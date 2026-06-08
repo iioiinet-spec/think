@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4장 기하학 — 모양과 공간의 세계</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"△  ▢  ◯  ⬠  ⬡";position:absolute;top:8px;left:0;right:0;
+  font-weight:900;font-size:22px;letter-spacing:16px;opacity:.12;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--orange)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--orange);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--orange);color:#fff;font-weight:900;border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:800;font-size:16px;
+  background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.org{background:var(--orange)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.disp{font-weight:900;font-size:21px}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+.bigans{font-size:26px;font-weight:900;color:var(--orange);text-align:center;margin:10px 0}
+.svgbox{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:10px;margin-top:10px;text-align:center}
+.svgbox svg{max-width:100%;height:auto}
+/* shape gallery */
+.gallery{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;justify-content:center}
+.shapecard{border:3px solid var(--ink);border-radius:16px;background:#fff;padding:10px;width:140px;text-align:center;cursor:pointer;transition:transform .1s;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.shapecard:hover{transform:translateY(-3px)}
+.shapecard.sel{background:#FFF5D6}
+.shapecard .nm{font-weight:900;font-size:16px;margin-top:6px}
+.shapecard .sub{font-size:13px;color:var(--soft);font-weight:700}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--orange);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--orange));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 4장</div>
+  <h1>기하학 — 모양과 <span class="hl">공간</span>의 세계 📐</h1>
+  <p>점·선·각에서 시작해 도형의 둘레와 넓이, 각도, 대칭까지! 직접 움직이며 배워요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">📍 점·선·각</button>
+  <button data-go="s1">🔷 도형 도감</button>
+  <button data-go="s2">📏 둘레와 넓이</button>
+  <button data-go="s3">📐 각도 재기</button>
+  <button data-go="s4">🦋 대칭과 옮기기</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 점선각 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">📍</span> 점, 선, 각</h2>
+    <p class="lead">기하학의 시작은 점이에요. 점이 모여 선이 되고, 선이 만나 각이 생겨요!</p>
+    <div class="box def"><div class="t">📘 기본 약속</div>
+      <b>점</b>: 위치만 있는 작은 자리 (·)<br>
+      <b>선분</b>: 두 점을 곧게 이은 선 (끝이 있음)<br>
+      <b>직선</b>: 양쪽으로 끝없이 늘어난 선<br>
+      <b>각</b>: 한 점에서 두 선이 벌어진 정도</div>
+
+    <div class="play">
+      <div class="ttl">📐 각이 벌어지는 걸 직접 봐요</div>
+      <div class="row"><span class="disp">각도: <span class="pill" id="ang_v">60</span>°</span></div>
+      <input type="range" class="slider" id="ang_s" min="0" max="180" value="60">
+      <div class="svgbox"><svg id="ang_svg" viewBox="0 0 300 200" width="300" height="200"></svg></div>
+      <div class="box tip" style="margin-top:10px"><div class="t">💡 각의 이름</div>
+        <span id="ang_msg"></span></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 각의 종류</div>
+      <b>직각</b> = 90° (반듯한 모서리) &nbsp;|&nbsp; <b>예각</b> = 90°보다 작음 &nbsp;|&nbsp; <b>둔각</b> = 90°보다 크고 180°보다 작음 &nbsp;|&nbsp; <b>평각</b> = 180°(쭉 편 선)</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">시계가 3시를 가리킬 때 시침과 분침이 이루는 각은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">12와 3 사이는 딱 <b>90°</b>, 직각이에요! 반듯한 모서리 모양이죠.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">45°는 예각일까요 둔각일까요?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">90°보다 작으니까 <b>예각</b>! (예각=날카로운 각)</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">직각 2개를 붙이면 몇 도이고 무슨 각일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">90° + 90° = <b>180°</b>, 쭉 펴진 <b>평각</b>이 돼요! 일직선이 되죠 📏</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 도형 도감 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">🔷</span> 도형 도감 — 변과 꼭짓점</h2>
+    <p class="lead">도형을 눌러보면 변과 꼭짓점이 몇 개인지, 어떤 특징이 있는지 알 수 있어요!</p>
+    <div class="box def"><div class="t">📘 다각형</div>
+      곧은 선분으로 둘러싸인 도형이 <b>다각형</b>이에요.
+      <b>변</b>의 수 = <b>꼭짓점</b>의 수! 변이 3개면 삼각형, 4개면 사각형…</div>
+
+    <div class="play">
+      <div class="ttl">🔍 도형을 눌러 살펴봐요</div>
+      <div class="gallery" id="shape_gallery"></div>
+      <div class="svgbox" style="margin-top:14px"><svg id="shape_svg" viewBox="0 0 200 200" width="200" height="200"></svg></div>
+      <div class="box key" style="margin-top:10px"><div class="t" id="shape_name">삼각형</div>
+        <span id="shape_info"></span></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 특별한 사각형들</div>
+      <b>정사각형</b>: 네 변 같고 네 각 직각 / <b>직사각형</b>: 마주보는 변 같고 네 각 직각 / <b>평행사변형</b>: 마주보는 변이 평행</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">변이 5개인 다각형의 이름과 꼭짓점 수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol"><b>오각형</b>이고, 꼭짓점도 <b>5개</b>! 변과 꼭짓점 수는 항상 같아요.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">정사각형과 직사각형의 공통점은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">둘 다 <b>네 각이 모두 직각(90°)</b>이에요! 차이는 정사각형은 네 변이 모두 같다는 점.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">육각형은 삼각형 몇 개로 나눌 수 있을까? (한 꼭짓점에서 선을 그어)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">한 꼭짓점에서 대각선을 그으면 <b>4개</b>의 삼각형! (n각형은 n−2개) 그래서 각의 합도 구할 수 있어요.</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 둘레와 넓이 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">📏</span> 둘레와 넓이</h2>
+    <p class="lead">둘레는 도형을 한 바퀴 두른 길이, 넓이는 도형이 차지하는 칸의 수예요. 직접 늘려보며 비교해요!</p>
+    <div class="box def"><div class="t">📘 직사각형 공식</div>
+      <b>둘레</b> = (가로 + 세로) × 2 &nbsp;|&nbsp; <b>넓이</b> = 가로 × 세로<br>
+      넓이는 단위 칸(1×1)이 몇 개 들어가는지 세는 것과 같아요!</div>
+
+    <div class="play">
+      <div class="ttl">🟧 직사각형 넓이 = 칸 세기</div>
+      <div class="row">
+        <div class="field"><div class="lab">가로 = <span class="pill" id="rect_w">5</span></div>
+          <input type="range" class="slider" id="rect_ws" min="1" max="10" value="5"></div>
+        <div class="field"><div class="lab">세로 = <span class="pill" id="rect_h">3</span></div>
+          <input type="range" class="slider" id="rect_hs" min="1" max="8" value="3"></div>
+      </div>
+      <div class="svgbox"><svg id="rect_svg" viewBox="0 0 340 260" width="340" height="260"></svg></div>
+      <div class="bigans" id="rect_ans"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 삼각형 넓이</div>
+      삼각형은 직사각형을 반으로 자른 것! <b>넓이 = 밑변 × 높이 ÷ 2</b>.
+      같은 삼각형 두 개를 붙이면 직사각형이 되거든요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">가로 6cm, 세로 4cm 직사각형의 둘레와 넓이는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">둘레 = (6+4)×2 = <b>20cm</b>, 넓이 = 6×4 = <b>24㎠</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">한 변이 5cm인 정사각형의 넓이는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">5 × 5 = <b>25㎠</b>. 정사각형 넓이는 한 변을 두 번 곱해요!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">밑변 8cm, 높이 3cm인 삼각형의 넓이는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">8 × 3 ÷ 2 = <b>12㎠</b>. 직사각형(24)의 절반이에요!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 각도 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">📐</span> 각도의 합</h2>
+    <p class="lead">삼각형 세 각을 모으면 항상 180°! 사각형은 360°! 직접 각을 바꿔보며 확인해요.</p>
+    <div class="box def"><div class="t">📘 각의 합 규칙</div>
+      <b>삼각형 세 각의 합 = 180°</b> (어떤 삼각형이든!)<br>
+      <b>사각형 네 각의 합 = 360°</b> (삼각형 2개니까 180×2)</div>
+
+    <div class="play">
+      <div class="ttl">🔺 삼각형 각 바꿔보기 — 합은 항상 180°</div>
+      <div class="row">
+        <div class="field"><div class="lab">첫째 각 = <span class="pill" id="tri_a">60</span>°</div>
+          <input type="range" class="slider" id="tri_as" min="20" max="120" value="60"></div>
+        <div class="field"><div class="lab">둘째 각 = <span class="pill" id="tri_b">60</span>°</div>
+          <input type="range" class="slider" id="tri_bs" min="20" max="120" value="60"></div>
+      </div>
+      <div class="svgbox"><svg id="tri_svg" viewBox="0 0 300 220" width="300" height="220"></svg></div>
+      <div class="bigans" id="tri_ans"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 활용</div>
+      두 각을 알면 나머지 한 각은 빼서 구해요! 삼각형: 180 − (두 각의 합). 빈 각 찾기 문제의 비결이에요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">삼각형의 두 각이 50°와 70°예요. 나머지 한 각은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">180 − (50+70) = 180 − 120 = <b>60°</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">정삼각형(세 변·세 각이 같은)의 한 각은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">180 ÷ 3 = <b>60°</b>. 세 각이 똑같이 나누니까요!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">사각형의 세 각이 90°, 90°, 100°예요. 나머지 한 각은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">360 − (90+90+100) = 360 − 280 = <b>80°</b>.</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 대칭과 옮기기 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🦋</span> 대칭과 도형 옮기기</h2>
+    <p class="lead">접으면 딱 겹치는 선대칭, 돌려도 똑같은 점대칭, 그리고 도형을 밀고·뒤집고·돌리는 변환을 배워요!</p>
+    <div class="box def"><div class="t">📘 대칭</div>
+      <b>선대칭</b>: 어떤 선(대칭축)으로 접으면 양쪽이 딱 겹쳐요 (나비, 하트)<br>
+      <b>점대칭</b>: 한 점을 중심으로 180° 돌리면 똑같아져요 (바람개비, S자)</div>
+
+    <div class="play">
+      <div class="ttl">🪞 거울 대칭 그리기 — 왼쪽을 그리면 오른쪽이 따라와요</div>
+      <p style="font-weight:700;margin-bottom:6px">왼쪽 칸을 눌러 색칠하면, 대칭축 너머로 거울처럼 똑같이 나타나요!</p>
+      <div class="svgbox"><svg id="sym_svg" viewBox="0 0 320 200" width="320" height="200"></svg></div>
+      <div class="row" style="margin-top:10px"><button class="btn gray" id="sym_clear">지우기 🧽</button></div>
+    </div>
+
+    <div class="play">
+      <div class="ttl">🔄 도형 옮기기 — 밀기·뒤집기·돌리기</div>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn org" data-move="slide">➡️ 밀기(이동)</button>
+        <button class="btn alt" data-move="flip">🔃 뒤집기(반사)</button>
+        <button class="btn" data-move="rotate">🔄 돌리기(회전)</button>
+        <button class="btn gray" data-move="reset">처음으로 🔁</button>
+      </div>
+      <div class="svgbox"><svg id="move_svg" viewBox="0 0 320 200" width="320" height="200"></svg></div>
+      <div class="box tip" style="margin-top:10px"><div class="t">💡 지금 한 변환</div>
+        <span id="move_msg">버튼을 눌러보세요! 밀기·뒤집기·돌리기를 해도 도형의 크기와 모양은 그대로예요.</span></div>
+    </div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">알파벳 A는 선대칭일까요?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">세로선으로 접으면 양쪽이 겹쳐요 → <b>선대칭이 맞아요</b>! (대칭축은 세로)</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">도형을 밀기(이동)하면 무엇이 바뀌고 무엇이 그대로일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol"><b>위치는 바뀌지만</b>, 크기·모양·방향은 <b>그대로</b>예요! 미끄러뜨리는 것뿐이니까요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">숫자 8과 0 중에서 점대칭인 것은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol"><b>둘 다 점대칭</b>이에요! 180° 돌려도 똑같죠. (8, 0은 위아래로도 대칭이에요)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 기하학 마스터 퀴즈</h2>
+    <p class="lead">점·선·각, 도형, 둘레·넓이, 각도, 대칭까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 4장 「기하학」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var SVGNS="http://www.w3.org/2000/svg";
+  function el(tag,attrs){ var e=document.createElementNS(SVGNS,tag); for(var k in attrs){ e.setAttribute(k,attrs[k]); } return e; }
+
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+
+  /* ---------- S0 각 ---------- */
+  function angRender(){
+    var deg=parseInt($("ang_s").value,10);
+    $("ang_v").textContent=deg;
+    var svg=$("ang_svg"); svg.innerHTML="";
+    var cx=60, cy=160, len=190;
+    // base ray (horizontal)
+    svg.appendChild(el("line",{x1:cx,y1:cy,x2:cx+len,y2:cy,stroke:"#3D7BFF","stroke-width":5,"stroke-linecap":"round"}));
+    // rotating ray
+    var rad=deg*Math.PI/180;
+    var ex=cx+len*Math.cos(rad), ey=cy-len*Math.sin(rad);
+    svg.appendChild(el("line",{x1:cx,y1:cy,x2:ex,y2:ey,stroke:"#FF5C8A","stroke-width":5,"stroke-linecap":"round"}));
+    // arc
+    var ax=cx+40*Math.cos(0), ay=cy;
+    var bx=cx+40*Math.cos(rad), by=cy-40*Math.sin(rad);
+    var large=deg>180?1:0;
+    svg.appendChild(el("path",{d:"M "+ax+" "+ay+" A 40 40 0 "+large+" 0 "+bx+" "+by,fill:"none",stroke:"#FFCE2E","stroke-width":4}));
+    svg.appendChild(el("circle",{cx:cx,cy:cy,r:6,fill:"#262338"}));
+    var label=el("text",{x:cx+52,y:cy-14,"font-size":18,"font-weight":900,fill:"#262338"}); label.textContent=deg+"°"; svg.appendChild(label);
+    var name;
+    if(deg===0){ name="0° — 두 선이 딱 붙어 있어요"; }
+    else if(deg<90){ name="<b>예각</b> (90°보다 작은 날카로운 각)"; }
+    else if(deg===90){ name="<b>직각</b>! 반듯한 모서리 90° 📐"; }
+    else if(deg<180){ name="<b>둔각</b> (90°보다 크고 180°보다 작은 둔한 각)"; }
+    else { name="<b>평각</b>! 쭉 펴진 일직선 180° 📏"; }
+    $("ang_msg").innerHTML=name;
+  }
+  $("ang_s").addEventListener("input", angRender);
+  angRender();
+
+  /* ---------- S1 도형 도감 ---------- */
+  var shapes=[
+    {key:"tri",nm:"삼각형",sides:3,info:"변 3개, 꼭짓점 3개. 세 각의 합은 180°! 가장 단단한 도형이라 다리·탑에 많이 써요."},
+    {key:"sq",nm:"정사각형",sides:4,info:"변 4개가 모두 같고, 네 각이 모두 직각(90°)! 둘레=한 변×4, 넓이=한 변×한 변."},
+    {key:"rect",nm:"직사각형",sides:4,info:"마주보는 변끼리 같고 네 각이 직각. 책·문처럼 우리 주변에 가장 많은 도형이에요."},
+    {key:"penta",nm:"오각형",sides:5,info:"변 5개, 꼭짓점 5개. 다섯 각의 합은 540°예요."},
+    {key:"hexa",nm:"육각형",sides:6,info:"변 6개, 꼭짓점 6개. 벌집 모양! 빈틈없이 딱 맞춰져요."}
+  ];
+  var shapeSel="tri";
+  function polygonPoints(n,cx,cy,rad,rot){
+    var pts=[];
+    for(var i=0;i<n;i++){
+      var a=rot+i*2*Math.PI/n;
+      pts.push((cx+rad*Math.cos(a)).toFixed(1)+","+(cy+rad*Math.sin(a)).toFixed(1));
+    }
+    return pts.join(" ");
+  }
+  function drawShape(){
+    var svg=$("shape_svg"); svg.innerHTML="";
+    var s=null; for(var i=0;i<shapes.length;i++){ if(shapes[i].key===shapeSel) s=shapes[i]; }
+    var pts;
+    if(s.key==="sq"){ pts="50,50 150,50 150,150 50,150"; }
+    else if(s.key==="rect"){ pts="35,65 165,65 165,135 35,135"; }
+    else { pts=polygonPoints(s.sides,100,105,70,-Math.PI/2); }
+    var poly=el("polygon",{points:pts,fill:"#FFE7C2",stroke:"#FF923E","stroke-width":4,"stroke-linejoin":"round"});
+    svg.appendChild(poly);
+    // vertices
+    var arr=pts.split(" ");
+    for(var v=0;v<arr.length;v++){
+      var xy=arr[v].split(","); svg.appendChild(el("circle",{cx:xy[0],cy:xy[1],r:6,fill:"#FF5C8A"}));
+    }
+    $("shape_name").textContent=s.nm;
+    $("shape_info").innerHTML="변 <b>"+s.sides+"개</b>, 꼭짓점 <b>"+s.sides+"개</b>. "+s.info;
+  }
+  function buildGallery(){
+    var g=$("shape_gallery"); g.innerHTML="";
+    for(var i=0;i<shapes.length;i++){
+      (function(s){
+        var card=document.createElement("div"); card.className="shapecard"+(s.key===shapeSel?" sel":"");
+        var mini='<svg viewBox="0 0 80 80" width="80" height="80"><polygon points="'+
+          (s.key==="sq"?"20,20 60,20 60,60 20,60":s.key==="rect"?"14,26 66,26 66,54 14,54":polygonPoints(s.sides,40,42,28,-Math.PI/2))+
+          '" fill="#FFE7C2" stroke="#FF923E" stroke-width="3" stroke-linejoin="round"/></svg>';
+        card.innerHTML=mini+'<div class="nm">'+s.nm+'</div><div class="sub">변 '+s.sides+'개</div>';
+        card.addEventListener("click", function(){ shapeSel=s.key; buildGallery(); drawShape(); });
+        g.appendChild(card);
+      })(shapes[i]);
+    }
+  }
+  buildGallery(); drawShape();
+  /* ---------- S2 직사각형 넓이 ---------- */
+  function rectRender(){
+    var w=parseInt($("rect_ws").value,10), h=parseInt($("rect_hs").value,10);
+    $("rect_w").textContent=w; $("rect_h").textContent=h;
+    var svg=$("rect_svg"); svg.innerHTML="";
+    var cell=26, ox=30, oy=20;
+    for(var i=0;i<w;i++){ for(var j=0;j<h;j++){
+      svg.appendChild(el("rect",{x:ox+i*cell,y:oy+j*cell,width:cell-2,height:cell-2,rx:4,fill:"#FFE7C2",stroke:"#FF923E","stroke-width":2}));
+    }}
+    // dimension labels
+    var tw=el("text",{x:ox+w*cell/2-6,y:oy+h*cell+22,"font-size":16,"font-weight":900,fill:"#3D7BFF"}); tw.textContent="가로 "+w; svg.appendChild(tw);
+    var th=el("text",{x:ox+w*cell+8,y:oy+h*cell/2,"font-size":16,"font-weight":900,fill:"#FF5C8A"}); th.textContent="세로 "+h; svg.appendChild(th);
+    $("rect_ans").innerHTML="둘레 = ("+w+"+"+h+")×2 = "+((w+h)*2)+" &nbsp;|&nbsp; 넓이 = "+w+"×"+h+" = <b>"+(w*h)+"칸</b>";
+  }
+  $("rect_ws").addEventListener("input", rectRender);
+  $("rect_hs").addEventListener("input", rectRender);
+  rectRender();
+
+  /* ---------- S3 삼각형 각 ---------- */
+  function triRender(){
+    var a=parseInt($("tri_as").value,10), b=parseInt($("tri_bs").value,10);
+    var c=180-a-b;
+    $("tri_a").textContent=a; $("tri_b").textContent=b;
+    var svg=$("tri_svg"); svg.innerHTML="";
+    if(c<=0){
+      $("tri_ans").innerHTML='<span style="color:var(--pink)">두 각의 합이 너무 커요! 세 각의 합은 180°를 넘을 수 없어요.</span>';
+      var warn=el("text",{x:150,y:110,"font-size":16,"font-weight":900,fill:"#FF5C8A","text-anchor":"middle"}); warn.textContent="각을 줄여보세요!"; svg.appendChild(warn);
+      return;
+    }
+    // place triangle: fix base, compute apex from angles a (left) and b (right)
+    var Ax=40, Ay=180, Bx=260, By=180;
+    var ar=a*Math.PI/180, br=b*Math.PI/180;
+    // apex via ray intersection
+    var base=Bx-Ax;
+    // using law: height position
+    var t = base * Math.tan(ar)*Math.tan(br)/(Math.tan(ar)+Math.tan(br));
+    var px = Ax + base*Math.tan(br)/(Math.tan(ar)+Math.tan(br));
+    var Cx=px, Cy=Ay - t;
+    svg.appendChild(el("polygon",{points:Ax+","+Ay+" "+Bx+","+By+" "+Cx.toFixed(1)+","+Cy.toFixed(1),fill:"#FFE7C2",stroke:"#FF923E","stroke-width":4,"stroke-linejoin":"round"}));
+    function lbl(x,y,txt,col){ var e=el("text",{x:x,y:y,"font-size":15,"font-weight":900,fill:col,"text-anchor":"middle"}); e.textContent=txt; svg.appendChild(e); }
+    lbl(Ax+28,Ay-8,a+"°","#3D7BFF");
+    lbl(Bx-28,By-8,b+"°","#FF5C8A");
+    lbl(Cx,Cy+24,c+"°","#27C99A");
+    $("tri_ans").innerHTML=a+"° + "+b+"° + "+c+"° = <b>180°</b> ✔";
+  }
+  $("tri_as").addEventListener("input", triRender);
+  $("tri_bs").addEventListener("input", triRender);
+  triRender();
+
+  /* ---------- S4 거울 대칭 ---------- */
+  var symCols=8, symRows=5, symState={};
+  function symBuild(){
+    var svg=$("sym_svg"); svg.innerHTML=""; 
+    var cell=30, ox=10, oy=20, axis=ox+symCols*cell;
+    // left grid (clickable)
+    for(var i=0;i<symCols;i++){ for(var j=0;j<symRows;j++){
+      (function(ci,cj){
+        var key=ci+"_"+cj;
+        var rc=el("rect",{x:ox+ci*cell,y:oy+cj*cell,width:cell-1,height:cell-1,fill:symState[key]?"#FF5C8A":"#fff",stroke:"#DCC","stroke-width":1});
+        rc.style.cursor="pointer"; rc.id="L_"+key;
+        rc.addEventListener("click", function(){
+          symState[key]=!symState[key];
+          rc.setAttribute("fill",symState[key]?"#FF5C8A":"#fff");
+          $("R_"+key).setAttribute("fill",symState[key]?"#3D7BFF":"#fff");
+        });
+        svg.appendChild(rc);
+      })(i,j);
+    }}
+    // axis
+    svg.appendChild(el("line",{x1:axis,y1:oy-6,x2:axis,y2:oy+symRows*cell+6,stroke:"#27C99A","stroke-width":4,"stroke-dasharray":"6 5"}));
+    // right grid (mirror)
+    for(var i2=0;i2<symCols;i2++){ for(var j2=0;j2<symRows;j2++){
+      var key2=i2+"_"+j2;
+      var mx=axis + (symCols-1-i2)*cell + 1;
+      var rc2=el("rect",{x:mx,y:oy+j2*cell,width:cell-1,height:cell-1,fill:symState[key2]?"#3D7BFF":"#fff",stroke:"#DCC","stroke-width":1}); rc2.id="R_"+key2;
+      svg.appendChild(rc2);
+    }}
+    var t=el("text",{x:axis,y:oy+symRows*cell+18,"font-size":13,"font-weight":900,fill:"#27C99A","text-anchor":"middle"}); t.textContent="↑ 대칭축"; svg.appendChild(t);
+  }
+  $("sym_clear").addEventListener("click", function(){ symState={}; symBuild(); });
+  symBuild();
+
+  /* ---------- S4 도형 옮기기 ---------- */
+  var moveSvg=$("move_svg");
+  var baseShape="60,70 110,70 85,40"; // triangle pointing up, left side
+  function drawMove(transform, color, msg){
+    moveSvg.innerHTML="";
+    // axis line for reference
+    moveSvg.appendChild(el("line",{x1:160,y1:10,x2:160,y2:190,stroke:"#ccc","stroke-width":2,"stroke-dasharray":"4 4"}));
+    // ghost original
+    moveSvg.appendChild(el("polygon",{points:baseShape,fill:"#EEE",stroke:"#bbb","stroke-width":2,"stroke-dasharray":"4 3"}));
+    // transformed
+    var p=el("polygon",{points:baseShape,fill:color,stroke:"#262338","stroke-width":3,"stroke-linejoin":"round"});
+    if(transform){ p.setAttribute("transform",transform); }
+    moveSvg.appendChild(p);
+    $("move_msg").innerHTML=msg;
+  }
+  drawMove("","#FFE7C2","버튼을 눌러보세요! 밀기·뒤집기·돌리기를 해도 도형의 크기와 모양은 그대로예요.");
+  var moveBtns=document.querySelectorAll("[data-move]");
+  for(var mb=0;mb<moveBtns.length;mb++){
+    moveBtns[mb].addEventListener("click", function(){
+      var m=this.getAttribute("data-move");
+      if(m==="slide"){ drawMove("translate(120,40)","#FFD2A6","<b>밀기(이동)</b>: 위치만 오른쪽 아래로 옮겼어요. 모양·크기·방향은 그대로! ➡️"); }
+      else if(m==="flip"){ drawMove("translate(320,0) scale(-1,1)","#CFE6FF","<b>뒤집기(반사)</b>: 축을 기준으로 거울처럼 좌우를 뒤집었어요. 🔃"); }
+      else if(m==="rotate"){ drawMove("rotate(180,85,55) translate(60,60)","#E0D2FF","<b>돌리기(회전)</b>: 180° 빙글 돌렸어요. 뾰족한 곳이 아래로! 🔄"); }
+      else { drawMove("","#FFE7C2","처음 위치로 돌아왔어요. 다시 변환해볼까요?"); }
+    });
+  }
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"90°인 각을 무엇이라고 할까요?", opts:["예각","직각","둔각","평각"], a:1, why:"90°는 직각! 반듯한 모서리예요."},
+    {q:"변이 6개인 다각형의 이름은?", opts:["오각형","육각형","사각형","칠각형"], a:1, why:"변 6개 = 육각형. 벌집 모양이에요."},
+    {q:"가로 7, 세로 5인 직사각형의 넓이는?", opts:["12","24","35","70"], a:2, why:"넓이 = 가로×세로 = 7×5 = 35."},
+    {q:"가로 7, 세로 5인 직사각형의 둘레는?", opts:["12","24","35","70"], a:1, why:"둘레 = (7+5)×2 = 24."},
+    {q:"삼각형 세 각의 합은?", opts:["90°","180°","270°","360°"], a:1, why:"어떤 삼각형이든 세 각의 합은 180°!"},
+    {q:"삼각형 두 각이 40°, 80°예요. 나머지 한 각은?", opts:["50°","60°","70°","80°"], a:1, why:"180−(40+80)=60°."},
+    {q:"한 변이 6cm인 정사각형의 넓이는?", opts:["24㎠","36㎠","12㎠","30㎠"], a:1, why:"6×6=36㎠."},
+    {q:"밑변 10, 높이 4인 삼각형의 넓이는?", opts:["40","20","14","24"], a:1, why:"10×4÷2=20. 직사각형의 절반!"},
+    {q:"도형을 '밀기(이동)' 했을 때 바뀌는 것은?", opts:["크기","모양","위치","방향"], a:2, why:"밀기는 위치만 바뀌고 크기·모양·방향은 그대로!"},
+    {q:"사각형 네 각의 합은?", opts:["180°","270°","360°","90°"], a:2, why:"사각형은 삼각형 2개 = 180×2 = 360°."}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 기하학 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

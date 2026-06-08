@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조합론 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"n!  nPr  nCr  for  *";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:16px;letter-spacing:8px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;
+  background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;
+  color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}
+.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;
+  color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;
+  background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 3장 · 코딩 연계</div>
+  <h1>조합론을 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>손으로 세던 경우의 수·순열·조합을 C와 Python으로! 값을 바꾸면 코드와 결과가 바로 바뀌어요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 곱하기 반복</button>
+  <button data-go="s1">❗ 팩토리얼 n!</button>
+  <button data-go="s2">🏃 순열 nPr</button>
+  <button data-go="s3">🤝 조합 nCr</button>
+  <button data-go="s4">📋 모든 경우 나열</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 곱하기를 반복하기</h2>
+    <p class="lead">조합론 코드의 핵심은 <b>곱셈을 반복</b>하는 거예요. 변수 하나에 계속 곱해 쌓으면 돼요!</p>
+    <div class="box def"><div class="t">📘 누적 곱셈</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">result = result * i</code> 를 반복하면,
+      여러 수를 차례로 곱한 값이 쌓여요. 경우의 수는 거의 다 이 방식!</div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 2 × 3 × 4 를 곱해 쌓기</span>
+<span class="tk-key">int</span> result = <span class="tk-num">1</span>;
+<span class="tk-key">for</span> (<span class="tk-key">int</span> i = <span class="tk-num">2</span>; i &lt;= <span class="tk-num">4</span>; i++) {
+    result = result * i;
+}
+<span class="tk-fn">printf</span>(<span class="tk-str">"%d\n"</span>, result);  <span class="tk-com">// 24</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 2 × 3 × 4 를 곱해 쌓기</span>
+result = <span class="tk-num">1</span>
+<span class="tk-key">for</span> i <span class="tk-key">in</span> <span class="tk-fn">range</span>(<span class="tk-num">2</span>, <span class="tk-num">5</span>):
+    result = result * i
+<span class="tk-fn">print</span>(result)   <span class="tk-com"># 24</span></code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 곱셈 쌓기 계산기 — a부터 b까지 곱하기</div>
+      <div class="row">
+        <input type="number" id="mp_a" class="numin" value="2">
+        <span class="lab">부터</span>
+        <input type="number" id="mp_b" class="numin" value="5">
+        <span class="lab">까지 곱</span>
+        <button class="btn" id="mp_go">계산 ✨</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="mp_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 기억!</div>
+      result를 <b>1로 시작</b>하는 게 중요해요. 0으로 시작하면 아무리 곱해도 0이 되거든요!</div>
+  </div>
+</section>
+
+<!-- S1 팩토리얼 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">❗</span> 팩토리얼 n! 구하기</h2>
+    <p class="lead">n명을 한 줄로 세우는 방법의 수 = n! = n × (n-1) × … × 2 × 1. 줄 세우기의 기본!</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — n! 계산</div>
+      <div class="row">
+        <div class="field"><div class="lab">n = <span class="pill" id="ft_n">5</span></div>
+          <input type="range" class="slider" id="ft_s" min="1" max="12" value="5"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="ft_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="ft_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="ft_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      1부터 n까지 모두 곱하면 끝! <b>0! = 1</b> 이라고 약속한 것도 기억해요.</div>
+  </div>
+</section>
+<!-- S2 순열 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🏃</span> 순열 nPr 구하기 (순서 있음)</h2>
+    <p class="lead">n명 중 r명을 순서대로 뽑기 = n × (n-1) × … (r번 곱하기). 반장·부반장 뽑기처럼요!</p>
+    <div class="box def"><div class="t">📘 순열 공식</div>
+      nPr = n부터 시작해 <b>1씩 줄이며 r번</b> 곱해요.<br>
+      예: 5P2 = 5 × 4 = 20 (반장 5명 중, 부반장 남은 4명 중).</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — nPr</div>
+      <div class="row">
+        <div class="field"><div class="lab">전체 n = <span class="pill" id="pm_n">5</span></div>
+          <input type="range" class="slider" id="pm_ns" min="1" max="10" value="5"></div>
+        <div class="field"><div class="lab">뽑을 r = <span class="pill" id="pm_r">2</span></div>
+          <input type="range" class="slider" id="pm_rs" min="1" max="10" value="2"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="pm_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="pm_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="pm_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 r이 n보다 크면?</div>
+      뽑을 사람이 전체보다 많을 수는 없죠! 그럴 땐 경우의 수가 <b>0</b>이에요. 코드가 자동으로 알려줘요.</div>
+  </div>
+</section>
+
+<!-- S3 조합 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🤝</span> 조합 nCr 구하기 (순서 없음)</h2>
+    <p class="lead">n명 중 r명을 순서 상관없이 뽑기. 순열을 구한 뒤 중복된 순서(r!)로 나눠주면 돼요!</p>
+    <div class="box def"><div class="t">📘 조합 공식</div>
+      nCr = nPr ÷ r! &nbsp; (순서를 따진 것을, 순서 가짓수로 나눠 중복 제거)<br>
+      예: 5C2 = (5×4) ÷ (2×1) = 20 ÷ 2 = 10.</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — nCr</div>
+      <div class="row">
+        <div class="field"><div class="lab">전체 n = <span class="pill" id="cm_n">5</span></div>
+          <input type="range" class="slider" id="cm_ns" min="1" max="12" value="5"></div>
+        <div class="field"><div class="lab">뽑을 r = <span class="pill" id="cm_r">2</span></div>
+          <input type="range" class="slider" id="cm_rs" min="0" max="12" value="2"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="cm_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="cm_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="cm_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 Python의 선물</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">import math</code> 후
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">math.comb(5, 2)</code> 하면 바로 10! 하지만 원리를 알아야 진짜 실력이에요.</div>
+  </div>
+</section>
+<!-- S4 모든 경우 나열 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">📋</span> 모든 경우를 직접 나열하기</h2>
+    <p class="lead">개수만 세는 게 아니라, 가능한 경우를 <b>전부 출력</b>해볼 수도 있어요. 반복문을 겹쳐서요!</p>
+    <div class="box def"><div class="t">📘 이중 반복문으로 곱의 법칙</div>
+      윗옷마다 바지를 다 짝지으려면 <b>반복문 안에 반복문</b>(이중 for)을 써요.
+      바깥은 윗옷, 안쪽은 바지!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 옷 코디 전부 출력</div>
+      <div class="row">
+        <div class="field"><div class="lab">👕 윗옷 수 = <span class="pill" id="en_a">3</span></div>
+          <input type="range" class="slider" id="en_as" min="1" max="5" value="3"></div>
+        <div class="field"><div class="lab">👖 바지 수 = <span class="pill" id="en_b">2</span></div>
+          <input type="range" class="slider" id="en_bs" min="1" max="5" value="2"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="en_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="en_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (모든 코디)</div>
+      <div class="console" id="en_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      반복문을 겹친 횟수 = 곱한 가짓수! 윗옷 3 × 바지 2 = 6줄이 출력돼요.
+      Python에는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">itertools</code> 라는 편리한 도구도 있어요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 조합론 코드 비교</h2>
+    <p class="lead">경우의 수를 다룰 때 자주 쓰는 표현을 정리했어요. 특히 Python의 편리한 도구들을 눈여겨봐요!</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>곱 누적</td><td><code>r = r * i;</code></td><td><code>r *= i</code></td></tr>
+      <tr><td>팩토리얼</td><td>for 반복 직접</td><td><code>math.factorial(n)</code></td></tr>
+      <tr><td>조합 nCr</td><td>직접 계산</td><td><code>math.comb(n, r)</code></td></tr>
+      <tr><td>순열 nPr</td><td>직접 계산</td><td><code>math.perm(n, r)</code></td></tr>
+      <tr><td>모든 순열 나열</td><td>재귀 함수 직접</td><td><code>itertools.permutations</code></td></tr>
+      <tr><td>모든 조합 나열</td><td>재귀 함수 직접</td><td><code>itertools.combinations</code></td></tr>
+      <tr><td>아주 큰 수(20! 등)</td><td><code>long long</code> 필요</td><td>걱정 없음(자동)</td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 Python 도구 미리보기</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">from itertools import permutations</code><br>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">list(permutations([1,2,3]))</code> → 1,2,3의 모든 순서 6가지를 한 번에!</div>
+    <div class="box warn"><div class="t">⚠️ 조심: 수가 폭발해요</div>
+      팩토리얼·순열은 <b>아주 빠르게</b> 커져요. 10! = 360만, 20!은 어마어마해요!
+      C에서는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">int</code>로 13!만 넘어도 넘쳐버려요. 큰 수는 Python이 편해요.</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      "순서가 중요하면 순열(nPr), 상관없으면 조합(nCr)". 손으로 원리를 익히고 코드로 자동 계산하면,
+      복잡한 경우의 수도 순식간에 해결! 수학 + 코딩의 힘이에요 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 3장 「조합론」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 곱셈 쌓기 */
+  $("mp_go").addEventListener("click", function(){
+    var a=parseInt($("mp_a").value,10), b=parseInt($("mp_b").value,10);
+    if(isNaN(a)||isNaN(b)||a>b){ $("mp_out").innerHTML='<span class="pmt">$ </span>"부터"가 "까지"보다 작아야 해요!'; return; }
+    var r=1, parts=[];
+    for(var i=a;i<=b;i++){ r*=i; parts.push(i); }
+    $("mp_out").innerHTML='<span class="pmt">$ </span>'+parts.join(" × ")+" = "+r;
+  });
+
+  /* S1 팩토리얼 */
+  function factVal(x){ var r=1; for(var i=2;i<=x;i++){ r*=i; } return r; }
+  function ftRender(){
+    var x=parseInt($("ft_s").value,10);
+    $("ft_n").textContent=x;
+    $("ft_c").innerHTML =
+      C("// "+x+"! 구하기")+"\n"+
+      K("long long")+" fact = "+N("1")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("1")+"; i &lt;= "+N(x)+"; i++) {\n"+
+      "    fact = fact * i;\n"+
+      "}\n"+
+      F("printf")+"("+ST('"%lld\\n"')+", fact);";
+    $("ft_py").innerHTML =
+      C("# "+x+"! 구하기")+"\n"+
+      "fact = "+N("1")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N("1")+", "+N(x+1)+"):\n"+
+      "    fact = fact * i\n"+
+      F("print")+"(fact)\n"+
+      C("# 또는: import math; math.factorial("+x+")");
+    var parts=[]; for(var i=1;i<=x;i++){ parts.push(i); }
+    $("ft_out").innerHTML='<span class="pmt">$ </span>'+x+"! = "+parts.join(" × ")+" = "+factVal(x);
+  }
+  $("ft_s").addEventListener("input", ftRender);
+  ftRender();
+
+  /* S2 순열 nPr */
+  function permVal(nn,rr){ if(rr>nn) return 0; var r=1; for(var i=0;i<rr;i++){ r*=(nn-i); } return r; }
+  function pmRender(){
+    var nn=parseInt($("pm_ns").value,10), rr=parseInt($("pm_rs").value,10);
+    $("pm_n").textContent=nn; $("pm_r").textContent=rr;
+    $("pm_c").innerHTML =
+      C("// "+nn+"P"+rr+" (순서 있게 뽑기)")+"\n"+
+      K("long long")+" p = "+N("1")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(rr)+"; i++) {\n"+
+      "    p = p * ("+N(nn)+" - i);\n"+
+      "}\n"+
+      F("printf")+"("+ST('"%lld\\n"')+", p);";
+    $("pm_py").innerHTML =
+      C("# "+nn+"P"+rr+" (순서 있게 뽑기)")+"\n"+
+      "p = "+N("1")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N(rr)+"):\n"+
+      "    p = p * ("+N(nn)+" - i)\n"+
+      F("print")+"(p)\n"+
+      C("# 또는: import math; math.perm("+nn+", "+rr+")");
+    var val=permVal(nn,rr);
+    var parts=[]; for(var i=0;i<rr;i++){ parts.push(nn-i); }
+    var line = rr>nn ? (rr+"명을 "+nn+"명에서 못 뽑아요 → 0") : (parts.join(" × ")+" = "+val);
+    $("pm_out").innerHTML='<span class="pmt">$ </span>'+nn+"P"+rr+" = "+line;
+  }
+  $("pm_ns").addEventListener("input", pmRender);
+  $("pm_rs").addEventListener("input", pmRender);
+  pmRender();
+  /* S3 조합 nCr */
+  function combVal(nn,rr){ if(rr<0||rr>nn) return 0; if(rr>nn-rr) rr=nn-rr; var r=1; for(var i=0;i<rr;i++){ r=r*(nn-i)/(i+1); } return Math.round(r); }
+  function cmRender(){
+    var nn=parseInt($("cm_ns").value,10), rr=parseInt($("cm_rs").value,10);
+    $("cm_n").textContent=nn; $("cm_r").textContent=rr;
+    $("cm_c").innerHTML =
+      C("// "+nn+"C"+rr+" (순서 없이 뽑기)")+"\n"+
+      K("long long")+" c = "+N("1")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(rr)+"; i++) {\n"+
+      "    c = c * ("+N(nn)+" - i) / (i + "+N("1")+");\n"+
+      "}\n"+
+      F("printf")+"("+ST('"%lld\\n"')+", c);";
+    $("cm_py").innerHTML =
+      C("# "+nn+"C"+rr+" (순서 없이 뽑기)")+"\n"+
+      "c = "+N("1")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N(rr)+"):\n"+
+      "    c = c * ("+N(nn)+" - i) // (i + "+N("1")+")\n"+
+      F("print")+"(c)\n"+
+      C("# 또는: import math; math.comb("+nn+", "+rr+")");
+    var val=combVal(nn,rr);
+    var pv=(rr>nn||rr<0)?0:1; var top=[],bot=[];
+    for(var i=0;i<rr;i++){ top.push(nn-i); bot.push(i+1); }
+    var line = (rr>nn) ? (rr+"명을 "+nn+"명에서 못 뽑아요 → 0")
+      : ("("+ (top.join("×")||"1") +") ÷ ("+ (bot.join("×")||"1") +") = "+val);
+    $("cm_out").innerHTML='<span class="pmt">$ </span>'+nn+"C"+rr+" = "+line;
+  }
+  $("cm_ns").addEventListener("input", cmRender);
+  $("cm_rs").addEventListener("input", cmRender);
+  cmRender();
+
+  /* S4 모든 경우 나열 (이중 for) */
+  function enRender(){
+    var a=parseInt($("en_as").value,10), b=parseInt($("en_bs").value,10);
+    $("en_a").textContent=a; $("en_b").textContent=b;
+    $("en_c").innerHTML =
+      C("// 윗옷 "+a+" × 바지 "+b+" 모두 출력")+"\n"+
+      K("for")+" ("+K("int")+" t = "+N("1")+"; t &lt;= "+N(a)+"; t++) {\n"+
+      "    "+K("for")+" ("+K("int")+" p = "+N("1")+"; p &lt;= "+N(b)+"; p++) {\n"+
+      "        "+F("printf")+"("+ST('"윗옷%d-바지%d\\n"')+", t, p);\n"+
+      "    }\n"+
+      "}";
+    $("en_py").innerHTML =
+      C("# 윗옷 "+a+" × 바지 "+b+" 모두 출력")+"\n"+
+      K("for")+" t "+K("in")+" "+F("range")+"("+N("1")+", "+N(a+1)+"):\n"+
+      "    "+K("for")+" p "+K("in")+" "+F("range")+"("+N("1")+", "+N(b+1)+"):\n"+
+      "        "+F("print")+"("+ST('f"윗옷{t}-바지{p}"')+")";
+    var lines=[];
+    for(var t=1;t<=a;t++){ for(var p=1;p<=b;p++){ lines.push("윗옷"+t+"-바지"+p); } }
+    $("en_out").innerHTML='<span class="pmt">$ </span>'+lines.join("\n")+"\n("+(a*b)+"가지)";
+  }
+  $("en_as").addEventListener("input", enRender);
+  $("en_bs").addEventListener("input", enRender);
+  enRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2장 정수론 — 수의 비밀을 파헤치자</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"2  3  5  7  11  13  17  19";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:20px;letter-spacing:12px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--purple)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--purple);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+/* 예제 */
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--purple);color:#fff;font-weight:900;
+  border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;
+  border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;
+  border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);
+  border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:8px 16px;font-weight:800;font-size:16px;background:var(--green);color:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.pur{background:var(--purple)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{flex:1;min-width:170px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:90px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;
+  font-weight:900;text-align:center;font-family:inherit}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.disp{font-weight:900;font-size:21px}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+/* dot grid for divisors / rectangles */
+.grid{display:inline-grid;gap:5px;padding:10px;background:#FFF7E6;border:3px solid var(--ink);border-radius:14px}
+.dot{width:20px;height:20px;border-radius:6px;background:var(--orange)}
+.gridwrap{display:flex;gap:14px;flex-wrap:wrap;align-items:start;margin-top:10px}
+/* number tiles */
+.tiles{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.tile{min-width:46px;height:46px;border:3px solid var(--ink);border-radius:11px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;cursor:pointer;
+  transition:transform .08s;user-select:none}
+.tile:active{transform:scale(.92)}
+.tile.mul{background:var(--blue);color:#fff}
+.tile.div{background:var(--green);color:#fff}
+.tile.prime{background:var(--pink);color:#fff}
+.tile.one{background:#D7D7E5;color:#555}
+.tile.dim{opacity:.4}
+/* hundred chart */
+.chart{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:10px}
+.cnum{aspect-ratio:1;border:2px solid var(--ink);border-radius:8px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.cnum.prime{background:var(--pink);color:#fff}.cnum.comp{background:#E7EAF5}
+.cnum.one{background:#D7D7E5;color:#555}
+/* gcd/lcm bars */
+.factbox{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fchip{border:3px solid var(--ink);border-radius:10px;padding:3px 11px;font-weight:900;background:#fff;font-size:16px}
+.fchip.shared{background:var(--yellow)}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--purple);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--purple));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:28px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}
+ .chart{gap:3px}.cnum{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 2장</div>
+  <h1>정수론 — 수의 <span class="hl">비밀</span> 🔢</h1>
+  <p>약수와 배수, 소수, 최대공약수와 최소공배수, 그리고 나머지의 마법까지! 직접 눌러보며 배워요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧩 약수와 배수</button>
+  <button data-go="s1">💎 소수 찾기</button>
+  <button data-go="s2">🌳 소인수분해</button>
+  <button data-go="s3">🤝 최대공약수·최소공배수</button>
+  <button data-go="s4">⚖️ 짝·홀과 나머지</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 약수와 배수 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧩</span> 약수와 배수</h2>
+    <p class="lead">나누어떨어지면 '약수', 곱해서 나오면 '배수'. 직사각형으로 만들어보면 한눈에 보여요!</p>
+    <div class="box def"><div class="t">📘 약수와 배수</div>
+      <b>약수</b>: 어떤 수를 <b>나누어떨어지게</b> 하는 수. (예: 12의 약수 → 1,2,3,4,6,12)<br>
+      <b>배수</b>: 어떤 수에 1,2,3…을 곱한 수. (예: 4의 배수 → 4,8,12,16…)<br>
+      ★ 12는 4의 배수이고, 동시에 4는 12의 약수예요. 서로 짝꿍!</div>
+
+    <div class="play">
+      <div class="ttl">🟧 직사각형으로 약수 찾기</div>
+      <div class="row"><span class="disp">수 고르기: <span class="pill" id="dv_n">12</span></span></div>
+      <input type="range" class="slider" id="dv_s" min="1" max="30" value="12">
+      <div class="gridwrap" id="dv_grid"></div>
+      <div class="box tip" style="margin-top:12px"><div class="t">💡 발견</div>
+        <span id="dv_msg"></span></div>
+      <div style="font-weight:900;margin-top:10px">이 수의 모든 약수:</div>
+      <div class="tiles" id="dv_tiles"></div>
+    </div>
+
+    <div class="play">
+      <div class="ttl">🔵 배수 사냥 — 4의 배수를 모두 눌러봐요</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="disp">몇의 배수? <span class="pill" id="mu_b">4</span></span>
+        <button class="btn alt" id="mu_new">다른 수로 🔄</button>
+      </div>
+      <div class="tiles" id="mu_tiles"></div>
+      <div class="feedback" id="mu_fb"></div>
+    </div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">18의 약수를 모두 구해보세요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">1×18, 2×9, 3×6 으로 짝을 지으면 → <b>1, 2, 3, 6, 9, 18</b> (6개).</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">6의 배수 중에서 30보다 작은 수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">6, 12, 18, 24 → <b>네 개</b>예요. (30은 '작은'에 안 들어가요!)</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">1부터 20까지 중 약수가 딱 2개뿐인 수는 몇 개일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">약수가 2개(1과 자기 자신)인 수 = <b>소수</b>! 2,3,5,7,11,13,17,19 → <b>8개</b>. 다음 칸에서 자세히 배워요 💎</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 소수 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">💎</span> 소수 — 더 못 쪼개는 수</h2>
+    <p class="lead">약수가 1과 자기 자신, 딱 2개뿐인 특별한 수가 소수예요. '에라토스테네스의 체'로 찾아봐요!</p>
+    <div class="box def"><div class="t">📘 소수와 합성수</div>
+      <b>소수</b>: 약수가 <b>딱 2개</b>(1과 자기 자신). 예: 2,3,5,7,11…<br>
+      <b>합성수</b>: 약수가 <b>3개 이상</b>. 예: 4(1,2,4), 6(1,2,3,6)…<br>
+      ⚠️ <b>1은 소수도 합성수도 아니에요</b> (약수가 1개뿐!).</div>
+
+    <div class="play">
+      <div class="ttl">🪄 에라토스테네스의 체 (1~100)</div>
+      <p style="font-weight:700;margin-bottom:6px">버튼을 누르면 배수가 차례로 지워지고, 끝까지 살아남는 분홍색이 소수예요!</p>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn pur" id="sv_step">다음 수 지우기 ▶</button>
+        <button class="btn" id="sv_auto">자동으로 끝까지 ⏩</button>
+        <button class="btn gray" id="sv_reset">처음부터 🔁</button>
+      </div>
+      <div id="sv_msg" style="font-weight:900;color:var(--purple);min-height:26px"></div>
+      <div class="chart" id="sv_chart"></div>
+      <div style="margin-top:8px;font-weight:700"><span style="color:var(--pink)">■</span> 소수 &nbsp; <span style="color:#9aa">■</span> 합성수(지워짐) &nbsp; <span style="color:#999">■</span> 1</div>
+    </div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">9는 소수일까요?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">9의 약수는 1, 3, 9 로 <b>3개</b>예요. 그래서 소수가 아니라 <b>합성수</b>!</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">20보다 크고 30보다 작은 소수를 모두 찾아보세요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol"><b>23, 29</b> 두 개! (21=3×7, 25=5×5, 27=3×9 는 합성수)</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">짝수인 소수는 몇 개일까요?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">딱 하나, <b>2</b>뿐이에요! 다른 짝수는 모두 2로 나눠지니까 약수가 3개 이상이 되거든요. 2는 가장 특별한 소수랍니다 ✨</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 소인수분해 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🌳</span> 소인수분해 — 수를 소수로 쪼개기</h2>
+    <p class="lead">모든 수는 소수들의 곱으로 쪼갤 수 있어요. 마치 수의 '유전자'를 찾는 것 같아요!</p>
+    <div class="box def"><div class="t">📘 소인수분해</div>
+      어떤 수를 <b>소수들의 곱</b>으로만 나타내는 것. 예: 12 = 2 × 2 × 3<br>
+      작은 소수(2,3,5,7…)부터 차례로 나눠보면 쉬워요.</div>
+
+    <div class="play">
+      <div class="ttl">🌳 인수나무(factor tree) 만들기</div>
+      <div class="row" style="margin-bottom:8px">
+        <input type="number" id="pf_in" class="numin" value="24" min="2" max="999">
+        <button class="btn pur" id="pf_go">쪼개기 🌳</button>
+        <button class="btn alt" id="pf_rnd">아무 수나 🎲</button>
+      </div>
+      <div id="pf_steps" style="font-weight:800;font-size:17px;line-height:2"></div>
+      <div class="box key" style="margin-top:10px"><div class="t">🔑 결과</div>
+        <span id="pf_result" style="font-size:19px"></span></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 나누는 방법</div>
+      24 ÷ 2 = 12 → 12 ÷ 2 = 6 → 6 ÷ 2 = 3 → 3은 소수! 그래서 <b>24 = 2×2×2×3</b>.
+      나눌 수 있는 가장 작은 소수로 계속 나누면 돼요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">36을 소인수분해 해보세요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">36 ÷2=18 ÷2=9 ÷3=3 ÷3=1 → <b>36 = 2×2×3×3</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">45를 소인수분해 하면?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">45 ÷3=15 ÷3=5 ÷5=1 → <b>45 = 3×3×5</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">소인수분해가 2×2×2 인 수는 무엇일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">2×2×2 = <b>8</b>! 거꾸로 곱하면 원래 수가 나와요 😊</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 최대공약수 최소공배수 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🤝</span> 최대공약수와 최소공배수</h2>
+    <p class="lead">두 수가 함께 가진 약수 중 가장 큰 것이 최대공약수(GCD), 함께 가진 배수 중 가장 작은 것이 최소공배수(LCM)예요.</p>
+    <div class="box def"><div class="t">📘 GCD와 LCM</div>
+      <b>최대공약수(GCD)</b>: 두 수의 <b>공통 약수</b> 중 가장 큰 수.<br>
+      <b>최소공배수(LCM)</b>: 두 수의 <b>공통 배수</b> 중 가장 작은 수.</div>
+
+    <div class="play">
+      <div class="ttl">🔬 두 수의 약수·배수 비교 실험실</div>
+      <div class="row">
+        <div class="field"><div class="lab">첫 번째 수 = <span class="pill" id="gl_a">12</span></div>
+          <input type="range" class="slider" id="gl_as" min="2" max="24" value="12"></div>
+        <div class="field"><div class="lab">두 번째 수 = <span class="pill" id="gl_b">18</span></div>
+          <input type="range" class="slider" id="gl_bs" min="2" max="24" value="18"></div>
+      </div>
+      <div style="font-weight:900;margin-top:10px" id="gl_aL"></div>
+      <div class="tiles" id="gl_aT"></div>
+      <div style="font-weight:900;margin-top:10px" id="gl_bL"></div>
+      <div class="tiles" id="gl_bT"></div>
+      <div class="box key" style="margin-top:12px">
+        <div>공통 약수(노랑): <span id="gl_common" style="font-weight:900"></span></div>
+        <div style="margin-top:6px;font-size:20px">🤝 최대공약수 = <b id="gl_gcd" style="color:var(--pink)"></b>
+          &nbsp;|&nbsp; 🔗 최소공배수 = <b id="gl_lcm" style="color:var(--blue)"></b></div>
+      </div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 실생활 예</div>
+      사탕 12개와 초콜릿 18개를 <b>똑같이 나눠 담을 수 있는 가장 많은 봉지 수</b> = 최대공약수(6봉지)!
+      두 버스가 <b>동시에 다시 출발하는 시간</b> = 최소공배수!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">8과 12의 최대공약수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">8의 약수: 1,2,4,8 / 12의 약수: 1,2,3,4,6,12 → 공통: 1,2,4 → 가장 큰 <b>4</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">4와 6의 최소공배수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">4의 배수: 4,8,12… / 6의 배수: 6,12… → 가장 작은 공통 배수는 <b>12</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">두 수의 최대공약수가 1이면 어떤 사이일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">공통 약수가 1뿐이면 <b>서로소</b>라고 해요! 예: 8과 9, 또는 4와 15처럼요 🤝</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 짝홀 나머지 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">⚖️</span> 짝수·홀수와 나머지의 마법</h2>
+    <p class="lead">나누고 남는 '나머지'에는 규칙이 숨어 있어요. 짝수·홀수도 나머지로 설명할 수 있답니다!</p>
+    <div class="box def"><div class="t">📘 나머지와 짝·홀</div>
+      <b>짝수</b>: 2로 나누면 나머지 <b>0</b> (예: 4, 10, 16)<br>
+      <b>홀수</b>: 2로 나누면 나머지 <b>1</b> (예: 3, 7, 15)<br>
+      어떤 수로 나눈 '나머지'는 일정한 규칙으로 돌고 돌아요!</div>
+
+    <div class="play">
+      <div class="ttl">🎡 나머지 시계 — 나머지가 빙글빙글</div>
+      <div class="row">
+        <div class="field"><div class="lab">나누는 수 = <span class="pill" id="md_b">3</span></div>
+          <input type="range" class="slider" id="md_bs" min="2" max="6" value="3"></div>
+      </div>
+      <p style="font-weight:700;margin:8px 0 4px">1부터 차례로 나눴을 때 나머지예요. 같은 색끼리 규칙적으로 반복돼요!</p>
+      <div class="tiles" id="md_tiles"></div>
+      <div class="box tip" style="margin-top:10px"><div class="t">💡 발견</div>
+        <span id="md_msg"></span></div>
+    </div>
+
+    <div class="play">
+      <div class="ttl">🔮 홀짝 마술 — 더하기·곱하기 규칙</div>
+      <div class="row">
+        <input type="number" id="oe_a" class="numin" value="7" min="0" max="99">
+        <select id="oe_op" style="height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;font-family:inherit;padding:0 10px">
+          <option value="+">＋</option><option value="*">✖️</option>
+        </select>
+        <input type="number" id="oe_b" class="numin" value="4" min="0" max="99">
+        <button class="btn" id="oe_go">확인 ✨</button>
+      </div>
+      <div class="feedback" id="oe_fb"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 홀짝 규칙</div>
+      짝+짝=짝, 홀+홀=짝, 짝+홀=홀 &nbsp;|&nbsp; 짝×무엇=짝, 홀×홀=홀<br>
+      수를 직접 계산 안 해도 짝·홀만으로 결과의 짝·홀을 알 수 있어요!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">17 + 25 의 결과는 짝수일까 홀수일까? (계산 말고 규칙으로!)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">홀 + 홀 = <b>짝</b>! (실제로 42, 짝수가 맞죠 ✔)</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">23을 5로 나눈 나머지는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">23 = 5×4 + 3 → 나머지 <b>3</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">홀수 7개를 모두 더하면 짝수일까 홀수일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">홀수를 짝수 개 더하면 짝, 홀수 개 더하면 홀! 7개(홀수 개)니까 <b>홀수</b>예요 🧠</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 정수론 마스터 퀴즈</h2>
+    <p class="lead">약수·배수·소수·소인수분해·최대공약수·최소공배수·나머지까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 2장 「정수론」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+
+  /* nav */
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){
+      goTo(this.getAttribute("data-go")); this.classList.add("on");
+    });
+  }
+
+  /* reveal */
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+  function divisors(x){ var d=[]; for(var i=1;i<=x;i++){ if(x%i===0) d.push(i); } return d; }
+  function isPrime(x){ if(x<2) return false; for(var i=2;i*i<=x;i++){ if(x%i===0) return false; } return true; }
+
+  /* ---------- S0 약수: 직사각형 + 약수 타일 ---------- */
+  function dvRender(){
+    var x=parseInt($("dv_s").value,10);
+    $("dv_n").textContent=x;
+    var divs=divisors(x);
+    // rectangles for each factor pair a x b (a<=b)
+    var gw=$("dv_grid"); gw.innerHTML="";
+    var pairs=[];
+    for(var a=1;a*a<=x;a++){ if(x%a===0){ pairs.push([a, x/a]); } }
+    for(var p=0;p<pairs.length;p++){
+      var rows=pairs[p][0], cols=pairs[p][1];
+      var g=document.createElement("div"); g.className="grid";
+      g.style.gridTemplateColumns="repeat("+cols+", 20px)";
+      for(var k=0;k<rows*cols;k++){ var d=document.createElement("div"); d.className="dot"; g.appendChild(d); }
+      var box=document.createElement("div");
+      var cap=document.createElement("div"); cap.style.fontWeight="900"; cap.style.textAlign="center"; cap.style.marginTop="4px";
+      cap.textContent=rows+" × "+cols;
+      box.appendChild(g); box.appendChild(cap); gw.appendChild(box);
+    }
+    $("dv_msg").innerHTML="<b>"+x+"</b>은(는) "+pairs.length+"가지 직사각형으로 만들 수 있어요. 각 변의 길이가 바로 <b>약수</b>예요!";
+    var tw=$("dv_tiles"); tw.innerHTML="";
+    for(var i=0;i<divs.length;i++){
+      var tl=document.createElement("div"); tl.className="tile div"; tl.textContent=divs[i]; tw.appendChild(tl);
+    }
+  }
+  $("dv_s").addEventListener("input", dvRender);
+  dvRender();
+
+  /* ---------- S0 배수 사냥 ---------- */
+  var muBase=4;
+  function muRender(){
+    $("mu_b").textContent=muBase;
+    var tw=$("mu_tiles"); tw.innerHTML="";
+    for(var i=1;i<=30;i++){
+      (function(v){
+        var tl=document.createElement("div"); tl.className="tile"; tl.textContent=v;
+        tl.addEventListener("click", function(){
+          if(v%muBase===0){ tl.classList.add("mul"); $("mu_fb").innerHTML='<span class="ok">맞아요! '+v+'는 '+muBase+'의 배수예요 🎉</span>'; }
+          else { $("mu_fb").innerHTML='<span class="no">'+v+'는 '+muBase+'로 나누면 나머지가 남아요 🤔</span>'; }
+        });
+        tw.appendChild(tl);
+      })(i);
+    }
+    $("mu_fb").textContent="";
+  }
+  $("mu_new").addEventListener("click", function(){ muBase=[3,4,5,6,7][Math.floor(Math.random()*5)]; muRender(); });
+  muRender();
+
+  /* ---------- S1 에라토스테네스의 체 ---------- */
+  var svState=[], svCur=2, svTimer=null;
+  function svBuild(){
+    var c=$("sv_chart"); c.innerHTML=""; svState=[];
+    for(var i=1;i<=100;i++){
+      var d=document.createElement("div"); d.className="cnum"; d.textContent=i; d.id="cn"+i;
+      if(i===1){ d.classList.add("one"); }
+      c.appendChild(d);
+      svState[i]= (i===1)? "one":"unknown";
+    }
+    svCur=2; $("sv_msg").textContent="";
+  }
+  function svMark(){
+    // find next number that is still candidate prime
+    while(svCur<=100 && svState[svCur]==="comp"){ svCur++; }
+    if(svCur>100 || svCur*svCur>100){
+      // remaining unknown are primes
+      for(var i=2;i<=100;i++){ if(svState[i]==="unknown"){ svState[i]="prime"; $("cn"+i).classList.add("prime"); } }
+      $("sv_msg").textContent="끝! 분홍색 수들이 모두 소수예요 💎";
+      return false;
+    }
+    var p=svCur;
+    svState[p]="prime"; $("cn"+p).classList.add("prime");
+    for(var m=p*2;m<=100;m+=p){ if(svState[m]!=="prime"){ svState[m]="comp"; $("cn"+m).classList.remove("prime"); $("cn"+m).classList.add("comp"); } }
+    $("sv_msg").textContent=p+"의 배수를 모두 지웠어요. ("+p+"은 소수!)";
+    svCur++;
+    return true;
+  }
+  $("sv_step").addEventListener("click", function(){ if(svTimer) return; svMark(); });
+  $("sv_auto").addEventListener("click", function(){
+    if(svTimer) return;
+    svTimer=setInterval(function(){ var go=svMark(); if(!go){ clearInterval(svTimer); svTimer=null; } }, 450);
+  });
+  $("sv_reset").addEventListener("click", function(){ if(svTimer){clearInterval(svTimer);svTimer=null;} svBuild(); });
+  svBuild();
+  /* ---------- S2 소인수분해 ---------- */
+  function pfRun(x){
+    if(isNaN(x)||x<2){ $("pf_steps").textContent="2 이상의 수를 넣어주세요!"; $("pf_result").textContent=""; return; }
+    var orig=x, steps=[], factors=[];
+    var p=2;
+    while(x>1){
+      if(x%p===0){ steps.push(x+" ÷ "+p+" = "+(x/p)); factors.push(p); x=x/p; }
+      else { p++; }
+    }
+    var html="";
+    for(var i=0;i<steps.length;i++){ html+="🌳 "+steps[i]+"<br>"; }
+    if(steps.length===0){ html="이미 더 못 쪼개요!"; }
+    $("pf_steps").innerHTML=html;
+    // count powers
+    if(factors.length===1){
+      $("pf_result").innerHTML="<b>"+orig+"</b> 은(는) <b>소수</b>예요! 더 쪼갤 수 없어요 💎";
+    } else {
+      $("pf_result").innerHTML="<b>"+orig+" = "+factors.join(" × ")+"</b>";
+    }
+  }
+  $("pf_go").addEventListener("click", function(){ pfRun(parseInt($("pf_in").value,10)); });
+  $("pf_rnd").addEventListener("click", function(){ var v=Math.floor(Math.random()*80)+12; $("pf_in").value=v; pfRun(v); });
+  pfRun(24);
+
+  /* ---------- S3 GCD / LCM ---------- */
+  function gcd(a,b){ while(b){ var t=b; b=a%b; a=t; } return a; }
+  function glRender(){
+    var a=parseInt($("gl_as").value,10), b=parseInt($("gl_bs").value,10);
+    $("gl_a").textContent=a; $("gl_b").textContent=b;
+    var da=divisors(a), db=divisors(b);
+    var common=da.filter(function(x){ return db.indexOf(x)>=0; });
+    var g=gcd(a,b), l=a/g*b;
+    $("gl_aL").textContent=a+"의 약수:";
+    $("gl_bL").textContent=b+"의 약수:";
+    function fill(el, list){
+      el.innerHTML="";
+      for(var i=0;i<list.length;i++){
+        var tl=document.createElement("div"); tl.className="tile"+(common.indexOf(list[i])>=0?" ":"");
+        tl.textContent=list[i];
+        if(common.indexOf(list[i])>=0){ tl.style.background="var(--yellow)"; }
+        el.appendChild(tl);
+      }
+    }
+    fill($("gl_aT"), da); fill($("gl_bT"), db);
+    $("gl_common").textContent=common.join(", ");
+    $("gl_gcd").textContent=g;
+    $("gl_lcm").textContent=l;
+  }
+  $("gl_as").addEventListener("input", glRender);
+  $("gl_bs").addEventListener("input", glRender);
+  glRender();
+
+  /* ---------- S4 나머지 시계 ---------- */
+  var mdPalette=["#FF5C8A","#3D7BFF","#27C99A","#FF923E","#8A6CFF","#1FC8C8"];
+  function mdRender(){
+    var b=parseInt($("md_bs").value,10);
+    $("md_b").textContent=b;
+    var tw=$("md_tiles"); tw.innerHTML="";
+    for(var i=1;i<=24;i++){
+      var rem=i%b;
+      var tl=document.createElement("div"); tl.className="tile";
+      tl.textContent=i;
+      tl.style.background=mdPalette[rem];
+      tl.style.color="#fff";
+      tl.title="나머지 "+rem;
+      tw.appendChild(tl);
+    }
+    $("md_msg").innerHTML=b+"로 나눈 나머지는 <b>0,1,…,"+(b-1)+"</b>가 빙글빙글 반복돼요! 같은 색은 나머지가 같은 수예요.";
+  }
+  $("md_bs").addEventListener("input", mdRender);
+  mdRender();
+
+  /* ---------- S4 홀짝 마술 ---------- */
+  function parity(x){ return (x%2===0)?"짝수":"홀수"; }
+  $("oe_go").addEventListener("click", function(){
+    var a=parseInt($("oe_a").value,10), b=parseInt($("oe_b").value,10), op=$("oe_op").value;
+    if(isNaN(a)||isNaN(b)){ $("oe_fb").innerHTML='<span class="no">두 수를 넣어주세요 ✏️</span>'; return; }
+    var res= op==="+" ? a+b : a*b;
+    var rule;
+    if(op==="+"){
+      var pa=a%2, pb=b%2;
+      rule = (pa===pb) ? "같은 짝·홀끼리 더하면 → 짝수" : "다른 짝·홀끼리 더하면 → 홀수";
+    } else {
+      rule = (a%2===0||b%2===0) ? "하나라도 짝수를 곱하면 → 짝수" : "홀수끼리 곱하면 → 홀수";
+    }
+    $("oe_fb").innerHTML='<span class="ok">'+parity(a)+' '+op+' '+parity(b)+' = <b>'+parity(res)+'</b> ('+res+')</span><br>'+
+      '<span style="color:var(--blue);font-size:16px">📌 '+rule+'</span>';
+  });
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"12의 약수가 아닌 것은?", opts:["3","4","5","6"], a:2, why:"12÷5는 나누어떨어지지 않아요. 12의 약수는 1,2,3,4,6,12."},
+    {q:"다음 중 소수는?", opts:["9","15","17","21"], a:2, why:"17은 약수가 1과 17뿐! 9=3×3, 15=3×5, 21=3×7은 합성수."},
+    {q:"7의 배수 중 가장 작은 두 자리 수는?", opts:["7","10","14","21"], a:2, why:"7,14,… 중 두 자리 수는 14가 처음이에요."},
+    {q:"30을 소인수분해 하면?", opts:["2×15","2×3×5","5×6","3×10"], a:1, why:"30=2×3×5, 모두 소수의 곱이어야 해요."},
+    {q:"8과 12의 최대공약수는?", opts:["2","4","6","24"], a:1, why:"공통 약수 1,2,4 중 가장 큰 4."},
+    {q:"6과 9의 최소공배수는?", opts:["3","15","18","54"], a:2, why:"6의 배수 6,12,18 / 9의 배수 9,18 → 가장 작은 공통은 18."},
+    {q:"1은 무엇일까?", opts:["소수","합성수","소수도 합성수도 아님","짝수"], a:2, why:"1은 약수가 1개뿐이라 소수도 합성수도 아니에요!"},
+    {q:"홀수 + 홀수 의 결과는?", opts:["항상 홀수","항상 짝수","알 수 없음","0"], a:1, why:"홀+홀=짝! 예: 3+5=8."},
+    {q:"29를 6으로 나눈 나머지는?", opts:["3","4","5","6"], a:2, why:"29=6×4+5 → 나머지 5."},
+    {q:"두 수의 최대공약수가 1일 때 두 수를 뭐라고 할까?", opts:["쌍둥이수","서로소","완전수","짝수"], a:1, why:"공통 약수가 1뿐이면 '서로소'! 예: 8과 9."}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 정수론 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

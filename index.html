@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세영코딩연구소 · 사고력·이산수학 + 코딩 통합 학습관</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 8% 4%, #FFE7C2 0, transparent 30%),
+    radial-gradient(circle at 94% 6%, #FFD2E2 0, transparent 30%),
+    radial-gradient(circle at 50% 103%, #CFE6FF 0, transparent 38%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.7; min-height:100vh;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:30px;padding:36px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"➕ 🔢 🔺 📊 🎲 🕵️ ♟️ 💻";position:absolute;top:8px;left:0;right:0;font-size:22px;letter-spacing:14px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:15px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--purple)}
+.hero p{margin-top:10px;color:var(--soft);font-weight:600;font-size:17px}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.stat{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 16px;font-weight:900;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.stat b{color:var(--pink);font-size:18px}
+/* legend */
+.legend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0 6px;font-weight:800;font-size:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:16px;height:16px;border-radius:5px;border:2px solid var(--ink)}
+.d-con{background:#FFE7C2}.d-adv{background:#E0D2FF}.d-code{background:#CFE6FF}.d-play{background:#D7F5E3}
+/* chapter card */
+.chapter{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:20px 22px;margin-top:20px;box-shadow:var(--shadow)}
+.ch-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ch-num{flex-shrink:0;width:56px;height:56px;border-radius:16px;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.ch-title{font-weight:900;font-size:22px}
+.ch-sub{color:var(--soft);font-weight:700;font-size:14px}
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.lnk{display:flex;align-items:center;gap:12px;border:3px solid var(--ink);border-radius:16px;padding:13px 15px;text-decoration:none;color:var(--ink);font-weight:800;background:#fff;transition:transform .1s,box-shadow .1s;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.lnk:hover{transform:translateY(-3px);box-shadow:0 7px 0 rgba(0,0,0,.12)}
+.lnk:active{transform:translateY(1px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.lnk .ic{flex-shrink:0;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;border:3px solid var(--ink)}
+.lnk .tx{display:flex;flex-direction:column;line-height:1.25}
+.lnk .tx .k{font-size:16px}
+.lnk .tx .s{font-size:12px;color:var(--soft);font-weight:700}
+.ic.con{background:#FFE7C2}.ic.adv{background:#E0D2FF}.ic.code{background:#CFE6FF}.ic.play{background:#D7F5E3}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+.note{background:#FFF5D6;border:3px solid var(--ink);border-radius:16px;padding:14px 18px;margin-top:20px;font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:28px}.ch-title{font-size:19px}.links{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">세영코딩연구소 · ph.D Kim</div>
+  <h1>사고력·이산수학 <span class="hl">+ 코딩</span> 통합 학습관 🎓</h1>
+  <p>초등 3~6학년을 위한 8개 장의 인터랙티브 학습 자료 — 개념부터 C/Python 코딩까지</p>
+  <div class="stats">
+    <div class="stat">📚 <b>8</b>개 장</div>
+    <div class="stat">🖥️ <b>18</b>개 자료</div>
+    <div class="stat">🎮 직접 조작 + 퀴즈</div>
+    <div class="stat">💻 C / Python 연계</div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="dot d-con"></span>개념 학습</span>
+  <span><span class="dot d-adv"></span>심화</span>
+  <span><span class="dot d-code"></span>코드 연계 (C/Python)</span>
+  <span><span class="dot d-play"></span>놀이터</span>
+</div>
+<!-- CH1 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#FF5C8A">1</div>
+    <div><div class="ch-title">수와 규칙</div><div class="ch-sub">패턴·수열 / 등차·등비·계차·도형수·피보나치</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter1_Numbers_and_Patterns.html"><div class="ic con">🔍</div><div class="tx"><span class="k">개념 학습</span><span class="s">규칙 찾기 · 모양/수 패턴</span></div></a>
+    <a class="lnk" href="Chapter1_Numbers_and_Patterns_Advanced.html"><div class="ic adv">🔭</div><div class="tx"><span class="k">심화</span><span class="s">계차·도형수·피보나치 + 예제</span></div></a>
+    <a class="lnk" href="Chapter1_Sequences_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">수열을 C/Python으로 출력</span></div></a>
+  </div>
+</div>
+
+<!-- CH2 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#8A6CFF">2</div>
+    <div><div class="ch-title">정수론</div><div class="ch-sub">약수·배수 / 소수 / 소인수분해 / 최대공약수·최소공배수</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter2_Number_Theory.html"><div class="ic con">🔢</div><div class="tx"><span class="k">개념 학습</span><span class="s">에라토스테네스의 체 · GCD/LCM</span></div></a>
+    <a class="lnk" href="Chapter2_NumberTheory_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">약수·소수·최대공약수 구하기</span></div></a>
+  </div>
+</div>
+
+<!-- CH3 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#1FC8C8">3</div>
+    <div><div class="ch-title">조합론</div><div class="ch-sub">경우의 수 / 순열 / 조합 / 파스칼의 삼각형</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter3_Combinatorics.html"><div class="ic con">🎲</div><div class="tx"><span class="k">개념 학습</span><span class="s">합·곱의 법칙 · 순열·조합</span></div></a>
+    <a class="lnk" href="Chapter3_Combinatorics_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">경우의 수·순열·조합 구하기</span></div></a>
+  </div>
+</div>
+
+<!-- CH4 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#FF923E">4</div>
+    <div><div class="ch-title">기하학</div><div class="ch-sub">점·선·각 / 도형 / 둘레·넓이 / 각도 / 대칭·변환</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter4_Geometry.html"><div class="ic con">📐</div><div class="tx"><span class="k">개념 학습</span><span class="s">도형 도감 · 둘레/넓이 · 각도</span></div></a>
+    <a class="lnk" href="Geometry_Transform_Playground.html"><div class="ic play">🎮</div><div class="tx"><span class="k">도형 옮기기 놀이터</span><span class="s">밀기·뒤집기·돌리기</span></div></a>
+    <a class="lnk" href="Chapter4_Geometry_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">둘레·넓이·도형 그리기</span></div></a>
+  </div>
+</div>
+<!-- CH5 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#3D7BFF">5</div>
+    <div><div class="ch-title">대수와 함수</div><div class="ch-sub">미지수 □ / 식 세우기 / 함수 기계 / 좌표·그래프 / 비례</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter5_Algebra_and_Functions.html"><div class="ic con">🔮</div><div class="tx"><span class="k">개념 학습</span><span class="s">함수 기계 · 좌표 · 비례</span></div></a>
+    <a class="lnk" href="Chapter5_Algebra_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">식 계산·함수·그래프 값</span></div></a>
+  </div>
+</div>
+
+<!-- CH6 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#27C99A">6</div>
+    <div><div class="ch-title">확률과 통계</div><div class="ch-sub">자료 정리 / 평균 / 확률 / 동전·주사위 실험 / 가능성</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter6_Probability_and_Statistics.html"><div class="ic con">📊</div><div class="tx"><span class="k">개념 학습</span><span class="s">평균 · 확률 · 실험</span></div></a>
+    <a class="lnk" href="Chapter6_Probability_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">평균·확률·실험 시뮬레이션</span></div></a>
+  </div>
+</div>
+
+<!-- CH7 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#FFCE2E;color:#262338 !important">7</div>
+    <div><div class="ch-title">논리와 수학적 증명</div><div class="ch-sub">참·거짓 / 그리고·또는·아니다 / 조건 / 모든·어떤 / 증명</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter7_Logic_and_Proof.html"><div class="ic con">🕵️</div><div class="tx"><span class="k">개념 학습</span><span class="s">논리 연산 · 증명하기</span></div></a>
+    <a class="lnk" href="Chapter7_Logic_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">참·거짓·논리 연산</span></div></a>
+  </div>
+</div>
+
+<!-- CH8 -->
+<div class="chapter">
+  <div class="ch-head">
+    <div class="ch-num" style="background:#262338">8</div>
+    <div><div class="ch-title">논리 퍼즐과 게임 이론</div><div class="ch-sub">논리 추리 / 거짓말쟁이 / 님 게임 / 동전 전략 / 공정한 게임</div></div>
+  </div>
+  <div class="links">
+    <a class="lnk" href="Chapter8_Logic_Puzzles_and_Game_Theory.html"><div class="ic con">🧩</div><div class="tx"><span class="k">개념 학습</span><span class="s">추리 · 님 게임 · 전략</span></div></a>
+    <a class="lnk" href="Chapter8_GameTheory_in_C_and_Python.html"><div class="ic code">💻</div><div class="tx"><span class="k">코드 연계</span><span class="s">님 게임·전략 만들기</span></div></a>
+  </div>
+</div>
+
+<div class="note">
+  💡 <b>사용 안내</b> — 모든 자료는 인터넷 없이도 열리는 단일 HTML 파일이에요. 이 목차 페이지(index)와 모든 챕터 파일을 <b>같은 폴더</b>에 두면 카드를 눌러 바로 이동할 수 있어요. 밝은 테마·큰 글씨로 만들어 눈이 편안합니다.
+</div>
+
+<div class="footer">세영코딩연구소 · ph.D Kim · 사고력·이산수학 + 코딩 통합 교육과정 (전 8장)</div>
+</div>
+</body>
+</html>

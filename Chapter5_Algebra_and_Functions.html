@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5장 대수와 함수 — 숨은 수와 마법 기계</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"□ + 3 = 7    y = 2x";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:18px;letter-spacing:8px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--purple)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--purple);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--purple);color:#fff;font-weight:900;border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.pur{background:var(--purple)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:90px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.disp{font-weight:900;font-size:21px}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+.bigans{font-size:26px;font-weight:900;color:var(--purple);text-align:center;margin:10px 0}
+/* balance scale */
+.eqline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;font-size:28px;font-weight:900;margin:10px 0}
+.boxq{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border:4px solid var(--ink);border-radius:14px;background:var(--yellow);font-size:26px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.token{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:46px;border:3px solid var(--ink);border-radius:12px;background:#fff;font-size:22px;font-weight:900}
+/* function machine */
+.machine{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:14px 0}
+.mbox{border:4px solid var(--ink);border-radius:18px;background:linear-gradient(180deg,#EAF0FF,#D9E6FF);padding:18px 22px;text-align:center;box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.mbox .rule{font-weight:900;font-size:22px;color:var(--blue)}
+.mio{display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border:3px solid var(--ink);border-radius:50%;background:#fff;font-size:24px;font-weight:900}
+.arrow{font-size:30px;font-weight:900;color:var(--orange)}
+.tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:17px}
+.tbl th,.tbl td{border:3px solid var(--ink);padding:8px;text-align:center;font-weight:900}
+.tbl th{background:#E9F2FF}
+.tbl td.out{background:#FFF5D6;color:var(--purple)}
+/* coordinate grid */
+.svgbox{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:10px;margin-top:10px;text-align:center}
+.svgbox svg{max-width:100%;height:auto}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--purple);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--purple));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:26px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 5장</div>
+  <h1>대수와 함수 — 숨은 수와 <span class="hl">마법 기계</span> 🔮</h1>
+  <p>□ 안의 숨은 수를 찾고, 규칙을 식으로 쓰고, 수를 넣으면 답이 나오는 마법 기계를 만들어요!</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🔍 □ 찾기</button>
+  <button data-go="s1">✍️ 식 세우기</button>
+  <button data-go="s2">🔮 함수 기계</button>
+  <button data-go="s3">📊 좌표와 그래프</button>
+  <button data-go="s4">⚖️ 비례</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 미지수 찾기 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🔍</span> 숨은 수 □ 찾기</h2>
+    <p class="lead">□ 안에 들어갈 수를 찾는 게 대수의 시작! 거꾸로 생각하면 쉽게 찾을 수 있어요.</p>
+    <div class="box def"><div class="t">📘 미지수란?</div>
+      아직 모르는 수를 <b>□</b> 나 글자(x)로 나타내요. 식을 보고 □가 얼마인지 알아내는 게 핵심!<br>
+      예: □ + 3 = 7 → □는 4 (7에서 3을 빼면 되니까요)</div>
+
+    <div class="play">
+      <div class="ttl">⚖️ 양팔저울처럼 풀기 — □를 맞혀봐요</div>
+      <div class="eqline" id="eq_line"></div>
+      <div class="row" style="margin-top:8px">
+        <input type="number" id="eq_in" class="numin" placeholder="?">
+        <button class="btn" id="eq_chk">확인 ✅</button>
+        <button class="btn alt" id="eq_new">새 문제 🔄</button>
+      </div>
+      <div class="feedback" id="eq_fb"></div>
+      <div id="eq_hint" style="font-weight:700;color:var(--blue);margin-top:4px"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 거꾸로 생각하기</div>
+      더하기는 빼기로, 곱하기는 나누기로 거꾸로! <b>□ + 3 = 7</b> 이면 <b>□ = 7 − 3</b>,
+      <b>□ × 2 = 10</b> 이면 <b>□ = 10 ÷ 2</b>.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">□ + 5 = 12 일 때 □는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">거꾸로! □ = 12 − 5 = <b>7</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">□ × 3 = 21 일 때 □는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">곱하기의 반대는 나누기! □ = 21 ÷ 3 = <b>7</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">□ × 2 + 1 = 9 일 때 □는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">먼저 +1을 거꾸로: □×2 = 8. 그다음 ÷2: □ = <b>4</b>. (뒤에서부터 풀어요!)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 식 세우기 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">✍️</span> 말을 식으로 바꾸기</h2>
+    <p class="lead">문제의 말을 식으로 옮기면 풀기 쉬워져요. 모르는 수를 □로 두는 게 비결!</p>
+    <div class="box def"><div class="t">📘 식 세우는 순서</div>
+      ① 모르는 것을 <b>□</b> 로 정하기 → ② 문장을 <b>식</b>으로 옮기기 → ③ □ 구하기<br>
+      예: "어떤 수에 4를 더하면 10" → □ + 4 = 10 → □ = 6</div>
+
+    <div class="play">
+      <div class="ttl">🍬 사탕 나누기 이야기</div>
+      <div class="row">
+        <div class="field"><div class="lab">🍬 전체 사탕 = <span class="pill" id="se_total">12</span></div>
+          <input type="range" class="slider" id="se_ts" min="4" max="24" value="12"></div>
+        <div class="field"><div class="lab">👦 친구 수 = <span class="pill" id="se_kids">3</span></div>
+          <input type="range" class="slider" id="se_ks" min="2" max="6" value="3"></div>
+      </div>
+      <div class="box def" id="se_story" style="margin-top:12px"></div>
+      <div class="bigans" id="se_ans"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 핵심</div>
+      "똑같이 나눠 가지면 한 명이 몇 개?" → <b>전체 ÷ 사람 수</b>. 말을 식으로 바꾸면 답이 보여요!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">연필 한 자루는 300원. 5자루를 사면 얼마? 식으로 써보세요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">식: 300 × 5 = <b>1500원</b>. "한 개 값 × 개수"예요.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">사탕 20개를 4명이 똑같이 나누면 한 명당 몇 개?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">식: 20 ÷ 4 = <b>5개</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">내 나이의 2배에 3을 더하면 17살. 내 나이는? (□로 식 세우기)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">식: □ × 2 + 3 = 17 → □×2 = 14 → □ = <b>7살</b>.</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 함수 기계 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🔮</span> 함수 기계 — 넣으면 답이 나와요</h2>
+    <p class="lead">수를 넣으면 규칙대로 바꿔서 내보내는 마법 기계! 이게 바로 '함수'예요.</p>
+    <div class="box def"><div class="t">📘 함수란?</div>
+      <b>들어간 수(입력)</b>를 정해진 <b>규칙</b>으로 바꿔 <b>나오는 수(출력)</b>를 만들어요.<br>
+      예: "×2 기계"에 3을 넣으면 6, 5를 넣으면 10이 나와요!</div>
+
+    <div class="play">
+      <div class="ttl">🎛️ 기계 규칙을 정해봐요</div>
+      <div class="row">
+        <div class="field"><div class="lab">곱하기 ×<span class="pill" id="fm_a">2</span></div>
+          <input type="range" class="slider" id="fm_as" min="1" max="5" value="2"></div>
+        <div class="field"><div class="lab">더하기 +<span class="pill" id="fm_b">1</span></div>
+          <input type="range" class="slider" id="fm_bs" min="0" max="9" value="1"></div>
+      </div>
+      <div class="machine">
+        <div class="mio" id="fm_in">3</div>
+        <span class="arrow">➡️</span>
+        <div class="mbox"><div style="font-size:13px;font-weight:800;color:var(--soft)">규칙</div><div class="rule" id="fm_rule">×2 +1</div></div>
+        <span class="arrow">➡️</span>
+        <div class="mio" id="fm_out" style="background:#FFF5D6;color:var(--purple)">7</div>
+      </div>
+      <div class="row" style="justify-content:center">
+        <span class="disp">넣는 수: <span class="pill" id="fm_x">3</span></span>
+        <input type="range" class="slider" id="fm_xs" min="0" max="10" value="3" style="max-width:240px">
+      </div>
+      <table class="tbl" id="fm_tbl"></table>
+    </div>
+
+    <div class="box tip"><div class="t">💡 식으로 쓰면</div>
+      넣는 수를 <b>x</b>, 나오는 수를 <b>y</b>라 하면 <b>y = (×규칙) x + (＋규칙)</b>!
+      예: y = 2x + 1 이면 x=3일 때 y=7.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"×3 기계"에 4를 넣으면 무엇이 나올까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">4 × 3 = <b>12</b>가 나와요!</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"+5 기계"에 어떤 수를 넣었더니 9가 나왔어요. 넣은 수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">거꾸로! 9 − 5 = <b>4</b>를 넣었어요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">y = 2x + 1 기계. x가 1,2,3일 때 y는 각각?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">x=1→3, x=2→5, x=3→7. <b>x가 1 커지면 y는 2씩 커져요</b>! (규칙 발견)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 좌표와 그래프 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">📊</span> 좌표와 그래프</h2>
+    <p class="lead">수 두 개로 위치를 나타내는 게 좌표! 함수 기계의 결과를 점으로 찍으면 그래프가 돼요.</p>
+    <div class="box def"><div class="t">📘 좌표 읽기</div>
+      <b>(가로, 세로)</b> 순서로 위치를 나타내요. (3, 2)는 "오른쪽으로 3칸, 위로 2칸"!<br>
+      가로축을 x축, 세로축을 y축이라고 해요.</div>
+
+    <div class="play">
+      <div class="ttl">📍 점을 직접 찍어봐요 — y = x + □ 그래프</div>
+      <div class="row">
+        <div class="field"><div class="lab">더하는 수 +<span class="pill" id="gr_b">1</span></div>
+          <input type="range" class="slider" id="gr_bs" min="0" max="5" value="1"></div>
+      </div>
+      <div class="svgbox"><svg id="gr_svg" viewBox="0 0 360 320" width="360" height="320"></svg></div>
+      <div class="box key" style="margin-top:8px"><div class="t">🔑 발견</div>
+        <span id="gr_msg"></span></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 직선이 되는 이유</div>
+      x가 1 커질 때마다 y도 일정하게 커지면, 점들이 <b>한 줄(직선)</b>로 이어져요! 규칙이 그림으로 보이는 거죠.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">점 (4, 3)은 어디에 있을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">오른쪽으로 <b>4칸</b>, 위로 <b>3칸</b> 간 자리예요. (가로 먼저, 세로 나중!)</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">y = x 그래프에서 x=5일 때 점의 좌표는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">y도 5니까 <b>(5, 5)</b>! y=x는 가로와 세로가 같은 점들이에요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">y = x + 2 에서 점 (0,2), (1,3), (2,4)를 이으면 어떤 모양?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">일정하게 올라가는 <b>직선</b>! x가 1 커질 때 y도 1씩 커지니까요.</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 비례 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">⚖️</span> 비례 — 같이 커지고 같이 작아져요</h2>
+    <p class="lead">하나가 2배 되면 다른 것도 2배! 이렇게 나란히 변하는 관계가 정비례예요.</p>
+    <div class="box def"><div class="t">📘 정비례</div>
+      한 양이 <b>2배, 3배</b> 되면 다른 양도 <b>2배, 3배</b> 되는 관계.<br>
+      예: 사탕 1개 200원 → 2개 400원 → 3개 600원 (개수와 값이 정비례!)</div>
+
+    <div class="play">
+      <div class="ttl">🍫 초콜릿 사기 — 개수와 가격</div>
+      <div class="row">
+        <div class="field"><div class="lab">초콜릿 1개 값 = <span class="pill" id="pr_price">500</span>원</div>
+          <input type="range" class="slider" id="pr_ps" min="100" max="1000" step="100" value="500"></div>
+        <div class="field"><div class="lab">사는 개수 = <span class="pill" id="pr_n">3</span></div>
+          <input type="range" class="slider" id="pr_ns" min="1" max="8" value="3"></div>
+      </div>
+      <table class="tbl" id="pr_tbl"></table>
+      <div class="bigans" id="pr_ans"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 한눈에 알기</div>
+      "개수가 2배면 값도 2배" → 표를 보면 가로로 항상 <b>같은 수(한 개 값)를 곱한</b> 모양이에요.
+      이게 함수 y = (한 개 값) × x 와 똑같아요!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">공책 1권에 800원. 4권 사면 얼마?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">800 × 4 = <b>3200원</b>. 개수와 값은 정비례!</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">2시간에 10km 걸어요. 같은 빠르기로 6시간이면 몇 km?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">2시간→10km니까 1시간→5km. 6시간이면 5×6 = <b>30km</b>!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">사과 3개가 1500원이면, 사과 1개와 7개는 각각 얼마?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">1개 = 1500÷3 = 500원. 7개 = 500×7 = <b>3500원</b>. (먼저 1개 값을 구해요!)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 대수와 함수 마스터 퀴즈</h2>
+    <p class="lead">□ 찾기, 식 세우기, 함수 기계, 좌표, 비례까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 5장 「대수와 함수」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var SVGNS="http://www.w3.org/2000/svg";
+  function el(tag,attrs){ var e=document.createElementNS(SVGNS,tag); for(var k in attrs){ e.setAttribute(k,attrs[k]); } return e; }
+
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+
+  /* ---------- S0 □ 찾기 ---------- */
+  var eqAns=0, eqType="";
+  function makeEq(){
+    var t=Math.floor(Math.random()*3); // 0:+, 1:×, 2:×+
+    var line=$("eq_line"); line.innerHTML="";
+    function add(html){ line.innerHTML+=html; }
+    if(t===0){
+      var add1=Math.floor(Math.random()*8)+2, ans=Math.floor(Math.random()*8)+2, res=ans+add1;
+      eqAns=ans; eqType="□ + "+add1+" = "+res;
+      add('<span class="boxq">□</span><span>+</span><span class="token">'+add1+'</span><span>=</span><span class="token">'+res+'</span>');
+    } else if(t===1){
+      var mul=Math.floor(Math.random()*4)+2, a=Math.floor(Math.random()*6)+2, res2=mul*a;
+      eqAns=a; eqType="□ × "+mul+" = "+res2;
+      add('<span class="boxq">□</span><span>×</span><span class="token">'+mul+'</span><span>=</span><span class="token">'+res2+'</span>');
+    } else {
+      var mul2=Math.floor(Math.random()*3)+2, a2=Math.floor(Math.random()*5)+2, add2=Math.floor(Math.random()*5)+1, res3=mul2*a2+add2;
+      eqAns=a2; eqType="□ × "+mul2+" + "+add2+" = "+res3;
+      add('<span class="boxq">□</span><span>×</span><span class="token">'+mul2+'</span><span>+</span><span class="token">'+add2+'</span><span>=</span><span class="token">'+res3+'</span>');
+    }
+    $("eq_fb").textContent=""; $("eq_hint").textContent=""; $("eq_in").value="";
+  }
+  $("eq_chk").addEventListener("click", function(){
+    var v=parseInt($("eq_in").value,10);
+    if(isNaN(v)){ $("eq_fb").innerHTML='<span class="no">숫자를 적어주세요 ✏️</span>'; return; }
+    if(v===eqAns){ $("eq_fb").innerHTML='<span class="ok">정답! □ = '+eqAns+' 🎉</span>'; $("eq_hint").textContent="식: "+eqType.replace("□",eqAns); }
+    else { $("eq_fb").innerHTML='<span class="no">아쉬워요! 거꾸로 생각해봐요 (더하기↔빼기, 곱하기↔나누기)</span>'; }
+  });
+  $("eq_new").addEventListener("click", makeEq);
+  makeEq();
+
+  /* ---------- S1 식 세우기 ---------- */
+  function seRender(){
+    var total=parseInt($("se_ts").value,10), kids=parseInt($("se_ks").value,10);
+    $("se_total").textContent=total; $("se_kids").textContent=kids;
+    var each=Math.floor(total/kids), left=total%kids;
+    var story="🍬 사탕 <b>"+total+"개</b>를 친구 <b>"+kids+"명</b>이 똑같이 나눠요.<br>식: "+total+" ÷ "+kids+" = ?";
+    $("se_story").innerHTML=story;
+    if(left===0){ $("se_ans").textContent="한 명당 "+each+"개씩!"; }
+    else { $("se_ans").textContent="한 명당 "+each+"개씩, "+left+"개 남아요"; }
+  }
+  $("se_ts").addEventListener("input", seRender);
+  $("se_ks").addEventListener("input", seRender);
+  seRender();
+
+  /* ---------- S2 함수 기계 ---------- */
+  function fmRender(){
+    var a=parseInt($("fm_as").value,10), b=parseInt($("fm_bs").value,10), x=parseInt($("fm_xs").value,10);
+    $("fm_a").textContent=a; $("fm_b").textContent=b; $("fm_x").textContent=x;
+    var ruleTxt = "×"+a+(b>0?" +"+b:"");
+    $("fm_rule").textContent=ruleTxt;
+    $("fm_in").textContent=x;
+    var y=x*a+b;
+    $("fm_out").textContent=y;
+    // table
+    var tb=$("fm_tbl");
+    var head="<tr><th>넣는 수 x</th>"; var row="<tr><th>나오는 수 y</th>";
+    for(var i=0;i<=5;i++){ head+="<th>"+i+"</th>"; row+='<td class="out">'+(i*a+b)+"</td>"; }
+    head+="</tr>"; row+="</tr>";
+    tb.innerHTML=head+row;
+  }
+  $("fm_as").addEventListener("input", fmRender);
+  $("fm_bs").addEventListener("input", fmRender);
+  $("fm_xs").addEventListener("input", fmRender);
+  fmRender();
+  /* ---------- S3 좌표 그래프 ---------- */
+  function grRender(){
+    var b=parseInt($("gr_bs").value,10);
+    $("gr_b").textContent=b;
+    var svg=$("gr_svg"); svg.innerHTML="";
+    var ox=40, oy=280, step=40, maxv=6;
+    // grid
+    for(var i=0;i<=maxv;i++){
+      svg.appendChild(el("line",{x1:ox+i*step,y1:oy,x2:ox+i*step,y2:oy-maxv*step,stroke:"#E3E8F5","stroke-width":2}));
+      svg.appendChild(el("line",{x1:ox,y1:oy-i*step,x2:ox+maxv*step,y2:oy-i*step,stroke:"#E3E8F5","stroke-width":2}));
+    }
+    // axes
+    svg.appendChild(el("line",{x1:ox,y1:oy,x2:ox+maxv*step+10,y2:oy,stroke:"#262338","stroke-width":3}));
+    svg.appendChild(el("line",{x1:ox,y1:oy,x2:ox,y2:oy-maxv*step-10,stroke:"#262338","stroke-width":3}));
+    // axis labels
+    for(var t=0;t<=maxv;t++){
+      var lx=el("text",{x:ox+t*step,y:oy+18,"font-size":12,"font-weight":800,fill:"#6A6A85","text-anchor":"middle"}); lx.textContent=t; svg.appendChild(lx);
+      if(t>0){ var ly=el("text",{x:ox-14,y:oy-t*step+5,"font-size":12,"font-weight":800,fill:"#6A6A85","text-anchor":"middle"}); ly.textContent=t; svg.appendChild(ly); }
+    }
+    svg.appendChild(el("text",{x:ox+maxv*step+4,y:oy+18,"font-size":13,"font-weight":900,fill:"#3D7BFF"})).textContent="x";
+    var yl=el("text",{x:ox-10,y:oy-maxv*step-2,"font-size":13,"font-weight":900,fill:"#FF5C8A"}); yl.textContent="y"; svg.appendChild(yl);
+    // line + points  y = x + b
+    var pts=[];
+    for(var x=0;x<=maxv;x++){ var y=x+b; if(y<=maxv){ pts.push([x,y]); } }
+    if(pts.length>1){
+      var poly=""; for(var p=0;p<pts.length;p++){ poly+=(ox+pts[p][0]*step)+","+(oy-pts[p][1]*step)+" "; }
+      svg.appendChild(el("polyline",{points:poly,fill:"none",stroke:"#8A6CFF","stroke-width":4,"stroke-linecap":"round"}));
+    }
+    for(var p2=0;p2<pts.length;p2++){
+      svg.appendChild(el("circle",{cx:ox+pts[p2][0]*step,cy:oy-pts[p2][1]*step,r:7,fill:"#FF5C8A",stroke:"#fff","stroke-width":2}));
+      var lbl=el("text",{x:ox+pts[p2][0]*step+10,y:oy-pts[p2][1]*step-8,"font-size":11,"font-weight":800,fill:"#8A6CFF"});
+      lbl.textContent="("+pts[p2][0]+","+pts[p2][1]+")"; svg.appendChild(lbl);
+    }
+    $("gr_msg").innerHTML="식 <b>y = x + "+b+"</b> 의 점들이에요. x가 1 커질 때 y도 1씩 커져서 <b>곧은 직선</b>이 돼요!";
+  }
+  $("gr_bs").addEventListener("input", grRender);
+  grRender();
+
+  /* ---------- S4 비례 ---------- */
+  function prRender(){
+    var price=parseInt($("pr_ps").value,10), nn=parseInt($("pr_ns").value,10);
+    $("pr_price").textContent=price; $("pr_n").textContent=nn;
+    var tb=$("pr_tbl");
+    var head="<tr><th>개수</th>"; var row="<tr><th>가격(원)</th>";
+    for(var i=1;i<=Math.max(nn,5);i++){
+      head+="<th>"+i+"</th>";
+      row+='<td class="'+(i===nn?"out":"")+'">'+(price*i)+"</td>";
+    }
+    head+="</tr>"; row+="</tr>";
+    tb.innerHTML=head+row;
+    $("pr_ans").textContent=price+"원 × "+nn+"개 = "+(price*nn)+"원";
+  }
+  $("pr_ps").addEventListener("input", prRender);
+  $("pr_ns").addEventListener("input", prRender);
+  prRender();
+
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"□ + 6 = 15 일 때 □는?", opts:["8","9","21","7"], a:1, why:"15 − 6 = 9."},
+    {q:"□ × 4 = 28 일 때 □는?", opts:["6","7","24","32"], a:1, why:"28 ÷ 4 = 7."},
+    {q:"'×3 기계'에 5를 넣으면?", opts:["8","15","53","12"], a:1, why:"5 × 3 = 15."},
+    {q:"'+7 기계'에서 13이 나왔어요. 넣은 수는?", opts:["6","20","7","91"], a:0, why:"거꾸로! 13 − 7 = 6."},
+    {q:"y = 2x 에서 x=4일 때 y는?", opts:["6","8","2","16"], a:1, why:"2 × 4 = 8."},
+    {q:"점 (3, 5)의 위치는?", opts:["오른쪽3 위로5","오른쪽5 위로3","왼쪽3 아래5","위로3 오른쪽5"], a:0, why:"(가로, 세로) 순서! 오른쪽 3칸, 위로 5칸."},
+    {q:"공책 1권 700원. 5권은?", opts:["1200원","3500원","705원","2800원"], a:1, why:"700 × 5 = 3500원. 정비례!"},
+    {q:"□ × 2 + 3 = 11 일 때 □는?", opts:["3","4","7","5"], a:1, why:"뒤에서부터! □×2 = 8 → □ = 4."},
+    {q:"사과 3개가 1200원. 1개는?", opts:["400원","300원","3600원","600원"], a:0, why:"1200 ÷ 3 = 400원."},
+    {q:"y = x + 3 에서 x가 1 커지면 y는?", opts:["3 커진다","1 커진다","변화 없다","2 커진다"], a:1, why:"x가 1 커지면 y도 1씩! 그래서 직선이 돼요."}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 대수·함수 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

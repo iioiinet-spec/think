@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기하학 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"width × height  ÷2  for  *";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:15px;letter-spacing:7px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 4장 · 코딩 연계</div>
+  <h1>기하학을 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>손으로 재던 둘레·넓이를 C와 Python으로! 별표(*)로 도형까지 그려봐요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 식 계산</button>
+  <button data-go="s1">📏 둘레 구하기</button>
+  <button data-go="s2">🟧 넓이 구하기</button>
+  <button data-go="s3">🔺 도형 그리기(*)</button>
+  <button data-go="s4">📐 각의 합</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 식을 코드로 옮기기</h2>
+    <p class="lead">기하 공식은 곱하기(*)·나누기(/)·괄호만 알면 돼요. 수학 식을 그대로 코드로 옮기면 끝!</p>
+    <div class="box def"><div class="t">📘 계산 기호</div>
+      곱하기 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">*</code>,
+      나누기 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">/</code>,
+      괄호 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">( )</code> 로 계산 순서를 정해요.<br>
+      예: (가로+세로)×2 → <b>(w + h) * 2</b></div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 변수에 값 담고 계산</span>
+<span class="tk-key">int</span> w = <span class="tk-num">5</span>, h = <span class="tk-num">3</span>;
+<span class="tk-key">int</span> area = w * h;
+<span class="tk-fn">printf</span>(<span class="tk-str">"넓이=%d\n"</span>, area);  <span class="tk-com">// 15</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 변수에 값 담고 계산</span>
+w, h = <span class="tk-num">5</span>, <span class="tk-num">3</span>
+area = w * h
+<span class="tk-fn">print</span>(<span class="tk-str">"넓이="</span>, area)   <span class="tk-com"># 15</span></code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 사칙연산 계산기</div>
+      <div class="row">
+        <input type="number" id="ca_a" class="numin" value="5">
+        <select id="ca_op" style="height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;font-family:inherit;padding:0 8px">
+          <option value="+">＋</option><option value="-">－</option><option value="*" selected>✖️</option><option value="/">➗</option></select>
+        <input type="number" id="ca_b" class="numin" value="3">
+        <button class="btn" id="ca_go">계산 ✨</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="ca_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 계산 순서</div>
+      코드도 수학처럼 <b>괄호 먼저, 그다음 곱·나누기, 마지막에 더·빼기</b> 순서로 계산해요!</div>
+  </div>
+</section>
+
+<!-- S1 둘레 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">📏</span> 둘레 구하기</h2>
+    <p class="lead">직사각형 둘레 = (가로 + 세로) × 2. 정사각형은 한 변 × 4! 슬라이더로 바꿔봐요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 직사각형 둘레</div>
+      <div class="row">
+        <div class="field"><div class="lab">가로 w = <span class="pill" id="pe_w">6</span></div>
+          <input type="range" class="slider" id="pe_ws" min="1" max="20" value="6"></div>
+        <div class="field"><div class="lab">세로 h = <span class="pill" id="pe_h">4</span></div>
+          <input type="range" class="slider" id="pe_hs" min="1" max="20" value="4"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="pe_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="pe_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="pe_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      공식을 그대로! 괄호 <b>(w + h)</b> 를 먼저 계산하고 2를 곱해요.</div>
+  </div>
+</section>
+<!-- S2 넓이 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🟧</span> 넓이 구하기</h2>
+    <p class="lead">직사각형 넓이 = 가로 × 세로, 삼각형 넓이 = 밑변 × 높이 ÷ 2. 버튼으로 바꿔봐요!</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 넓이</div>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn" id="ar_mode">현재: 직사각형 🟧 ↔ 삼각형 🔺</button>
+      </div>
+      <div class="row">
+        <div class="field"><div class="lab"><span id="ar_lw">가로</span> = <span class="pill" id="ar_w">8</span></div>
+          <input type="range" class="slider" id="ar_ws" min="1" max="20" value="8"></div>
+        <div class="field"><div class="lab"><span id="ar_lh">세로</span> = <span class="pill" id="ar_h">5</span></div>
+          <input type="range" class="slider" id="ar_hs" min="1" max="20" value="5"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="ar_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="ar_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="ar_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 나누기 주의 (C)</div>
+      C에서 정수끼리 나누면 소수가 사라져요! 삼각형 넓이가 소수가 될 수 있으니
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">double</code> 이나 <b>2.0</b>으로 나누면 정확해요.</div>
+  </div>
+</section>
+
+<!-- S3 도형 그리기 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🔺</span> 별표(*)로 도형 그리기</h2>
+    <p class="lead">반복문으로 별표를 찍으면 사각형·삼각형이 그려져요! 줄(행)과 칸(열)을 반복하는 거예요.</p>
+    <div class="box def"><div class="t">📘 이중 반복문으로 그리기</div>
+      바깥 반복문은 <b>줄(세로)</b>, 안쪽 반복문은 <b>별표 개수(가로)</b>를 정해요.
+      줄마다 별을 몇 개 찍을지 바꾸면 삼각형이 돼요!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 별표 도형</div>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn pur" id="st_mode">현재: 사각형 ⬛ ↔ 삼각형 🔺</button>
+      </div>
+      <div class="row">
+        <div class="field"><div class="lab">크기 n = <span class="pill" id="st_n">4</span></div>
+          <input type="range" class="slider" id="st_s" min="1" max="8" value="4"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="st_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="st_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (별표 그림)</div>
+      <div class="console" id="st_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      사각형은 줄마다 별 <b>n개</b>, 삼각형은 줄 번호만큼 별 <b>1, 2, 3…개</b>를 찍어요!</div>
+  </div>
+</section>
+<!-- S4 각의 합 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">📐</span> 각의 합과 빈 각 구하기</h2>
+    <p class="lead">삼각형 세 각의 합은 180°. 두 각을 알면 나머지는 빼면 돼요. 다각형 각의 합도 공식으로!</p>
+    <div class="box def"><div class="t">📘 각의 합 공식</div>
+      삼각형 빈 각 = <b>180 − (두 각의 합)</b><br>
+      n각형 모든 각의 합 = <b>(n − 2) × 180</b> (삼각형으로 쪼갠 개수 × 180)</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 삼각형 빈 각 찾기</div>
+      <div class="row">
+        <div class="field"><div class="lab">첫째 각 = <span class="pill" id="an_a">50</span>°</div>
+          <input type="range" class="slider" id="an_as" min="10" max="150" value="50"></div>
+        <div class="field"><div class="lab">둘째 각 = <span class="pill" id="an_b">70</span>°</div>
+          <input type="range" class="slider" id="an_bs" min="10" max="150" value="70"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="an_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="an_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="an_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 다각형도!</div>
+      오각형 각의 합 = (5−2)×180 = 540°. 코드로 <b>(n-2)*180</b> 한 줄이면 어떤 다각형이든 구해요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 기하 코드 비교</h2>
+    <p class="lead">도형 계산·그리기에서 자주 쓰는 표현을 정리했어요. 특히 나누기와 별표 찍기를 눈여겨봐요!</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>넓이 계산</td><td><code>int a = w * h;</code></td><td><code>a = w * h</code></td></tr>
+      <tr><td>소수 나누기</td><td><code>(double)b * h / 2</code></td><td><code>b * h / 2</code></td></tr>
+      <tr><td>별표 한 줄</td><td><code>printf("*");</code></td><td><code>print("*", end="")</code></td></tr>
+      <tr><td>줄 바꾸기</td><td><code>printf("\n");</code></td><td><code>print()</code></td></tr>
+      <tr><td>별 n개 한 번에</td><td>for 반복 필요</td><td><code>print("*" * n)</code></td></tr>
+      <tr><td>도형 그리기</td><td>이중 for 직접</td><td>이중 for 또는 <code>"*"*i</code></td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 Python의 별표 마법</div>
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">"*" * 5</code> 라고 하면 <b>*****</b> 가 한 번에 나와요!
+      그래서 삼각형도 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">for i in range(1,n+1): print("*"*i)</code> 처럼 아주 짧게 그릴 수 있어요.</div>
+    <div class="box warn"><div class="t">⚠️ C의 나누기 함정</div>
+      C에서 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">7 / 2</code> 는 3이 돼요(소수 버림)! 삼각형 넓이처럼 소수가 필요하면
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">7.0 / 2</code> 또는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">double</code>을 꼭 써요.</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      공식을 코드로 옮기면 어떤 크기의 도형도 순식간에 계산! 반복문으로 도형까지 그릴 수 있어요.
+      수학(공식) + 코딩(자동 계산·그리기) = 진짜 기하 실력 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 4장 「기하학」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 사칙연산 */
+  $("ca_go").addEventListener("click", function(){
+    var a=parseFloat($("ca_a").value), b=parseFloat($("ca_b").value), op=$("ca_op").value, r;
+    if(isNaN(a)||isNaN(b)){ $("ca_out").innerHTML='<span class="pmt">$ </span>두 수를 넣어주세요!'; return; }
+    if(op==="+") r=a+b; else if(op==="-") r=a-b; else if(op==="*") r=a*b;
+    else { if(b===0){ $("ca_out").innerHTML='<span class="pmt">$ </span>0으로 나눌 수 없어요!'; return; } r=a/b; }
+    $("ca_out").innerHTML='<span class="pmt">$ </span>'+a+" "+op+" "+b+" = "+(Math.round(r*1000)/1000);
+  });
+
+  /* S1 둘레 */
+  function peRender(){
+    var w=parseInt($("pe_ws").value,10), h=parseInt($("pe_hs").value,10);
+    $("pe_w").textContent=w; $("pe_h").textContent=h;
+    $("pe_c").innerHTML =
+      C("// 직사각형 둘레")+"\n"+
+      K("int")+" w = "+N(w)+", h = "+N(h)+";\n"+
+      K("int")+" peri = (w + h) * "+N("2")+";\n"+
+      F("printf")+"("+ST('"둘레=%d\\n"')+", peri);";
+    $("pe_py").innerHTML =
+      C("# 직사각형 둘레")+"\n"+
+      "w, h = "+N(w)+", "+N(h)+"\n"+
+      "peri = (w + h) * "+N("2")+"\n"+
+      F("print")+"("+ST('"둘레="')+", peri)";
+    $("pe_out").innerHTML='<span class="pmt">$ </span>둘레 = ('+w+" + "+h+") × 2 = "+((w+h)*2);
+  }
+  $("pe_ws").addEventListener("input", peRender);
+  $("pe_hs").addEventListener("input", peRender);
+  peRender();
+
+  /* S2 넓이 */
+  var arMode="rect";
+  function arRender(){
+    var w=parseInt($("ar_ws").value,10), h=parseInt($("ar_hs").value,10);
+    $("ar_w").textContent=w; $("ar_h").textContent=h;
+    if(arMode==="rect"){
+      $("ar_mode").textContent="현재: 직사각형 🟧 ↔ 삼각형 🔺";
+      $("ar_lw").textContent="가로"; $("ar_lh").textContent="세로";
+      $("ar_c").innerHTML=C("// 직사각형 넓이")+"\n"+K("int")+" area = "+N(w)+" * "+N(h)+";\n"+F("printf")+"("+ST('"넓이=%d\\n"')+", area);";
+      $("ar_py").innerHTML=C("# 직사각형 넓이")+"\n"+"area = "+N(w)+" * "+N(h)+"\n"+F("print")+"("+ST('"넓이="')+", area)";
+      $("ar_out").innerHTML='<span class="pmt">$ </span>넓이 = '+w+" × "+h+" = "+(w*h);
+    } else {
+      $("ar_mode").textContent="현재: 삼각형 🔺 ↔ 직사각형 🟧";
+      $("ar_lw").textContent="밑변"; $("ar_lh").textContent="높이";
+      $("ar_c").innerHTML=C("// 삼각형 넓이 (소수 주의!)")+"\n"+K("double")+" area = "+N(w)+" * "+N(h)+" / "+N("2.0")+";\n"+F("printf")+"("+ST('"넓이=%.1f\\n"')+", area);";
+      $("ar_py").innerHTML=C("# 삼각형 넓이")+"\n"+"area = "+N(w)+" * "+N(h)+" / "+N("2")+"\n"+F("print")+"("+ST('"넓이="')+", area)";
+      var v=w*h/2;
+      $("ar_out").innerHTML='<span class="pmt">$ </span>넓이 = '+w+" × "+h+" ÷ 2 = "+(Math.round(v*10)/10);
+    }
+  }
+  $("ar_ws").addEventListener("input", arRender);
+  $("ar_hs").addEventListener("input", arRender);
+  $("ar_mode").addEventListener("click", function(){ arMode=(arMode==="rect")?"tri":"rect"; arRender(); });
+  arRender();
+  /* S3 별표 도형 */
+  var stMode="rect";
+  function stRender(){
+    var nn=parseInt($("st_s").value,10);
+    $("st_n").textContent=nn;
+    if(stMode==="rect"){
+      $("st_mode").textContent="현재: 사각형 ⬛ ↔ 삼각형 🔺";
+      $("st_c").innerHTML=
+        C("// "+nn+"×"+nn+" 사각형 그리기")+"\n"+
+        K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(nn)+"; i++) {\n"+
+        "    "+K("for")+" ("+K("int")+" j = "+N("0")+"; j &lt; "+N(nn)+"; j++)\n"+
+        "        "+F("printf")+"("+ST('"*"')+");\n"+
+        "    "+F("printf")+"("+ST('"\\n"')+");\n"+
+        "}";
+      $("st_py").innerHTML=
+        C("# "+nn+"×"+nn+" 사각형 그리기")+"\n"+
+        K("for")+" i "+K("in")+" "+F("range")+"("+N(nn)+"):\n"+
+        "    "+F("print")+"("+ST('"*"')+" * "+N(nn)+")";
+      var out="";
+      for(var i=0;i<nn;i++){ for(var j=0;j<nn;j++){ out+="*"; } out+="\n"; }
+      $("st_out").innerHTML='<span class="pmt">$ </span>\n'+out;
+    } else {
+      $("st_mode").textContent="현재: 삼각형 🔺 ↔ 사각형 ⬛";
+      $("st_c").innerHTML=
+        C("// 높이 "+nn+" 삼각형 그리기")+"\n"+
+        K("for")+" ("+K("int")+" i = "+N("1")+"; i &lt;= "+N(nn)+"; i++) {\n"+
+        "    "+K("for")+" ("+K("int")+" j = "+N("0")+"; j &lt; i; j++)\n"+
+        "        "+F("printf")+"("+ST('"*"')+");\n"+
+        "    "+F("printf")+"("+ST('"\\n"')+");\n"+
+        "}";
+      $("st_py").innerHTML=
+        C("# 높이 "+nn+" 삼각형 그리기")+"\n"+
+        K("for")+" i "+K("in")+" "+F("range")+"("+N("1")+", "+N(nn+1)+"):\n"+
+        "    "+F("print")+"("+ST('"*"')+" * i)";
+      var out2="";
+      for(var k=1;k<=nn;k++){ for(var m=0;m<k;m++){ out2+="*"; } out2+="\n"; }
+      $("st_out").innerHTML='<span class="pmt">$ </span>\n'+out2;
+    }
+  }
+  $("st_s").addEventListener("input", stRender);
+  $("st_mode").addEventListener("click", function(){ stMode=(stMode==="rect")?"tri":"rect"; stRender(); });
+  stRender();
+
+  /* S4 각의 합 */
+  function anRender(){
+    var a=parseInt($("an_as").value,10), b=parseInt($("an_bs").value,10);
+    $("an_a").textContent=a; $("an_b").textContent=b;
+    var c=180-a-b;
+    $("an_c").innerHTML=
+      C("// 삼각형 빈 각 구하기")+"\n"+
+      K("int")+" a = "+N(a)+", b = "+N(b)+";\n"+
+      K("int")+" c = "+N("180")+" - a - b;\n"+
+      F("printf")+"("+ST('"나머지 각=%d도\\n"')+", c);";
+    $("an_py").innerHTML=
+      C("# 삼각형 빈 각 구하기")+"\n"+
+      "a, b = "+N(a)+", "+N(b)+"\n"+
+      "c = "+N("180")+" - a - b\n"+
+      F("print")+"("+ST('"나머지 각="')+", c, "+ST('"도"')+")";
+    if(c>0){
+      $("an_out").innerHTML='<span class="pmt">$ </span>나머지 각 = 180 − ('+a+"+"+b+") = "+c+"도";
+    } else {
+      $("an_out").innerHTML='<span class="pmt">$ </span>두 각의 합이 180°를 넘어요! 삼각형이 될 수 없어요 ('+c+'도)';
+    }
+  }
+  $("an_as").addEventListener("input", anRender);
+  $("an_bs").addEventListener("input", anRender);
+  anRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

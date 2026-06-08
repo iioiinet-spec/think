@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>확률과 통계 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"sum/n   rand()   p = k/n";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:15px;letter-spacing:7px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}.btn.org{background:var(--orange)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 6장 · 코딩 연계</div>
+  <h1>확률·통계를 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>합계·평균, 확률, 그리고 동전·주사위 실험까지! 코드로 수천 번 실험해봐요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 더하기 쌓기</button>
+  <button data-go="s1">⚖️ 평균 구하기</button>
+  <button data-go="s2">🎯 확률 계산</button>
+  <button data-go="s3">🪙 동전 실험(난수)</button>
+  <button data-go="s4">📊 자료 세기</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 더하기를 쌓기</h2>
+    <p class="lead">통계의 시작은 '모두 더하기(합계)'예요. 변수 하나에 계속 더해 쌓으면 돼요!</p>
+    <div class="box def"><div class="t">📘 누적 덧셈</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">sum = sum + x</code> 를 반복하면 여러 수의 합이 쌓여요.
+      평균은 이 합을 개수로 나누면 끝!</div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 점수 3개 더하기</span>
+<span class="tk-key">int</span> score[] = {<span class="tk-num">6</span>, <span class="tk-num">8</span>, <span class="tk-num">10</span>};
+<span class="tk-key">int</span> sum = <span class="tk-num">0</span>;
+<span class="tk-key">for</span> (<span class="tk-key">int</span> i = <span class="tk-num">0</span>; i &lt; <span class="tk-num">3</span>; i++)
+    sum = sum + score[i];
+<span class="tk-fn">printf</span>(<span class="tk-str">"합=%d\n"</span>, sum);  <span class="tk-com">// 24</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 점수 3개 더하기</span>
+score = [<span class="tk-num">6</span>, <span class="tk-num">8</span>, <span class="tk-num">10</span>]
+total = <span class="tk-fn">sum</span>(score)
+<span class="tk-fn">print</span>(<span class="tk-str">"합="</span>, total)   <span class="tk-com"># 24</span></code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 합계 계산기 — 수들을 더해요 (쉼표로 구분)</div>
+      <div class="row">
+        <input type="text" id="su_in" value="6, 8, 10, 4" style="flex:1;min-width:200px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:18px;font-weight:900;text-align:center;font-family:inherit">
+        <button class="btn" id="su_go">합 구하기 ✨</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="su_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 Python의 선물</div>
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">sum(리스트)</code> 한 줄로 합을 구해줘요! C는 직접 반복문으로 더해야 해요.</div>
+  </div>
+</section>
+
+<!-- S1 평균 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">⚖️</span> 평균 구하기</h2>
+    <p class="lead">평균 = 합계 ÷ 개수. 합을 구한 뒤 나누면 끝! 슬라이더로 점수를 바꿔봐요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 점수들의 평균</div>
+      <div class="row">
+        <div class="field"><div class="lab">사람 수 = <span class="pill" id="av_n">4</span></div>
+          <input type="range" class="slider" id="av_ns" min="2" max="6" value="4"></div>
+        <button class="btn alt" id="av_rnd">새 점수 🎲</button>
+      </div>
+      <div class="box def" id="av_data" style="margin-top:10px"></div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="av_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="av_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="av_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 소수 주의 (C)</div>
+      평균은 소수가 될 수 있어요! C에서는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">(double)sum / n</code> 으로 나눠야 정확해요. Python은 그냥 / 면 돼요.</div>
+  </div>
+</section>
+<!-- S2 확률 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🎯</span> 확률 계산하기</h2>
+    <p class="lead">확률 = 원하는 경우 ÷ 전체 경우. 코드로는 나누기 한 번! 분수와 퍼센트로 보여줘요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 확률 = k / n</div>
+      <div class="row">
+        <div class="field"><div class="lab">전체 경우 n = <span class="pill" id="pr_n">6</span></div>
+          <input type="range" class="slider" id="pr_ns" min="2" max="12" value="6"></div>
+        <div class="field"><div class="lab">원하는 경우 k = <span class="pill" id="pr_k">3</span></div>
+          <input type="range" class="slider" id="pr_ks" min="0" max="12" value="3"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="pr_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="pr_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="pr_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      확률을 퍼센트로 바꾸려면 <b>× 100</b>! 예: 0.5 → 50%. 코드에서 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">p * 100</code> 하면 돼요.</div>
+  </div>
+</section>
+
+<!-- S3 동전 실험 난수 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🪙</span> 동전 실험 — 난수로 시뮬레이션</h2>
+    <p class="lead">컴퓨터의 '랜덤(난수)'으로 동전을 수천 번 던져봐요! 많이 던질수록 50%에 가까워져요.</p>
+    <div class="box def"><div class="t">📘 난수란?</div>
+      컴퓨터가 만드는 '아무 수'예요. C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">rand()</code>,
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">random</code>을 써요.
+      0 또는 1을 뽑아 앞·뒤를 정해요!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 동전 n번 던지기</div>
+      <div class="row">
+        <div class="field"><div class="lab">던지는 횟수 = <span class="pill" id="cn_n">100</span></div>
+          <input type="range" class="slider" id="cn_ns" min="10" max="2000" step="10" value="100"></div>
+        <button class="btn org" id="cn_run">🎲 실험 실행!</button>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="cn_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="cn_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (실제로 던져봐요!)</div>
+      <div class="console" id="cn_out">'실험 실행!' 버튼을 눌러보세요.</div>
+    </div>
+    <div class="box tip"><div class="t">💡 할 때마다 달라요</div>
+      난수라서 실행할 때마다 결과가 조금씩 달라요! 하지만 횟수를 늘릴수록 앞면 비율이 <b>50%에 착 붙어요</b>. 직접 횟수를 키워보세요!</div>
+  </div>
+</section>
+<!-- S4 자료 세기 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">📊</span> 자료 세기 — 막대그래프 그리기</h2>
+    <p class="lead">각 항목이 몇 개인지 세고, 그 수만큼 별표(*)를 찍으면 글자 막대그래프가 돼요!</p>
+    <div class="box def"><div class="t">📘 세기와 그리기</div>
+      투표 수를 변수에 담고, 그 수만큼 <b>별표를 반복</b>해서 찍으면 막대가 돼요.
+      막대가 길수록 많은 거죠!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 과일 투표 막대그래프</div>
+      <div class="row">
+        <div class="field"><div class="lab">🍎 사과 = <span class="pill" id="ct_a">5</span></div>
+          <input type="range" class="slider" id="ct_as" min="0" max="12" value="5"></div>
+        <div class="field"><div class="lab">🍌 바나나 = <span class="pill" id="ct_b">3</span></div>
+          <input type="range" class="slider" id="ct_bs" min="0" max="12" value="3"></div>
+        <div class="field"><div class="lab">🍇 포도 = <span class="pill" id="ct_g">7</span></div>
+          <input type="range" class="slider" id="ct_gs" min="0" max="12" value="7"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="ct_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="ct_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (글자 막대그래프)</div>
+      <div class="console" id="ct_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">"*" * 5</code> 로 별 5개를 한 번에! 가장 긴 막대가 1등 항목이에요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 확률·통계 코드 비교</h2>
+    <p class="lead">합계·평균·난수에서 자주 쓰는 표현을 정리했어요. 특히 난수와 합계가 많이 달라요!</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>합계</td><td>for로 직접 더하기</td><td><code>sum(리스트)</code></td></tr>
+      <tr><td>평균</td><td><code>(double)sum / n</code></td><td><code>sum(a)/len(a)</code></td></tr>
+      <tr><td>난수(0~1)</td><td><code>rand() % 2</code></td><td><code>random.randint(0,1)</code></td></tr>
+      <tr><td>주사위(1~6)</td><td><code>rand()%6 + 1</code></td><td><code>random.randint(1,6)</code></td></tr>
+      <tr><td>리스트 길이</td><td>직접 세기/상수</td><td><code>len(리스트)</code></td></tr>
+      <tr><td>별표 n개</td><td>for 반복</td><td><code>"*" * n</code></td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 난수 준비 (C)</div>
+      C에서 난수를 쓰려면 맨 위에 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">#include &lt;stdlib.h&gt;</code> 와
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">srand(time(0))</code> 가 필요해요. Python은
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">import random</code> 한 줄이면 끝!</div>
+    <div class="box warn"><div class="t">⚠️ 평균 나누기 함정</div>
+      C에서 정수끼리 나누면 소수가 사라져요(<code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">7/2 = 3</code>)! 평균은 꼭 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">double</code>로 나눠요.</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      손으로 세던 자료·확률을 코드로! 특히 난수로 수천 번 실험하면 "많이 할수록 확률에 가까워진다"를 직접 볼 수 있어요.
+      통계 + 코딩 = 진짜 데이터 과학의 시작 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 6장 「확률과 통계」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 합계 계산기 */
+  $("su_go").addEventListener("click", function(){
+    var raw=$("su_in").value.split(",");
+    var nums=[], bad=false;
+    for(var i=0;i<raw.length;i++){ var v=parseFloat(raw[i]); if(isNaN(v)){ if(raw[i].trim()!==""){bad=true;} } else nums.push(v); }
+    if(nums.length===0){ $("su_out").innerHTML='<span class="pmt">$ </span>수를 쉼표로 적어주세요! 예: 6, 8, 10'; return; }
+    var sum=0; for(var k=0;k<nums.length;k++){ sum+=nums[k]; }
+    $("su_out").innerHTML='<span class="pmt">$ </span>'+nums.join(" + ")+" = "+(Math.round(sum*100)/100)+"  ("+nums.length+"개)";
+  });
+
+  /* S1 평균 */
+  var avData=[];
+  function avGen(){
+    var nn=parseInt($("av_ns").value,10);
+    $("av_n").textContent=nn;
+    avData=[]; for(var i=0;i<nn;i++){ avData.push(Math.floor(Math.random()*51)+50); }
+    avRender();
+  }
+  function avRender(){
+    var nn=avData.length, sum=0; for(var i=0;i<nn;i++){ sum+=avData[i]; }
+    var avg=sum/nn;
+    $("av_data").innerHTML="점수: <b>"+avData.join(", ")+"</b>";
+    var cArr="{"+avData.join(", ")+"}";
+    $("av_c").innerHTML=
+      C("// 평균 구하기")+"\n"+
+      K("int")+" score[] = "+cArr+";\n"+
+      K("int")+" n = "+N(nn)+", sum = "+N("0")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; n; i++)\n"+
+      "    sum += score[i];\n"+
+      K("double")+" avg = ("+K("double")+")sum / n;\n"+
+      F("printf")+"("+ST('"평균=%.1f\\n"')+", avg);";
+    $("av_py").innerHTML=
+      C("# 평균 구하기")+"\n"+
+      "score = ["+avData.join(", ")+"]\n"+
+      "avg = "+F("sum")+"(score) / "+F("len")+"(score)\n"+
+      F("print")+"("+ST('"평균="')+", avg)";
+    $("av_out").innerHTML='<span class="pmt">$ </span>합 = '+sum+", 개수 = "+nn+"\n평균 = "+sum+" ÷ "+nn+" = "+(Math.round(avg*10)/10);
+  }
+  $("av_ns").addEventListener("input", avGen);
+  $("av_rnd").addEventListener("click", avGen);
+  avGen();
+
+  /* S2 확률 */
+  function prRender(){
+    var nn=parseInt($("pr_ns").value,10), k=parseInt($("pr_ks").value,10);
+    if(k>nn){ k=nn; $("pr_ks").value=nn; }
+    $("pr_n").textContent=nn; $("pr_k").textContent=k;
+    $("pr_c").innerHTML=
+      C("// 확률 = k / n")+"\n"+
+      K("int")+" n = "+N(nn)+", k = "+N(k)+";\n"+
+      K("double")+" p = ("+K("double")+")k / n;\n"+
+      F("printf")+"("+ST('"확률=%.2f (%.0f%%)\\n"')+", p, p*"+N("100")+");";
+    $("pr_py").innerHTML=
+      C("# 확률 = k / n")+"\n"+
+      "n, k = "+N(nn)+", "+N(k)+"\n"+
+      "p = k / n\n"+
+      F("print")+"("+ST('f"확률={p:.2f} ({p*100:.0f}%)"')+")";
+    var p=k/nn;
+    $("pr_out").innerHTML='<span class="pmt">$ </span>확률 = '+k+" / "+nn+" = "+(Math.round(p*100)/100)+" ("+Math.round(p*100)+"%)";
+  }
+  $("pr_ns").addEventListener("input", prRender);
+  $("pr_ks").addEventListener("input", prRender);
+  prRender();
+  /* S3 동전 난수 시뮬 */
+  function cnCode(){
+    var nn=parseInt($("cn_ns").value,10);
+    $("cn_n").textContent=nn;
+    $("cn_c").innerHTML=
+      C("// 동전 "+nn+"번 던지기")+"\n"+
+      K("#include")+" &lt;stdlib.h&gt;\n"+
+      K("#include")+" &lt;time.h&gt;\n"+
+      C("// main 안에서")+"\n"+
+      F("srand")+"("+F("time")+"("+N("0")+"));\n"+
+      K("int")+" head = "+N("0")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(nn)+"; i++)\n"+
+      "    "+K("if")+" ("+F("rand")+"() % "+N("2")+" == "+N("0")+") head++;\n"+
+      F("printf")+"("+ST('"앞면 %d번\\n"')+", head);";
+    $("cn_py").innerHTML=
+      C("# 동전 "+nn+"번 던지기")+"\n"+
+      K("import")+" random\n"+
+      "head = "+N("0")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N(nn)+"):\n"+
+      "    "+K("if")+" random."+F("randint")+"("+N("0")+", "+N("1")+") == "+N("0")+":\n"+
+      "        head += "+N("1")+"\n"+
+      F("print")+"("+ST('f"앞면 {head}번"')+")";
+  }
+  $("cn_ns").addEventListener("input", cnCode);
+  $("cn_run").addEventListener("click", function(){
+    var nn=parseInt($("cn_ns").value,10), head=0;
+    for(var i=0;i<nn;i++){ if(Math.random()<0.5) head++; }
+    var tail=nn-head, hp=Math.round(head/nn*100);
+    $("cn_out").innerHTML='<span class="pmt">$ </span>앞면 '+head+"번 ("+hp+"%), 뒤면 "+tail+"번\n"+
+      (Math.abs(hp-50)<=5 ? "→ 50%에 아주 가까워요! ✨" : (nn<50?"→ 횟수를 늘리면 50%에 더 가까워져요!":"→ 한 번 더 실행하면 또 달라져요!"));
+  });
+  cnCode();
+
+  /* S4 자료 세기 막대그래프 */
+  function ctRender(){
+    var a=parseInt($("ct_as").value,10), b=parseInt($("ct_bs").value,10), g=parseInt($("ct_gs").value,10);
+    $("ct_a").textContent=a; $("ct_b").textContent=b; $("ct_g").textContent=g;
+    $("ct_c").innerHTML=
+      C("// 막대그래프 그리기")+"\n"+
+      K("char")+" *name[] = {"+ST('"사과"')+", "+ST('"바나나"')+", "+ST('"포도"')+"};\n"+
+      K("int")+" cnt[] = {"+N(a)+", "+N(b)+", "+N(g)+"};\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N("3")+"; i++) {\n"+
+      "    "+F("printf")+"("+ST('"%s: "')+", name[i]);\n"+
+      "    "+K("for")+" ("+K("int")+" j = "+N("0")+"; j &lt; cnt[i]; j++)\n"+
+      "        "+F("printf")+"("+ST('"*"')+");\n"+
+      "    "+F("printf")+"("+ST('"\\n"')+");\n"+
+      "}";
+    $("ct_py").innerHTML=
+      C("# 막대그래프 그리기")+"\n"+
+      "data = {"+ST('"사과"')+": "+N(a)+", "+ST('"바나나"')+": "+N(b)+", "+ST('"포도"')+": "+N(g)+"}\n"+
+      K("for")+" name, cnt "+K("in")+" data."+F("items")+"():\n"+
+      "    "+F("print")+"(name, "+ST('":"')+", "+ST('"*"')+" * cnt)";
+    function bar(name,c){ var s=""; for(var i=0;i<c;i++){ s+="*"; } return name+": "+s+" ("+c+")"; }
+    $("ct_out").innerHTML='<span class="pmt">$ </span>\n'+bar("사과 🍎",a)+"\n"+bar("바나나🍌",b)+"\n"+bar("포도 🍇",g);
+  }
+  $("ct_as").addEventListener("input", ctRender);
+  $("ct_bs").addEventListener("input", ctRender);
+  $("ct_gs").addEventListener("input", ctRender);
+  ctRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

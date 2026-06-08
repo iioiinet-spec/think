@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3장 조합론 — 몇 가지 방법이 있을까?</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"1  1  1   1  2  1   1  3  3  1";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:18px;letter-spacing:8px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--teal)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--teal);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--teal);color:#fff;font-weight:900;
+  border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;
+  border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;
+  border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);
+  border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:8px 16px;font-weight:800;font-size:16px;background:var(--green);color:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.teal{background:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.disp{font-weight:900;font-size:21px}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+.bigans{font-size:30px;font-weight:900;color:var(--teal);text-align:center;margin:10px 0}
+/* tree diagram */
+.tree{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.tlevel{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tnode{border:3px solid var(--ink);border-radius:12px;padding:6px 12px;background:#fff;
+  font-weight:900;font-size:16px;box-shadow:0 3px 0 rgba(0,0,0,.1)}
+/* combo list */
+.combos{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.combo{border:3px solid var(--ink);border-radius:12px;padding:6px 12px;background:#fff;
+  font-weight:900;font-size:17px;display:flex;align-items:center;gap:4px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.combo .ic{font-size:20px}
+/* chips selectable */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.chip{border:3px solid var(--ink);border-radius:12px;padding:8px 14px;background:#fff;cursor:pointer;
+  font-weight:900;font-size:18px;display:flex;align-items:center;gap:6px;user-select:none;transition:transform .08s}
+.chip:active{transform:scale(.94)}
+.chip.sel{background:var(--teal);color:#fff}
+/* pascal */
+.pascal{display:flex;flex-direction:column;gap:6px;align-items:center;margin-top:10px}
+.prow{display:flex;gap:8px;justify-content:center}
+.pcell{min-width:46px;height:46px;border:3px solid var(--ink);border-radius:11px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;cursor:pointer;
+  transition:transform .1s}
+.pcell:hover{transform:scale(1.1);background:var(--yellow)}
+.pcell.hot{background:var(--pink);color:#fff}
+.pcell.add{background:var(--blue);color:#fff}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--teal);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--teal));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 3장</div>
+  <h1>조합론 — 몇 가지 <span class="hl">방법</span>이 있을까? 🎲</h1>
+  <p>옷 입기, 줄 세우기, 친구 뽑기… 세상의 '경우의 수'를 빠짐없이 세는 법을 배워요!</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🔢 경우의 수</button>
+  <button data-go="s1">✖️ 곱의 법칙</button>
+  <button data-go="s2">🏃 순열(순서○)</button>
+  <button data-go="s3">🤝 조합(순서✗)</button>
+  <button data-go="s4">🔺 파스칼 삼각형</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 경우의 수 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🔢</span> 경우의 수란?</h2>
+    <p class="lead">'경우의 수'는 일어날 수 있는 모든 방법의 가짓수예요. 빠짐없이, 겹치지 않게 세는 게 핵심!</p>
+    <div class="box def"><div class="t">📘 합의 법칙 (또는, or)</div>
+      두 가지 중 <b>하나만 고를 때</b>는 가짓수를 <b>더해요</b>.<br>
+      예: 간식으로 과일 3종류 <b>또는</b> 과자 2종류 중 하나 → 3 + 2 = <b>5가지</b></div>
+
+    <div class="play">
+      <div class="ttl">🍎 합의 법칙 체험 — '또는'은 더하기</div>
+      <div class="row">
+        <div class="field"><div class="lab">🍎 과일 종류 = <span class="pill" id="sum_a">3</span></div>
+          <input type="range" class="slider" id="sum_as" min="1" max="6" value="3"></div>
+        <div class="field"><div class="lab">🍪 과자 종류 = <span class="pill" id="sum_b">2</span></div>
+          <input type="range" class="slider" id="sum_bs" min="1" max="6" value="2"></div>
+      </div>
+      <div class="combos" id="sum_list"></div>
+      <div class="bigans" id="sum_ans"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 언제 더할까?</div>
+      "이것 <b>또는</b> 저것"처럼 <b>동시에 일어나지 않고 하나만</b> 고를 때 더해요.
+      "이것 <b>그리고</b> 저것"처럼 둘 다 정할 때는 곱해요(다음 칸!).</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">버스 4종류 또는 지하철 3종류로 학교에 가는 방법은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">'또는'이니까 더하기! 4 + 3 = <b>7가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">1부터 10까지 중 짝수 또는 3의 배수는 몇 개? (겹침 주의!)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">짝수 5개(2,4,6,8,10) + 3의 배수 3개(3,6,9) = 8, 그런데 <b>6은 양쪽에 겹쳐요</b>! 그래서 8 − 1 = <b>7개</b>. 겹치는 건 한 번만 세요!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">주사위 한 개를 던져 2 이하 또는 5 이상이 나오는 경우는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">2 이하: 1,2 (2가지) / 5 이상: 5,6 (2가지) → 겹침 없음 → 2 + 2 = <b>4가지</b>.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 곱의 법칙 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">✖️</span> 곱의 법칙 — '그리고'는 곱하기</h2>
+    <p class="lead">두 가지를 <b>모두</b> 정할 때는 가짓수를 곱해요. 나뭇가지 그림으로 보면 한눈에!</p>
+    <div class="box def"><div class="t">📘 곱의 법칙 (그리고, and)</div>
+      윗옷 <b>그리고</b> 바지를 모두 고를 때 → (윗옷 수) × (바지 수)<br>
+      예: 윗옷 3개 × 바지 2개 = <b>6가지</b> 코디!</div>
+
+    <div class="play">
+      <div class="ttl">👕 옷 코디 나뭇가지 그림</div>
+      <div class="row">
+        <div class="field"><div class="lab">👕 윗옷 = <span class="pill" id="mul_a">3</span></div>
+          <input type="range" class="slider" id="mul_as" min="1" max="4" value="3"></div>
+        <div class="field"><div class="lab">👖 바지 = <span class="pill" id="mul_b">2</span></div>
+          <input type="range" class="slider" id="mul_bs" min="1" max="4" value="2"></div>
+      </div>
+      <div class="tree" id="mul_tree"></div>
+      <div class="bigans" id="mul_ans"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 핵심</div>
+      나뭇가지 그림에서 <b>맨 끝 가지의 개수</b>가 곧 경우의 수! 단계마다 가짓수를 곱하면 돼요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">동전 1개와 주사위 1개를 던지면 나오는 경우의 수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">동전 2가지(앞·뒤) × 주사위 6가지 = <b>12가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">아이스크림 맛 4가지에서 콘 또는 컵을 고르면 모두 몇 가지?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">맛 4가지 × 그릇 2가지(콘·컵) = <b>8가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">0~9 숫자로 세 자리 비밀번호를 만들면 몇 가지? (숫자 중복 가능)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">각 자리마다 10가지씩! 10 × 10 × 10 = <b>1000가지</b>. 그래서 비밀번호가 안전한 거예요 🔐</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 순열 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🏃</span> 순열 — 순서가 중요해!</h2>
+    <p class="lead">줄을 세우거나 등수를 정할 때처럼 <b>순서가 다르면 다른 경우</b>로 세는 것이 순열이에요.</p>
+    <div class="box def"><div class="t">📘 순열</div>
+      서로 다른 것들을 <b>순서를 정해</b> 늘어놓는 방법.<br>
+      3명을 한 줄로 세우기 = 3 × 2 × 1 = <b>6가지</b> (첫째 3명 중, 둘째 남은 2명 중, 셋째 1명).</div>
+
+    <div class="play">
+      <div class="ttl">🏅 친구 줄 세우기 — 순서대로 모두 보기</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="disp">줄 세울 친구 수: <span class="pill" id="perm_n">3</span></span>
+      </div>
+      <input type="range" class="slider" id="perm_s" min="2" max="4" value="3">
+      <div class="bigans" id="perm_ans"></div>
+      <div style="font-weight:900;margin-top:6px">가능한 모든 줄 순서:</div>
+      <div class="combos" id="perm_list"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 곱셈으로 빨리!</div>
+      4명을 줄 세우면 4 × 3 × 2 × 1 = <b>24가지</b>. 이렇게 1까지 줄여 곱하는 걸 <b>팩토리얼(!)</b>이라 해요.
+      4! = 24 처럼요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">3명(가,나,다)이 달리기를 했어요. 1·2·3등이 정해지는 경우는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">순서(등수)가 중요하니 순열! 3 × 2 × 1 = <b>6가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">5명 중에서 반장과 부반장을 뽑는 방법은? (순서 있음)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">반장 5명 중 1명, 부반장 남은 4명 중 1명 → 5 × 4 = <b>20가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">숫자 1,2,3을 한 번씩 써서 만들 수 있는 세 자리 수는 몇 개?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">백의 자리 3가지 × 십의 자리 2가지 × 일의 자리 1가지 = <b>6개</b> (123,132,213,231,312,321).</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 조합 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🤝</span> 조합 — 순서는 상관없어!</h2>
+    <p class="lead">팀을 뽑거나 친구를 고를 때처럼 <b>순서가 달라도 같은 경우</b>로 세는 것이 조합이에요.</p>
+    <div class="box def"><div class="t">📘 순열 vs 조합</div>
+      <b>순열</b>: 순서 중요 (반장-부반장, 1등-2등) → (가,나)와 (나,가)는 다름<br>
+      <b>조합</b>: 순서 상관없음 (팀원 뽑기, 짝 고르기) → (가,나)와 (나,가)는 같음!</div>
+
+    <div class="play">
+      <div class="ttl">🍕 친구들 중에서 뽑기 — 직접 골라봐요</div>
+      <p style="font-weight:700;margin-bottom:4px">5명 중에서 몇 명을 뽑을지 정하고, 친구를 눌러 뽑아보세요!</p>
+      <div class="row" style="margin-bottom:6px">
+        <span class="disp">몇 명 뽑기: <span class="pill" id="comb_k">2</span></span>
+        <input type="range" class="slider" id="comb_ks" min="1" max="4" value="2" style="max-width:180px">
+        <button class="btn gray" id="comb_clear">다시 🔄</button>
+      </div>
+      <div class="chips" id="comb_chips"></div>
+      <div class="feedback" id="comb_fb"></div>
+      <div class="box key" style="margin-top:10px">
+        <div>5명 중 <b id="comb_kk">2</b>명을 뽑는 모든 방법 (순서 무시):</div>
+        <div class="combos" id="comb_all"></div>
+        <div class="bigans" id="comb_ans"></div>
+      </div>
+    </div>
+
+    <div class="box warn"><div class="t">⚠️ 헷갈리지 마요</div>
+      "반장·부반장 뽑기"는 <b>순열</b>(역할이 다름), "청소 당번 2명 뽑기"는 <b>조합</b>(둘 다 똑같은 당번)!
+      문제에서 순서·역할이 다른지 잘 봐요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">4명 중에서 청소 당번 2명을 뽑는 방법은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">순서 무시! 짝을 적어보면 (가나)(가다)(가라)(나다)(나라)(다라) → <b>6가지</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2 · 비교</span>
+        <div class="qz">4명 중 반장·부반장 뽑기 vs 대표 2명 뽑기, 어느 게 더 많을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">반장·부반장(순열)=4×3=12가지. 대표 2명(조합)=6가지. <b>순열이 2배 많아요!</b> 순서를 따지니까요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">5가지 과일 중 3가지를 골라 주스를 만들면 몇 가지?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">순서 상관없는 조합! 5가지 중 3가지 = <b>10가지</b>. (5가지 중 2가지 빼는 것과 같아서 10가지예요.)</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 파스칼 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🔺</span> 파스칼의 삼각형</h2>
+    <p class="lead">조합의 수가 삼각형 모양으로 줄지어 있어요. 위 두 수를 더하면 아래 수가 되는 마법 삼각형!</p>
+    <div class="box def"><div class="t">📘 파스칼의 삼각형</div>
+      양쪽 끝은 모두 1, 안쪽 수는 <b>바로 위 두 수의 합</b>이에요.<br>
+      이 수들이 바로 "n개 중 k개 뽑는 조합의 수"와 똑같답니다!</div>
+
+    <div class="play">
+      <div class="ttl">🔺 직접 만들어보기 — 줄을 늘려봐요</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="disp">줄 수: <span class="pill" id="pas_n">5</span></span>
+        <input type="range" class="slider" id="pas_s" min="1" max="8" value="5" style="max-width:200px">
+      </div>
+      <p style="font-weight:700;color:var(--blue)">💡 칸을 누르면 그 수를 만든 '위 두 수'에 불이 들어와요!</p>
+      <div class="pascal" id="pas_tri"></div>
+      <div class="box tip" style="margin-top:12px"><div class="t">🔎 눌러본 칸</div>
+        <span id="pas_msg">칸을 눌러보세요!</span></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 숨은 규칙들</div>
+      ① 각 줄의 수를 모두 더하면 2씩 커져요 (1, 2, 4, 8, 16…)<br>
+      ② 둘째 칸 수는 줄 번호와 같아요<br>
+      ③ 좌우가 똑같은 대칭 모양! (5명 중 2명 뽑기 = 5명 중 3명 빼기)</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">파스칼 삼각형에서 1, 3, 3, 1 다음 줄은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">양끝 1, 안쪽은 위 두 수의 합! 1, (1+3)=4, (3+3)=6, (3+1)=4, 1 → <b>1 4 6 4 1</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">1 4 6 4 1 줄의 모든 수를 더하면?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">1+4+6+4+1 = <b>16</b> = 2×2×2×2. 줄마다 합이 2배씩 커져요!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 연결</span>
+        <div class="qz">'4명 중 2명 뽑기'는 파스칼 삼각형 어디에 있을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">1 4 6 4 1 줄(4번째)의 가운데 <b>6</b>! 조합의 수가 삼각형 안에 숨어 있어요 🤩</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 조합론 마스터 퀴즈</h2>
+    <p class="lead">합·곱의 법칙, 순열, 조합, 파스칼 삼각형까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 3장 「조합론」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+
+  /* ---------- S0 합의 법칙 ---------- */
+  var fruits=["🍎","🍌","🍇","🍊","🍓","🍑"], snacks=["🍪","🍫","🍩","🧁","🍬","🥨"];
+  function sumRender(){
+    var a=parseInt($("sum_as").value,10), b=parseInt($("sum_bs").value,10);
+    $("sum_a").textContent=a; $("sum_b").textContent=b;
+    var list=$("sum_list"); list.innerHTML="";
+    for(var i=0;i<a;i++){ var c=document.createElement("div"); c.className="combo"; c.style.background="#FFF0E6";
+      c.innerHTML='<span class="ic">'+fruits[i]+'</span>'; list.appendChild(c); }
+    for(var j=0;j<b;j++){ var c2=document.createElement("div"); c2.className="combo"; c2.style.background="#FFF6D8";
+      c2.innerHTML='<span class="ic">'+snacks[j]+'</span>'; list.appendChild(c2); }
+    $("sum_ans").textContent=a+" + "+b+" = "+(a+b)+"가지";
+  }
+  $("sum_as").addEventListener("input", sumRender);
+  $("sum_bs").addEventListener("input", sumRender);
+  sumRender();
+
+  /* ---------- S1 곱의 법칙 나뭇가지 ---------- */
+  var tops=["👕","👚","🧥","🦺"], pants=["👖","🩳","👗","🩲"];
+  function mulRender(){
+    var a=parseInt($("mul_as").value,10), b=parseInt($("mul_bs").value,10);
+    $("mul_a").textContent=a; $("mul_b").textContent=b;
+    var tree=$("mul_tree"); tree.innerHTML="";
+    // level 1: tops
+    var l1=document.createElement("div"); l1.className="tlevel";
+    for(var i=0;i<a;i++){ var nd=document.createElement("div"); nd.className="tnode"; nd.textContent=tops[i]; l1.appendChild(nd); }
+    tree.appendChild(l1);
+    var arrow=document.createElement("div"); arrow.style.textAlign="center"; arrow.style.fontWeight="900"; arrow.textContent="↓ 각 윗옷마다 바지 "+b+"개씩";
+    tree.appendChild(arrow);
+    // level 2: all combos
+    var l2=document.createElement("div"); l2.className="tlevel";
+    for(var i2=0;i2<a;i2++){ for(var j=0;j<b;j++){
+      var nd2=document.createElement("div"); nd2.className="tnode"; nd2.style.background="#E6FBF2";
+      nd2.textContent=tops[i2]+pants[j]; l2.appendChild(nd2);
+    }}
+    tree.appendChild(l2);
+    $("mul_ans").textContent=a+" × "+b+" = "+(a*b)+"가지 코디";
+  }
+  $("mul_as").addEventListener("input", mulRender);
+  $("mul_bs").addEventListener("input", mulRender);
+  mulRender();
+
+  /* ---------- S2 순열 ---------- */
+  var people=["🐶","🐱","🐰","🦊"];
+  function permute(arr){
+    if(arr.length<=1) return [arr];
+    var res=[];
+    for(var i=0;i<arr.length;i++){
+      var rest=arr.slice(0,i).concat(arr.slice(i+1));
+      var sub=permute(rest);
+      for(var s=0;s<sub.length;s++){ res.push([arr[i]].concat(sub[s])); }
+    }
+    return res;
+  }
+  function permRender(){
+    var nn=parseInt($("perm_s").value,10);
+    $("perm_n").textContent=nn;
+    var arr=people.slice(0,nn);
+    var all=permute(arr);
+    var fact=1; for(var f=1;f<=nn;f++){ fact*=f; }
+    var calc=[]; for(var c=nn;c>=1;c--){ calc.push(c); }
+    $("perm_ans").textContent=calc.join(" × ")+" = "+fact+"가지";
+    var list=$("perm_list"); list.innerHTML="";
+    for(var i=0;i<all.length;i++){
+      var d=document.createElement("div"); d.className="combo"; d.textContent=all[i].join("");
+      list.appendChild(d);
+    }
+  }
+  $("perm_s").addEventListener("input", permRender);
+  permRender();
+  /* ---------- S3 조합 ---------- */
+  var cpeople=[{e:"🐶",n:"가"},{e:"🐱",n:"나"},{e:"🐰",n:"다"},{e:"🦊",n:"라"},{e:"🐻",n:"마"}];
+  var combK=2, selected=[];
+  function combChoose(arr,k){
+    var res=[];
+    function go(start,cur){
+      if(cur.length===k){ res.push(cur.slice()); return; }
+      for(var i=start;i<arr.length;i++){ cur.push(arr[i]); go(i+1,cur); cur.pop(); }
+    }
+    go(0,[]);
+    return res;
+  }
+  function combRenderAll(){
+    var all=combChoose(cpeople, combK);
+    $("comb_kk").textContent=combK;
+    var box=$("comb_all"); box.innerHTML="";
+    for(var i=0;i<all.length;i++){
+      var d=document.createElement("div"); d.className="combo";
+      d.textContent=all[i].map(function(p){return p.e;}).join("");
+      box.appendChild(d);
+    }
+    $("comb_ans").textContent="모두 "+all.length+"가지";
+  }
+  function combRenderChips(){
+    var box=$("comb_chips"); box.innerHTML="";
+    for(var i=0;i<cpeople.length;i++){
+      (function(idx){
+        var c=document.createElement("div"); c.className="chip"+(selected.indexOf(idx)>=0?" sel":"");
+        c.innerHTML='<span>'+cpeople[idx].e+'</span><span style="font-size:14px">'+cpeople[idx].n+'</span>';
+        c.addEventListener("click", function(){
+          var pos=selected.indexOf(idx);
+          if(pos>=0){ selected.splice(pos,1); }
+          else { if(selected.length>=combK){ $("comb_fb").innerHTML='<span class="no">이미 '+combK+'명 다 골랐어요! 다시 버튼을 눌러요</span>'; return; } selected.push(idx); }
+          combRenderChips(); checkComb();
+        });
+        box.appendChild(c);
+      })(i);
+    }
+  }
+  function checkComb(){
+    if(selected.length===combK){
+      var names=selected.map(function(i){return cpeople[i].e;}).join("");
+      $("comb_fb").innerHTML='<span class="ok">'+names+' 를 뽑았어요! 순서를 바꿔도 같은 팀이에요 🤝</span>';
+    } else {
+      $("comb_fb").innerHTML='<span style="color:var(--blue)">'+selected.length+' / '+combK+' 명 선택됨</span>';
+    }
+  }
+  function combReset(){ selected=[]; combRenderChips(); $("comb_fb").textContent=""; }
+  $("comb_ks").addEventListener("input", function(){
+    combK=parseInt(this.value,10); $("comb_k").textContent=combK;
+    selected=[]; combRenderChips(); $("comb_fb").textContent=""; combRenderAll();
+  });
+  $("comb_clear").addEventListener("click", combReset);
+  $("comb_k").textContent=combK;
+  combRenderChips(); combRenderAll();
+
+  /* ---------- S4 파스칼 ---------- */
+  var pasN=5, pascalRows=[];
+  function buildPascal(rows){
+    var tri=[];
+    for(var r=0;r<rows;r++){
+      var row=[];
+      for(var c=0;c<=r;c++){
+        if(c===0||c===r){ row.push(1); }
+        else { row.push(tri[r-1][c-1]+tri[r-1][c]); }
+      }
+      tri.push(row);
+    }
+    return tri;
+  }
+  function pasRender(){
+    pasN=parseInt($("pas_s").value,10);
+    $("pas_n").textContent=pasN;
+    pascalRows=buildPascal(pasN);
+    var wrap=$("pas_tri"); wrap.innerHTML="";
+    for(var r=0;r<pascalRows.length;r++){
+      var pr=document.createElement("div"); pr.className="prow";
+      for(var c=0;c<pascalRows[r].length;c++){
+        (function(rr,cc){
+          var cell=document.createElement("div"); cell.className="pcell"; cell.id="p_"+rr+"_"+cc;
+          cell.textContent=pascalRows[rr][cc];
+          cell.addEventListener("click", function(){ pasHighlight(rr,cc); });
+          pr.appendChild(cell);
+        })(r,c);
+      }
+      wrap.appendChild(pr);
+    }
+    $("pas_msg").textContent="칸을 눌러보세요!";
+  }
+  function pasHighlight(r,c){
+    var cells=document.querySelectorAll(".pcell");
+    for(var i=0;i<cells.length;i++){ cells[i].classList.remove("hot","add"); }
+    var me=$("p_"+r+"_"+c); me.classList.add("hot");
+    if(r===0||c===0||c===r){
+      $("pas_msg").innerHTML="이 칸은 <b>양쪽 끝</b>이라서 항상 <b>1</b>이에요!";
+    } else {
+      var a=$("p_"+(r-1)+"_"+(c-1)), b=$("p_"+(r-1)+"_"+c);
+      a.classList.add("add"); b.classList.add("add");
+      $("pas_msg").innerHTML="위 두 수 <b>"+pascalRows[r-1][c-1]+" + "+pascalRows[r-1][c]+" = "+pascalRows[r][c]+"</b> 이에요! 🔵+🔵=🔴";
+    }
+  }
+  $("pas_s").addEventListener("input", pasRender);
+  pasRender();
+
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"빵 3종류 또는 음료 4종류 중 하나를 고르는 방법은?", opts:["7가지","12가지","1가지","34가지"], a:0, why:"'또는'이니 더하기! 3+4=7."},
+    {q:"윗옷 4개와 바지 3개로 만들 수 있는 코디는?", opts:["7가지","12가지","4가지","43가지"], a:1, why:"'그리고'이니 곱하기! 4×3=12."},
+    {q:"3명을 한 줄로 세우는 방법은?", opts:["3가지","6가지","9가지","1가지"], a:1, why:"순열! 3×2×1=6."},
+    {q:"4명 중 반장·부반장을 뽑는 방법은? (순서 있음)", opts:["8가지","12가지","6가지","16가지"], a:1, why:"순열! 4×3=12."},
+    {q:"4명 중 대표 2명을 뽑는 방법은? (순서 없음)", opts:["12가지","6가지","8가지","4가지"], a:1, why:"조합! (가나)(가다)(가라)(나다)(나라)(다라)=6."},
+    {q:"동전 1개와 주사위 1개를 던질 때 경우의 수는?", opts:["8가지","12가지","6가지","2가지"], a:1, why:"곱의 법칙! 2×6=12."},
+    {q:"순서가 중요한 것은?", opts:["청소 당번 2명 뽑기","달리기 1·2등 정하기","과일 2개 고르기","팀원 뽑기"], a:1, why:"등수는 순서가 중요 → 순열!"},
+    {q:"파스칼 삼각형에서 1 3 3 1 다음 줄은?", opts:["1 4 4 1","1 4 6 4 1","1 3 6 3 1","1 5 5 1"], a:1, why:"위 두 수의 합! 1,(1+3),(3+3),(3+1),1 = 1 4 6 4 1."},
+    {q:"0~9로 두 자리 비밀번호는 몇 가지? (중복 가능)", opts:["20가지","90가지","100가지","99가지"], a:2, why:"각 자리 10가지! 10×10=100."},
+    {q:"5명 중 3명을 뽑는 조합의 수는?", opts:["10가지","60가지","15가지","20가지"], a:0, why:"5명 중 3명 = 5명 중 2명 빼기 = 10가지. 파스칼 삼각형에도 있어요!"}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 조합론 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

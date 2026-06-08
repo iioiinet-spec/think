@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6장 확률과 통계 — 자료와 가능성의 세계</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"🎲  📊  🪙  📈";position:absolute;top:8px;left:0;right:0;font-size:22px;letter-spacing:18px;opacity:.12;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--teal)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--teal);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--teal);color:#fff;font-weight:900;border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.teal{background:var(--teal)}.btn.org{background:var(--orange)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.disp{font-weight:900;font-size:21px}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+.bigans{font-size:24px;font-weight:900;color:var(--teal);text-align:center;margin:10px 0}
+/* bar chart */
+.chart{display:flex;align-items:flex-end;gap:14px;height:200px;padding:10px;background:#fff;border:3px solid var(--ink);border-radius:16px;margin-top:10px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bar .col{width:100%;border:3px solid var(--ink);border-radius:8px 8px 0 0;transition:height .3s;min-height:6px;display:flex;align-items:flex-start;justify-content:center}
+.bar .col span{font-weight:900;color:#fff;font-size:14px;margin-top:3px}
+.bar .lb{font-weight:900;font-size:20px;margin-top:6px}
+/* clickable counters */
+.counters{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;justify-content:center}
+.cbtn{border:3px solid var(--ink);border-radius:16px;background:#fff;padding:12px 16px;cursor:pointer;text-align:center;transition:transform .08s;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.cbtn:active{transform:scale(.93)}
+.cbtn .face{font-size:34px}
+.cbtn .cnt{font-weight:900;font-size:20px;color:var(--teal)}
+/* mean blocks */
+.meanrow{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px;justify-content:center}
+.stack{display:flex;flex-direction:column-reverse;gap:3px;align-items:center}
+.unit{width:34px;height:20px;border:2px solid var(--ink);border-radius:5px;background:var(--blue)}
+.unit.extra{background:var(--pink)}
+.stack .lb{font-weight:900;margin-top:4px;font-size:14px}
+/* probability bar */
+.probbar{height:44px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;display:flex;margin-top:10px;font-weight:900;color:#fff;font-size:15px}
+.probbar div{display:flex;align-items:center;justify-content:center;transition:width .3s}
+/* dice/coin result tiles */
+.results{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:120px;overflow-y:auto;padding:4px}
+.rtile{width:40px;height:40px;border:3px solid var(--ink);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;background:#fff}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--teal);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--teal));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:26px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 6장</div>
+  <h1>확률과 통계 — 자료와 <span class="hl">가능성</span> 🎲</h1>
+  <p>자료를 표와 그래프로 정리하고, 평균을 구하고, '얼마나 일어날까?'를 직접 실험해봐요!</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">📊 자료 정리</button>
+  <button data-go="s1">⚖️ 평균</button>
+  <button data-go="s2">🎯 확률이란?</button>
+  <button data-go="s3">🪙 동전·주사위 실험</button>
+  <button data-go="s4">🔮 가능성 비교</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 자료 정리 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">📊</span> 자료를 표와 그래프로</h2>
+    <p class="lead">친구들이 좋아하는 과일을 세어 표로 만들고, 막대그래프로 그리면 한눈에 보여요!</p>
+    <div class="box def"><div class="t">📘 자료 정리하기</div>
+      ① 자료를 모은다 → ② <b>표</b>로 개수를 센다 → ③ <b>그래프</b>로 그려 비교한다.<br>
+      막대가 길수록 많은 거예요! 가장 길면 '가장 인기 있는 것'이죠.</div>
+
+    <div class="play">
+      <div class="ttl">🍎 좋아하는 과일 조사 — 눌러서 투표해요!</div>
+      <div class="counters" id="fr_counters"></div>
+      <div class="chart" id="fr_chart"></div>
+      <div class="box key" style="margin-top:10px"><div class="t">📋 결과</div>
+        <span id="fr_msg">과일 버튼을 눌러 투표해보세요!</span></div>
+      <div class="row" style="margin-top:8px"><button class="btn gray" id="fr_reset">다시 세기 🔄</button></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 그래프의 좋은 점</div>
+      표는 정확한 수를 알려주고, 그래프는 <b>어느 게 많고 적은지 한눈에</b> 보여줘요. 둘 다 쓰면 최고!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">사과 5명, 바나나 3명, 포도 7명이 좋아해요. 가장 인기 있는 과일은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">가장 많은 <b>포도(7명)</b>! 그래프에서 막대가 가장 길어요.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">위 조사에서 모두 몇 명이 투표했을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">5 + 3 + 7 = <b>15명</b>. 모든 개수를 더하면 전체 인원!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">사과를 좋아하는 사람은 바나나보다 몇 명 더 많을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">5 − 3 = <b>2명</b> 더 많아요. 그래프 막대 길이 차이로도 알 수 있어요!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 평균 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">⚖️</span> 평균 — 똑같이 나누면?</h2>
+    <p class="lead">높낮이가 다른 블록을 똑같은 높이로 평평하게 만든 게 평균이에요!</p>
+    <div class="box def"><div class="t">📘 평균 구하기</div>
+      <b>평균 = 모두 더하기 ÷ 개수</b><br>
+      예: 점수 6, 8, 10 → (6+8+10) ÷ 3 = 24 ÷ 3 = 8. 평균은 8점!</div>
+
+    <div class="play">
+      <div class="ttl">🧱 블록을 평평하게 — 평균 만들기</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="disp">친구 수: <span class="pill" id="mn_n">4</span></span>
+        <input type="range" class="slider" id="mn_ns" min="2" max="6" value="4" style="max-width:200px">
+        <button class="btn alt" id="mn_rnd">새 점수 🎲</button>
+        <button class="btn teal" id="mn_flat">평평하게! ⚖️</button>
+      </div>
+      <div class="meanrow" id="mn_blocks"></div>
+      <div class="bigans" id="mn_ans"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 평균의 뜻</div>
+      평균은 "모두 똑같이 가졌다면 각자 얼마?"예요. 키, 점수, 용돈 등을 한 수로 대표할 때 써요!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">세 사람의 키가 120, 130, 140cm예요. 평균 키는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">(120+130+140) ÷ 3 = 390 ÷ 3 = <b>130cm</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">시험 점수 80, 90, 100, 70점의 평균은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">(80+90+100+70) ÷ 4 = 340 ÷ 4 = <b>85점</b>.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">두 수의 평균이 10이에요. 한 수가 7이면 다른 수는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">평균 10이면 두 수의 합 = 10×2 = 20. 20 − 7 = <b>13</b>!</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 확률이란 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🎯</span> 확률 — 얼마나 일어날까?</h2>
+    <p class="lead">'확률'은 어떤 일이 일어날 가능성을 수로 나타낸 거예요. 0(절대 안 됨)부터 1(반드시)까지!</p>
+    <div class="box def"><div class="t">📘 확률 구하기</div>
+      <b>확률 = (원하는 경우) ÷ (전체 경우)</b><br>
+      예: 주사위에서 3이 나올 확률 = 1 ÷ 6 (3은 1가지, 전체는 6가지)</div>
+
+    <div class="play">
+      <div class="ttl">🎚️ 가능성 막대 — 어디쯤일까?</div>
+      <div class="row"><span class="disp">전체 중 <span class="pill" id="pb_k">1</span> / <span class="pill" id="pb_n">6</span> 가지가 당첨</span></div>
+      <div class="field"><div class="lab">전체 경우</div><input type="range" class="slider" id="pb_ns" min="2" max="10" value="6"></div>
+      <div class="field"><div class="lab">당첨 경우</div><input type="range" class="slider" id="pb_ks" min="0" max="10" value="1"></div>
+      <div class="probbar" id="pb_bar"></div>
+      <div class="box key" style="margin-top:10px"><div class="t">🎯 이 가능성은?</div>
+        <span id="pb_msg"></span></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 확률의 말</div>
+      <b>불가능</b>(0): 주사위에서 7 나오기 / <b>반반</b>(1/2): 동전 앞면 / <b>확실</b>(1): 주사위에서 1~6 중 하나 나오기</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">동전을 던져 앞면이 나올 확률은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">앞·뒤 2가지 중 앞 1가지 → 1 ÷ 2 = <b>1/2 (반반)</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">주사위에서 짝수가 나올 확률은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">짝수는 2,4,6 (3가지), 전체 6가지 → 3 ÷ 6 = <b>1/2</b>!</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">빨강 공 3개, 파랑 공 1개인 주머니에서 빨강을 뽑을 확률은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">전체 4개 중 빨강 3개 → 3 ÷ 4 = <b>3/4</b>. 빨강이 더 잘 나오겠죠!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 동전 주사위 실험 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🪙</span> 동전·주사위 실험</h2>
+    <p class="lead">직접 많이 던져보면, 실제 결과가 확률에 점점 가까워져요! 신기하죠?</p>
+    <div class="box def"><div class="t">📘 많이 할수록 정확해요</div>
+      동전 앞면 확률은 1/2(반반). 10번은 들쭉날쭉해도, <b>100번, 1000번</b> 던지면 거의 반반에 가까워져요!
+      이걸 '큰 수의 법칙'이라고 해요.</div>
+
+    <div class="play">
+      <div class="ttl">🪙 동전 던지기 실험실</div>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn org" id="cn_1">1번 던지기</button>
+        <button class="btn alt" id="cn_10">10번</button>
+        <button class="btn teal" id="cn_100">100번</button>
+        <button class="btn gray" id="cn_reset">처음부터 🔄</button>
+      </div>
+      <div class="chart" id="cn_chart" style="height:160px"></div>
+      <div class="box key" style="margin-top:10px"><div class="t">📊 지금까지</div>
+        <span id="cn_msg">동전을 던져보세요!</span></div>
+      <div class="results" id="cn_results"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 주사위도 마찬가지</div>
+      주사위 각 숫자는 1/6 확률. 6번 던진다고 1,2,3,4,5,6이 딱 한 번씩 나오진 않지만, 아주 많이 던지면 골고루 나와요!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">동전을 4번 던졌더니 앞앞앞앞이 나왔어요. 다음엔 꼭 뒤가 나올까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">아니에요! 다음도 여전히 <b>반반(1/2)</b>이에요. 동전은 앞 결과를 기억하지 못해요 😊</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">동전 100번 중 앞면이 약 몇 번 나올까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">약 <b>50번</b> 근처! 정확히 50은 아니어도 가까워져요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">주사위를 600번 던지면 6은 대략 몇 번?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">6의 확률 1/6 → 600 × 1/6 = 약 <b>100번</b> 근처예요!</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 가능성 비교 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🔮</span> 가능성 비교하기</h2>
+    <p class="lead">어느 쪽이 더 잘 나올까? 주머니 속 공의 개수를 바꿔가며 가능성을 비교해요!</p>
+    <div class="box def"><div class="t">📘 많을수록 잘 나와요</div>
+      주머니에 같은 색 공이 많을수록 그 색을 뽑을 가능성이 커요.<br>
+      가능성 순서: <b>불가능 &lt; 적음 &lt; 반반 &lt; 많음 &lt; 확실</b></div>
+
+    <div class="play">
+      <div class="ttl">🎒 주머니 속 공 — 뽑기 가능성</div>
+      <div class="row">
+        <div class="field"><div class="lab">🔴 빨강 공 = <span class="pill" id="bag_r">3</span></div>
+          <input type="range" class="slider" id="bag_rs" min="0" max="10" value="3"></div>
+        <div class="field"><div class="lab">🔵 파랑 공 = <span class="pill" id="bag_b">1</span></div>
+          <input type="range" class="slider" id="bag_bs" min="0" max="10" value="1"></div>
+      </div>
+      <div class="probbar" id="bag_bar"></div>
+      <div class="box key" style="margin-top:10px"><div class="t">🔮 어느 쪽이 잘 나올까?</div>
+        <span id="bag_msg"></span></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="bag_draw">공 하나 뽑기! 🎲</button>
+        <span class="disp" id="bag_draw_msg"></span>
+      </div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 공정한 게임?</div>
+      빨강과 파랑이 <b>같은 개수</b>면 가능성이 똑같아요(반반). 한쪽이 많으면 그쪽이 유리하니 공정하지 않죠!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">빨강 8개, 파랑 2개 주머니. 어느 색이 더 잘 나올까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">빨강이 훨씬 많으니 <b>빨강</b>이 잘 나와요! (빨강 8/10, 파랑 2/10)</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">빨강 5개, 파랑 5개면 가능성은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">개수가 같으니 <b>반반</b>! 공정한 뽑기예요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">빨강만 4개 있고 파랑은 0개. 파랑을 뽑을 가능성은?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">파랑이 없으니 <b>불가능(0)</b>! 빨강은 반드시(확실, 1) 나와요.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 확률과 통계 마스터 퀴즈</h2>
+    <p class="lead">자료 정리, 평균, 확률, 실험, 가능성 비교까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 6장 「확률과 통계」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+
+  /* ---------- S0 자료 정리 ---------- */
+  var fruits=[{e:"🍎",n:"사과",c:"#FF5C8A"},{e:"🍌",n:"바나나",c:"#FFCE2E"},{e:"🍇",n:"포도",c:"#8A6CFF"},{e:"🍊",n:"귤",c:"#FF923E"}];
+  var frCount=[0,0,0,0];
+  function frRender(){
+    var cs=$("fr_counters"); cs.innerHTML="";
+    for(var i=0;i<fruits.length;i++){
+      (function(idx){
+        var b=document.createElement("div"); b.className="cbtn";
+        b.innerHTML='<div class="face">'+fruits[idx].e+'</div><div class="cnt">'+frCount[idx]+'표</div>';
+        b.addEventListener("click", function(){ frCount[idx]++; frRender(); });
+        cs.appendChild(b);
+      })(i);
+    }
+    var max=Math.max(1,Math.max.apply(null,frCount));
+    var ch=$("fr_chart"); ch.innerHTML="";
+    for(var j=0;j<fruits.length;j++){
+      var bar=document.createElement("div"); bar.className="bar";
+      var h=Math.round(frCount[j]/max*150);
+      bar.innerHTML='<div class="col" style="height:'+(h+6)+'px;background:'+fruits[j].c+'"><span>'+(frCount[j]||"")+'</span></div><div class="lb">'+fruits[j].e+'</div>';
+      ch.appendChild(bar);
+    }
+    var total=frCount[0]+frCount[1]+frCount[2]+frCount[3];
+    if(total===0){ $("fr_msg").textContent="과일 버튼을 눌러 투표해보세요!"; }
+    else {
+      var maxIdx=0; for(var k=1;k<4;k++){ if(frCount[k]>frCount[maxIdx]) maxIdx=k; }
+      $("fr_msg").innerHTML="모두 <b>"+total+"표</b>! 지금 1등은 <b>"+fruits[maxIdx].n+" "+fruits[maxIdx].e+"</b> ("+frCount[maxIdx]+"표)";
+    }
+  }
+  $("fr_reset").addEventListener("click", function(){ frCount=[0,0,0,0]; frRender(); });
+  frRender();
+
+  /* ---------- S1 평균 ---------- */
+  var mnScores=[];
+  function mnGen(){
+    var nn=parseInt($("mn_ns").value,10);
+    $("mn_n").textContent=nn;
+    mnScores=[];
+    for(var i=0;i<nn;i++){ mnScores.push(Math.floor(Math.random()*8)+3); }
+    mnDraw(false);
+  }
+  function mnDraw(flat){
+    var sum=0; for(var i=0;i<mnScores.length;i++){ sum+=mnScores[i]; }
+    var avg=sum/mnScores.length;
+    var box=$("mn_blocks"); box.innerHTML="";
+    for(var j=0;j<mnScores.length;j++){
+      var val= flat ? Math.round(avg) : mnScores[j];
+      var st=document.createElement("div"); st.className="stack";
+      var inner="";
+      for(var u=0;u<val;u++){ inner+='<div class="unit'+(flat?" extra":"")+'"></div>'; }
+      st.innerHTML=inner+'<div class="lb">'+(flat?Math.round(avg):mnScores[j])+'</div>';
+      box.appendChild(st);
+    }
+    if(flat){
+      $("mn_ans").innerHTML="평균 = "+sum+" ÷ "+mnScores.length+" = <b>"+(Math.round(avg*10)/10)+"</b> (모두 똑같이!)";
+    } else {
+      $("mn_ans").innerHTML="합 = "+mnScores.join("+")+" = "+sum+" &nbsp;|&nbsp; '평평하게!'를 눌러봐요";
+    }
+  }
+  $("mn_ns").addEventListener("input", mnGen);
+  $("mn_rnd").addEventListener("click", mnGen);
+  $("mn_flat").addEventListener("click", function(){ mnDraw(true); });
+  mnGen();
+
+  /* ---------- S2 확률 막대 ---------- */
+  function pbRender(){
+    var nn=parseInt($("pb_ns").value,10), k=parseInt($("pb_ks").value,10);
+    if(k>nn){ k=nn; $("pb_ks").value=nn; }
+    $("pb_n").textContent=nn; $("pb_k").textContent=k;
+    var pct=Math.round(k/nn*100);
+    var bar=$("pb_bar"); bar.innerHTML=
+      '<div style="width:'+pct+'%;background:var(--green)">'+(pct>10?"당첨 "+pct+"%":"")+'</div>'+
+      '<div style="width:'+(100-pct)+'%;background:#D7D7E5;color:#555">'+((100-pct)>10?"꽝 "+(100-pct)+"%":"")+'</div>';
+    var msg;
+    if(k===0) msg="<b>불가능</b>! 당첨이 하나도 없어요 (확률 0)";
+    else if(k===nn) msg="<b>확실</b>! 무조건 당첨돼요 (확률 1)";
+    else if(k*2===nn) msg="<b>반반</b>! 될 수도, 안 될 수도 (확률 1/2)";
+    else if(k*2<nn) msg="<b>가능성 적음</b> — 확률 "+k+"/"+nn;
+    else msg="<b>가능성 많음</b> — 확률 "+k+"/"+nn;
+    $("pb_msg").innerHTML=msg;
+  }
+  $("pb_ns").addEventListener("input", pbRender);
+  $("pb_ks").addEventListener("input", pbRender);
+  pbRender();
+  /* ---------- S3 동전 실험 ---------- */
+  var cnHead=0, cnTail=0;
+  function cnDraw(){
+    var total=cnHead+cnTail, max=Math.max(1,cnHead,cnTail);
+    var ch=$("cn_chart"); ch.innerHTML="";
+    function bar(label,val,color){
+      var b=document.createElement("div"); b.className="bar";
+      var h=Math.round(val/max*120);
+      b.innerHTML='<div class="col" style="height:'+(h+6)+'px;background:'+color+'"><span>'+(val||"")+'</span></div><div class="lb">'+label+'</div>';
+      return b;
+    }
+    ch.appendChild(bar("앞 🙂",cnHead,"#FF923E"));
+    ch.appendChild(bar("뒤 🌙",cnTail,"#3D7BFF"));
+    if(total===0){ $("cn_msg").textContent="동전을 던져보세요!"; }
+    else {
+      var hp=Math.round(cnHead/total*100);
+      $("cn_msg").innerHTML="총 <b>"+total+"번</b> 던져서 앞 "+cnHead+"번("+hp+"%), 뒤 "+cnTail+"번. "+
+        (total>=50?"반반(50%)에 가까워지고 있어요! ✨":"더 많이 던지면 50%에 가까워져요!");
+    }
+  }
+  function flip(times){
+    var res=$("cn_results");
+    for(var i=0;i<times;i++){
+      var head=Math.random()<0.5;
+      if(head) cnHead++; else cnTail++;
+      if(times<=10){
+        var t=document.createElement("div"); t.className="rtile";
+        t.textContent=head?"🙂":"🌙"; t.style.background=head?"#FFE7C2":"#CFE6FF";
+        res.insertBefore(t,res.firstChild);
+      }
+    }
+    if(times>10){
+      var t2=document.createElement("div"); t2.className="rtile"; t2.style.width="auto"; t2.style.padding="0 10px";
+      t2.textContent="+"+times+"번"; t2.style.background="#FFF5D6"; res.insertBefore(t2,res.firstChild);
+    }
+    cnDraw();
+  }
+  $("cn_1").addEventListener("click", function(){ flip(1); });
+  $("cn_10").addEventListener("click", function(){ flip(10); });
+  $("cn_100").addEventListener("click", function(){ flip(100); });
+  $("cn_reset").addEventListener("click", function(){ cnHead=0; cnTail=0; $("cn_results").innerHTML=""; cnDraw(); });
+  cnDraw();
+
+  /* ---------- S4 주머니 공 ---------- */
+  function bagRender(){
+    var rr=parseInt($("bag_rs").value,10), bb=parseInt($("bag_bs").value,10);
+    $("bag_r").textContent=rr; $("bag_b").textContent=bb;
+    var total=rr+bb;
+    var bar=$("bag_bar");
+    if(total===0){ bar.innerHTML='<div style="width:100%;background:#D7D7E5;color:#555">공이 없어요!</div>'; $("bag_msg").textContent="공을 넣어주세요!"; return; }
+    var rp=Math.round(rr/total*100);
+    bar.innerHTML='<div style="width:'+rp+'%;background:#FF5C8A">'+(rp>10?"빨강 "+rp+"%":"")+'</div>'+
+      '<div style="width:'+(100-rp)+'%;background:#3D7BFF">'+((100-rp)>10?"파랑 "+(100-rp)+"%":"")+'</div>';
+    var msg;
+    if(rr===bb) msg="<b>반반!</b> 빨강·파랑 가능성이 똑같아요. 공정한 뽑기예요 ⚖️";
+    else if(rr>bb) msg="<b>빨강</b>이 더 잘 나와요! (빨강 "+rr+"/"+total+")";
+    else msg="<b>파랑</b>이 더 잘 나와요! (파랑 "+bb+"/"+total+")";
+    if(rr===0) msg="빨강은 <b>불가능</b>, 파랑은 <b>확실</b>!";
+    if(bb===0) msg="파랑은 <b>불가능</b>, 빨강은 <b>확실</b>!";
+    $("bag_msg").innerHTML=msg;
+  }
+  $("bag_rs").addEventListener("input", bagRender);
+  $("bag_bs").addEventListener("input", bagRender);
+  $("bag_draw").addEventListener("click", function(){
+    var rr=parseInt($("bag_rs").value,10), bb=parseInt($("bag_bs").value,10), total=rr+bb;
+    if(total===0){ $("bag_draw_msg").textContent="공이 없어요!"; return; }
+    var pick=Math.random()*total;
+    if(pick<rr){ $("bag_draw_msg").innerHTML='🔴 <span style="color:var(--pink)">빨강!</span>'; }
+    else { $("bag_draw_msg").innerHTML='🔵 <span style="color:var(--blue)">파랑!</span>'; }
+  });
+  bagRender();
+
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"사과 4명, 귤 6명, 포도 2명이 좋아해요. 1등 과일은?", opts:["사과","귤","포도","없음"], a:1, why:"가장 많은 귤(6명)! 막대가 제일 길어요."},
+    {q:"점수 6, 8, 10의 평균은?", opts:["6","8","10","24"], a:1, why:"(6+8+10)÷3 = 24÷3 = 8."},
+    {q:"동전에서 앞면이 나올 확률은?", opts:["1/6","1/2","1/3","1"], a:1, why:"앞·뒤 2가지 중 1가지 = 1/2."},
+    {q:"주사위에서 3이 나올 확률은?", opts:["1/2","1/3","1/6","3/6"], a:2, why:"전체 6가지 중 1가지 = 1/6."},
+    {q:"주사위에서 7이 나올 확률은?", opts:["1/6","1/7","0","1"], a:2, why:"주사위에 7은 없어요! 불가능 = 0."},
+    {q:"빨강 6개, 파랑 2개 주머니. 잘 나오는 색은?", opts:["빨강","파랑","똑같음","알 수 없음"], a:0, why:"빨강이 더 많으니 빨강이 잘 나와요!"},
+    {q:"네 사람 키 100,110,120,130의 평균은?", opts:["110","115","120","100"], a:1, why:"(100+110+120+130)÷4 = 460÷4 = 115."},
+    {q:"동전을 3번 모두 앞이 나왔어요. 다음 앞이 나올 확률은?", opts:["더 높다","더 낮다","여전히 1/2","0"], a:2, why:"동전은 기억 못 해요! 항상 1/2."},
+    {q:"빨강 5, 파랑 5 주머니의 가능성은?", opts:["빨강 유리","파랑 유리","반반","불가능"], a:2, why:"개수가 같으니 반반! 공정해요."},
+    {q:"두 수의 평균이 8이고 한 수가 5면 다른 수는?", opts:["3","8","11","13"], a:2, why:"합=8×2=16, 16−5=11."}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 확률·통계 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

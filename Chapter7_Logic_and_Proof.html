@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7장 논리와 수학적 증명 — 참거짓과 까닭 찾기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:940px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"⭕ ❌  AND OR NOT  ∴";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:18px;letter-spacing:10px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:27px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.exwrap{margin:18px 0}
+.exwrap > .exh{font-weight:900;font-size:19px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ex{border:3px solid var(--ink);border-radius:16px;padding:14px 16px;margin:12px 0;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.ex .tag{display:inline-block;background:var(--blue);color:#fff;font-weight:900;border-radius:9px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.ex .qz{font-weight:800;font-size:18px;margin-bottom:8px}
+.ex .reveal{font-family:inherit;cursor:pointer;border:2px dashed var(--blue);background:#F2F7FF;border-radius:10px;padding:6px 14px;font-weight:800;font-size:15px;color:var(--blue)}
+.ex .sol{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#F4FFF9;border:2px solid var(--green);font-weight:600;font-size:16px}
+.ex .sol.show{display:block;animation:pop .3s ease}
+.ex .sol b{color:var(--green)}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.gray{background:#9AA0B5}.btn.org{background:var(--orange)}
+.btn.tf{font-size:18px;padding:12px 22px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.feedback{margin-top:12px;font-weight:900;font-size:18px;min-height:26px}
+.ok{color:var(--green)}.no{color:var(--pink)}
+.disp{font-weight:900;font-size:20px}
+/* statement card */
+.stmt{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:18px;text-align:center;font-weight:900;font-size:22px;margin-bottom:12px}
+/* toggle switches for AND/OR */
+.switches{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.sw{text-align:center}
+.sw .toggle{width:90px;height:46px;border:3px solid var(--ink);border-radius:999px;background:#E7EAF5;position:relative;cursor:pointer;transition:background .2s;margin:0 auto}
+.sw .toggle .knob{position:absolute;top:3px;left:3px;width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid var(--ink);transition:left .2s;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}
+.sw .toggle.on{background:var(--green)}
+.sw .toggle.on .knob{left:47px}
+.sw .lab{font-weight:900;margin-top:8px;font-size:16px}
+.sw .val{font-weight:900;font-size:14px;color:var(--soft)}
+.bulb{font-size:60px;text-align:center;margin:6px 0}
+.opbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.opbtns button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 18px;font-weight:900;font-size:16px;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.opbtns button.on{background:var(--purple);color:#fff}
+/* truth result */
+.tres{text-align:center;font-weight:900;font-size:22px;padding:12px;border-radius:14px;border:3px solid var(--ink);margin-top:10px}
+.tres.t{background:#E2F7EC;color:var(--green)}
+.tres.f{background:#FFE6EE;color:var(--pink)}
+/* venn / all-some */
+.svgbox{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:10px;margin-top:10px;text-align:center}
+.svgbox svg{max-width:100%;height:auto}
+/* proof steps */
+.psteps{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.pstep{display:flex;gap:12px;align-items:flex-start;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:12px 14px;box-shadow:0 4px 0 rgba(0,0,0,.06);opacity:.4;transition:opacity .3s}
+.pstep.show{opacity:1}
+.pstep .num{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid var(--ink)}
+.pstep .tx b{color:var(--blue)}
+.q-card{border:3px solid var(--ink);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.q-num{display:inline-block;background:var(--blue);color:#fff;font-weight:900;border-radius:10px;padding:2px 12px;margin-bottom:8px}
+.q-text{font-weight:800;font-size:18px;margin-bottom:12px}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q-opts button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:12px;font-weight:800;font-size:17px;background:#fff;transition:transform .08s;text-align:left}
+.q-opts button:hover{transform:translateY(-2px)}
+.q-opts button.correct{background:var(--green);color:#fff}
+.q-opts button.wrong{background:var(--pink);color:#fff}
+.q-opts button.lock{pointer-events:none;opacity:.85}
+.progress{height:18px;background:#EFE6D8;border:3px solid var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 18px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .4s}
+.score-big{text-align:center;font-size:26px;font-weight:900;margin-top:10px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:25px}.card h2{font-size:21px}.q-opts{grid-template-columns:1fr}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 · 7장</div>
+  <h1>논리와 수학적 <span class="hl">증명</span> 🕵️</h1>
+  <p>참인지 거짓인지 따지고, 그리고·또는·아니다를 익히고, "왜 그럴까?"를 똑똑하게 설명해봐요!</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">⭕ 참과 거짓</button>
+  <button data-go="s1">🔀 그리고·또는·아니다</button>
+  <button data-go="s2">➡️ 만약 ~라면</button>
+  <button data-go="s3">🌐 모든·어떤</button>
+  <button data-go="s4">🧱 증명하기</button>
+  <button data-go="s5">🎯 도전 퀴즈</button>
+</div>
+<!-- S0 참과 거짓 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">⭕</span> 참과 거짓 (명제)</h2>
+    <p class="lead">참인지 거짓인지 분명하게 가릴 수 있는 문장을 '명제'라고 해요. 직접 판단해봐요!</p>
+    <div class="box def"><div class="t">📘 명제란?</div>
+      <b>참(맞다)</b> 또는 <b>거짓(틀리다)</b>을 분명히 정할 수 있는 문장이에요.<br>
+      "2 + 3 = 5" → 참 / "고양이는 날 수 있다" → 거짓 / <b>"오늘 날씨 좋다"</b>는 사람마다 달라서 명제가 아니에요!</div>
+
+    <div class="play">
+      <div class="ttl">⚖️ 참일까 거짓일까? — 직접 판단해요</div>
+      <div class="stmt" id="tf_stmt"></div>
+      <div class="row" style="justify-content:center">
+        <button class="btn tf" id="tf_true">⭕ 참</button>
+        <button class="btn tf gray" id="tf_false">❌ 거짓</button>
+        <button class="btn alt" id="tf_new">새 문장 🔄</button>
+      </div>
+      <div class="feedback" id="tf_fb" style="text-align:center"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 명제가 아닌 것</div>
+      질문("몇 시야?"), 명령("앉아!"), 느낌("예쁘다") 은 참·거짓을 가릴 수 없어서 명제가 아니에요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"7은 홀수이다"는 참일까 거짓일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">7은 2로 나누면 1이 남으니 홀수! → <b>참</b>.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"모든 새는 날 수 있다"는 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">펭귄·타조는 못 날아요! 그래서 <b>거짓</b>. 하나라도 안 맞으면 '모든'은 거짓이에요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 생각</span>
+        <div class="qz">"이 문장은 재미있다"는 명제일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol"><b>명제가 아니에요!</b> 재미는 사람마다 달라서 참·거짓을 딱 정할 수 없거든요.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S1 그리고 또는 아니다 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">🔀</span> 그리고 · 또는 · 아니다</h2>
+    <p class="lead">두 문장을 잇는 말! 스위치를 켜고 끄며 전구에 불이 들어오는지 봐요 💡</p>
+    <div class="box def"><div class="t">📘 세 가지 잇는 말</div>
+      <b>그리고(AND)</b>: 둘 <b>다</b> 참이어야 참<br>
+      <b>또는(OR)</b>: <b>하나라도</b> 참이면 참<br>
+      <b>아니다(NOT)</b>: 참↔거짓을 <b>뒤집어요</b></div>
+
+    <div class="play">
+      <div class="ttl">💡 논리 전구 — 스위치를 켜봐요</div>
+      <div class="opbtns" id="lg_ops">
+        <button data-op="and" class="on">그리고 (AND)</button>
+        <button data-op="or">또는 (OR)</button>
+        <button data-op="not">아니다 (NOT)</button>
+      </div>
+      <div class="switches" id="lg_switches"></div>
+      <div class="bulb" id="lg_bulb">💡</div>
+      <div class="tres" id="lg_res"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 외우는 법</div>
+      그리고=둘 다(엄격!) / 또는=하나만이라도(너그러움) / 아니다=반대로! 일상에서도 똑같이 써요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"4는 짝수이고 그리고 3보다 크다"는 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">4는 짝수(참) 그리고 4>3(참) → 둘 다 참이니 <b>참</b>!</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"5는 짝수이거나 또는 7은 홀수이다"는 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">5는 짝수(거짓) 또는 7은 홀수(참) → 하나라도 참이니 <b>참</b>! '또는'은 너그러워요.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">"2는 홀수가 아니다"는 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">"2는 홀수다"는 거짓. '아니다'로 뒤집으면 → <b>참</b>! (2는 정말 홀수가 아니죠)</div></div>
+    </div>
+  </div>
+</section>
+<!-- S2 만약 ~라면 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">➡️</span> 만약 ~라면 (조건)</h2>
+    <p class="lead">"만약 A라면 B다" 같은 약속! 조건이 맞으면 어떤 일이 일어나는지 따져봐요.</p>
+    <div class="box def"><div class="t">📘 조건문</div>
+      <b>만약 ~라면(if) ~다</b> 형태예요. "비가 오면 우산을 쓴다"처럼요.<br>
+      앞부분(조건)이 참일 때 뒷부분이 따라와요. 코딩의 if문과 똑같아요!</div>
+
+    <div class="play">
+      <div class="ttl">🌧️ 조건 따라가기 — 상황을 바꿔봐요</div>
+      <div class="row" style="justify-content:center;margin-bottom:10px">
+        <span class="disp">규칙: 만약 <b style="color:var(--blue)">비가 오면</b> → <b style="color:var(--pink)">우산을 쓴다</b></span>
+      </div>
+      <div class="switches">
+        <div class="sw"><div class="toggle on" id="if_toggle"><div class="knob">☔</div></div><div class="lab" id="if_label">비가 와요</div></div>
+      </div>
+      <div class="bulb" id="if_result">🌂</div>
+      <div class="tres" id="if_msg"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 거꾸로는 항상 맞을까?</div>
+      "비 오면 우산 쓴다"가 참이어도, "우산 쓰면 꼭 비가 온다"는 아닐 수 있어요(햇빛 가리개로도!).
+      조건문은 <b>방향이 중요</b>해요.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"만약 어떤 수가 4의 배수라면, 그 수는 짝수다." 8은 어떨까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">8은 4의 배수(조건 참) → 그래서 짝수(맞음)! → <b>참</b>. 4의 배수는 항상 짝수예요.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"비가 오면 땅이 젖는다"가 참일 때, 땅이 젖었으면 꼭 비가 온 걸까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">꼭 그렇진 않아요! 누가 물을 뿌렸을 수도 있죠. <b>거꾸로는 항상 맞지 않아요.</b></div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">"만약 홀수 + 홀수라면 결과는 짝수다." 항상 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">3+5=8, 7+1=8… 늘 짝수! → <b>참</b>. 이건 다음 칸에서 '증명'까지 해볼 거예요 🧱</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 모든 어떤 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🌐</span> 모든 · 어떤</h2>
+    <p class="lead">"모든 ~는", "어떤 ~는"은 아주 다른 말이에요! 하나라도 안 맞으면 '모든'은 무너져요.</p>
+    <div class="box def"><div class="t">📘 모든 vs 어떤</div>
+      <b>모든(전체)</b>: 빠짐없이 다 맞아야 참. 하나만 틀려도 거짓!<br>
+      <b>어떤(적어도 하나)</b>: 하나라도 맞으면 참.</div>
+
+    <div class="play">
+      <div class="ttl">🐾 동물 친구들 — 규칙이 맞는지 확인해요</div>
+      <div class="row" style="justify-content:center;margin-bottom:8px">
+        <button class="btn" data-claim="all">"모든 동물은 다리가 4개다"</button>
+        <button class="btn alt" data-claim="some">"어떤 동물은 날 수 있다"</button>
+      </div>
+      <div class="svgbox" id="qf_box"></div>
+      <div class="tres" id="qf_res"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 반례의 힘</div>
+      '모든 ~다'를 무너뜨리려면 <b>안 맞는 예 딱 하나(반례)</b>면 충분해요! "모든 새는 난다" → 펭귄 하나로 거짓.</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"모든 짝수는 2로 나누어떨어진다"는 참일까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">짝수의 뜻이 바로 그거예요! → <b>참</b>. 반례를 찾을 수 없어요.</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"모든 수는 자기보다 큰 수가 있다"를 무너뜨리는 반례가 있을까?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">없어요! 어떤 수든 +1 하면 더 크니까 → <b>참</b> (반례가 없으면 참).</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">"모든 세 자리 수는 5의 배수다"는 거짓이에요. 반례 하나를 들어봐요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">예: <b>101</b>은 5의 배수가 아니죠! 반례 하나로 '모든'은 거짓이 돼요.</div></div>
+    </div>
+  </div>
+</section>
+<!-- S4 증명하기 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🧱</span> 증명하기 — "왜 그럴까?" 설명하기</h2>
+    <p class="lead">'증명'은 왜 항상 맞는지 빈틈없이 설명하는 거예요. 예시 몇 개로는 부족하고, 까닭을 대야 해요!</p>
+    <div class="box def"><div class="t">📘 증명이란?</div>
+      한두 개 맞는다고 "항상 맞다"고 할 순 없어요. <b>모든 경우에 왜 맞는지 까닭</b>을 차근차근 설명하는 게 증명이에요.</div>
+
+    <div class="play">
+      <div class="ttl">🧩 "홀수 + 홀수 = 짝수" 증명해보기</div>
+      <p style="font-weight:700;margin-bottom:6px">버튼을 누르면 증명이 한 단계씩 나타나요!</p>
+      <div class="row" style="margin-bottom:10px">
+        <button class="btn org" id="pf_next">다음 단계 보기 ▶</button>
+        <button class="btn gray" id="pf_reset">처음부터 🔄</button>
+      </div>
+      <div class="psteps" id="pf_steps"></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 증명 vs 예시</div>
+      "3+5=8, 7+9=16… 그러니까 항상 짝수!"는 예시일 뿐이에요. 진짜 증명은 <b>"왜 모든 홀수에서 그런지"</b> 까닭을 대는 거예요.</div>
+
+    <div class="box warn"><div class="t">⚠️ 반례 한 개 = 증명 끝</div>
+      반대로, 틀렸다는 걸 보일 땐 <b>안 맞는 예 하나(반례)</b>면 충분해요. "모든 소수는 홀수다" → <b>2</b>가 반례!</div>
+
+    <div class="exwrap">
+      <div class="exh">📝 예제 (3개)</div>
+      <div class="ex"><span class="tag">예제 1</span>
+        <div class="qz">"짝수 + 짝수 = 짝수"인 까닭을 설명해보세요.</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">짝수는 2개씩 묶을 수 있어요(2의 묶음). 두 짝수를 더해도 여전히 2개씩 묶이니 <b>짝수</b>! 🟦🟦+🟦🟦=🟦🟦🟦🟦</div></div>
+      <div class="ex"><span class="tag">예제 2</span>
+        <div class="qz">"모든 소수는 홀수다"가 거짓인 이유는?</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">반례 <b>2</b>! 2는 소수인데 짝수예요. 반례 하나로 증명 끝.</div></div>
+      <div class="ex"><span class="tag">예제 3 · 도전</span>
+        <div class="qz">"1부터 어떤 수까지 홀수를 차례로 더하면 항상 제곱수"인지 살펴봐요. (1, 1+3, 1+3+5…)</div>
+        <button class="reveal">풀이 보기 👀</button>
+        <div class="sol">1=1, 1+3=4, 1+3+5=9, 1+3+5+7=16… → 1,4,9,16 모두 <b>제곱수</b>(1×1,2×2,3×3,4×4)! 점을 정사각형으로 쌓으면 왜 그런지 보여요 🟧</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 quiz -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">🎯</span> 도전! 논리와 증명 마스터 퀴즈</h2>
+    <p class="lead">참·거짓, 그리고·또는·아니다, 조건, 모든·어떤, 증명까지! 10문제에 도전해요 🏆</p>
+    <div class="progress"><div id="qBar"></div></div>
+    <div id="quizArea"></div>
+    <div id="quizResult"></div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 7장 「논리와 수학적 증명」 · 초등 3~6학년용 학습 자료</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var SVGNS="http://www.w3.org/2000/svg";
+  function el(tag,attrs){ var e=document.createElementNS(SVGNS,tag); for(var k in attrs){ e.setAttribute(k,attrs[k]); } return e; }
+
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  var revs=document.querySelectorAll(".ex .reveal");
+  for(var r=0;r<revs.length;r++){
+    revs[r].addEventListener("click", function(){
+      var sol=this.parentNode.querySelector(".sol");
+      if(sol.classList.contains("show")){ sol.classList.remove("show"); this.textContent="풀이 보기 👀"; }
+      else { sol.classList.add("show"); this.textContent="풀이 숨기기 🙈"; }
+    });
+  }
+
+  /* ---------- S0 참거짓 ---------- */
+  var tfList=[
+    {s:"3 + 4 = 7", t:true, why:"3+4는 정말 7이에요!"},
+    {s:"10은 홀수이다", t:false, why:"10은 2로 나누어떨어져서 짝수예요."},
+    {s:"모든 정사각형은 네 변이 같다", t:true, why:"정사각형의 정의가 그래요!"},
+    {s:"5는 4보다 작다", t:false, why:"5는 4보다 커요."},
+    {s:"거미는 다리가 6개다", t:false, why:"거미는 다리가 8개예요!"},
+    {s:"2는 가장 작은 소수이다", t:true, why:"맞아요, 2가 가장 작은 소수예요."},
+    {s:"100은 10의 배수이다", t:true, why:"100 ÷ 10 = 10, 딱 떨어져요!"},
+    {s:"모든 새는 날 수 있다", t:false, why:"펭귄, 타조는 못 날아요!"}
+  ];
+  var tfCur=0;
+  function tfShow(){
+    tfCur=Math.floor(Math.random()*tfList.length);
+    $("tf_stmt").textContent='"'+tfList[tfCur].s+'"';
+    $("tf_fb").textContent="";
+  }
+  function tfAnswer(guess){
+    var item=tfList[tfCur];
+    if(guess===item.t){ $("tf_fb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { $("tf_fb").innerHTML='<span class="no">아쉬워요! '+item.why+' (정답: '+(item.t?"참":"거짓")+')</span>'; }
+  }
+  $("tf_true").addEventListener("click", function(){ tfAnswer(true); });
+  $("tf_false").addEventListener("click", function(){ tfAnswer(false); });
+  $("tf_new").addEventListener("click", tfShow);
+  tfShow();
+
+  /* ---------- S1 그리고/또는/아니다 ---------- */
+  var lgOp="and", lgA=true, lgB=false;
+  function lgRenderSwitches(){
+    var box=$("lg_switches"); box.innerHTML="";
+    function sw(id,label,val){
+      var d=document.createElement("div"); d.className="sw";
+      d.innerHTML='<div class="toggle'+(val?" on":"")+'" id="'+id+'"><div class="knob">'+(val?"⭕":"❌")+'</div></div>'+
+        '<div class="lab">'+label+'</div><div class="val">'+(val?"참":"거짓")+'</div>';
+      return d;
+    }
+    box.appendChild(sw("sw_a","문장 A",lgA));
+    if(lgOp!=="not"){ box.appendChild(sw("sw_b","문장 B",lgB)); }
+    $("sw_a").addEventListener("click", function(){ lgA=!lgA; lgRenderSwitches(); lgEval(); });
+    if(lgOp!=="not"){ $("sw_b").addEventListener("click", function(){ lgB=!lgB; lgRenderSwitches(); lgEval(); }); }
+  }
+  function lgEval(){
+    var res;
+    if(lgOp==="and") res=lgA&&lgB;
+    else if(lgOp==="or") res=lgA||lgB;
+    else res=!lgA;
+    $("lg_bulb").textContent=res?"💡":"🔌";
+    var opName=lgOp==="and"?"그리고(AND)":lgOp==="or"?"또는(OR)":"아니다(NOT)";
+    var expr;
+    if(lgOp==="not"){ expr="A가 "+(lgA?"참":"거짓")+" → 아니다 → "; }
+    else { expr="A("+(lgA?"참":"거짓")+") "+opName+" B("+(lgB?"참":"거짓")+") → "; }
+    var rb=$("lg_res");
+    rb.className="tres "+(res?"t":"f");
+    rb.innerHTML=expr+"<b>"+(res?"참 ⭕ 불이 켜졌어요!":"거짓 ❌ 불이 꺼졌어요")+"</b>";
+  }
+  var ops=document.querySelectorAll("#lg_ops button");
+  for(var o=0;o<ops.length;o++){
+    ops[o].addEventListener("click", function(){
+      for(var k=0;k<ops.length;k++){ ops[k].classList.remove("on"); }
+      this.classList.add("on"); lgOp=this.getAttribute("data-op");
+      lgRenderSwitches(); lgEval();
+    });
+  }
+  lgRenderSwitches(); lgEval();
+
+  /* ---------- S2 조건문 ---------- */
+  var ifState=true;
+  function ifRender(){
+    var tog=$("if_toggle");
+    tog.classList.toggle("on",ifState);
+    tog.querySelector(".knob").textContent=ifState?"☔":"☀️";
+    $("if_label").textContent=ifState?"비가 와요":"비가 안 와요";
+    $("if_result").textContent=ifState?"🌂":"😎";
+    var rb=$("if_msg");
+    if(ifState){ rb.className="tres t"; rb.innerHTML="비가 오니까 → <b>우산을 써요! ☔ (조건 성립)</b>"; }
+    else { rb.className="tres"; rb.style.background="#FFF5D6"; rb.style.color="#9a7b00";
+      rb.innerHTML="비가 안 오면 규칙은 아무 말도 안 해요. 우산을 써도 안 써도 괜찮아요 😎"; }
+  }
+  $("if_toggle").addEventListener("click", function(){ ifState=!ifState; ifRender(); });
+  ifRender();
+
+  /* ---------- S3 모든/어떤 ---------- */
+  var animals=[{e:"🐶",legs:4,fly:false},{e:"🐱",legs:4,fly:false},{e:"🐦",legs:2,fly:true},{e:"🐢",legs:4,fly:false},{e:"🦋",legs:6,fly:true}];
+  function qfRender(claim){
+    var box=$("qf_box"); box.innerHTML="";
+    var svg=el("svg",{viewBox:"0 0 360 110",width:360,height:110});
+    for(var i=0;i<animals.length;i++){
+      var x=20+i*68;
+      var highlight=false;
+      if(claim==="all" && animals[i].legs!==4) highlight=true;
+      if(claim==="some" && animals[i].fly) highlight=true;
+      svg.appendChild(el("rect",{x:x,y:20,width:56,height:56,rx:14,fill:highlight?(claim==="all"?"#FFE6EE":"#E2F7EC"):"#F3F6FF",stroke:"#262338","stroke-width":3}));
+      var t=el("text",{x:x+28,y:58,"font-size":30,"text-anchor":"middle"}); t.textContent=animals[i].e; svg.appendChild(t);
+      var lg=el("text",{x:x+28,y:92,"font-size":12,"font-weight":800,fill:"#6A6A85","text-anchor":"middle"});
+      lg.textContent="다리"+animals[i].legs; svg.appendChild(lg);
+    }
+    box.appendChild(svg);
+    var rb=$("qf_res");
+    if(claim==="all"){
+      // all legs==4?
+      var allFour=true, counter="";
+      for(var j=0;j<animals.length;j++){ if(animals[j].legs!==4){ allFour=false; counter=animals[j].e; break; } }
+      rb.className="tres f";
+      rb.innerHTML='"모든 동물은 다리가 4개다" → <b>거짓!</b> 반례: '+counter+' (다리가 4개가 아니에요). 빨강 칸을 봐요!';
+    } else {
+      var someFly=false, ex="";
+      for(var k=0;k<animals.length;k++){ if(animals[k].fly){ someFly=true; ex+=animals[k].e; } }
+      rb.className="tres t";
+      rb.innerHTML='"어떤 동물은 날 수 있다" → <b>참!</b> 날 수 있는 동물: '+ex+' (초록 칸). 하나라도 있으면 참이에요!';
+    }
+  }
+  var claimBtns=document.querySelectorAll("[data-claim]");
+  for(var c=0;c<claimBtns.length;c++){
+    claimBtns[c].addEventListener("click", function(){ qfRender(this.getAttribute("data-claim")); });
+  }
+  qfRender("all");
+  /* ---------- S4 증명 단계 ---------- */
+  var proofSteps=[
+    {n:"1",h:"홀수가 무엇인지 생각하기",d:"홀수는 짝수보다 1 큰 수예요. 예: 3 = 2+1, 5 = 4+1. 즉 <b>(짝수) + 1</b> 모양!"},
+    {n:"2",h:"두 홀수를 적어보기",d:"첫째 홀수 = (어떤 짝수) + 1, 둘째 홀수 = (다른 짝수) + 1 이라고 둬요."},
+    {n:"3",h:"두 홀수를 더하기",d:"(짝수 + 1) + (짝수 + 1) = <b>(짝수 + 짝수) + 2</b> 가 돼요."},
+    {n:"4",h:"결과 살펴보기",d:"짝수 + 짝수 = 짝수, 거기에 + 2(짝수)를 더하면 여전히 <b>짝수</b>예요!"},
+    {n:"∴",h:"결론",d:"그래서 <b>어떤 홀수 두 개를 더해도 항상 짝수</b>예요. 예시가 아니라 까닭으로 증명했어요! 🎉"}
+  ];
+  var pfShown=0;
+  function pfBuild(){
+    var box=$("pf_steps"); box.innerHTML="";
+    for(var i=0;i<proofSteps.length;i++){
+      var st=document.createElement("div"); st.className="pstep"+(i<pfShown?" show":""); st.id="pstep"+i;
+      st.innerHTML='<div class="num">'+proofSteps[i].n+'</div><div class="tx"><b>'+proofSteps[i].h+'</b><br>'+proofSteps[i].d+'</div>';
+      box.appendChild(st);
+    }
+  }
+  $("pf_next").addEventListener("click", function(){
+    if(pfShown<proofSteps.length){ pfShown++; pfBuild(); }
+    if(pfShown>=proofSteps.length){ this.textContent="증명 완성! ✅"; }
+  });
+  $("pf_reset").addEventListener("click", function(){ pfShown=0; pfBuild(); $("pf_next").textContent="다음 단계 보기 ▶"; });
+  pfBuild();
+
+  /* ---------- S5 quiz ---------- */
+  var quiz=[
+    {q:"\"5 + 3 = 8\"은 참일까 거짓일까?", opts:["참","거짓","알 수 없음","질문"], a:0, why:"5+3은 정말 8! 참이에요."},
+    {q:"다음 중 명제(참·거짓을 가릴 수 있는 문장)는?", opts:["몇 시야?","앉아!","7은 홀수다","예쁘다"], a:2, why:"'7은 홀수다'만 참·거짓을 분명히 가릴 수 있어요!"},
+    {q:"\"4는 짝수이고 그리고 4>2\"는?", opts:["참","거짓","반반","알 수 없음"], a:0, why:"둘 다 참이니 '그리고'도 참!"},
+    {q:"\"5는 짝수이거나 또는 6은 짝수\"는?", opts:["참","거짓","둘 다 필요","불가능"], a:0, why:"6이 짝수(참)니까 '또는'은 참! 하나라도 참이면 돼요."},
+    {q:"\"3은 짝수가 아니다\"는?", opts:["참","거짓","질문","명령"], a:0, why:"3은 홀수니까 '짝수가 아니다'는 참!"},
+    {q:"\"모든 새는 난다\"를 무너뜨리는 반례는?", opts:["참새","독수리","펭귄","비둘기"], a:2, why:"펭귄은 못 날아요! 반례 하나면 '모든'은 거짓."},
+    {q:"\"어떤 수는 짝수다\"는 참일까?", opts:["참","거짓","불가능","질문"], a:0, why:"2, 4처럼 짝수가 있으니 '어떤'은 참!"},
+    {q:"홀수 + 홀수의 결과는 항상?", opts:["홀수","짝수","소수","알 수 없음"], a:1, why:"항상 짝수! 까닭까지 증명할 수 있어요."},
+    {q:"\"모든 소수는 홀수다\"의 반례는?", opts:["3","5","2","7"], a:2, why:"2는 소수인데 짝수! 그래서 거짓."},
+    {q:"무언가 '항상 맞다'를 보이려면?", opts:["예시 1개","예시 2개","까닭을 증명","반례 찾기"], a:2, why:"예시는 부족해요. 왜 항상 맞는지 까닭(증명)이 필요!"}
+  ];
+  var qIdx=0,qScore=0,locked=false;
+  function renderQuiz(){
+    locked=false; var item=quiz[qIdx];
+    $("qBar").style.width=((qIdx)/quiz.length*100)+"%";
+    $("quizArea").innerHTML='<div class="q-card"><span class="q-num">'+(qIdx+1)+' / '+quiz.length+
+      '</span><div class="q-text">'+item.q+'</div><div class="q-opts" id="qOpts"></div>'+
+      '<div class="feedback" id="qFb"></div></div>';
+    var box=$("qOpts");
+    for(var i=0;i<item.opts.length;i++){
+      (function(idx){
+        var b=document.createElement("button"); b.textContent=item.opts[idx];
+        b.addEventListener("click", function(){ ans(idx,b); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  function ans(idx,btn){
+    if(locked) return; locked=true; var item=quiz[qIdx];
+    var all=$("qOpts").children;
+    for(var i=0;i<all.length;i++){ all[i].classList.add("lock"); }
+    if(idx===item.a){ btn.classList.add("correct"); qScore++;
+      $("qFb").innerHTML='<span class="ok">정답! 🎉 '+item.why+'</span>'; }
+    else { btn.classList.add("wrong"); all[item.a].classList.add("correct");
+      $("qFb").innerHTML='<span class="no">아쉬워요! '+item.why+'</span>'; }
+    var nb=document.createElement("button"); nb.className="btn"; nb.style.marginTop="12px";
+    nb.textContent=(qIdx===quiz.length-1)?"결과 보기 🏁":"다음 문제 ▶";
+    nb.addEventListener("click", function(){
+      qIdx++; if(qIdx<quiz.length){ renderQuiz(); } else { showResult(); }
+    });
+    $("quizArea").querySelector(".q-card").appendChild(nb);
+  }
+  function showResult(){
+    $("qBar").style.width="100%"; $("quizArea").innerHTML="";
+    var msg,emoji;
+    if(qScore===quiz.length){ msg="완벽! 논리·증명 마스터 🎓"; emoji="🏆"; }
+    else if(qScore>=8){ msg="훌륭해요! 거의 마스터"; emoji="🌟"; }
+    else if(qScore>=5){ msg="좋아요! 한 번 더 도전해봐요"; emoji="💪"; }
+    else { msg="개념을 다시 보고 도전해요"; emoji="🌱"; }
+    $("quizResult").innerHTML='<div class="box key"><div class="score-big">'+emoji+' '+qScore+' / '+quiz.length+
+      ' 점</div><div style="text-align:center;font-weight:800;font-size:20px;margin-top:6px">'+msg+
+      '</div></div><div class="row" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn alt" id="qRetry">다시 풀기 🔄</button></div>';
+    $("qRetry").addEventListener("click", function(){
+      qIdx=0;qScore=0;$("quizResult").innerHTML="";renderQuiz();
+    });
+  }
+  renderQuiz();
+})();
+</script>
+</body>
+</html>

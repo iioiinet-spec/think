@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>논리와 증명 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"== &&  ||  !  if  True False";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:15px;letter-spacing:6px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.tgl{display:inline-flex;gap:8px;align-items:center}
+.tglbtn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:900;font-size:16px;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.tglbtn.on{background:var(--green);color:#fff}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 7장 · 코딩 연계</div>
+  <h1>논리를 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>참·거짓, 비교, 그리고·또는·아니다, if 조건문까지! 코드의 판단력을 배워요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 참·거짓 값</button>
+  <button data-go="s1">⚖️ 비교 연산</button>
+  <button data-go="s2">🔀 그리고·또는·아니다</button>
+  <button data-go="s3">➡️ if 조건문</button>
+  <button data-go="s4">🌐 모든·어떤 판정</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 참거짓 값 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 참·거짓을 코드로 담기</h2>
+    <p class="lead">코드에서도 참과 거짓을 값으로 다뤄요! Python은 True/False, C는 1/0을 써요.</p>
+    <div class="box def"><div class="t">📘 불(bool) 값</div>
+      참·거짓을 나타내는 값을 <b>불(boolean)</b>이라고 해요.<br>
+      Python: <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">True</code> / <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">False</code><br>
+      C: <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">1</code>(참) / <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">0</code>(거짓)</div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 참은 1, 거짓은 0</span>
+<span class="tk-key">int</span> isSunny = <span class="tk-num">1</span>;   <span class="tk-com">// 참</span>
+<span class="tk-key">int</span> isRainy = <span class="tk-num">0</span>;   <span class="tk-com">// 거짓</span>
+<span class="tk-fn">printf</span>(<span class="tk-str">"%d\n"</span>, isSunny);  <span class="tk-com">// 1</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 참은 True, 거짓은 False</span>
+is_sunny = <span class="tk-key">True</span>
+is_rainy = <span class="tk-key">False</span>
+<span class="tk-fn">print</span>(is_sunny)   <span class="tk-com"># True</span></code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 참·거짓 변환기</div>
+      <div class="row">
+        <span class="lab">값을 골라요:</span>
+        <button class="tglbtn on" id="bv_btn">참 (True / 1)</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 두 언어에서</div>
+      <div class="console" id="bv_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 0은 거짓!</div>
+      C에서는 <b>0이 아닌 모든 수가 참</b>으로 여겨져요. 0만 거짓이에요. Python에서도 0은 거짓 취급!</div>
+  </div>
+</section>
+
+<!-- S1 비교 연산 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">⚖️</span> 비교 연산 — 참·거짓 만들기</h2>
+    <p class="lead">두 수를 비교하면 참 또는 거짓이 나와요. 이게 모든 논리의 출발점이에요!</p>
+    <div class="box def"><div class="t">📘 비교 기호</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">==</code> 같다,
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">!=</code> 다르다,
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&gt;</code> 크다,
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&lt;</code> 작다.
+      <b>같다는 = 가 아니라 == 두 개!</b> (=는 값을 담는 거예요)</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 두 수 비교</div>
+      <div class="row">
+        <input type="number" id="cp_a" class="numin" value="7">
+        <select id="cp_op" style="height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;font-family:inherit;padding:0 10px">
+          <option value="==">==</option><option value="!=">!=</option><option value=">">&gt;</option><option value="<">&lt;</option><option value=">=">&gt;=</option><option value="<=">&lt;=</option></select>
+        <input type="number" id="cp_b" class="numin" value="5">
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="cp_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="cp_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="cp_out"></div>
+    </div>
+    <div class="box warn"><div class="t">⚠️ = 와 == 헷갈리지 마요</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">x = 5</code>는 "x에 5를 담아라", <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">x == 5</code>는 "x가 5와 같니?" 완전히 달라요!</div>
+  </div>
+</section>
+<!-- S2 논리 연산 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🔀</span> 그리고 · 또는 · 아니다 연산</h2>
+    <p class="lead">7장에서 배운 AND·OR·NOT을 코드로! 두 스위치를 켜고 끄며 결과를 봐요.</p>
+    <div class="box def"><div class="t">📘 논리 연산 기호</div>
+      <b>그리고(AND)</b>: C <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&amp;&amp;</code> / Python <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">and</code><br>
+      <b>또는(OR)</b>: C <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">||</code> / Python <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">or</code><br>
+      <b>아니다(NOT)</b>: C <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">!</code> / Python <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">not</code></div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — A와 B를 켜봐요</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="lab">A =</span><button class="tglbtn on" id="lo_a">참</button>
+        <span class="lab">B =</span><button class="tglbtn" id="lo_b">거짓</button>
+        <span class="lab">연산:</span>
+        <button class="tglbtn on" data-lop="and">AND</button>
+        <button class="tglbtn" data-lop="or">OR</button>
+        <button class="tglbtn" data-lop="not">NOT A</button>
+      </div>
+      <div class="codewrap" style="margin-top:8px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="lo_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="lo_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="lo_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      C는 기호(<code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&amp;&amp; || !</code>), Python은 영어 단어(<code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">and or not</code>)! 뜻은 똑같아요.</div>
+  </div>
+</section>
+
+<!-- S3 if 조건문 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">➡️</span> if 조건문 — 만약 ~라면</h2>
+    <p class="lead">7장의 "만약 ~라면"이 바로 코드의 if문이에요! 조건이 참일 때만 안쪽이 실행돼요.</p>
+    <div class="box def"><div class="t">📘 if ~ else</div>
+      <b>if(조건)</b>: 조건이 참이면 실행<br>
+      <b>else</b>: 거짓이면 대신 실행. "만약 비가 오면 우산, 아니면 그냥"처럼요!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 점수로 합격/불합격 판정</div>
+      <div class="row">
+        <div class="field"><div class="lab">내 점수 = <span class="pill" id="if_score">75</span></div>
+          <input type="range" class="slider" id="if_ss" min="0" max="100" value="75"></div>
+        <div class="field"><div class="lab">합격 기준 = <span class="pill" id="if_pass">60</span></div>
+          <input type="range" class="slider" id="if_ps" min="40" max="90" value="60"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="if_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="if_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="if_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 여러 조건도!</div>
+      "점수가 60 이상 <b>그리고</b> 90 미만이면 통과" 처럼 if 안에 and/or를 넣어 복잡한 판단도 할 수 있어요.</div>
+  </div>
+</section>
+<!-- S4 모든 어떤 판정 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🌐</span> 모든 · 어떤 판정하기</h2>
+    <p class="lead">"모든 수가 짝수인가?", "어떤 수가 5보다 큰가?"를 반복문으로 자동 검사해요!</p>
+    <div class="box def"><div class="t">📘 반복으로 판정</div>
+      <b>모든(all)</b>: 하나라도 틀리면 거짓! 끝까지 다 맞아야 참.<br>
+      <b>어떤(any)</b>: 하나라도 맞으면 참! 발견하면 멈춰요.</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 수 목록 검사</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="lab">수 목록:</span>
+        <input type="text" id="qf_list" value="2, 4, 6, 7, 10" style="flex:1;min-width:180px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:18px;font-weight:900;text-align:center;font-family:inherit">
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <button class="tglbtn on" data-qf="all">모든 수가 짝수?</button>
+        <button class="tglbtn" data-qf="any">어떤 수가 짝수?</button>
+      </div>
+      <div class="codewrap" style="margin-top:8px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="qf_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="qf_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="qf_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 Python의 마법</div>
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">all(...)</code>, <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">any(...)</code> 한 줄로 끝! C는 반복문으로 하나씩 검사해요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 논리 코드 비교</h2>
+    <p class="lead">참·거짓·논리 연산에서 자주 쓰는 표현을 정리했어요. C는 기호, Python은 영어 단어!</p>
+    <table class="cmp">
+      <tr><th>뜻</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>참 / 거짓</td><td><code>1</code> / <code>0</code></td><td><code>True</code> / <code>False</code></td></tr>
+      <tr><td>같다</td><td><code>a == b</code></td><td><code>a == b</code></td></tr>
+      <tr><td>그리고</td><td><code>a &amp;&amp; b</code></td><td><code>a and b</code></td></tr>
+      <tr><td>또는</td><td><code>a || b</code></td><td><code>a or b</code></td></tr>
+      <tr><td>아니다</td><td><code>!a</code></td><td><code>not a</code></td></tr>
+      <tr><td>조건문</td><td><code>if (조건) { }</code></td><td><code>if 조건:</code></td></tr>
+      <tr><td>모든 / 어떤</td><td>for로 직접 검사</td><td><code>all(...)</code> / <code>any(...)</code></td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 논리와 코딩은 한몸</div>
+      코드는 끊임없이 "참인가 거짓인가?"를 판단해서 길을 골라요. 7장의 논리(참·거짓, AND·OR·NOT, 만약~라면)가
+      그대로 if문·반복문의 조건이 되는 거예요!</div>
+    <div class="box warn"><div class="t">⚠️ 자주 하는 실수</div>
+      ① <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">=</code>(담기)와 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">==</code>(같니?) 헷갈리기<br>
+      ② C에서 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">and</code> 쓰기(C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&amp;&amp;</code>!), Python에서 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">&amp;&amp;</code> 쓰기(Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">and</code>!)</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      참·거짓을 값으로 다루고, 비교·논리 연산으로 조건을 만들고, if로 길을 고른다 — 이게 컴퓨터가 '생각'하는 방법이에요.
+      논리(7장) + 코딩 = 똑똑한 판단력 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 7장 「논리와 수학적 증명」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 참거짓 값 */
+  var bvVal=true;
+  $("bv_btn").addEventListener("click", function(){
+    bvVal=!bvVal;
+    this.classList.toggle("on",bvVal);
+    this.textContent= bvVal ? "참 (True / 1)" : "거짓 (False / 0)";
+    bvRender();
+  });
+  function bvRender(){
+    $("bv_out").innerHTML='<span class="pmt">$ </span>'+
+      'C 언어:  '+(bvVal?"1":"0")+"   (참은 1, 거짓은 0)\n"+
+      'Python: '+(bvVal?"True":"False");
+  }
+  bvRender();
+
+  /* S1 비교 */
+  function cpRender(){
+    var a=parseInt($("cp_a").value,10), b=parseInt($("cp_b").value,10), op=$("cp_op").value;
+    if(isNaN(a)||isNaN(b)){ $("cp_out").innerHTML='<span class="pmt">$ </span>두 수를 넣어주세요!'; return; }
+    $("cp_c").innerHTML=
+      C("// "+a+" "+op+" "+b+" 의 결과")+"\n"+
+      K("int")+" result = ("+N(a)+" "+op+" "+N(b)+");\n"+
+      F("printf")+"("+ST('"%d\\n"')+", result);  "+C("// 1=참, 0=거짓");
+    $("cp_py").innerHTML=
+      C("# "+a+" "+op+" "+b+" 의 결과")+"\n"+
+      "result = ("+N(a)+" "+op+" "+N(b)+")\n"+
+      F("print")+"(result)";
+    var res;
+    if(op==="==") res=(a===b); else if(op==="!=") res=(a!==b);
+    else if(op===">") res=(a>b); else if(op==="<") res=(a<b);
+    else if(op===">=") res=(a>=b); else res=(a<=b);
+    $("cp_out").innerHTML='<span class="pmt">$ </span>'+a+" "+op+" "+b+" → C: "+(res?"1":"0")+" / Python: "+(res?"True":"False")+"  ("+(res?"참 ⭕":"거짓 ❌")+")";
+  }
+  $("cp_a").addEventListener("input", cpRender);
+  $("cp_b").addEventListener("input", cpRender);
+  $("cp_op").addEventListener("change", cpRender);
+  cpRender();
+
+  /* S2 논리 연산 */
+  var loA=true, loB=false, loOp="and";
+  function loRender(){
+    $("lo_a").classList.toggle("on",loA); $("lo_a").textContent=loA?"참":"거짓";
+    $("lo_b").classList.toggle("on",loB); $("lo_b").textContent=loB?"참":"거짓";
+    var aC=loA?"1":"0", bC=loB?"1":"0", aP=loA?"True":"False", bP=loB?"True":"False";
+    var cExpr, pExpr, res;
+    if(loOp==="and"){ cExpr="a && b"; pExpr="a and b"; res=loA&&loB; }
+    else if(loOp==="or"){ cExpr="a || b"; pExpr="a or b"; res=loA||loB; }
+    else { cExpr="!a"; pExpr="not a"; res=!loA; }
+    $("lo_c").innerHTML=
+      K("int")+" a = "+N(aC)+", b = "+N(bC)+";\n"+
+      F("printf")+"("+ST('"%d\\n"')+", "+cExpr+");";
+    $("lo_py").innerHTML=
+      "a, b = "+K(aP)+", "+K(bP)+"\n"+
+      F("print")+"("+pExpr+")";
+    var opName=loOp==="and"?"그리고":loOp==="or"?"또는":"아니다";
+    $("lo_out").innerHTML='<span class="pmt">$ </span>'+opName+" 결과 → C: "+(res?"1":"0")+" / Python: "+(res?"True":"False")+"  ("+(res?"참 ⭕":"거짓 ❌")+")";
+  }
+  $("lo_a").addEventListener("click", function(){ loA=!loA; loRender(); });
+  $("lo_b").addEventListener("click", function(){ loB=!loB; loRender(); });
+  var lopBtns=document.querySelectorAll("[data-lop]");
+  for(var i=0;i<lopBtns.length;i++){
+    lopBtns[i].addEventListener("click", function(){
+      for(var k=0;k<lopBtns.length;k++){ lopBtns[k].classList.remove("on"); }
+      this.classList.add("on"); loOp=this.getAttribute("data-lop"); loRender();
+    });
+  }
+  loRender();
+  /* S3 if 조건문 */
+  function ifRender(){
+    var score=parseInt($("if_ss").value,10), pass=parseInt($("if_ps").value,10);
+    $("if_score").textContent=score; $("if_pass").textContent=pass;
+    $("if_c").innerHTML=
+      C("// 점수로 합격 판정")+"\n"+
+      K("int")+" score = "+N(score)+";\n"+
+      K("if")+" (score &gt;= "+N(pass)+") {\n"+
+      "    "+F("printf")+"("+ST('"합격! 🎉\\n"')+");\n"+
+      "} "+K("else")+" {\n"+
+      "    "+F("printf")+"("+ST('"불합격 😢\\n"')+");\n"+
+      "}";
+    $("if_py").innerHTML=
+      C("# 점수로 합격 판정")+"\n"+
+      "score = "+N(score)+"\n"+
+      K("if")+" score &gt;= "+N(pass)+":\n"+
+      "    "+F("print")+"("+ST('"합격! 🎉"')+")\n"+
+      K("else")+":\n"+
+      "    "+F("print")+"("+ST('"불합격 😢"')+")";
+    var ok=score>=pass;
+    $("if_out").innerHTML='<span class="pmt">$ </span>점수 '+score+(ok?" >= ":" < ")+pass+" → "+(ok?"합격! 🎉":"불합격 😢");
+  }
+  $("if_ss").addEventListener("input", ifRender);
+  $("if_ps").addEventListener("input", ifRender);
+  ifRender();
+
+  /* S4 모든/어떤 판정 */
+  var qfMode="all";
+  function parseList(){
+    var raw=$("qf_list").value.split(","), nums=[];
+    for(var i=0;i<raw.length;i++){ var v=parseInt(raw[i],10); if(!isNaN(v)) nums.push(v); }
+    return nums;
+  }
+  function qfRender(){
+    var nums=parseList();
+    var cArr="{"+nums.join(", ")+"}";
+    if(qfMode==="all"){
+      $("qf_c").innerHTML=
+        C("// 모든 수가 짝수?")+"\n"+
+        K("int")+" a[] = "+cArr+", n = "+N(nums.length)+";\n"+
+        K("int")+" allEven = "+N("1")+";\n"+
+        K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; n; i++)\n"+
+        "    "+K("if")+" (a[i] % "+N("2")+" != "+N("0")+") allEven = "+N("0")+";\n"+
+        F("printf")+"("+ST('"%d\\n"')+", allEven);";
+      $("qf_py").innerHTML=
+        C("# 모든 수가 짝수?")+"\n"+
+        "a = ["+nums.join(", ")+"]\n"+
+        F("print")+"("+F("all")+"(x % "+N("2")+" == "+N("0")+" "+K("for")+" x "+K("in")+" a))";
+      var allEven=true, bad="";
+      for(var i=0;i<nums.length;i++){ if(nums[i]%2!==0){ allEven=false; bad=nums[i]; break; } }
+      $("qf_out").innerHTML='<span class="pmt">$ </span>'+(allEven?"모두 짝수! → 참 ⭕":"아니요 → 거짓 ❌ (반례: "+bad+", 홀수예요)");
+    } else {
+      $("qf_c").innerHTML=
+        C("// 어떤 수가 짝수?")+"\n"+
+        K("int")+" a[] = "+cArr+", n = "+N(nums.length)+";\n"+
+        K("int")+" anyEven = "+N("0")+";\n"+
+        K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; n; i++)\n"+
+        "    "+K("if")+" (a[i] % "+N("2")+" == "+N("0")+") anyEven = "+N("1")+";\n"+
+        F("printf")+"("+ST('"%d\\n"')+", anyEven);";
+      $("qf_py").innerHTML=
+        C("# 어떤 수가 짝수?")+"\n"+
+        "a = ["+nums.join(", ")+"]\n"+
+        F("print")+"("+F("any")+"(x % "+N("2")+" == "+N("0")+" "+K("for")+" x "+K("in")+" a))";
+      var anyEven=false, good="";
+      for(var j=0;j<nums.length;j++){ if(nums[j]%2===0){ anyEven=true; good+=nums[j]+" "; } }
+      $("qf_out").innerHTML='<span class="pmt">$ </span>'+(anyEven?"있어요! → 참 ⭕ (짝수: "+good+")":"하나도 없어요 → 거짓 ❌");
+    }
+  }
+  $("qf_list").addEventListener("input", qfRender);
+  var qfBtns=document.querySelectorAll("[data-qf]");
+  for(var q=0;q<qfBtns.length;q++){
+    qfBtns[q].addEventListener("click", function(){
+      for(var k=0;k<qfBtns.length;k++){ qfBtns[k].classList.remove("on"); }
+      this.classList.add("on"); qfMode=this.getAttribute("data-qf"); qfRender();
+    });
+  }
+  qfRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

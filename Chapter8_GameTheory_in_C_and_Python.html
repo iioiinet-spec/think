@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게임 이론 → C / Python 코드로 만들기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"rand()  while  (n-1)%4  if";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:15px;letter-spacing:6px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}.btn.org{background:var(--orange)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.tglbtn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:8px 16px;font-weight:900;font-size:16px;background:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.tglbtn.on{background:var(--purple);color:#fff}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 8장 · 코딩 연계</div>
+  <h1>게임을 <span class="hl">코드</span>로 만들기 ♟️</h1>
+  <p>컴퓨터 상대 만들기, 님 게임 규칙과 이기는 전략, 동전 퍼즐까지 코드로 구현해요!</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 컴퓨터 만들기(난수)</button>
+  <button data-go="s1">♟️ 님 게임 규칙</button>
+  <button data-go="s2">🏆 이기는 전략</button>
+  <button data-go="s3">🪙 동전 최소 횟수</button>
+  <button data-go="s4">🔁 모든 경우 따지기</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 난수 컴퓨터 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 컴퓨터 상대 만들기 (난수)</h2>
+    <p class="lead">게임의 상대가 되려면 컴퓨터가 '선택'을 해야 해요. 난수(랜덤)로 아무 수나 고르게 해요!</p>
+    <div class="box def"><div class="t">📘 난수로 고르기</div>
+      범위 안에서 아무 수나 뽑아요.<br>
+      C: <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">rand() % 3 + 1</code> (1~3)<br>
+      Python: <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">random.randint(1, 3)</code></div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 1~3 중 컴퓨터가 고르기</span>
+<span class="tk-key">#include</span> &lt;stdlib.h&gt;
+<span class="tk-key">#include</span> &lt;time.h&gt;
+<span class="tk-fn">srand</span>(<span class="tk-fn">time</span>(<span class="tk-num">0</span>));
+<span class="tk-key">int</span> pick = <span class="tk-fn">rand</span>() % <span class="tk-num">3</span> + <span class="tk-num">1</span>;
+<span class="tk-fn">printf</span>(<span class="tk-str">"컴퓨터: %d개\n"</span>, pick);</code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 1~3 중 컴퓨터가 고르기</span>
+<span class="tk-key">import</span> random
+pick = random.<span class="tk-fn">randint</span>(<span class="tk-num">1</span>, <span class="tk-num">3</span>)
+<span class="tk-fn">print</span>(<span class="tk-str">"컴퓨터:"</span>, pick, <span class="tk-str">"개"</span>)</code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 컴퓨터 선택기 — 눌러서 뽑아봐요</div>
+      <div class="row">
+        <span class="lab">1 ~</span><input type="number" id="rd_max" class="numin" value="3">
+        <span class="lab">중에서</span>
+        <button class="btn org" id="rd_go">🎲 컴퓨터가 고르기!</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="rd_out">버튼을 눌러보세요!</div>
+    </div>
+    <div class="box tip"><div class="t">💡 난수는 매번 달라요</div>
+      누를 때마다 다른 수가 나와요! 그래서 컴퓨터가 '예측 못 할 상대'가 되는 거예요. 하지만 똑똑한 상대는 난수 말고 <b>전략</b>을 써요(다음 칸!).</div>
+  </div>
+</section>
+
+<!-- S1 님 게임 규칙 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">♟️</span> 님 게임 규칙을 코드로</h2>
+    <p class="lead">막대가 몇 개 남았는지 변수로 관리하고, 가져간 만큼 빼면 돼요. 게임의 뼈대를 만들어요!</p>
+    <div class="box def"><div class="t">📘 게임의 흐름</div>
+      ① 막대 개수를 변수에 담기 → ② 번갈아 1~3개 빼기 → ③ <b>0이 될 때까지 반복</b>(while) → ④ 마지막에 가져간 사람이 짐</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 막대 빼기 시뮬레이션</div>
+      <div class="row">
+        <div class="field"><div class="lab">시작 막대 = <span class="pill" id="nm_start">7</span></div>
+          <input type="range" class="slider" id="nm_ss" min="3" max="15" value="7"></div>
+        <div class="field"><div class="lab">한 번에 가져갈 수 = <span class="pill" id="nm_take">2</span></div>
+          <input type="range" class="slider" id="nm_ts" min="1" max="3" value="2"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="nm_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="nm_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (막대가 줄어드는 모습)</div>
+      <div class="console" id="nm_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">while (막대 &gt; 0)</code> 로 막대가 다 없어질 때까지 반복! 이게 게임의 심장이에요.</div>
+  </div>
+</section>
+<!-- S2 이기는 전략 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🏆</span> 이기는 전략을 코드로</h2>
+    <p class="lead">8장에서 찾은 비밀! "상대에게 4의 배수+1을 남기기". 이걸 코드 한 줄로 계산해요.</p>
+    <div class="box def"><div class="t">📘 승리 공식</div>
+      마지막 막대를 가져가면 지는 게임에서, 내 차례에 막대가 n개면<br>
+      <b>가져갈 개수 = (n − 1) % 4</b> 로 계산! (이게 0이면 질 수밖에 없는 자리예요)</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 최적의 한 수 계산</div>
+      <div class="row">
+        <div class="field"><div class="lab">지금 남은 막대 = <span class="pill" id="st_n">7</span></div>
+          <input type="range" class="slider" id="st_ns" min="1" max="20" value="7"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="st_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="st_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (몇 개 가져갈까?)</div>
+      <div class="console" id="st_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 왜 4일까?</div>
+      나와 상대가 가져간 수를 합쳐 <b>항상 4</b>가 되게 맞추면(상대 1→나 3, 상대 2→나 2…), 4씩 줄어들어 결국 상대에게 1개를 남길 수 있어요!</div>
+  </div>
+</section>
+
+<!-- S3 동전 최소 횟수 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🪙</span> 동전 최소 뒤집기 횟수</h2>
+    <p class="lead">모두 앞면으로 만드는 최소 횟수 = 뒷면 개수! 목록에서 뒷면을 세면 돼요.</p>
+    <div class="box def"><div class="t">📘 세기로 답 구하기</div>
+      앞면을 1, 뒷면을 0이라 하면, <b>0의 개수를 세면</b> 그게 최소 뒤집기 횟수예요!
+      반복문으로 하나씩 세면 끝.</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 동전 목록 (1=앞, 0=뒤)</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="lab">동전:</span>
+        <input type="text" id="cf_list" value="1, 0, 1, 0, 0" style="flex:1;min-width:180px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:18px;font-weight:900;text-align:center;font-family:inherit">
+      </div>
+      <div class="codewrap" style="margin-top:8px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="cf_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="cf_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="cf_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 Python의 마법</div>
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">coins.count(0)</code> 한 줄로 0의 개수를 세요! C는 반복문으로 하나씩.</div>
+  </div>
+</section>
+<!-- S4 모든 경우 따지기 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🔁</span> 모든 경우 따져서 이기는 자리 찾기</h2>
+    <p class="lead">공식을 몰라도, 컴퓨터가 1부터 끝까지 따져보면 '이기는 자리'를 스스로 찾아내요!</p>
+    <div class="box def"><div class="t">📘 작은 것부터 쌓기</div>
+      막대 1개일 때(지는 자리)부터 시작해, "내가 1~3개 가져가서 <b>상대를 지는 자리로 보낼 수 있으면 나는 이기는 자리</b>"라고 표시해 나가요. 작은 답으로 큰 답을 만드는 방법이에요!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 이기는 자리 표 만들기</div>
+      <div class="row">
+        <div class="field"><div class="lab">막대 끝값 = <span class="pill" id="wn_n">10</span></div>
+          <input type="range" class="slider" id="wn_ns" min="4" max="16" value="10"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="wn_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="wn_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (각 막대 수에서 이길까/질까)</div>
+      <div class="console" id="wn_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 발견!</div>
+      결과를 보면 <b>1, 5, 9, 13…</b> (4의 배수+1) 자리에서 지는 게 보여요! 컴퓨터가 따져서 찾은 답이 우리가 손으로 찾은 전략과 똑같아요 🤩</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 게임 코드 비교</h2>
+    <p class="lead">게임 만들 때 자주 쓰는 표현을 정리했어요. 난수와 세기가 특히 달라요!</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>난수(1~3)</td><td><code>rand()%3 + 1</code></td><td><code>random.randint(1,3)</code></td></tr>
+      <tr><td>반복(조건)</td><td><code>while (n &gt; 0)</code></td><td><code>while n &gt; 0:</code></td></tr>
+      <tr><td>나머지</td><td><code>(n-1) % 4</code></td><td><code>(n-1) % 4</code></td></tr>
+      <tr><td>개수 세기</td><td>for로 직접</td><td><code>list.count(0)</code></td></tr>
+      <tr><td>표(배열)</td><td><code>int win[100];</code></td><td><code>win = [False]*100</code></td></tr>
+      <tr><td>참/거짓</td><td><code>1</code> / <code>0</code></td><td><code>True</code> / <code>False</code></td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 게임 = 규칙 + 반복 + 판단</div>
+      게임 코드는 ① 상태를 변수로 두고 ② while로 반복하며 ③ if로 승패를 판단해요.
+      여기에 <b>난수(랜덤 상대)</b>나 <b>전략(똑똑한 상대)</b>을 넣으면 완성!</div>
+    <div class="box warn"><div class="t">⚠️ 난수 준비 잊지 마요</div>
+      C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">srand(time(0))</code>를 한 번 해줘야 매번 다른 수가 나와요. 안 하면 항상 똑같은 수만!
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">import random</code>만 하면 돼요.</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      손으로 찾은 전략을 코드로 옮기면 <b>절대 안 지는 컴퓨터</b>를 만들 수 있어요! 그리고 모든 경우를 따지면 공식 없이도 컴퓨터가 전략을 스스로 발견해요.
+      게임 이론 + 코딩 = 똑똑한 인공지능의 시작 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 8장 「논리 퍼즐과 게임 이론」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 난수 컴퓨터 */
+  $("rd_go").addEventListener("click", function(){
+    var max=parseInt($("rd_max").value,10);
+    if(isNaN(max)||max<1){ $("rd_out").innerHTML='<span class="pmt">$ </span>1 이상의 수를 넣어주세요!'; return; }
+    var pick=Math.floor(Math.random()*max)+1;
+    $("rd_out").innerHTML='<span class="pmt">$ </span>컴퓨터가 고른 수: '+pick+'  (1 ~ '+max+' 중에서)';
+  });
+
+  /* S1 님 게임 규칙 */
+  function nmRender(){
+    var start=parseInt($("nm_ss").value,10), take=parseInt($("nm_ts").value,10);
+    $("nm_start").textContent=start; $("nm_take").textContent=take;
+    $("nm_c").innerHTML=
+      C("// 막대 빼기 시뮬레이션")+"\n"+
+      K("int")+" n = "+N(start)+";\n"+
+      K("while")+" (n &gt; "+N("0")+") {\n"+
+      "    "+F("printf")+"("+ST('"막대 %d개 남음\\n"')+", n);\n"+
+      "    n = n - "+N(take)+";\n"+
+      "    "+K("if")+" (n &lt; "+N("0")+") n = "+N("0")+";\n"+
+      "}\n"+
+      F("printf")+"("+ST('"끝!\\n"')+");";
+    $("nm_py").innerHTML=
+      C("# 막대 빼기 시뮬레이션")+"\n"+
+      "n = "+N(start)+"\n"+
+      K("while")+" n &gt; "+N("0")+":\n"+
+      "    "+F("print")+"("+ST('f"막대 {n}개 남음"')+")\n"+
+      "    n = "+F("max")+"("+N("0")+", n - "+N(take)+")\n"+
+      F("print")+"("+ST('"끝!"')+")";
+    var out="", n=start;
+    while(n>0){ out+="막대 "+n+"개 남음\n"; n=Math.max(0,n-take); }
+    out+="끝!";
+    $("nm_out").innerHTML='<span class="pmt">$ </span>\n'+out;
+  }
+  $("nm_ss").addEventListener("input", nmRender);
+  $("nm_ts").addEventListener("input", nmRender);
+  nmRender();
+
+  /* S2 이기는 전략 */
+  function stRender(){
+    var n=parseInt($("st_ns").value,10);
+    $("st_n").textContent=n;
+    $("st_c").innerHTML=
+      C("// 최적의 한 수 (마지막 가져가면 짐)")+"\n"+
+      K("int")+" n = "+N(n)+";\n"+
+      K("int")+" take = (n - "+N("1")+") % "+N("4")+";\n"+
+      K("if")+" (take == "+N("0")+")\n"+
+      "    "+F("printf")+"("+ST('"질 자리... 1개만\\n"')+");\n"+
+      K("else")+"\n"+
+      "    "+F("printf")+"("+ST('"%d개 가져가기!\\n"')+", take);";
+    $("st_py").innerHTML=
+      C("# 최적의 한 수 (마지막 가져가면 짐)")+"\n"+
+      "n = "+N(n)+"\n"+
+      "take = (n - "+N("1")+") % "+N("4")+"\n"+
+      K("if")+" take == "+N("0")+":\n"+
+      "    "+F("print")+"("+ST('"질 자리... 1개만"')+")\n"+
+      K("else")+":\n"+
+      "    "+F("print")+"("+ST('f"{take}개 가져가기!"')+")";
+    var take=(n-1)%4;
+    var msg;
+    if(n===1){ msg="막대 1개뿐 — 가져가면 져요 😢 (질 자리)"; }
+    else if(take===0){ msg="(n−1)%4 = 0 → 질 자리예요! 1개만 가져가며 버텨요"; }
+    else { msg="(n−1)%4 = "+take+" → "+take+"개 가져가면 이겨요! 🏆 (상대에게 "+(n-take)+"개 남김)"; }
+    $("st_out").innerHTML='<span class="pmt">$ </span>막대 '+n+"개 → "+msg;
+  }
+  $("st_ns").addEventListener("input", stRender);
+  stRender();
+  /* S3 동전 최소 횟수 */
+  function parseCoins(){
+    var raw=$("cf_list").value.split(","), arr=[];
+    for(var i=0;i<raw.length;i++){ var v=parseInt(raw[i],10); if(v===0||v===1) arr.push(v); }
+    return arr;
+  }
+  function cfRender(){
+    var coins=parseCoins();
+    var cArr="{"+coins.join(", ")+"}";
+    $("cf_c").innerHTML=
+      C("// 뒷면(0) 개수 세기 = 최소 뒤집기")+"\n"+
+      K("int")+" coin[] = "+cArr+", n = "+N(coins.length)+";\n"+
+      K("int")+" flips = "+N("0")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; n; i++)\n"+
+      "    "+K("if")+" (coin[i] == "+N("0")+") flips++;\n"+
+      F("printf")+"("+ST('"최소 %d번\\n"')+", flips);";
+    $("cf_py").innerHTML=
+      C("# 뒷면(0) 개수 세기 = 최소 뒤집기")+"\n"+
+      "coin = ["+coins.join(", ")+"]\n"+
+      "flips = coin."+F("count")+"("+N("0")+")\n"+
+      F("print")+"("+ST('f"최소 {flips}번"')+")";
+    var flips=0; for(var i=0;i<coins.length;i++){ if(coins[i]===0) flips++; }
+    var disp=coins.map(function(c){return c?"🙂":"🌙";}).join(" ");
+    $("cf_out").innerHTML='<span class="pmt">$ </span>'+disp+"\n뒷면(🌙)이 "+flips+"개 → 최소 "+flips+"번 뒤집으면 모두 앞면!";
+  }
+  $("cf_list").addEventListener("input", cfRender);
+  cfRender();
+
+  /* S4 모든 경우 따지기 */
+  function wnRender(){
+    var nn=parseInt($("wn_ns").value,10);
+    $("wn_n").textContent=nn;
+    $("wn_c").innerHTML=
+      C("// 각 자리가 이길 자리인지 따지기")+"\n"+
+      K("int")+" win["+N(nn+1)+"];\n"+
+      "win["+N("1")+"] = "+N("0")+";  "+C("// 1개 = 지는 자리")+"\n"+
+      K("for")+" ("+K("int")+" i = "+N("2")+"; i &lt;= "+N(nn)+"; i++) {\n"+
+      "    win[i] = "+N("0")+";\n"+
+      "    "+K("for")+" ("+K("int")+" t = "+N("1")+"; t &lt;= "+N("3")+"; t++)\n"+
+      "        "+K("if")+" (i-t &gt;= "+N("1")+" &amp;&amp; win[i-t] == "+N("0")+") win[i] = "+N("1")+";\n"+
+      "    "+F("printf")+"("+ST('"%d: %s\\n"')+", i, win[i]?"+ST('"이김"')+":"+ST('"짐"')+");\n"+
+      "}";
+    $("wn_py").innerHTML=
+      C("# 각 자리가 이길 자리인지 따지기")+"\n"+
+      "win = ["+K("False")+"] * ("+N(nn+1)+")\n"+
+      "win["+N("1")+"] = "+K("False")+"   "+C("# 1개 = 지는 자리")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N("2")+", "+N(nn+1)+"):\n"+
+      "    "+K("for")+" t "+K("in")+" "+F("range")+"("+N("1")+", "+N("4")+"):\n"+
+      "        "+K("if")+" i-t &gt;= "+N("1")+" "+K("and")+" "+K("not")+" win[i-t]:\n"+
+      "            win[i] = "+K("True")+"\n"+
+      "    "+F("print")+"(i, "+ST('"이김"')+" "+K("if")+" win[i] "+K("else")+" "+ST('"짐"')+")";
+    // compute
+    var win=[]; win[1]=false;
+    var out="1: 짐 (마지막 가져감)\n";
+    for(var i=2;i<=nn;i++){
+      win[i]=false;
+      for(var t=1;t<=3;t++){ if(i-t>=1 && win[i-t]===false){ win[i]=true; } }
+      out+=i+": "+(win[i]?"이김 🏆":"짐 😢")+"\n";
+    }
+    $("wn_out").innerHTML='<span class="pmt">$ </span>\n'+out;
+  }
+  $("wn_ns").addEventListener("input", wnRender);
+  wnRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

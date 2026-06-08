@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정수론 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"% == gcd  prime  for  if";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:16px;letter-spacing:8px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;
+  box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;
+  align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);
+  background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;
+  color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}
+.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;
+  padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;
+  min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);
+  border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:160px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:90px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;
+  font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;
+  font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 2장 · 코딩 연계</div>
+  <h1>정수론을 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>손으로 찾던 약수·소수·최대공약수를 C와 Python으로! 값을 바꾸면 코드와 결과가 바로 바뀌어요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 나머지 %</button>
+  <button data-go="s1">🧩 약수 구하기</button>
+  <button data-go="s2">💎 소수 판별</button>
+  <button data-go="s3">🪄 소수 목록(체)</button>
+  <button data-go="s4">🤝 최대공약수·최소공배수</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비: 나머지 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 나머지 연산 %</h2>
+    <p class="lead">정수론 코드의 비밀 무기는 <b>나머지(%)</b>예요. "나누어떨어지는가?"를 컴퓨터가 판단하는 방법이죠.</p>
+    <div class="box def"><div class="t">📘 나머지 연산자 %</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">a % b</code> 는 a를 b로 나눈 <b>나머지</b>예요.<br>
+      그래서 <b>a % b == 0</b> 이면 "a는 b로 나누어떨어진다 = b는 a의 약수"라는 뜻!</div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 12를 5로 나눈 나머지</span>
+<span class="tk-fn">printf</span>(<span class="tk-str">"%d\n"</span>, <span class="tk-num">12</span> % <span class="tk-num">5</span>);  <span class="tk-com">// 2</span>
+
+<span class="tk-com">// 나누어떨어지는지 확인</span>
+<span class="tk-key">if</span> (<span class="tk-num">12</span> % <span class="tk-num">3</span> == <span class="tk-num">0</span>)
+    <span class="tk-fn">printf</span>(<span class="tk-str">"3은 12의 약수!\n"</span>);</code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 12를 5로 나눈 나머지</span>
+<span class="tk-fn">print</span>(<span class="tk-num">12</span> % <span class="tk-num">5</span>)   <span class="tk-com"># 2</span>
+
+<span class="tk-com"># 나누어떨어지는지 확인</span>
+<span class="tk-key">if</span> <span class="tk-num">12</span> % <span class="tk-num">3</span> == <span class="tk-num">0</span>:
+    <span class="tk-fn">print</span>(<span class="tk-str">"3은 12의 약수!"</span>)</code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 나머지 계산기</div>
+      <div class="row">
+        <input type="number" id="md_a" class="numin" value="17">
+        <span class="lab" style="font-size:24px">%</span>
+        <input type="number" id="md_b" class="numin" value="5">
+        <button class="btn" id="md_go">계산 ✨</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="md_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 핵심 한 줄</div>
+      약수든 배수든 소수든, 전부 <b>"% 가 0인가?"</b>로 판단해요. 이 한 가지만 알면 절반은 끝!</div>
+  </div>
+</section>
+
+<!-- S1 약수 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">🧩</span> 약수 모두 구하기</h2>
+    <p class="lead">1부터 그 수까지 돌면서, 나머지가 0이면 약수! 반복문으로 빠짐없이 찾아요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 약수 찾기</div>
+      <div class="row">
+        <div class="field"><div class="lab">수 n = <span class="pill" id="dv_n">24</span></div>
+          <input type="range" class="slider" id="dv_s" min="1" max="60" value="24"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="dv_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="dv_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="dv_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      <b>i가 1부터 n까지</b> 돌면서 <b>n % i == 0</b> 이면 i를 출력! 그게 전부예요.</div>
+  </div>
+</section>
+<!-- S2 소수 판별 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">💎</span> 소수인지 판별하기</h2>
+    <p class="lead">약수가 1과 자기 자신뿐이면 소수! 2부터 나눠봐서 하나라도 나누어떨어지면 소수가 아니에요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 소수 판별</div>
+      <div class="row">
+        <input type="number" id="pr_in" class="numin" value="29" min="1" max="9999">
+        <button class="btn pur" id="pr_go">판별 💎</button>
+        <button class="btn alt" id="pr_rnd">아무 수나 🎲</button>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="pr_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="pr_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="pr_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 더 빠르게!</div>
+      사실 <b>i × i ≤ n</b> 까지만 나눠봐도 충분해요. (약수는 짝을 이루니까!) 그래서 코드에서 <b>i*i &lt;= n</b> 을 써요. 큰 수도 순식간에 판별하는 비결이에요.</div>
+  </div>
+</section>
+
+<!-- S3 에라토스테네스의 체 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🪄</span> 소수 목록 — 에라토스테네스의 체</h2>
+    <p class="lead">1부터 n까지 모든 소수를 한 번에! 배수를 지워나가는 그 방법, 코드로도 똑같아요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 소수 목록 만들기</div>
+      <div class="row">
+        <div class="field"><div class="lab">n 까지 = <span class="pill" id="si_n">30</span></div>
+          <input type="range" class="slider" id="si_s" min="10" max="100" value="30"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="si_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="si_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (소수들)</div>
+      <div class="console" id="si_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 체의 원리</div>
+      "모두 소수다"라고 가정한 표(<b>isPrime</b>)에서, 소수를 찾을 때마다 그 <b>배수를 전부 거짓으로 지워요</b>. 끝까지 참으로 남은 수가 소수!</div>
+  </div>
+</section>
+<!-- S4 GCD LCM -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🤝</span> 최대공약수 · 최소공배수</h2>
+    <p class="lead">큰 수를 작은 수로 나눈 나머지로 계속 바꿔치기! '유클리드 호제법'이라는 똑똑한 방법이에요.</p>
+    <div class="box def"><div class="t">📘 유클리드 호제법</div>
+      두 수의 최대공약수는 <b>(큰 수 ÷ 작은 수의 나머지)</b>로 계속 바꾸다가, 나머지가 0이 되면 그때의 수가 답!<br>
+      예: GCD(18,12) → GCD(12,6) → GCD(6,0) → <b>6</b>. 그리고 <b>최소공배수 = a × b ÷ 최대공약수</b>.</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실</div>
+      <div class="row">
+        <div class="field"><div class="lab">a = <span class="pill" id="gl_a">18</span></div>
+          <input type="range" class="slider" id="gl_as" min="1" max="60" value="18"></div>
+        <div class="field"><div class="lab">b = <span class="pill" id="gl_b">12</span></div>
+          <input type="range" class="slider" id="gl_bs" min="1" max="60" value="12"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="gl_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="gl_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="gl_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 Python의 선물</div>
+      Python에는 이미 만들어진 도구가 있어요!<br>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">import math</code> 후
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">math.gcd(18, 12)</code> 라고만 써도 6이 나와요. 하지만 원리를 알면 더 멋지죠!</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 정수론 코드 비교</h2>
+    <p class="lead">같은 정수론 문제도 두 언어는 생김새가 달라요. 자주 쓰는 표현을 정리했어요.</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>나머지 구하기</td><td><code>a % b</code></td><td><code>a % b</code></td></tr>
+      <tr><td>나누어떨어지나?</td><td><code>if (n % i == 0)</code></td><td><code>if n % i == 0:</code></td></tr>
+      <tr><td>참/거짓 변수</td><td><code>int ok = 1;</code> (1/0)</td><td><code>ok = True</code></td></tr>
+      <tr><td>리스트(목록)</td><td>배열 <code>int a[100];</code></td><td><code>a = []</code>, <code>a.append(x)</code></td></tr>
+      <tr><td>최대공약수 도구</td><td>직접 함수 작성</td><td><code>math.gcd(a, b)</code> 내장</td></tr>
+      <tr><td>아주 큰 수</td><td><code>long long</code> 필요</td><td>걱정 없음(자동)</td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 함수로 묶으면 편해요</div>
+      약수 구하기·소수 판별처럼 자주 쓰는 일은 <b>함수</b>로 만들어두면 이름만 불러서 재사용할 수 있어요.
+      C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">int isPrime(int n){...}</code>,
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">def is_prime(n):</code> 처럼요.</div>
+    <div class="box warn"><div class="t">⚠️ 정올 꿀팁</div>
+      소수 판별은 <b>i*i &lt;= n</b> 까지만, 소수 목록은 <b>에라토스테네스의 체</b>를 쓰면 훨씬 빨라요.
+      문제에서 수가 아주 크면 빠른 방법이 꼭 필요해요!</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      손으로 익힌 정수론 + 코드로 자동 계산 = 100개, 10000개도 순식간에! 수학과 코딩이 만나면 진짜 강력해져요 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 2장 「정수론」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 나머지 계산기 */
+  $("md_go").addEventListener("click", function(){
+    var a=parseInt($("md_a").value,10), b=parseInt($("md_b").value,10);
+    if(isNaN(a)||isNaN(b)||b===0){ $("md_out").innerHTML='<span class="pmt">$ </span>0으로 나눌 수 없어요! 다른 수를 넣어주세요.'; return; }
+    var r=a%b;
+    var div = r===0 ? (b+"는 "+a+"의 약수예요! ✔") : (b+"로 나누어떨어지지 않아요.");
+    $("md_out").innerHTML='<span class="pmt">$ </span>'+a+" % "+b+" = "+r+"\n"+div;
+  });
+
+  /* S1 약수 */
+  function dvRender(){
+    var x=parseInt($("dv_s").value,10);
+    $("dv_n").textContent=x;
+    $("dv_c").innerHTML =
+      C("// "+x+"의 약수 모두 구하기")+"\n"+
+      K("int")+" n = "+N(x)+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("1")+"; i &lt;= n; i++) {\n"+
+      "    "+K("if")+" (n % i == "+N("0")+")\n"+
+      "        "+F("printf")+"("+ST('"%d "')+", i);\n"+
+      "}";
+    $("dv_py").innerHTML =
+      C("# "+x+"의 약수 모두 구하기")+"\n"+
+      "n = "+N(x)+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N("1")+", n + "+N("1")+"):\n"+
+      "    "+K("if")+" n % i == "+N("0")+":\n"+
+      "        "+F("print")+"(i, end="+ST('" "')+")";
+    var out=[];
+    for(var i=1;i<=x;i++){ if(x%i===0) out.push(i); }
+    $("dv_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ")+"\n("+out.length+"개의 약수)";
+  }
+  $("dv_s").addEventListener("input", dvRender);
+  dvRender();
+
+  /* S2 소수 판별 */
+  function prRun(x){
+    $("pr_in").value=x;
+    $("pr_c").innerHTML =
+      C("// "+x+"이(가) 소수인지 판별")+"\n"+
+      K("int")+" n = "+N(x)+";\n"+
+      K("int")+" prime = "+N("1")+";\n"+
+      K("if")+" (n &lt; "+N("2")+") prime = "+N("0")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("2")+"; i*i &lt;= n; i++) {\n"+
+      "    "+K("if")+" (n % i == "+N("0")+") { prime = "+N("0")+"; "+K("break")+"; }\n"+
+      "}\n"+
+      F("printf")+"(prime ? "+ST('"소수!"')+" : "+ST('"소수 아님"')+");";
+    $("pr_py").innerHTML =
+      C("# "+x+"이(가) 소수인지 판별")+"\n"+
+      "n = "+N(x)+"\n"+
+      "prime = n &gt;= "+N("2")+"\n"+
+      "i = "+N("2")+"\n"+
+      K("while")+" i*i &lt;= n:\n"+
+      "    "+K("if")+" n % i == "+N("0")+":\n"+
+      "        prime = "+K("False")+"\n"+
+      "        "+K("break")+"\n"+
+      "    i += "+N("1")+"\n"+
+      F("print")+"("+ST('"소수!"')+" "+K("if")+" prime "+K("else")+" "+ST('"소수 아님"')+")";
+    var isP = x>=2;
+    for(var i=2;i*i<=x;i++){ if(x%i===0){ isP=false; break; } }
+    var why="";
+    if(x<2){ why=" ("+x+"은 소수가 될 수 없어요)"; }
+    else if(!isP){ for(var j=2;j*j<=x;j++){ if(x%j===0){ why=" ("+x+" = "+j+" × "+(x/j)+")"; break; } } }
+    $("pr_out").innerHTML='<span class="pmt">$ </span>'+x+" → "+(isP?"소수! 💎":"소수 아님")+why;
+  }
+  $("pr_go").addEventListener("click", function(){ var v=parseInt($("pr_in").value,10); if(!isNaN(v)) prRun(v); });
+  $("pr_rnd").addEventListener("click", function(){ prRun(Math.floor(Math.random()*90)+10); });
+  prRun(29);
+  /* S3 에라토스테네스의 체 */
+  function siRender(){
+    var x=parseInt($("si_s").value,10);
+    $("si_n").textContent=x;
+    $("si_c").innerHTML =
+      C("// "+x+"까지의 소수 (체)")+"\n"+
+      K("int")+" n = "+N(x)+";\n"+
+      K("int")+" isP["+N("101")+"];\n"+
+      K("for")+" ("+K("int")+" i = "+N("2")+"; i &lt;= n; i++) isP[i] = "+N("1")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("2")+"; i*i &lt;= n; i++)\n"+
+      "    "+K("if")+" (isP[i])\n"+
+      "        "+K("for")+" ("+K("int")+" j = i*i; j &lt;= n; j += i)\n"+
+      "            isP[j] = "+N("0")+";\n"+
+      K("for")+" ("+K("int")+" i = "+N("2")+"; i &lt;= n; i++)\n"+
+      "    "+K("if")+" (isP[i]) "+F("printf")+"("+ST('"%d "')+", i);";
+    $("si_py").innerHTML =
+      C("# "+x+"까지의 소수 (체)")+"\n"+
+      "n = "+N(x)+"\n"+
+      "isP = ["+K("True")+"] * (n + "+N("1")+")\n"+
+      "isP["+N("0")+"] = isP["+N("1")+"] = "+K("False")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N("2")+", "+F("int")+"(n**"+N("0.5")+")+"+N("1")+"):\n"+
+      "    "+K("if")+" isP[i]:\n"+
+      "        "+K("for")+" j "+K("in")+" "+F("range")+"(i*i, n+"+N("1")+", i):\n"+
+      "            isP[j] = "+K("False")+"\n"+
+      F("print")+"([i "+K("for")+" i "+K("in")+" "+F("range")+"("+N("2")+", n+"+N("1")+") "+K("if")+" isP[i]])";
+    // sieve
+    var isP=[]; for(var i=0;i<=x;i++){ isP[i]=true; } isP[0]=false; if(x>=1) isP[1]=false;
+    for(var i=2;i*i<=x;i++){ if(isP[i]){ for(var j=i*i;j<=x;j+=i){ isP[j]=false; } } }
+    var out=[]; for(var k=2;k<=x;k++){ if(isP[k]) out.push(k); }
+    $("si_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ")+"\n(소수 "+out.length+"개)";
+  }
+  $("si_s").addEventListener("input", siRender);
+  siRender();
+
+  /* S4 GCD/LCM */
+  function gcd(a,b){ while(b){ var t=b; b=a%b; a=t; } return a; }
+  function glRender(){
+    var a=parseInt($("gl_as").value,10), b=parseInt($("gl_bs").value,10);
+    $("gl_a").textContent=a; $("gl_b").textContent=b;
+    $("gl_c").innerHTML =
+      C("// 최대공약수 (유클리드 호제법)")+"\n"+
+      K("int")+" "+F("gcd")+"("+K("int")+" a, "+K("int")+" b) {\n"+
+      "    "+K("while")+" (b != "+N("0")+") {\n"+
+      "        "+K("int")+" t = b; b = a % b; a = t;\n"+
+      "    }\n"+
+      "    "+K("return")+" a;\n}\n"+
+      C("// main 안에서")+"\n"+
+      K("int")+" g = "+F("gcd")+"("+N(a)+", "+N(b)+");\n"+
+      F("printf")+"("+ST('"최대공약수=%d, 최소공배수=%d"')+",\n"+
+      "       g, "+N(a)+" / g * "+N(b)+");";
+    $("gl_py").innerHTML =
+      C("# 최대공약수 (유클리드 호제법)")+"\n"+
+      K("def")+" "+F("gcd")+"(a, b):\n"+
+      "    "+K("while")+" b != "+N("0")+":\n"+
+      "        a, b = b, a % b\n"+
+      "    "+K("return")+" a\n\n"+
+      "g = "+F("gcd")+"("+N(a)+", "+N(b)+")\n"+
+      F("print")+"("+ST('"최대공약수="')+", g)\n"+
+      F("print")+"("+ST('"최소공배수="')+", "+N(a)+" // g * "+N(b)+")";
+    var g=gcd(a,b), l=a/g*b;
+    $("gl_out").innerHTML='<span class="pmt">$ </span>최대공약수 = '+g+"\n최소공배수 = "+l;
+  }
+  $("gl_as").addEventListener("input", glRender);
+  $("gl_bs").addEventListener("input", glRender);
+  glRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>

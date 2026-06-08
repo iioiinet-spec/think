@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대수와 함수 → C / Python 코드로 구하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --teal:#1FC8C8; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"y = 2*x + 1   def f(x)";position:absolute;top:10px;left:0;right:0;font-weight:900;font-size:15px;letter-spacing:7px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14px;line-height:1.65;color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}.tk-fn{color:#9FD0FF}
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:150px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.numin{width:80px;height:50px;border:3px solid var(--ink);border-radius:12px;font-size:20px;font-weight:900;text-align:center;font-family:inherit}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}.btn.pur{background:var(--purple)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.lab{font-weight:900}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:27px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 5장 · 코딩 연계</div>
+  <h1>대수와 함수를 <span class="hl">코드</span>로 구하기 💻</h1>
+  <p>식 계산, 함수 만들기, 함수표·그래프 값까지! 값을 바꾸면 코드와 결과가 바로 바뀌어요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 변수와 식</button>
+  <button data-go="s1">🔮 함수 만들기</button>
+  <button data-go="s2">📋 함수표 만들기</button>
+  <button data-go="s3">📊 그래프 점 구하기</button>
+  <button data-go="s4">🔍 □ 찾기(거꾸로)</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 변수와 식</h2>
+    <p class="lead">대수의 핵심은 '모르는 수를 글자로 두기'. 코드에서는 그 글자가 바로 <b>변수</b>예요!</p>
+    <div class="box def"><div class="t">📘 변수 = 수를 담는 상자</div>
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">x = 3</code> 은 "x라는 상자에 3을 담아라"예요.<br>
+      그러면 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">y = 2 * x + 1</code> 처럼 식에 x를 넣어 계산할 수 있어요!</div>
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 식 y = 2x + 1 계산</span>
+<span class="tk-key">int</span> x = <span class="tk-num">3</span>;
+<span class="tk-key">int</span> y = <span class="tk-num">2</span> * x + <span class="tk-num">1</span>;
+<span class="tk-fn">printf</span>(<span class="tk-str">"y=%d\n"</span>, y);  <span class="tk-com">// 7</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 식 y = 2x + 1 계산</span>
+x = <span class="tk-num">3</span>
+y = <span class="tk-num">2</span> * x + <span class="tk-num">1</span>
+<span class="tk-fn">print</span>(<span class="tk-str">"y="</span>, y)   <span class="tk-com"># 7</span></code></pre></div>
+    </div>
+    <div class="play">
+      <div class="ttl">🔬 식 계산기 — y = a×x + b</div>
+      <div class="row">
+        <span class="lab">y =</span>
+        <input type="number" id="ev_a" class="numin" value="2"><span class="lab">× x +</span>
+        <input type="number" id="ev_b" class="numin" value="1">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <span class="lab">x =</span><input type="number" id="ev_x" class="numin" value="3">
+        <button class="btn" id="ev_go">계산 ✨</button>
+      </div>
+      <div class="lab" style="margin-top:10px">▶ 결과</div>
+      <div class="console" id="ev_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 곱하기 기호는 꼭!</div>
+      수학에서는 2x라고 쓰지만, 코드에서는 곱하기 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">*</code>를 꼭 써야 해요! <b>2 * x</b> 처럼요.</div>
+  </div>
+</section>
+
+<!-- S1 함수 만들기 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">🔮</span> 함수 기계를 코드로 만들기</h2>
+    <p class="lead">5장의 '함수 기계'를 진짜 코드 함수로! 수를 넣으면 규칙대로 답을 돌려줘요.</p>
+    <div class="box def"><div class="t">📘 함수 = 재사용하는 기계</div>
+      한 번 만들면 이름만 불러서 계속 쓸 수 있어요.<br>
+      C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">int f(int x){...}</code>,
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">def f(x):</code> 로 만들어요.</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 함수 f(x) = a×x + b</div>
+      <div class="row">
+        <div class="field"><div class="lab">곱하기 a = <span class="pill" id="fn_a">2</span></div>
+          <input type="range" class="slider" id="fn_as" min="1" max="5" value="2"></div>
+        <div class="field"><div class="lab">더하기 b = <span class="pill" id="fn_b">1</span></div>
+          <input type="range" class="slider" id="fn_bs" min="0" max="9" value="1"></div>
+        <div class="field"><div class="lab">넣는 x = <span class="pill" id="fn_x">3</span></div>
+          <input type="range" class="slider" id="fn_xs" min="0" max="10" value="3"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="fn_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="fn_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="fn_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      함수를 한 번 만들면 <b>f(3), f(5), f(10)</b> 처럼 여러 번 불러 쓸 수 있어요. 기계를 재사용하는 거죠!</div>
+  </div>
+</section>
+<!-- S2 함수표 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">📋</span> 함수표 만들기 (반복문)</h2>
+    <p class="lead">x를 0,1,2,3… 차례로 넣어 y값을 모두 구하면 함수표! 반복문이 자동으로 만들어줘요.</p>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — y = a×x + b 표</div>
+      <div class="row">
+        <div class="field"><div class="lab">곱하기 a = <span class="pill" id="tb_a">2</span></div>
+          <input type="range" class="slider" id="tb_as" min="1" max="5" value="2"></div>
+        <div class="field"><div class="lab">더하기 b = <span class="pill" id="tb_b">1</span></div>
+          <input type="range" class="slider" id="tb_bs" min="0" max="9" value="1"></div>
+        <div class="field"><div class="lab">x 끝값 = <span class="pill" id="tb_n">5</span></div>
+          <input type="range" class="slider" id="tb_ns" min="3" max="9" value="5"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="tb_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="tb_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (x → y)</div>
+      <div class="console" id="tb_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 규칙이 보여요</div>
+      표를 보면 x가 1 커질 때 y가 <b>a씩</b> 커져요! 코드로 표를 뽑으면 규칙이 한눈에 보인답니다.</div>
+  </div>
+</section>
+
+<!-- S3 그래프 점 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">📊</span> 그래프 점 좌표 구하기</h2>
+    <p class="lead">함수표의 (x, y)가 바로 그래프의 점! 좌표를 (x, y) 모양으로 출력해봐요.</p>
+    <div class="box def"><div class="t">📘 점 = (x, y)</div>
+      x값마다 y를 구해 <b>(x, y)</b> 쌍으로 묶으면 그래프에 찍을 점이 돼요.
+      이 점들을 이으면 직선 그래프!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 점 좌표 출력</div>
+      <div class="row">
+        <div class="field"><div class="lab">기울기 a = <span class="pill" id="pt_a">1</span></div>
+          <input type="range" class="slider" id="pt_as" min="1" max="4" value="1"></div>
+        <div class="field"><div class="lab">더하기 b = <span class="pill" id="pt_b">2</span></div>
+          <input type="range" class="slider" id="pt_bs" min="0" max="5" value="2"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="pt_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="pt_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과 (점 좌표)</div>
+      <div class="console" id="pt_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 핵심</div>
+      Python의 f-string <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">f"({x}, {y})"</code> 로 좌표를 예쁘게 묶어 출력할 수 있어요!</div>
+  </div>
+</section>
+<!-- S4 미지수 거꾸로 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🔍</span> 숨은 수 □ 거꾸로 찾기</h2>
+    <p class="lead">a×□ + b = 결과 일 때 □를 구하기! 코드로도 거꾸로 계산하면 돼요: □ = (결과 − b) ÷ a.</p>
+    <div class="box def"><div class="t">📘 거꾸로 식</div>
+      <b>a × □ + b = c</b> 라면 → <b>□ = (c − b) / a</b><br>
+      더하기는 빼기로, 곱하기는 나누기로 거꾸로 풀어요!</div>
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — □ 구하기</div>
+      <div class="row">
+        <div class="field"><div class="lab">곱하기 a = <span class="pill" id="sv_a">2</span></div>
+          <input type="range" class="slider" id="sv_as" min="1" max="6" value="2"></div>
+        <div class="field"><div class="lab">더하기 b = <span class="pill" id="sv_b">3</span></div>
+          <input type="range" class="slider" id="sv_bs" min="0" max="9" value="3"></div>
+        <div class="field"><div class="lab">결과 c = <span class="pill" id="sv_c">11</span></div>
+          <input type="range" class="slider" id="sv_cs" min="1" max="40" value="11"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="sv_code_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="sv_code_py"></code></pre></div>
+      </div>
+      <div class="lab">▶ 실행 결과</div>
+      <div class="console" id="sv_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 나누어떨어지나 확인</div>
+      (c − b)가 a로 딱 나누어떨어져야 □가 깔끔한 정수예요! 안 떨어지면 답이 소수가 돼요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 대수·함수 코드 비교</h2>
+    <p class="lead">변수·식·함수에서 자주 쓰는 표현을 정리했어요. Python 함수가 얼마나 짧은지 비교해봐요!</p>
+    <table class="cmp">
+      <tr><th>하고 싶은 것</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>변수 만들기</td><td><code>int x = 3;</code></td><td><code>x = 3</code></td></tr>
+      <tr><td>식 계산</td><td><code>y = 2 * x + 1;</code></td><td><code>y = 2 * x + 1</code></td></tr>
+      <tr><td>함수 정의</td><td><code>int f(int x){ return ...; }</code></td><td><code>def f(x): return ...</code></td></tr>
+      <tr><td>함수 호출</td><td><code>f(3)</code></td><td><code>f(3)</code></td></tr>
+      <tr><td>좌표 출력</td><td><code>printf("(%d,%d)", x, y);</code></td><td><code>print(f"({x},{y})")</code></td></tr>
+      <tr><td>소수 나누기</td><td><code>(double)(c-b)/a</code></td><td><code>(c-b)/a</code></td></tr>
+    </table>
+    <div class="box def"><div class="t">📘 함수 한 줄 비교</div>
+      같은 함수도 C는 자료형(<code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">int</code>)과 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">return</code>·중괄호가 필요하고,
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">def f(x): return 2*x+1</code> 한 줄이면 돼요!</div>
+    <div class="box warn"><div class="t">⚠️ 곱하기 기호 빼먹지 않기</div>
+      수학의 2x, 3(x+1) 은 코드에서 <b>2*x</b>, <b>3*(x+1)</b> 로 곱하기를 꼭 써야 해요. 안 쓰면 오류가 나요!</div>
+    <div class="box key"><div class="t">🎯 정리</div>
+      모르는 수를 변수로 두고, 규칙을 함수로 만들면 어떤 x를 넣어도 답이 바로! 함수표·그래프 점도 반복문으로 한 번에.
+      대수(식·함수) + 코딩(자동 계산) = 강력한 문제 해결력 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 5장 「대수와 함수」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){ goTo(this.getAttribute("data-go")); this.classList.add("on"); });
+  }
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent, done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);}, C=function(t){return S("tk-com",t);};
+
+  /* S0 식 계산기 */
+  $("ev_go").addEventListener("click", function(){
+    var a=parseFloat($("ev_a").value), b=parseFloat($("ev_b").value), x=parseFloat($("ev_x").value);
+    if(isNaN(a)||isNaN(b)||isNaN(x)){ $("ev_out").innerHTML='<span class="pmt">$ </span>모든 칸에 수를 넣어주세요!'; return; }
+    var y=a*x+b;
+    $("ev_out").innerHTML='<span class="pmt">$ </span>y = '+a+" × "+x+" + "+b+" = "+(Math.round(y*100)/100);
+  });
+
+  /* S1 함수 만들기 */
+  function fnRender(){
+    var a=parseInt($("fn_as").value,10), b=parseInt($("fn_bs").value,10), x=parseInt($("fn_xs").value,10);
+    $("fn_a").textContent=a; $("fn_b").textContent=b; $("fn_x").textContent=x;
+    $("fn_c").innerHTML=
+      C("// 함수 f(x) = "+a+"x + "+b)+"\n"+
+      K("int")+" "+F("f")+"("+K("int")+" x) {\n"+
+      "    "+K("return")+" "+N(a)+" * x + "+N(b)+";\n"+
+      "}\n"+
+      C("// main 안에서")+"\n"+
+      F("printf")+"("+ST('"%d\\n"')+", "+F("f")+"("+N(x)+"));";
+    $("fn_py").innerHTML=
+      C("# 함수 f(x) = "+a+"x + "+b)+"\n"+
+      K("def")+" "+F("f")+"(x):\n"+
+      "    "+K("return")+" "+N(a)+" * x + "+N(b)+"\n\n"+
+      F("print")+"("+F("f")+"("+N(x)+"))";
+    var y=a*x+b;
+    $("fn_out").innerHTML='<span class="pmt">$ </span>f('+x+') = '+a+"×"+x+"+"+b+" = "+y;
+  }
+  $("fn_as").addEventListener("input", fnRender);
+  $("fn_bs").addEventListener("input", fnRender);
+  $("fn_xs").addEventListener("input", fnRender);
+  fnRender();
+
+  /* S2 함수표 */
+  function tbRender(){
+    var a=parseInt($("tb_as").value,10), b=parseInt($("tb_bs").value,10), nn=parseInt($("tb_ns").value,10);
+    $("tb_a").textContent=a; $("tb_b").textContent=b; $("tb_n").textContent=nn;
+    $("tb_c").innerHTML=
+      C("// y = "+a+"x + "+b+" 함수표")+"\n"+
+      K("for")+" ("+K("int")+" x = "+N("0")+"; x &lt;= "+N(nn)+"; x++) {\n"+
+      "    "+K("int")+" y = "+N(a)+" * x + "+N(b)+";\n"+
+      "    "+F("printf")+"("+ST('"x=%d -> y=%d\\n"')+", x, y);\n"+
+      "}";
+    $("tb_py").innerHTML=
+      C("# y = "+a+"x + "+b+" 함수표")+"\n"+
+      K("for")+" x "+K("in")+" "+F("range")+"("+N(nn+1)+"):\n"+
+      "    y = "+N(a)+" * x + "+N(b)+"\n"+
+      "    "+F("print")+"("+ST('f"x={x} -> y={y}"')+")";
+    var out="";
+    for(var x=0;x<=nn;x++){ out+="x="+x+" -> y="+(a*x+b)+"\n"; }
+    $("tb_out").innerHTML='<span class="pmt">$ </span>\n'+out;
+  }
+  $("tb_as").addEventListener("input", tbRender);
+  $("tb_bs").addEventListener("input", tbRender);
+  $("tb_ns").addEventListener("input", tbRender);
+  tbRender();
+  /* S3 그래프 점 */
+  function ptRender(){
+    var a=parseInt($("pt_as").value,10), b=parseInt($("pt_bs").value,10);
+    $("pt_a").textContent=a; $("pt_b").textContent=b;
+    $("pt_c").innerHTML=
+      C("// y = "+a+"x + "+b+" 점 좌표")+"\n"+
+      K("for")+" ("+K("int")+" x = "+N("0")+"; x &lt;= "+N("5")+"; x++) {\n"+
+      "    "+K("int")+" y = "+N(a)+" * x + "+N(b)+";\n"+
+      "    "+F("printf")+"("+ST('"(%d, %d)\\n"')+", x, y);\n"+
+      "}";
+    $("pt_py").innerHTML=
+      C("# y = "+a+"x + "+b+" 점 좌표")+"\n"+
+      K("for")+" x "+K("in")+" "+F("range")+"("+N("6")+"):\n"+
+      "    y = "+N(a)+" * x + "+N(b)+"\n"+
+      "    "+F("print")+"("+ST('f"({x}, {y})"')+")";
+    var out="";
+    for(var x=0;x<=5;x++){ out+="("+x+", "+(a*x+b)+")\n"; }
+    $("pt_out").innerHTML='<span class="pmt">$ </span>\n'+out;
+  }
+  $("pt_as").addEventListener("input", ptRender);
+  $("pt_bs").addEventListener("input", ptRender);
+  ptRender();
+
+  /* S4 미지수 거꾸로 */
+  function svRender(){
+    var a=parseInt($("sv_as").value,10), b=parseInt($("sv_bs").value,10), c=parseInt($("sv_cs").value,10);
+    $("sv_a").textContent=a; $("sv_b").textContent=b; $("sv_c").textContent=c;
+    $("sv_code_c").innerHTML=
+      C("// "+a+" × □ + "+b+" = "+c+", □ 구하기")+"\n"+
+      K("double")+" box = ("+K("double")+")("+N(c)+" - "+N(b)+") / "+N(a)+";\n"+
+      F("printf")+"("+ST('"□ = %.2f\\n"')+", box);";
+    $("sv_code_py").innerHTML=
+      C("# "+a+" × □ + "+b+" = "+c+", □ 구하기")+"\n"+
+      "box = ("+N(c)+" - "+N(b)+") / "+N(a)+"\n"+
+      F("print")+"("+ST('"□ ="')+", box)";
+    var box=(c-b)/a;
+    var nice = (Number.isInteger(box)) ? ("□ = "+box+" (딱 떨어져요!)") : ("□ = "+(Math.round(box*100)/100)+" (소수가 나왔어요)");
+    if(c-b<0){ nice="□ = "+(Math.round(box*100)/100)+" (결과가 더하는 수보다 작아요!)"; }
+    $("sv_out").innerHTML='<span class="pmt">$ </span>□ = ('+c+" − "+b+") ÷ "+a+" → "+nice;
+  }
+  $("sv_as").addEventListener("input", svRender);
+  $("sv_bs").addEventListener("input", svRender);
+  $("sv_cs").addEventListener("input", svRender);
+  svRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>
