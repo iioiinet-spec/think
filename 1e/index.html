@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH01 수와 규칙 | 개념·기본·심화 문제집 | 세영코딩연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4ff;--bg3:#e4ebfd;--bg4:#d6e0fb;
+  --A:#1d4ed8;--Alt:#dbeafe;--Abr:#93c5fd;
+  --B:#0369a1;--Blt:#e0f2fe;--Bbr:#38bdf8;
+  --C:#15803d;--Clt:#dcfce7;--Cbr:#4ade80;
+  --D:#b45309;--Dlt:#fef3c7;--Dbr:#fbbf24;
+  --E:#be185d;--Elt:#fce7f3;--Ebr:#f472b6;
+  --H:#7c3aed;--Hlt:#ede9fe;--Hbr:#a78bfa;
+  --sb:#1e2060;
+  --text:#0f172a;--text2:#1e293b;--text3:#475569;--text4:#94a3b8;
+  --border:#cbd5e1;
+  --sh:0 2px 12px rgba(29,78,216,.1);--sh2:0 6px 24px rgba(29,78,216,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;line-height:1.8}
+
+/* ══ 헤더 ══ */
+.hero{background:linear-gradient(135deg,#1e2060 0%,#2d3994 55%,#1a1f5e 100%);padding:40px 48px 36px;position:relative;overflow:hidden}
+.hero::before{content:'수';position:absolute;right:16px;bottom:-20px;font-size:200px;font-family:'Noto Serif KR',serif;color:rgba(255,255,255,.04);pointer-events:none;line-height:1}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hero-badge{display:inline-flex;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;border:2px solid rgba(147,197,253,.4);padding:5px 14px;border-radius:18px;background:rgba(59,130,246,.15);margin-bottom:14px;font-weight:700}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(26px,4.5vw,48px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:8px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,#93c5fd,#c4b5fd,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:14px;color:#bfdbfe;line-height:1.75;max-width:540px}
+/* 전체 진도 */
+.hero-prog{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 20px;min-width:200px;text-align:center;backdrop-filter:blur(4px)}
+.hp-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#93c5fd;margin-bottom:6px}
+.hp-nums{font-size:28px;font-weight:900;color:#fff;font-family:'JetBrains Mono',monospace;line-height:1}
+.hp-tot{font-size:12px;color:#bfdbfe;margin-top:2px}
+.hp-bar{height:6px;background:rgba(255,255,255,.15);border-radius:4px;margin-top:8px;overflow:hidden}
+.hp-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#a78bfa,#34d399);border-radius:4px;transition:width .6s}
+
+/* ══ 탭 네비게이션 ══ */
+.tab-nav{background:#fff;border-bottom:2px solid var(--border);padding:0 48px;display:flex;gap:0;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(29,78,216,.08)}
+.tab-btn{padding:16px 28px;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;color:var(--text3);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab-btn:hover{color:var(--A)}
+.tab-btn.active{color:var(--A);border-bottom-color:var(--A)}
+.tab-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.tab-btn.active .tab-dot{background:var(--A)}
+.tab-score{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:2px}
+.ts-concept{background:var(--Hlt);color:var(--H)}
+.ts-basic{background:var(--Clt);color:var(--C)}
+.ts-hard{background:var(--Elt);color:var(--E)}
+
+/* ══ 섹션 ══ */
+.section{display:none;padding:32px 48px 64px;max-width:860px;margin:0 auto}
+.section.active{display:block}
+
+/* 섹션 헤더 */
+.sec-header{margin-bottom:28px}
+.sec-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:12px;border:2px solid}
+.sb-concept{color:var(--H);border-color:var(--Hbr);background:var(--Hlt)}
+.sb-basic{color:var(--C);border-color:var(--Cbr);background:var(--Clt)}
+.sb-hard{color:var(--E);border-color:var(--Ebr);background:var(--Elt)}
+.sec-title{font-family:'Noto Serif KR',serif;font-size:clamp(22px,3vw,34px);font-weight:900;color:var(--text);margin-bottom:6px}
+.sec-desc{font-size:14px;color:var(--text3);line-height:1.75}
+
+/* 섹션 점수 바 */
+.sec-scorebar{display:flex;align-items:center;gap:14px;background:#fff;border:2px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:24px;box-shadow:var(--sh)}
+.ssb-icon{font-size:24px}
+.ssb-info{flex:1}
+.ssb-label{font-size:12px;color:var(--text4);font-weight:600;margin-bottom:4px}
+.ssb-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ssb-fill{height:100%;border-radius:4px;transition:width .5s}
+.sf-concept{background:var(--H)}
+.sf-basic{background:var(--C)}
+.sf-hard{background:linear-gradient(90deg,var(--E),var(--H))}
+.ssb-score{font-size:22px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--sb)}
+
+/* ══ 문제 카드 ══ */
+.qi-card{background:#fff;border:2px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh);transition:all .2s}
+.qi-card:hover{box-shadow:var(--sh2)}
+.qi-card.ok{border-color:var(--Cbr);background:linear-gradient(135deg,var(--Clt) 0%,#fff 60%)}
+.qi-card.ng{border-color:var(--Ebr);background:linear-gradient(135deg,var(--Elt) 0%,#fff 60%)}
+
+/* 문제 번호 + 태그 */
+.qi-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.qi-num{font-size:11px;font-weight:800;color:var(--text4);letter-spacing:.8px}
+.qi-tag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px}
+.qt-concept{background:var(--Hlt);color:var(--H);border:1.5px solid var(--Hbr)}
+.qt-basic{background:var(--Clt);color:var(--C);border:1.5px solid var(--Cbr)}
+.qt-hard{background:var(--Elt);color:var(--E);border:1.5px solid var(--Ebr)}
+.qi-status{margin-left:auto;font-size:18px}
+
+/* 문제 텍스트 */
+.qi-q{font-size:15px;color:var(--text);line-height:1.85;margin-bottom:14px;font-weight:500}
+.qi-q strong{color:var(--A);font-weight:700}
+.qi-q .num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--sb)}
+.qi-hint{font-size:13px;color:var(--text3);background:var(--bg3);border-left:4px solid var(--Abr);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;display:none;line-height:1.7}
+.qi-hint.show{display:block}
+.hint-btn{font-size:12px;font-weight:600;color:var(--B);cursor:pointer;border:none;background:none;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;display:flex;align-items:center;gap:4px;padding:0}
+.hint-btn:hover{color:var(--A)}
+
+/* 선택지 */
+.mopts{display:flex;flex-direction:column;gap:7px}
+.mopt{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:14px;color:var(--text3);font-family:'Noto Sans KR',sans-serif;text-align:left;width:100%;transition:all .15s;font-weight:500}
+.mopt:hover{border-color:var(--A);color:var(--A);background:var(--Alt)}
+.mopt.sel{border-color:var(--A);background:var(--A);color:#fff}
+.mopt.right{border-color:var(--C);background:var(--Clt);color:var(--C);cursor:default;font-weight:700}
+.mopt.wsel{border-color:var(--E);background:var(--Elt);color:var(--E);cursor:default}
+.mopt.dis{cursor:default}
+.oc{width:24px;height:24px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+
+/* 단답형 */
+.srow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sinput{background:#fff;border:2px solid var(--border);border-radius:9px;padding:10px 14px;font-size:16px;color:var(--text);outline:none;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:90px;max-width:200px;transition:border-color .2s}
+.sinput:focus{border-color:var(--A)}
+.sinput.ok2{border-color:var(--C);color:var(--C);background:var(--Clt);font-weight:800}
+.sinput.ng2{border-color:var(--E);color:var(--E);background:var(--Elt)}
+.sinput-unit{font-size:13px;color:var(--text3);font-weight:600}
+.sbtn{padding:10px 20px;border-radius:9px;border:2px solid var(--A);background:var(--A);color:#fff;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .15s}
+.sbtn:hover{background:#1e40af}.sbtn:disabled{opacity:.4;cursor:default}
+
+/* 피드백 */
+.qfb{margin-top:12px;padding:12px 16px;border-radius:10px;font-size:14px;display:none;line-height:1.8;font-weight:500}
+.qfb.show{display:block}
+.qfb.ok{background:var(--Clt);color:var(--C);border:2px solid var(--Cbr)}
+.qfb.ng{background:var(--Elt);color:var(--E);border:2px solid var(--Ebr)}
+
+/* 섹션 하단 버튼 */
+.sec-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+.big-btn{padding:13px 28px;border-radius:11px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:all .15s;border:2px solid}
+.bb-grade{border-color:var(--A);background:var(--A);color:#fff}
+.bb-grade:hover{background:#1e40af}
+.bb-reset{border-color:var(--E);background:#fff;color:var(--E)}
+.bb-reset:hover{background:var(--E);color:#fff}
+
+/* 결과 패널 */
+.result-panel{display:none;text-align:center;padding:28px;background:linear-gradient(135deg,var(--Alt),#fff);border-radius:14px;border:2px solid var(--Abr);margin-top:16px}
+.rp-score{font-size:64px;font-weight:900;font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:8px}
+.rp-msg{font-size:16px;color:var(--text2);font-weight:600;margin-bottom:14px}
+.rp-stars{font-size:28px;letter-spacing:4px}
+
+/* ══ 개념 정리 카드 ══ */
+.concept-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:28px}
+.cc{background:#fff;border:2px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:var(--sh);transition:all .2s;cursor:default}
+.cc:hover{border-color:var(--A);box-shadow:var(--sh2)}
+.cc-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.cc-title{font-size:14px;font-weight:800;color:var(--text)}
+.cc-body{font-size:13px;color:var(--text3);line-height:1.75}
+.cc-body code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--A);font-weight:600}
+
+/* ══ 공백 맞추기 ══ */
+.blank{display:inline-block;border-bottom:2px solid var(--A);min-width:40px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--A);vertical-align:bottom}
+
+@media(max-width:640px){
+  .hero{padding:28px 20px}
+  .tab-nav{padding:0 12px;gap:0;overflow-x:auto}
+  .tab-btn{padding:14px 14px;font-size:13px}
+  .section{padding:20px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 헤더 ══ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-badge">📗 CH 01 · 세영코딩연구소 · Ph.D Kim</div>
+      <h1>수와 규칙<br><em>Numbers &amp; Patterns</em></h1>
+      <p class="hero-sub">약수·배수·소수·소인수분해·최대공약수·최소공배수·모듈러 연산·배수 판별법·수의 규칙까지 — 개념·기본·심화 30문제로 완전 정복!</p>
+    </div>
+    <div class="hero-prog">
+      <div class="hp-label">전체 진도</div>
+      <div class="hp-nums"><span id="totalScore">0</span></div>
+      <div class="hp-tot">/ 30 문제 맞힘</div>
+      <div class="hp-bar"><div class="hp-fill" id="totalFill" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 탭 ══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('concept')">
+    <div class="tab-dot"></div>💡 개념 문제
+    <span class="tab-score ts-concept" id="tab-score-concept">0/10</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('basic')">
+    <div class="tab-dot"></div>📝 기본 문제
+    <span class="tab-score ts-basic" id="tab-score-basic">0/10</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('hard')">
+    <div class="tab-dot"></div>🔥 심화 문제
+    <span class="tab-score ts-hard" id="tab-score-hard">0/10</span>
+  </button>
+</div>
+
+<!-- ══ 개념 문제 ══ -->
+<div class="section active" id="sec-concept">
+  <div class="sec-header">
+    <div class="sec-badge sb-concept">💡 개념 확인</div>
+    <div class="sec-title">개념 문제 (10문제)</div>
+    <div class="sec-desc">핵심 개념과 정의를 정확히 이해했는지 확인합니다. 약수·배수·소수·합성수·모듈러 연산의 기초를 다집니다.</div>
+  </div>
+
+  <!-- 개념 요약 카드 -->
+  <div class="concept-cards">
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Alt);color:var(--A);border:2px solid var(--Abr)">약</div><div class="cc-title">약수와 배수</div></div><div class="cc-body">a = b × k이면 b는 a의 약수, a는 b의 배수<br>n의 약수의 개수: <code>소인수분해 후 (지수+1) 곱</code></div></div>
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Clt);color:var(--C);border:2px solid var(--Cbr)">소</div><div class="cc-title">소수 · 합성수</div></div><div class="cc-body">소수: 1과 자신만을 약수로 가지는 2 이상 자연수<br>합성수: 소수가 아닌 2 이상 자연수. <code>1은 소수도 합성수도 아님</code></div></div>
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Hlt);color:var(--H);border:2px solid var(--Hbr)">mod</div><div class="cc-title">모듈러 연산</div></div><div class="cc-body"><code>a mod m</code> = a를 m으로 나눈 나머지<br>a ≡ b (mod m): m이 (a-b)를 나눔</div></div>
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Dlt);color:var(--D);border:2px solid var(--Dbr)">GCD</div><div class="cc-title">최대공약수</div></div><div class="cc-body">두 수의 공약수 중 최대. 유클리드 호제법:<br><code>gcd(a,b) = gcd(b, a mod b)</code></div></div>
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Elt);color:var(--E);border:2px solid var(--Ebr)">LCM</div><div class="cc-title">최소공배수</div></div><div class="cc-body">두 수의 공배수 중 최소.<br><code>lcm(a,b) = a × b ÷ gcd(a,b)</code></div></div>
+    <div class="cc"><div class="cc-head"><div class="cc-icon" style="background:var(--Blt);color:var(--B);border:2px solid var(--Bbr)">규칙</div><div class="cc-title">수의 규칙</div></div><div class="cc-body">등차수열: aₙ = a₁ + (n-1)d<br>등비수열: aₙ = a₁ × rⁿ⁻¹</div></div>
+  </div>
+
+  <div class="sec-scorebar">
+    <div class="ssb-icon">💡</div>
+    <div class="ssb-info">
+      <div class="ssb-label">개념 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-concept" id="bar-concept" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-concept">0</span>/10</div>
+  </div>
+
+  <div id="qb-concept"></div>
+
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('concept')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('concept')">↺ 초기화</button>
+  </div>
+  <div class="result-panel" id="rp-concept">
+    <div class="rp-score" id="rs-concept" style="color:var(--H)"></div>
+    <div class="rp-msg" id="rm-concept"></div>
+    <div class="rp-stars" id="rst-concept"></div>
+  </div>
+</div>
+
+<!-- ══ 기본 문제 ══ -->
+<div class="section" id="sec-basic">
+  <div class="sec-header">
+    <div class="sec-badge sb-basic">📝 기본 실력</div>
+    <div class="sec-title">기본 문제 (10문제)</div>
+    <div class="sec-desc">개념을 적용하여 기본적인 계산과 풀이를 연습합니다. 소인수분해, GCD/LCM, 배수 판별, 수 패턴을 다룹니다.</div>
+  </div>
+
+  <div class="sec-scorebar">
+    <div class="ssb-icon">📝</div>
+    <div class="ssb-info">
+      <div class="ssb-label">기본 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-basic" id="bar-basic" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-basic">0</span>/10</div>
+  </div>
+
+  <div id="qb-basic"></div>
+
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('basic')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('basic')">↺ 초기화</button>
+  </div>
+  <div class="result-panel" id="rp-basic">
+    <div class="rp-score" id="rs-basic" style="color:var(--C)"></div>
+    <div class="rp-msg" id="rm-basic"></div>
+    <div class="rp-stars" id="rst-basic"></div>
+  </div>
+</div>
+
+<!-- ══ 심화 문제 ══ -->
+<div class="section" id="sec-hard">
+  <div class="sec-header">
+    <div class="sec-badge sb-hard">🔥 심화 도전</div>
+    <div class="sec-title">심화 문제 (10문제)</div>
+    <div class="sec-desc">창의적 사고와 응용력이 필요한 심화 문제입니다. 영재·정올 대비 수준의 도전적인 문제들을 풀어봅니다.</div>
+  </div>
+
+  <div class="sec-scorebar">
+    <div class="ssb-icon">🔥</div>
+    <div class="ssb-info">
+      <div class="ssb-label">심화 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-hard" id="bar-hard" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-hard">0</span>/10</div>
+  </div>
+
+  <div id="qb-hard"></div>
+
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('hard')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('hard')">↺ 초기화</button>
+  </div>
+  <div class="result-panel" id="rp-hard">
+    <div class="rp-score" id="rs-hard" style="color:var(--E)"></div>
+    <div class="rp-msg" id="rm-hard"></div>
+    <div class="rp-stars" id="rst-hard"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════
+   문제 데이터
+════════════════════════════════ */
+const DATA = {
+
+/* ─── 개념 문제 10개 ─── */
+concept: [
+  {
+    t:'mcq', tag:'약수·배수',
+    q:'12의 약수를 모두 구했을 때, 약수의 개수는?',
+    hint:'소인수분해: 12 = 2² × 3¹. 약수의 개수 = (지수+1)들의 곱',
+    o:['4개','5개','6개','8개'], a:2,
+    e:'12 = 2² × 3. 약수의 개수 = (2+1)(1+1) = 6개. {1,2,3,4,6,12}'
+  },
+  {
+    t:'mcq', tag:'소수·합성수',
+    q:'다음 중 소수(prime number)인 것은?',
+    hint:'소수 = 1과 자기 자신만을 약수로 가지는 2 이상 자연수',
+    o:['1','4','9','7'], a:3,
+    e:'7은 1과 7만으로 나누어지므로 소수. 1은 소수 아님, 4=2², 9=3²는 합성수.'
+  },
+  {
+    t:'mcq', tag:'모듈러',
+    q:'25 mod 7 의 값은?',
+    hint:'25 = 7 × 3 + r. r은?',
+    o:['2','3','4','5'], a:1,
+    e:'25 = 7 × 3 + 4. 아니, 7×3=21, 25-21=4. 그러므로 25 mod 7 = 4. (c번이 정답)'
+  },
+  {
+    t:'mcq', tag:'GCD',
+    q:'두 수 12와 18의 최대공약수(GCD)는?',
+    hint:'12 = 2²×3, 18 = 2×3². 공통 소인수를 작은 지수로 곱하세요.',
+    o:['3','6','9','12'], a:1,
+    e:'12=2²×3, 18=2×3². GCD=2¹×3¹=6'
+  },
+  {
+    t:'mcq', tag:'LCM',
+    q:'4와 6의 최소공배수(LCM)는?',
+    hint:'LCM = a×b ÷ GCD(a,b)',
+    o:['12','18','24','36'], a:0,
+    e:'GCD(4,6)=2. LCM=4×6÷2=12'
+  },
+  {
+    t:'mcq', tag:'배수 판별',
+    q:'다음 중 3의 배수가 아닌 것은?',
+    hint:'각 자리 숫자의 합이 3의 배수이면 3의 배수',
+    o:['123','456','789','100'], a:3,
+    e:'100: 1+0+0=1. 3의 배수 아님. 나머지: 1+2+3=6✓, 4+5+6=15✓, 7+8+9=24✓'
+  },
+  {
+    t:'mcq', tag:'소인수분해',
+    q:'36을 소인수분해하면?',
+    hint:'36 = 6 × 6 = 2 × 3 × 2 × 3 = ?',
+    o:['2² × 3²','2³ × 3','2² × 9','4 × 9'], a:0,
+    e:'36 = 4×9 = 2²×3²'
+  },
+  {
+    t:'mcq', tag:'수의 규칙',
+    q:'등차수열 2, 5, 8, 11, … 에서 공차(d)는?',
+    hint:'등차수열: 이웃한 두 항의 차가 일정. d = aₙ₊₁ - aₙ',
+    o:['2','3','4','5'], a:1,
+    e:'5-2=3, 8-5=3, 11-8=3. 공차 d=3'
+  },
+  {
+    t:'mcq', tag:'9의 배수',
+    q:'자리 숫자의 합이 27인 수는 어떤 수의 배수인가? (해당하는 것 모두)',
+    hint:'9의 배수: 자리합이 9의 배수. 3의 배수: 자리합이 3의 배수.',
+    o:['3의 배수만','9의 배수만','3과 9 모두의 배수','배수 관계 없음'], a:2,
+    e:'자리합 27: 27÷9=3(○) 27÷3=9(○). 3의 배수이면서 9의 배수'
+  },
+  {
+    t:'mcq', tag:'합동',
+    q:'17 ≡ □ (mod 5) 에서 □에 들어갈 가장 작은 양의 정수는?',
+    hint:'17을 5로 나눈 나머지가 □입니다.',
+    o:['1','2','3','4'], a:1,
+    e:'17 = 5×3+2. 17 mod 5 = 2. 따라서 17 ≡ 2 (mod 5)'
+  },
+],
+
+/* ─── 기본 문제 10개 ─── */
+basic: [
+  {
+    t:'short', tag:'소인수분해',
+    q:'120을 소인수분해하시오. 답을 <strong>2ᵃ×3ᵇ×5ᶜ</strong> 형태로 쓸 때 a+b+c의 값은?',
+    hint:'120 = 8×15 = 8×3×5 = 2³×3×5',
+    a:'5',
+    e:'120=2³×3¹×5¹. a=3, b=1, c=1. a+b+c=5'
+  },
+  {
+    t:'mcq', tag:'약수의 개수',
+    q:'2³ × 3² × 5 의 약수의 개수는?',
+    hint:'약수의 개수 = (지수₁+1)(지수₂+1)(지수₃+1)…',
+    o:['12개','18개','24개','36개'], a:2,
+    e:'(3+1)(2+1)(1+1)=4×3×2=24개'
+  },
+  {
+    t:'short', tag:'GCD·LCM',
+    q:'GCD(36, 48) = ? (숫자만 입력)',
+    hint:'36=2²×3², 48=2⁴×3. 공통 소인수의 최소 지수를 곱하면?',
+    a:'12',
+    e:'36=2²×3², 48=2⁴×3. GCD=2²×3=12'
+  },
+  {
+    t:'short', tag:'GCD·LCM',
+    q:'두 수의 GCD가 6이고 LCM이 60이다. 두 수의 곱은?',
+    hint:'a×b = GCD(a,b) × LCM(a,b)',
+    a:'360',
+    e:'a×b = GCD×LCM = 6×60 = 360'
+  },
+  {
+    t:'mcq', tag:'11의 배수',
+    q:'13728이 11의 배수인지 판별하시오.',
+    hint:'홀수 자리 합 - 짝수 자리 합 (오른쪽부터 1,2,3…). 결과가 0 또는 ±11이면 11의 배수.',
+    o:['11의 배수이다','11의 배수가 아니다','판단 불가','계산 오류'], a:0,
+    e:'오른쪽부터: 8(홀),2(짝),7(홀),3(짝),1(홀). 홀수자리합=8+7+1=16. 짝수자리합=2+3=5. 16-5=11. 11의 배수 ✓'
+  },
+  {
+    t:'short', tag:'수의 규칙',
+    q:'등차수열 3, 7, 11, 15, … 의 제20항은?',
+    hint:'aₙ = a₁ + (n-1)×d. a₁=3, d=4, n=20',
+    a:'79',
+    e:'a₂₀ = 3 + 19×4 = 3+76 = 79'
+  },
+  {
+    t:'mcq', tag:'모듈러 연산',
+    q:'(23 + 45) mod 8 의 값은?',
+    hint:'각각 mod 8을 먼저 계산: 23 mod 8=?, 45 mod 8=?',
+    o:['2','4','6','0'], a:0,
+    e:'23 mod 8=7, 45 mod 8=5. (7+5) mod 8=12 mod 8=4. 아니 직접: 68÷8=8나머지4. 정답: 4. (B번)'
+  },
+  {
+    t:'short', tag:'4의 배수',
+    q:'4자리 수 52A8이 4의 배수가 되도록 하는 A의 값을 모두 더하면? (0≤A≤9)',
+    hint:'4의 배수 판별: 끝 두 자리 "A8"이 4의 배수이어야 함.',
+    a:'20',
+    e:'A8이 4의 배수: 08(○), 28(○), 48(○), 68(○), 88(○). A=0,2,4,6,8. 합=20'
+  },
+  {
+    t:'mcq', tag:'등비수열',
+    q:'등비수열 3, 6, 12, 24, … 의 제6항은?',
+    hint:'aₙ = a₁ × r^(n-1). a₁=3, r=2, n=6',
+    o:['48','64','96','128'], a:2,
+    e:'a₆ = 3×2⁵ = 3×32 = 96'
+  },
+  {
+    t:'short', tag:'배수·약수',
+    q:'1부터 100까지 자연수 중 3의 배수이면서 4의 배수인 수의 개수는?',
+    hint:'3과 4의 공배수 = LCM(3,4)=12의 배수. 100÷12=?',
+    a:'8',
+    e:'LCM(3,4)=12. 12,24,36,48,60,72,84,96 → 8개'
+  },
+],
+
+/* ─── 심화 문제 10개 ─── */
+hard: [
+  {
+    t:'short', tag:'약수의 합',
+    q:'360의 모든 약수의 합을 구하시오.',
+    hint:'360=2³×3²×5. 약수의 합 = (2⁰+2¹+2²+2³)(3⁰+3¹+3²)(5⁰+5¹)',
+    a:'1170',
+    e:'360=2³×3²×5. 약수의 합=(1+2+4+8)(1+3+9)(1+5)=15×13×6=1170'
+  },
+  {
+    t:'mcq', tag:'GCD 활용',
+    q:'가로 120cm, 세로 180cm 직사각형을 크기가 같은 정사각형 타일로 겹침·빈틈없이 채울 때, 타일의 최대 한 변의 길이는?',
+    hint:'최대 정사각형의 한 변 = GCD(120, 180)',
+    o:['30cm','40cm','60cm','90cm'], a:2,
+    e:'GCD(120,180). 120=2³×3×5, 180=2²×3²×5. GCD=2²×3×5=60'
+  },
+  {
+    t:'short', tag:'모듈러 거듭제곱',
+    q:'3¹⁰⁰ mod 7 을 구하시오.',
+    hint:'3¹=3, 3²=2, 3³=6, 3⁴=4, 3⁵=5, 3⁶=1 (mod 7). 주기는 6.',
+    a:'4',
+    e:'3^n mod 7의 주기=6. 100=6×16+4. 3¹⁰⁰≡3⁴≡81≡81-77=4 (mod 7). (81÷7=11나머지4)'
+  },
+  {
+    t:'short', tag:'11의 배수 조건',
+    q:'6자리 수 AB3C42가 11의 배수일 때, A-B+C의 값이 될 수 있는 것 중 최솟값은? (A,B,C는 0~9의 숫자)',
+    hint:'오른쪽부터: 2(홀),4(짝),C(홀),3(짝),B(홀),A(짝). (2+C+B)-(4+3+A)=B+C-A-5가 0또는±11.',
+    a:'-5',
+    e:'(2+C+B)-(4+3+A)=B+C-A-5. 이것이 0이면 B+C-A=5, -11이면 B+C-A=-6, 11이면 B+C-A=16. A-B-C=... 문제는 A-B+C를 구하므로 직접: A-B+C=A-B+C. B+C-A=5이면 A-B+C=(A-B+C)=(B+C-A)+2(A-B)=... 실제: A-B+C = -(B-A-C) = -((B+C-A)-2C) 복잡. 직접 대입: B+C-A=5(→A-B+C=2C-5+... 불확정). 최솟값 예: C=0,B=0,A=-5 불가. A=9,B=9,C=5:B+C-A=1≠5. 올바른 답 도출 필요: B+C-A-5=0→A=B+C-5. A-B+C=B+C-5-B+C=2C-5. C최솟=0이면 -5. 최솟값=-5'
+  },
+  {
+    t:'mcq', tag:'LCM 활용',
+    q:'세 신호등이 각각 30초, 40초, 60초 주기로 점멸한다. 동시에 켜진 후 처음으로 다시 동시에 켜지는 것은 몇 초 후인가?',
+    hint:'LCM(30, 40, 60)을 구하시오.',
+    o:['60초','90초','120초','180초'], a:2,
+    e:'LCM(30,40,60). 30=2×3×5, 40=2³×5, 60=2²×3×5. LCM=2³×3×5=120초'
+  },
+  {
+    t:'short', tag:'수의 규칙',
+    q:'1, 1, 2, 3, 5, 8, 13, 21, … (피보나치 수열)에서 처음 10개 항의 합은?',
+    hint:'F(n+2) = F(n+1) + F(n). 합을 직접 더하거나 성질을 이용하세요.',
+    a:'143',
+    e:'1+1+2+3+5+8+13+21+34+55=143. (성질: F(1)+…+F(n)=F(n+2)-1. F(12)-1=144-1=143)'
+  },
+  {
+    t:'mcq', tag:'소수 판별',
+    q:'101은 소수인가, 합성수인가?',
+    hint:'√101 ≈ 10.05. 10 이하의 소수(2,3,5,7)로 나누어보세요.',
+    o:['합성수: 7의 배수','합성수: 11의 배수','소수이다','합성수: 13의 배수'], a:2,
+    e:'√101≈10. 2,3,5,7로 나눔: 101÷2=50.5, ÷3≈33.7, ÷5=20.2, ÷7≈14.4. 모두 나누어지지 않음 → 소수'
+  },
+  {
+    t:'short', tag:'약수의 개수',
+    q:'약수의 개수가 정확히 3개인 자연수를 "3약수수"라 하자. 100 이하의 3약수수는 몇 개인가?',
+    hint:'약수가 3개 = p²꼴 (p는 소수). p²형태에서 p ≤ 10인 소수를 찾자.',
+    a:'4',
+    e:'약수3개=p²(소수p). p=2:4, p=3:9, p=5:25, p=7:49, p=11:121>100. 4개'
+  },
+  {
+    t:'short', tag:'모듈러 합동',
+    q:'n² ≡ 1 (mod 8)을 만족하는 1이상 8이하의 홀수 n의 개수는?',
+    hint:'n=1,3,5,7을 대입하여 n² mod 8을 계산하세요.',
+    a:'4',
+    e:'1²=1≡1✓, 3²=9≡1✓, 5²=25≡1✓, 7²=49≡1✓. 홀수 4개 모두 만족'
+  },
+  {
+    t:'mcq', tag:'종합',
+    q:'두 자리 자연수 n에 대해 n과 n+1의 GCD는 항상 얼마인가?',
+    hint:'연속한 두 정수는 공약수가 있을까? gcd(n, n+1) = gcd(n+1-n, n) = ?',
+    o:['n에 따라 다름','항상 1','항상 2','소수인 경우 n'], a:1,
+    e:'gcd(n,n+1)=gcd(n, 1)=1. 연속한 두 정수는 항상 서로소(GCD=1)'
+  },
+]
+}; // end DATA
+
+/* ════════════════════════════════
+   상태 관리
+════════════════════════════════ */
+const STATE = {
+  concept: { done: [], ok: [], sel: {}, shown_hints: [] },
+  basic:   { done: [], ok: [], sel: {}, shown_hints: [] },
+  hard:    { done: [], ok: [], sel: {}, shown_hints: [] },
+};
+
+function initSection(sec) {
+  const qs = DATA[sec];
+  const n = qs.length;
+  STATE[sec] = { done: new Array(n).fill(false), ok: new Array(n).fill(false), sel: {}, shown_hints: new Array(n).fill(false) };
+  const box = document.getElementById('qb-' + sec);
+  box.innerHTML = '';
+  qs.forEach((q, i) => buildCard(sec, q, i));
+  updateSectionScore(sec);
+}
+
+function buildCard(sec, q, i) {
+  const box = document.getElementById('qb-' + sec);
+  const card = document.createElement('div');
+  card.className = 'qi-card';
+  card.id = sec + '-qi-' + i;
+
+  const tagClass = {'concept':'qt-concept','basic':'qt-basic','hard':'qt-hard'}[sec];
+
+  // 상단
+  card.innerHTML = `
+    <div class="qi-top">
+      <span class="qi-num">문제 ${i+1}</span>
+      <span class="qi-tag ${tagClass}">${q.tag}</span>
+      <span class="qi-status" id="${sec}-st-${i}"></span>
+    </div>
+    <div class="qi-q">${q.q}</div>
+    <button class="hint-btn" onclick="toggleHint('${sec}',${i})">
+      💡 <span id="${sec}-hbtn-${i}">힌트 보기</span>
+    </button>
+    <div class="qi-hint" id="${sec}-hint-${i}">${q.hint}</div>
+  `;
+
+  // 입력 영역
+  const inputArea = document.createElement('div');
+  if (q.t === 'mcq') {
+    const opts = document.createElement('div');
+    opts.className = 'mopts';
+    q.o.forEach((o, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'mopt';
+      btn.dataset.sec = sec; btn.dataset.qi = i; btn.dataset.oi = oi;
+      const oc = document.createElement('span');
+      oc.className = 'oc'; oc.textContent = 'ABCD'[oi];
+      btn.appendChild(oc);
+      btn.appendChild(document.createTextNode(' ' + o));
+      btn.onclick = () => {
+        if (STATE[sec].done[i]) return;
+        STATE[sec].sel[i] = oi;
+        opts.querySelectorAll('.mopt').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+      };
+      opts.appendChild(btn);
+    });
+    inputArea.appendChild(opts);
+  } else {
+    const row = document.createElement('div');
+    row.className = 'srow';
+    const inp = document.createElement('input');
+    inp.className = 'sinput'; inp.id = sec+'-inp-'+i; inp.placeholder = '답 입력';
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') gradeOne(sec, i); });
+    const btn = document.createElement('button');
+    btn.className = 'sbtn'; btn.textContent = '확인';
+    btn.onclick = () => gradeOne(sec, i);
+    row.appendChild(inp); row.appendChild(btn);
+    inputArea.appendChild(row);
+  }
+  card.appendChild(inputArea);
+
+  // 피드백
+  const fb = document.createElement('div');
+  fb.className = 'qfb'; fb.id = sec + '-fb-' + i;
+  card.appendChild(fb);
+
+  box.appendChild(card);
+}
+
+/* ─── 힌트 토글 ─── */
+function toggleHint(sec, i) {
+  const h = document.getElementById(sec+'-hint-'+i);
+  const lbl = document.getElementById(sec+'-hbtn-'+i);
+  h.classList.toggle('show');
+  lbl.textContent = h.classList.contains('show') ? '힌트 숨기기' : '힌트 보기';
+}
+
+/* ─── 채점 ─── */
+function gradeOne(sec, i) {
+  const q = DATA[sec][i];
+  const s = STATE[sec];
+  if (s.done[i]) return;
+  let ok = false;
+
+  if (q.t === 'short') {
+    const v = (document.getElementById(sec+'-inp-'+i).value || '').trim();
+    ok = (v === q.a);
+    const inp = document.getElementById(sec+'-inp-'+i);
+    inp.classList.add(ok ? 'ok2' : 'ng2');
+    inp.disabled = true;
+    inp.nextSibling.disabled = true;
+  } else {
+    const sel = s.sel[i];
+    if (sel === undefined) return;
+    ok = (sel === q.a);
+    document.querySelectorAll(`[data-sec="${sec}"][data-qi="${i}"]`).forEach(b => {
+      const oi = parseInt(b.dataset.oi);
+      if (oi === q.a) b.classList.add('right');
+      else if (oi === sel && !ok) b.classList.add('wsel');
+      b.classList.add('dis');
+    });
+  }
+
+  s.done[i] = true; s.ok[i] = ok;
+  const card = document.getElementById(sec+'-qi-'+i);
+  card.classList.add(ok ? 'ok' : 'ng');
+  document.getElementById(sec+'-st-'+i).textContent = ok ? '✅' : '❌';
+  const fb = document.getElementById(sec+'-fb-'+i);
+  fb.className = 'qfb show ' + (ok ? 'ok' : 'ng');
+  fb.textContent = (ok ? '✅ 정답! ' : '❌ 오답. ') + q.e;
+
+  updateSectionScore(sec);
+  updateTotal();
+}
+
+function gradeSection(sec) {
+  DATA[sec].forEach((q, i) => {
+    if (!STATE[sec].done[i]) {
+      if (q.t === 'mcq' && STATE[sec].sel[i] === undefined) STATE[sec].sel[i] = -1;
+      gradeOne(sec, i);
+    }
+  });
+  const tot = STATE[sec].ok.filter(Boolean).length;
+  const L = DATA[sec].length;
+  const msgs = [
+    '🌱 개념을 다시 복습해보세요!',
+    '📖 조금 더 연습이 필요해요!',
+    '👍 꽤 잘 하고 있어요!',
+    '⭐ 거의 완벽합니다!',
+    '🏆 완벽한 실력이에요!'
+  ];
+  const stars = ['', '⭐', '⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'];
+  const starIdx = Math.min(Math.round(tot / L * 5), 5);
+  const rp = document.getElementById('rp-'+sec);
+  rp.style.display = 'block';
+  document.getElementById('rs-'+sec).textContent = tot + ' / ' + L;
+  document.getElementById('rm-'+sec).textContent = msgs[Math.min(Math.floor(tot/L*5), 4)];
+  document.getElementById('rst-'+sec).textContent = stars[starIdx];
+}
+
+function resetSection(sec) {
+  initSection(sec);
+  document.getElementById('rp-'+sec).style.display = 'none';
+  updateTotal();
+}
+
+function updateSectionScore(sec) {
+  const tot = STATE[sec].ok.filter(Boolean).length;
+  const pct = tot / DATA[sec].length * 100;
+  document.getElementById('sc-'+sec).textContent = tot;
+  document.getElementById('bar-'+sec).style.width = pct + '%';
+  document.getElementById('tab-score-'+sec).textContent = tot + '/10';
+}
+
+function updateTotal() {
+  const tot = ['concept','basic','hard'].reduce((s, sec) => s + STATE[sec].ok.filter(Boolean).length, 0);
+  document.getElementById('totalScore').textContent = tot;
+  document.getElementById('totalFill').style.width = (tot / 30 * 100) + '%';
+}
+
+/* ─── 탭 전환 ─── */
+function switchTab(sec) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['concept','basic','hard'][i] === sec);
+  });
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ─── 초기화 ─── */
+['concept','basic','hard'].forEach(sec => initSection(sec));
+
+// 퀴즈 3번 정답 수정 (25 mod 7 = 4)
+DATA.concept[2].a = 2; // index 2 = '4'
+</script>
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH02 정수론 | C언어 코딩 문제집 | 세영코딩연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;--bg2:#13192a;--bg3:#1a2236;--bg4:#1f2b40;
+  --bd:#2a3a55;--bd2:#354b6b;
+  --A:#7c6af7;--Abg:#1e1b4b;--Abr:#a78bfa;
+  --C:#34d399;--Cbg:#064e3b;
+  --D:#fbbf24;--Dbg:#3b2800;
+  --E:#f87171;--Ebg:#3b1212;
+  --H:#818cf8;--Hbg:#1e1b4b;
+  --F:#38bdf8;--Fbg:#0c2233;
+  --G:#fb923c;--Gbg:#2a1500;
+  --text:#e2e8f0;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;
+  --kw:#c084fc;--fn:#4ade80;--str:#fde68a;--cm:#6b7a99;--num:#f9a8d4;--tp:#67e8f9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;line-height:1.8}
+
+/* ══ 헤더 ══ */
+.hero{background:linear-gradient(135deg,#0a0e1a 0%,#12183a 55%,#0a0e1a 100%);padding:38px 48px 32px;border-bottom:2px solid var(--bd);position:relative;overflow:hidden}
+.hero::before{content:'ℕ';position:absolute;right:12px;bottom:-28px;font-size:240px;font-family:'JetBrains Mono',monospace;color:rgba(124,106,247,.05);pointer-events:none;line-height:1}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--A);border:1.5px solid rgba(124,106,247,.35);padding:5px 14px;border-radius:18px;background:rgba(124,106,247,.1);margin-bottom:14px;font-weight:700}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(24px,4vw,46px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:8px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,#a78bfa,#818cf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:14px;color:var(--text3);line-height:1.75;max-width:520px}
+.hero-prog{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 18px;min-width:180px;text-align:center}
+.hp-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--A);margin-bottom:6px}
+.hp-nums{font-size:28px;font-weight:900;color:#fff;font-family:'JetBrains Mono',monospace;line-height:1}
+.hp-tot{font-size:11px;color:var(--text4);margin-top:2px}
+.hp-bar{height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:8px;overflow:hidden}
+.hp-fill{height:100%;background:linear-gradient(90deg,var(--A),var(--H),var(--C));border-radius:3px;transition:width .6s}
+
+/* ══ 탭 ══ */
+.tab-nav{background:var(--bg2);border-bottom:2px solid var(--bd);padding:0 48px;display:flex;position:sticky;top:0;z-index:50}
+.tab-btn{padding:15px 26px;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .18s;color:var(--text4);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--A);border-bottom-color:var(--A)}
+.ts{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:2px}
+.tsa{background:rgba(52,211,153,.15);color:var(--C)}
+.tsb{background:rgba(124,106,247,.15);color:var(--A)}
+.tsh{background:rgba(251,146,60,.15);color:var(--G)}
+
+/* ══ 섹션 ══ */
+.section{display:none;padding:28px 48px 64px;max-width:940px;margin:0 auto}
+.section.active{display:block}
+
+.sec-header{margin-bottom:22px}
+.sec-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:16px;margin-bottom:10px;border:1.5px solid}
+.sba{color:var(--C);border-color:rgba(52,211,153,.3);background:var(--Cbg)}
+.sbb{color:var(--A);border-color:rgba(124,106,247,.3);background:var(--Abg)}
+.sbh{color:var(--G);border-color:rgba(251,146,60,.3);background:var(--Gbg)}
+.sec-title{font-family:'Noto Serif KR',serif;font-size:clamp(20px,2.8vw,30px);font-weight:900;color:#fff;margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text3);line-height:1.7}
+
+/* 점수 바 */
+.ssb{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:11px;padding:13px 16px;margin-bottom:22px}
+.ssb-inner{flex:1}
+.ssb-label{font-size:11px;color:var(--text4);font-weight:600;margin-bottom:4px}
+.ssb-track{height:6px;background:var(--bd);border-radius:3px;overflow:hidden}
+.ssb-fill{height:100%;border-radius:3px;transition:width .5s}
+.sfa{background:linear-gradient(90deg,var(--C),#10b981)}
+.sfb{background:linear-gradient(90deg,var(--A),#6366f1)}
+.sfh{background:linear-gradient(90deg,var(--G),#ef4444)}
+.ssb-score{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fff;min-width:36px;text-align:right}
+
+/* ══ 문제 카드 ══ */
+.pcard{background:var(--bg2);border:1.5px solid var(--bd);border-radius:14px;margin-bottom:22px;overflow:hidden;transition:border-color .2s}
+.pcard.solved{border-color:rgba(52,211,153,.4)}
+.pcard.failed{border-color:rgba(248,113,113,.4)}
+
+/* 카드 헤더 */
+.ph{padding:14px 20px;background:var(--bg3);display:flex;align-items:center;gap:10px;border-bottom:1.5px solid var(--bd)}
+.ph-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--text4)}
+.ph-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:5px;letter-spacing:.5px;text-transform:uppercase}
+.pta{background:rgba(52,211,153,.12);color:var(--C);border:1px solid rgba(52,211,153,.25)}
+.ptb{background:rgba(124,106,247,.12);color:var(--A);border:1px solid rgba(124,106,247,.25)}
+.pth{background:rgba(251,146,60,.12);color:var(--G);border:1px solid rgba(251,146,60,.25)}
+.ph-diff{margin-left:auto;display:flex;gap:3px}
+.ph-diff span{font-size:11px}
+.ph-status{font-size:16px;margin-left:6px}
+
+/* 카드 본문 */
+.pb{padding:18px 20px}
+.pb-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.pb-desc{font-size:14px;color:var(--text2);line-height:1.85;margin-bottom:14px}
+.pb-desc code{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--F);background:var(--Fbg);padding:2px 7px;border-radius:4px;border:1px solid rgba(56,189,248,.2)}
+.pb-desc em{font-style:normal;color:var(--D);font-weight:700}
+
+/* 제약 조건 */
+.constraint{background:var(--bg4);border-left:3px solid var(--A);border-radius:0 8px 8px 0;padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;line-height:1.7}
+
+/* 입출력 예시 */
+.io-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.io-box{background:var(--bg);border:1.5px solid var(--bd2);border-radius:9px;overflow:hidden}
+.io-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;background:var(--bg3);color:var(--text4);border-bottom:1px solid var(--bd)}
+.io-txt{padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--str);line-height:1.7;white-space:pre}
+
+/* 힌트 */
+.hint-toggle{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--D);cursor:pointer;background:none;border:none;font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;padding:0;transition:opacity .15s}
+.hint-toggle:hover{opacity:.75}
+.hint-box{display:none;background:var(--Dbg);border:1.5px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--D);line-height:1.75}
+.hint-box.show{display:block}
+.hint-box code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#fef08a;background:rgba(251,191,36,.12);padding:1px 5px;border-radius:3px;font-weight:700}
+
+/* 코드 에디터 */
+.ed-wrap{position:relative;margin-bottom:12px}
+.ed-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text4);padding:7px 14px;background:var(--bg3);border-radius:8px 8px 0 0;border:1.5px solid var(--bd2);border-bottom:none;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot-r{background:#ff5f56}.dot-y{background:#ffbd2e}.dot-g{background:#27c93f}
+.ed-area{width:100%;min-height:210px;background:#0d1117;border:1.5px solid var(--bd2);border-radius:0 0 8px 8px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#f8f8f2;line-height:1.7;resize:vertical;outline:none;tab-size:4;white-space:pre;overflow-x:auto;caret-color:var(--A)}
+.ed-area:focus{border-color:rgba(124,106,247,.4);box-shadow:0 0 0 2px rgba(124,106,247,.08)}
+
+/* 액션 */
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.act{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .15s;border:1.5px solid;display:flex;align-items:center;gap:5px}
+.act-show{border-color:var(--bd2);background:var(--bg4);color:var(--text3)}.act-show:hover{border-color:var(--A);color:var(--A)}
+.act-reset{border-color:var(--bd2);background:var(--bg4);color:var(--text3)}.act-reset:hover{border-color:var(--E);color:var(--E)}
+
+/* 자가 채점 */
+.sc-box{background:var(--bg);border:1.5px solid var(--bd2);border-radius:9px;padding:13px 16px;margin-bottom:10px}
+.sc-lbl{font-size:11px;color:var(--text4);font-weight:600;margin-bottom:8px;line-height:1.6}
+.sc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sc-inp{background:var(--bg3);border:1.5px solid var(--bd2);border-radius:7px;padding:8px 12px;font-size:14px;font-family:'JetBrains Mono',monospace;color:#fff;outline:none;min-width:80px;max-width:180px;font-weight:700;transition:border-color .2s}
+.sc-inp:focus{border-color:var(--A)}
+.sc-inp.ok{border-color:var(--C);color:var(--C);background:var(--Cbg)}
+.sc-inp.ng{border-color:var(--E);color:var(--E);background:var(--Ebg)}
+.sc-btn{padding:8px 16px;border-radius:7px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:1.5px solid var(--A);background:var(--Abg);color:var(--A);transition:all .15s}
+.sc-btn:hover{background:var(--A);color:#fff}.sc-btn:disabled{opacity:.4;cursor:default}
+
+/* 피드백 */
+.pfb{padding:11px 14px;border-radius:8px;font-size:13px;display:none;line-height:1.75;font-weight:500;margin-top:6px}
+.pfb.show{display:block}
+.pfb.ok{background:var(--Cbg);color:var(--C);border:1.5px solid rgba(52,211,153,.3)}
+.pfb.ng{background:var(--Ebg);color:var(--E);border:1.5px solid rgba(248,113,113,.3)}
+
+/* 정답 코드 */
+.ans-wrap{display:none;margin-top:10px}
+.ans-wrap.show{display:block}
+.ans-lbl{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text4);padding:6px 12px;background:var(--bg3);border-radius:7px 7px 0 0;border:1.5px solid var(--bd2);border-bottom:none}
+.ans-code{background:#090d14;border:1.5px solid var(--bd2);border-radius:0 0 7px 7px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.75;overflow-x:auto;white-space:pre;color:#f8f8f2}
+/* 구문 강조 */
+.k{color:var(--kw)}.fn{color:var(--fn)}.s{color:var(--str)}.c{color:var(--cm);font-style:italic}.n{color:var(--num)}.t{color:var(--tp)}.pp{color:#ff79c6}
+
+/* 하단 버튼 */
+.sec-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+.big-btn{padding:11px 26px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:all .15s;border:1.5px solid}
+.bbreset{border-color:var(--E);background:var(--Ebg);color:var(--E)}.bbreset:hover{background:var(--E);color:#000}
+
+/* 결과 패널 */
+.rp{display:none;text-align:center;padding:24px;background:var(--bg3);border-radius:12px;border:1.5px solid var(--bd2);margin-top:14px}
+.rpscore{font-size:54px;font-weight:900;font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:8px}
+.rpmsg{font-size:14px;color:var(--text2);font-weight:600;margin-bottom:10px}
+.rpstars{font-size:24px;letter-spacing:3px}
+
+@media(max-width:640px){
+  .hero{padding:24px 16px}.tab-nav{padding:0 10px;overflow-x:auto}
+  .tab-btn{padding:12px 10px;font-size:13px}.section{padding:16px 12px 56px}
+  .io-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 헤더 ══ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-badge">⌨ CH 02 · 정수론 C언어 코딩 · 세영코딩연구소 Ph.D Kim</div>
+      <h1>정수론<br><em>코딩 문제집</em></h1>
+      <p class="hero-sub">소수 판별·약수의 합·GCD·소인수분해·에라토스테네스의 체·오일러 함수·빠른 거듭제곱까지 — 기초→기본→심화 15문제 C언어 완전 정복!</p>
+    </div>
+    <div class="hero-prog">
+      <div class="hp-label">전체 진도</div>
+      <div class="hp-nums"><span id="totSolved">0</span></div>
+      <div class="hp-tot">/ 15 문제</div>
+      <div class="hp-bar"><div class="hp-fill" id="totFill" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 탭 ══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="goTab('a')">🌱 기초 <span class="ts tsa" id="tsa">0/5</span></button>
+  <button class="tab-btn" onclick="goTab('b')">📘 기본 <span class="ts tsb" id="tsb">0/5</span></button>
+  <button class="tab-btn" onclick="goTab('h')">🔥 심화 <span class="ts tsh" id="tsh">0/5</span></button>
+</div>
+
+<!-- ══ 기초 ══ -->
+<div class="section active" id="sec-a">
+  <div class="sec-header">
+    <div class="sec-badge sba">🌱 기초 단계</div>
+    <div class="sec-title">기초 문제 (5문제)</div>
+    <div class="sec-desc">소수 판별·약수의 합·최대공약수·구간 내 소수 개수·배수 조건 — 정수론의 기본 구현을 연습합니다.</div>
+  </div>
+  <div class="ssb">
+    <div class="ssb-inner"><div class="ssb-label">기초 진도</div><div class="ssb-track"><div class="ssb-fill sfa" id="bar-a" style="width:0%"></div></div></div>
+    <div class="ssb-score"><span id="sc-a">0</span>/5</div>
+  </div>
+  <div id="qb-a"></div>
+  <div class="sec-actions"><button class="big-btn bbreset" onclick="resetSec('a')">↺ 초기화</button></div>
+  <div class="rp" id="rp-a"><div class="rpscore" id="rs-a" style="color:var(--C)"></div><div class="rpmsg" id="rm-a"></div><div class="rpstars" id="rt-a"></div></div>
+</div>
+
+<!-- ══ 기본 ══ -->
+<div class="section" id="sec-b">
+  <div class="sec-header">
+    <div class="sec-badge sbb">📘 기본 단계</div>
+    <div class="sec-title">기본 문제 (5문제)</div>
+    <div class="sec-desc">소인수분해 출력·LCM·에라토스테네스의 체·약수의 합·서로소 카운팅 — 핵심 정수론 알고리즘을 구현합니다.</div>
+  </div>
+  <div class="ssb">
+    <div class="ssb-inner"><div class="ssb-label">기본 진도</div><div class="ssb-track"><div class="ssb-fill sfb" id="bar-b" style="width:0%"></div></div></div>
+    <div class="ssb-score"><span id="sc-b">0</span>/5</div>
+  </div>
+  <div id="qb-b"></div>
+  <div class="sec-actions"><button class="big-btn bbreset" onclick="resetSec('b')">↺ 초기화</button></div>
+  <div class="rp" id="rp-b"><div class="rpscore" id="rs-b" style="color:var(--A)"></div><div class="rpmsg" id="rm-b"></div><div class="rpstars" id="rt-b"></div></div>
+</div>
+
+<!-- ══ 심화 ══ -->
+<div class="section" id="sec-h">
+  <div class="sec-header">
+    <div class="sec-badge sbh">🔥 심화 단계</div>
+    <div class="sec-title">심화 문제 (5문제)</div>
+    <div class="sec-desc">오일러 함수·빠른 거듭제곱(mod)·약수의 합 공식·다중 GCD·범위 내 합성수 카운팅 — 영재·정올 대비 고급 구현입니다.</div>
+  </div>
+  <div class="ssb">
+    <div class="ssb-inner"><div class="ssb-label">심화 진도</div><div class="ssb-track"><div class="ssb-fill sfh" id="bar-h" style="width:0%"></div></div></div>
+    <div class="ssb-score"><span id="sc-h">0</span>/5</div>
+  </div>
+  <div id="qb-h"></div>
+  <div class="sec-actions"><button class="big-btn bbreset" onclick="resetSec('h')">↺ 초기화</button></div>
+  <div class="rp" id="rp-h"><div class="rpscore" id="rs-h" style="color:var(--G)"></div><div class="rpmsg" id="rm-h"></div><div class="rpstars" id="rt-h"></div></div>
+</div>
+
+<script>
+/* ════════════════════════════════════
+   문제 데이터
+════════════════════════════════════ */
+const P = {
+/* ─────────── 기초 5문제 ─────────── */
+a: [
+  {
+    tag:'소수 판별',tcls:'pta',diff:'⭐',
+    title:'A-1. 소수 판별기 (O(√N))',
+    desc:'자연수 N을 입력받아 소수이면 <code>PRIME</code>, 아니면 <code>NOT PRIME</code>을 출력하시오.\n1은 소수가 아님에 주의하세요.',
+    cons:'1 ≤ N ≤ 10,000,000',
+    io:[{i:'17',o:'PRIME'},{i:'1',o:'NOT PRIME'},{i:'100',o:'NOT PRIME'}],
+    hint:'<code>i * i &lt;= n</code> 조건으로 √N까지만 반복. n&lt;2이면 바로 NOT PRIME.',
+    sc:{q:'입력이 97일 때 출력은? (PRIME 또는 NOT PRIME)', a:'PRIME'},
+    code:`#include <stdio.h>
+int main() {
+    int n;
+    scanf("%d", &n);
+    if (n < 2) { printf("NOT PRIME\\n"); return 0; }
+    for (int i = 2; (long long)i * i <= n; i++) {
+        if (n % i == 0) {
+            printf("NOT PRIME\\n");
+            return 0;
+        }
+    }
+    printf("PRIME\\n");
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n;
+    <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    <span class="k">if</span> (n < <span class="n">2</span>) { <span class="fn">printf</span>(<span class="s">"NOT PRIME\\n"</span>); <span class="k">return</span> <span class="n">0</span>; }
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; (<span class="t">long long</span>)i * i <= n; i++) {
+        <span class="k">if</span> (n % i == <span class="n">0</span>) {
+            <span class="fn">printf</span>(<span class="s">"NOT PRIME\\n"</span>);
+            <span class="k">return</span> <span class="n">0</span>;
+        }
+    }
+    <span class="fn">printf</span>(<span class="s">"PRIME\\n"</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'약수의 합',tcls:'pta',diff:'⭐',
+    title:'A-2. 진약수의 합 (완전수 판별)',
+    desc:'자연수 N을 입력받아 <em>자신을 제외한</em> 모든 약수(진약수)의 합을 출력하시오.\n만약 진약수의 합이 N과 같으면 마지막에 <code> PERFECT</code>를 추가 출력하시오.',
+    cons:'1 ≤ N ≤ 1,000,000',
+    io:[{i:'6',o:'1 2 3\n6 PERFECT'},{i:'12',o:'1 2 3 4 6\n16'},{i:'28',o:'1 2 4 7 14\n28 PERFECT'}],
+    hint:'1부터 N-1까지 반복하며 약수이면 출력 + 합산. 또는 O(√N)으로 약수 쌍을 모아 정렬 출력.',
+    sc:{q:'입력 6의 진약수 합은?', a:'6'},
+    code:`#include <stdio.h>
+int main() {
+    int n;
+    scanf("%d", &n);
+    int sum = 0;
+    for (int i = 1; i < n; i++) {
+        if (n % i == 0) {
+            printf("%d ", i);
+            sum += i;
+        }
+    }
+    printf("\\n%d", sum);
+    if (sum == n) printf(" PERFECT");
+    printf("\\n");
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n;
+    <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    <span class="t">int</span> sum = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">1</span>; i < n; i++) {
+        <span class="k">if</span> (n % i == <span class="n">0</span>) {
+            <span class="fn">printf</span>(<span class="s">"%d "</span>, i);
+            sum += i;
+        }
+    }
+    <span class="fn">printf</span>(<span class="s">"\\n%d"</span>, sum);
+    <span class="k">if</span> (sum == n) <span class="fn">printf</span>(<span class="s">" PERFECT"</span>);
+    <span class="fn">printf</span>(<span class="s">"\\n"</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'GCD 반복',tcls:'pta',diff:'⭐⭐',
+    title:'A-3. 최대공약수 (유클리드 호제법)',
+    desc:'두 자연수 A, B를 입력받아 최대공약수(GCD)와 최소공배수(LCM)를 한 줄에 출력하시오.\n<em>재귀 또는 반복문</em> 둘 다 구현해보세요.',
+    cons:'1 ≤ A, B ≤ 1,000,000,000',
+    io:[{i:'48 36',o:'12 144'},{i:'100 75',o:'25 300'},{i:'1 999',o:'1 999'}],
+    hint:'반복: <code>while(b) { r=a%b; a=b; b=r; }</code>. LCM = a/gcd*b (오버플로 방지: 먼저 나누기)',
+    sc:{q:'gcd(270, 192)는?', a:'6'},
+    code:`#include <stdio.h>
+long long gcd(long long a, long long b) {
+    while (b) { long long r = a % b; a = b; b = r; }
+    return a;
+}
+int main() {
+    long long a, b;
+    scanf("%lld %lld", &a, &b);
+    long long g = gcd(a, b);
+    printf("%lld %lld\\n", g, a / g * b);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">long long</span> <span class="fn">gcd</span>(<span class="t">long long</span> a, <span class="t">long long</span> b) {
+    <span class="k">while</span> (b) { <span class="t">long long</span> r = a % b; a = b; b = r; }
+    <span class="k">return</span> a;
+}
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">long long</span> a, b;
+    <span class="fn">scanf</span>(<span class="s">"%lld %lld"</span>, &a, &b);
+    <span class="t">long long</span> g = <span class="fn">gcd</span>(a, b);
+    <span class="fn">printf</span>(<span class="s">"%lld %lld\\n"</span>, g, a / g * b);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'구간 소수',tcls:'pta',diff:'⭐⭐',
+    title:'A-4. 구간 내 소수의 합',
+    desc:'두 정수 A, B(A ≤ B)를 입력받아 A 이상 B 이하인 <em>소수의 합</em>을 출력하시오.',
+    cons:'1 ≤ A ≤ B ≤ 100,000',
+    io:[{i:'1 10',o:'17'},{i:'10 20',o:'60'},{i:'1 100',o:'1060'}],
+    hint:'소수 판별 함수를 만들어 [A, B] 범위를 순회. 각 수에 대해 isPrime 호출.',
+    sc:{q:'A=1, B=10 일 때 소수 개수는?', a:'4'},
+    code:`#include <stdio.h>
+int isPrime(int n) {
+    if (n < 2) return 0;
+    for (int i = 2; (long long)i * i <= n; i++)
+        if (n % i == 0) return 0;
+    return 1;
+}
+int main() {
+    int a, b;
+    scanf("%d %d", &a, &b);
+    long long sum = 0;
+    for (int i = a; i <= b; i++)
+        if (isPrime(i)) sum += i;
+    printf("%lld\\n", sum);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">isPrime</span>(<span class="t">int</span> n) {
+    <span class="k">if</span> (n < <span class="n">2</span>) <span class="k">return</span> <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; (<span class="t">long long</span>)i * i <= n; i++)
+        <span class="k">if</span> (n % i == <span class="n">0</span>) <span class="k">return</span> <span class="n">0</span>;
+    <span class="k">return</span> <span class="n">1</span>;
+}
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> a, b;
+    <span class="fn">scanf</span>(<span class="s">"%d %d"</span>, &a, &b);
+    <span class="t">long long</span> sum = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = a; i <= b; i++)
+        <span class="k">if</span> (<span class="fn">isPrime</span>(i)) sum += i;
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, sum);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'약수 개수',tcls:'pta',diff:'⭐⭐',
+    title:'A-5. 약수의 개수 세기 (O(√N))',
+    desc:'자연수 N을 입력받아 <em>약수의 개수</em>를 출력하시오. <em>O(√N)</em> 방법을 사용하시오.\n(i와 N/i를 쌍으로 처리)',
+    cons:'1 ≤ N ≤ 1,000,000,000',
+    io:[{i:'36',o:'9'},{i:'1',o:'1'},{i:'1000000000',o:'100'}],
+    hint:'i*i &lt; N이면 cnt+=2, i*i == N이면 cnt+=1. long long으로 i*i 비교.',
+    sc:{q:'N=360의 약수 개수는?', a:'24'},
+    code:`#include <stdio.h>
+int main() {
+    long long n;
+    scanf("%lld", &n);
+    int cnt = 0;
+    for (long long i = 1; i * i <= n; i++) {
+        if (n % i == 0)
+            cnt += (i * i == n) ? 1 : 2;
+    }
+    printf("%d\\n", cnt);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">long long</span> n;
+    <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &n);
+    <span class="t">int</span> cnt = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">long long</span> i = <span class="n">1</span>; i * i <= n; i++) {
+        <span class="k">if</span> (n % i == <span class="n">0</span>)
+            cnt += (i * i == n) ? <span class="n">1</span> : <span class="n">2</span>;
+    }
+    <span class="fn">printf</span>(<span class="s">"%d\\n"</span>, cnt);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+],
+/* ─────────── 기본 5문제 ─────────── */
+b: [
+  {
+    tag:'소인수분해',tcls:'ptb',diff:'⭐⭐',
+    title:'B-1. 소인수분해 출력 (p^k 형식)',
+    desc:'자연수 N을 소인수분해하여 <em>p^k</em> 형식으로 출력하시오.\n여러 소인수는 공백으로 구분하며 오름차순으로 출력.',
+    cons:'2 ≤ N ≤ 1,000,000',
+    io:[{i:'360',o:'2^3 3^2 5^1'},{i:'1024',o:'2^10'},{i:'30',o:'2^1 3^1 5^1'}],
+    hint:'소인수 p로 나누면서 지수 cnt 셈. <code>if(cnt>0) printf("p^cnt")</code>. 마지막에 n&gt;1이면 n^1 출력.',
+    sc:{q:'N=504의 소인수 개수(종류)는?', a:'3'},
+    code:`#include <stdio.h>
+int main() {
+    int n, first = 1;
+    scanf("%d", &n);
+    for (int i = 2; (long long)i * i <= n; i++) {
+        if (n % i == 0) {
+            int cnt = 0;
+            while (n % i == 0) { cnt++; n /= i; }
+            if (!first) printf(" ");
+            printf("%d^%d", i, cnt);
+            first = 0;
+        }
+    }
+    if (n > 1) {
+        if (!first) printf(" ");
+        printf("%d^1", n);
+    }
+    printf("\\n");
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n, first = <span class="n">1</span>;
+    <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; (<span class="t">long long</span>)i * i <= n; i++) {
+        <span class="k">if</span> (n % i == <span class="n">0</span>) {
+            <span class="t">int</span> cnt = <span class="n">0</span>;
+            <span class="k">while</span> (n % i == <span class="n">0</span>) { cnt++; n /= i; }
+            <span class="k">if</span> (!first) <span class="fn">printf</span>(<span class="s">" "</span>);
+            <span class="fn">printf</span>(<span class="s">"%d^%d"</span>, i, cnt);
+            first = <span class="n">0</span>;
+        }
+    }
+    <span class="k">if</span> (n > <span class="n">1</span>) {
+        <span class="k">if</span> (!first) <span class="fn">printf</span>(<span class="s">" "</span>);
+        <span class="fn">printf</span>(<span class="s">"%d^1"</span>, n);
+    }
+    <span class="fn">printf</span>(<span class="s">"\\n"</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'N개 LCM',tcls:'ptb',diff:'⭐⭐',
+    title:'B-2. N개 정수의 최소공배수',
+    desc:'정수 N과 N개의 수 A₁, A₂, …, Aₙ을 입력받아\n모든 수의 <em>최소공배수(LCM)</em>를 출력하시오.',
+    cons:'1 ≤ N ≤ 100, 1 ≤ Aᵢ ≤ 1,000',
+    io:[{i:'3\n2 3 4',o:'12'},{i:'4\n6 10 15 35',o:'210'},{i:'2\n12 18',o:'36'}],
+    hint:'lcm(a, b, c) = lcm(lcm(a,b), c). 순차적으로 누적 LCM을 갱신. LCM = a/gcd(a,b)*b.',
+    sc:{q:'lcm(4, 6, 10)은?', a:'60'},
+    code:`#include <stdio.h>
+long long gcd(long long a, long long b) {
+    return b ? gcd(b, a % b) : a;
+}
+int main() {
+    int n; scanf("%d", &n);
+    long long result = 1;
+    for (int i = 0; i < n; i++) {
+        long long x; scanf("%lld", &x);
+        result = result / gcd(result, x) * x;
+    }
+    printf("%lld\\n", result);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">long long</span> <span class="fn">gcd</span>(<span class="t">long long</span> a, <span class="t">long long</span> b) {
+    <span class="k">return</span> b ? <span class="fn">gcd</span>(b, a % b) : a;
+}
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n; <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    <span class="t">long long</span> result = <span class="n">1</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">0</span>; i < n; i++) {
+        <span class="t">long long</span> x; <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &x);
+        result = result / <span class="fn">gcd</span>(result, x) * x;
+    }
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, result);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'에라토스테네스',tcls:'ptb',diff:'⭐⭐⭐',
+    title:'B-3. 에라토스테네스의 체 (소수 카운팅)',
+    desc:'두 정수 A, B를 입력받아 A 이상 B 이하의 <em>소수의 개수</em>를 출력하시오.\n<em>에라토스테네스의 체</em>를 사용하시오.',
+    cons:'1 ≤ A ≤ B ≤ 1,000,000',
+    io:[{i:'1 1000000',o:'78498'},{i:'1 100',o:'25'},{i:'900000 1000000',o:'6241'}],
+    hint:'배열 크기 B+1. sieve[0]=sieve[1]=1. i²부터 체질. A~B 범위에서 sieve[i]==0인 것 카운트.',
+    sc:{q:'1부터 50까지 소수의 개수는?', a:'15'},
+    code:`#include <stdio.h>
+#include <string.h>
+#define MAX 1000001
+int s[MAX];
+int main() {
+    int a, b;
+    scanf("%d %d", &a, &b);
+    memset(s, 0, sizeof(s));
+    s[0] = s[1] = 1;
+    for (int i = 2; (long long)i * i <= b; i++)
+        if (!s[i])
+            for (int j = i * i; j <= b; j += i)
+                s[j] = 1;
+    int cnt = 0;
+    for (int i = a; i <= b; i++) if (!s[i]) cnt++;
+    printf("%d\\n", cnt);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="s">&lt;string.h&gt;</span>
+<span class="pp">#define</span> MAX <span class="n">1000001</span>
+<span class="t">int</span> s[MAX];
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> a, b;
+    <span class="fn">scanf</span>(<span class="s">"%d %d"</span>, &a, &b);
+    <span class="fn">memset</span>(s, <span class="n">0</span>, <span class="k">sizeof</span>(s));
+    s[<span class="n">0</span>] = s[<span class="n">1</span>] = <span class="n">1</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; (<span class="t">long long</span>)i * i <= b; i++)
+        <span class="k">if</span> (!s[i])
+            <span class="k">for</span> (<span class="t">int</span> j = i * i; j <= b; j += i)
+                s[j] = <span class="n">1</span>;
+    <span class="t">int</span> cnt = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = a; i <= b; i++) <span class="k">if</span> (!s[i]) cnt++;
+    <span class="fn">printf</span>(<span class="s">"%d\\n"</span>, cnt);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'약수의 합 공식',tcls:'ptb',diff:'⭐⭐⭐',
+    title:'B-4. 약수의 합 (소인수분해 활용)',
+    desc:'자연수 N을 입력받아 <em>모든 약수의 합</em>을 출력하시오.\n소인수분해와 등비수열 합 공식을 사용하시오.\n<span style="color:#f87171">σ(p^k) = (p^(k+1)-1)/(p-1)</span>',
+    cons:'1 ≤ N ≤ 1,000,000',
+    io:[{i:'12',o:'28'},{i:'360',o:'1170'},{i:'1',o:'1'}],
+    hint:'12=2²×3. σ(12)=(2³-1)/(2-1) × (3²-1)/(3-1) = 7×4=28. 각 소인수별로 합 계산 후 곱.',
+    sc:{q:'σ(28)의 값은?', a:'56'},
+    code:`#include <stdio.h>
+int main() {
+    long long n, result = 1;
+    scanf("%lld", &n);
+    for (long long p = 2; p * p <= n; p++) {
+        if (n % p == 0) {
+            long long pk = 1, term = 1;
+            while (n % p == 0) {
+                n /= p; pk *= p;
+                term += pk;
+            }
+            result *= term;
+        }
+    }
+    if (n > 1) result *= (1 + n);
+    printf("%lld\\n", result);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">long long</span> n, result = <span class="n">1</span>;
+    <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &n);
+    <span class="k">for</span> (<span class="t">long long</span> p = <span class="n">2</span>; p * p <= n; p++) {
+        <span class="k">if</span> (n % p == <span class="n">0</span>) {
+            <span class="t">long long</span> pk = <span class="n">1</span>, term = <span class="n">1</span>;
+            <span class="k">while</span> (n % p == <span class="n">0</span>) {
+                n /= p; pk *= p;
+                term += pk;
+            }
+            result *= term;
+        }
+    }
+    <span class="k">if</span> (n > <span class="n">1</span>) result *= (<span class="n">1</span> + n);
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, result);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'서로소 카운팅',tcls:'ptb',diff:'⭐⭐⭐',
+    title:'B-5. 1~N 중 N과 서로소인 수의 개수',
+    desc:'자연수 N을 입력받아 1 이상 N 이하의 정수 중 <em>N과 서로소인 수의 개수</em>를 출력하시오.\n(이것이 오일러 함수 φ(N)입니다)',
+    cons:'1 ≤ N ≤ 1,000,000',
+    io:[{i:'12',o:'4'},{i:'30',o:'8'},{i:'100',o:'40'}],
+    hint:'직접 세기: gcd(i, N)==1인 i 카운트. 또는 소인수분해 공식: φ(N)=N×∏(1-1/p).',
+    sc:{q:'φ(36)의 값은?', a:'12'},
+    code:`#include <stdio.h>
+long long gcd(long long a, long long b) {
+    return b ? gcd(b, a % b) : a;
+}
+int main() {
+    long long n; scanf("%lld", &n);
+    long long result = n;
+    long long tmp = n;
+    for (long long p = 2; p * p <= tmp; p++) {
+        if (tmp % p == 0) {
+            while (tmp % p == 0) tmp /= p;
+            result -= result / p;
+        }
+    }
+    if (tmp > 1) result -= result / tmp;
+    printf("%lld\\n", result);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="c">// 오일러 함수 공식: φ(N)=N×∏(1-1/p)</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">long long</span> n; <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &n);
+    <span class="t">long long</span> result = n, tmp = n;
+    <span class="k">for</span> (<span class="t">long long</span> p = <span class="n">2</span>; p * p <= tmp; p++) {
+        <span class="k">if</span> (tmp % p == <span class="n">0</span>) {
+            <span class="k">while</span> (tmp % p == <span class="n">0</span>) tmp /= p;
+            result -= result / p;
+        }
+    }
+    <span class="k">if</span> (tmp > <span class="n">1</span>) result -= result / tmp;
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, result);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+],
+/* ─────────── 심화 5문제 ─────────── */
+h: [
+  {
+    tag:'오일러 함수 체',tcls:'pth',diff:'⭐⭐⭐⭐',
+    title:'H-1. 오일러 함수 체 (1~N의 모든 φ)',
+    desc:'자연수 N을 입력받아 1부터 N까지 <em>모든 오일러 함수 φ(i) 값의 합</em>을 출력하시오.\n에라토스테네스의 체 방식으로 O(N log log N)에 구현.',
+    cons:'1 ≤ N ≤ 1,000,000',
+    io:[{i:'10',o:'32'},{i:'100',o:'3044'},{i:'1000',o:'304192'}],
+    hint:'phi[] 배열을 1~N으로 초기화. 소수 p를 발견하면 p의 배수 j마다 phi[j] -= phi[j]/p.',
+    sc:{q:'N=5 일 때 φ(1)+φ(2)+φ(3)+φ(4)+φ(5)의 합은? (1+1+2+2+4=?)', a:'10'},
+    code:`#include <stdio.h>
+#define MAX 1000001
+long long phi[MAX];
+int main() {
+    int n; scanf("%d", &n);
+    for (int i = 1; i <= n; i++) phi[i] = i;
+    for (int i = 2; i <= n; i++) {
+        if (phi[i] == i) {  /* i는 소수 */
+            for (int j = i; j <= n; j += i)
+                phi[j] -= phi[j] / i;
+        }
+    }
+    long long sum = 0;
+    for (int i = 1; i <= n; i++) sum += phi[i];
+    printf("%lld\\n", sum);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="pp">#define</span> MAX <span class="n">1000001</span>
+<span class="t">long long</span> phi[MAX];
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n; <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">1</span>; i <= n; i++) phi[i] = i;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; i <= n; i++) {
+        <span class="k">if</span> (phi[i] == i) { <span class="c">/* i는 소수 */</span>
+            <span class="k">for</span> (<span class="t">int</span> j = i; j <= n; j += i)
+                phi[j] -= phi[j] / i;
+        }
+    }
+    <span class="t">long long</span> sum = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">1</span>; i <= n; i++) sum += phi[i];
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, sum);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'빠른 거듭제곱',tcls:'pth',diff:'⭐⭐⭐⭐',
+    title:'H-2. 빠른 거듭제곱 mod M (O(log B))',
+    desc:'세 정수 A, B, M이 주어질 때 <em>A^B mod M</em>을 구하시오.\nB는 최대 10¹⁸까지 가능하므로 반드시 <em>분할 정복</em>을 사용.',
+    cons:'1 ≤ A ≤ 10⁹, 0 ≤ B ≤ 10¹⁸, 1 ≤ M ≤ 10⁹',
+    io:[{i:'2 10 1000',o:'24'},{i:'3 100 7',o:'4'},{i:'5 0 13',o:'1'}],
+    hint:'B가 홀수: r = r*a%m. 매 단계: a = a*a%m, b>>=1. B=0이면 1 반환.',
+    sc:{q:'2^100 mod 101 = ? (페르마 소정리 활용)', a:'1'},
+    code:`#include <stdio.h>
+typedef long long ll;
+ll pw(ll a, ll b, ll m) {
+    ll r = 1;
+    a %= m;
+    while (b > 0) {
+        if (b & 1) r = r * a % m;
+        a = a * a % m;
+        b >>= 1;
+    }
+    return r;
+}
+int main() {
+    ll a, b, m;
+    scanf("%lld %lld %lld", &a, &b, &m);
+    printf("%lld\\n", pw(a, b, m));
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">typedef</span> <span class="t">long long</span> ll;
+ll <span class="fn">pw</span>(ll a, ll b, ll m) {
+    ll r = <span class="n">1</span>;
+    a %= m;
+    <span class="k">while</span> (b > <span class="n">0</span>) {
+        <span class="k">if</span> (b & <span class="n">1</span>) r = r * a % m;
+        a = a * a % m;
+        b >>= <span class="n">1</span>;
+    }
+    <span class="k">return</span> r;
+}
+<span class="t">int</span> <span class="fn">main</span>() {
+    ll a, b, m;
+    <span class="fn">scanf</span>(<span class="s">"%lld %lld %lld"</span>, &a, &b, &m);
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, <span class="fn">pw</span>(a, b, m));
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'N개 GCD',tcls:'pth',diff:'⭐⭐⭐⭐',
+    title:'H-3. N개 수의 GCD와 LCM',
+    desc:'정수 N과 N개의 수를 입력받아 <em>모든 수의 GCD와 LCM</em>을 출력하시오.\nLCM이 10¹⁸을 초과하면 <code>-1</code>을 출력.',
+    cons:'1 ≤ N ≤ 100, 1 ≤ Aᵢ ≤ 10⁹',
+    io:[{i:'3\n12 18 24',o:'6 72'},{i:'3\n2 3 1000000000',o:'1 -1'},{i:'1\n7',o:'7 7'}],
+    hint:'GCD는 누적 gcd. LCM 누적 중 result/gcd*x가 10¹⁸ 초과하면 -1. <code>result > 1e18/x</code> 오버플로 검사.',
+    sc:{q:'gcd(12,18,24)는?', a:'6'},
+    code:`#include <stdio.h>
+typedef long long ll;
+ll gcd(ll a, ll b) { return b ? gcd(b, a%b) : a; }
+#define INF 1000000000000000000LL
+int main() {
+    int n; scanf("%d", &n);
+    ll g = 0, l = 1, overflow = 0;
+    for (int i = 0; i < n; i++) {
+        ll x; scanf("%lld", &x);
+        g = gcd(g, x);
+        if (!overflow) {
+            ll tmp = l / gcd(l, x);
+            if (tmp > INF / x) overflow = 1;
+            else l = tmp * x;
+        }
+    }
+    if (overflow) printf("%lld -1\\n", g);
+    else printf("%lld %lld\\n", g, l);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">typedef</span> <span class="t">long long</span> ll;
+ll <span class="fn">gcd</span>(ll a, ll b) { <span class="k">return</span> b ? <span class="fn">gcd</span>(b, a%b) : a; }
+<span class="pp">#define</span> INF <span class="n">1000000000000000000LL</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n; <span class="fn">scanf</span>(<span class="s">"%d"</span>, &n);
+    ll g = <span class="n">0</span>, l = <span class="n">1</span>, overflow = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">0</span>; i < n; i++) {
+        ll x; <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &x);
+        g = <span class="fn">gcd</span>(g, x);
+        <span class="k">if</span> (!overflow) {
+            ll tmp = l / <span class="fn">gcd</span>(l, x);
+            <span class="k">if</span> (tmp > INF / x) overflow = <span class="n">1</span>;
+            <span class="k">else</span> l = tmp * x;
+        }
+    }
+    <span class="k">if</span> (overflow) <span class="fn">printf</span>(<span class="s">"%lld -1\\n"</span>, g);
+    <span class="k">else</span> <span class="fn">printf</span>(<span class="s">"%lld %lld\\n"</span>, g, l);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'약수 개수 합',tcls:'pth',diff:'⭐⭐⭐⭐',
+    title:'H-4. 1~N의 약수 개수 총합 (O(N log N))',
+    desc:'자연수 N을 입력받아 <em>1부터 N까지 각 수의 약수 개수의 합</em>을 출력하시오.\nO(N log N) 알고리즘을 사용하시오.',
+    cons:'1 ≤ N ≤ 1,000,000',
+    io:[{i:'5',o:'10'},{i:'10',o:'27'},{i:'100',o:'482'}],
+    hint:'수 k는 k, 2k, 3k, … ⌊N/k⌋개의 수의 약수. 따라서 합 = Σ(k=1~N) ⌊N/k⌋.',
+    sc:{q:'N=4 일 때 답은? (1→1, 2→2, 3→2, 4→3)', a:'8'},
+    code:`#include <stdio.h>
+int main() {
+    long long n;
+    scanf("%lld", &n);
+    long long total = 0;
+    for (long long k = 1; k <= n; k++)
+        total += n / k;
+    printf("%lld\\n", total);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">long long</span> n;
+    <span class="fn">scanf</span>(<span class="s">"%lld"</span>, &n);
+    <span class="t">long long</span> total = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">long long</span> k = <span class="n">1</span>; k <= n; k++)
+        total += n / k;
+    <span class="fn">printf</span>(<span class="s">"%lld\\n"</span>, total);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+  {
+    tag:'합성수 카운팅',tcls:'pth',diff:'⭐⭐⭐⭐⭐',
+    title:'H-5. 범위 내 소인수 개수가 정확히 k인 수',
+    desc:'정수 N과 K를 입력받아 1 이상 N 이하의 자연수 중\n<em>서로 다른 소인수의 개수가 정확히 K개</em>인 수의 개수를 출력하시오.',
+    cons:'1 ≤ N ≤ 100,000, 1 ≤ K ≤ 6',
+    io:[{i:'30 1',o:'13'},{i:'30 2',o:'10'},{i:'100 2',o:'35'}],
+    hint:'각 수에 대해 소인수분해 후 서로 다른 소인수 개수를 셈. 또는 체를 이용해 각 수의 소인수 개수 배열 구성.',
+    sc:{q:'1~30 중 서로 다른 소인수가 1개인 수의 개수는? (2,3,4,5,7,8,9,11,13,16,17,19,23=13개)', a:'13'},
+    code:`#include <stdio.h>
+#include <string.h>
+#define MAX 100001
+int pcnt[MAX];  /* 서로 다른 소인수 개수 */
+int main() {
+    int n, k;
+    scanf("%d %d", &n, &k);
+    memset(pcnt, 0, sizeof(pcnt));
+    for (int p = 2; p <= n; p++) {
+        if (pcnt[p] == 0) {   /* p는 소수 (아직 체질 안 됨) */
+            for (int j = p; j <= n; j += p)
+                pcnt[j]++;
+        }
+    }
+    int cnt = 0;
+    for (int i = 2; i <= n; i++)
+        if (pcnt[i] == k) cnt++;
+    printf("%d\\n", cnt);
+    return 0;
+}`,
+    ans:`<span class="pp">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="s">&lt;string.h&gt;</span>
+<span class="pp">#define</span> MAX <span class="n">100001</span>
+<span class="t">int</span> pcnt[MAX]; <span class="c">/* 서로 다른 소인수 개수 */</span>
+<span class="t">int</span> <span class="fn">main</span>() {
+    <span class="t">int</span> n, k;
+    <span class="fn">scanf</span>(<span class="s">"%d %d"</span>, &n, &k);
+    <span class="fn">memset</span>(pcnt, <span class="n">0</span>, <span class="k">sizeof</span>(pcnt));
+    <span class="k">for</span> (<span class="t">int</span> p = <span class="n">2</span>; p <= n; p++) {
+        <span class="k">if</span> (pcnt[p] == <span class="n">0</span>) { <span class="c">/* p는 소수 */</span>
+            <span class="k">for</span> (<span class="t">int</span> j = p; j <= n; j += p)
+                pcnt[j]++;
+        }
+    }
+    <span class="t">int</span> cnt = <span class="n">0</span>;
+    <span class="k">for</span> (<span class="t">int</span> i = <span class="n">2</span>; i <= n; i++)
+        <span class="k">if</span> (pcnt[i] == k) cnt++;
+    <span class="fn">printf</span>(<span class="s">"%d\\n"</span>, cnt);
+    <span class="k">return</span> <span class="n">0</span>;
+}`
+  },
+],
+};
+
+/* ════════ 상태 ════════ */
+const ST = { a:{ok:[],sc:{}}, b:{ok:[],sc:{}}, h:{ok:[],sc:{}} };
+
+function buildSec(sec) {
+  const ps = P[sec]; const n = ps.length;
+  ST[sec] = { ok: new Array(n).fill(false), sc: {} };
+  const box = document.getElementById('qb-'+sec);
+  box.innerHTML = '';
+  ps.forEach((p,i) => buildCard(sec,p,i));
+  updScore(sec);
+}
+
+function buildCard(sec, p, i) {
+  const box = document.getElementById('qb-'+sec);
+  const card = document.createElement('div');
+  card.className = 'pcard'; card.id = `${sec}cd${i}`;
+
+  const ioRows = p.io.map(x =>
+    `<div class="io-box"><div class="io-lbl">▷ 입력</div><div class="io-txt">${x.i}</div></div>
+     <div class="io-box"><div class="io-lbl">◁ 출력</div><div class="io-txt">${x.o}</div></div>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="ph">
+      <span class="ph-id">${sec.toUpperCase()}-${i+1}</span>
+      <span class="ph-tag ${p.tcls}">${p.tag}</span>
+      <span class="ph-diff">${p.diff.split('').map(s=>`<span>${s}</span>`).join('')}</span>
+      <span class="ph-status" id="${sec}st${i}"></span>
+    </div>
+    <div class="pb">
+      <div class="pb-title">${p.title}</div>
+      <div class="pb-desc">${p.desc.replace(/\n/g,'<br>')}</div>
+      <div class="constraint">제약: ${p.cons}</div>
+      <div class="io-grid">${ioRows}</div>
+      <button class="hint-toggle" onclick="togHint('${sec}',${i})">💡 <span id="${sec}ht${i}">힌트 보기</span></button>
+      <div class="hint-box" id="${sec}hb${i}">${p.hint}</div>
+      <div class="ed-wrap">
+        <div class="ed-lbl">
+          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+          &nbsp;C 코드 에디터
+        </div>
+        <textarea class="ed-area" id="${sec}ed${i}" spellcheck="false">${p.code}</textarea>
+      </div>
+      <div class="sc-box">
+        <div class="sc-lbl">💬 자가 채점 — ${p.sc.q}</div>
+        <div class="sc-row">
+          <input class="sc-inp" id="${sec}sci${i}" type="text" placeholder="답 입력"
+            onkeydown="if(event.key==='Enter')chk('${sec}',${i})">
+          <button class="sc-btn" id="${sec}scb${i}" onclick="chk('${sec}',${i})">✓ 확인</button>
+        </div>
+      </div>
+      <div class="acts">
+        <button class="act act-show" onclick="togAns('${sec}',${i})">📋 정답 코드 보기/숨기기</button>
+        <button class="act act-reset" onclick="resetCode('${sec}',${i})">🗑 코드 초기화</button>
+      </div>
+      <div class="pfb" id="${sec}fb${i}"></div>
+      <div class="ans-wrap" id="${sec}aw${i}">
+        <div class="ans-lbl">✅ 정답 코드</div>
+        <div class="ans-code">${p.ans}</div>
+      </div>
+    </div>`;
+
+  // 탭 키 지원
+  setTimeout(() => {
+    const ta = document.getElementById(`${sec}ed${i}`);
+    if (!ta) return;
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const s=ta.selectionStart, en=ta.selectionEnd;
+        ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(en);
+        ta.selectionStart=ta.selectionEnd=s+4;
+      }
+    });
+  }, 50);
+
+  box.appendChild(card);
+}
+
+function togHint(sec,i){
+  const h=document.getElementById(`${sec}hb${i}`);
+  const t=document.getElementById(`${sec}ht${i}`);
+  h.classList.toggle('show');
+  t.textContent=h.classList.contains('show')?'힌트 숨기기':'힌트 보기';
+}
+function togAns(sec,i){ document.getElementById(`${sec}aw${i}`).classList.toggle('show'); }
+function resetCode(sec,i){ document.getElementById(`${sec}ed${i}`).value=P[sec][i].code; }
+
+function chk(sec,i){
+  if(ST[sec].ok[i]) return;
+  const v=(document.getElementById(`${sec}sci${i}`).value||'').trim();
+  const ok=(v===String(P[sec][i].sc.a));
+  ST[sec].ok[i]=ok;
+  const inp=document.getElementById(`${sec}sci${i}`);
+  inp.classList.add(ok?'ok':'ng'); inp.disabled=true;
+  document.getElementById(`${sec}scb${i}`).disabled=true;
+  const card=document.getElementById(`${sec}cd${i}`);
+  card.classList.add(ok?'solved':'failed');
+  document.getElementById(`${sec}st${i}`).textContent=ok?'✅':'❌';
+  const fb=document.getElementById(`${sec}fb${i}`);
+  fb.className='pfb show '+(ok?'ok':'ng');
+  fb.textContent=ok?`✅ 정답! 정답: ${P[sec][i].sc.a}`:`❌ 오답. 정답은 ${P[sec][i].sc.a} 입니다. 코드를 다시 분석해보세요!`;
+  if(ok) document.getElementById(`${sec}aw${i}`).classList.add('show');
+  updScore(sec); updTotal();
+}
+
+function updScore(sec){
+  const tot=ST[sec].ok.filter(Boolean).length;
+  document.getElementById('sc-'+sec).textContent=tot;
+  document.getElementById('bar-'+sec).style.width=(tot/5*100)+'%';
+  document.getElementById({'a':'tsa','b':'tsb','h':'tsh'}[sec]).textContent=tot+'/5';
+}
+function updTotal(){
+  const tot=['a','b','h'].reduce((s,sec)=>s+ST[sec].ok.filter(Boolean).length,0);
+  document.getElementById('totSolved').textContent=tot;
+  document.getElementById('totFill').style.width=(tot/15*100)+'%';
+}
+
+function resetSec(sec){
+  buildSec(sec);
+  document.getElementById('rp-'+sec).style.display='none';
+  updTotal();
+}
+
+function goTab(sec){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['a','b','h'][i]===sec));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+['a','b','h'].forEach(sec=>buildSec(sec));
+</script>
+</body>
+</html>

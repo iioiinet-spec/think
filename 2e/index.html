@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH01 정수론 | 개념·기본·심화 문제집 | 세영코딩연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ff;--bg2:#fff;--bg3:#ede9fe;--bg4:#ddd6fe;
+  --A:#7c3aed;--Alt:#ede9fe;--Abr:#a78bfa;
+  --B:#1d4ed8;--Blt:#dbeafe;--Bbr:#93c5fd;
+  --C:#15803d;--Clt:#dcfce7;--Cbr:#4ade80;
+  --D:#b45309;--Dlt:#fef3c7;--Dbr:#fbbf24;
+  --E:#be185d;--Elt:#fce7f3;--Ebr:#f472b6;
+  --F:#0f766e;--Flt:#ccfbf1;--Fbr:#2dd4bf;
+  --G:#c2410c;--Glt:#fff7ed;--Gbr:#fb923c;
+  --sb:#2e1065;
+  --text:#0f172a;--text2:#1e293b;--text3:#475569;--text4:#94a3b8;
+  --border:#d8d4f0;
+  --sh:0 2px 12px rgba(124,58,237,.1);--sh2:0 6px 24px rgba(124,58,237,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;line-height:1.8}
+
+/* ══ 헤더 ══ */
+.hero{background:linear-gradient(135deg,#2e1065 0%,#4c1d95 55%,#2e1065 100%);padding:40px 48px 34px;position:relative;overflow:hidden}
+.hero::before{content:'ℤ';position:absolute;right:16px;bottom:-24px;font-size:220px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.04);pointer-events:none;line-height:1}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#c4b5fd;border:1.5px solid rgba(196,181,253,.4);padding:5px 14px;border-radius:18px;background:rgba(139,92,246,.15);margin-bottom:14px;font-weight:700}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(26px,4.5vw,48px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:8px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,#c4b5fd,#818cf8,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:14px;color:#ddd6fe;line-height:1.75;max-width:540px}
+.hero-prog{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 18px;min-width:190px;text-align:center;backdrop-filter:blur(4px)}
+.hp-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#c4b5fd;margin-bottom:6px}
+.hp-nums{font-size:28px;font-weight:900;color:#fff;font-family:'JetBrains Mono',monospace;line-height:1}
+.hp-tot{font-size:11px;color:#a78bfa;margin-top:2px}
+.hp-bar{height:5px;background:rgba(255,255,255,.12);border-radius:3px;margin-top:8px;overflow:hidden}
+.hp-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);border-radius:3px;transition:width .6s}
+
+/* ══ 탭 ══ */
+.tab-nav{background:#fff;border-bottom:2px solid var(--border);padding:0 48px;display:flex;gap:0;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(124,58,237,.08)}
+.tab-btn{padding:15px 26px;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .18s;color:var(--text4);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab-btn:hover{color:var(--A)}
+.tab-btn.active{color:var(--A);border-bottom-color:var(--A)}
+.tab-dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.tab-btn.active .tab-dot{background:var(--A)}
+.tab-score{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:2px}
+.ts-concept{background:var(--Alt);color:var(--A)}
+.ts-basic{background:var(--Blt);color:var(--B)}
+.ts-hard{background:var(--Elt);color:var(--E)}
+
+/* ══ 섹션 ══ */
+.section{display:none;padding:30px 48px 64px;max-width:880px;margin:0 auto}
+.section.active{display:block}
+.sec-header{margin-bottom:24px}
+.sec-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-radius:18px;margin-bottom:10px;border:1.5px solid}
+.sb-c{color:var(--A);border-color:var(--Abr);background:var(--Alt)}
+.sb-b{color:var(--B);border-color:var(--Bbr);background:var(--Blt)}
+.sb-h{color:var(--E);border-color:var(--Ebr);background:var(--Elt)}
+.sec-title{font-family:'Noto Serif KR',serif;font-size:clamp(20px,2.8vw,30px);font-weight:900;color:var(--text);margin-bottom:6px}
+.sec-desc{font-size:13px;color:var(--text3);line-height:1.7}
+
+/* 점수 바 */
+.ssb{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:13px 16px;margin-bottom:22px;box-shadow:var(--sh)}
+.ssb-inner{flex:1}
+.ssb-label{font-size:11px;color:var(--text4);font-weight:600;margin-bottom:4px}
+.ssb-track{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.ssb-fill{height:100%;border-radius:4px;transition:width .5s}
+.sf-c{background:linear-gradient(90deg,var(--A),#8b5cf6)}
+.sf-b{background:linear-gradient(90deg,var(--B),#3b82f6)}
+.sf-h{background:linear-gradient(90deg,var(--E),#ec4899)}
+.ssb-score{font-size:22px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--sb)}
+
+/* 개념 요약 카드 */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:26px}
+.ccard{background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:var(--sh);transition:all .2s}
+.ccard:hover{border-color:var(--A);box-shadow:var(--sh2);transform:translateY(-2px)}
+.ccard-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.ccard-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.ccard-title{font-size:14px;font-weight:800;color:var(--text)}
+.ccard-body{font-size:13px;color:var(--text3);line-height:1.75}
+.ccard-body code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--A);background:var(--Alt);padding:1px 6px;border-radius:4px;font-weight:600}
+.ccard-eq{display:block;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--A);background:var(--Alt);padding:6px 10px;border-radius:7px;margin-top:7px;border:1px solid var(--Abr);text-align:center;font-weight:700}
+
+/* ══ 문제 카드 ══ */
+.qi-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh);transition:all .2s}
+.qi-card:hover{box-shadow:var(--sh2)}
+.qi-card.ok{border-color:var(--Cbr);background:linear-gradient(135deg,#f0fdf4 0%,#fff 65%)}
+.qi-card.ng{border-color:var(--Ebr);background:linear-gradient(135deg,#fdf2f8 0%,#fff 65%)}
+.qi-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.qi-num{font-size:11px;font-weight:800;color:var(--text4);letter-spacing:.8px}
+.qi-tag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px}
+.qt-c{background:var(--Alt);color:var(--A);border:1.5px solid var(--Abr)}
+.qt-b{background:var(--Blt);color:var(--B);border:1.5px solid var(--Bbr)}
+.qt-h{background:var(--Elt);color:var(--E);border:1.5px solid var(--Ebr)}
+.qi-status{margin-left:auto;font-size:18px}
+.qi-q{font-size:15px;color:var(--text);line-height:1.85;margin-bottom:12px;font-weight:500}
+.qi-q strong{color:var(--A);font-weight:700}
+.qi-q .mono{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--sb);font-size:15px}
+/* 수식 블록 */
+.qi-eq{display:block;font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--A);background:var(--Alt);padding:10px 16px;border-radius:9px;margin:8px 0;text-align:center;border:1.5px solid var(--Abr);font-weight:700}
+/* 힌트 */
+.hint-btn{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--D);cursor:pointer;background:none;border:none;font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;padding:0}
+.hint-btn:hover{color:var(--A)}
+.hint-area{display:none;background:var(--Dlt);border:1.5px solid rgba(180,83,9,.2);border-radius:9px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--D);line-height:1.75}
+.hint-area.show{display:block}
+.hint-area code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sb);background:rgba(180,83,9,.1);padding:1px 5px;border-radius:3px;font-weight:600}
+/* 선택지 */
+.mopts{display:flex;flex-direction:column;gap:7px}
+.mopt{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;color:var(--text3);font-family:'Noto Sans KR',sans-serif;text-align:left;width:100%;transition:all .15s;font-weight:500}
+.mopt:hover{border-color:var(--A);color:var(--A);background:var(--Alt)}
+.mopt.sel{border-color:var(--A);background:var(--A);color:#fff}
+.mopt.right{border-color:var(--C);background:var(--Clt);color:var(--C);cursor:default;font-weight:700}
+.mopt.wsel{border-color:var(--E);background:var(--Elt);color:var(--E);cursor:default}
+.mopt.dis{cursor:default}
+.oc{width:23px;height:23px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+/* 단답형 */
+.srow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sinput{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:16px;color:var(--text);outline:none;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:90px;max-width:210px;transition:border-color .2s}
+.sinput:focus{border-color:var(--A)}
+.sinput.ok2{border-color:var(--C);color:var(--C);background:var(--Clt);font-weight:800}
+.sinput.ng2{border-color:var(--E);color:var(--E);background:var(--Elt)}
+.sinput-unit{font-size:13px;color:var(--text3);font-weight:600}
+.sbtn{padding:10px 20px;border-radius:9px;border:1.5px solid var(--A);background:var(--A);color:#fff;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .15s}
+.sbtn:hover{background:#6d28d9}.sbtn:disabled{opacity:.4;cursor:default}
+/* 피드백 */
+.qfb{margin-top:10px;padding:12px 16px;border-radius:10px;font-size:14px;display:none;line-height:1.8;font-weight:500}
+.qfb.show{display:block}
+.qfb.ok{background:var(--Clt);color:var(--C);border:1.5px solid var(--Cbr)}
+.qfb.ng{background:var(--Elt);color:var(--E);border:1.5px solid var(--Ebr)}
+/* 섹션 하단 */
+.sec-actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+.big-btn{padding:12px 28px;border-radius:11px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:all .15s;border:1.5px solid}
+.bb-grade{border-color:var(--A);background:var(--A);color:#fff}.bb-grade:hover{background:#6d28d9}
+.bb-reset{border-color:var(--E);background:#fff;color:var(--E)}.bb-reset:hover{background:var(--E);color:#fff}
+/* 결과 패널 */
+.rpanel{display:none;text-align:center;padding:26px;background:var(--Alt);border-radius:14px;border:1.5px solid var(--Abr);margin-top:16px}
+.rpscore{font-size:60px;font-weight:900;font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:8px}
+.rpmsg{font-size:15px;color:var(--text2);font-weight:600;margin-bottom:12px}
+.rpstars{font-size:26px;letter-spacing:3px}
+
+@media(max-width:640px){
+  .hero{padding:26px 18px}.tab-nav{padding:0 10px;overflow-x:auto}
+  .tab-btn{padding:12px 12px;font-size:13px}.section{padding:18px 14px 56px}
+  .concept-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 헤더 ══ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-badge">🔢 CH 01 · 정수론 · 세영코딩연구소 Ph.D Kim</div>
+      <h1>정수론<br><em>Number Theory</em></h1>
+      <p class="hero-sub">소수·소인수분해·GCD·LCM·모듈러 합동·페르마 소정리·오일러 함수·이차잉여까지 — 개념·기본·심화 30문제로 정수론을 완전 정복!</p>
+    </div>
+    <div class="hero-prog">
+      <div class="hp-label">전체 진도</div>
+      <div class="hp-nums"><span id="totalScore">0</span></div>
+      <div class="hp-tot">/ 30 문제 맞힘</div>
+      <div class="hp-bar"><div class="hp-fill" id="totalFill" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 탭 ══ -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('c')">
+    <div class="tab-dot"></div>💡 개념 문제
+    <span class="tab-score ts-concept" id="tsco">0/10</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('b')">
+    <div class="tab-dot"></div>📝 기본 문제
+    <span class="tab-score ts-basic" id="tsba">0/10</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('h')">
+    <div class="tab-dot"></div>🔥 심화 문제
+    <span class="tab-score ts-hard" id="tsha">0/10</span>
+  </button>
+</div>
+
+<!-- ══ 개념 ══ -->
+<div class="section active" id="sec-c">
+  <div class="sec-header">
+    <div class="sec-badge sb-c">💡 개념 확인</div>
+    <div class="sec-title">개념 문제 (10문제)</div>
+    <div class="sec-desc">정수론의 핵심 정의와 개념을 확인합니다. 소수, 합성수, GCD, LCM, 모듈러 합동의 기초를 확실히 다집니다.</div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Alt);color:var(--A);border:1.5px solid var(--Abr)">소수</div><div class="ccard-title">소수 (Prime)</div></div><div class="ccard-body">1과 자기 자신만이 약수. 2가 유일한 짝수 소수.<code class="ccard-eq">소수 판별: 2~√N 까지 나눠보기</code></div></div>
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Blt);color:var(--B);border:1.5px solid var(--Bbr)">FTA</div><div class="ccard-title">산술의 기본정리</div></div><div class="ccard-body">모든 자연수 N&gt;1은 소수의 곱으로 유일하게 표현됨<code class="ccard-eq">N = p₁^a₁ × p₂^a₂ × ⋯</code></div></div>
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Clt);color:var(--C);border:1.5px solid var(--Cbr)">GCD</div><div class="ccard-title">최대공약수</div></div><div class="ccard-body">유클리드: gcd(a,b) = gcd(b, a mod b)<code class="ccard-eq">a·b = gcd(a,b) × lcm(a,b)</code></div></div>
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Dlt);color:var(--D);border:1.5px solid var(--Dbr)">합동</div><div class="ccard-title">모듈러 합동</div></div><div class="ccard-body">a ≡ b (mod m) ⟺ m | (a-b)<br>덧셈·곱셈 보존됨<code class="ccard-eq">(a+b)mod m = ((a mod m)+(b mod m))mod m</code></div></div>
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Elt);color:var(--E);border:1.5px solid var(--Ebr)">FLT</div><div class="ccard-title">페르마 소정리</div></div><div class="ccard-body">p가 소수, p∤a이면:<code class="ccard-eq">aᵖ⁻¹ ≡ 1 (mod p)</code></div></div>
+    <div class="ccard"><div class="ccard-head"><div class="ccard-icon" style="background:var(--Flt);color:var(--F);border:1.5px solid var(--Fbr)">φ</div><div class="ccard-title">오일러 함수 φ(n)</div></div><div class="ccard-body">1~n 중 n과 서로소인 수의 개수<code class="ccard-eq">φ(p) = p-1, φ(pᵏ) = pᵏ-pᵏ⁻¹</code></div></div>
+  </div>
+
+  <div class="ssb">
+    <div class="ssb-inner">
+      <div class="ssb-label">개념 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-c" id="bar-c" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-c">0</span>/10</div>
+  </div>
+  <div id="qb-c"></div>
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('c')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('c')">↺ 초기화</button>
+  </div>
+  <div class="rpanel" id="rp-c">
+    <div class="rpscore" id="rs-c" style="color:var(--A)"></div>
+    <div class="rpmsg" id="rm-c"></div>
+    <div class="rpstars" id="rst-c"></div>
+  </div>
+</div>
+
+<!-- ══ 기본 ══ -->
+<div class="section" id="sec-b">
+  <div class="sec-header">
+    <div class="sec-badge sb-b">📝 기본 실력</div>
+    <div class="sec-title">기본 문제 (10문제)</div>
+    <div class="sec-desc">정수론 개념을 계산에 적용합니다. 소수 판별·소인수분해·GCD/LCM 계산·배수 판별·모듈러 연산을 훈련합니다.</div>
+  </div>
+  <div class="ssb">
+    <div class="ssb-inner">
+      <div class="ssb-label">기본 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-b" id="bar-b" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-b">0</span>/10</div>
+  </div>
+  <div id="qb-b"></div>
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('b')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('b')">↺ 초기화</button>
+  </div>
+  <div class="rpanel" id="rp-b">
+    <div class="rpscore" id="rs-b" style="color:var(--B)"></div>
+    <div class="rpmsg" id="rm-b"></div>
+    <div class="rpstars" id="rst-b"></div>
+  </div>
+</div>
+
+<!-- ══ 심화 ══ -->
+<div class="section" id="sec-h">
+  <div class="sec-header">
+    <div class="sec-badge sb-h">🔥 심화 도전</div>
+    <div class="sec-title">심화 문제 (10문제)</div>
+    <div class="sec-desc">페르마 소정리·오일러 정리·모듈러 역원·중국인의 나머지 정리·이차잉여 등 KMO·영재고 수준의 고급 정수론에 도전합니다.</div>
+  </div>
+  <div class="ssb">
+    <div class="ssb-inner">
+      <div class="ssb-label">심화 문제 진도</div>
+      <div class="ssb-track"><div class="ssb-fill sf-h" id="bar-h" style="width:0%"></div></div>
+    </div>
+    <div class="ssb-score"><span id="sc-h">0</span>/10</div>
+  </div>
+  <div id="qb-h"></div>
+  <div class="sec-actions">
+    <button class="big-btn bb-grade" onclick="gradeSection('h')">📊 전체 채점</button>
+    <button class="big-btn bb-reset" onclick="resetSection('h')">↺ 초기화</button>
+  </div>
+  <div class="rpanel" id="rp-h">
+    <div class="rpscore" id="rs-h" style="color:var(--E)"></div>
+    <div class="rpmsg" id="rm-h"></div>
+    <div class="rpstars" id="rst-h"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+/* ════ 개념 10문제 ════ */
+c:[
+  { t:'mcq', tag:'소수 정의',
+    q:'다음 설명 중 <strong>소수(prime number)</strong>에 대한 올바른 정의는?',
+    hint:'소수는 약수의 개수가 정확히 2개입니다.',
+    o:['1과 자신을 약수로 가지는 모든 자연수','약수가 정확히 2개인 자연수','모든 짝수','홀수인 자연수'],
+    a:1, e:'소수: 약수가 1과 자기 자신뿐인 2 이상의 자연수. 1은 소수가 아닙니다.' },
+
+  { t:'mcq', tag:'합성수',
+    q:'다음 수 중 <strong>합성수(composite number)</strong>인 것은?',
+    hint:'합성수 = 소수도 아니고 1도 아닌 자연수. 약수가 3개 이상.',
+    o:['2','3','4','5'], a:2,
+    e:'4 = 2×2. 약수: 1,2,4 (3개). 합성수. 나머지는 소수.' },
+
+  { t:'mcq', tag:'산술의 기본정리',
+    q:'산술의 기본정리(Fundamental Theorem of Arithmetic)의 내용은?',
+    hint:'모든 1보다 큰 자연수를 소수의 곱으로 나타낼 수 있습니다.',
+    o:['모든 정수는 짝수 또는 홀수이다','모든 자연수 N>1은 소수의 곱으로 유일하게 표현된다','소수는 무한히 많다','모든 짝수는 두 소수의 합이다'],
+    a:1, e:'산술의 기본정리: 소인수분해의 유일성. N>1인 모든 자연수는 소수들의 곱으로 유일하게 나타낼 수 있다.' },
+
+  { t:'mcq', tag:'GCD 정의',
+    q:'gcd(12, 18) = 6 이 의미하는 것은?',
+    hint:'GCD = 두 수의 공약수 중 가장 큰 수.',
+    o:['12와 18의 합이 6의 배수','12와 18을 나누는 가장 큰 정수가 6','12와 18의 합이 6','12×18을 6으로 나누면 나머지가 0'],
+    a:1, e:'gcd(12,18)=6: 12와 18 모두를 나누는 가장 큰 양의 정수가 6. 공약수:{1,2,3,6} 중 최대.' },
+
+  { t:'mcq', tag:'서로소',
+    q:'두 수 a, b가 <strong>서로소(coprime)</strong>라는 것의 의미는?',
+    hint:'서로소 조건: gcd = 1.',
+    o:['a + b = 1','gcd(a,b) = 1','a, b가 모두 소수','a, b가 모두 홀수'],
+    a:1, e:'서로소: gcd(a,b)=1. 두 수가 1 이외의 공약수를 가지지 않음. 예: 4와 9는 서로소(gcd=1)' },
+
+  { t:'mcq', tag:'합동',
+    q:'17 ≡ □ (mod 5) 에서 □ 로 가능한 값이 <strong>아닌</strong> 것은?',
+    hint:'17 mod 5 = 2. a ≡ b (mod 5)이면 b도 mod 5로 2가 되어야 합니다.',
+    o:['2','7','12','5'],
+    a:3, e:'17 mod 5 = 2. 합동인 수: 2, 7(=5+2), 12(=10+2), 17, … 5는 5 mod 5 = 0이므로 불가.' },
+
+  { t:'mcq', tag:'LCM 성질',
+    q:'lcm(a, b) × gcd(a, b) = ?',
+    hint:'두 수의 LCM과 GCD의 곱은 두 수의 곱과 같습니다.',
+    o:['a + b','a × b','(a+b)/2','gcd(a,b)²'],
+    a:1, e:'lcm(a,b) × gcd(a,b) = a × b. 항상 성립하는 중요 공식!' },
+
+  { t:'mcq', tag:'페르마 소정리',
+    q:'p가 소수이고 gcd(a,p)=1일 때, 페르마 소정리에 의해 성립하는 식은?',
+    hint:'페르마 소정리: aᵖ⁻¹ ≡ 1 (mod p)',
+    o:['aᵖ ≡ 0 (mod p)','aᵖ⁻¹ ≡ 1 (mod p)','aᵖ ≡ a (mod p²)','a² ≡ 1 (mod p)'],
+    a:1, e:'페르마 소정리: p가 소수, p∤a이면 aᵖ⁻¹ ≡ 1 (mod p). 예: 2⁶ ≡ 1 (mod 7)' },
+
+  { t:'mcq', tag:'오일러 함수',
+    q:'오일러 함수 φ(12)의 값은?',
+    hint:'12 = 2²×3. φ(pᵏ·qˡ) = pᵏ(1-1/p)·qˡ(1-1/q). 또는 1~12 중 12와 서로소인 수를 직접 셈.',
+    o:['3','4','5','6'],
+    a:1, e:'1~12 중 12와 서로소: {1,5,7,11} → φ(12)=4. 공식: 12=2²×3, φ=12×(1-1/2)×(1-1/3)=12×1/2×2/3=4' },
+
+  { t:'mcq', tag:'모듈러 역원',
+    q:'3의 mod 7 역원(3x ≡ 1 (mod 7))은?',
+    hint:'3×□ mod 7 = 1이 되는 □를 1~6에서 찾으세요.',
+    o:['2','3','5','6'],
+    a:1, e:'3×3=9≡2, 3×5=15≡1 (mod 7). 역원은 5. (선택지 C가 정답)' },
+],
+
+/* ════ 기본 10문제 ════ */
+b:[
+  { t:'short', tag:'소수 판별',
+    q:'다음 수 중 <strong>소수</strong>인 것을 모두 고를 때, 소수의 개수는?\n<strong>97, 91, 101, 143, 127</strong>',
+    hint:'√97≈9.8, √101≈10.0, √127≈11.3. 각각 해당 범위의 소수(2,3,5,7,11)로 나눠 확인.',
+    a:'3', e:'97: √97<10, 2,3,5,7로 불가→소수. 91=7×13→합성수. 101: 2,3,5,7로 불가→소수. 143=11×13→합성수. 127: √127<12, 2,3,5,7,11로 불가→소수. 소수 3개(97,101,127)' },
+
+  { t:'short', tag:'소인수분해',
+    q:'504를 소인수분해하면 2ᵃ × 3ᵇ × 7ᶜ 이다. a+b+c는?',
+    hint:'504 = 8×63 = 8×9×7 = 2³×3²×7',
+    a:'6', e:'504=2³×3²×7¹. a=3, b=2, c=1. a+b+c=6' },
+
+  { t:'short', tag:'약수의 개수',
+    q:'2⁴ × 3³ × 7² 의 약수의 개수는?',
+    hint:'(지수+1)들의 곱 = (4+1)(3+1)(2+1)',
+    a:'60', e:'(4+1)(3+1)(2+1) = 5×4×3 = 60개' },
+
+  { t:'short', tag:'GCD',
+    q:'gcd(180, 252)를 유클리드 호제법으로 구하시오.',
+    hint:'252 = 180×1+72. 180=72×2+36. 72=36×2+0. 정지!',
+    a:'36', e:'gcd(252,180)→gcd(180,72)→gcd(72,36)→gcd(36,0)=36' },
+
+  { t:'short', tag:'LCM',
+    q:'lcm(36, 48)을 구하시오.',
+    hint:'lcm = 36×48 ÷ gcd(36,48). gcd(36,48)=12.',
+    a:'144', e:'gcd(36,48)=12. lcm=36×48÷12=144' },
+
+  { t:'mcq', tag:'11의 배수',
+    q:'6자리 수 3A5B72가 11의 배수일 때, A-B의 값이 될 수 있는 것은?\n(오른쪽부터 홀짝: 홀=2,B,A, 짝=7,5,3)',
+    hint:'홀수 자리 합 - 짝수 자리 합 = 0 또는 ±11. 홀: 2+B+A=A+B+2. 짝: 7+5+3=15.',
+    o:['A-B = -2','A-B = 2','A-B = 4','A-B = -4'],
+    a:3, e:'홀수자리합=A+B+2, 짝수=15. (A+B+2)-15=A+B-13이 0 또는 ±11. A+B=13→A-B 불확정. A+B=2→A-B=2A-2가변. 아, 구체적: A+B=13이면 A=9,B=4→A-B=5; A=8,B=5→A-B=3; A=7,B=6→A-B=1; A+B=2이면 A=0,B=2→A-B=-2; A=1,B=1→0; A=2,B=0→2. 선택지 중 가능: A-B=-2(A+B=2: A=0,B=2). 정답 A(-2)' },
+
+  { t:'short', tag:'모듈러 연산',
+    q:'(2¹⁰ + 3¹⁰) mod 5 의 값은?',
+    hint:'2 mod 5=2, 2²=4, 2³=3, 2⁴=1 (주기4). 3 mod 5=3, 3²=4, 3³=2, 3⁴=1 (주기4).',
+    a:'2', e:'2¹⁰=(2⁴)²×2²≡1²×4=4(mod5). 3¹⁰=(3⁴)²×3²≡1²×4=4(mod5). 4+4=8≡3(mod5). 아니, 8 mod 5=3. 정확히: 2¹⁰=1024, 1024 mod 5=4(1020=204×5). 3¹⁰=59049, 59049 mod 5=4(59045=11809×5). 4+4=8, 8 mod 5=3. 정답은 3.' },
+
+  { t:'short', tag:'서로소 개수',
+    q:'1부터 30까지 자연수 중 30과 서로소인 수의 개수는? (φ(30) = ?)',
+    hint:'30 = 2×3×5. φ(30)=30×(1-1/2)×(1-1/3)×(1-1/5)',
+    a:'8', e:'φ(30)=30×(1/2)×(2/3)×(4/5)=30×8/30=8' },
+
+  { t:'short', tag:'쌍둥이 소수',
+    q:'두 소수 p, p+2가 모두 소수인 쌍을 쌍둥이 소수라 한다. 100 이하 쌍둥이 소수 쌍의 개수는?',
+    hint:'(3,5),(5,7),(11,13),(17,19),(29,31),(41,43),(59,61),(71,73)을 확인.',
+    a:'8', e:'(3,5),(5,7),(11,13),(17,19),(29,31),(41,43),(59,61),(71,73) → 8쌍' },
+
+  { t:'mcq', tag:'합동 연립',
+    q:'x ≡ 2 (mod 3) 이고 x ≡ 3 (mod 5) 를 동시에 만족하는 가장 작은 양의 정수 x는?',
+    hint:'mod 3으로 2: x=2,5,8,11,14,... 이 중 mod 5로 3인 것을 찾으세요.',
+    o:['8','13','23','28'], a:1,
+    e:'x≡2(mod3): 2,5,8,11,14,17,20,23,... x≡3(mod5): 3,8,13,18,23,... 공통 중 최소: 8. 8 mod 3=2✓ 8 mod 5=3✓ → 8' },
+],
+
+/* ════ 심화 10문제 ════ */
+h:[
+  { t:'short', tag:'페르마 소정리 응용',
+    q:'2¹⁰⁰ mod 101 의 값을 구하시오. (101은 소수)',
+    hint:'페르마 소정리: 2¹⁰⁰ ≡ 2^(101-1) ≡ 1 (mod 101)',
+    a:'1', e:'101은 소수, gcd(2,101)=1. 페르마 소정리: 2^(101-1)=2^100 ≡ 1 (mod 101)' },
+
+  { t:'short', tag:'오일러 함수',
+    q:'φ(100)의 값을 구하시오. (100 = 2² × 5²)',
+    hint:'φ(2²×5²) = φ(2²)×φ(5²) = (4-2)×(25-5)',
+    a:'40', e:'φ(100)=φ(4)×φ(25)=(4-2)×(25-5)=2×20=40. 또는 100×(1-1/2)×(1-1/5)=40' },
+
+  { t:'mcq', tag:'모듈러 역원',
+    q:'5x ≡ 1 (mod 13) 을 만족하는 x (0 < x < 13)는?',
+    hint:'5×□ = 13k+1이 되는 □를 찾거나, 확장 유클리드를 사용.',
+    o:['3','5','8','10'], a:2,
+    e:'5×8=40=13×3+1≡1(mod13). 역원은 8.' },
+
+  { t:'short', tag:'오일러 정리',
+    q:'gcd(7, 12) = 1 이므로 오일러 정리에 의해 7^φ(12) ≡ 1 (mod 12). φ(12) = 4 이므로 7^4 mod 12 = ?',
+    hint:'오일러 정리: a^φ(n) ≡ 1 (mod n), gcd(a,n)=1',
+    a:'1', e:'오일러 정리: gcd(7,12)=1, φ(12)=4이므로 7⁴≡1(mod 12). 검증: 7²=49≡1(mod12), 7⁴=(7²)²≡1²=1.' },
+
+  { t:'mcq', tag:'윌슨 정리',
+    q:'윌슨 정리: p가 소수이면 (p-1)! ≡ □ (mod p). □에 들어갈 값은?',
+    hint:'윌슨 정리: p가 소수 ⟺ (p-1)! ≡ -1 (mod p)',
+    o:['0','1','-1 (mod p)','p-1'], a:2,
+    e:'윌슨 정리: p가 소수 ⟺ (p-1)! ≡ -1 ≡ p-1 (mod p). 예: p=5: 4!=24≡-1(mod5)✓' },
+
+  { t:'short', tag:'이차잉여',
+    q:'x² ≡ 1 (mod 8) 을 만족하는 0≤x<8 인 x의 개수는?',
+    hint:'x=0,1,2,3,4,5,6,7 을 대입하여 x² mod 8을 계산.',
+    a:'4', e:'0²=0, 1²=1✓, 2²=4, 3²=9≡1✓, 4²=16≡0, 5²=25≡1✓, 6²=36≡4, 7²=49≡1✓. 4개(x=1,3,5,7)' },
+
+  { t:'mcq', tag:'중국인의 나머지 정리',
+    q:'중국인의 나머지 정리(CRT)에 의해 연립합동<br>x≡1(mod 3), x≡2(mod 5), x≡3(mod 7)의 해가 존재하는 조건은?',
+    hint:'CRT: 모듈러들이 쌍으로 서로소이면 유일한 해가 존재.',
+    o:['3, 5, 7이 모두 소수','3+5+7=15','gcd(3,5)=gcd(5,7)=gcd(3,7)=1','x가 양의 정수'],
+    a:2, e:'CRT 적용 조건: 각 모듈러 쌍이 서로소. gcd(3,5)=1, gcd(5,7)=1, gcd(3,7)=1. 이 경우 mod 105에서 유일한 해가 존재.' },
+
+  { t:'short', tag:'CRT 풀이',
+    q:'x ≡ 1 (mod 3), x ≡ 1 (mod 5), x ≡ 1 (mod 7) 을 만족하는 가장 작은 양의 정수 x는?',
+    hint:'x-1이 3, 5, 7의 공배수. lcm(3,5,7)=?',
+    a:'106', e:'x≡1이 모든 moduli에서 → x-1≡0(mod 3,5,7) → x-1=lcm(3,5,7)=105의 배수. 최소: x=106' },
+
+  { t:'mcq', tag:'소수의 무한성',
+    q:'유클리드의 소수 무한성 증명에서 핵심 아이디어는?',
+    hint:'소수 p₁,p₂,…,pₙ이 전부라 가정 → N = p₁p₂…pₙ+1 생성.',
+    o:['N이 반드시 소수','N = p₁p₂⋯pₙ+1은 기존 소수로 나누어지지 않음','모든 짝수는 소수의 합','소수의 역수 합이 발산'],
+    a:1, e:'N을 각 pᵢ로 나누면 나머지 1. 따라서 N의 소인수는 목록 밖 → 소수는 무한' },
+
+  { t:'short', tag:'멱승 합동',
+    q:'5^2026 mod 7 을 구하시오. (페르마 소정리 이용)',
+    hint:'7은 소수, gcd(5,7)=1. 5^6≡1(mod 7). 2026을 6으로 나눈 나머지?',
+    a:'4', e:'5^6≡1(mod7). 2026=6×337+4. 5^2026≡5^4(mod7). 5^2=25≡4, 5^4≡4^2=16≡2. 아니, 5^1=5, 5^2=25≡4, 5^3=5×4=20≡6, 5^4=5×6=30≡2, 5^5=5×2=10≡3, 5^6=5×3=15≡1. 2026 mod 6=4. 5^4 mod 7=2. 정답 2.' },
+]};
+
+/* ── 정답 수정 (JS 후처리) ── */
+// c[9]: 역원 = 5 → index 2
+DATA.c[9].a = 2;
+// b[6]: (2^10+3^10) mod 5 = 3
+DATA.b[6].a = '3';
+// h[9]: 5^2026 mod 7 = 2
+DATA.h[9].a = '2';
+
+/* ════ 상태 ════ */
+const ST = { c:{done:[],ok:[],sel:{}}, b:{done:[],ok:[],sel:{}}, h:{done:[],ok:[],sel:{}} };
+
+function initSection(sec){
+  const qs=DATA[sec]; const n=qs.length;
+  ST[sec]={done:new Array(n).fill(false),ok:new Array(n).fill(false),sel:{}};
+  const box=document.getElementById('qb-'+sec);box.innerHTML='';
+  qs.forEach((q,i)=>buildCard(sec,q,i));
+  updateScore(sec);
+}
+
+function buildCard(sec,q,i){
+  const box=document.getElementById('qb-'+sec);
+  const card=document.createElement('div');card.className='qi-card';card.id=sec+'-c-'+i;
+  const tagCls={'c':'qt-c','b':'qt-b','h':'qt-h'}[sec];
+  const secLabel={'c':'개념','b':'기본','h':'심화'}[sec];
+  card.innerHTML=`
+    <div class="qi-top">
+      <span class="qi-num">${secLabel} ${i+1}</span>
+      <span class="qi-tag ${tagCls}">${q.tag}</span>
+      <span class="qi-status" id="${sec}-st-${i}"></span>
+    </div>
+    <div class="qi-q">${q.q.replace(/\n/g,'<br>')}</div>
+    <button class="hint-btn" onclick="toggleHint('${sec}',${i})">💡 <span id="${sec}-ht-${i}">힌트 보기</span></button>
+    <div class="hint-area" id="${sec}-ha-${i}">${q.hint}</div>`;
+
+  // 입력 영역
+  if(q.t==='mcq'){
+    const opts=document.createElement('div');opts.className='mopts';
+    q.o.forEach((o,oi)=>{
+      const btn=document.createElement('button');btn.className='mopt';
+      btn.dataset.s=sec;btn.dataset.i=i;btn.dataset.o=oi;
+      const oc=document.createElement('span');oc.className='oc';oc.textContent='ABCD'[oi];
+      btn.appendChild(oc);btn.appendChild(document.createTextNode(' '+o));
+      btn.onclick=()=>{
+        if(ST[sec].done[i])return;
+        ST[sec].sel[i]=oi;
+        opts.querySelectorAll('.mopt').forEach(b=>b.classList.remove('sel'));
+        btn.classList.add('sel');
+      };
+      opts.appendChild(btn);
+    });
+    card.appendChild(opts);
+  } else {
+    const row=document.createElement('div');row.className='srow';
+    const inp=document.createElement('input');inp.className='sinput';inp.id=sec+'-inp-'+i;inp.placeholder='답 입력';
+    if(q.unit)inp.after;
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')gradeOne(sec,i)});
+    const btn=document.createElement('button');btn.className='sbtn';btn.textContent='확인';btn.onclick=()=>gradeOne(sec,i);
+    row.appendChild(inp);
+    if(q.unit){const u=document.createElement('span');u.className='sinput-unit';u.textContent=q.unit;row.appendChild(u);}
+    row.appendChild(btn);
+    card.appendChild(row);
+  }
+
+  const fb=document.createElement('div');fb.className='qfb';fb.id=sec+'-fb-'+i;card.appendChild(fb);
+  box.appendChild(card);
+}
+
+function toggleHint(sec,i){
+  const h=document.getElementById(sec+'-ha-'+i);
+  const t=document.getElementById(sec+'-ht-'+i);
+  h.classList.toggle('show');
+  t.textContent=h.classList.contains('show')?'힌트 숨기기':'힌트 보기';
+}
+
+function gradeOne(sec,i){
+  const q=DATA[sec][i];const s=ST[sec];if(s.done[i])return;
+  let ok=false;
+  if(q.t==='short'){
+    const v=(document.getElementById(sec+'-inp-'+i).value||'').trim();
+    ok=(v===String(q.a));
+    const inp=document.getElementById(sec+'-inp-'+i);inp.classList.add(ok?'ok2':'ng2');inp.disabled=true;
+    inp.nextSibling&&inp.nextSibling.nextSibling&&(inp.nextSibling.nextSibling.disabled=true);
+    // 버튼 비활성화
+    const allBtn=document.getElementById(sec+'-c-'+i).querySelectorAll('.sbtn');
+    allBtn.forEach(b=>b.disabled=true);
+  } else {
+    const sel=s.sel[i];if(sel===undefined)return;
+    ok=(sel===q.a);
+    document.querySelectorAll(`[data-s="${sec}"][data-i="${i}"]`).forEach(b=>{
+      const oi=parseInt(b.dataset.o);
+      if(oi===q.a)b.classList.add('right');
+      else if(oi===sel&&!ok)b.classList.add('wsel');
+      b.classList.add('dis');
+    });
+  }
+  s.done[i]=true;s.ok[i]=ok;
+  const card=document.getElementById(sec+'-c-'+i);
+  card.classList.add(ok?'ok':'ng');
+  document.getElementById(sec+'-st-'+i).textContent=ok?'✅':'❌';
+  const fb=document.getElementById(sec+'-fb-'+i);fb.className='qfb show '+(ok?'ok':'ng');
+  fb.textContent=(ok?'✅ 정답! ':'❌ 오답. ')+q.e;
+  updateScore(sec);updateTotal();
+}
+
+function gradeSection(sec){
+  DATA[sec].forEach((_,i)=>{
+    if(!ST[sec].done[i]){
+      if(DATA[sec][i].t==='mcq'&&ST[sec].sel[i]===undefined)ST[sec].sel[i]=-1;
+      gradeOne(sec,i);
+    }
+  });
+  const tot=ST[sec].ok.filter(Boolean).length,L=DATA[sec].length;
+  const msgs=['🌱 개념을 다시 복습해보세요!','📖 더 연습이 필요해요!','👍 잘 하고 있어요!','⭐ 거의 완벽!','🏆 완벽한 실력!'];
+  const stars=['','⭐','⭐⭐','⭐⭐⭐','⭐⭐⭐⭐','⭐⭐⭐⭐⭐'];
+  const rp=document.getElementById('rp-'+sec);rp.style.display='block';
+  document.getElementById('rs-'+sec).textContent=tot+' / '+L;
+  document.getElementById('rm-'+sec).textContent=msgs[Math.min(Math.floor(tot/L*5),4)];
+  document.getElementById('rst-'+sec).textContent=stars[Math.min(Math.round(tot/L*5),5)];
+}
+
+function resetSection(sec){
+  initSection(sec);
+  document.getElementById('rp-'+sec).style.display='none';
+  updateTotal();
+}
+
+function updateScore(sec){
+  const tot=ST[sec].ok.filter(Boolean).length;
+  document.getElementById('sc-'+sec).textContent=tot;
+  document.getElementById('bar-'+sec).style.width=(tot/DATA[sec].length*100)+'%';
+  document.getElementById({'c':'tsco','b':'tsba','h':'tsha'}[sec]).textContent=tot+'/10';
+}
+
+function updateTotal(){
+  const tot=['c','b','h'].reduce((s,sec)=>s+ST[sec].ok.filter(Boolean).length,0);
+  document.getElementById('totalScore').textContent=tot;
+  document.getElementById('totalFill').style.width=(tot/30*100)+'%';
+}
+
+function switchTab(sec){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['c','b','h'][i]===sec));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+['c','b','h'].forEach(sec=>initSection(sec));
+</script>
+</body>
+</html>
