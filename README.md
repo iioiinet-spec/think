@@ -8,3 +8,14 @@ ch2gl    :  gcd lcm 개념
 ch2glq   :  gcd lcm 문제
 ch2q     :  정수론 문제
 ch2c     :  코딩
+
+
+
+
+
+
+
+
+
+
+p   :  포켓몬카드게임
