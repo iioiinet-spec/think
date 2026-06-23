@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2장 정수론 코딩 수업 — 세영코딩연구소</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+  :root {
+    --bg:       #FFF8F0;
+    --panel:    #FFFFFF;
+    --border:   #E8DDD0;
+    --ink:      #2C1A0E;
+    --ink2:     #5C4033;
+    --accent:   #D04A1A;
+    --accent2:  #1A6EA8;
+    --green:    #1A7A3C;
+    --yellow:   #E8A800;
+    --tag-c:    #D04A1A;
+    --tag-py:   #1A6EA8;
+    --radius:   12px;
+    --mono:     'JetBrains Mono', monospace;
+    --sans:     'Noto Sans KR', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: #FFF8F0;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  header .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 4px;
+    align-self: center;
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+  }
+  header p {
+    font-size: 13px;
+    color: #C8B8A8;
+    margin-top: 4px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--panel);
+    border-bottom: 2px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  nav button {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink2);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 16px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  nav button:hover { color: var(--accent); }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── CONCEPT CARD ── */
+  .concept {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  .concept h2 {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .concept h2 .icon { font-size: 22px; }
+  .concept p { color: var(--ink2); font-size: 16px; margin-bottom: 10px; }
+  .concept .formula {
+    font-family: var(--mono);
+    font-size: 15px;
+    background: var(--bg);
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 6px;
+    color: var(--ink);
+    margin-top: 10px;
+  }
+
+  /* ── INTERACTIVE DEMO ── */
+  .demo {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .demo-header {
+    background: var(--ink);
+    color: #FFF8F0;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .demo-header .title { display: flex; align-items: center; gap: 8px; }
+
+  .lang-tabs {
+    display: flex;
+    gap: 6px;
+  }
+  .lang-btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .lang-btn.c-btn { background: #3A1A0A; color: var(--accent); }
+  .lang-btn.c-btn.active { background: var(--accent); color: #fff; }
+  .lang-btn.py-btn { background: #0A1A2A; color: var(--accent2); }
+  .lang-btn.py-btn.active { background: var(--accent2); color: #fff; }
+
+  .demo-body { padding: 24px; }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap { position: relative; margin-bottom: 16px; }
+  .code-block {
+    font-family: var(--mono);
+    font-size: 14px;
+    background: #1C1008;
+    color: #F0E0C0;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    line-height: 1.7;
+    border: 1.5px solid #3A2A1A;
+    display: none;
+    white-space: pre;
+  }
+  .code-block.active { display: block; }
+  .code-block .kw  { color: #FF7A3A; }
+  .code-block .fn  { color: #FFCC66; }
+  .code-block .cm  { color: #8A7A6A; font-style: italic; }
+  .code-block .num { color: #88DDAA; }
+  .code-block .str { color: #AADDFF; }
+  .code-block .op  { color: #FF9966; }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    background: #3A2A1A;
+    color: #C0A080;
+    border: 1px solid #5A3A2A;
+    border-radius: 5px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .copy-btn:hover { background: var(--accent); color: #fff; }
+  .copy-btn.copied { background: var(--green); color: #fff; }
+
+  /* ── INPUT ROW ── */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .input-row label { font-size: 15px; font-weight: 600; color: var(--ink2); }
+  .num-input {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    width: 100px;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    text-align: center;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .num-input:focus { border-color: var(--accent); }
+  .num-input-sm { width: 80px; }
+
+  .run-btn {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: #B03A10; }
+  .run-btn:active { transform: scale(.97); }
+
+  /* ── RESULT ── */
+  .result-box {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--ink);
+    min-height: 44px;
+    transition: background .2s;
+  }
+  .result-box.ok { border-color: var(--green); background: #F0FFF4; color: var(--green); }
+  .result-box.info { border-color: var(--accent2); background: #F0F6FF; color: var(--accent2); }
+
+  /* ── VISUAL ── */
+  .visual-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+    min-height: 36px;
+    align-items: center;
+  }
+  .num-chip {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--border);
+    color: var(--ink2);
+    transition: background .2s, color .2s;
+  }
+  .num-chip.prime { background: var(--accent); color: #fff; }
+  .num-chip.factor { background: var(--accent2); color: #fff; }
+  .num-chip.common { background: var(--green); color: #fff; }
+  .num-chip.highlight { background: var(--yellow); color: var(--ink); }
+  .num-chip.dim { background: #E8E0D8; color: #B0A090; }
+
+  /* ── STEP LOG ── */
+  .step-log {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: #1C1008;
+    color: #C0A080;
+    border-radius: 8px;
+    padding: 14px 18px;
+    max-height: 180px;
+    overflow-y: auto;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .step-log .step-ok { color: #88DDAA; }
+  .step-log .step-hi { color: #FFCC66; }
+
+  /* ── RANGE SLIDER ── */
+  .slider-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 200px; height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+  .slider-val {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 36px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 30px 0; }
+
+  /* grid for prime sieve */
+  .sieve-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+  .sieve-cell {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    padding: 5px 2px;
+    border-radius: 5px;
+    background: var(--border);
+    color: var(--ink2);
+    transition: background .2s, color .2s;
+    cursor: default;
+  }
+  .sieve-cell.crossed { background: #E8E0D8; color: #C0B0A0; text-decoration: line-through; }
+  .sieve-cell.prime { background: var(--accent); color: #fff; }
+  .sieve-cell.current { background: var(--yellow); color: var(--ink); outline: 2px solid var(--accent); }
+  .sieve-cell.one { background: #E0D8D0; color: #A09080; }
+
+  .tip {
+    font-size: 14px;
+    color: var(--ink2);
+    background: #FFF0E8;
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 12px;
+  }
+
+  @media(max-width:600px){
+    header { padding: 20px; }
+    nav { padding: 0 12px; }
+    main { padding: 20px 12px 60px; }
+    .concept { padding: 20px; }
+    .demo-body { padding: 16px; }
+    .sieve-grid { gap: 2px; }
+    .sieve-cell { font-size: 11px; padding: 4px 1px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="badge">세영코딩연구소 · 사고력수학 2장</div>
+    <h1>정수론 코딩 수업</h1>
+    <p>소수 · 약수 · 최대공약수 · 최소공배수 — C & Python 인터랙티브 예제</p>
+  </div>
+</header>
+
+<nav id="mainNav">
+  <button class="active" onclick="showSection('s1',this)">① 소수 판별</button>
+  <button onclick="showSection('s2',this)">② 에라토스테네스의 체</button>
+  <button onclick="showSection('s3',this)">③ 약수 구하기</button>
+  <button onclick="showSection('s4',this)">④ GCD (최대공약수)</button>
+  <button onclick="showSection('s5',this)">⑤ LCM (최소공배수)</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ 1. 소수 판별 ══════════════ -->
+<div id="s1" class="section active">
+  <div class="concept">
+    <h2><span class="icon">🔢</span> 소수(Prime Number)란?</h2>
+    <p>1보다 큰 자연수 중 <strong>1과 자기 자신만</strong>을 약수로 갖는 수입니다.<br>
+       예: 2, 3, 5, 7, 11, 13 …</p>
+    <div class="formula">소수 판별 핵심: 2 ≤ i ≤ √n 범위에서 나누어지면 소수가 아님</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-header">
+      <div class="title">🖥 소수 판별 코드</div>
+      <div class="lang-tabs">
+        <button class="lang-btn c-btn active" onclick="switchLang('prime','c')">C</button>
+        <button class="lang-btn py-btn" onclick="switchLang('prime','py')">Python</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="code-wrap">
+        <div id="prime-c" class="code-block active"><span class="cm">// 소수 판별 (C언어)</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;math.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">isPrime</span>(<span class="kw">int</span> n) {
+    <span class="kw">if</span> (n <span class="op">&lt;</span> <span class="num">2</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">2</span>; i <span class="op">*</span> i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">if</span> (n <span class="op">%</span> i <span class="op">==</span> <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;
+    }
+    <span class="kw">return</span> <span class="num">1</span>;
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">if</span> (<span class="fn">isPrime</span>(n))
+        <span class="fn">printf</span>(<span class="str">"%d은(는) 소수입니다\n"</span>, n);
+    <span class="kw">else</span>
+        <span class="fn">printf</span>(<span class="str">"%d은(는) 소수가 아닙니다\n"</span>, n);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</div>
+        <div id="prime-py" class="code-block"><span class="cm"># 소수 판별 (Python)</span>
+<span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">is_prime</span>(n):
+    <span class="kw">if</span> n <span class="op">&lt;</span> <span class="num">2</span>:
+        <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, <span class="kw">int</span>(math.<span class="fn">sqrt</span>(n)) <span class="op">+</span> <span class="num">1</span>):
+        <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="num">0</span>:
+            <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+
+n <span class="op">=</span> <span class="kw">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> <span class="fn">is_prime</span>(n):
+    <span class="fn">print</span>(<span class="str">f"{n}은(는) 소수입니다"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">f"{n}은(는) 소수가 아닙니다"</span>)</div>
+        <button class="copy-btn" onclick="copyCode('prime')">복사</button>
+      </div>
+
+      <div class="input-row">
+        <label>숫자 입력:</label>
+        <input type="number" class="num-input" id="primeN" value="17" min="1" max="999">
+        <button class="run-btn" onclick="runPrime()">▶ 실행</button>
+      </div>
+
+      <div class="visual-area" id="primeVis"></div>
+      <div class="step-log" id="primeLog">← 숫자를 입력하고 실행 버튼을 눌러보세요</div>
+      <div class="result-box" id="primeResult">결과가 여기에 표시됩니다</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 2. 에라토스테네스의 체 ══════════════ -->
+<div id="s2" class="section">
+  <div class="concept">
+    <h2><span class="icon">🧮</span> 에라토스테네스의 체</h2>
+    <p>1~N 범위의 소수를 <strong>한꺼번에 빠르게</strong> 찾는 알고리즘입니다.<br>
+       소수의 배수를 차례로 지워나가면 남은 수들이 모두 소수!</p>
+    <div class="formula">시간복잡도: O(N log log N)  — 단순 반복보다 훨씬 빠름</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-header">
+      <div class="title">🖥 에라토스테네스의 체 코드</div>
+      <div class="lang-tabs">
+        <button class="lang-btn c-btn active" onclick="switchLang('sieve','c')">C</button>
+        <button class="lang-btn py-btn" onclick="switchLang('sieve','py')">Python</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="code-wrap">
+        <div id="sieve-c" class="code-block active"><span class="cm">// 에라토스테네스의 체 (C언어)</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;string.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> N;
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, <span class="op">&amp;</span>N);
+
+    <span class="kw">int</span> sieve[N<span class="op">+</span><span class="num">1</span>];
+    <span class="fn">memset</span>(sieve, <span class="num">1</span>, <span class="kw">sizeof</span>(sieve));
+    sieve[<span class="num">0</span>] <span class="op">=</span> sieve[<span class="num">1</span>] <span class="op">=</span> <span class="num">0</span>;
+
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">2</span>; i <span class="op">*</span> i <span class="op">&lt;=</span> N; i<span class="op">++</span>) {
+        <span class="kw">if</span> (sieve[i]) {
+            <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> i<span class="op">*</span>i; j <span class="op">&lt;=</span> N; j <span class="op">+=</span> i)
+                sieve[j] <span class="op">=</span> <span class="num">0</span>;
+        }
+    }
+
+    <span class="fn">printf</span>(<span class="str">"소수: "</span>);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">2</span>; i <span class="op">&lt;=</span> N; i<span class="op">++</span>)
+        <span class="kw">if</span> (sieve[i]) <span class="fn">printf</span>(<span class="str">"%d "</span>, i);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</div>
+        <div id="sieve-py" class="code-block"><span class="cm"># 에라토스테네스의 체 (Python)</span>
+<span class="kw">def</span> <span class="fn">sieve_of_eratosthenes</span>(N):
+    sieve <span class="op">=</span> [<span class="kw">True</span>] <span class="op">*</span> (N <span class="op">+</span> <span class="num">1</span>)
+    sieve[<span class="num">0</span>] <span class="op">=</span> sieve[<span class="num">1</span>] <span class="op">=</span> <span class="kw">False</span>
+
+    i <span class="op">=</span> <span class="num">2</span>
+    <span class="kw">while</span> i <span class="op">*</span> i <span class="op">&lt;=</span> N:
+        <span class="kw">if</span> sieve[i]:
+            <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i<span class="op">*</span>i, N<span class="op">+</span><span class="num">1</span>, i):
+                sieve[j] <span class="op">=</span> <span class="kw">False</span>
+        i <span class="op">+=</span> <span class="num">1</span>
+
+    <span class="kw">return</span> [i <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, N<span class="op">+</span><span class="num">1</span>) <span class="kw">if</span> sieve[i]]
+
+N <span class="op">=</span> <span class="kw">int</span>(<span class="fn">input</span>())
+<span class="fn">print</span>(<span class="str">"소수:"</span>, <span class="fn">sieve_of_eratosthenes</span>(N))</div>
+        <button class="copy-btn" onclick="copyCode('sieve')">복사</button>
+      </div>
+
+      <div class="slider-row">
+        <label style="font-size:15px;font-weight:600;color:var(--ink2)">N =</label>
+        <input type="range" min="10" max="100" value="50" id="sieveRange" oninput="updateSieveN(this.value)">
+        <span class="slider-val" id="sieveVal">50</span>
+        <button class="run-btn" onclick="runSieve()">▶ 체 실행</button>
+      </div>
+
+      <div class="sieve-grid" id="sieveGrid"></div>
+      <div class="result-box info" id="sieveResult">체를 실행하면 소수가 빨간색으로 표시됩니다</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 3. 약수 구하기 ══════════════ -->
+<div id="s3" class="section">
+  <div class="concept">
+    <h2><span class="icon">➗ 약수(Divisors)</span></h2>
+    <p>어떤 수 N을 나누어 떨어지게 하는 수의 집합입니다.<br>
+       약수는 항상 <strong>쌍으로</strong> 존재합니다: d와 N/d</p>
+    <div class="formula">효율적 탐색: i = 1 → √N 까지만 확인 → O(√N)</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-header">
+      <div class="title">🖥 약수 구하기 코드</div>
+      <div class="lang-tabs">
+        <button class="lang-btn c-btn active" onclick="switchLang('div','c')">C</button>
+        <button class="lang-btn py-btn" onclick="switchLang('div','py')">Python</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="code-wrap">
+        <div id="div-c" class="code-block active"><span class="cm">// 약수 구하기 (C언어)</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+
+<span class="kw">void</span> <span class="fn">getDivisors</span>(<span class="kw">int</span> n) {
+    <span class="kw">int</span> divs[<span class="num">1000</span>], cnt <span class="op">=</span> <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">1</span>; i <span class="op">*</span> i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">if</span> (n <span class="op">%</span> i <span class="op">==</span> <span class="num">0</span>) {
+            divs[cnt<span class="op">++</span>] <span class="op">=</span> i;
+            <span class="kw">if</span> (i <span class="op">!=</span> n <span class="op">/</span> i)
+                divs[cnt<span class="op">++</span>] <span class="op">=</span> n <span class="op">/</span> i;
+        }
+    }
+    <span class="cm">/* 정렬 후 출력 */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> cnt<span class="op">-</span><span class="num">1</span>; i<span class="op">++</span>)
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> i<span class="op">+</span><span class="num">1</span>; j <span class="op">&lt;</span> cnt; j<span class="op">++</span>)
+            <span class="kw">if</span> (divs[i] <span class="op">&gt;</span> divs[j]) {
+                <span class="kw">int</span> t <span class="op">=</span> divs[i];
+                divs[i] <span class="op">=</span> divs[j];
+                divs[j] <span class="op">=</span> t;
+            }
+    <span class="fn">printf</span>(<span class="str">"%d의 약수(%d개): "</span>, n, cnt);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> cnt; i<span class="op">++</span>)
+        <span class="fn">printf</span>(<span class="str">"%d "</span>, divs[i]);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="fn">getDivisors</span>(n);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</div>
+        <div id="div-py" class="code-block"><span class="cm"># 약수 구하기 (Python)</span>
+<span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">get_divisors</span>(n):
+    divs <span class="op">=</span> []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="kw">int</span>(math.<span class="fn">sqrt</span>(n)) <span class="op">+</span> <span class="num">1</span>):
+        <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="num">0</span>:
+            divs.<span class="fn">append</span>(i)
+            <span class="kw">if</span> i <span class="op">!=</span> n <span class="op">//</span> i:
+                divs.<span class="fn">append</span>(n <span class="op">//</span> i)
+    <span class="kw">return</span> <span class="fn">sorted</span>(divs)
+
+n <span class="op">=</span> <span class="kw">int</span>(<span class="fn">input</span>())
+d <span class="op">=</span> <span class="fn">get_divisors</span>(n)
+<span class="fn">print</span>(<span class="str">f"{n}의 약수({len(d)}개):"</span>, d)</div>
+        <button class="copy-btn" onclick="copyCode('div')">복사</button>
+      </div>
+
+      <div class="input-row">
+        <label>숫자 입력:</label>
+        <input type="number" class="num-input" id="divN" value="36" min="1" max="9999">
+        <button class="run-btn" onclick="runDiv()">▶ 실행</button>
+      </div>
+
+      <div class="visual-area" id="divVis"></div>
+      <div class="result-box" id="divResult">결과가 여기에 표시됩니다</div>
+
+      <div class="tip">💡 <strong>쌍 약수 원리:</strong> i × (N/i) = N 이므로 √N 까지만 확인하면 모든 약수를 찾을 수 있어요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 4. GCD ══════════════ -->
+<div id="s4" class="section">
+  <div class="concept">
+    <h2><span class="icon">🔗</span> 최대공약수 GCD</h2>
+    <p>두 수의 공통 약수 중 <strong>가장 큰 수</strong>입니다.<br>
+       유클리드 호제법: GCD(a, b) = GCD(b, a mod b) — b = 0이면 a가 GCD</p>
+    <div class="formula">GCD(48, 18) → GCD(18, 12) → GCD(12, 6) → GCD(6, 0) = 6</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-header">
+      <div class="title">🖥 GCD 코드 (유클리드 호제법)</div>
+      <div class="lang-tabs">
+        <button class="lang-btn c-btn active" onclick="switchLang('gcd','c')">C</button>
+        <button class="lang-btn py-btn" onclick="switchLang('gcd','py')">Python</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="code-wrap">
+        <div id="gcd-c" class="code-block active"><span class="cm">// 최대공약수 GCD (C언어 - 유클리드 호제법)</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">gcd</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+    <span class="kw">while</span> (b) {
+        <span class="kw">int</span> t <span class="op">=</span> b;
+        b <span class="op">=</span> a <span class="op">%</span> b;
+        a <span class="op">=</span> t;
+    }
+    <span class="kw">return</span> a;
+}
+
+<span class="cm">/* 재귀 버전 */</span>
+<span class="kw">int</span> <span class="fn">gcd_rec</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+    <span class="kw">return</span> b <span class="op">==</span> <span class="num">0</span> ? a : <span class="fn">gcd_rec</span>(b, a <span class="op">%</span> b);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a, b;
+    <span class="fn">scanf</span>(<span class="str">"%d %d"</span>, <span class="op">&amp;</span>a, <span class="op">&amp;</span>b);
+    <span class="fn">printf</span>(<span class="str">"GCD(%d, %d) = %d\n"</span>, a, b, <span class="fn">gcd</span>(a, b));
+    <span class="kw">return</span> <span class="num">0</span>;
+}</div>
+        <div id="gcd-py" class="code-block"><span class="cm"># 최대공약수 GCD (Python - 유클리드 호제법)</span>
+<span class="kw">import</span> math
+
+<span class="cm"># 방법 1: 직접 구현</span>
+<span class="kw">def</span> <span class="fn">gcd</span>(a, b):
+    <span class="kw">while</span> b:
+        a, b <span class="op">=</span> b, a <span class="op">%</span> b
+    <span class="kw">return</span> a
+
+<span class="cm"># 방법 2: 재귀</span>
+<span class="kw">def</span> <span class="fn">gcd_rec</span>(a, b):
+    <span class="kw">return</span> a <span class="kw">if</span> b <span class="op">==</span> <span class="num">0</span> <span class="kw">else</span> <span class="fn">gcd_rec</span>(b, a <span class="op">%</span> b)
+
+<span class="cm"># 방법 3: 내장 함수</span>
+<span class="cm"># math.gcd(a, b)</span>
+
+a, b <span class="op">=</span> <span class="fn">map</span>(<span class="kw">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+<span class="fn">print</span>(<span class="str">f"GCD({a}, {b}) = {gcd(a, b)}"</span>)</div>
+        <button class="copy-btn" onclick="copyCode('gcd')">복사</button>
+      </div>
+
+      <div class="input-row">
+        <label>a =</label>
+        <input type="number" class="num-input num-input-sm" id="gcdA" value="48" min="1" max="9999">
+        <label>b =</label>
+        <input type="number" class="num-input num-input-sm" id="gcdB" value="18" min="1" max="9999">
+        <button class="run-btn" onclick="runGCD()">▶ 실행</button>
+      </div>
+
+      <div class="step-log" id="gcdLog">← 두 수를 입력하고 실행해보세요</div>
+      <div class="result-box" id="gcdResult">결과가 여기에 표시됩니다</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 5. LCM ══════════════ -->
+<div id="s5" class="section">
+  <div class="concept">
+    <h2><span class="icon">📐</span> 최소공배수 LCM</h2>
+    <p>두 수의 공통 배수 중 <strong>가장 작은 수</strong>입니다.<br>
+       GCD를 이용하면 간단하게 구할 수 있어요!</p>
+    <div class="formula">LCM(a, b) = a × b ÷ GCD(a, b)</div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-header">
+      <div class="title">🖥 LCM 코드</div>
+      <div class="lang-tabs">
+        <button class="lang-btn c-btn active" onclick="switchLang('lcm','c')">C</button>
+        <button class="lang-btn py-btn" onclick="switchLang('lcm','py')">Python</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="code-wrap">
+        <div id="lcm-c" class="code-block active"><span class="cm">// 최소공배수 LCM (C언어)</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">gcd</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+    <span class="kw">while</span> (b) { <span class="kw">int</span> t <span class="op">=</span> b; b <span class="op">=</span> a <span class="op">%</span> b; a <span class="op">=</span> t; }
+    <span class="kw">return</span> a;
+}
+
+<span class="kw">long long</span> <span class="fn">lcm</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+    <span class="kw">return</span> (<span class="kw">long long</span>)a <span class="op">/</span> <span class="fn">gcd</span>(a, b) <span class="op">*</span> b;
+    <span class="cm">/* a를 먼저 나눠 오버플로우 방지 */</span>
+}
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a, b;
+    <span class="fn">scanf</span>(<span class="str">"%d %d"</span>, <span class="op">&amp;</span>a, <span class="op">&amp;</span>b);
+    <span class="fn">printf</span>(<span class="str">"GCD = %d\n"</span>, <span class="fn">gcd</span>(a, b));
+    <span class="fn">printf</span>(<span class="str">"LCM = %lld\n"</span>, <span class="fn">lcm</span>(a, b));
+    <span class="kw">return</span> <span class="num">0</span>;
+}</div>
+        <div id="lcm-py" class="code-block"><span class="cm"># 최소공배수 LCM (Python)</span>
+<span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">gcd</span>(a, b):
+    <span class="kw">while</span> b:
+        a, b <span class="op">=</span> b, a <span class="op">%</span> b
+    <span class="kw">return</span> a
+
+<span class="kw">def</span> <span class="fn">lcm</span>(a, b):
+    <span class="kw">return</span> a <span class="op">//</span> <span class="fn">gcd</span>(a, b) <span class="op">*</span> b
+
+a, b <span class="op">=</span> <span class="fn">map</span>(<span class="kw">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+g <span class="op">=</span> <span class="fn">gcd</span>(a, b)
+l <span class="op">=</span> <span class="fn">lcm</span>(a, b)
+<span class="fn">print</span>(<span class="str">f"GCD({a},{b}) = {g}"</span>)
+<span class="fn">print</span>(<span class="str">f"LCM({a},{b}) = {l}"</span>)
+
+<span class="cm"># Python 3.9+ 내장</span>
+<span class="cm"># math.lcm(a, b)</span></div>
+        <button class="copy-btn" onclick="copyCode('lcm')">복사</button>
+      </div>
+
+      <div class="input-row">
+        <label>a =</label>
+        <input type="number" class="num-input num-input-sm" id="lcmA" value="12" min="1" max="9999">
+        <label>b =</label>
+        <input type="number" class="num-input num-input-sm" id="lcmB" value="18" min="1" max="9999">
+        <button class="run-btn" onclick="runLCM()">▶ 실행</button>
+      </div>
+
+      <div class="visual-area" id="lcmVis" style="flex-direction:column;gap:8px;"></div>
+      <div class="result-box" id="lcmResult">결과가 여기에 표시됩니다</div>
+
+      <div class="tip">💡 <strong>왜 a를 먼저 나눌까?</strong> a × b를 먼저 계산하면 큰 수에서 오버플로우가 날 수 있어요. C에서는 <code>(a / gcd) * b</code> 순서가 안전해요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ── NAV ──
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── LANG SWITCH ──
+function switchLang(prefix, lang) {
+  const c = document.getElementById(prefix+'-c');
+  const py = document.getElementById(prefix+'-py');
+  const btns = document.querySelectorAll(`#${prefix}-c`).length
+    ? document.querySelectorAll('.lang-btn')
+    : [];
+  // find parent demo-header
+  const codeWrap = c.closest('.code-wrap');
+  const demoHeader = c.closest('.demo-body').parentElement.querySelector('.demo-header');
+  const cBtn = demoHeader.querySelector('.c-btn');
+  const pyBtn = demoHeader.querySelector('.py-btn');
+
+  if (lang === 'c') {
+    c.classList.add('active'); py.classList.remove('active');
+    cBtn.classList.add('active'); pyBtn.classList.remove('active');
+  } else {
+    py.classList.add('active'); c.classList.remove('active');
+    pyBtn.classList.add('active'); cBtn.classList.remove('active');
+  }
+}
+
+// ── COPY ──
+function copyCode(prefix) {
+  const activeBlock = document.querySelector(`#${prefix}-c.active, #${prefix}-py.active`);
+  const text = activeBlock ? activeBlock.innerText : '';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = activeBlock.closest('.code-wrap').querySelector('.copy-btn');
+    btn.textContent = '✓ 복사됨';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// ── 1. PRIME ──
+function runPrime() {
+  const n = parseInt(document.getElementById('primeN').value);
+  const vis = document.getElementById('primeVis');
+  const log = document.getElementById('primeLog');
+  const res = document.getElementById('primeResult');
+
+  if (!n || n < 1) { res.textContent = '1 이상의 수를 입력하세요'; return; }
+
+  vis.innerHTML = '';
+  let steps = [];
+
+  if (n < 2) {
+    steps.push(`<span class="step-hi">n = ${n} < 2 → 소수 아님 (정의)</span>`);
+    res.className = 'result-box';
+    res.textContent = `${n}은(는) 소수가 아닙니다`;
+    log.innerHTML = steps.join('\n');
+    return;
+  }
+
+  steps.push(`<span class="step-hi">n = ${n} 판별 시작</span>`);
+  steps.push(`검사 범위: 2 ~ √${n} = ${Math.floor(Math.sqrt(n))}`);
+
+  let isPrime = true;
+  let foundDiv = -1;
+
+  for (let i = 2; i * i <= n; i++) {
+    if (n % i === 0) {
+      steps.push(`<span style="color:#FF7A3A">${n} % ${i} = 0 → 나누어 떨어짐! 소수 아님</span>`);
+      isPrime = false;
+      foundDiv = i;
+      break;
+    } else {
+      steps.push(`${n} % ${i} = ${n % i} ✓`);
+    }
+  }
+
+  // chips
+  const limit = Math.min(n, 50);
+  for (let i = 2; i <= limit; i++) {
+    const chip = document.createElement('div');
+    chip.className = 'num-chip';
+    chip.textContent = i;
+    if (i === n) chip.classList.add('highlight');
+    else if (isPrime && simplePrime(i)) chip.classList.add('prime');
+    else if (!isPrime && i === foundDiv) chip.classList.add('factor');
+    vis.appendChild(chip);
+  }
+  if (n > limit) {
+    const more = document.createElement('div');
+    more.className = 'num-chip dim';
+    more.textContent = `…${n}`;
+    vis.appendChild(more);
+  }
+
+  if (isPrime) {
+    steps.push(`<span class="step-ok">√${n} 까지 모두 통과 → 소수!</span>`);
+    res.className = 'result-box ok';
+    res.textContent = `✅ ${n}은(는) 소수입니다!`;
+  } else {
+    res.className = 'result-box';
+    res.textContent = `❌ ${n}은(는) 소수가 아닙니다 (${foundDiv}의 배수)`;
+  }
+  log.innerHTML = steps.join('\n');
+}
+
+function simplePrime(n) {
+  if (n < 2) return false;
+  for (let i = 2; i * i <= n; i++) if (n % i === 0) return false;
+  return true;
+}
+
+// ── 2. SIEVE ──
+function updateSieveN(v) {
+  document.getElementById('sieveVal').textContent = v;
+  buildSieveGrid(parseInt(v));
+}
+
+function buildSieveGrid(N) {
+  const grid = document.getElementById('sieveGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= N; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'sieve-cell' + (i === 1 ? ' one' : '');
+    cell.id = 'sc' + i;
+    cell.textContent = i;
+    grid.appendChild(cell);
+  }
+}
+
+function runSieve() {
+  const N = parseInt(document.getElementById('sieveRange').value);
+  buildSieveGrid(N);
+  const sieve = new Array(N + 1).fill(true);
+  sieve[0] = sieve[1] = false;
+
+  const steps = [];
+
+  for (let i = 2; i * i <= N; i++) {
+    if (sieve[i]) {
+      steps.push({ type: 'mark', prime: i });
+      for (let j = i * i; j <= N; j += i) {
+        sieve[j] = false;
+        steps.push({ type: 'cross', val: j, prime: i });
+      }
+    }
+  }
+
+  // animate
+  let idx = 0;
+  // first reset
+  for (let i = 2; i <= N; i++) {
+    const el = document.getElementById('sc' + i);
+    if (el) el.className = 'sieve-cell';
+  }
+  document.getElementById('sc1').className = 'sieve-cell one';
+
+  function animate() {
+    if (idx >= steps.length) {
+      // final paint
+      for (let i = 2; i <= N; i++) {
+        const el = document.getElementById('sc' + i);
+        if (el) el.className = sieve[i] ? 'sieve-cell prime' : 'sieve-cell crossed';
+      }
+      const primes = [];
+      for (let i = 2; i <= N; i++) if (sieve[i]) primes.push(i);
+      const res = document.getElementById('sieveResult');
+      res.className = 'result-box ok';
+      res.textContent = `소수 ${primes.length}개: ${primes.join(', ')}`;
+      return;
+    }
+    const step = steps[idx++];
+    if (step.type === 'mark') {
+      const el = document.getElementById('sc' + step.prime);
+      if (el) el.className = 'sieve-cell current';
+    } else {
+      const el = document.getElementById('sc' + step.val);
+      if (el) el.className = 'sieve-cell crossed';
+    }
+    setTimeout(animate, Math.max(10, 300 / N));
+  }
+  animate();
+}
+
+// init sieve grid
+buildSieveGrid(50);
+
+// ── 3. DIVISORS ──
+function runDiv() {
+  const n = parseInt(document.getElementById('divN').value);
+  const vis = document.getElementById('divVis');
+  const res = document.getElementById('divResult');
+
+  if (!n || n < 1) return;
+
+  vis.innerHTML = '';
+  const divs = [];
+  for (let i = 1; i * i <= n; i++) {
+    if (n % i === 0) {
+      divs.push(i);
+      if (i !== n / i) divs.push(n / i);
+    }
+  }
+  divs.sort((a, b) => a - b);
+
+  divs.forEach(d => {
+    const chip = document.createElement('div');
+    chip.className = 'num-chip factor';
+    chip.textContent = d;
+    vis.appendChild(chip);
+  });
+
+  res.className = 'result-box ok';
+  res.textContent = `${n}의 약수 (${divs.length}개): ${divs.join(', ')}`;
+}
+
+// ── 4. GCD ──
+function runGCD() {
+  let a = parseInt(document.getElementById('gcdA').value);
+  let b = parseInt(document.getElementById('gcdB').value);
+  const log = document.getElementById('gcdLog');
+  const res = document.getElementById('gcdResult');
+
+  if (!a || !b) return;
+
+  const steps = [];
+  let oa = a, ob = b;
+  steps.push(`<span class="step-hi">GCD(${a}, ${b}) 계산 시작</span>`);
+
+  while (b !== 0) {
+    const r = a % b;
+    steps.push(`GCD(<span class="step-hi">${a}</span>, ${b})  →  ${a} % ${b} = <span class="step-ok">${r}</span>  →  GCD(${b}, ${r})`);
+    a = b;
+    b = r;
+  }
+  steps.push(`<span class="step-ok">GCD(${oa}, ${ob}) = ${a} ✅</span>`);
+
+  log.innerHTML = steps.join('\n');
+  res.className = 'result-box ok';
+  res.textContent = `GCD(${oa}, ${ob}) = ${a}`;
+}
+
+// ── 5. LCM ──
+function runLCM() {
+  const a = parseInt(document.getElementById('lcmA').value);
+  const b = parseInt(document.getElementById('lcmB').value);
+  const vis = document.getElementById('lcmVis');
+  const res = document.getElementById('lcmResult');
+
+  if (!a || !b) return;
+
+  function gcd(x, y) { while (y) { [x, y] = [y, x % y]; } return x; }
+  const g = gcd(a, b);
+  const l = (a / g) * b;
+
+  vis.innerHTML = '';
+
+  // show multiples
+  function makeRow(label, val, max, color) {
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.gap = '6px';
+    row.style.flexWrap = 'wrap';
+    const lbl = document.createElement('span');
+    lbl.style.cssText = `font-size:13px;font-weight:700;color:var(--ink2);min-width:60px;`;
+    lbl.textContent = label + '의 배수:';
+    row.appendChild(lbl);
+    const limit = Math.min(val * 10, 200);
+    for (let v = val; v <= limit; v += val) {
+      const chip = document.createElement('div');
+      chip.className = 'num-chip';
+      chip.textContent = v;
+      if (v === l) { chip.classList.add('common'); chip.style.outline = '2px solid var(--green)'; }
+      else chip.style.background = color; 
+      row.appendChild(chip);
+    }
+    vis.appendChild(row);
+  }
+
+  makeRow(a, a, l, '#FFE0D0');
+  makeRow(b, b, l, '#D0E4FF');
+
+  res.className = 'result-box ok';
+  res.textContent = `GCD(${a}, ${b}) = ${g}   |   LCM(${a}, ${b}) = ${a} × ${b} ÷ ${g} = ${l}`;
+}
+</script>
+</body>
+</html>

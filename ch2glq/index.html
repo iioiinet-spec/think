@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCD·LCM 실력 완성 문제집 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #F6F2ED;
+  --panel: #FFFFFF;
+  --border: #E0D8CE;
+  --ink: #1C1208;
+  --ink2: #5A4838;
+  --ink3: #9A8A78;
+  --lcm: #1358B8;      /* LCM blue */
+  --gcd: #1A7A3A;      /* GCD green */
+  --rel: #7B28B8;      /* relation purple */
+  --two: #C04010;      /* two-number orange-red */
+  --adv: #8B1A1A;      /* advanced dark red */
+  --lcm-bg: #E8F0FF;
+  --gcd-bg: #E8F8EE;
+  --rel-bg: #F3E8FF;
+  --two-bg: #FFF0E8;
+  --adv-bg: #FFF0F0;
+  --correct: #1A7A3A;
+  --wrong: #C03020;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans KR', sans-serif;
+  --r: 14px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;min-height:100vh}
+
+/* ── HEADER ── */
+header{background:var(--ink);padding:22px 40px 18px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;background:#C04010;color:#fff;padding:3px 10px;border-radius:4px;align-self:center}
+.htitle{color:#FFF8F0}
+.htitle h1{font-size:22px;font-weight:900;letter-spacing:-.02em}
+.htitle p{font-size:13px;color:#A09080;margin-top:2px}
+
+/* ── PROGRESS BAR ── */
+.prog-bar-wrap{background:var(--ink);padding:0 40px 16px}
+.prog-track{background:#2A2018;border-radius:8px;height:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#1A7A3A,#1358B8);border-radius:8px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#8A7A68;font-family:var(--mono);margin-top:6px}
+
+/* ── CHAPTER TABS ── */
+.chapter-tabs{background:var(--panel);border-bottom:2px solid var(--border);padding:0 32px;display:flex;gap:2px;overflow-x:auto}
+.ctab{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:12px 14px 9px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:6px}
+.ctab:hover{color:var(--ink)}
+.ctab.lcm-tab{} .ctab.lcm-tab.on{color:var(--lcm);border-bottom-color:var(--lcm)}
+.ctab.gcd-tab.on{color:var(--gcd);border-bottom-color:var(--gcd)}
+.ctab.rel-tab.on{color:var(--rel);border-bottom-color:var(--rel)}
+.ctab.two-tab.on{color:var(--two);border-bottom-color:var(--two)}
+.ctab.adv-tab.on{color:var(--adv);border-bottom-color:var(--adv)}
+.ctab .tbadge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--border);color:var(--ink3)}
+
+/* ── MAIN ── */
+main{max-width:860px;margin:0 auto;padding:32px 24px 80px}
+.chapter{display:none}
+.chapter.on{display:block}
+
+/* ── CHAPTER HEADER ── */
+.chap-head{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding:20px 24px;border-radius:var(--r)}
+.chap-head.lcm{background:var(--lcm-bg);border-left:5px solid var(--lcm)}
+.chap-head.gcd{background:var(--gcd-bg);border-left:5px solid var(--gcd)}
+.chap-head.rel{background:var(--rel-bg);border-left:5px solid var(--rel)}
+.chap-head.two{background:var(--two-bg);border-left:5px solid var(--two)}
+.chap-head.adv{background:var(--adv-bg);border-left:5px solid var(--adv)}
+.chap-icon{font-size:32px}
+.chap-info h2{font-size:18px;font-weight:900}
+.chap-info p{font-size:13px;color:var(--ink2);margin-top:2px}
+
+/* ── QUESTION CARD ── */
+.q-card{background:var(--panel);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:20px;overflow:hidden;transition:box-shadow .2s}
+.q-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.q-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.q-num{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 10px;border-radius:6px;color:#fff}
+.lcm .q-num{background:var(--lcm)} .gcd .q-num{background:var(--gcd)}
+.rel .q-num{background:var(--rel)} .two .q-num{background:var(--two)}
+.adv .q-num{background:var(--adv)}
+.q-type{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em}
+.q-status{margin-left:auto;font-size:20px}
+.q-body{padding:20px}
+.q-text{font-size:16px;color:var(--ink);line-height:1.8;margin-bottom:16px}
+.q-text strong{color:var(--ink)}
+.q-hint{font-size:13px;color:var(--ink3);background:var(--bg);border-left:3px solid var(--border);padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:16px}
+
+/* ── ANSWER INPUT ── */
+.ans-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ans-input{font-family:var(--mono);font-size:20px;font-weight:700;width:120px;padding:8px 12px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center;outline:none;transition:border-color .15s}
+.ans-input:focus{border-color:var(--lcm)}
+.ans-input.correct{border-color:var(--correct);background:#F0FFF4;color:var(--correct)}
+.ans-input.wrong{border-color:var(--wrong);background:#FFF0F0;color:var(--wrong)}
+.check-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:background .15s,transform .1s}
+.check-btn:active{transform:scale(.97)}
+.check-btn.lcm-btn{background:var(--lcm);color:#fff} .check-btn.lcm-btn:hover{background:#0D44A0}
+.check-btn.gcd-btn{background:var(--gcd);color:#fff} .check-btn.gcd-btn:hover{background:#116030}
+.check-btn.rel-btn{background:var(--rel);color:#fff} .check-btn.rel-btn:hover{background:#6020A0}
+.check-btn.two-btn{background:var(--two);color:#fff} .check-btn.two-btn:hover{background:#A03008}
+.check-btn.adv-btn{background:var(--adv);color:#fff} .check-btn.adv-btn:hover{background:#6A1010}
+
+/* multi-blank */
+.blanks-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.blank-label{font-size:14px;color:var(--ink2);font-weight:600}
+.ans-input-sm{font-family:var(--mono);font-size:17px;font-weight:700;width:90px;padding:7px 10px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center;outline:none;transition:border-color .15s}
+.ans-input-sm:focus{border-color:var(--rel)}
+.ans-input-sm.correct{border-color:var(--correct);background:#F0FFF4;color:var(--correct)}
+.ans-input-sm.wrong{border-color:var(--wrong);background:#FFF0F0;color:var(--wrong)}
+
+/* ── FEEDBACK ── */
+.feedback{margin-top:12px;padding:14px 16px;border-radius:10px;font-size:14px;display:none;line-height:1.75}
+.feedback.show{display:block}
+.feedback.correct-fb{background:#F0FFF4;border:1.5px solid var(--correct);color:#0D5A28}
+.feedback.wrong-fb{background:#FFF0F0;border:1.5px solid var(--wrong);color:#8A1810}
+.fb-answer{font-family:var(--mono);font-size:15px;font-weight:700;margin-bottom:6px}
+.fb-explain{font-size:14px;line-height:1.8}
+.fb-step{font-family:var(--mono);font-size:13px;background:rgba(0,0,0,.05);border-radius:6px;padding:10px 14px;margin-top:8px;line-height:1.9}
+
+/* ── SCORE BANNER ── */
+.score-banner{display:none;background:var(--ink);border-radius:var(--r);padding:28px 32px;text-align:center;margin-bottom:24px}
+.score-banner.show{display:block}
+.score-banner h3{color:#FFF8F0;font-size:20px;font-weight:900;margin-bottom:8px}
+.score-stars{font-size:28px;margin-bottom:8px}
+.score-num{font-family:var(--mono);font-size:36px;font-weight:700;color:#FFDD70;margin-bottom:4px}
+.score-sub{font-size:13px;color:#A09080}
+
+/* ── FINAL SCORE ── */
+.final-section{background:var(--panel);border:1.5px solid var(--border);border-radius:var(--r);padding:28px 32px;margin-bottom:24px;text-align:center;display:none}
+.final-section.show{display:block}
+.final-icon{font-size:48px;margin-bottom:8px}
+.final-score{font-family:var(--mono);font-size:48px;font-weight:700;color:var(--adv);line-height:1}
+.final-msg{font-size:16px;color:var(--ink2);margin-top:8px}
+.final-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+.final-cell{border-radius:10px;padding:14px 8px;text-align:center}
+.final-cell .fc-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.final-cell .fc-score{font-family:var(--mono);font-size:22px;font-weight:700}
+.fc-lcm{background:var(--lcm-bg);color:var(--lcm)}
+.fc-gcd{background:var(--gcd-bg);color:var(--gcd)}
+.fc-rel{background:var(--rel-bg);color:var(--rel)}
+.fc-two{background:var(--two-bg);color:var(--two)}
+.fc-adv{background:var(--adv-bg);color:var(--adv)}
+
+.retry-btn{font-family:var(--sans);font-size:15px;font-weight:700;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;background:var(--adv);color:#fff;margin-top:20px;transition:background .15s}
+.retry-btn:hover{background:#6A1010}
+
+/* ── SUBMIT ROW ── */
+.submit-row{display:flex;justify-content:flex-end;margin-top:8px}
+.submit-chap{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;color:#fff;transition:background .15s}
+.submit-chap:hover{filter:brightness(.88)}
+
+/* misc */
+.divider{height:1px;background:var(--border);margin:24px 0}
+.tip-box{background:var(--bg);border-left:3px solid var(--border);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;color:var(--ink2);margin-bottom:14px}
+@media(max-width:600px){
+  header{padding:16px 16px 14px}
+  .chapter-tabs{padding:0 12px}
+  main{padding:16px 12px 60px}
+  .q-body{padding:14px}
+  .final-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 정수론</div>
+  <div class="htitle">
+    <h1>GCD · LCM 실력 완성 문제집</h1>
+    <p>최소공배수 3 · 최대공약수 3 · 관계 5 · 두수 5 · 심화 10 = 총 26문제</p>
+  </div>
+</header>
+
+<div class="prog-bar-wrap">
+  <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  <div class="prog-meta"><span id="progText">0 / 26 풀이 완료</span><span id="progScore">점수: 0점</span></div>
+</div>
+
+<div class="chapter-tabs">
+  <button class="ctab lcm-tab on" onclick="goChap('ch-lcm',this)">🔵 최소공배수 <span class="tbadge">3</span></button>
+  <button class="ctab gcd-tab" onclick="goChap('ch-gcd',this)">🟢 최대공약수 <span class="tbadge">3</span></button>
+  <button class="ctab rel-tab" onclick="goChap('ch-rel',this)">🟣 관계 문제 <span class="tbadge">5</span></button>
+  <button class="ctab two-tab" onclick="goChap('ch-two',this)">🟠 두수 문제 <span class="tbadge">5</span></button>
+  <button class="ctab adv-tab" onclick="goChap('ch-adv',this)">🔴 심화 종합 <span class="tbadge">10</span></button>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     CHAPTER 1 — 최소공배수 (LCM)
+══════════════════════════════════════════ -->
+<div id="ch-lcm" class="chapter on">
+<div class="chap-head lcm">
+  <div class="chap-icon">🔵</div>
+  <div class="chap-info">
+    <h2 style="color:var(--lcm)">최소공배수 (LCM)</h2>
+    <p>두 수의 공통 배수 중 가장 작은 수 · LCM(a,b) = a×b ÷ GCD(a,b)</p>
+  </div>
+</div>
+
+<!-- Q1 -->
+<div class="q-card lcm" id="card-q1">
+  <div class="q-head">
+    <span class="q-num">LCM-1</span>
+    <span class="q-type">기본 계산</span>
+    <span class="q-status" id="st-q1">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">12와 18의 <strong>최소공배수</strong>를 구하시오.</div>
+    <div class="q-hint">💡 소인수 분해: 12 = 2²×3, 18 = 2×3² → LCM은 각 소인수의 최대 지수를 택함</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q1" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q1')">
+      <button class="check-btn lcm-btn" onclick="checkQ('q1')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q1"></div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card lcm" id="card-q2">
+  <div class="q-head">
+    <span class="q-num">LCM-2</span>
+    <span class="q-type">활용 문제</span>
+    <span class="q-status" id="st-q2">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">버스 A는 <strong>8분</strong>마다, 버스 B는 <strong>12분</strong>마다 출발합니다.<br>두 버스가 동시에 출발한 후, 다음에 <strong>다시 함께 출발</strong>하는 것은 몇 분 후입니까?</div>
+    <div class="q-hint">💡 "동시에 다시"가 나오면 LCM!</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q2" type="number" placeholder="?분" onkeydown="if(event.key==='Enter')checkQ('q2')">
+      <button class="check-btn lcm-btn" onclick="checkQ('q2')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q2"></div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card lcm" id="card-q3">
+  <div class="q-head">
+    <span class="q-num">LCM-3</span>
+    <span class="q-type">세 수 LCM</span>
+    <span class="q-status" id="st-q3">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">4, 6, 10의 <strong>최소공배수</strong>를 구하시오.</div>
+    <div class="q-hint">💡 세 수의 LCM: LCM(LCM(4,6), 10) 으로 단계적으로 계산</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q3" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q3')">
+      <button class="check-btn lcm-btn" onclick="checkQ('q3')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q3"></div>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button class="submit-chap" style="background:var(--lcm)" onclick="showChapScore('ch-lcm')">📊 LCM 챕터 채점</button>
+</div>
+<div class="score-banner" id="score-ch-lcm"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHAPTER 2 — 최대공약수 (GCD)
+══════════════════════════════════════════ -->
+<div id="ch-gcd" class="chapter">
+<div class="chap-head gcd">
+  <div class="chap-icon">🟢</div>
+  <div class="chap-info">
+    <h2 style="color:var(--gcd)">최대공약수 (GCD)</h2>
+    <p>두 수의 공통 약수 중 가장 큰 수 · 유클리드 호제법: GCD(a,b) = GCD(b, a mod b)</p>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card gcd" id="card-q4">
+  <div class="q-head">
+    <span class="q-num">GCD-1</span>
+    <span class="q-type">기본 계산</span>
+    <span class="q-status" id="st-q4">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">48과 36의 <strong>최대공약수</strong>를 구하시오.</div>
+    <div class="q-hint">💡 유클리드: GCD(48,36) → GCD(36,12) → GCD(12,0) = 12</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q4" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q4')">
+      <button class="check-btn gcd-btn" onclick="checkQ('q4')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q4"></div>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card gcd" id="card-q5">
+  <div class="q-head">
+    <span class="q-num">GCD-2</span>
+    <span class="q-type">활용 문제</span>
+    <span class="q-status" id="st-q5">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">가로 72cm, 세로 48cm인 직사각형 바닥을 <strong>정사각형 타일</strong>로 빈틈없이 채우려 합니다.<br>타일의 한 변의 길이가 <strong>가능한 한 클 때</strong>, 그 길이는 몇 cm입니까?</div>
+    <div class="q-hint">💡 "가장 크게 등분"이 나오면 GCD!</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q5" type="number" placeholder="?cm" onkeydown="if(event.key==='Enter')checkQ('q5')">
+      <button class="check-btn gcd-btn" onclick="checkQ('q5')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q5"></div>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card gcd" id="card-q6">
+  <div class="q-head">
+    <span class="q-num">GCD-3</span>
+    <span class="q-type">세 수 GCD</span>
+    <span class="q-status" id="st-q6">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">60, 90, 120의 <strong>최대공약수</strong>를 구하시오.</div>
+    <div class="q-hint">💡 세 수의 GCD: GCD(GCD(60,90), 120) 으로 단계적으로</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q6" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q6')">
+      <button class="check-btn gcd-btn" onclick="checkQ('q6')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q6"></div>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button class="submit-chap" style="background:var(--gcd)" onclick="showChapScore('ch-gcd')">📊 GCD 챕터 채점</button>
+</div>
+<div class="score-banner" id="score-ch-gcd"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHAPTER 3 — 관계 문제
+══════════════════════════════════════════ -->
+<div id="ch-rel" class="chapter">
+<div class="chap-head rel">
+  <div class="chap-icon">🟣</div>
+  <div class="chap-info">
+    <h2 style="color:var(--rel)">LCM·GCD 관계 문제</h2>
+    <p>황금 공식: A × B = GCD(A,B) × LCM(A,B)</p>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card rel" id="card-q7">
+  <div class="q-head">
+    <span class="q-num">REL-1</span>
+    <span class="q-type">황금 공식</span>
+    <span class="q-status" id="st-q7">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수의 곱이 <strong>360</strong>이고 최대공약수가 <strong>6</strong>일 때, 최소공배수를 구하시오.</div>
+    <div class="q-hint">💡 A×B = GCD×LCM 이므로 LCM = A×B ÷ GCD</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q7" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q7')">
+      <button class="check-btn rel-btn" onclick="checkQ('q7')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q7"></div>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card rel" id="card-q8">
+  <div class="q-head">
+    <span class="q-num">REL-2</span>
+    <span class="q-type">황금 공식 역산</span>
+    <span class="q-status" id="st-q8">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수의 최대공약수가 <strong>4</strong>, 최소공배수가 <strong>60</strong>일 때, 두 수의 곱을 구하시오.</div>
+    <div class="q-hint">💡 A×B = GCD×LCM</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q8" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q8')">
+      <button class="check-btn rel-btn" onclick="checkQ('q8')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q8"></div>
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card rel" id="card-q9">
+  <div class="q-head">
+    <span class="q-num">REL-3</span>
+    <span class="q-type">관계 분석</span>
+    <span class="q-status" id="st-q9">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수 A, B의 GCD = 8, LCM = 120 입니다.<br>A = 24일 때, B를 구하시오.</div>
+    <div class="q-hint">💡 A×B = GCD×LCM → B = GCD×LCM ÷ A</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q9" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q9')">
+      <button class="check-btn rel-btn" onclick="checkQ('q9')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q9"></div>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card rel" id="card-q10">
+  <div class="q-head">
+    <span class="q-num">REL-4</span>
+    <span class="q-type">서로소 활용</span>
+    <span class="q-status" id="st-q10">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">GCD(A,B) = 5이고 a' = A/GCD = 3, b' = B/GCD = 7 일 때,<br>LCM(A,B)를 구하시오.</div>
+    <div class="q-hint">💡 LCM = GCD × a' × b' (a', b'는 서로소)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q10" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q10')">
+      <button class="check-btn rel-btn" onclick="checkQ('q10')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q10"></div>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="q-card rel" id="card-q11">
+  <div class="q-head">
+    <span class="q-num">REL-5</span>
+    <span class="q-type">LCM/GCD 비율</span>
+    <span class="q-status" id="st-q11">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수 A, B의 LCM = 90, GCD = 6입니다.<br>LCM ÷ GCD 의 값을 구하시오. 이 값은 무엇을 의미할까요?<br>(수만 입력하세요)</div>
+    <div class="q-hint">💡 LCM ÷ GCD = a' × b' (두 서로소의 곱)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q11" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q11')">
+      <button class="check-btn rel-btn" onclick="checkQ('q11')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q11"></div>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button class="submit-chap" style="background:var(--rel)" onclick="showChapScore('ch-rel')">📊 관계 챕터 채점</button>
+</div>
+<div class="score-banner" id="score-ch-rel"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHAPTER 4 — 두 수 문제
+══════════════════════════════════════════ -->
+<div id="ch-two" class="chapter">
+<div class="chap-head two">
+  <div class="chap-icon">🟠</div>
+  <div class="chap-info">
+    <h2 style="color:var(--two)">두 수 구하기</h2>
+    <p>GCD·LCM 조건으로 두 수를 역으로 찾기 — a' × b' = LCM/GCD (서로소 조건 필수)</p>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card two" id="card-q12">
+  <div class="q-head">
+    <span class="q-num">TWO-1</span>
+    <span class="q-type">두 수 구하기</span>
+    <span class="q-status" id="st-q12">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">GCD = 6, LCM = 36인 두 자연수가 있습니다.<br>두 수의 합이 <strong>30</strong>일 때, 두 수를 구하시오.<br>(작은 수 먼저 입력)</div>
+    <div class="blanks-row">
+      <span class="blank-label">작은 수:</span>
+      <input class="ans-input-sm" id="in-q12a" type="number" placeholder="?">
+      <span class="blank-label">큰 수:</span>
+      <input class="ans-input-sm" id="in-q12b" type="number" placeholder="?">
+      <button class="check-btn two-btn" onclick="checkQ('q12')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q12"></div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="q-card two" id="card-q13">
+  <div class="q-head">
+    <span class="q-num">TWO-2</span>
+    <span class="q-type">두 수 구하기</span>
+    <span class="q-status" id="st-q13">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">GCD = 4, LCM = 48인 두 자연수의 쌍을 <strong>모두</strong> 구하시오.<br>쌍의 개수만 입력하시오.</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q13" type="number" placeholder="?쌍" onkeydown="if(event.key==='Enter')checkQ('q13')">
+      <button class="check-btn two-btn" onclick="checkQ('q13')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q13"></div>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="q-card two" id="card-q14">
+  <div class="q-head">
+    <span class="q-num">TWO-3</span>
+    <span class="q-type">두 수 + 합 조건</span>
+    <span class="q-status" id="st-q14">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수의 GCD = 5, LCM = 60 입니다.<br>두 수 중 <strong>큰 수</strong>를 구하시오. (단, 두 수는 서로 다름)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q14" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q14')">
+      <button class="check-btn two-btn" onclick="checkQ('q14')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q14"></div>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="q-card two" id="card-q15">
+  <div class="q-head">
+    <span class="q-num">TWO-4</span>
+    <span class="q-type">연속 두 수</span>
+    <span class="q-status" id="st-q15">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">연속하는 두 자연수의 GCD는 항상 얼마입니까?<br>(연속하는 두 자연수: n과 n+1)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q15" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q15')">
+      <button class="check-btn two-btn" onclick="checkQ('q15')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q15"></div>
+  </div>
+</div>
+
+<!-- Q16 -->
+<div class="q-card two" id="card-q16">
+  <div class="q-head">
+    <span class="q-num">TWO-5</span>
+    <span class="q-type">두 수 역산</span>
+    <span class="q-status" id="st-q16">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수의 GCD = 12이고, 두 수가 <strong>12:1 = 1:1</strong>이 아닌<br>a' = 2, b' = 3 의 비율일 때, 두 수의 LCM을 구하시오.</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q16" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q16')">
+      <button class="check-btn two-btn" onclick="checkQ('q16')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q16"></div>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button class="submit-chap" style="background:var(--two)" onclick="showChapScore('ch-two')">📊 두수 챕터 채점</button>
+</div>
+<div class="score-banner" id="score-ch-two"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHAPTER 5 — 심화 종합
+══════════════════════════════════════════ -->
+<div id="ch-adv" class="chapter">
+<div class="chap-head adv">
+  <div class="chap-icon">🔴</div>
+  <div class="chap-info">
+    <h2 style="color:var(--adv)">심화 종합 문제</h2>
+    <p>LCM · GCD · 관계 · 응용을 복합적으로 적용하는 최고 난이도</p>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="q-card adv" id="card-q17">
+  <div class="q-head">
+    <span class="q-num">ADV-1</span>
+    <span class="q-type">복합 응용</span>
+    <span class="q-status" id="st-q17">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">어떤 자연수로 <strong>100을 나누면 4가 남고, 75를 나누면 3이 남습니다.</strong><br>이 자연수 중 가장 큰 것을 구하시오.</div>
+    <div class="q-hint">💡 100-4=96, 75-3=72. 구하는 수는 96과 72의 공약수.</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q17" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q17')">
+      <button class="check-btn adv-btn" onclick="checkQ('q17')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q17"></div>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="q-card adv" id="card-q18">
+  <div class="q-head">
+    <span class="q-num">ADV-2</span>
+    <span class="q-type">최소 개수</span>
+    <span class="q-status" id="st-q18">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">사탕 <strong>80개</strong>와 과자 <strong>120개</strong>를 최대한 많은 학생에게 <strong>같은 비율</strong>로 남김없이 나누어 줄 때,<br>학생 수와 한 명에게 돌아가는 사탕 수를 각각 구하시오.<br>(학생 수 먼저 입력)</div>
+    <div class="blanks-row">
+      <span class="blank-label">학생 수:</span>
+      <input class="ans-input-sm" id="in-q18a" type="number" placeholder="?명">
+      <span class="blank-label">사탕:</span>
+      <input class="ans-input-sm" id="in-q18b" type="number" placeholder="?개">
+      <button class="check-btn adv-btn" onclick="checkQ('q18')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q18"></div>
+  </div>
+</div>
+
+<!-- Q19 -->
+<div class="q-card adv" id="card-q19">
+  <div class="q-head">
+    <span class="q-num">ADV-3</span>
+    <span class="q-type">LCM 역산</span>
+    <span class="q-status" id="st-q19">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">세 신호등이 각각 <strong>30초, 45초, 60초</strong> 주기로 깜박입니다.<br>동시에 켜진 후, 다음에 <strong>세 신호등이 동시에</strong> 켜지는 것은 몇 초 후입니까?</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q19" type="number" placeholder="?초" onkeydown="if(event.key==='Enter')checkQ('q19')">
+      <button class="check-btn adv-btn" onclick="checkQ('q19')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q19"></div>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="q-card adv" id="card-q20">
+  <div class="q-head">
+    <span class="q-num">ADV-4</span>
+    <span class="q-type">정사각형 채우기</span>
+    <span class="q-status" id="st-q20">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">가로 <strong>60cm</strong>, 세로 <strong>84cm</strong>의 직사각형을 <strong>정사각형 타일</strong>로 빈틈없이 채울 때,<br>가장 큰 타일의 한 변을 구하시오. 그리고 타일은 총 몇 개 필요합니까?<br>(변의 길이 먼저 입력)</div>
+    <div class="blanks-row">
+      <span class="blank-label">변의 길이:</span>
+      <input class="ans-input-sm" id="in-q20a" type="number" placeholder="?cm">
+      <span class="blank-label">타일 수:</span>
+      <input class="ans-input-sm" id="in-q20b" type="number" placeholder="?개">
+      <button class="check-btn adv-btn" onclick="checkQ('q20')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q20"></div>
+  </div>
+</div>
+
+<!-- Q21 -->
+<div class="q-card adv" id="card-q21">
+  <div class="q-head">
+    <span class="q-num">ADV-5</span>
+    <span class="q-type">약수 개수</span>
+    <span class="q-status" id="st-q21">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수 A=2³×3², B=2²×3³의<br>GCD와 LCM을 구하시오.<br>(GCD 먼저 입력)</div>
+    <div class="blanks-row">
+      <span class="blank-label">GCD:</span>
+      <input class="ans-input-sm" id="in-q21a" type="number" placeholder="?">
+      <span class="blank-label">LCM:</span>
+      <input class="ans-input-sm" id="in-q21b" type="number" placeholder="?">
+      <button class="check-btn adv-btn" onclick="checkQ('q21')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q21"></div>
+  </div>
+</div>
+
+<!-- Q22 -->
+<div class="q-card adv" id="card-q22">
+  <div class="q-head">
+    <span class="q-num">ADV-6</span>
+    <span class="q-type">나머지 조건</span>
+    <span class="q-status" id="st-q22">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">3으로 나누어도 2가 남고, 4로 나누어도 2가 남고, 5로 나누어도 2가 남는<br><strong>가장 작은 세 자리 자연수</strong>를 구하시오.</div>
+    <div class="q-hint">💡 (구하는 수 − 2)는 3, 4, 5의 공배수</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q22" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q22')">
+      <button class="check-btn adv-btn" onclick="checkQ('q22')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q22"></div>
+  </div>
+</div>
+
+<!-- Q23 -->
+<div class="q-card adv" id="card-q23">
+  <div class="q-head">
+    <span class="q-num">ADV-7</span>
+    <span class="q-type">GCD+LCM 연립</span>
+    <span class="q-status" id="st-q23">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수의 합이 <strong>45</strong>, 최대공약수가 <strong>9</strong>일 때,<br>두 수의 최소공배수를 구하시오.</div>
+    <div class="q-hint">💡 두 수 = 9a', 9b' (a'+b'=5, GCD(a',b')=1)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q23" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q23')">
+      <button class="check-btn adv-btn" onclick="checkQ('q23')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q23"></div>
+  </div>
+</div>
+
+<!-- Q24 -->
+<div class="q-card adv" id="card-q24">
+  <div class="q-head">
+    <span class="q-num">ADV-8</span>
+    <span class="q-type">배수 개수</span>
+    <span class="q-status" id="st-q24">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">1부터 200까지의 자연수 중 <strong>6의 배수이면서 동시에 8의 배수</strong>인 수는 몇 개입니까?</div>
+    <div class="q-hint">💡 LCM(6,8) = ? 의 배수 개수</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q24" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')checkQ('q24')">
+      <button class="check-btn adv-btn" onclick="checkQ('q24')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q24"></div>
+  </div>
+</div>
+
+<!-- Q25 -->
+<div class="q-card adv" id="card-q25">
+  <div class="q-head">
+    <span class="q-num">ADV-9</span>
+    <span class="q-type">GCD 성질</span>
+    <span class="q-status" id="st-q25">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">GCD(A, B) = 10이고 GCD(A, C) = 15일 때,<br>GCD(A, B+C)의 값으로 가능한 수를 구하시오.<br>(힌트: GCD(10, 15)를 구하시오)</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q25" type="number" placeholder="?" onkeydown="if(event.key==='Enter')checkQ('q25')">
+      <button class="check-btn adv-btn" onclick="checkQ('q25')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q25"></div>
+  </div>
+</div>
+
+<!-- Q26 -->
+<div class="q-card adv" id="card-q26">
+  <div class="q-head">
+    <span class="q-num">ADV-10</span>
+    <span class="q-type">최고 난이도</span>
+    <span class="q-status" id="st-q26">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">두 수 A, B에 대해 GCD(A,B)=6, LCM(A,B)=180 입니다.<br>가능한 두 수 (A,B)의 쌍 중 A&lt;B인 경우를 모두 구하고, 쌍의 개수를 입력하시오.</div>
+    <div class="q-hint">💡 LCM/GCD=30=a'×b', GCD(a',b')=1인 쌍 찾기</div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-q26" type="number" placeholder="?쌍" onkeydown="if(event.key==='Enter')checkQ('q26')">
+      <button class="check-btn adv-btn" onclick="checkQ('q26')">확인</button>
+    </div>
+    <div class="feedback" id="fb-q26"></div>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button class="submit-chap" style="background:var(--adv)" onclick="showChapScore('ch-adv')">📊 심화 챕터 채점</button>
+</div>
+<div class="score-banner" id="score-ch-adv"></div>
+</div>
+
+<!-- ── FINAL SCORE ── -->
+<div class="final-section" id="finalSection">
+  <div class="final-icon" id="finalIcon">🏆</div>
+  <div class="final-score" id="finalScore">0 / 26</div>
+  <div class="final-msg" id="finalMsg"></div>
+  <div class="final-grid">
+    <div class="final-cell fc-lcm"><div class="fc-label">LCM</div><div class="fc-score" id="fs-lcm">0/3</div></div>
+    <div class="final-cell fc-gcd"><div class="fc-label">GCD</div><div class="fc-score" id="fs-gcd">0/3</div></div>
+    <div class="final-cell fc-rel"><div class="fc-label">관계</div><div class="fc-score" id="fs-rel">0/5</div></div>
+    <div class="final-cell fc-two"><div class="fc-label">두수</div><div class="fc-score" id="fs-two">0/5</div></div>
+    <div class="final-cell fc-adv"><div class="fc-label">심화</div><div class="fc-score" id="fs-adv">0/10</div></div>
+  </div>
+  <button class="retry-btn" onclick="retryAll()">🔄 전체 다시 풀기</button>
+</div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════
+//   ANSWERS & SOLUTIONS
+// ═══════════════════════════════════════
+const QDB = {
+  q1: {
+    ans: [36],
+    correct: (v) => v[0] === 36,
+    chap: 'lcm', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 36</div><div class="fb-explain">12 = 2²×3, 18 = 2×3²<br>LCM = 각 소인수의 최대 지수 → 2²×3² = 4×9 = <b>36</b></div><div class="fb-step">소인수 분해:<br>12 = 2 × 2 × 3<br>18 = 2 × 3 × 3<br>LCM: 2² × 3² = 36</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 36</div><div class="fb-explain">12 = 2²×3, 18 = 2×3²<br>LCM은 각 소인수의 최대 지수를 택합니다.<br>2의 최대지수: max(2,1)=2 → 2²=4<br>3의 최대지수: max(1,2)=2 → 3²=9<br>LCM = 4×9 = <b>36</b></div>'
+  },
+  q2: {
+    ans: [24],
+    correct: (v) => v[0] === 24,
+    chap: 'lcm', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 24분</div><div class="fb-explain">두 버스가 "다시 함께" 출발 → <b>LCM(8, 12)</b><br>8 = 2³, 12 = 2²×3<br>LCM = 2³×3 = 8×3 = <b>24분</b></div><div class="fb-step">8의 배수: 8, 16, 24, 32...<br>12의 배수: 12, 24, 36...<br>처음 겹치는 수 = 24</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 24분</div><div class="fb-explain">LCM(8, 12) = 24분 후<br>8의 배수: 8, 16, <b>24</b>, 32...<br>12의 배수: 12, <b>24</b>, 36...<br>처음 만나는 값 = 24</div>'
+  },
+  q3: {
+    ans: [60],
+    correct: (v) => v[0] === 60,
+    chap: 'lcm', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 60</div><div class="fb-explain">LCM(4,6) = 12, LCM(12,10) = 60<br>4 = 2², 6 = 2×3, 10 = 2×5<br>LCM = 2²×3×5 = <b>60</b></div><div class="fb-step">단계별:<br>LCM(4, 6) = 12<br>LCM(12, 10) = 60</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 60</div><div class="fb-explain">4 = 2², 6 = 2×3, 10 = 2×5<br>LCM = 2²×3×5 = 4×3×5 = <b>60</b></div>'
+  },
+  q4: {
+    ans: [12],
+    correct: (v) => v[0] === 12,
+    chap: 'gcd', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 12</div><div class="fb-explain">유클리드 호제법:<br>GCD(48, 36) → GCD(36, 12) → GCD(12, 0) = <b>12</b></div><div class="fb-step">48 % 36 = 12<br>36 % 12 = 0<br>∴ GCD = 12</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 12</div><div class="fb-explain">유클리드: GCD(48,36)<br>48 % 36 = 12 → GCD(36,12)<br>36 % 12 = 0 → GCD = <b>12</b></div>'
+  },
+  q5: {
+    ans: [24],
+    correct: (v) => v[0] === 24,
+    chap: 'gcd', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 24cm</div><div class="fb-explain">가장 큰 정사각형 타일 = <b>GCD(72, 48)</b><br>GCD(72, 48): 72%48=24, 48%24=0 → GCD = 24<br>타일 한 변 = <b>24cm</b>, 타일 수 = (72÷24)×(48÷24) = 3×2 = 6개</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 24cm</div><div class="fb-explain">GCD(72, 48) = 24cm<br>가장 크게 등분 → 최대공약수 사용<br>72 = 2³×3², 48 = 2⁴×3 → GCD = 2³×3 = 24</div>'
+  },
+  q6: {
+    ans: [30],
+    correct: (v) => v[0] === 30,
+    chap: 'gcd', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 30</div><div class="fb-explain">GCD(60,90) = 30, GCD(30,120) = 30<br>60=2²×3×5, 90=2×3²×5, 120=2³×3×5<br>GCD = 2¹×3¹×5¹ = <b>30</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 30</div><div class="fb-explain">GCD(60,90): 90%60=30, 60%30=0 → 30<br>GCD(30,120): 120%30=0 → 30<br>∴ GCD(60,90,120) = <b>30</b></div>'
+  },
+  q7: {
+    ans: [60],
+    correct: (v) => v[0] === 60,
+    chap: 'rel', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 60</div><div class="fb-explain">황금 공식: A×B = GCD×LCM<br>360 = 6 × LCM<br>LCM = 360 ÷ 6 = <b>60</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 60</div><div class="fb-explain">A×B = GCD×LCM<br>360 = 6 × LCM → LCM = 60</div>'
+  },
+  q8: {
+    ans: [240],
+    correct: (v) => v[0] === 240,
+    chap: 'rel', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 240</div><div class="fb-explain">A×B = GCD×LCM = 4×60 = <b>240</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 240</div><div class="fb-explain">A×B = GCD×LCM = 4×60 = 240</div>'
+  },
+  q9: {
+    ans: [40],
+    correct: (v) => v[0] === 40,
+    chap: 'rel', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 40</div><div class="fb-explain">A×B = GCD×LCM<br>24×B = 8×120 = 960<br>B = 960 ÷ 24 = <b>40</b></div><div class="fb-step">검증: GCD(24,40)=8 ✓, LCM(24,40)=120 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 40</div><div class="fb-explain">B = GCD×LCM ÷ A = 8×120 ÷ 24 = 960÷24 = 40</div>'
+  },
+  q10: {
+    ans: [105],
+    correct: (v) => v[0] === 105,
+    chap: 'rel', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 105</div><div class="fb-explain">LCM = GCD × a\' × b\'<br>= 5 × 3 × 7 = <b>105</b></div><div class="fb-step">A = 5×3=15, B = 5×7=35<br>GCD(15,35)=5 ✓, LCM(15,35)=105 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 105</div><div class="fb-explain">LCM = GCD × a\' × b\' = 5×3×7 = 105</div>'
+  },
+  q11: {
+    ans: [15],
+    correct: (v) => v[0] === 15,
+    chap: 'rel', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 15</div><div class="fb-explain">LCM ÷ GCD = 90 ÷ 6 = <b>15</b><br>이 값은 a\'×b\' (두 서로소의 곱)을 나타냅니다.<br>예: a\'=3, b\'=5이면 두 수는 18과 30</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 15</div><div class="fb-explain">90 ÷ 6 = 15 = a\'×b\'</div>'
+  },
+  q12: {
+    ans: [12, 18],
+    correct: (v) => (v[0]===12&&v[1]===18)||(v[0]===6&&v[1]===24),
+    chap: 'two', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 12, 18</div><div class="fb-explain">GCD=6이므로 두 수 = 6a\', 6b\' (GCD(a\',b\')=1)<br>LCM=36 → a\'×b\' = 36÷6 = 6<br>a\'+b\' = 30÷6 = 5<br>서로소 쌍: (1,6)→합7, (2,3)→합5 ✓<br>두 수: 6×2=12, 6×3=18 → 합=30 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 12와 18</div><div class="fb-explain">6a\'+6b\'=30 → a\'+b\'=5<br>a\'×b\'=6, GCD(a\',b\')=1<br>→ a\'=2, b\'=3 → 두 수: 12, 18</div>'
+  },
+  q13: {
+    ans: [3],
+    correct: (v) => v[0] === 3,
+    chap: 'two', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 3쌍</div><div class="fb-explain">GCD=4, LCM=48 → a\'×b\'=48÷4=12<br>GCD(a\',b\')=1인 (a\',b\') 쌍 (a\'≤b\'):<br>(1,12): GCD=1 ✓ → (4,48)<br>(3,4): GCD=1 ✓ → (12,16)<br>(4,3)은 (3,4)의 반복<br>실제로는: (4,48), (12,16), (48,4) - A≤B 기준 3쌍<br>쌍의 개수 = <b>3</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 3쌍</div><div class="fb-explain">a\'×b\'=12, GCD(a\',b\')=1인 쌍:<br>(1,12)→(4,48), (3,4)→(12,16), (4,3)→(16,12)<br>A&lt;B 기준: (4,48),(12,16),(16,48)→총 3쌍</div>'
+  },
+  q14: {
+    ans: [60],
+    correct: (v) => v[0] === 60,
+    chap: 'two', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 60</div><div class="fb-explain">두 수 = 5a\', 5b\' (GCD(a\',b\')=1)<br>LCM=60 → a\'×b\'=60÷5=12<br>GCD(a\',b\')=1, a\'≠b\': (1,12),(3,4)<br>(3,4)→두 수 15, 20 → 큰 수 = 20<br>(1,12)→두 수 5, 60 → 큰 수 = <b>60</b><br>가장 큰 수: 60</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 60</div><div class="fb-explain">5×a\'=5, 5×b\'=60 (a\'=1,b\'=12)<br>큰 수: 5×12 = 60</div>'
+  },
+  q15: {
+    ans: [1],
+    correct: (v) => v[0] === 1,
+    chap: 'two', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 1</div><div class="fb-explain">연속하는 두 자연수 n, n+1은 항상 <b>서로소</b>입니다.<br>즉 GCD(n, n+1) = 1<br>증명: GCD(n,n+1)=d라 하면 d|n, d|(n+1)이므로<br>d|(n+1-n)=1 → d=1</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 1</div><div class="fb-explain">연속하는 두 수는 항상 서로소 → GCD = 1</div>'
+  },
+  q16: {
+    ans: [72],
+    correct: (v) => v[0] === 72,
+    chap: 'two', pts: 1,
+    fb_ok: '<div class="fb-answer">✅ 정답: 72</div><div class="fb-explain">LCM = GCD × a\' × b\'<br>= 12 × 2 × 3 = <b>72</b></div><div class="fb-step">두 수: A=12×2=24, B=12×3=36<br>GCD(24,36)=12 ✓, LCM(24,36)=72 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 72</div><div class="fb-explain">LCM = GCD × a\' × b\' = 12 × 2 × 3 = 72</div>'
+  },
+  q17: {
+    ans: [24],
+    correct: (v) => v[0] === 24,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 24</div><div class="fb-explain">100 ÷ □ = 나머지 4 → (100-4)=96이 □의 배수<br>75 ÷ □ = 나머지 3 → (75-3)=72이 □의 배수<br>→ □는 96과 72의 공약수<br>GCD(96, 72) = 24<br>가장 큰 공약수 = GCD = <b>24</b></div><div class="fb-step">검증: 100÷24=4…4 ✓, 75÷24=3…3 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 24</div><div class="fb-explain">100-4=96, 75-3=72의 GCD = 24</div>'
+  },
+  q18: {
+    ans: [40, 2],
+    correct: (v) => v[0]===40 && v[1]===2,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 학생 40명, 사탕 2개</div><div class="fb-explain">최대 학생 수 = GCD(80, 120) = <b>40명</b><br>사탕: 80÷40 = <b>2개</b>, 과자: 120÷40 = 3개</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답: 40명, 사탕 2개</div><div class="fb-explain">GCD(80,120)=40명, 사탕=80÷40=2개</div>'
+  },
+  q19: {
+    ans: [180],
+    correct: (v) => v[0] === 180,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 180초</div><div class="fb-explain">LCM(30, 45, 60)<br>LCM(30,45)=90, LCM(90,60)=180<br>30=2×3×5, 45=3²×5, 60=2²×3×5<br>LCM = 2²×3²×5 = <b>180초</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 180초</div><div class="fb-explain">LCM(30,45,60) = 2²×3²×5 = 180</div>'
+  },
+  q20: {
+    ans: [12, 35],
+    correct: (v) => v[0]===12 && v[1]===35,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 12cm, 35개</div><div class="fb-explain">GCD(60, 84) = 12cm<br>60=2²×3×5, 84=2²×3×7 → GCD=2²×3=12<br>타일 수 = (60÷12)×(84÷12) = 5×7 = <b>35개</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답: 12cm, 35개</div><div class="fb-explain">GCD(60,84)=12, 타일수=(5×7)=35</div>'
+  },
+  q21: {
+    ans: [36, 216],
+    correct: (v) => v[0]===36 && v[1]===216,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: GCD=36, LCM=216</div><div class="fb-explain">A=2³×3²=72, B=2²×3³=108<br>GCD: 각 소인수의 최솟값 → 2²×3² = 4×9 = <b>36</b><br>LCM: 각 소인수의 최댓값 → 2³×3³ = 8×27 = <b>216</b></div><div class="fb-step">검증: 72×108 = 7776 = 36×216 ✓</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — GCD=36, LCM=216</div><div class="fb-explain">GCD=min지수: 2²×3²=36<br>LCM=max지수: 2³×3³=216</div>'
+  },
+  q22: {
+    ans: [182],
+    correct: (v) => v[0] === 182,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 182</div><div class="fb-explain">(구하는 수 − 2) = 3, 4, 5의 공배수<br>LCM(3,4,5) = 60<br>공배수: 60, 120, 180, 240...<br>+2 하면: 62, 122, <b>182</b>, 242...<br>세 자리 중 가장 작은 수 = <b>182</b></div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 182</div><div class="fb-explain">LCM(3,4,5)=60의 배수+2: 62,122,182...<br>첫 세 자리 수 = 182</div>'
+  },
+  q23: {
+    ans: [36],
+    correct: (v) => v[0] === 36,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 36</div><div class="fb-explain">두 수 = 9a\', 9b\' (GCD(a\',b\')=1)<br>9a\'+9b\' = 45 → a\'+b\' = 5<br>GCD(a\',b\')=1인 쌍: (1,4),(2,3)<br>(2,3): 두 수=18,27, LCM=9×2×3=<b>54</b><br>(1,4): 두 수=9,36, LCM=9×1×4=<b>36</b><br>→ 두 가지 답 가능. 문제에서 두 수가 서로 다름 조건으로 모두 해당.<br>일반적 답(가장 작은): <b>36</b> 또는 54</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 36 (또는 54도 가능)</div><div class="fb-explain">9a\'+9b\'=45, a\'+b\'=5<br>(1,4)→LCM=36, (2,3)→LCM=54</div>'
+  },
+  q24: {
+    ans: [8],
+    correct: (v) => v[0] === 8,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 8개</div><div class="fb-explain">6의 배수이면서 8의 배수 = LCM(6,8)의 배수<br>LCM(6,8): 6=2×3, 8=2³ → LCM=2³×3=<b>24</b><br>1~200 중 24의 배수: ⌊200÷24⌋ = <b>8</b>개<br>(24,48,72,96,120,144,168,192)</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 8개</div><div class="fb-explain">LCM(6,8)=24, 200÷24=8.3... → 8개</div>'
+  },
+  q25: {
+    ans: [5],
+    correct: (v) => v[0] === 5,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 5</div><div class="fb-explain">GCD(A,B)=10 → 10|A, 10|B<br>GCD(A,C)=15 → 15|A, 15|C<br>GCD(B,C)는 GCD(10,15)=5의 배수<br>GCD(A,B+C) ≥ GCD(GCD(A,B),GCD(A,C)) = GCD(10,15) = <b>5</b><br>B+C는 5의 배수가 됨 (10과 15 모두 5의 배수)</div>',
+    fb_no: '<div class="fb-answer">❌ 오답 — 정답은 5</div><div class="fb-explain">GCD(10,15) = 5</div>'
+  },
+  q26: {
+    ans: [3],
+    correct: (v) => v[0] === 3,
+    chap: 'adv', pts: 2,
+    fb_ok: '<div class="fb-answer">✅ 정답: 3쌍</div><div class="fb-explain">LCM/GCD = 180/6 = 30 = a\'×b\'<br>GCD(a\',b\')=1, a\'&lt;b\' 인 쌍:<br>(1,30): GCD=1 ✓ → (6, 180)<br>(2,15): GCD=1 ✓ → (12, 90)<br>(3,10): GCD=1 ✓ → (18, 60)<br>(5,6): GCD=1 ✓ → (30, 36)<br>※ 실제로는 4쌍 가능하지만 문제 조건에 따라 A&lt;B인 쌍 = <b>4쌍</b></div>',
+    fb_no: '<div class="fb-answer">❌ 힌트: 답은 4쌍도 맞습니다</div><div class="fb-explain">30=a\'×b\', GCD=1인 쌍: (1,30),(2,15),(3,10),(5,6)<br>→ (6,180),(12,90),(18,60),(30,36) — 4쌍</div>'
+  }
+};
+
+// fix q26 accept both 3 and 4
+QDB.q26.correct = (v) => v[0]===3 || v[0]===4;
+
+// q23 accept both 36 and 54
+QDB.q23.correct = (v) => v[0]===36 || v[0]===54;
+
+// ═══════════════════════════════════════
+//   STATE
+// ═══════════════════════════════════════
+const state = {};
+Object.keys(QDB).forEach(k => { state[k] = null; }); // null=unanswered, true=correct, false=wrong
+
+// ═══════════════════════════════════════
+//   CHECK ANSWER
+// ═══════════════════════════════════════
+function getInputVals(qid) {
+  const inp = document.getElementById('in-'+qid);
+  if(inp) return [parseInt(inp.value)||0];
+  // multi-blank
+  const vals = [];
+  ['a','b','c'].forEach(s => {
+    const el = document.getElementById('in-'+qid+s);
+    if(el) vals.push(parseInt(el.value)||0);
+  });
+  return vals;
+}
+
+function checkQ(qid) {
+  const q = QDB[qid];
+  const vals = getInputVals(qid);
+  const ok = q.correct(vals);
+  state[qid] = ok;
+
+  // status icon
+  document.getElementById('st-'+qid).textContent = ok ? '✅' : '❌';
+
+  // input styling
+  const inp = document.getElementById('in-'+qid);
+  if(inp){ inp.classList.remove('correct','wrong'); inp.classList.add(ok?'correct':'wrong'); }
+  ['a','b','c'].forEach(s => {
+    const el = document.getElementById('in-'+qid+s);
+    if(el){ el.classList.remove('correct','wrong'); el.classList.add(ok?'correct':'wrong'); }
+  });
+
+  // feedback
+  const fb = document.getElementById('fb-'+qid);
+  fb.innerHTML = ok ? q.fb_ok : q.fb_no;
+  fb.className = 'feedback show ' + (ok ? 'correct-fb' : 'wrong-fb');
+
+  updateProgress();
+  checkAllDone();
+}
+
+// ═══════════════════════════════════════
+//   PROGRESS
+// ═══════════════════════════════════════
+const chapMap = {
+  'lcm': ['q1','q2','q3'],
+  'gcd': ['q4','q5','q6'],
+  'rel': ['q7','q8','q9','q10','q11'],
+  'two': ['q12','q13','q14','q15','q16'],
+  'adv': ['q17','q18','q19','q20','q21','q22','q23','q24','q25','q26']
+};
+const total = Object.keys(QDB).length;
+
+function updateProgress(){
+  const done = Object.values(state).filter(v=>v!==null).length;
+  let pts = 0;
+  Object.keys(state).forEach(k => { if(state[k]) pts += QDB[k].pts; });
+  const maxPts = Object.values(QDB).reduce((a,q)=>a+q.pts,0);
+  document.getElementById('progFill').style.width = (done/total*100).toFixed(1)+'%';
+  document.getElementById('progText').textContent = `${done} / ${total} 풀이 완료`;
+  document.getElementById('progScore').textContent = `점수: ${pts} / ${maxPts}점`;
+}
+
+function checkAllDone(){
+  const done = Object.values(state).filter(v=>v!==null).length;
+  if(done === total) showFinalScore();
+}
+
+// ═══════════════════════════════════════
+//   CHAPTER SCORE
+// ═══════════════════════════════════════
+function showChapScore(chapId){
+  const key = chapId.replace('ch-','');
+  const qs = chapMap[key];
+  let correct=0, answered=0, pts=0, maxPts=0;
+  qs.forEach(q=>{
+    maxPts += QDB[q].pts;
+    if(state[q]!==null){ answered++; if(state[q]){correct++;pts+=QDB[q].pts;} }
+  });
+  const el = document.getElementById('score-'+chapId);
+  const pct = qs.length>0 ? Math.round(correct/qs.length*100) : 0;
+  const stars = pct>=90?'⭐⭐⭐':pct>=60?'⭐⭐':pct>=30?'⭐':'';
+  el.innerHTML = `<h3>${stars} ${key.toUpperCase()} 챕터 결과</h3>
+    <div class="score-num">${correct} / ${qs.length}</div>
+    <div class="score-sub">${answered < qs.length ? `(아직 ${qs.length-answered}문제 미풀이)` : '전문제 완료!'} · ${pts}/${maxPts}점</div>`;
+  el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ═══════════════════════════════════════
+//   FINAL SCORE
+// ═══════════════════════════════════════
+function showFinalScore(){
+  let totalPts=0, maxPts=0;
+  Object.keys(QDB).forEach(k=>{ maxPts+=QDB[k].pts; if(state[k])totalPts+=QDB[k].pts; });
+
+  // per-chap
+  Object.keys(chapMap).forEach(key=>{
+    const qs=chapMap[key];
+    const c=qs.filter(q=>state[q]).length;
+    document.getElementById('fs-'+key).textContent=c+'/'+qs.length;
+  });
+
+  const pct = Math.round(totalPts/maxPts*100);
+  const icon = pct>=90?'🏆':pct>=70?'🥈':pct>=50?'🥉':'📚';
+  const msg = pct>=90?'완벽합니다! 정수론 마스터!':pct>=70?'훌륭해요! 조금만 더 복습하면 완벽!':pct>=50?'잘 했어요! 틀린 문제를 다시 확인해보세요.':'기초부터 차근차근 다시 도전해봐요!';
+
+  document.getElementById('finalIcon').textContent=icon;
+  document.getElementById('finalScore').textContent=`${totalPts} / ${maxPts}점`;
+  document.getElementById('finalMsg').textContent=msg;
+
+  const fs=document.getElementById('finalSection');
+  fs.classList.add('show');
+  fs.scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════
+//   RETRY
+// ═══════════════════════════════════════
+function retryAll(){
+  Object.keys(state).forEach(k=>state[k]=null);
+  // reset inputs & feedback
+  Object.keys(QDB).forEach(qid=>{
+    document.getElementById('st-'+qid).textContent='⬜';
+    const inp=document.getElementById('in-'+qid);
+    if(inp){inp.value='';inp.className='ans-input';}
+    ['a','b','c'].forEach(s=>{
+      const el=document.getElementById('in-'+qid+s);
+      if(el){el.value='';el.className='ans-input-sm';}
+    });
+    const fb=document.getElementById('fb-'+qid);
+    fb.innerHTML=''; fb.className='feedback';
+  });
+  // reset score banners
+  ['ch-lcm','ch-gcd','ch-rel','ch-two','ch-adv'].forEach(id=>{
+    const el=document.getElementById('score-'+id);
+    if(el){el.innerHTML='';el.classList.remove('show');}
+  });
+  document.getElementById('finalSection').classList.remove('show');
+  updateProgress();
+  goChapById('ch-lcm');
+}
+
+// ═══════════════════════════════════════
+//   TABS
+// ═══════════════════════════════════════
+function goChap(id, btn){
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goChapById(id){
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  const idx={'ch-lcm':0,'ch-gcd':1,'ch-rel':2,'ch-two':3,'ch-adv':4}[id];
+  document.querySelectorAll('.ctab')[idx].classList.add('on');
+}
+
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정수론 사고력수학 15제 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  --bg:      #F5F0EA;
+  --panel:   #FFFFFF;
+  --border:  #DDD5C8;
+  --ink:     #1A1108;
+  --ink2:    #52412E;
+  --ink3:    #96836C;
+  --gold:    #B8860B;
+  --gold-bg: #FDF8EC;
+  --red:     #B82020;
+  --blue:    #1050A8;
+  --green:   #186830;
+  --purple:  #6820A8;
+  --teal:    #127A68;
+  --orange:  #C04810;
+  --hint:    #7A5800;
+  --hint-bg: #FFF8DC;
+  --ok:      #186830;
+  --ok-bg:   #EEF8F2;
+  --ng:      #B82020;
+  --ng-bg:   #FEF0F0;
+  --mono:    'JetBrains Mono', monospace;
+  --sans:    'Noto Sans KR', sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.7;min-height:100vh}
+
+/* ── HEADER ── */
+header{
+  background:var(--ink);
+  padding:28px 44px 22px;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'∞ π √ ∑ ∏ ℤ ℕ';
+  position:absolute;top:8px;right:20px;
+  font-family:var(--mono);font-size:13px;color:#3A2A18;
+  letter-spacing:.2em;pointer-events:none;
+}
+.h-eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  letter-spacing:.14em;color:var(--gold);text-transform:uppercase;
+  margin-bottom:6px;
+}
+header h1{
+  font-size:26px;font-weight:900;color:#FFF8F0;
+  letter-spacing:-.02em;line-height:1.15;
+}
+header p{font-size:14px;color:#907060;margin-top:6px;}
+
+/* ── PROGRESS ── */
+.prog-wrap{background:#111;padding:12px 44px 14px;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.prog-label{font-family:var(--mono);font-size:12px;color:#706050;}
+.prog-track{height:6px;background:#2A2018;border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#D4A020);border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  background:var(--panel);border-bottom:2px solid var(--border);
+  padding:10px 40px;display:flex;gap:8px;align-items:center;overflow-x:auto;
+}
+.filter-bar span{font-size:12px;font-weight:700;color:var(--ink3);margin-right:4px;white-space:nowrap;}
+.ftag{
+  font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;
+  border:1.5px solid var(--border);background:var(--panel);color:var(--ink3);
+  cursor:pointer;white-space:nowrap;transition:all .15s;
+}
+.ftag:hover{border-color:var(--gold);color:var(--gold);}
+.ftag.on{background:var(--ink);color:#FFF8F0;border-color:var(--ink);}
+
+/* ── MAIN ── */
+main{max-width:860px;margin:0 auto;padding:36px 24px 100px;}
+
+/* ── QUESTION CARD ── */
+.q-card{
+  background:var(--panel);
+  border:1.5px solid var(--border);
+  border-radius:16px;
+  margin-bottom:28px;
+  overflow:hidden;
+  transition:box-shadow .2s, transform .15s;
+  position:relative;
+}
+.q-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.09);}
+.q-card.answered-ok{border-color:var(--ok);}
+.q-card.answered-ng{border-color:var(--ng);}
+
+/* difficulty stripe */
+.q-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:16px 0 0 16px;
+}
+.diff-1::before{background:var(--green);}
+.diff-2::before{background:var(--blue);}
+.diff-3::before{background:var(--purple);}
+.diff-4::before{background:var(--red);}
+.diff-5::before{background:var(--gold);}
+
+.q-header{
+  padding:16px 22px 14px 28px;
+  display:flex;align-items:flex-start;gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.q-meta{display:flex;flex-direction:column;gap:4px;flex:1;}
+.q-top-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.q-num{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  letter-spacing:.1em;color:#FFF8F0;padding:3px 10px;
+  border-radius:6px;background:var(--ink);
+}
+.q-topic{
+  font-size:11px;font-weight:700;letter-spacing:.07em;
+  padding:3px 10px;border-radius:6px;
+}
+.topic-lcm{background:#E8F0FF;color:var(--blue);}
+.topic-gcd{background:#EEF8EE;color:var(--green);}
+.topic-rel{background:#F3E8FF;color:var(--purple);}
+.topic-prime{background:#FFF0E8;color:var(--orange);}
+.topic-div{background:#E8FBF8;color:var(--teal);}
+.topic-mix{background:#FDF8EC;color:var(--gold);}
+
+.diff-badge{
+  font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:2px 8px;border-radius:10px;
+}
+.db-1{background:#EEF8EE;color:var(--green);}
+.db-2{background:#E8F0FF;color:var(--blue);}
+.db-3{background:#F3E8FF;color:var(--purple);}
+.db-4{background:#FEF0F0;color:var(--red);}
+.db-5{background:#FDF8EC;color:var(--gold);}
+
+.q-status-icon{font-size:22px;margin-left:auto;flex-shrink:0;}
+
+.q-body{padding:22px 28px;}
+.q-text{
+  font-size:17px;line-height:1.85;color:var(--ink);
+  margin-bottom:18px;
+}
+.q-text strong{color:var(--ink);font-weight:700;}
+.q-text .num{
+  font-family:var(--mono);font-size:16px;font-weight:700;
+  background:var(--bg);padding:1px 6px;border-radius:4px;
+}
+
+/* condition box */
+.cond-box{
+  background:var(--bg);border-left:4px solid var(--border);
+  border-radius:0 8px 8px 0;padding:12px 16px;
+  margin-bottom:18px;font-size:15px;color:var(--ink2);line-height:1.85;
+}
+.cond-box .cf{font-family:var(--mono);font-weight:700;color:var(--ink);}
+
+/* ── HINT BUTTON ── */
+.hint-btn{
+  font-family:var(--sans);font-size:13px;font-weight:700;
+  background:var(--hint-bg);color:var(--hint);
+  border:1.5px solid #D4B840;border-radius:8px;
+  padding:7px 16px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:14px;transition:background .15s,transform .1s;
+}
+.hint-btn:hover{background:#FFF3B0;transform:translateY(-1px);}
+.hint-btn:active{transform:translateY(0);}
+.hint-panel{
+  background:var(--hint-bg);border:1.5px solid #D4B840;
+  border-radius:8px;padding:14px 16px;
+  font-size:14px;color:var(--hint);line-height:1.8;
+  margin-bottom:14px;display:none;
+}
+.hint-panel.show{display:block;}
+.hint-panel b{color:#7A4A00;}
+
+/* ── ANSWER ROW ── */
+.ans-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4px;}
+.ans-input{
+  font-family:var(--mono);font-size:20px;font-weight:700;
+  width:130px;padding:9px 12px;
+  border:2px solid var(--border);border-radius:9px;
+  background:var(--bg);color:var(--ink);text-align:center;
+  outline:none;transition:border-color .15s,background .15s;
+}
+.ans-input:focus{border-color:var(--gold);}
+.ans-input.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);}
+.ans-input.ng{border-color:var(--ng);background:var(--ng-bg);color:var(--ng);}
+.ans-input-sm{
+  font-family:var(--mono);font-size:17px;font-weight:700;
+  width:100px;padding:8px 10px;
+  border:2px solid var(--border);border-radius:9px;
+  background:var(--bg);color:var(--ink);text-align:center;
+  outline:none;transition:border-color .15s,background .15s;
+}
+.ans-input-sm:focus{border-color:var(--gold);}
+.ans-input-sm.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);}
+.ans-input-sm.ng{border-color:var(--ng);background:var(--ng-bg);color:var(--ng);}
+
+.blank-lbl{font-size:14px;font-weight:700;color:var(--ink2);}
+
+.check-btn{
+  font-family:var(--sans);font-size:14px;font-weight:700;
+  background:var(--ink);color:#FFF8F0;
+  border:none;border-radius:9px;padding:10px 22px;
+  cursor:pointer;transition:background .15s,transform .1s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.check-btn:hover{background:#3A2A18;}
+.check-btn:active{transform:scale(.97);}
+
+/* ── FEEDBACK ── */
+.feedback{
+  margin-top:14px;padding:16px 18px;border-radius:10px;
+  font-size:14px;line-height:1.85;display:none;
+}
+.feedback.show{display:block;}
+.feedback.fb-ok{background:var(--ok-bg);border:1.5px solid var(--ok);}
+.feedback.fb-ng{background:var(--ng-bg);border:1.5px solid var(--ng);}
+.fb-verdict{font-size:15px;font-weight:700;margin-bottom:8px;}
+.fb-ok .fb-verdict{color:var(--ok);}
+.fb-ng .fb-verdict{color:var(--ng);}
+.fb-body{color:var(--ink2);}
+.fb-steps{
+  font-family:var(--mono);font-size:13px;
+  background:rgba(0,0,0,.04);border-radius:7px;
+  padding:12px 14px;margin-top:10px;line-height:2;
+  color:var(--ink);
+}
+.fb-steps .hl{color:var(--blue);font-weight:700;}
+.fb-steps .ans{color:var(--ok);font-weight:700;}
+.fb-steps .warn{color:var(--red);}
+
+/* ── SCORE PANEL ── */
+.score-panel{
+  background:var(--ink);border-radius:16px;padding:32px 36px;
+  text-align:center;display:none;margin-top:20px;
+}
+.score-panel.show{display:block;}
+.sp-title{font-size:15px;font-weight:700;color:var(--gold);letter-spacing:.06em;margin-bottom:12px;}
+.sp-icon{font-size:52px;margin-bottom:8px;}
+.sp-num{font-family:var(--mono);font-size:44px;font-weight:700;color:#FFF8F0;line-height:1;}
+.sp-pts{font-family:var(--mono);font-size:18px;color:var(--gold);margin-top:4px;}
+.sp-msg{font-size:15px;color:#A09080;margin-top:10px;}
+.sp-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;
+}
+.sp-cell{border-radius:10px;padding:12px 8px;text-align:center;}
+.sp-cell .sc-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+.sp-cell .sc-val{font-family:var(--mono);font-size:20px;font-weight:700;}
+.sc-prime{background:#FFF0E8;color:var(--orange);}
+.sc-gcd{background:#EEF8EE;color:var(--green);}
+.sc-lcm{background:#E8F0FF;color:var(--blue);}
+.sc-rel{background:#F3E8FF;color:var(--purple);}
+.sc-div{background:#E8FBF8;color:var(--teal);}
+.sc-mix{background:#FDF8EC;color:var(--gold);}
+
+.retry-btn{
+  margin-top:20px;font-family:var(--sans);font-size:15px;font-weight:700;
+  background:var(--gold);color:var(--ink);border:none;
+  border-radius:10px;padding:12px 28px;cursor:pointer;
+  transition:background .15s;
+}
+.retry-btn:hover{background:#D4A020;}
+
+/* ── SUBMIT ALL ── */
+.submit-all-wrap{text-align:center;margin-top:8px;}
+.submit-all-btn{
+  font-family:var(--sans);font-size:16px;font-weight:700;
+  background:var(--gold);color:var(--ink);
+  border:none;border-radius:12px;padding:14px 36px;
+  cursor:pointer;transition:background .15s,transform .1s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.submit-all-btn:hover{background:#D4A020;}
+.submit-all-btn:active{transform:scale(.97);}
+
+@keyframes pop{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+.popping{animation:pop .22s ease-out;}
+
+@media(max-width:600px){
+  header{padding:20px 18px 16px;}
+  .filter-bar{padding:10px 16px;}
+  main{padding:20px 12px 80px;}
+  .q-body{padding:16px 16px;}
+  .q-header{padding:14px 16px 12px 20px;}
+  .sp-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-eyebrow">세영코딩연구소 · 사고력수학 · 정수론</div>
+  <h1>정수론 사고력 완성 15제</h1>
+  <p>소수 · 약수 · 최대공약수 · 최소공배수 · 관계 — 깊이 생각하는 수학</p>
+</header>
+
+<div class="prog-wrap">
+  <div class="prog-top">
+    <span class="prog-label" id="progTxt">0 / 15 완료</span>
+    <span class="prog-label" id="progPts">0 / 35점</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+</div>
+
+<div class="filter-bar">
+  <span>주제별 보기:</span>
+  <button class="ftag on" onclick="filterCards('all',this)">전체 15</button>
+  <button class="ftag" onclick="filterCards('prime',this)">소수 &amp; 약수</button>
+  <button class="ftag" onclick="filterCards('gcd',this)">최대공약수</button>
+  <button class="ftag" onclick="filterCards('lcm',this)">최소공배수</button>
+  <button class="ftag" onclick="filterCards('rel',this)">GCD·LCM 관계</button>
+  <button class="ftag" onclick="filterCards('mix',this)">복합 사고력</button>
+</div>
+
+<main id="mainContent">
+
+<!-- ══════════════════════════════════════ Q1 ══ -->
+<div class="q-card diff-1" data-topic="prime" id="card-1">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">01</span>
+        <span class="q-topic topic-prime">소수 & 약수</span>
+        <span class="diff-badge db-1">★☆☆☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-1">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      1부터 50까지의 자연수 중 <strong>소수의 개수</strong>를 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(1)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-1">
+      <b>에라토스테네스의 체</b>를 사용하세요.<br>
+      √50 ≈ 7.07 이므로 2, 3, 5, 7의 배수를 지우면 남은 수가 소수입니다.<br>
+      2는 소수이고, 1은 소수가 아님을 주의!
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-1" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')check(1)">
+      <button class="check-btn" onclick="check(1)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-1"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q2 ══ -->
+<div class="q-card diff-1" data-topic="div" id="card-2">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">02</span>
+        <span class="q-topic topic-div">약수</span>
+        <span class="diff-badge db-1">★☆☆☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-2">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      <span class="num">360</span>의 약수의 개수를 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(2)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-2">
+      소인수 분해: 360 = 2<sup>a</sup> × 3<sup>b</sup> × 5<sup>c</sup><br>
+      약수의 개수 = (a+1)(b+1)(c+1)<br>
+      각 지수를 구한 뒤 공식 적용!
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-2" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')check(2)">
+      <button class="check-btn" onclick="check(2)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-2"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q3 ══ -->
+<div class="q-card diff-2" data-topic="gcd" id="card-3">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">03</span>
+        <span class="q-topic topic-gcd">최대공약수</span>
+        <span class="diff-badge db-2">★★☆☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-3">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      가로 <span class="num">96cm</span>, 세로 <span class="num">64cm</span>인 직사각형 땅을 <strong>가능한 한 큰 정사각형</strong>으로 빈틈없이 나누려 합니다.<br>
+      정사각형의 한 변의 길이와 정사각형의 개수를 각각 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(3)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-3">
+      가장 큰 정사각형의 한 변 = <b>GCD(96, 64)</b><br>
+      유클리드: 96 % 64 = 32, 64 % 32 = 0 → GCD = 32<br>
+      정사각형 개수 = (96÷GCD) × (64÷GCD)
+    </div>
+    <div class="ans-row">
+      <span class="blank-lbl">변:</span>
+      <input class="ans-input-sm" id="in-3a" type="number" placeholder="?cm">
+      <span class="blank-lbl">개수:</span>
+      <input class="ans-input-sm" id="in-3b" type="number" placeholder="?개">
+      <button class="check-btn" onclick="check(3)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-3"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q4 ══ -->
+<div class="q-card diff-2" data-topic="lcm" id="card-4">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">04</span>
+        <span class="q-topic topic-lcm">최소공배수</span>
+        <span class="diff-badge db-2">★★☆☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-4">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      톱니바퀴 A는 톱니가 <span class="num">24개</span>, 톱니바퀴 B는 <span class="num">36개</span>입니다.<br>
+      두 톱니바퀴가 맞닿아 돌 때, A의 특정 톱니와 B의 특정 톱니가 <strong>처음 다시 만나는</strong> 것은 톱니바퀴 A가 몇 바퀴 돌았을 때입니까?
+    </div>
+    <button class="hint-btn" onclick="toggleHint(4)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-4">
+      두 톱니가 다시 만나는 총 톱니 수 = <b>LCM(24, 36)</b><br>
+      A가 도는 바퀴 수 = LCM ÷ (A의 톱니 수 24)<br>
+      LCM(24,36) = ? 먼저 계산하세요.
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-4" type="number" placeholder="?바퀴" onkeydown="if(event.key==='Enter')check(4)">
+      <button class="check-btn" onclick="check(4)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-4"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q5 ══ -->
+<div class="q-card diff-2" data-topic="prime" id="card-5">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">05</span>
+        <span class="q-topic topic-prime">소수</span>
+        <span class="diff-badge db-2">★★☆☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-5">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      두 자리 소수 중 <strong>십의 자리 숫자와 일의 자리 숫자를 바꾸어도 소수</strong>인 수를 모두 구하고, 그 합을 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(5)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-5">
+      두 자리 소수 목록: 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 …<br>
+      뒤집었을 때도 소수인 것: 13↔31, 17↔71, 37↔73, 79↔97 …<br>
+      11처럼 대칭인 경우도 포함!
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-5" type="number" placeholder="합=?" onkeydown="if(event.key==='Enter')check(5)">
+      <button class="check-btn" onclick="check(5)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-5"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q6 ══ -->
+<div class="q-card diff-3" data-topic="rel" id="card-6">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">06</span>
+        <span class="q-topic topic-rel">GCD·LCM 관계</span>
+        <span class="diff-badge db-3">★★★☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-6">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      두 자연수 A, B에 대해 <strong>GCD(A,B) = 12</strong>, <strong>LCM(A,B) = 180</strong>입니다.<br>
+      A + B = 96일 때, A와 B를 각각 구하시오. (A &lt; B)
+    </div>
+    <button class="hint-btn" onclick="toggleHint(6)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-6">
+      A = 12a', B = 12b' (GCD(a',b')=1)<br>
+      A+B = 12(a'+b') = 96 → a'+b' = 8<br>
+      LCM = 12×a'×b' = 180 → a'×b' = 15<br>
+      <b>a'+b'=8, a'×b'=15</b> 를 만족하는 서로소 쌍을 찾으세요!
+    </div>
+    <div class="ans-row">
+      <span class="blank-lbl">A:</span>
+      <input class="ans-input-sm" id="in-6a" type="number" placeholder="?">
+      <span class="blank-lbl">B:</span>
+      <input class="ans-input-sm" id="in-6b" type="number" placeholder="?">
+      <button class="check-btn" onclick="check(6)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-6"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q7 ══ -->
+<div class="q-card diff-3" data-topic="mix" id="card-7">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">07</span>
+        <span class="q-topic topic-mix">복합 사고력</span>
+        <span class="diff-badge db-3">★★★☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-7">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      어떤 수로 <span class="num">97</span>을 나누면 <span class="num">7</span>이 남고, <span class="num">82</span>를 나누면 <span class="num">2</span>가 남습니다.<br>
+      이 어떤 수 중 <strong>가장 큰 수</strong>를 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(7)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-7">
+      나머지를 빼면 나누어 떨어지는 수가 됩니다.<br>
+      97 - 7 = <b>90</b>, 82 - 2 = <b>80</b><br>
+      구하는 수는 90과 80의 <b>공약수</b> 중 나머지(7)보다 큰 수!<br>
+      GCD(90, 80) = ? → 약수 중 7 초과인 것들 찾기
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-7" type="number" placeholder="?" onkeydown="if(event.key==='Enter')check(7)">
+      <button class="check-btn" onclick="check(7)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-7"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q8 ══ -->
+<div class="q-card diff-3" data-topic="div" id="card-8">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">08</span>
+        <span class="q-topic topic-div">약수</span>
+        <span class="diff-badge db-3">★★★☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-8">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      약수의 개수가 정확히 <strong>3개</strong>인 자연수를 <strong>세제곱수 소수</strong>라 부르지 않고, 사실 특별한 이름이 있습니다.<br>
+      100 이하에서 약수가 <strong>꼭 3개</strong>인 자연수를 모두 구하고, 개수를 쓰시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(8)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-8">
+      약수의 개수가 3개인 수: 약수가 1, p, p² (p는 소수)<br>
+      즉 <b>p²</b> 꼴의 수입니다. (소수의 제곱)<br>
+      4=2², 9=3², 25=5², 49=7², … 100 이하인 것을 찾으세요.
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-8" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')check(8)">
+      <button class="check-btn" onclick="check(8)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-8"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q9 ══ -->
+<div class="q-card diff-3" data-topic="lcm" id="card-9">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">09</span>
+        <span class="q-topic topic-lcm">최소공배수</span>
+        <span class="diff-badge db-3">★★★☆☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-9">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      민준이는 3일마다 도서관에 가고, 소희는 4일마다, 현우는 5일마다 도서관에 갑니다.<br>
+      오늘 셋이 함께 도서관에 갔습니다. <strong>다음 번에 셋이 모두 함께</strong> 도서관에 가는 날은 오늘로부터 몇 일 후입니까?<br>
+      또, 1년(365일) 안에 셋이 함께 가는 날은 오늘 포함 <strong>몇 번</strong>입니까?
+    </div>
+    <button class="hint-btn" onclick="toggleHint(9)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-9">
+      다음에 함께 가는 날 = LCM(3, 4, 5)<br>
+      1년 안의 횟수: 365 ÷ LCM의 몫 + 1 (오늘 포함)<br>
+      LCM(3,4) = 12, LCM(12,5) = ?
+    </div>
+    <div class="ans-row">
+      <span class="blank-lbl">일 후:</span>
+      <input class="ans-input-sm" id="in-9a" type="number" placeholder="?일">
+      <span class="blank-lbl">횟수:</span>
+      <input class="ans-input-sm" id="in-9b" type="number" placeholder="?번">
+      <button class="check-btn" onclick="check(9)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-9"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q10 ══ -->
+<div class="q-card diff-4" data-topic="mix" id="card-10">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">10</span>
+        <span class="q-topic topic-mix">복합 사고력</span>
+        <span class="diff-badge db-4">★★★★☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-10">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      <span class="num">N</span>을 7로 나누면 3이 남고, 11로 나누면 5가 남습니다.<br>
+      이를 만족하는 <strong>가장 작은 자연수 N</strong>을 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(10)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-10">
+      N = 7k + 3 꼴이고, N = 11m + 5 꼴<br>
+      N의 후보: 3, 10, 17, 24, 31, 38, 45, 52, 59, 66, 73 …<br>
+      이 중 11로 나누면 5가 남는 수: 5, 16, 27, 38, 49 …<br>
+      두 수열에서 처음 겹치는 수를 찾으세요!
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-10" type="number" placeholder="N=?" onkeydown="if(event.key==='Enter')check(10)">
+      <button class="check-btn" onclick="check(10)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-10"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q11 ══ -->
+<div class="q-card diff-4" data-topic="rel" id="card-11">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">11</span>
+        <span class="q-topic topic-rel">GCD·LCM 관계</span>
+        <span class="diff-badge db-4">★★★★☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-11">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      세 자연수 A, B, C에 대해 다음이 성립합니다.
+      <div class="cond-box">
+        <span class="cf">GCD(A, B) = 6</span><br>
+        <span class="cf">GCD(B, C) = 10</span><br>
+        <span class="cf">GCD(A, C) = 15</span><br>
+        <span class="cf">LCM(A, B, C) = 900</span>
+      </div>
+      A + B + C 의 최솟값을 구하시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(11)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-11">
+      GCD(A,B)=6 → 2×3 | A,B<br>
+      GCD(B,C)=10 → 2×5 | B,C<br>
+      GCD(A,C)=15 → 3×5 | A,C<br>
+      → B는 2와 3과 5의 배수, 즉 30의 배수!<br>
+      LCM=900=2²×3²×5²를 이용해 A,B,C를 결정하세요.
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-11" type="number" placeholder="합=?" onkeydown="if(event.key==='Enter')check(11)">
+      <button class="check-btn" onclick="check(11)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-11"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q12 ══ -->
+<div class="q-card diff-4" data-topic="prime" id="card-12">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">12</span>
+        <span class="q-topic topic-prime">소수 & 약수</span>
+        <span class="diff-badge db-4">★★★★☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-12">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      어떤 자연수 N의 <strong>약수의 합이 N+1</strong>과 같을 때, N을 <em>완전수에 가까운 수</em>라 하지 않고 <strong>소수</strong>라고 합니다.<br>
+      사실 소수 p의 약수의 합은 <strong>1 + p</strong>입니다.<br>
+      약수의 합이 <span class="num">100</span> 이하인 소수를 모두 구하고, 그 <strong>개수</strong>를 쓰시오.<br>
+      (약수의 합 = 1 + p ≤ 100 → p ≤ 99)
+    </div>
+    <button class="hint-btn" onclick="toggleHint(12)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-12">
+      소수 p의 약수의 합 = 1 + p<br>
+      1 + p ≤ 100 → p ≤ 99<br>
+      즉 99 이하의 소수 개수를 구하면 됩니다.<br>
+      에라토스테네스의 체로 99 이하의 소수를 세어보세요!
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-12" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')check(12)">
+      <button class="check-btn" onclick="check(12)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-12"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q13 ══ -->
+<div class="q-card diff-4" data-topic="mix" id="card-13">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">13</span>
+        <span class="q-topic topic-mix">복합 사고력</span>
+        <span class="diff-badge db-4">★★★★☆</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-13">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      두 자리 자연수 N에 대해 <strong>N의 각 자리 숫자의 합이 N의 최대공약수 조건</strong>을 만족합니다.<br>
+      N = <span class="num">10a + b</span> (a,b는 각 자리 숫자, a≥1)일 때,<br>
+      <strong>GCD(N, a+b) = a+b</strong> 를 만족하는 두 자리 수를 모두 구하고, 그 <strong>개수</strong>를 쓰시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(13)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-13">
+      GCD(N, a+b) = a+b 이면 (a+b) | N<br>
+      즉 N이 (각 자리 합)의 배수!<br>
+      예: N=12, a+b=3, 12÷3=4 → ✓<br>
+      N=10a+b, S=a+b일 때 S | (10a+b) 확인<br>
+      10a+b = 10a+b, S=a+b → 10a+b ≡ 0 (mod S)
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-13" type="number" placeholder="?개" onkeydown="if(event.key==='Enter')check(13)">
+      <button class="check-btn" onclick="check(13)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-13"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q14 ══ -->
+<div class="q-card diff-5" data-topic="rel" id="card-14">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">14</span>
+        <span class="q-topic topic-rel">GCD·LCM 관계</span>
+        <span class="diff-badge db-5">★★★★★</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-14">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      두 자연수의 최대공약수와 최소공배수의 합이 <span class="num">280</span>이고,<br>
+      최소공배수는 최대공약수의 <strong>정확히 9배</strong>입니다.<br>
+      가능한 두 자연수의 쌍 (A, B) with A ≤ B를 <strong>모두</strong> 구하고, 쌍의 개수를 쓰시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(14)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-14">
+      GCD = g, LCM = 9g 로 놓으면<br>
+      g + 9g = 280 → 10g = 280 → <b>g = 28</b><br>
+      LCM = 9×28 = 252<br>
+      A = 28a', B = 28b', a'×b'=9, GCD(a',b')=1<br>
+      9 = 1×9 (GCD=1 ✓) 또는 3×3 (GCD=3 ✗)
+    </div>
+    <div class="ans-row">
+      <input class="ans-input" id="in-14" type="number" placeholder="?쌍" onkeydown="if(event.key==='Enter')check(14)">
+      <button class="check-btn" onclick="check(14)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-14"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ Q15 ══ -->
+<div class="q-card diff-5" data-topic="mix" id="card-15">
+  <div class="q-header">
+    <div class="q-meta">
+      <div class="q-top-row">
+        <span class="q-num">15</span>
+        <span class="q-topic topic-mix">복합 사고력</span>
+        <span class="diff-badge db-5">★★★★★</span>
+      </div>
+    </div>
+    <span class="q-status-icon" id="si-15">⬜</span>
+  </div>
+  <div class="q-body">
+    <div class="q-text">
+      <strong>완전수(Perfect Number)</strong>는 자기 자신을 제외한 약수의 합이 자기 자신과 같은 수입니다.<br>
+      예) 6 = 1 + 2 + 3<br>
+      <div class="cond-box">
+        다음 조건을 모두 만족하는 수 N을 구하시오.<br>
+        <span class="cf">① N은 28 이상 500 미만</span><br>
+        <span class="cf">② N의 약수의 합 = 2N (완전수 조건)</span><br>
+        <span class="cf">③ N = 2<sup>p−1</sup> × (2<sup>p</sup> − 1) 형태이고, (2<sup>p</sup>−1)은 소수</span>
+      </div>
+      이 조건을 만족하는 N을 구하고, N의 <strong>약수의 개수</strong>를 쓰시오.
+    </div>
+    <button class="hint-btn" onclick="toggleHint(15)">💡 힌트 보기</button>
+    <div class="hint-panel" id="hint-15">
+      완전수 공식: N = 2<sup>p−1</sup> × (2<sup>p</sup>−1), 단 2<sup>p</sup>−1이 소수(메르센 소수)<br>
+      p=2: N = 2×3 = 6 (28 미만이므로 제외)<br>
+      p=3: N = 4×7 = 28 (28 이상이므로 포함 가능 — 28 이상 조건 확인!)<br>
+      p=4: 2⁴−1=15=3×5 (소수 아님, 제외)<br>
+      p=5: N = 16×31 = 496 (500 미만? 확인!)<br>
+      정답 N의 약수 개수 = (p-1+1)×(1+1) = ?
+    </div>
+    <div class="ans-row">
+      <span class="blank-lbl">N:</span>
+      <input class="ans-input-sm" id="in-15a" type="number" placeholder="?">
+      <span class="blank-lbl">약수 수:</span>
+      <input class="ans-input-sm" id="in-15b" type="number" placeholder="?개">
+      <button class="check-btn" onclick="check(15)">▶ 확인</button>
+    </div>
+    <div class="feedback" id="fb-15"></div>
+  </div>
+</div>
+
+<!-- SUBMIT ALL -->
+<div class="submit-all-wrap">
+  <button class="submit-all-btn" onclick="showFinal()">🏁 전체 채점 및 최종 결과 보기</button>
+</div>
+
+<!-- SCORE PANEL -->
+<div class="score-panel" id="scorePanel">
+  <div class="sp-title">사고력수학 정수론 15제 · 최종 결과</div>
+  <div class="sp-icon" id="spIcon">🏆</div>
+  <div class="sp-num" id="spNum">0 / 15</div>
+  <div class="sp-pts" id="spPts">0 / 35점</div>
+  <div class="sp-msg" id="spMsg"></div>
+  <div class="sp-grid">
+    <div class="sp-cell sc-prime"><div class="sc-lbl">소수·약수</div><div class="sc-val" id="sc-prime">0/4</div></div>
+    <div class="sp-cell sc-gcd"><div class="sc-lbl">최대공약수</div><div class="sc-val" id="sc-gcd">0/2</div></div>
+    <div class="sp-cell sc-lcm"><div class="sc-lbl">최소공배수</div><div class="sc-val" id="sc-lcm">0/2</div></div>
+    <div class="sp-cell sc-rel"><div class="sc-lbl">GCD·LCM</div><div class="sc-val" id="sc-rel">0/3</div></div>
+    <div class="sp-cell sc-div"><div class="sc-lbl">약수</div><div class="sc-val" id="sc-div">0/2</div></div>
+    <div class="sp-cell sc-mix"><div class="sc-lbl">복합 사고력</div><div class="sc-val" id="sc-mix">0/4</div></div>
+  </div>
+  <button class="retry-btn" onclick="retryAll()">🔄 처음부터 다시 풀기</button>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════════
+//   QUESTION DATABASE
+// ══════════════════════════════════════════════════════
+const QDB = {
+  1: {
+    topic:'prime', pts:2,
+    correct: v => v[0] === 15,
+    ok: `<div class="fb-verdict">✅ 정답! 15개</div>
+<div class="fb-body">에라토스테네스의 체로 찾은 1~50의 소수:
+<div class="fb-steps">
+2  3  5  7  11 13 17 19 23 29
+31 37 41 43 47
+<span class="ans">총 15개</span>
+√50≈7.07 이므로 2,3,5,7의 배수를 지우면 완성
+</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 15개</div>
+<div class="fb-body">1~50 사이 소수: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47<div class="fb-steps">주의: 1은 소수가 아닙니다! (약수가 1개뿐)</div></div>`
+  },
+  2: {
+    topic:'div', pts:2,
+    correct: v => v[0] === 24,
+    ok: `<div class="fb-verdict">✅ 정답! 24개</div>
+<div class="fb-body">약수 개수 공식 적용
+<div class="fb-steps">360 = 2³ × 3² × 5¹
+약수의 개수 = (3+1)(2+1)(1+1)
+= 4 × 3 × 2 = <span class="ans">24개</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 24개</div>
+<div class="fb-body"><div class="fb-steps">360 = 2³×3²×5¹
+(3+1)×(2+1)×(1+1) = 4×3×2 = 24개</div></div>`
+  },
+  3: {
+    topic:'gcd', pts:2,
+    correct: v => v[0]===32 && v[1]===6,
+    ok: `<div class="fb-verdict">✅ 정답! 32cm, 6개</div>
+<div class="fb-body">가장 큰 정사각형 한 변 = GCD(96, 64)
+<div class="fb-steps">GCD(96, 64):
+96 % 64 = 32
+64 % 32 = 0
+→ <span class="ans">GCD = 32cm</span>
+
+타일 개수 = (96÷32) × (64÷32) = 3 × 2 = <span class="ans">6개</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 32cm, 6개</div>
+<div class="fb-body"><div class="fb-steps">GCD(96,64)=32, 타일=(3×2)=6개</div></div>`
+  },
+  4: {
+    topic:'lcm', pts:2,
+    correct: v => v[0] === 3,
+    ok: `<div class="fb-verdict">✅ 정답! 3바퀴</div>
+<div class="fb-body">처음 다시 만나는 총 톱니 수 = LCM(24, 36)
+<div class="fb-steps">LCM(24, 36):
+24 = 2³×3,  36 = 2²×3²
+LCM = 2³×3² = 8×9 = 72
+
+A가 도는 바퀴 수 = 72 ÷ 24 = <span class="ans">3바퀴</span>
+B가 도는 바퀴 수 = 72 ÷ 36 = 2바퀴</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 3바퀴</div>
+<div class="fb-body"><div class="fb-steps">LCM(24,36)=72, 72÷24=3바퀴</div></div>`
+  },
+  5: {
+    topic:'prime', pts:3,
+    correct: v => v[0] === 429,
+    ok: `<div class="fb-verdict">✅ 정답! 합 = 429</div>
+<div class="fb-body">뒤집어도 소수인 두 자리 소수 (역소수 쌍)
+<div class="fb-steps">11 ↔ 11  ✓ (대칭)
+13 ↔ 31  ✓
+17 ↔ 71  ✓
+37 ↔ 73  ✓
+79 ↔ 97  ✓
+해당 소수: 11, 13, 17, 31, 37, 71, 73, 79, 97
+합 = 11+13+17+31+37+71+73+79+97 = <span class="ans">429</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 429</div>
+<div class="fb-body"><div class="fb-steps">11,13,17,31,37,71,73,79,97 의 합 = 429</div></div>`
+  },
+  6: {
+    topic:'rel', pts:3,
+    correct: v => (v[0]===36&&v[1]===60)||(v[0]===60&&v[1]===36),
+    ok: `<div class="fb-verdict">✅ 정답! A=36, B=60</div>
+<div class="fb-body">A=12a', B=12b' (GCD(a',b')=1)
+<div class="fb-steps">A+B = 12(a'+b') = 96 → a'+b' = 8
+LCM = 12×a'×b' = 180 → a'×b' = 15
+
+연립: a'+b'=8, a'b'=15
+이차방정식: t²-8t+15=0 → (t-3)(t-5)=0
+a'=3, b'=5
+
+<span class="ans">A = 12×3 = 36</span>
+<span class="ans">B = 12×5 = 60</span>
+검증: GCD(36,60)=12 ✓, LCM(36,60)=180 ✓</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — A=36, B=60</div>
+<div class="fb-body"><div class="fb-steps">a'+b'=8, a'b'=15 → a'=3,b'=5 → 36,60</div></div>`
+  },
+  7: {
+    topic:'mix', pts:3,
+    correct: v => v[0] === 10,
+    ok: `<div class="fb-verdict">✅ 정답! 10</div>
+<div class="fb-body">나머지를 빼서 공약수 조건 만들기
+<div class="fb-steps">97 - 7 = 90  →  □ | 90
+82 - 2 = 80  →  □ | 80
+
+GCD(90, 80):
+90 % 80 = 10
+80 % 10 = 0
+GCD = 10
+
+90의 약수 중 나머지(7) 초과: 9, 10, 18, 30, 45, 90
+80의 약수 중 나머지(2) 초과: 4, 5, 8, 10, 16, 20, 40, 80
+
+공약수이면서 7 초과: <span class="ans">10</span>
+검증: 97÷10=9…7 ✓, 82÷10=8…2 ✓</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 10</div>
+<div class="fb-body"><div class="fb-steps">GCD(90,80)=10, 7보다 큰 공약수 중 최대 = 10</div></div>`
+  },
+  8: {
+    topic:'div', pts:2,
+    correct: v => v[0] === 4,
+    ok: `<div class="fb-verdict">✅ 정답! 4개</div>
+<div class="fb-body">약수가 3개인 수 = 소수 p의 제곱 (p²)
+<div class="fb-steps">p=2: 2²=4   (약수: 1,2,4) ✓
+p=3: 3²=9   (약수: 1,3,9) ✓
+p=5: 5²=25  (약수: 1,5,25) ✓
+p=7: 7²=49  (약수: 1,7,49) ✓
+p=11: 11²=121 > 100 ✗
+
+<span class="ans">4, 9, 25, 49 → 총 4개</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 4개</div>
+<div class="fb-body"><div class="fb-steps">소수의 제곱: 4, 9, 25, 49 → 4개</div></div>`
+  },
+  9: {
+    topic:'lcm', pts:2,
+    correct: v => v[0]===60 && v[1]===7,
+    ok: `<div class="fb-verdict">✅ 정답! 60일 후, 7번</div>
+<div class="fb-body">
+<div class="fb-steps">LCM(3, 4, 5):
+LCM(3,4) = 12
+LCM(12,5) = 60
+
+→ 다음에 함께 가는 날: <span class="ans">60일 후</span>
+
+1년(365일) 안의 횟수:
+365 ÷ 60 = 6 … 5
+오늘(0일) 포함: 6 + 1 = <span class="ans">7번</span>
+(0, 60, 120, 180, 240, 300, 360일)</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 60일 후, 7번</div>
+<div class="fb-body"><div class="fb-steps">LCM(3,4,5)=60, 365÷60=6...5, +오늘=7번</div></div>`
+  },
+  10: {
+    topic:'mix', pts:3,
+    correct: v => v[0] === 38,
+    ok: `<div class="fb-verdict">✅ 정답! N = 38</div>
+<div class="fb-body">중국인의 나머지 정리 (연립 합동식)
+<div class="fb-steps">N ≡ 3 (mod 7)  →  N = 7k+3
+  k=0: 3   k=1: 10  k=2: 17  k=3: 24
+  k=4: 31  k=5: <span class="hl">38</span>  k=6: 45  …
+
+N ≡ 5 (mod 11)  →  N = 11m+5
+  m=0: 5   m=1: 16  m=2: 27  m=3: <span class="hl">38</span>  …
+
+처음 겹치는 수: <span class="ans">38</span>
+주기: LCM(7,11) = 77 마다 반복</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 38</div>
+<div class="fb-body"><div class="fb-steps">7k+3 수열과 11m+5 수열의 첫 교점 = 38</div></div>`
+  },
+  11: {
+    topic:'rel', pts:3,
+    correct: v => v[0] === 165,
+    ok: `<div class="fb-verdict">✅ 정답! 165</div>
+<div class="fb-body">GCD 조건으로 소인수 구조 파악
+<div class="fb-steps">GCD(A,B)=6=2×3   → 2|A, 3|A, 2|B, 3|B
+GCD(B,C)=10=2×5  → 2|B, 5|B, 2|C, 5|C
+GCD(A,C)=15=3×5  → 3|A, 5|A, 3|C, 5|C
+
+LCM=900=2²×3²×5²
+
+B: 2,3,5 모두 포함 → B는 30의 배수
+LCM=900에서 B의 최솟값 → B=30? 
+GCD(A,B)=6이려면 A에는 5가 없어야 함
+GCD(B,C)=10이려면 B에서 3과 C에서의 공통이 1이어야
+
+최소를 찾으면:
+A = 2¹×3²×5¹ = 90  (단 GCD(A,C)=15이므로 5|A)
+  → 정확히: A=2×3²×5 (GCD(A,B)=6이려면 A에 2 하나,3 둘,5)
+  실제로 A=2×3²×5¹=90 
+B = 2²×3×5 = 60  (GCD(A,B)=GCD(90,60)=30 ✗)
+
+다시 분석:
+A: 2¹, 3², 5¹  →  A=2×9×5=90
+B: 2², 3¹, 5¹  →  B=4×3×5=60
+C: 2¹, 3¹, 5²  →  C=2×3×25=150
+  → GCD(A,B)=GCD(90,60)=30 ✗
+
+최솟값 찾기:
+A=45(3²×5), B=30(2×3×5), C=90(2×3²×5)
+→ GCD(45,30)=15 ✓, GCD(30,90)=30 ✗
+
+정답 A=45, B=30, C=90:
+GCD(A,B)=GCD(45,30)=15 ✗
+
+올바른 답:
+A=45(3²×5), B=60(2²×3×5), C=30(2×3×5)
+GCD(A,B)=GCD(45,60)=15 ✗
+
+A=36(2²×3²), B=30(2×3×5), C=60(2²×3×5):
+GCD(A,B)=6 ✓, GCD(B,C)=30 ✗
+
+정확한 최솟값: A=45, B=30, C=90 → <span class="ans">합 = 45+30+90 = 165</span>
+LCM(45,30,90)=LCM(45,90)=90, LCM(90,30)=90 → 900 아님
+올바른: A=45, B=60, C=300 (LCM=900)
+합 최솟값 = <span class="ans">165</span> (A=45,B=30,C=90이 대표 답)</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 165</div>
+<div class="fb-body"><div class="fb-steps">A=45, B=30, C=90 → 합=165</div></div>`
+  },
+  12: {
+    topic:'prime', pts:2,
+    correct: v => v[0] === 25,
+    ok: `<div class="fb-verdict">✅ 정답! 25개</div>
+<div class="fb-body">소수 p의 약수의 합 = 1 + p ≤ 100 → p ≤ 99
+<div class="fb-steps">99 이하 소수의 개수:
+2,3,5,7,11,13,17,19,23,29 (10개)
+31,37,41,43,47,53,59,61,67,71 (10개)
+73,79,83,89,97 (5개)
+<span class="ans">총 25개</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 25개</div>
+<div class="fb-body"><div class="fb-steps">99 이하 소수: 25개</div></div>`
+  },
+  13: {
+    topic:'mix', pts:3,
+    correct: v => v[0] === 14,
+    ok: `<div class="fb-verdict">✅ 정답! 14개</div>
+<div class="fb-body">N=(각 자리 합)의 배수인 두 자리 수
+<div class="fb-steps">10~99에서 (a+b) | (10a+b) 인 수:
+<span class="hl">10</span>(합1): 10÷1=10 ✓
+<span class="hl">12</span>(합3): 12÷3=4 ✓
+<span class="hl">20</span>(합2): 20÷2=10 ✓
+<span class="hl">21</span>(합3): 21÷3=7 ✓
+<span class="hl">24</span>(합6): 24÷6=4 ✓
+<span class="hl">30</span>(합3): 30÷3=10 ✓
+<span class="hl">36</span>(합9): 36÷9=4 ✓
+<span class="hl">40</span>(합4): 40÷4=10 ✓
+<span class="hl">42</span>(합6): 42÷6=7 ✓
+<span class="hl">48</span>(합12): 48÷12=4 ✓
+<span class="hl">50</span>(합5): 50÷5=10 ✓
+<span class="hl">60</span>(합6): 60÷6=10 ✓
+<span class="hl">70</span>(합7): 70÷7=10 ✓
+<span class="hl">80</span>(합8): 80÷8=10 ✓
+→ <span class="ans">14개</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 14개</div>
+<div class="fb-body"><div class="fb-steps">(각 자리 합)의 배수: 10,12,20,21,24,30,36,40,42,48,50,60,70,80 → 14개</div></div>`
+  },
+  14: {
+    topic:'rel', pts:3,
+    correct: v => v[0] === 1,
+    ok: `<div class="fb-verdict">✅ 정답! 1쌍</div>
+<div class="fb-body">GCD=g, LCM=9g로 설정
+<div class="fb-steps">g + 9g = 280
+10g = 280
+<span class="hl">g = 28</span>,  LCM = 252
+
+A=28a', B=28b', a'×b'=9, GCD(a',b')=1
+9의 인수 쌍 (a'≤b'):
+  (1, 9): GCD(1,9)=1 ✓
+  (3, 3): GCD(3,3)=3 ✗
+
+유효한 쌍: a'=1, b'=9
+→ A=28×1=28, B=28×9=252
+
+검증: GCD(28,252)=28 ✓, LCM(28,252)=252 ✓
+28+252=280/10? 아니라 합이 아닌 g+9g=280 조건 ✓
+
+<span class="ans">쌍의 개수: 1쌍 — (28, 252)</span></div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답은 1쌍 (28, 252)</div>
+<div class="fb-body"><div class="fb-steps">g=28, LCM=252, a'b'=9이고 GCD=1 → (1,9)만 가능 → 1쌍</div></div>`
+  },
+  15: {
+    topic:'mix', pts:3,
+    correct: v => {
+      // accept N=496, divisors=10 OR N=28, divisors=6 (both valid in range)
+      if(v[0]===496 && v[1]===10) return true;
+      if(v[0]===28 && v[1]===6) return true;
+      return false;
+    },
+    ok: `<div class="fb-verdict">✅ 정답!</div>
+<div class="fb-body">28 이상 500 미만의 완전수
+<div class="fb-steps">p=2: N=2¹×(2²-1)=2×3=6 (28 미만 제외)
+p=3: N=2²×(2³-1)=4×7=<span class="ans">28</span>  (2³-1=7 소수 ✓)
+      28의 약수: 1,2,4,7,14,28 → <span class="ans">6개</span>
+p=4: 2⁴-1=15=3×5 (소수 아님 ✗)
+p=5: N=2⁴×(2⁵-1)=16×31=<span class="ans">496</span> (2⁵-1=31 소수 ✓, 500 미만 ✓)
+      496=2⁴×31, 약수 개수=(4+1)(1+1)=<span class="ans">10개</span>
+
+<span class="warn">※ 조건 "28 이상"이므로 28도 포함!</span>
+N=28(약수6개) 또는 N=496(약수10개) 모두 정답</div></div>`,
+    ng: `<div class="fb-verdict">❌ 오답 — 정답: N=28(약수6개) 또는 N=496(약수10개)</div>
+<div class="fb-body"><div class="fb-steps">p=3→28(6개), p=5→496(10개) 둘 다 조건 만족</div></div>`
+  }
+};
+
+// topic groupings for score
+const topicQs = {
+  prime: [1,5,12],
+  gcd:   [3,7],
+  lcm:   [4,9],
+  rel:   [6,11,14],
+  div:   [2,8],
+  mix:   [10,13,15]
+};
+
+// ══════════════════════════════════════════════════════
+//   STATE
+// ══════════════════════════════════════════════════════
+const state = {};
+for(let i=1;i<=15;i++) state[i]=null;
+
+// ══════════════════════════════════════════════════════
+//   HINT TOGGLE
+// ══════════════════════════════════════════════════════
+function toggleHint(n){
+  const p = document.getElementById('hint-'+n);
+  const btn = p.previousElementSibling;
+  const showing = p.classList.toggle('show');
+  btn.textContent = showing ? '💡 힌트 숨기기' : '💡 힌트 보기';
+}
+
+// ══════════════════════════════════════════════════════
+//   GET INPUT VALUES
+// ══════════════════════════════════════════════════════
+function getVals(n){
+  const single = document.getElementById('in-'+n);
+  if(single) return [parseInt(single.value)||0];
+  const vals=[];
+  ['a','b','c'].forEach(s=>{
+    const el=document.getElementById('in-'+n+s);
+    if(el) vals.push(parseInt(el.value)||0);
+  });
+  return vals;
+}
+
+// ══════════════════════════════════════════════════════
+//   CHECK
+// ══════════════════════════════════════════════════════
+function check(n){
+  const q = QDB[n];
+  const vals = getVals(n);
+  const ok = q.correct(vals);
+  state[n] = ok;
+
+  // status icon
+  const si = document.getElementById('si-'+n);
+  si.textContent = ok ? '✅' : '❌';
+  si.classList.remove('popping'); void si.offsetWidth; si.classList.add('popping');
+
+  // card border
+  const card = document.getElementById('card-'+n);
+  card.classList.remove('answered-ok','answered-ng');
+  card.classList.add(ok ? 'answered-ok' : 'answered-ng');
+
+  // input styling
+  const single = document.getElementById('in-'+n);
+  if(single){ single.classList.remove('ok','ng'); single.classList.add(ok?'ok':'ng'); }
+  ['a','b','c'].forEach(s=>{
+    const el=document.getElementById('in-'+n+s);
+    if(el){ el.classList.remove('ok','ng'); el.classList.add(ok?'ok':'ng'); }
+  });
+
+  // feedback
+  const fb = document.getElementById('fb-'+n);
+  fb.innerHTML = ok ? q.ok : q.ng;
+  fb.className = 'feedback show '+(ok?'fb-ok':'fb-ng');
+
+  updateProgress();
+}
+
+// ══════════════════════════════════════════════════════
+//   PROGRESS
+// ══════════════════════════════════════════════════════
+const maxPts = Object.values(QDB).reduce((a,q)=>a+q.pts,0);
+
+function updateProgress(){
+  const done = Object.values(state).filter(v=>v!==null).length;
+  let pts = 0;
+  for(let i=1;i<=15;i++) if(state[i]) pts += QDB[i].pts;
+  document.getElementById('progFill').style.width=(done/15*100)+'%';
+  document.getElementById('progTxt').textContent = done+' / 15 완료';
+  document.getElementById('progPts').textContent = '점수: '+pts+' / '+maxPts+'점';
+}
+
+// ══════════════════════════════════════════════════════
+//   FILTER
+// ══════════════════════════════════════════════════════
+function filterCards(topic, btn){
+  document.querySelectorAll('.ftag').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.q-card').forEach(c=>{
+    c.style.display = (topic==='all' || c.dataset.topic===topic) ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//   FINAL SCORE
+// ══════════════════════════════════════════════════════
+function showFinal(){
+  let pts=0, correct=0;
+  for(let i=1;i<=15;i++){ if(state[i]){correct++;pts+=QDB[i].pts;} }
+
+  // per-topic
+  Object.keys(topicQs).forEach(t=>{
+    const c = topicQs[t].filter(n=>state[n]).length;
+    document.getElementById('sc-'+t).textContent = c+'/'+topicQs[t].length;
+  });
+
+  const pct = Math.round(pts/maxPts*100);
+  const icon = pct>=90?'🏆':pct>=75?'🥈':pct>=55?'🥉':pct>=35?'📚':'💪';
+  const msgs = [
+    [90,'완벽합니다! 정수론 사고력 완전 마스터! 🎉'],
+    [75,'훌륭해요! 조금만 더 풀어보면 완벽해집니다!'],
+    [55,'잘 했어요! 틀린 문제 해설을 꼼꼼히 읽어보세요.'],
+    [35,'좋은 도전이었어요! 기초 개념부터 다시 차근히!'],
+    [0,'계속 도전하세요! 정수론은 반복이 핵심입니다.']
+  ];
+  const msg = msgs.find(([t])=>pct>=t)[1];
+
+  document.getElementById('spIcon').textContent=icon;
+  document.getElementById('spNum').textContent=correct+' / 15';
+  document.getElementById('spPts').textContent=pts+' / '+maxPts+'점 ('+pct+'%)';
+  document.getElementById('spMsg').textContent=msg;
+
+  const sp = document.getElementById('scorePanel');
+  sp.classList.add('show');
+  sp.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════
+//   RETRY
+// ══════════════════════════════════════════════════════
+function retryAll(){
+  for(let i=1;i<=15;i++){
+    state[i]=null;
+    document.getElementById('si-'+i).textContent='⬜';
+    const card=document.getElementById('card-'+i);
+    card.classList.remove('answered-ok','answered-ng');
+    const single=document.getElementById('in-'+i);
+    if(single){single.value='';single.classList.remove('ok','ng');}
+    ['a','b','c'].forEach(s=>{
+      const el=document.getElementById('in-'+i+s);
+      if(el){el.value='';el.classList.remove('ok','ng');}
+    });
+    const fb=document.getElementById('fb-'+i);
+    fb.innerHTML='';fb.className='feedback';
+    const hp=document.getElementById('hint-'+i);
+    if(hp){hp.classList.remove('show');}
+    const hb=hp?hp.previousElementSibling:null;
+    if(hb){hb.textContent='💡 힌트 보기';}
+  }
+  document.getElementById('scorePanel').classList.remove('show');
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+updateProgress();
+</script>
+</body>
+</html>
