@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>드모르간 법칙 문제집 | 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#fdfaf3;--bg2:#f5f0e4;--bg3:#ede6d6;
+  --ink:#1a1408;--ink2:#3d3420;--ink3:#6b5c3e;
+  --gold:#c8860a;--glt:#fff4d0;
+  --teal:#0e7c72;--tlt:#d4f0ec;
+  --rose:#b03a2e;--rlt:#fde8e6;
+  --indigo:#2c3e8c;--ilt:#e0e6ff;
+  --green:#1e7a3c;--glt2:#d6f5e3;
+  --purple:#6b2d8c;--plt:#f0e0ff;
+  --border:#d6c9a8;--shadow:rgba(26,20,8,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.85}
+header{background:var(--ink);color:var(--bg);padding:15px 30px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 18px rgba(0,0,0,.5)}
+.brand{font-size:10px;color:var(--glt);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+header h1{font-size:19px;font-weight:900}
+.hbadge{display:flex;gap:7px;align-items:center}
+.bdg{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.bdg-g{background:var(--gold);color:var(--ink)}.bdg-i{background:var(--indigo);color:#fff}.bdg-r{background:var(--rose);color:#fff}
+.prog-bar{height:6px;background:var(--bg3)}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--rose),var(--indigo));transition:width .5s;width:0%}
+.nav-tabs{display:flex;background:var(--bg3);border-bottom:2px solid var(--border);overflow-x:auto;position:sticky;top:58px;z-index:190;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:12px 20px;font-size:13.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
+.ntab:hover{background:var(--bg2);color:var(--ink)}
+.ntab.active{background:var(--bg);color:var(--rose);border-bottom-color:var(--rose)}
+.page{display:none;max-width:940px;margin:0 auto;padding:30px 22px 100px}
+.page.active{display:block}
+.sdash{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:22px}
+.sc{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:15px 16px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+.sc .n{font-size:30px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.sc .l{font-size:12px;color:var(--ink3);margin-top:4px;font-weight:700}
+.sec-h{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.sec-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.sec-h h2{font-size:23px;font-weight:900}
+.sec-h p{font-size:13px;color:var(--ink3);margin-top:2px}
+.qcard{background:#fff;border:2px solid var(--border);border-radius:16px;margin-bottom:16px;overflow:hidden;transition:border-color .2s;box-shadow:0 2px 8px var(--shadow)}
+.qcard.q-ok{border-color:var(--green)}.qcard.q-ng{border-color:var(--rose)}
+.qhdr{display:flex;align-items:center;gap:12px;padding:14px 20px 12px;border-bottom:1.5px solid var(--border);background:var(--bg2)}
+.qnum{width:40px;height:40px;border-radius:10px;background:var(--rose);color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.qtag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.qt-b{background:var(--tlt);color:var(--teal);border-color:var(--teal)}
+.qt-a{background:var(--plt);color:var(--purple);border-color:var(--purple)}
+.qt-k{background:var(--glt);color:var(--gold);border-color:var(--gold)}
+.dm-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid;font-family:'JetBrains Mono',monospace}
+.dmt1{background:var(--rlt);color:var(--rose);border-color:var(--rose)}
+.dmt2{background:var(--ilt);color:var(--indigo);border-color:var(--indigo)}
+.dmtm{background:var(--plt);color:var(--purple);border-color:var(--purple)}
+.dmtc{background:var(--bg3);color:var(--ink3);border-color:var(--border)}
+.qst{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.dot{width:9px;height:9px;border-radius:50%}
+.dok{background:var(--green)}.dng{background:var(--rose)}.dun{background:var(--border)}
+.qbody{padding:18px 20px}
+.q-fml{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--rose);background:var(--rlt);border:2px solid var(--rose);border-radius:12px;padding:14px 22px;text-align:center;margin-bottom:16px}
+.qtext{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:14px;line-height:1.7}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.obt{display:flex;align-items:flex-start;gap:11px;padding:11px 16px;border:2px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);transition:all .14s;font-family:'JetBrains Mono',monospace;text-align:left;line-height:1.6;width:100%}
+.obt:hover:not(:disabled){border-color:var(--rose);background:var(--rlt)}
+.onum{width:26px;height:26px;min-width:26px;border-radius:7px;background:var(--bg3);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .14s;margin-top:1px}
+.obt:hover:not(:disabled) .onum{background:var(--rose);color:#fff}
+.obt.ok{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.ok .onum{background:var(--green)!important;color:#fff!important}
+.obt.ng{border-color:var(--rose)!important;background:var(--rlt)!important}
+.obt.ng .onum{background:var(--rose)!important;color:#fff!important}
+.obt.reveal{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.reveal .onum{background:var(--green)!important;color:#fff!important}
+.obt:disabled{cursor:not-allowed}
+.tinp-wrap{display:flex;gap:9px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.tinp{padding:10px 16px;border:2px solid var(--border);border-radius:10px;font-size:17px;font-family:'JetBrains Mono',monospace;font-weight:700;background:#fff;color:var(--ink);min-width:200px;transition:border-color .14s}
+.tinp:focus{outline:none;border-color:var(--rose)}
+.tinp.tok{border-color:var(--green)!important;background:var(--glt2)!important;color:var(--green)}
+.tinp.tng{border-color:var(--rose)!important;background:var(--rlt)!important;color:var(--rose)}
+.subm{padding:10px 20px;background:var(--rose);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.subm:hover:not(:disabled){background:#8c2a20}
+.subm:disabled{background:var(--border);cursor:not-allowed}
+.hint-txt{font-size:13px;color:var(--ink3);margin-top:6px}
+.qfb{margin-top:12px;display:none}
+.qfb.show{display:block}
+.fbtxt{font-size:16px;font-weight:700;margin-bottom:8px}
+.tok-t{color:var(--green)}.tng-t{color:var(--rose)}
+.ans-badge{font-family:'JetBrains Mono',monospace;background:var(--glt2);color:var(--green);padding:2px 9px;border-radius:6px;font-size:16px;font-weight:700}
+.exbtn{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border:1.5px solid var(--rose);border-radius:8px;background:#fff;color:var(--rose);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .14s}
+.exbtn:hover{background:var(--rlt)}
+.exbtn .arr{transition:transform .2s;display:inline-block}
+.exbtn.open .arr{transform:rotate(180deg)}
+.exbox{margin-top:10px;background:var(--bg2);border-left:4px solid var(--rose);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;display:none}
+.exbox.show{display:block}
+.step-chain{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.step-row{display:flex;align-items:center;gap:10px}
+.step-expr{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--rose);background:#fff;border:1.5px solid var(--rose);border-radius:8px;padding:8px 14px;min-width:180px;text-align:center}
+.step-law{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px}
+.s-dm{background:var(--rlt);color:var(--rose)}.s-id{background:var(--glt);color:#7a5000}
+.s-bo{background:var(--rlt);color:var(--rose)}.s-ab{background:var(--glt2);color:var(--green)}
+.s-as{background:var(--tlt);color:var(--teal)}.s-co{background:var(--ilt);color:var(--indigo)}
+.step-arrow{color:var(--rose);font-size:16px;font-weight:900}
+.tv-wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0;padding:14px 18px;background:var(--bg2);border-radius:10px;justify-content:center}
+.tv-from{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;padding:10px 18px;border-radius:10px;background:var(--rlt);color:var(--rose);border:2px solid var(--rose)}
+.tv-to{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;padding:10px 18px;border-radius:10px;background:var(--ilt);color:var(--indigo);border:2px solid var(--indigo)}
+.tv-arrow{font-size:24px;color:var(--ink3);font-weight:900}
+.tv-law{font-size:11px;font-weight:700;color:var(--rose)}
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:7px;margin:12px 0}
+.ovdot{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;cursor:pointer;border:2px solid var(--border);background:#fff;color:var(--ink3);transition:all .14s;font-family:'JetBrains Mono',monospace}
+.ovdot:hover{border-color:var(--rose);color:var(--rose)}
+.ovdot.ov-ok{background:var(--glt2);border-color:var(--green);color:var(--green)}
+.ovdot.ov-ng{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+.navbtns{margin-top:18px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.nb{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .14s}
+.nb-out{background:#fff;border:1.5px solid var(--border);color:var(--ink3)}.nb-out:hover{border-color:var(--rose);color:var(--rose)}
+.nb-fill{background:var(--rose);color:#fff;border:none}.nb-fill:hover{background:#8c2a20}
+.nb-teal{background:var(--teal);color:#fff;border:none}.nb-teal:hover{background:#0a5f57}
+.res-big{text-align:center;padding:26px 14px 18px}
+.res-score{font-size:66px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--rose)}
+.res-grade{font-size:20px;font-weight:700;margin:7px 0;color:var(--ink2)}
+.res-bar-wrap{max-width:360px;margin:14px auto;background:var(--bg3);border-radius:8px;height:14px;overflow:hidden}
+.res-bar{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--rose),var(--indigo));transition:width 1s;width:0%}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:18px 0}
+.rgi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:13px;text-align:center;box-shadow:0 2px 6px var(--shadow)}
+.rgi .rn{font-size:26px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.rgi .rl{font-size:12px;color:var(--ink3);font-weight:700;margin-top:4px}
+.rbtn{padding:12px 28px;border:none;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin:7px 5px}
+.rbtn-r{background:var(--rose);color:#fff}.rbtn-r:hover{background:#8c2a20}
+.rbtn-t{background:var(--teal);color:#fff}.rbtn-t:hover{background:#0a5f57}
+.allexp-item{border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.allexp-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;background:var(--bg2)}
+.allexp-hdr:hover{background:var(--bg3)}
+.allexp-body{padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;background:#fff;display:none;border-top:1.5px solid var(--border)}
+.allexp-body.show{display:block}
+.wi{background:#fff;border:1.5px solid var(--rlt);border-left:4px solid var(--rose);border-radius:10px;padding:12px 16px;margin-bottom:9px;cursor:pointer}
+.wi:hover{border-color:var(--rose)}
+.wi-q{font-weight:700;font-size:15px;margin-bottom:3px}
+.wi-a{font-size:13px;color:var(--rose);font-family:'JetBrains Mono',monospace}
+.fprog{position:fixed;bottom:20px;right:20px;background:white;border:1.5px solid var(--border);border-radius:14px;padding:11px 14px;box-shadow:0 4px 18px rgba(0,0,0,.13);font-size:12px;z-index:150;min-width:108px}
+.fprog .fpl{color:var(--ink3);font-weight:700;margin-bottom:5px}
+.fprog .fpn{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--rose)}
+@media(max-width:600px){.sdash{grid-template-columns:1fr 1fr}.res-grid{grid-template-columns:1fr 1fr}.page{padding:16px 12px 80px}header{padding:12px 14px}header h1{font-size:15px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand">세영코딩연구소 · ph.D Kim</div>
+    <h1>🔁 드모르간(De Morgan) 법칙 문제집</h1>
+  </div>
+  <div class="hbadge">
+    <span class="bdg bdg-r">(A∪B)'=A'∩B'</span>
+    <span class="bdg bdg-i">(A∩B)'=A'∪B'</span>
+    <span class="bdg bdg-g">30문제</span>
+  </div>
+</header>
+<div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+<div class="nav-tabs">
+  <button class="ntab active" onclick="goPage(0)">🏠 개요</button>
+  <button class="ntab" onclick="goPage(1)">📘 기본 1~10</button>
+  <button class="ntab" onclick="goPage(2)">📗 심화 11~20</button>
+  <button class="ntab" onclick="goPage(3)">🏆 올림피아드 21~30</button>
+  <button class="ntab" onclick="goPage(4)">📊 결과 &amp; 해설</button>
+</div>
+
+<!-- PAGE 0 -->
+<div class="page active" id="pg0">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--rlt)">🔁</div>
+    <div><h2>드모르간 법칙 문제집</h2><p>KOI 중등 · 이산수학 · 30문제</p></div>
+  </div>
+  <div class="sdash">
+    <div class="sc"><div class="n" id="ov-ans" style="color:var(--indigo)">0</div><div class="l">답한 문제</div></div>
+    <div class="sc"><div class="n" id="ov-ok" style="color:var(--green)">0</div><div class="l">✅ 정답</div></div>
+    <div class="sc"><div class="n" id="ov-ng" style="color:var(--rose)">0</div><div class="l">❌ 오답</div></div>
+    <div class="sc"><div class="n" id="ov-rem" style="color:var(--ink3)">30</div><div class="l">남은 문제</div></div>
+  </div>
+
+  <!-- 드모르간 핵심 공식 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+    <div style="background:var(--rlt);border:2px solid var(--rose);border-radius:14px;padding:18px;text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--rose);letter-spacing:1px;margin-bottom:8px">드모르간 법칙 ①</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--rose)">(A&cup;B)&apos; = A&apos;&cap;B&apos;</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:6px">&cup; &rarr; &cap; 으로 바뀜</div>
+    </div>
+    <div style="background:var(--ilt);border:2px solid var(--indigo);border-radius:14px;padding:18px;text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--indigo);letter-spacing:1px;margin-bottom:8px">드모르간 법칙 ②</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--indigo)">(A&cap;B)&apos; = A&apos;&cup;B&apos;</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:6px">&cap; &rarr; &cup; 으로 바뀜</div>
+    </div>
+  </div>
+
+  <!-- 벤다이어그램 SVG -->
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:16px">🌐 벤다이어그램으로 이해하기</div>
+
+    <!-- 행 1: (A∪B)' = A'∩B' -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:22px">
+      <div style="text-align:center">
+        <svg width="190" height="145" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="184" height="139" fill="rgba(176,58,46,0.38)" rx="4"/>
+          <rect x="3" y="3" width="184" height="139" fill="none" stroke="#d6c9a8" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+          <text x="9" y="17" font-size="11" fill="#9b8b6e" font-family="sans-serif" font-weight="bold">U</text>
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <circle cx="82" cy="78" r="44" fill="none" stroke="#2c3e8c" stroke-width="2.5"/>
+          <circle cx="110" cy="78" r="44" fill="none" stroke="#0e7c72" stroke-width="2.5"/>
+          <text x="45" y="82" font-size="14" fill="#2c3e8c" font-family="sans-serif" font-weight="bold" text-anchor="middle">A</text>
+          <text x="147" y="82" font-size="14" fill="#0e7c72" font-family="sans-serif" font-weight="bold" text-anchor="middle">B</text>
+        </svg>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--rose);font-size:14px;margin-top:6px">(A&cup;B)&apos;</div>
+        <div style="font-size:12px;color:var(--ink3)">두 원 바깥 (빨강)</div>
+      </div>
+      <div style="font-size:30px;font-weight:900;color:var(--rose)">=</div>
+      <div style="text-align:center">
+        <svg width="190" height="145" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="184" height="139" fill="rgba(44,62,140,0.35)" rx="4"/>
+          <rect x="3" y="3" width="184" height="139" fill="none" stroke="#d6c9a8" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+          <text x="9" y="17" font-size="11" fill="#9b8b6e" font-family="sans-serif" font-weight="bold">U</text>
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <circle cx="82" cy="78" r="44" fill="none" stroke="#2c3e8c" stroke-width="2.5"/>
+          <circle cx="110" cy="78" r="44" fill="none" stroke="#0e7c72" stroke-width="2.5"/>
+          <text x="45" y="82" font-size="13" fill="#2c3e8c" font-family="sans-serif" font-weight="bold" text-anchor="middle">A&apos;</text>
+          <text x="147" y="82" font-size="13" fill="#0e7c72" font-family="sans-serif" font-weight="bold" text-anchor="middle">B&apos;</text>
+        </svg>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--indigo);font-size:14px;margin-top:6px">A&apos;&cap;B&apos;</div>
+        <div style="font-size:12px;color:var(--ink3)">두 여집합 교집합 (파랑)</div>
+      </div>
+    </div>
+
+    <!-- 행 2: (A∩B)' = A'∪B' -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <svg width="190" height="145" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="clipA1"><circle cx="82" cy="78" r="44"/></clipPath>
+            <clipPath id="clipB1"><circle cx="110" cy="78" r="44"/></clipPath>
+          </defs>
+          <rect x="3" y="3" width="184" height="139" fill="none" stroke="#d6c9a8" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+          <text x="9" y="17" font-size="11" fill="#9b8b6e" font-family="sans-serif" font-weight="bold">U</text>
+          <!-- A 원 채색 (교집합 포함) -->
+          <circle cx="82" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <!-- B 원 채색 (교집합 포함) -->
+          <circle cx="110" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <!-- 교집합 부분 흰색으로 덮기 -->
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA1)"/>
+          <!-- 바깥 영역 채색 -->
+          <rect x="3" y="3" width="184" height="139" fill="rgba(176,58,46,0.38)" rx="4"/>
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <!-- 다시 A, B 채색 (교집합 제외) -->
+          <circle cx="82" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <circle cx="110" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA1)"/>
+          <!-- 바깥 다시 채색 -->
+          <rect x="3" y="3" width="184" height="139" fill="rgba(176,58,46,0.38)" rx="4"/>
+          <circle cx="82" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <circle cx="110" cy="78" r="44" fill="rgba(176,58,46,0.38)"/>
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA1)"/>
+          <rect x="3" y="3" width="184" height="139" fill="rgba(176,58,46,0.38)" rx="4"/>
+          <!-- 최종: 흰 배경으로 원 내부 지우고 교집합만 흰색 유지, 바깥+A only+B only 빨강 -->
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <circle cx="82" cy="78" r="44" fill="rgba(176,58,46,0.42)"/>
+          <circle cx="110" cy="78" r="44" fill="rgba(176,58,46,0.42)"/>
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA1)"/>
+          <rect x="3" y="3" width="184" height="139" fill="rgba(176,58,46,0.38)" rx="4"/>
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <circle cx="82" cy="78" r="44" fill="rgba(176,58,46,0.42)"/>
+          <circle cx="110" cy="78" r="44" fill="rgba(176,58,46,0.42)"/>
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA1)"/>
+          <!-- 테두리 -->
+          <circle cx="82" cy="78" r="44" fill="none" stroke="#2c3e8c" stroke-width="2.5"/>
+          <circle cx="110" cy="78" r="44" fill="none" stroke="#0e7c72" stroke-width="2.5"/>
+          <text x="45" y="82" font-size="14" fill="#2c3e8c" font-family="sans-serif" font-weight="bold" text-anchor="middle">A</text>
+          <text x="147" y="82" font-size="14" fill="#0e7c72" font-family="sans-serif" font-weight="bold" text-anchor="middle">B</text>
+        </svg>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--rose);font-size:14px;margin-top:6px">(A&cap;B)&apos;</div>
+        <div style="font-size:12px;color:var(--ink3)">교집합 제외 (빨강)</div>
+      </div>
+      <div style="font-size:30px;font-weight:900;color:var(--indigo)">=</div>
+      <div style="text-align:center">
+        <svg width="190" height="145" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="clipA2"><circle cx="82" cy="78" r="44"/></clipPath>
+          </defs>
+          <rect x="3" y="3" width="184" height="139" fill="none" stroke="#d6c9a8" stroke-width="1.5" stroke-dasharray="5,3" rx="4"/>
+          <text x="9" y="17" font-size="11" fill="#9b8b6e" font-family="sans-serif" font-weight="bold">U</text>
+          <rect x="3" y="3" width="184" height="139" fill="rgba(44,62,140,0.35)" rx="4"/>
+          <circle cx="82" cy="78" r="44" fill="white"/>
+          <circle cx="110" cy="78" r="44" fill="white"/>
+          <circle cx="82" cy="78" r="44" fill="rgba(44,62,140,0.40)"/>
+          <circle cx="110" cy="78" r="44" fill="rgba(44,62,140,0.40)"/>
+          <circle cx="110" cy="78" r="44" fill="white" clip-path="url(#clipA2)"/>
+          <circle cx="82" cy="78" r="44" fill="none" stroke="#2c3e8c" stroke-width="2.5"/>
+          <circle cx="110" cy="78" r="44" fill="none" stroke="#0e7c72" stroke-width="2.5"/>
+          <text x="45" y="82" font-size="13" fill="#2c3e8c" font-family="sans-serif" font-weight="bold" text-anchor="middle">A&apos;</text>
+          <text x="147" y="82" font-size="13" fill="#0e7c72" font-family="sans-serif" font-weight="bold" text-anchor="middle">B&apos;</text>
+        </svg>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--indigo);font-size:14px;margin-top:6px">A&apos;&cup;B&apos;</div>
+        <div style="font-size:12px;color:var(--ink3)">두 여집합 합집합 (파랑)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 문제 현황판 -->
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:12px">📋 문제 현황판 (클릭하면 이동)</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;font-weight:700">
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--glt2);border:1.5px solid var(--green);margin-right:4px;vertical-align:middle"></span>정답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--rlt);border:1.5px solid var(--rose);margin-right:4px;vertical-align:middle"></span>오답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fff;border:1.5px solid var(--border);margin-right:4px;vertical-align:middle"></span>미응답</span>
+    </div>
+    <div class="ovgrid" id="ov-grid"></div>
+  </div>
+
+  <!-- 단원 이동 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <div style="background:#fff;border:1.5px solid var(--teal);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(1)">
+      <div style="font-size:24px;margin-bottom:6px">📘</div>
+      <div style="font-weight:900;color:var(--teal);font-size:15px">기본문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">1~10번</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--purple);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(2)">
+      <div style="font-size:24px;margin-bottom:6px">📗</div>
+      <div style="font-weight:900;color:var(--purple);font-size:15px">심화문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">11~20번</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gold);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(3)">
+      <div style="font-size:24px;margin-bottom:6px">🏆</div>
+      <div style="font-weight:900;color:var(--gold);font-size:15px">올림피아드</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">21~30번</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 1 -->
+<div class="page" id="pg1">
+  <div class="sec-h"><div class="sec-icon" style="background:var(--tlt)">📘</div><div><h2>기본문제</h2><p>문제 1~10 · 드모르간 법칙 이해와 기본 변환</p></div></div>
+  <div id="sec1"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(0)">← 개요</button>
+    <button class="nb nb-fill" onclick="goPage(2)">심화문제 →</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="pg2">
+  <div class="sec-h"><div class="sec-icon" style="background:var(--plt)">📗</div><div><h2>심화문제</h2><p>문제 11~20 · 이중여집합·3변수·다른 법칙 결합</p></div></div>
+  <div id="sec2"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(1)">← 기본문제</button>
+    <button class="nb nb-fill" onclick="goPage(3)">올림피아드 →</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="pg3">
+  <div class="sec-h"><div class="sec-icon" style="background:var(--glt)">🏆</div><div><h2>올림피아드 스타일</h2><p>문제 21~30 · 드모르간 + 보원·흡수 복합</p></div></div>
+  <div id="sec3"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(2)">← 심화문제</button>
+    <button class="nb nb-teal" onclick="goPage(4)">📊 결과 보기 →</button>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="pg4">
+  <div class="sec-h"><div class="sec-icon" style="background:var(--glt2)">📊</div><div><h2>결과 &amp; 해설</h2><p>채점 결과 · 틀린 문제 복습 · 전체 해설</p></div></div>
+  <div id="result-area"></div>
+</div>
+
+<div class="fprog">
+  <div class="fpl">진행 현황</div>
+  <div><span class="fpn" id="fp-n">0</span><span style="color:var(--ink3);font-size:13px"> / 30</span></div>
+</div>
+
+<script>
+// ── 탭 네비게이션 ──
+var tabs = document.querySelectorAll(".ntab");
+function goPage(n) {
+  document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
+  tabs.forEach(function(t){ t.classList.remove("active"); });
+  var pg = document.getElementById("pg" + n);
+  if (pg) pg.classList.add("active");
+  if (tabs[n]) tabs[n].classList.add("active");
+  window.scrollTo(0, 0);
+  updateOv();
+  if (n === 4) renderResults();
+}
+
+// ── 상태 ──
+var UA = {};
+
+// ── 집합 연산 유틸 ──
+function ps(s){ return s.trim().split(",").map(function(x){ return x.trim(); }).filter(function(x){ return x !== ""; }); }
+function ms(a){ var s={}, r=[]; a.forEach(function(x){ if(!s[x]){ s[x]=1; r.push(x); } }); return r; }
+function su(a,b){ return ms(a.concat(b)); }
+function si(a,b){ return a.filter(function(x){ return b.indexOf(x) >= 0; }); }
+function sd(a,b){ return a.filter(function(x){ return b.indexOf(x) < 0; }); }
+function fmt(a){ return a.length === 0 ? "\u2205" : "{" + a.join(", ") + "}"; }
+
+// ── 단계 체인 빌더 ──
+var LAWCLS = {
+  "\ub4dc\ubaa8\ub974\uac04": "s-dm",
+  "\ubcf4\uc6d0\ubc95\uce59": "s-bo",
+  "\ud56d\ub4f1\ubc95\uce59": "s-id",
+  "\ud761\uc218\ubc95\uce59": "s-ab",
+  "\uacb0\ud569\ubc95\uce59": "s-as",
+  "\uad50\ud658\ubc95\uce59": "s-co",
+  "\uc774\uc911\uc5ec\uc9d1\ud569": "s-co"
+};
+function stepChain(steps) {
+  var h = "<div class=\"step-chain\">";
+  steps.forEach(function(s, i) {
+    h += "<div class=\"step-row\">";
+    if (i > 0) h += "<span class=\"step-arrow\">\u2193</span>";
+    else h += "<span style=\"width:18px\"></span>";
+    h += "<div class=\"step-expr\">" + s.e + "</div>";
+    if (s.l) {
+      var c = LAWCLS[s.l] || "s-dm";
+      h += "<span class=\"step-law " + c + "\">" + s.l + "</span>";
+    }
+    h += "</div>";
+  });
+  return h + "</div>";
+}
+
+// ── 변환 시각화 ──
+function tviz(from, to, law) {
+  return "<div class=\"tv-wrap\">" +
+    "<div class=\"tv-from\">" + from + "</div>" +
+    "<div><div class=\"tv-arrow\">&rarr;</div><div class=\"tv-law\">" + law + "</div></div>" +
+    "<div class=\"tv-to\">" + to + "</div>" +
+    "</div>";
+}
+
+// ── 문제 데이터 ──
+var QS = [];
+
+function addQ(id, sec, dm, fml, q, type, opts, ans, ansIdx, expl) {
+  QS.push({ id:id, sec:sec, dm:dm, fml:fml, q:q, type:type, opts:opts, ans:ans, ansIdx:ansIdx, expl:expl });
+}
+
+// 기본 1~10
+addQ(1, "basic", 1, "",
+  "다음 중 <strong>드모르간 법칙 ①</strong>로 올바른 것은?",
+  "choice",
+  ["(A\u222AB)&apos; = A&apos;\u222AB&apos;", "(A\u222AB)&apos; = A&apos;\u2229B&apos;", "(A\u222AB)&apos; = A\u2229B", "(A\u222AB)&apos; = A\u222AB"],
+  "\u2462", 1,
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2460: <strong>(A\u222AB)&apos; = A&apos;\u2229B&apos;</strong><br><br>" +
+  tviz("(A\u222AB)&apos;", "A&apos;\u2229B&apos;", "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2460") +
+  "<br>\u222A \u2192 \u2229 \uc73c\ub85c \ubc14\ub00c\uace0, \ubaa8\ub4e0 \uc9d1\ud569\uc5d0 &apos; \ubd99\uc784"
+);
+
+addQ(2, "basic", 1, "A\u2229B&apos;",
+  "\ub2e4\uc74c \uc2dd\uc744 \ub4dc\ubaa8\ub974\uac04\uc73c\ub85c \ubc14\uafb8\uc2dc\uc624.",
+  "text", [], "A&apos;\u222AB",
+  -1,
+  stepChain([{e:"A\u2229B&apos;"}, {e:"(A&apos;\u222AB'')", l:"\ub4dc\ubaa8\ub974\uac04 \uc5ed\uc801\uc6a9"}, {e:"A&apos;\u222AB", l:"\uc774\uc911\uc5ec\uc9d1\ud569 B''=B"}]) +
+  "<div style=\"margin-top:8px;font-size:14px;color:var(--ink3)\">A\u2229B&apos; \ub294 A-B \ucc28\uc9d1\ud569\uacfc \uac19\uc2b5\ub2c8\ub2e4.</div>"
+);
+
+addQ(3, "basic", 2, "A\u222AB&apos;",
+  "\ub2e4\uc74c \uc2dd\uc744 \ub4dc\ubaa8\ub974\uac04\uc73c\ub85c \ubc14\uafb8\uc2dc\uc624.",
+  "text", [], "A&apos;\u2229B",
+  -1,
+  tviz("A\u222AB&apos;", "A&apos;\u2229B", "\ub4dc\ubaa8\ub974\uac04 \u2461 \uc5ed\uc801\uc6a9") +
+  stepChain([{e:"A\u222AB&apos;"}, {e:"(A&apos;\u2229B'')", l:"\ub4dc\ubaa8\ub974\uac04 \uc5ed\uc801\uc6a9"}, {e:"A&apos;\u2229B", l:"\uc774\uc911\uc5ec\uc9d1\ud569 B''=B"}])
+);
+
+addQ(4, "basic", 2, "",
+  "\ub2e4\uc74c \uc911 <strong>\uc0ac\uc2e4</strong>\uc778 \uac83\uc740?",
+  "choice",
+  ["(A\u2229B)&apos; = A&apos;\u2229B&apos;", "(A\u2229B)&apos; = A&apos;\u222AB&apos;", "(A\u2229B)&apos; = A\u2229B&apos;", "(A\u2229B)&apos; = A\u222AB"],
+  "\u2461", 1,
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2461: <strong>(A\u2229B)&apos; = A&apos;\u222AB&apos;</strong><br><br>" +
+  tviz("(A\u2229B)&apos;", "A&apos;\u222AB&apos;", "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2461") +
+  "<br>\u2229 \u2192 \u222A \uc73c\ub85c \ubc14\ub00c\uace0, \ubaa8\ub4e0 \uc9d1\ud569\uc5d0 &apos; \ubd99\uc784"
+);
+
+addQ(5, "basic", 1, "(A\u222AB)&apos;",
+  "(A\u222AB)&apos;\ub97c \ub4dc\ubaa8\ub974\uac04\uc73c\ub85c \ubc14\uafb8\uba74?",
+  "text", [], "A&apos;\u2229B&apos;",
+  -1,
+  tviz("(A\u222AB)&apos;", "A&apos;\u2229B&apos;", "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2460") +
+  "<br>\u222A \u2192 \u2229 \uc73c\ub85c \ubc14\ub00c\uace0 A\u2192A&apos;, B\u2192B&apos;"
+);
+
+addQ(6, "basic", 2, "(A\u2229B)&apos;",
+  "(A\u2229B)&apos;\ub97c \ub4dc\ubaa8\ub974\uac04\uc73c\ub85c \ubc14\uafb8\uba74?",
+  "text", [], "A&apos;\u222AB&apos;",
+  -1,
+  tviz("(A\u2229B)&apos;", "A&apos;\u222AB&apos;", "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2461") +
+  "<br>\u2229 \u2192 \u222A \uc73c\ub85c \ubc14\ub00c\uace0 A\u2192A&apos;, B\u2192B&apos;"
+);
+
+addQ(7, "basic", 0, "",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc5d0\uc11c \u222A\uc640 \u2229\uc740 \uc5b4\ub5bb\uac8c \ub418\ub294\uac00?",
+  "choice",
+  ["\u222A\ub294 \uadf8\ub300\ub85c \uc720\uc9c0", "\u2229\ub294 \uadf8\ub300\ub85c \uc720\uc9c0", "\u222A\uc640 \u2229\uc774 \uc11c\ub85c \ubc14\ub00c\ub2e4", "\ub458 \ub2e4 \uc5c6\uc5b4\uc9c4\ub2e4"],
+  "\u2463", 2,
+  "\ub4dc\ubaa8\ub974\uac04 \ud575\uc2ec: <strong>\u222A \u2194 \u2229 \uc11c\ub85c \uad50\uccb4</strong><br><br>" +
+  "<div style=\"display:flex;gap:14px;margin:10px 0;flex-wrap:wrap\">" +
+  "<div style=\"padding:10px 16px;background:var(--rlt);border:2px solid var(--rose);border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:var(--rose)\">\u222A \u2192 \u2229</div>" +
+  "<div style=\"padding:10px 16px;background:var(--ilt);border:2px solid var(--indigo);border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:var(--indigo)\">\u2229 \u2192 \u222A</div>" +
+  "</div>"
+);
+
+addQ(8, "basic", 0, "",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \uc801\uc6a9 \uc2dc \ubaa8\ub4e0 \uc9d1\ud569\uc5d0 \ubb34\uc5c7\uc774 \ubd99\ub294\uac00?",
+  "text", [], "\uc5ec\uc9d1\ud569(&apos;)",
+  -1,
+  "\ub4dc\ubaa8\ub974\uac04 \uc801\uc6a9 \uc2dc <strong>\ubaa8\ub4e0 \uc9d1\ud569\uc5d0 &apos;(\uc5ec\uc9d1\ud569)</strong>\uc774 \ubd99\uc2b5\ub2c8\ub2e4.<br><br>" +
+  "A \u2192 A&apos;&nbsp;&nbsp; B \u2192 B&apos;&nbsp;&nbsp; C \u2192 C&apos;"
+);
+
+addQ(9, "basic", 0, "",
+  "\ub2e4\uc74c \uc911 <strong>\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc774 \uc544\ub2cc</strong> \uac83\uc740?",
+  "choice",
+  ["(A\u222AB)&apos; = A&apos;\u2229B&apos;", "(A\u2229B)&apos; = A&apos;\u222AB&apos;", "(A\u222AB) = A\u222AB", "\u2460 \u2461 \ub458 \ub2e4 \ub4dc\ubaa8\ub974\uac04"],
+  "\u2463", 2,
+  "\u2460 (A\u222AB)&apos;=A&apos;\u2229B&apos; \u2014 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2460 \u2705<br>" +
+  "\u2461 (A\u2229B)&apos;=A&apos;\u222AB&apos; \u2014 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2461 \u2705<br>" +
+  "\u2462 (A\u222AB)=A\u222AB \u2014 \ub2e8\uc21c \ud56d\ub4f1\uc2dd, \ub4dc\ubaa8\ub974\uac04 \uc544\ub2d8 \u274c<br><br>" +
+  "\ub4dc\ubaa8\ub974\uac04\uc740 \ubc18\ub4dc\uc2dc <strong>\ubc14\uae65\uc5d0 &apos;</strong>\uac00 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4."
+);
+
+addQ(10, "basic", 1, "(A\u222AB)&apos;",
+  "(A\u222AB)&apos;\uc5d0\uc11c \u222A\ub294 \ubb34\uc5c7\uc73c\ub85c \ubc14\ub00c\ub294\uac00?",
+  "text", [], "\u2229",
+  -1,
+  tviz("(A\u222AB)&apos;", "A&apos;\u2229B&apos;", "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59 \u2460") +
+  "<br><strong>\u222A \u2192 \u2229</strong> \uc73c\ub85c \ubc14\ub00c\ub2e4."
+);
+
+// 심화 11~20
+addQ(11, "adv", 0, "(A\u222AB)''",
+  "\uc774\uc911 \uc5ec\uc9d1\ud569\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A\u222AB",
+  -1,
+  stepChain([{e:"(A\u222AB)''"}, {e:"A\u222AB", l:"\uc774\uc911\uc5ec\uc9d1\ud569 (A)''=A"}]) +
+  "<div style=\"margin-top:8px;font-size:14px;color:var(--ink3)\">\uc5ec\uc9d1\ud569\uc744 \ub450 \ubc88 \ucde8\ud558\uba74 \uc6d0\ub798 \uc9d1\ud569\uc73c\ub85c \ub3cc\uc544\uc635\ub2c8\ub2e4.</div>"
+);
+
+addQ(12, "adv", 0, "(A\u2229B)''",
+  "\uc774\uc911 \uc5ec\uc9d1\ud569\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A\u2229B",
+  -1,
+  stepChain([{e:"(A\u2229B)''"}, {e:"A\u2229B", l:"\uc774\uc911\uc5ec\uc9d1\ud569"}])
+);
+
+addQ(13, "adv", 1, "(A\u222AB\u222AC)&apos;",
+  "\uc138 \uc9d1\ud569\uc5d0 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u2229B&apos;\u2229C&apos;",
+  -1,
+  tviz("(A\u222AB\u222AC)&apos;", "A&apos;\u2229B&apos;\u2229C&apos;", "\ub4dc\ubaa8\ub974\uac04 \u2460 (3\ubcc0\uc218)") +
+  "<div style=\"margin-top:8px;font-size:14px;color:var(--ink3)\">\uc9d1\ud569\uc774 \uba87 \uac1c\uc774\ub4e0 \ub3d9\uc77c: \u222A \u2192 \u2229, \ubaa8\ub450\uc5d0 &apos; \ubd99\uc784</div>"
+);
+
+addQ(14, "adv", 2, "(A\u2229B\u2229C)&apos;",
+  "\uc138 \uc9d1\ud569\uc5d0 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u222AB&apos;\u222AC&apos;",
+  -1,
+  tviz("(A\u2229B\u2229C)&apos;", "A&apos;\u222AB&apos;\u222AC&apos;", "\ub4dc\ubaa8\ub974\uac04 \u2461 (3\ubcc0\uc218)")
+);
+
+addQ(15, "adv", 1, "(A\u222AB)&apos;\u2229A",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uacfc \ub2e4\ub978 \ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "\u2205",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)&apos;\u2229A"},
+    {e:"(A&apos;\u2229B&apos;)\u2229A", l:"\ub4dc\ubaa8\ub974\uac04 \u2460"},
+    {e:"(A&apos;\u2229A)\u2229B&apos;", l:"\uacb0\ud569+\uad50\ud658\ubc95\uce59"},
+    {e:"\u2205\u2229B&apos;", l:"\ubcf4\uc6d0\ubc95\uce59"},
+    {e:"\u2205", l:"\ud56d\ub4f1\ubc95\uce59(\u2229\u2205=\u2205)"}
+  ])
+);
+
+addQ(16, "adv", 2, "(A\u2229B)&apos;\u222AA",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uacfc \ub2e4\ub978 \ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "U",
+  -1,
+  stepChain([
+    {e:"(A\u2229B)&apos;\u222AA"},
+    {e:"(A&apos;\u222AB&apos;)\u222AA", l:"\ub4dc\ubaa8\ub974\uac04 \u2461"},
+    {e:"(A&apos;\u222AA)\u222AB&apos;", l:"\uacb0\ud569+\uad50\ud658\ubc95\uce59"},
+    {e:"U\u222AB&apos;", l:"\ubcf4\uc6d0\ubc95\uce59"},
+    {e:"U", l:"\ud56d\ub4f1\ubc95\uce59(\u222AU=U)"}
+  ])
+);
+
+addQ(17, "adv", "복합", "(A\u222AB)&apos;\u222A(A&apos;\u2229B&apos;)",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uacfc \ub2e4\ub978 \ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u2229B&apos;",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)&apos;\u222A(A&apos;\u2229B&apos;)"},
+    {e:"(A&apos;\u2229B&apos;)\u222A(A&apos;\u2229B&apos;)", l:"\ub4dc\ubaa8\ub974\uac04 \u2460"},
+    {e:"A&apos;\u2229B&apos;", l:"\uba71\ub4f1\ubc95\uce59 X\u222AX=X"}
+  ])
+);
+
+addQ(18, "adv", "복합", "(A\u2229B)&apos;\u2229(A&apos;\u222AB&apos;)",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uacfc \ub2e4\ub978 \ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u222AB&apos;",
+  -1,
+  stepChain([
+    {e:"(A\u2229B)&apos;\u2229(A&apos;\u222AB&apos;)"},
+    {e:"(A&apos;\u222AB&apos;)\u2229(A&apos;\u222AB&apos;)", l:"\ub4dc\ubaa8\ub974\uac04 \u2461"},
+    {e:"A&apos;\u222AB&apos;", l:"\uba71\ub4f1\ubc95\uce59 X\u2229X=X"}
+  ])
+);
+
+addQ(19, "adv", 1, "(A\u222AB\u222AC\u222AD)&apos;",
+  "4\ubcc0\uc218\uc5d0 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u2229B&apos;\u2229C&apos;\u2229D&apos;",
+  -1,
+  tviz("(A\u222AB\u222AC\u222AD)&apos;", "A&apos;\u2229B&apos;\u2229C&apos;\u2229D&apos;", "\ub4dc\ubaa8\ub974\uac04 \u2460 (4\ubcc0\uc218)")
+);
+
+addQ(20, "adv", 2, "(A\u2229B\u2229C\u2229D)&apos;",
+  "4\ubcc0\uc218\uc5d0 \ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc2dc\uc624.",
+  "text", [], "A&apos;\u222AB&apos;\u222AC&apos;\u222AD&apos;",
+  -1,
+  tviz("(A\u2229B\u2229C\u2229D)&apos;", "A&apos;\u222AB&apos;\u222AC&apos;\u222AD&apos;", "\ub4dc\ubaa8\ub974\uac04 \u2461 (4\ubcc0\uc218)")
+);
+
+// 올림피아드 21~30
+addQ(21, "koi", "복합", "(A\u222AB)&apos;\u2229(A\u222AB)",
+  "\ub2e4\uc74c\uc744 \uac00\uc7a5 \uac04\ub2e8\ud558\uac8c \ub098\ud0c0\ub0b4\uc2dc\uc624.",
+  "text", [], "\u2205",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)&apos;\u2229(A\u222AB)"},
+    {e:"X&apos;\u2229X &nbsp;(X=A\u222AB)", l:"\uce58\ud658"},
+    {e:"\u2205", l:"\ubcf4\uc6d0\ubc95\uce59 X\u2229X&apos;=\u2205"}
+  ])
+);
+
+addQ(22, "koi", "복합", "(A\u2229B)&apos;\u222A(A\u2229B)",
+  "\ub2e4\uc74c\uc744 \uac00\uc7a5 \uac04\ub2e8\ud558\uac8c \ub098\ud0c0\ub0b4\uc2dc\uc624.",
+  "text", [], "U",
+  -1,
+  stepChain([
+    {e:"(A\u2229B)&apos;\u222A(A\u2229B)"},
+    {e:"X&apos;\u222AX &nbsp;(X=A\u2229B)", l:"\uce58\ud658"},
+    {e:"U", l:"\ubcf4\uc6d0\ubc95\uce59 X\u222AX&apos;=U"}
+  ])
+);
+
+addQ(23, "koi", "복합", "((A\u222AB)&apos;\u2229C&apos;)&apos;",
+  "\ub4dc\ubaa8\ub974\uac04\uc744 \ub450 \ubc88 \uc801\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "(A\u222AB)\u222AC",
+  -1,
+  stepChain([
+    {e:"((A\u222AB)&apos;\u2229C&apos;)&apos;"},
+    {e:"(A\u222AB)&apos;&apos;\u222AC&apos;&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2461 \u2014 \u2229\u2192\u222A, \ubaa8\ub450\uc5d0 &apos; \ubd99\uc784"},
+    {e:"(A\u222AB)\u222AC", l:"\uc774\uc911\uc5ec\uc9d1\ud569 \uc81c\uac70"}
+  ])
+);
+
+addQ(24, "koi", "복합", "((A\u2229B)&apos;\u222AC&apos;)&apos;",
+  "\ub4dc\ubaa8\ub974\uac04\uc744 \ub450 \ubc88 \uc801\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "(A\u2229B)\u2229C",
+  -1,
+  stepChain([
+    {e:"((A\u2229B)&apos;\u222AC&apos;)&apos;"},
+    {e:"(A\u2229B)&apos;&apos;\u2229C&apos;&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2460 \u2014 \u222A\u2192\u2229, \ubaa8\ub450\uc5d0 &apos; \ubd99\uc784"},
+    {e:"(A\u2229B)\u2229C", l:"\uc774\uc911\uc5ec\uc9d1\ud569 \uc81c\uac70"}
+  ])
+);
+
+addQ(25, "koi", "복합", "((A\u222AB)\u2229C)&apos;",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "(A&apos;\u2229B&apos;)\u222AC&apos;",
+  -1,
+  stepChain([
+    {e:"((A\u222AB)\u2229C)&apos;"},
+    {e:"(A\u222AB)&apos;\u222AC&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2461 \u2014 \u2229\u2192\u222A"},
+    {e:"(A&apos;\u2229B&apos;)\u222AC&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2460 \u2014 A\u222AB\uc5d0 \uc801\uc6a9"}
+  ])
+);
+
+addQ(26, "koi", "복합", "((A\u2229B)\u222AC)&apos;",
+  "\ub4dc\ubaa8\ub974\uac04 \ubc95\uce59\uc744 \uc801\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "(A&apos;\u222AB&apos;)\u2229C&apos;",
+  -1,
+  stepChain([
+    {e:"((A\u2229B)\u222AC)&apos;"},
+    {e:"(A\u2229B)&apos;\u2229C&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2460 \u2014 \u222A\u2192\u2229"},
+    {e:"(A&apos;\u222AB&apos;)\u2229C&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2461 \u2014 A\u2229B\uc5d0 \uc801\uc6a9"}
+  ])
+);
+
+addQ(27, "koi", "복합", "(A\u222AB)&apos;\u222AA&apos;",
+  "\ub4dc\ubaa8\ub974\uac04\uacfc \ud761\uc218\ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A&apos;",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)&apos;\u222AA&apos;"},
+    {e:"(A&apos;\u2229B&apos;)\u222AA&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2460"},
+    {e:"A&apos;", l:"\ud761\uc218\ubc95\uce59 A&apos;\u222A(A&apos;\u2229B&apos;)=A&apos;"}
+  ])
+);
+
+addQ(28, "koi", "복합", "(A\u2229B)&apos;\u2229A&apos;",
+  "\ub4dc\ubaa8\ub974\uac04\uacfc \ud761\uc218\ubc95\uce59\uc744 \uc774\uc6a9\ud558\uc5ec \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A&apos;",
+  -1,
+  stepChain([
+    {e:"(A\u2229B)&apos;\u2229A&apos;"},
+    {e:"(A&apos;\u222AB&apos;)\u2229A&apos;", l:"\ub4dc\ubaa8\ub974\uac04 \u2461"},
+    {e:"A&apos;", l:"\ud761\uc218\ubc95\uce59 A&apos;\u2229(A&apos;\u222AB&apos;)=A&apos;"}
+  ])
+);
+
+addQ(29, "koi", "복합", "(A\u222AB)&apos;\u222A(A\u222AB)",
+  "\ub2e4\uc74c\uc744 \uac00\uc7a5 \uac04\ub2e8\ud558\uac8c \ub098\ud0c0\ub0b4\uc2dc\uc624.",
+  "text", [], "U",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)&apos;\u222A(A\u222AB)"},
+    {e:"X&apos;\u222AX &nbsp;(X=A\u222AB)", l:"\uce58\ud658"},
+    {e:"U", l:"\ubcf4\uc6d0\ubc95\uce59 X\u222AX&apos;=U"}
+  ])
+);
+
+addQ(30, "koi", 0, "(A\u222AB)''",
+  "\uc774\uc911 \uc5ec\uc9d1\ud569\uc73c\ub85c \uac04\ub2e8\ud788 \ud558\uc2dc\uc624.",
+  "text", [], "A\u222AB",
+  -1,
+  stepChain([
+    {e:"(A\u222AB)''"},
+    {e:"A\u222AB", l:"\uc774\uc911\uc5ec\uc9d1\ud569 (X''=X)"}
+  ])
+);
+
+// ── 문제 카드 빌더 ──
+function dmTagHtml(dm) {
+  if (dm === 1) return "<span class=\"dm-tag dmt1\">\ubc95\uce59\u2460</span>";
+  if (dm === 2) return "<span class=\"dm-tag dmt2\">\ubc95\uce59\u2461</span>";
+  if (dm === "\ubd72\ud569") return "<span class=\"dm-tag dmtm\">\ubcf5\ud569</span>";
+  return "<span class=\"dm-tag dmtc\">\uac1c\ub150</span>";
+}
+
+function buildQ(q) {
+  var a = UA[q.id];
+  var cardCls = a ? (a.correct ? "q-ok" : "q-ng") : "";
+  var secCls = q.sec === "basic" ? "qt-b" : q.sec === "adv" ? "qt-a" : "qt-k";
+  var secLbl = q.sec === "basic" ? "\uae30\ubcf8" : q.sec === "adv" ? "\uc2ec\ud654" : "\uc62c\ub9bc\ud53c\uc544\ub4dc";
+  var stHtml = a
+    ? (a.correct ? "<span class=\"dot dok\"></span><span style=\"color:var(--green)\">\uc815\ub2f5</span>"
+                 : "<span class=\"dot dng\"></span><span style=\"color:var(--rose)\">\uc624\ub2f5</span>")
+    : "<span class=\"dot dun\"></span><span style=\"color:var(--ink3)\">\ubbf8\uc751\ub2f5</span>";
+
+  var fHtml = q.fml ? "<div class=\"q-fml\">" + q.fml + "</div>" : "";
+
+  var inputHtml = "";
+  var nums = ["\u2460", "\u2461", "\u2462", "\u2463"];
+  if (q.type === "choice") {
+    inputHtml = "<div class=\"opts\" id=\"opts-" + q.id + "\">";
+    q.opts.forEach(function(o, i) {
+      var cls = "";
+      if (a) {
+        if (i === q.ansIdx) cls = "reveal";
+        if (i === a.givenIdx && !a.correct) cls = "ng";
+        if (i === a.givenIdx && a.correct) cls = "ok";
+      }
+      inputHtml += "<button class=\"obt " + cls + "\" id=\"ob-" + q.id + "-" + i + "\""
+        + " onclick=\"subChoice(" + q.id + "," + i + ")\" " + (a ? "disabled" : "") + ">"
+        + "<span class=\"onum\">" + nums[i] + "</span>" + o + "</button>";
+    });
+    inputHtml += "</div>";
+  } else {
+    var iCls = a ? (a.correct ? "tok" : "tng") : "";
+    inputHtml = "<div class=\"tinp-wrap\">"
+      + "<input class=\"tinp " + iCls + "\" id=\"ti-" + q.id + "\" placeholder=\"\ub2f5 \uc785\ub825...\" value=\"" + (a ? escHtml(a.given) : "") + "\" " + (a ? "disabled" : "") + ">"
+      + "<button class=\"subm\" id=\"sb-" + q.id + "\" onclick=\"subText(" + q.id + ")\" " + (a ? "disabled" : "") + ">\uc81c\ucd9c</button>"
+      + "</div>"
+      + "<div class=\"hint-txt\">\uc5ec\uc9d1\ud569: A&apos; &nbsp;|\u2205 |\u222A |\u2229</div>";
+  }
+
+  var fbHtml = "";
+  if (a) {
+    var fbMsg = a.correct
+      ? "<span class=\"tok-t\">\u2705 \uc815\ub2f5\uc785\ub2c8\ub2e4!</span>"
+      : "<span class=\"tng-t\">\u274c \uc624\ub2f5\uc785\ub2c8\ub2e4. &nbsp;\uc815\ub2f5: <span class=\"ans-badge\">" + q.ans + "</span></span>";
+    fbHtml = "<div class=\"qfb show\" id=\"fb-" + q.id + "\">"
+      + "<div class=\"fbtxt\">" + fbMsg + "</div>"
+      + "<button class=\"exbtn\" id=\"exb-" + q.id + "\" onclick=\"togEx(" + q.id + ")\">&#128218; \ud574\uc124 \ubcf4\uae30 <span class=\"arr\">\u25bc</span></button>"
+      + "<div class=\"exbox\" id=\"exbox-" + q.id + "\">" + q.expl + "</div>"
+      + "</div>";
+  } else {
+    fbHtml = "<div class=\"qfb\" id=\"fb-" + q.id + "\">"
+      + "<div class=\"fbtxt\" id=\"fbm-" + q.id + "\"></div>"
+      + "<button class=\"exbtn\" id=\"exb-" + q.id + "\" onclick=\"togEx(" + q.id + ")\" style=\"display:none\">&#128218; \ud574\uc124 \ubcf4\uae30 <span class=\"arr\">\u25bc</span></button>"
+      + "<div class=\"exbox\" id=\"exbox-" + q.id + "\">" + q.expl + "</div>"
+      + "</div>";
+  }
+
+  return "<div class=\"qcard " + cardCls + "\" id=\"qc-" + q.id + "\">"
+    + "<div class=\"qhdr\">"
+    + "<div class=\"qnum\">" + q.id + "</div>"
+    + "<span class=\"qtag " + secCls + "\">" + secLbl + "</span>"
+    + dmTagHtml(q.dm)
+    + "<div class=\"qst\" id=\"qs-" + q.id + "\">" + stHtml + "</div>"
+    + "</div>"
+    + "<div class=\"qbody\">" + fHtml + "<div class=\"qtext\">" + q.q + "</div>" + inputHtml + fbHtml + "</div>"
+    + "</div>";
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── 제출 ──
+function normAns(s) {
+  return s.trim().replace(/\s/g,"").replace(/&apos;/g,"'").toLowerCase();
+}
+
+function subChoice(qid, ci) {
+  var q = QS.find(function(x){ return x.id === qid; });
+  var ok = ci === q.ansIdx;
+  UA[qid] = { correct: ok, given: q.opts[ci], givenIdx: ci };
+  for (var i = 0; i < q.opts.length; i++) {
+    var b = document.getElementById("ob-" + qid + "-" + i);
+    if (!b) continue;
+    b.disabled = true;
+    b.className = "obt" + (i === q.ansIdx ? " reveal" : "") + (i === ci && !ok ? " ng" : "") + (i === ci && ok ? " ok" : "");
+  }
+  showFB(qid, ok, q.ans);
+  updCard(qid, ok);
+  updProg(); updateOv();
+}
+
+function subText(qid) {
+  var q = QS.find(function(x){ return x.id === qid; });
+  var inp = document.getElementById("ti-" + qid);
+  var v = inp.value.trim();
+  if (!v) return;
+  var ok = normAns(v) === normAns(q.ans);
+  inp.disabled = true;
+  inp.className = "tinp " + (ok ? "tok" : "tng");
+  document.getElementById("sb-" + qid).disabled = true;
+  UA[qid] = { correct: ok, given: v };
+  showFB(qid, ok, q.ans);
+  updCard(qid, ok);
+  updProg(); updateOv();
+}
+
+function showFB(qid, ok, ans) {
+  var fb = document.getElementById("fb-" + qid);
+  var msg = document.getElementById("fbm-" + qid);
+  var exb = document.getElementById("exb-" + qid);
+  fb.classList.add("show");
+  if (msg) msg.innerHTML = ok
+    ? "<span class=\"tok-t\">\u2705 \uc815\ub2f5\uc785\ub2c8\ub2e4!</span>"
+    : "<span class=\"tng-t\">\u274c \uc624\ub2f5\uc785\ub2c8\ub2e4. &nbsp;\uc815\ub2f5: <span class=\"ans-badge\">" + ans + "</span></span>";
+  if (exb) exb.style.display = "inline-flex";
+}
+
+function updCard(qid, ok) {
+  var c = document.getElementById("qc-" + qid);
+  var s = document.getElementById("qs-" + qid);
+  if (c) { c.classList.remove("q-ok","q-ng"); c.classList.add(ok ? "q-ok" : "q-ng"); }
+  if (s) s.innerHTML = ok
+    ? "<span class=\"dot dok\"></span><span style=\"color:var(--green)\">\uc815\ub2f5</span>"
+    : "<span class=\"dot dng\"></span><span style=\"color:var(--rose)\">\uc624\ub2f5</span>";
+}
+
+function togEx(qid) {
+  var box = document.getElementById("exbox-" + qid);
+  var btn = document.getElementById("exb-" + qid);
+  if (!box) return;
+  var show = box.classList.toggle("show");
+  if (btn) { btn.classList.toggle("open", show); btn.querySelector(".arr").textContent = show ? "\u25b2" : "\u25bc"; }
+}
+
+// ── 진행 & 현황판 ──
+function updProg() {
+  var n = Object.keys(UA).length;
+  var f = document.getElementById("prog-fill"); if (f) f.style.width = (n/30*100) + "%";
+  var fp = document.getElementById("fp-n"); if (fp) fp.textContent = n;
+}
+
+function updateOv() {
+  var n = Object.keys(UA).length;
+  var ok = Object.values(UA).filter(function(a){ return a.correct; }).length;
+  var e = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; };
+  e("ov-ans",n); e("ov-ok",ok); e("ov-ng",n-ok); e("ov-rem",30-n);
+  var grid = document.getElementById("ov-grid"); if (!grid) return;
+  var h = "";
+  for (var i = 1; i <= 30; i++) {
+    var a = UA[i];
+    var cls = a ? (a.correct ? "ov-ok" : "ov-ng") : "";
+    var sec = i <= 10 ? 1 : i <= 20 ? 2 : 3;
+    h += "<div class=\"ovdot " + cls + "\" onclick=\"goPage(" + sec + ");setTimeout(function(){scQ(" + i + ");},80)\" title=\"\ubb38\uc81c " + i + "\">" + i + "</div>";
+  }
+  grid.innerHTML = h;
+}
+
+function scQ(id) {
+  var e = document.getElementById("qc-" + id);
+  if (e) e.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// ── 결과 ──
+function renderResults() {
+  var n = Object.keys(UA).length;
+  var ok = Object.values(UA).filter(function(a){ return a.correct; }).length;
+  var ng = n - ok, rem = 30 - n;
+  var pct = Math.round(ok/30*100);
+  var grade = ok>=28?"\uD83C\uDFC6 \ub4dc\ubaa8\ub974\uac04 \ub9c8\uc2a4\ud130!":ok>=24?"\u2B50\u2B50\u2B50 \uc6b0\uc218":ok>=18?"\u2B50\u2B50 \uc591\ud638":ok>=12?"\u2B50 \ubcf4\ud1b5":"\uD83D\uDCDA \uc7AC\ud559\uc2b5 \ud544\uc694";
+  var h = "<div class=\"res-big\">"
+    + "<div class=\"res-score\">" + ok + "<span style=\"font-size:30px;color:var(--ink3)\">/30</span></div>"
+    + "<div class=\"res-grade\">" + grade + "</div>"
+    + "<div style=\"font-size:13px;color:var(--ink3);margin-bottom:10px\">\uc815\ub2f5\ub960 " + pct + "%</div>"
+    + "<div class=\"res-bar-wrap\"><div class=\"res-bar\" id=\"rbar\" style=\"width:0%\"></div></div>"
+    + "<div class=\"res-grid\">"
+    + "<div class=\"rgi\"><div class=\"rn\" style=\"color:var(--green)\">" + ok + "</div><div class=\"rl\">\u2705 \uc815\ub2f5</div></div>"
+    + "<div class=\"rgi\"><div class=\"rn\" style=\"color:var(--rose)\">" + ng + "</div><div class=\"rl\">\u274c \uc624\ub2f5</div></div>"
+    + "<div class=\"rgi\"><div class=\"rn\" style=\"color:var(--ink3)\">" + rem + "</div><div class=\"rl\">\u2b1c \ubbf8\uc751\ub2f5</div></div>"
+    + "</div>"
+    + "<button class=\"rbtn rbtn-r\" onclick=\"resetAll()\">\uD83D\uDD04 \ucc98\uc74c\ubd80\ud130 \ub2e4\uc2dc</button>"
+    + "<button class=\"rbtn rbtn-t\" onclick=\"goPage(0)\">\uD83C\uDFE0 \uac1c\uc694\ub85c</button>"
+    + "</div>";
+
+  var wqs = Object.keys(UA).filter(function(id){ return !UA[id].correct; }).map(Number);
+  if (wqs.length) {
+    h += "<div style=\"background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)\">"
+      + "<div style=\"font-size:17px;font-weight:900;margin-bottom:12px;color:var(--rose)\">\u274c \ud2c0\ub9b0 \ubb38\uc81c \ubcf5\uc2b5</div>";
+    wqs.forEach(function(id) {
+      var q = QS.find(function(x){ return x.id === id; });
+      var sec = q.sec === "basic" ? 1 : q.sec === "adv" ? 2 : 3;
+      var disp = q.fml || q.q.replace(/<[^>]+>/g,"").substring(0,35);
+      h += "<div class=\"wi\" onclick=\"goPage(" + sec + ");setTimeout(function(){scQ(" + id + ");togEx(" + id + ");},80)\">"
+        + "<div class=\"wi-q\">\ubb38\uc81c " + id + ". " + disp + "</div>"
+        + "<div class=\"wi-a\">\uc815\ub2f5: " + q.ans + " | \ub0b4 \ub2f5: " + (UA[id].given||"(\ubbf8\uc785\ub825)") + "</div>"
+        + "</div>";
+    });
+    h += "</div>";
+  }
+
+  h += "<div style=\"background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)\">"
+    + "<div style=\"font-size:17px;font-weight:900;margin-bottom:14px\">\uD83D\uDCDA \uc804\uccb4 \ud574\uc124 \ubaa8\uc544\ubcf4\uae30</div>";
+  QS.forEach(function(q) {
+    var a = UA[q.id];
+    var ic = a ? (a.correct ? "\u2705" : "\u274c") : "\u2b1c";
+    var ac = a ? (a.correct ? "var(--green)" : "var(--rose)") : "var(--ink3)";
+    var disp = q.fml || q.q.replace(/<[^>]+>/g,"").substring(0,36);
+    h += "<div class=\"allexp-item\">"
+      + "<div class=\"allexp-hdr\" onclick=\"this.nextElementSibling.classList.toggle('show')\">"
+      + "<span style=\"font-family:'JetBrains Mono',monospace;font-weight:900;font-size:13px;background:var(--rose);color:#fff;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0\">" + q.id + "</span>"
+      + "<span style=\"font-size:14px;font-weight:700;flex:1\">" + disp + "</span>"
+      + "<span style=\"color:" + ac + ";font-weight:700;font-size:13px;flex-shrink:0;margin-left:6px\">" + ic + " " + q.ans + "</span>"
+      + "<span style=\"color:var(--ink3);margin-left:8px\">\u25bc</span>"
+      + "</div>"
+      + "<div class=\"allexp-body\">" + q.expl + "</div>"
+      + "</div>";
+  });
+  h += "</div>";
+
+  document.getElementById("result-area").innerHTML = h;
+  setTimeout(function(){ var b=document.getElementById("rbar"); if(b) b.style.width=pct+"%"; }, 100);
+}
+
+// ── 초기화 & 렌더 ──
+function resetAll() {
+  UA = {};
+  renderSecs();
+  updProg(); updateOv();
+  goPage(0);
+}
+
+function renderSecs() {
+  var s1="", s2="", s3="";
+  QS.forEach(function(q) {
+    var h = buildQ(q);
+    if (q.sec === "basic") s1 += h;
+    else if (q.sec === "adv") s2 += h;
+    else s3 += h;
+  });
+  document.getElementById("sec1").innerHTML = s1;
+  document.getElementById("sec2").innerHTML = s2;
+  document.getElementById("sec3").innerHTML = s3;
+}
+
+window.onload = function() {
+  renderSecs();
+  updateOv();
+  updProg();
+};
+</script>
+</body>
+</html>

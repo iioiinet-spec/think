@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>집합 기초개념 문제집 | 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#fdfaf3;--bg2:#f5f0e4;--bg3:#ede6d6;
+  --ink:#1a1408;--ink2:#3d3420;--ink3:#6b5c3e;
+  --gold:#c8860a;--glt:#fff4d0;
+  --teal:#0e7c72;--tlt:#d4f0ec;
+  --rose:#b03a2e;--rlt:#fde8e6;
+  --indigo:#2c3e8c;--ilt:#e0e6ff;
+  --green:#1e7a3c;--glt2:#d6f5e3;
+  --purple:#6b2d8c;--plt:#f0e0ff;
+  --border:#d6c9a8;--shadow:rgba(26,20,8,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.8;min-height:100vh}
+
+/* HEADER */
+header{background:var(--ink);color:var(--bg);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 18px rgba(0,0,0,.5)}
+.brand{font-size:10px;color:var(--glt);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+header h1{font-size:20px;font-weight:900}
+.hbadge{display:flex;gap:8px;align-items:center}
+.bdg{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px}
+.bdg-g{background:var(--gold);color:var(--ink)}
+.bdg-i{background:var(--indigo);color:#fff}
+.bdg-t{background:var(--teal);color:#fff}
+
+/* PROGRESS BAR */
+.progress-outer{height:6px;background:var(--bg3)}
+.progress-fill{height:6px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .5s ease;width:0%}
+
+/* NAV */
+.nav-tabs{display:flex;background:var(--bg3);border-bottom:2px solid var(--border);overflow-x:auto;position:sticky;top:62px;z-index:190;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .16s;font-family:'Noto Sans KR',sans-serif}
+.ntab:hover{background:var(--bg2);color:var(--ink)}
+.ntab.active{background:var(--bg);color:var(--indigo);border-bottom-color:var(--indigo)}
+
+/* PAGES */
+.page{display:none;max-width:900px;margin:0 auto;padding:32px 24px 100px}
+.page.active{display:block}
+
+/* SCORE DASHBOARD */
+.score-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.score-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+.score-card .num{font-size:32px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.score-card .lbl{font-size:12px;color:var(--ink3);margin-top:4px;font-weight:700}
+.num-total{color:var(--indigo)}
+.num-correct{color:var(--green)}
+.num-wrong{color:var(--rose)}
+.num-skip{color:var(--ink3)}
+
+/* SECTION HEADER */
+.sec-h{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.sec-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.sec-h h2{font-size:24px;font-weight:900}
+.sec-h p{font-size:13px;color:var(--ink3);margin-top:2px}
+
+/* QUESTION CARD */
+.q-card{background:#fff;border:2px solid var(--border);border-radius:16px;margin-bottom:20px;overflow:hidden;transition:border-color .2s;box-shadow:0 2px 8px var(--shadow)}
+.q-card.answered-correct{border-color:var(--green)}
+.q-card.answered-wrong{border-color:var(--rose)}
+.q-card.answered-skip{border-color:var(--gold)}
+
+.q-header{display:flex;align-items:center;gap:14px;padding:18px 22px 14px;border-bottom:1.5px solid var(--border)}
+.q-num{width:44px;height:44px;border-radius:12px;background:var(--indigo);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.q-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.q-tag-basic{background:var(--tlt);color:var(--teal);border-color:var(--teal)}
+.q-tag-adv{background:var(--plt);color:var(--purple);border-color:var(--purple)}
+.q-tag-koi{background:var(--glt);color:var(--gold);border-color:var(--gold)}
+.q-status{margin-left:auto;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-correct{background:var(--green)}
+.dot-wrong{background:var(--rose)}
+.dot-skip{background:var(--gold)}
+.dot-unanswered{background:var(--border)}
+
+.q-body{padding:18px 22px}
+.q-text{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:16px;line-height:1.7}
+.q-text .math{font-family:'JetBrains Mono',monospace;background:var(--ilt);color:var(--indigo);padding:2px 8px;border-radius:6px;font-size:15px;display:inline-block;margin:3px 2px}
+.q-text .mblock{display:block;font-family:'JetBrains Mono',monospace;background:var(--ilt);color:var(--indigo);padding:10px 16px;border-radius:10px;font-size:16px;margin:8px 0;font-weight:700}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.opt-btn{display:flex;align-items:center;gap:12px;padding:12px 18px;border:2px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:16px;font-weight:600;color:var(--ink);transition:all .15s;font-family:'Noto Sans KR',sans-serif;text-align:left}
+.opt-btn:hover:not(:disabled){border-color:var(--indigo);background:var(--ilt)}
+.opt-num{width:28px;height:28px;border-radius:8px;background:var(--bg3);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink3)}
+.opt-btn:hover:not(:disabled) .opt-num{background:var(--indigo);color:#fff}
+.opt-btn.selected-correct{border-color:var(--green)!important;background:var(--glt2)!important}
+.opt-btn.selected-correct .opt-num{background:var(--green)!important;color:#fff!important}
+.opt-btn.selected-wrong{border-color:var(--rose)!important;background:var(--rlt)!important}
+.opt-btn.selected-wrong .opt-num{background:var(--rose)!important;color:#fff!important}
+.opt-btn.correct-reveal{border-color:var(--green)!important;background:var(--glt2)!important}
+.opt-btn.correct-reveal .opt-num{background:var(--green)!important;color:#fff!important}
+.opt-btn:disabled{cursor:not-allowed;opacity:.85}
+
+/* TEXT ANSWER */
+.txt-wrap{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.txt-input{padding:10px 16px;border:2px solid var(--border);border-radius:10px;font-size:16px;font-family:'JetBrains Mono',monospace;font-weight:700;background:#fff;color:var(--ink);min-width:180px;transition:border-color .15s}
+.txt-input:focus{outline:none;border-color:var(--indigo)}
+.txt-input.correct{border-color:var(--green)!important;background:var(--glt2)!important}
+.txt-input.wrong{border-color:var(--rose)!important;background:var(--rlt)!important}
+
+/* SUBMIT BUTTON */
+.q-submit{padding:10px 22px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .15s}
+.q-submit:hover:not(:disabled){background:#1f2d6a}
+.q-submit:disabled{background:var(--border);cursor:not-allowed}
+
+/* FEEDBACK */
+.q-fb{margin-top:14px;display:none}
+.q-fb.show{display:block}
+.fb-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:16px;font-weight:700}
+.fb-correct{color:var(--green)}
+.fb-wrong{color:var(--rose)}
+
+/* EXPLANATION */
+.expl-btn{display:flex;align-items:center;gap:8px;padding:9px 18px;border:1.5px solid var(--teal);border-radius:8px;background:#fff;color:var(--teal);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;margin-top:10px}
+.expl-btn:hover{background:var(--tlt)}
+.expl-btn .arrow{transition:transform .2s}
+.expl-btn.open .arrow{transform:rotate(180deg)}
+
+.expl-body{margin-top:12px;background:var(--bg2);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:16px 20px;font-size:15px;line-height:1.85;color:var(--ink2);display:none}
+.expl-body.show{display:block}
+.expl-body .hi{font-family:'JetBrains Mono',monospace;background:var(--ilt);color:var(--indigo);padding:2px 8px;border-radius:5px;font-size:14px}
+.expl-body .formula{background:#fff;border:1.5px solid var(--indigo);border-radius:8px;padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--indigo);text-align:center;margin:10px 0}
+
+/* RESULTS PAGE */
+.result-big{text-align:center;padding:32px 20px}
+.result-score{font-size:72px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+.result-grade{font-size:22px;font-weight:700;margin:10px 0;color:var(--ink2)}
+.result-bar-wrap{max-width:400px;margin:20px auto;background:var(--bg3);border-radius:8px;height:16px;overflow:hidden}
+.result-bar{height:16px;border-radius:8px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 1s}
+.result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:24px 0}
+.rg-item{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 6px var(--shadow)}
+.rg-n{font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.rg-l{font-size:13px;color:var(--ink3);font-weight:700;margin-top:4px}
+.retry-btn{padding:14px 36px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .15s;margin:10px 6px}
+.retry-btn:hover{background:#1f2d6a}
+.retry-btn.teal{background:var(--teal)}.retry-btn.teal:hover{background:#0a5f57}
+
+/* WRONG REVIEW */
+.wrong-list{list-style:none}
+.wrong-item{background:#fff;border:1.5px solid var(--rlt);border-left:4px solid var(--rose);border-radius:10px;padding:14px 18px;margin-bottom:12px;font-size:15px;cursor:pointer;transition:border-color .15s}
+.wrong-item:hover{border-color:var(--rose)}
+.wrong-q{font-weight:700;margin-bottom:4px}
+.wrong-ans{font-size:13px;color:var(--rose);font-family:'JetBrains Mono',monospace}
+
+/* FLOATING PROGRESS */
+.float-prog{position:fixed;bottom:24px;right:24px;background:white;border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;box-shadow:0 4px 20px rgba(0,0,0,.14);font-size:13px;z-index:150;min-width:120px}
+.float-prog .fp-label{color:var(--ink3);font-weight:700;margin-bottom:6px;font-size:12px}
+.float-prog .fp-nums{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+.float-prog .fp-of{font-size:13px;color:var(--ink3)}
+
+/* OVERVIEW GRID */
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px;margin:16px 0}
+.ov-dot{width:54px;height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;cursor:pointer;border:2px solid var(--border);background:#fff;color:var(--ink3);transition:all .15s;font-family:'JetBrains Mono',monospace}
+.ov-dot:hover{border-color:var(--indigo);color:var(--indigo)}
+.ov-dot.ov-correct{background:var(--glt2);border-color:var(--green);color:var(--green)}
+.ov-dot.ov-wrong{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+.ov-dot.ov-skip{background:var(--glt);border-color:var(--gold);color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .score-dash{grid-template-columns:1fr 1fr}
+  .result-grid{grid-template-columns:1fr 1fr}
+  .page{padding:20px 14px 80px}
+  header{padding:12px 16px}
+  header h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">세영코딩연구소 · ph.D Kim</div>
+    <h1>📚 집합 기초개념 문제집</h1>
+  </div>
+  <div class="hbadge">
+    <span class="bdg bdg-t">KOI 중등</span>
+    <span class="bdg bdg-i">30문제</span>
+  </div>
+</header>
+<div class="progress-outer">
+  <div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<div class="nav-tabs">
+  <button class="ntab active" onclick="goPage(0)">🏠 개요</button>
+  <button class="ntab" onclick="goPage(1)">📘 기본문제 1~10</button>
+  <button class="ntab" onclick="goPage(2)">📗 심화문제 11~20</button>
+  <button class="ntab" onclick="goPage(3)">🏆 올림피아드 21~30</button>
+  <button class="ntab" onclick="goPage(4)">📊 결과 &amp; 해설</button>
+</div>
+
+<!-- ── PAGE 0: 개요 ── -->
+<div class="page active" id="pg0">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏠</div>
+    <div><h2>집합 기초개념 문제집</h2><p>기본 · 심화 · 정보올림피아드 스타일 30문제</p></div>
+  </div>
+
+  <div class="score-dash">
+    <div class="score-card"><div class="num num-total" id="ov-total">0</div><div class="lbl">답한 문제</div></div>
+    <div class="score-card"><div class="num num-correct" id="ov-correct">0</div><div class="lbl">✅ 정답</div></div>
+    <div class="score-card"><div class="num num-wrong" id="ov-wrong">0</div><div class="lbl">❌ 오답</div></div>
+    <div class="score-card"><div class="num num-skip" id="ov-remain">30</div><div class="lbl">남은 문제</div></div>
+  </div>
+
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:20px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:18px;font-weight:900;margin-bottom:14px">📋 문제 현황판</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:13px;font-weight:700">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:var(--glt2);border:1.5px solid var(--green);display:inline-block"></span>정답</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:var(--rlt);border:1.5px solid var(--rose);display:inline-block"></span>오답</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:var(--glt);border:1.5px solid var(--gold);display:inline-block"></span>건너뜀</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:4px;background:#fff;border:1.5px solid var(--border);display:inline-block"></span>미응답</span>
+    </div>
+    <div class="ov-grid" id="ov-grid"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+    <div style="background:#fff;border:1.5px solid var(--teal);border-radius:14px;padding:20px;cursor:pointer" onclick="goPage(1)">
+      <div style="font-size:26px;margin-bottom:8px">📘</div>
+      <div style="font-weight:900;font-size:16px;color:var(--teal)">기본문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:4px">문제 1~10<br>원소·부분집합 기초</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--purple);border-radius:14px;padding:20px;cursor:pointer" onclick="goPage(2)">
+      <div style="font-size:26px;margin-bottom:8px">📗</div>
+      <div style="font-weight:900;font-size:16px;color:var(--purple)">심화문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:4px">문제 11~20<br>중첩집합·조합 개념</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gold);border-radius:14px;padding:20px;cursor:pointer" onclick="goPage(3)">
+      <div style="font-size:26px;margin-bottom:8px">🏆</div>
+      <div style="font-weight:900;font-size:16px;color:var(--gold)">올림피아드</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:4px">문제 21~30<br>KOI 스타일 문제</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 1: 기본문제 ── -->
+<div class="page" id="pg1">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--tlt)">📘</div>
+    <div><h2>기본문제</h2><p>문제 1~10 · 집합의 기초 개념</p></div>
+  </div>
+  <div id="sec1-questions"></div>
+  <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end">
+    <button onclick="goPage(0)" style="padding:10px 20px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">← 개요로</button>
+    <button onclick="goPage(2)" style="padding:10px 20px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">심화문제 →</button>
+  </div>
+</div>
+
+<!-- ── PAGE 2: 심화문제 ── -->
+<div class="page" id="pg2">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--plt)">📗</div>
+    <div><h2>심화문제</h2><p>문제 11~20 · 중첩집합 · 진부분집합 · 조합</p></div>
+  </div>
+  <div id="sec2-questions"></div>
+  <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end">
+    <button onclick="goPage(1)" style="padding:10px 20px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">← 기본문제</button>
+    <button onclick="goPage(3)" style="padding:10px 20px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">올림피아드 →</button>
+  </div>
+</div>
+
+<!-- ── PAGE 3: 올림피아드 ── -->
+<div class="page" id="pg3">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏆</div>
+    <div><h2>올림피아드 스타일</h2><p>문제 21~30 · KOI 중등 대비</p></div>
+  </div>
+  <div id="sec3-questions"></div>
+  <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end">
+    <button onclick="goPage(2)" style="padding:10px 20px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">← 심화문제</button>
+    <button onclick="goPage(4)" style="padding:10px 20px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">📊 결과 보기 →</button>
+  </div>
+</div>
+
+<!-- ── PAGE 4: 결과 ── -->
+<div class="page" id="pg4">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt2)">📊</div>
+    <div><h2>결과 &amp; 해설</h2><p>정답 확인 · 틀린 문제 복습</p></div>
+  </div>
+  <div id="result-area"></div>
+</div>
+
+<!-- FLOATING PROGRESS -->
+<div class="float-prog" id="float-prog">
+  <div class="fp-label">진행 현황</div>
+  <div><span class="fp-nums" id="fp-answered">0</span><span class="fp-of"> / 30</span></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// QUESTION DATA
+// ═══════════════════════════════════════════
+var QUESTIONS = [
+  // ── 기본문제 ──
+  {
+    id:1, sec:'basic',
+    q: '집합 <span class="mblock">A = {1, 2, 3, 4}</span>에서 원소가 <strong>아닌</strong> 것은?',
+    type:'choice',
+    opts:['2','4','5','1'],
+    ans:'③',
+    ansIdx:2,
+    expl:'집합 A에는 1, 2, 3, 4만 있으므로 <span class="hi">5</span>는 포함되지 않습니다. ③번이 오답.'
+  },
+  {
+    id:2, sec:'basic',
+    q:'다음 중 집합을 <strong>올바르게</strong> 나타낸 것은?',
+    type:'choice',
+    opts:['(1,2,3)','[1,2,3]','{1,2,3}','&lt;1,2,3&gt;'],
+    ans:'③',
+    ansIdx:2,
+    expl:'집합은 반드시 <span class="hi">{ }</span> <strong>중괄호</strong>를 사용합니다. 소괄호()는 순서쌍, 대괄호[]는 배열 표기입니다.'
+  },
+  {
+    id:3, sec:'basic',
+    q:'다음 중 <strong>참</strong>인 것은? <span class="mblock">A = {2, 4, 6}</span>',
+    type:'choice',
+    opts:['3 ∈ A','4 ∈ A','6 ∉ A','2 ∉ A'],
+    ans:'②',
+    ansIdx:1,
+    expl:'A = {2,4,6}이므로 <span class="hi">4 ∈ A</span>만 참입니다. 3은 A에 없고, 6과 2는 A에 있으므로 ∉는 거짓입니다.'
+  },
+  {
+    id:4, sec:'basic',
+    q:'다음 중 <strong>공집합</strong>은? (단, 해당하는 것 모두 선택)',
+    type:'choice',
+    opts:['{ }','{0}','빈칸 { }','① 과 ③ 둘 다'],
+    ans:'④',
+    ansIdx:3,
+    expl:'공집합은 <span class="hi">{ }</span> 또는 <span class="hi">∅</span>으로 나타냅니다. ① { }와 ③ { } (빈칸이 있어도 원소가 없으면) 모두 공집합입니다. {0}은 0이라는 원소가 있으므로 공집합이 아닙니다.'
+  },
+  {
+    id:5, sec:'basic',
+    q:'집합 <span class="mblock">A = {1, 3, 5, 7}</span>의 원소 개수는?',
+    type:'text',
+    ans:'4',
+    expl:'<span class="hi">1, 3, 5, 7</span> — 원소가 4개입니다. |A| = 4'
+  },
+  {
+    id:6, sec:'basic',
+    q:'집합 <span class="mblock">B = {a, b, c, d, e}</span>의 원소 개수는?',
+    type:'text',
+    ans:'5',
+    expl:'문자도 원소가 될 수 있습니다. <span class="hi">a, b, c, d, e</span> — 총 5개입니다.'
+  },
+  {
+    id:7, sec:'basic',
+    q:'다음 중 A의 <strong>부분집합</strong>은? <span class="mblock">A = {1, 2, 3}</span>',
+    type:'choice',
+    opts:['{1,2}','{4}','{2,4}','{1,2,3,4}'],
+    ans:'①',
+    ansIdx:0,
+    expl:'부분집합은 모든 원소가 원래 집합에 있어야 합니다. <span class="hi">{1,2}</span>의 1과 2 모두 A에 있으므로 부분집합. 나머지는 A에 없는 4가 포함되어 있습니다.'
+  },
+  {
+    id:8, sec:'basic',
+    q:'공집합은 모든 집합의 _______이다.',
+    type:'text',
+    ans:'부분집합',
+    expl:'공집합 ∅은 원소가 없으므로 어떤 집합 A에 대해서도 <span class="hi">∅ ⊆ A</span>가 성립합니다. 이를 "공허 참"이라 합니다.'
+  },
+  {
+    id:9, sec:'basic',
+    q:'다음 중 <strong>참</strong>인 것은?',
+    type:'choice',
+    opts:['∅ ⊂ A','A ⊂ ∅','∅ = {0}','∅ = { }'],
+    ans:'①',
+    ansIdx:0,
+    expl:'<span class="hi">∅ ⊂ A</span>는 임의의 집합 A에 대해 항상 참입니다. ② A⊂∅는 거짓(A가 공집합이 아니면), ③ ∅={0}은 거짓({0}은 원소 0을 가짐), ④ ∅={ }는 같은 표현이지만 "⊂"가 아닌 "="이어야 합니다.'
+  },
+  {
+    id:10, sec:'basic',
+    q:'<span class="mblock">A = {1, 2}</span>가능한 <strong>부분집합의 개수</strong>는?',
+    type:'text',
+    ans:'4',
+    expl:'<div class="formula">부분집합 개수 = 2^N = 2² = 4</div>∅, {1}, {2}, {1,2} — 총 4개입니다.'
+  },
+  // ── 심화문제 ──
+  {
+    id:11, sec:'adv',
+    q:'<span class="mblock">A = {1,2,3},  B = {1,2,3,4}</span>A는 B의 무엇인가?',
+    type:'text',
+    ans:'진부분집합',
+    expl:'A의 모든 원소가 B에 있고, B에는 추가 원소 4가 있으므로 A ≠ B입니다. 따라서 <span class="hi">A ⊂ B</span> — A는 B의 <strong>진부분집합</strong>입니다.'
+  },
+  {
+    id:12, sec:'adv',
+    q:'집합 <span class="mblock">A = {1, {2,3}}</span>원소의 개수는?',
+    type:'text',
+    ans:'2',
+    expl:'<span class="hi">1</span>과 <span class="hi">{2,3}</span> 두 개의 원소뿐입니다. {2,3}은 통째로 하나의 원소입니다. 안의 2와 3은 따로 세지 않습니다. → <strong>2개</strong>'
+  },
+  {
+    id:13, sec:'adv',
+    q:'다음 중 <strong>참</strong>인 것은? <span class="mblock">A = {{1}, 2}</span>',
+    type:'choice',
+    opts:['1 ∈ A','{1} ∈ A','2 ⊄ A','{2} ∈ A'],
+    ans:'②',
+    ansIdx:1,
+    expl:'A의 원소는 <span class="hi">{1}</span>과 <span class="hi">2</span>입니다. ① 1은 직접 원소가 아닌 {1} 안에 있으므로 거짓. ② {1}은 원소로 직접 들어있으므로 참. ③ 2는 A의 원소이므로 ⊄은 거짓. ④ {2}는 A의 원소가 아닙니다.'
+  },
+  {
+    id:14, sec:'adv',
+    q:'<span class="mblock">A = {1, 2, 3}</span>원소가 <strong>정확히 2개</strong>인 부분집합의 개수는?',
+    type:'text',
+    ans:'3',
+    expl:'<div class="formula">₃C₂ = 3! / (2! × 1!) = 3</div>{1,2}, {1,3}, {2,3} — 3가지입니다.'
+  },
+  {
+    id:15, sec:'adv',
+    q:'원소가 <strong>6개</strong>인 집합의 부분집합 개수는?',
+    type:'text',
+    ans:'64',
+    expl:'<div class="formula">2^6 = 64</div>원소 N개인 집합의 부분집합 수 = 2ᴺ'
+  },
+  {
+    id:16, sec:'adv',
+    q:'<span class="mblock">A = {1, 2},  B = {2, 1}</span>두 집합은 어떤 관계인가?',
+    type:'text',
+    ans:'같은 집합',
+    expl:'집합은 <strong>순서를 고려하지 않습니다.</strong> {1,2}와 {2,1}은 완전히 같은 집합입니다. → <span class="hi">A = B</span>'
+  },
+  {
+    id:17, sec:'adv',
+    q:'다음 두 집합은 같은 집합인가? <span class="mblock">① {1,2,2,3} &nbsp;&nbsp; ② {3,2,1}</span>',
+    type:'text',
+    ans:'둘 다 같은 집합',
+    expl:'집합에서 <strong>중복 원소는 자동 제거</strong>됩니다. {1,2,2,3} → {1,2,3}이고, {3,2,1} = {1,2,3}이므로 둘 다 같습니다.'
+  },
+  {
+    id:18, sec:'adv',
+    q:'집합 <span class="mblock">A = {1, 2, {3,4}}</span>원소 개수는?',
+    type:'text',
+    ans:'3',
+    expl:'원소는 <span class="hi">1</span>, <span class="hi">2</span>, <span class="hi">{3,4}</span> — 3개입니다. {3,4}는 하나의 원소로 취급합니다.'
+  },
+  {
+    id:19, sec:'adv',
+    q:'<span class="mblock">A = {∅}</span>원소 개수는?',
+    type:'text',
+    ans:'1',
+    expl:'{∅}은 <strong>공집합을 원소로 가지는 집합</strong>입니다. ∅ 자체가 하나의 원소이므로 원소 개수는 <strong>1</strong>입니다. ∅(원소 0개)과 {∅}(원소 1개)은 완전히 다른 집합!'
+  },
+  {
+    id:20, sec:'adv',
+    q:'<span class="mblock">A = ∅</span>(공집합)의 부분집합 개수는?',
+    type:'text',
+    ans:'1',
+    expl:'공집합의 부분집합은 오직 <span class="hi">∅</span> 하나뿐입니다.<div class="formula">2^0 = 1</div>원소가 0개이므로 2⁰ = 1개.'
+  },
+  // ── 올림피아드 ──
+  {
+    id:21, sec:'koi',
+    q:'원소가 <strong>N</strong>개인 집합의 부분집합 개수를 출력하시오.<div style="margin:12px 0;background:var(--bg3);border-radius:8px;padding:12px 16px;font-family:\'JetBrains Mono\',monospace;font-size:15px"><span style="color:var(--ink3);font-size:12px">입력</span><br>5<br><span style="color:var(--ink3);font-size:12px;margin-top:6px;display:block">출력</span><br>32</div>',
+    type:'text',
+    ans:'32',
+    expl:'<div class="formula">부분집합 개수 = 2^N = 2^5 = 32</div>N=5이면 2⁵ = 32개의 부분집합이 존재합니다.'
+  },
+  {
+    id:22, sec:'koi',
+    q:'집합 <span class="mblock">A = {1, 2, 3}</span>의 <strong>모든 부분집합 개수</strong>를 출력하시오.',
+    type:'text',
+    ans:'8',
+    expl:'<div class="formula">2^3 = 8</div>∅, {1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3} — 총 8개'
+  },
+  {
+    id:23, sec:'koi',
+    q:'다음 집합의 <strong>원소 개수</strong>를 구하시오. <span class="mblock">A = {1, 2, {3,4}, {5}}</span>',
+    type:'text',
+    ans:'4',
+    expl:'원소: <span class="hi">1</span>, <span class="hi">2</span>, <span class="hi">{3,4}</span>, <span class="hi">{5}</span> — 각각 독립된 원소 총 <strong>4개</strong>입니다.'
+  },
+  {
+    id:24, sec:'koi',
+    q:'다음 중 <strong>참인 것을 모두</strong> 고르시오. <span class="mblock">A = {1, {2}, 3}</span>① 2∈A &nbsp;&nbsp; ② {2}∈A &nbsp;&nbsp; ③ {{2}}⊂A &nbsp;&nbsp; ④ 3∈A',
+    type:'text',
+    ans:'②④',
+    expl:'A의 원소는 <span class="hi">1</span>, <span class="hi">{2}</span>, <span class="hi">3</span>입니다.<br>① 2∈A → 거짓 (2는 {2} 안에 있음)<br>② {2}∈A → <strong>참</strong> ({2}가 직접 원소)<br>③ {{2}}⊂A → 거짓 ({{2}}는 A의 원소가 아님)<br>④ 3∈A → <strong>참</strong>'
+  },
+  {
+    id:25, sec:'koi',
+    q:'다음 집합의 <strong>부분집합 개수</strong>를 구하시오. <span class="mblock">A = {a, b, c, d, e, f, g}</span>',
+    type:'text',
+    ans:'128',
+    expl:'<div class="formula">2^7 = 128</div>원소가 7개이므로 2⁷ = 128개의 부분집합이 존재합니다.'
+  },
+  {
+    id:26, sec:'koi',
+    q:'원소가 N개인 집합에서 원소가 <strong>정확히 K개</strong>인 부분집합 개수를 구하시오.<div style="margin:12px 0;background:var(--bg3);border-radius:8px;padding:12px 16px;font-family:\'JetBrains Mono\',monospace;font-size:15px"><span style="color:var(--ink3);font-size:12px">입력</span><br>5 2<br><span style="color:var(--ink3);font-size:12px;margin-top:6px;display:block">출력</span><br>10</div>',
+    type:'text',
+    ans:'10',
+    expl:'<div class="formula">₅C₂ = 5! / (2! × 3!) = 10</div>N=5, K=2 → ₅C₂ = 10개'
+  },
+  {
+    id:27, sec:'koi',
+    q:'<span class="mblock">A = {1, {2,3}, 4}</span>원소 개수 출력',
+    type:'text',
+    ans:'3',
+    expl:'원소: <span class="hi">1</span>, <span class="hi">{2,3}</span>, <span class="hi">4</span> — 총 <strong>3개</strong>. {2,3}은 하나의 원소입니다.'
+  },
+  {
+    id:28, sec:'koi',
+    q:'<span class="mblock">A = {{1}, {2}, {3}}</span>원소 개수 출력',
+    type:'text',
+    ans:'3',
+    expl:'원소: <span class="hi">{1}</span>, <span class="hi">{2}</span>, <span class="hi">{3}</span> — 모두 집합 형태의 원소 총 <strong>3개</strong>.'
+  },
+  {
+    id:29, sec:'koi',
+    q:'공집합 ∅ 의 <strong>부분집합 개수</strong>는?',
+    type:'text',
+    ans:'1',
+    expl:'공집합의 부분집합은 오직 <span class="hi">∅</span> 자신뿐입니다.<div class="formula">2^0 = 1</div>'
+  },
+  {
+    id:30, sec:'koi',
+    q:'집합 <span class="mblock">A = {1, 2, 3, 4}</span>원소가 <strong>3개</strong>인 부분집합 개수는?',
+    type:'text',
+    ans:'4',
+    expl:'<div class="formula">₄C₃ = 4! / (3! × 1!) = 4</div>{1,2,3}, {1,2,4}, {1,3,4}, {2,3,4} — 4가지입니다.'
+  }
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+var userAnswers = {}; // {id: {given, correct}}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+var tabs = document.querySelectorAll('.ntab');
+function goPage(n) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  tabs.forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('pg'+n).classList.add('active');
+  tabs[n].classList.add('active');
+  window.scrollTo(0,0);
+  updateOverview();
+  if(n===4) renderResults();
+}
+
+// ═══════════════════════════════════════════
+// BUILD QUESTION HTML
+// ═══════════════════════════════════════════
+function buildQuestion(q) {
+  var tag = q.sec==='basic' ? '<span class="q-tag q-tag-basic">기본</span>' :
+            q.sec==='adv'   ? '<span class="q-tag q-tag-adv">심화</span>' :
+                              '<span class="q-tag q-tag-koi">올림피아드</span>';
+
+  var answered = userAnswers[q.id];
+  var cardClass = '';
+  if(answered) cardClass = answered.correct ? 'answered-correct' : 'answered-wrong';
+
+  var statusHtml = '';
+  if(answered) {
+    if(answered.correct) statusHtml = '<span class="dot dot-correct"></span><span style="color:var(--green)">정답</span>';
+    else statusHtml = '<span class="dot dot-wrong"></span><span style="color:var(--rose)">오답</span>';
+  } else {
+    statusHtml = '<span class="dot dot-unanswered"></span><span style="color:var(--ink3)">미응답</span>';
+  }
+
+  var inputHtml = '';
+  if(q.type==='choice') {
+    inputHtml = '<div class="opts" id="opts-'+q.id+'">';
+    var nums = ['①','②','③','④'];
+    q.opts.forEach(function(opt, i) {
+      var cls = '';
+      if(answered) {
+        if(i===q.ansIdx) cls='correct-reveal';
+        if(i===answered.givenIdx && !answered.correct) cls='selected-wrong';
+        if(i===answered.givenIdx && answered.correct) cls='selected-correct';
+      }
+      inputHtml += '<button class="opt-btn '+cls+'" id="opt-'+q.id+'-'+i+'" onclick="submitChoice('+q.id+','+i+')" '+(answered?'disabled':'')+'>'+
+        '<span class="opt-num">'+nums[i]+'</span>'+opt+'</button>';
+    });
+    inputHtml += '</div>';
+  } else {
+    var inputCls = answered ? (answered.correct ? 'correct' : 'wrong') : '';
+    inputHtml = '<div class="txt-wrap">'+
+      '<input class="txt-input '+inputCls+'" id="txt-'+q.id+'" placeholder="답 입력..." value="'+(answered?answered.given:'')+'" '+(answered?'disabled':'')+'>'+
+      '<button class="q-submit" id="sub-'+q.id+'" onclick="submitText('+q.id+')" '+(answered?'disabled':'')+'>제출</button>'+
+    '</div>';
+  }
+
+  var fbHtml = '';
+  if(answered) {
+    fbHtml = '<div class="q-fb show" id="fb-'+q.id+'">'+
+      '<div class="fb-row">'+(answered.correct ? '<span class="fb-correct">✅ 정답입니다!</span>' : '<span class="fb-wrong">❌ 오답입니다. 정답: <span style="font-family:\'JetBrains Mono\',monospace;background:var(--glt2);padding:2px 8px;border-radius:5px;color:var(--green)">'+q.ans+'</span></span>')+'</div>'+
+      '<button class="expl-btn" id="exbtn-'+q.id+'" onclick="toggleExpl('+q.id+')">📖 해설 보기 <span class="arrow">▼</span></button>'+
+      '<div class="expl-body" id="expl-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  } else {
+    fbHtml = '<div class="q-fb" id="fb-'+q.id+'">'+
+      '<div class="fb-row" id="fb-msg-'+q.id+'"></div>'+
+      '<button class="expl-btn" id="exbtn-'+q.id+'" onclick="toggleExpl('+q.id+')" style="display:none">📖 해설 보기 <span class="arrow">▼</span></button>'+
+      '<div class="expl-body" id="expl-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  }
+
+  return '<div class="q-card '+cardClass+'" id="qcard-'+q.id+'">'+
+    '<div class="q-header">'+
+      '<div class="q-num">'+q.id+'</div>'+
+      tag+
+      '<div class="q-status" id="qstatus-'+q.id+'">'+statusHtml+'</div>'+
+    '</div>'+
+    '<div class="q-body">'+
+      '<div class="q-text">'+q.q+'</div>'+
+      inputHtml+
+      fbHtml+
+    '</div>'+
+  '</div>';
+}
+
+// ═══════════════════════════════════════════
+// SUBMIT HANDLERS
+// ═══════════════════════════════════════════
+function submitChoice(qid, chosenIdx) {
+  var q = QUESTIONS.find(function(x){ return x.id===qid; });
+  var correct = chosenIdx === q.ansIdx;
+  userAnswers[qid] = { given: q.opts[chosenIdx], givenIdx: chosenIdx, correct: correct };
+
+  // Disable all option buttons
+  for(var i=0;i<q.opts.length;i++) {
+    var btn = document.getElementById('opt-'+qid+'-'+i);
+    if(btn) {
+      btn.disabled = true;
+      if(i===q.ansIdx) btn.classList.add('correct-reveal');
+      if(i===chosenIdx && !correct) btn.classList.add('selected-wrong');
+      if(i===chosenIdx && correct) btn.classList.add('selected-correct');
+    }
+  }
+  showFeedback(qid, correct, q.ans);
+  updateCard(qid, correct);
+  updateProgress();
+  updateOverview();
+}
+
+function submitText(qid) {
+  var q = QUESTIONS.find(function(x){ return x.id===qid; });
+  var inp = document.getElementById('txt-'+qid);
+  var given = inp.value.trim();
+  if(!given) return;
+
+  // flexible match: normalize
+  var norm = function(s){ return s.replace(/\s/g,'').toLowerCase(); };
+  var correct = norm(given) === norm(q.ans) ||
+    (q.ans==='②④' && (norm(given)==='②④' || norm(given)==='④②' || norm(given)==='24' || norm(given)==='42'));
+
+  inp.disabled = true;
+  inp.classList.add(correct ? 'correct' : 'wrong');
+  document.getElementById('sub-'+qid).disabled = true;
+  userAnswers[qid] = { given: given, correct: correct };
+
+  showFeedback(qid, correct, q.ans);
+  updateCard(qid, correct);
+  updateProgress();
+  updateOverview();
+}
+
+function showFeedback(qid, correct, ans) {
+  var fb = document.getElementById('fb-'+qid);
+  var msgEl = document.getElementById('fb-msg-'+qid);
+  var exBtn = document.getElementById('exbtn-'+qid);
+  fb.classList.add('show');
+  if(msgEl) {
+    if(correct) {
+      msgEl.innerHTML = '<span class="fb-correct">✅ 정답입니다!</span>';
+    } else {
+      msgEl.innerHTML = '<span class="fb-wrong">❌ 오답입니다. 정답: <span style="font-family:\'JetBrains Mono\',monospace;background:var(--glt2);padding:2px 8px;border-radius:5px;color:var(--green)">'+ans+'</span></span>';
+    }
+  }
+  if(exBtn) exBtn.style.display = 'flex';
+}
+
+function updateCard(qid, correct) {
+  var card = document.getElementById('qcard-'+qid);
+  var status = document.getElementById('qstatus-'+qid);
+  if(card) {
+    card.classList.remove('answered-correct','answered-wrong');
+    card.classList.add(correct ? 'answered-correct' : 'answered-wrong');
+  }
+  if(status) {
+    status.innerHTML = correct ?
+      '<span class="dot dot-correct"></span><span style="color:var(--green)">정답</span>' :
+      '<span class="dot dot-wrong"></span><span style="color:var(--rose)">오답</span>';
+  }
+}
+
+function toggleExpl(qid) {
+  var expl = document.getElementById('expl-'+qid);
+  var btn = document.getElementById('exbtn-'+qid);
+  if(!expl) return;
+  var showing = expl.classList.contains('show');
+  expl.classList.toggle('show');
+  if(btn) {
+    btn.classList.toggle('open', !showing);
+    btn.querySelector('.arrow').textContent = showing ? '▼' : '▲';
+    btn.innerHTML = btn.innerHTML.replace('📖 해설 보기','📖 해설 '+(showing?'보기':'닫기'));
+  }
+}
+
+// ═══════════════════════════════════════════
+// PROGRESS & OVERVIEW
+// ═══════════════════════════════════════════
+function updateProgress() {
+  var answered = Object.keys(userAnswers).length;
+  var pct = (answered/30)*100;
+  var fill = document.getElementById('progress-fill');
+  if(fill) fill.style.width = pct+'%';
+  var fp = document.getElementById('fp-answered');
+  if(fp) fp.textContent = answered;
+}
+
+function updateOverview() {
+  var answered = Object.keys(userAnswers).length;
+  var correct = Object.values(userAnswers).filter(function(a){ return a.correct; }).length;
+  var wrong = answered - correct;
+
+  var el = function(id,v){ var e=document.getElementById(id);if(e)e.textContent=v; };
+  el('ov-total', answered);
+  el('ov-correct', correct);
+  el('ov-wrong', wrong);
+  el('ov-remain', 30-answered);
+
+  // Grid dots
+  var grid = document.getElementById('ov-grid');
+  if(!grid) return;
+  var html = '';
+  for(var i=1;i<=30;i++){
+    var a = userAnswers[i];
+    var cls = a ? (a.correct?'ov-correct':'ov-wrong') : '';
+    var sec = i<=10 ? 1 : i<=20 ? 2 : 3;
+    html += '<div class="ov-dot '+cls+'" onclick="goPage('+sec+');setTimeout(function(){scrollToQ('+i+')},80)" title="문제 '+i+'">'+i+'</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function scrollToQ(id) {
+  var el = document.getElementById('qcard-'+id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ═══════════════════════════════════════════
+// RESULTS PAGE
+// ═══════════════════════════════════════════
+function renderResults() {
+  var answered = Object.keys(userAnswers).length;
+  var correct = Object.values(userAnswers).filter(function(a){ return a.correct; }).length;
+  var wrong = answered - correct;
+  var remain = 30-answered;
+  var pct = Math.round((correct/30)*100);
+
+  var grade = correct>=28?'🏆 완벽! KOI 준비 완료':
+              correct>=24?'⭐⭐⭐ 우수':
+              correct>=18?'⭐⭐ 양호':
+              correct>=12?'⭐ 보통':
+              '📚 기초 재학습 필요';
+
+  var html = '<div class="result-big">'+
+    '<div class="result-score">'+correct+'<span style="font-size:36px;color:var(--ink3)">/30</span></div>'+
+    '<div class="result-grade">'+grade+'</div>'+
+    '<div style="font-size:14px;color:var(--ink3);margin-bottom:14px">정답률 '+pct+'%</div>'+
+    '<div class="result-bar-wrap"><div class="result-bar" id="result-bar" style="width:0%"></div></div>'+
+    '<div class="result-grid">'+
+      '<div class="rg-item"><div class="rg-n" style="color:var(--green)">'+correct+'</div><div class="rg-l">✅ 정답</div></div>'+
+      '<div class="rg-item"><div class="rg-n" style="color:var(--rose)">'+wrong+'</div><div class="rg-l">❌ 오답</div></div>'+
+      '<div class="rg-item"><div class="rg-n" style="color:var(--ink3)">'+remain+'</div><div class="rg-l">⬜ 미응답</div></div>'+
+    '</div>'+
+    '<button class="retry-btn" onclick="resetAll()">🔄 처음부터 다시</button>'+
+    '<button class="retry-btn teal" onclick="goPage(0)">🏠 개요로</button>'+
+  '</div>';
+
+  // Wrong questions list
+  var wrongQs = Object.keys(userAnswers).filter(function(id){ return !userAnswers[id].correct; }).map(Number);
+  if(wrongQs.length > 0) {
+    html += '<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-top:20px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:18px;font-weight:900;margin-bottom:14px;color:var(--rose)">❌ 틀린 문제 복습</div>'+
+      '<ul class="wrong-list">';
+    wrongQs.forEach(function(id){
+      var q = QUESTIONS.find(function(x){ return x.id===id; });
+      var sec = q.sec==='basic'?1:q.sec==='adv'?2:3;
+      html += '<li class="wrong-item" onclick="goPage('+sec+');setTimeout(function(){scrollToQ('+id+');toggleExpl('+id+')},80)">'+
+        '<div class="wrong-q">문제 '+id+'. '+stripTags(q.q).substring(0,50)+(stripTags(q.q).length>50?'…':'')+'</div>'+
+        '<div class="wrong-ans">정답: '+q.ans+' | 내 답: '+(userAnswers[id].given||'(미입력)')+'</div>'+
+      '</li>';
+    });
+    html += '</ul></div>';
+  }
+
+  // Unanswered list
+  var unanswered = [];
+  for(var i=1;i<=30;i++){ if(!userAnswers[i]) unanswered.push(i); }
+  if(unanswered.length > 0) {
+    html += '<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-top:16px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:18px;font-weight:900;margin-bottom:10px;color:var(--ink3)">⬜ 미응답 문제</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    unanswered.forEach(function(id){
+      var sec = id<=10?1:id<=20?2:3;
+      html += '<div style="width:44px;height:44px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid var(--border)" onclick="goPage('+sec+');setTimeout(function(){scrollToQ('+id+')},80)">'+id+'</div>';
+    });
+    html += '</div></div>';
+  }
+
+  // All 30 explanations
+  html += '<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-top:16px;box-shadow:0 2px 8px var(--shadow)">'+
+    '<div style="font-size:18px;font-weight:900;margin-bottom:16px">📖 전체 해설 모아보기</div>';
+  QUESTIONS.forEach(function(q){
+    var a = userAnswers[q.id];
+    var statusColor = a ? (a.correct?'var(--green)':'var(--rose)') : 'var(--ink3)';
+    var statusIcon = a ? (a.correct?'✅':'❌') : '⬜';
+    html += '<div style="border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden">'+
+      '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--bg2)" onclick="this.nextElementSibling.classList.toggle(\'show\')">'+
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-weight:900;font-size:14px;background:var(--indigo);color:#fff;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+q.id+'</span>'+
+        '<span style="font-size:15px;font-weight:700;flex:1">'+stripTags(q.q).substring(0,45)+(stripTags(q.q).length>45?'…':'')+'</span>'+
+        '<span style="color:'+statusColor+';font-weight:700;font-size:14px">'+statusIcon+' 정답: '+q.ans+'</span>'+
+        '<span style="color:var(--ink3)">▼</span>'+
+      '</div>'+
+      '<div class="expl-body" style="margin:0;border-left:none;border-radius:0;border-top:1.5px solid var(--border)">'+q.expl+'</div>'+
+    '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('result-area').innerHTML = html;
+  setTimeout(function(){
+    var bar = document.getElementById('result-bar');
+    if(bar) bar.style.width = pct+'%';
+  }, 100);
+}
+
+function stripTags(s) {
+  return s.replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+}
+
+// ═══════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════
+function resetAll() {
+  userAnswers = {};
+  // Rebuild all question sections
+  renderSections();
+  updateProgress();
+  updateOverview();
+  goPage(0);
+}
+
+// ═══════════════════════════════════════════
+// RENDER SECTIONS
+// ═══════════════════════════════════════════
+function renderSections() {
+  var sec1 = document.getElementById('sec1-questions');
+  var sec2 = document.getElementById('sec2-questions');
+  var sec3 = document.getElementById('sec3-questions');
+  if(!sec1||!sec2||!sec3) return;
+
+  var h1='', h2='', h3='';
+  QUESTIONS.forEach(function(q){
+    var html = buildQuestion(q);
+    if(q.sec==='basic') h1+=html;
+    else if(q.sec==='adv') h2+=html;
+    else h3+=html;
+  });
+  sec1.innerHTML = h1;
+  sec2.innerHTML = h2;
+  sec3.innerHTML = h3;
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.onload = function() {
+  renderSections();
+  updateOverview();
+  updateProgress();
+};
+</script>
+</body>
+</html>

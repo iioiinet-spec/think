@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>집합 연산 문제집 | 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#fdfaf3;--bg2:#f5f0e4;--bg3:#ede6d6;
+  --ink:#1a1408;--ink2:#3d3420;--ink3:#6b5c3e;
+  --gold:#c8860a;--glt:#fff4d0;
+  --teal:#0e7c72;--tlt:#d4f0ec;
+  --rose:#b03a2e;--rlt:#fde8e6;
+  --indigo:#2c3e8c;--ilt:#e0e6ff;
+  --green:#1e7a3c;--glt2:#d6f5e3;
+  --purple:#6b2d8c;--plt:#f0e0ff;
+  --border:#d6c9a8;--shadow:rgba(26,20,8,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.8}
+
+/* HEADER */
+header{background:var(--ink);color:var(--bg);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 18px rgba(0,0,0,.5)}
+.brand{font-size:10px;color:var(--glt);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+header h1{font-size:19px;font-weight:900}
+.hbadge{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bdg{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px}
+.bdg-g{background:var(--gold);color:var(--ink)}
+.bdg-i{background:var(--indigo);color:#fff}
+.bdg-t{background:var(--teal);color:#fff}
+
+/* PROGRESS */
+.prog-outer{height:6px;background:var(--bg3)}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .5s;width:0%}
+
+/* TABS */
+.nav-tabs{display:flex;background:var(--bg3);border-bottom:2px solid var(--border);overflow-x:auto;position:sticky;top:61px;z-index:190;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:12px 20px;font-size:13.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
+.ntab:hover{background:var(--bg2);color:var(--ink)}
+.ntab.active{background:var(--bg);color:var(--indigo);border-bottom-color:var(--indigo)}
+
+/* PAGES */
+.page{display:none;max-width:920px;margin:0 auto;padding:30px 22px 100px}
+.page.active{display:block}
+
+/* SCORE DASH */
+.sdash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.sc{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+.sc .n{font-size:30px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.sc .l{font-size:12px;color:var(--ink3);margin-top:4px;font-weight:700}
+
+/* SEC HEADER */
+.sec-h{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.sec-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.sec-h h2{font-size:23px;font-weight:900}
+.sec-h p{font-size:13px;color:var(--ink3);margin-top:2px}
+
+/* OPERATION CHIPS */
+.op-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.op-chip{padding:7px 14px;border-radius:20px;font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;border:1.5px solid}
+.op-u{background:var(--ilt);border-color:var(--indigo);color:var(--indigo)}
+.op-i{background:var(--tlt);border-color:var(--teal);color:var(--teal)}
+.op-d{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+.op-c{background:var(--glt);border-color:var(--gold);color:#7a5000}
+.op-s{background:var(--plt);border-color:var(--purple);color:var(--purple)}
+
+/* QUESTION CARD */
+.qcard{background:#fff;border:2px solid var(--border);border-radius:16px;margin-bottom:18px;overflow:hidden;transition:border-color .2s;box-shadow:0 2px 8px var(--shadow)}
+.qcard.q-ok{border-color:var(--green)}
+.qcard.q-ng{border-color:var(--rose)}
+
+/* CARD HEADER */
+.qhdr{display:flex;align-items:center;gap:12px;padding:16px 20px 12px;border-bottom:1.5px solid var(--border);background:var(--bg2)}
+.qnum{width:40px;height:40px;border-radius:10px;background:var(--indigo);color:#fff;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.qtag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.qt-basic{background:var(--tlt);color:var(--teal);border-color:var(--teal)}
+.qt-adv{background:var(--plt);color:var(--purple);border-color:var(--purple)}
+.qt-koi{background:var(--glt);color:var(--gold);border-color:var(--gold)}
+.qst{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.dot{width:9px;height:9px;border-radius:50%}
+.dok{background:var(--green)}
+.dng{background:var(--rose)}
+.dun{background:var(--border)}
+
+/* CARD BODY */
+.qbody{padding:18px 20px}
+
+/* GIVEN INFO BOX */
+.given{background:var(--bg2);border-left:4px solid var(--indigo);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--indigo);line-height:2}
+
+/* QUESTION TEXT */
+.qtext{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:14px;line-height:1.7}
+.math{font-family:'JetBrains Mono',monospace;background:var(--ilt);color:var(--indigo);padding:2px 8px;border-radius:6px;font-size:15px}
+
+/* CHOICE OPTIONS */
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.obt{display:flex;align-items:center;gap:11px;padding:11px 16px;border:2px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:16px;font-weight:600;color:var(--ink);transition:all .15s;font-family:'Noto Sans KR',sans-serif;text-align:left;font-family:'JetBrains Mono',monospace}
+.obt:hover:not(:disabled){border-color:var(--indigo);background:var(--ilt)}
+.onum{width:26px;height:26px;border-radius:7px;background:var(--bg3);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink3);transition:all .15s}
+.obt:hover:not(:disabled) .onum{background:var(--indigo);color:#fff}
+.obt.ok{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.ok .onum{background:var(--green)!important;color:#fff!important}
+.obt.ng{border-color:var(--rose)!important;background:var(--rlt)!important}
+.obt.ng .onum{background:var(--rose)!important;color:#fff!important}
+.obt.reveal{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.reveal .onum{background:var(--green)!important;color:#fff!important}
+.obt:disabled{cursor:not-allowed}
+
+/* TEXT INPUT */
+.tinp-wrap{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.tinp{padding:10px 15px;border:2px solid var(--border);border-radius:10px;font-size:16px;font-family:'JetBrains Mono',monospace;font-weight:700;background:#fff;color:var(--ink);min-width:200px;transition:border-color .15s}
+.tinp:focus{outline:none;border-color:var(--indigo)}
+.tinp.tok{border-color:var(--green)!important;background:var(--glt2)!important}
+.tinp.tng{border-color:var(--rose)!important;background:var(--rlt)!important}
+
+/* MULTI-PART */
+.multi-part{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.mp-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);background:#fff}
+.mp-row:last-child{border-bottom:none}
+.mp-label{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--indigo);font-size:15px;min-width:80px;flex-shrink:0}
+.mp-inp{flex:1;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:15px;font-family:'JetBrains Mono',monospace;font-weight:700;background:#fff;color:var(--ink);transition:border-color .15s;min-width:0}
+.mp-inp:focus{outline:none;border-color:var(--indigo)}
+.mp-inp.tok{border-color:var(--green)!important;background:var(--glt2)!important}
+.mp-inp.tng{border-color:var(--rose)!important;background:var(--rlt)!important}
+.mp-ans{font-size:13px;color:var(--ink3);font-family:'JetBrains Mono',monospace;display:none;flex-shrink:0}
+.mp-ans.show{display:block}
+.mp-ok{color:var(--green);font-weight:700}
+.mp-ng{color:var(--rose);font-weight:700}
+
+/* SUBMIT */
+.subm{padding:10px 22px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .15s;flex-shrink:0}
+.subm:hover:not(:disabled){background:#1f2d6a}
+.subm:disabled{background:var(--border);cursor:not-allowed}
+
+/* FEEDBACK */
+.qfb{margin-top:12px;display:none}
+.qfb.show{display:block}
+.fbtxt{font-size:16px;font-weight:700;margin-bottom:8px}
+.tok-txt{color:var(--green)}
+.tng-txt{color:var(--rose)}
+.ans-badge{font-family:'JetBrains Mono',monospace;background:var(--glt2);color:var(--green);padding:2px 9px;border-radius:6px;font-size:15px}
+
+/* EXPLANATION */
+.exbtn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border:1.5px solid var(--teal);border-radius:8px;background:#fff;color:var(--teal);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;margin-top:8px}
+.exbtn:hover{background:var(--tlt)}
+.exbtn .arr{transition:transform .2s;display:inline-block}
+.exbtn.open .arr{transform:rotate(180deg)}
+.exbox{margin-top:10px;background:var(--bg2);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;display:none}
+.exbox.show{display:block}
+.exbox .fml{background:#fff;border:1.5px solid var(--teal);border-radius:8px;padding:9px 14px;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--teal);text-align:center;margin:10px 0}
+.exbox .step{margin:6px 0;padding:6px 10px;background:#fff;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:14px;border-left:3px solid var(--indigo);color:var(--indigo)}
+.exbox .hi{background:var(--ilt);color:var(--indigo);padding:1px 7px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:14px}
+
+/* OVERVIEW GRID */
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:7px;margin:14px 0}
+.ovdot{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;cursor:pointer;border:2px solid var(--border);background:#fff;color:var(--ink3);transition:all .15s;font-family:'JetBrains Mono',monospace}
+.ovdot:hover{border-color:var(--indigo);color:var(--indigo)}
+.ovdot.ov-ok{background:var(--glt2);border-color:var(--green);color:var(--green)}
+.ovdot.ov-ng{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+
+/* NAV BTNS */
+.navbtns{margin-top:16px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.nb{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.nb-out{background:#fff;border:1.5px solid var(--border);color:var(--ink3)}
+.nb-out:hover{border-color:var(--indigo);color:var(--indigo)}
+.nb-fill{background:var(--indigo);color:#fff;border:none}
+.nb-fill:hover{background:#1f2d6a}
+.nb-teal{background:var(--teal);color:#fff;border:none}
+.nb-teal:hover{background:#0a5f57}
+
+/* RESULTS */
+.res-big{text-align:center;padding:28px 16px 20px}
+.res-score{font-size:68px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+.res-grade{font-size:21px;font-weight:700;margin:8px 0;color:var(--ink2)}
+.res-bar-wrap{max-width:380px;margin:16px auto;background:var(--bg3);border-radius:8px;height:14px;overflow:hidden}
+.res-bar{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 1s;width:0%}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.rgi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 6px var(--shadow)}
+.rgi .rn{font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.rgi .rl{font-size:12px;color:var(--ink3);font-weight:700;margin-top:4px}
+.rbtn{padding:12px 30px;border:none;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .15s;margin:8px 6px}
+.rbtn-i{background:var(--indigo);color:#fff}.rbtn-i:hover{background:#1f2d6a}
+.rbtn-t{background:var(--teal);color:#fff}.rbtn-t:hover{background:#0a5f57}
+
+/* WRONG LIST */
+.wrong-item{background:#fff;border:1.5px solid var(--rlt);border-left:4px solid var(--rose);border-radius:10px;padding:13px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.wrong-item:hover{border-left-color:var(--rose);border-color:var(--rose)}
+.wi-q{font-weight:700;margin-bottom:3px;font-size:15px}
+.wi-a{font-size:13px;color:var(--rose);font-family:'JetBrains Mono',monospace}
+
+/* FORMULA CARD */
+.fcard{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)}
+.fcard h3{font-size:17px;font-weight:900;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+
+/* FLOAT */
+.fprog{position:fixed;bottom:22px;right:22px;background:white;border:1.5px solid var(--border);border-radius:14px;padding:11px 15px;box-shadow:0 4px 18px rgba(0,0,0,.13);font-size:12px;z-index:150;min-width:110px}
+.fprog .fpl{color:var(--ink3);font-weight:700;margin-bottom:5px}
+.fprog .fpn{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+
+/* ALL-EXPL */
+.allexp-item{border:1.5px solid var(--border);border-radius:10px;margin-bottom:9px;overflow:hidden}
+.allexp-hdr{display:flex;align-items:center;gap:10px;padding:11px 15px;cursor:pointer;background:var(--bg2);transition:background .15s}
+.allexp-hdr:hover{background:var(--bg3)}
+.allexp-body{padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;background:#fff;display:none;border-top:1.5px solid var(--border)}
+.allexp-body.show{display:block}
+
+@media(max-width:600px){
+  .sdash{grid-template-columns:1fr 1fr}
+  .res-grid{grid-template-columns:1fr 1fr}
+  .page{padding:18px 12px 80px}
+  header h1{font-size:15px}
+  header{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">세영코딩연구소 · ph.D Kim</div>
+    <h1>🔣 집합 연산 문제집</h1>
+  </div>
+  <div class="hbadge">
+    <span class="bdg bdg-t">합·교·차·여·대칭차</span>
+    <span class="bdg bdg-i">30문제</span>
+  </div>
+</header>
+<div class="prog-outer"><div class="prog-fill" id="prog-fill"></div></div>
+
+<div class="nav-tabs">
+  <button class="ntab active" onclick="goPage(0)">🏠 개요</button>
+  <button class="ntab" onclick="goPage(1)">📘 기본 1~10</button>
+  <button class="ntab" onclick="goPage(2)">📗 심화 11~20</button>
+  <button class="ntab" onclick="goPage(3)">🏆 올림피아드 21~30</button>
+  <button class="ntab" onclick="goPage(4)">📊 결과 &amp; 해설</button>
+</div>
+
+<!-- ═══ PAGE 0: 개요 ═══ -->
+<div class="page active" id="pg0">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏠</div>
+    <div><h2>집합 연산 문제집</h2><p>합집합·교집합·차집합·여집합·대칭차집합 · 30문제</p></div>
+  </div>
+
+  <div class="sdash">
+    <div class="sc"><div class="n" id="ov-ans" style="color:var(--indigo)">0</div><div class="l">답한 문제</div></div>
+    <div class="sc"><div class="n" id="ov-ok" style="color:var(--green)">0</div><div class="l">✅ 정답</div></div>
+    <div class="sc"><div class="n" id="ov-ng" style="color:var(--rose)">0</div><div class="l">❌ 오답</div></div>
+    <div class="sc"><div class="n" id="ov-rem" style="color:var(--ink3)">30</div><div class="l">남은 문제</div></div>
+  </div>
+
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:18px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:12px">📋 문제 현황판 (클릭하면 이동)</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;font-weight:700">
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--glt2);border:1.5px solid var(--green);margin-right:4px"></span>정답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--rlt);border:1.5px solid var(--rose);margin-right:4px"></span>오답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fff;border:1.5px solid var(--border);margin-right:4px"></span>미응답</span>
+    </div>
+    <div class="ovgrid" id="ov-grid"></div>
+  </div>
+
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:18px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:14px">📚 연산 공식 빠른 참조</div>
+    <div class="op-chips">
+      <span class="op-chip op-u">A∪B 합집합</span>
+      <span class="op-chip op-i">A∩B 교집합</span>
+      <span class="op-chip op-d">A−B 차집합</span>
+      <span class="op-chip op-c">A' 여집합</span>
+      <span class="op-chip op-s">A△B 대칭차</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px">
+      <div style="background:var(--ilt);border-radius:8px;padding:10px 14px"><strong style="color:var(--indigo)">A∪B</strong> — A 또는 B에 있는 모든 원소 (중복 제거)</div>
+      <div style="background:var(--tlt);border-radius:8px;padding:10px 14px"><strong style="color:var(--teal)">A∩B</strong> — A와 B 모두에 있는 원소</div>
+      <div style="background:var(--rlt);border-radius:8px;padding:10px 14px"><strong style="color:var(--rose)">A−B</strong> — A에 있지만 B에 없는 원소</div>
+      <div style="background:var(--glt);border-radius:8px;padding:10px 14px"><strong style="color:#7a5000">A'</strong> — 전체집합 U에서 A를 제외한 원소</div>
+      <div style="background:var(--plt);border-radius:8px;padding:10px 14px;grid-column:1/-1"><strong style="color:var(--purple)">A△B</strong> = (A−B) ∪ (B−A) — 하나에만 속하는 원소</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <div style="background:#fff;border:1.5px solid var(--teal);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(1)">
+      <div style="font-size:24px;margin-bottom:6px">📘</div>
+      <div style="font-weight:900;color:var(--teal);font-size:15px">기본문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">1~10번<br>기본 5가지 연산</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--purple);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(2)">
+      <div style="font-size:24px;margin-bottom:6px">📗</div>
+      <div style="font-weight:900;color:var(--purple);font-size:15px">심화문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">11~20번<br>복합 연산·조건판별</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gold);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(3)">
+      <div style="font-size:24px;margin-bottom:6px">🏆</div>
+      <div style="font-weight:900;color:var(--gold);font-size:15px">올림피아드</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">21~30번<br>KOI 스타일</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 1: 기본문제 ═══ -->
+<div class="page" id="pg1">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--tlt)">📘</div>
+    <div><h2>기본문제</h2><p>문제 1~10 · 합집합·교집합·차집합·여집합·대칭차집합</p></div>
+  </div>
+  <div id="sec1"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(0)">← 개요</button>
+    <button class="nb nb-fill" onclick="goPage(2)">심화문제 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: 심화문제 ═══ -->
+<div class="page" id="pg2">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--plt)">📗</div>
+    <div><h2>심화문제</h2><p>문제 11~20 · 복합 연산·항등식 판별</p></div>
+  </div>
+  <div id="sec2"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(1)">← 기본문제</button>
+    <button class="nb nb-fill" onclick="goPage(3)">올림피아드 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 3: 올림피아드 ═══ -->
+<div class="page" id="pg3">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏆</div>
+    <div><h2>올림피아드 스타일</h2><p>문제 21~30 · KOI 중등 대비</p></div>
+  </div>
+  <div id="sec3"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(2)">← 심화문제</button>
+    <button class="nb nb-teal" onclick="goPage(4)">📊 결과 보기 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 4: 결과 ═══ -->
+<div class="page" id="pg4">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt2)">📊</div>
+    <div><h2>결과 &amp; 해설</h2><p>채점 결과 · 틀린 문제 복습 · 전체 해설</p></div>
+  </div>
+  <div id="result-area"></div>
+</div>
+
+<div class="fprog">
+  <div class="fpl">진행 현황</div>
+  <div><span class="fpn" id="fp-n">0</span><span style="color:var(--ink3);font-size:13px"> / 30</span></div>
+</div>
+
+<script>
+// ═══════════════════ QUESTION DATA ═══════════════════
+var QS = [
+// ── 기본 1~10 ──
+{id:1,sec:'basic',
+ given:'A = {1,2,3}\nB = {3,4,5}',
+ q:'A∪B는?',
+ type:'choice',
+ opts:['{1,2,3}','{3}','{1,2,3,4,5}','{4,5}'],
+ ans:'③', ansIdx:2,
+ expl:'<strong>합집합</strong>은 A 또는 B에 있는 모든 원소를 중복 없이 모은 집합입니다.<div class="step">A∪B = {1,2,3} ∪ {3,4,5} = {1,2,3,4,5}</div>3이 중복되어도 한 번만 씁니다.'
+},
+{id:2,sec:'basic',
+ given:'A = {1,2,3}\nB = {3,4,5}',
+ q:'A∩B는?',
+ type:'text', ans:'{3}',
+ expl:'<strong>교집합</strong>은 A와 B 모두에 들어있는 원소입니다.<div class="step">A∩B = {3}</div>두 집합에서 공통으로 있는 원소는 3뿐입니다.'
+},
+{id:3,sec:'basic',
+ given:'A = {1,2,3,4}\nB = {3,4}',
+ q:'A−B는?',
+ type:'text', ans:'{1,2}',
+ expl:'<strong>차집합</strong> A−B는 A에는 있지만 B에는 없는 원소입니다.<div class="step">A−B = {1,2,3,4} − {3,4} = {1,2}</div>3과 4는 B에도 있으므로 제거합니다.'
+},
+{id:4,sec:'basic',
+ given:'A = {1,2,3,4}\nB = {3,4}',
+ q:'B−A는?',
+ type:'text', ans:'∅',
+ expl:'B−A는 B에는 있지만 A에는 없는 원소입니다.<div class="step">B−A = {3,4} − {1,2,3,4} = ∅</div>B의 원소 3, 4가 모두 A에 있으므로 결과는 공집합입니다.'
+},
+{id:5,sec:'basic',
+ given:'U = {1,2,3,4,5}\nA = {2,4}',
+ q:"A' (여집합)는?",
+ type:'text', ans:'{1,3,5}',
+ expl:"<strong>여집합</strong> A'는 전체집합 U에서 A를 제외한 원소입니다.<div class=\"step\">A' = U − A = {1,2,3,4,5} − {2,4} = {1,3,5}</div>"
+},
+{id:6,sec:'basic',
+ given:'A = {1,2,3}\nB = {3,4,5}',
+ q:'A△B (대칭차집합)는?',
+ type:'text', ans:'{1,2,4,5}',
+ expl:'<strong>대칭차집합</strong>은 A 또는 B 중 하나에만 있는 원소입니다.<div class="fml">A△B = (A−B) ∪ (B−A)</div><div class="step">A−B = {1,2},  B−A = {4,5}</div><div class="step">A△B = {1,2} ∪ {4,5} = {1,2,4,5}</div>'
+},
+{id:7,sec:'basic',
+ given:'A = {a,b,c}\nB = {b,c,d}',
+ q:'A∩B는?',
+ type:'text', ans:'{b,c}',
+ expl:'문자 집합도 동일하게 교집합을 구합니다.<div class="step">A∩B = {b,c}</div>b와 c가 두 집합에 모두 있습니다.'
+},
+{id:8,sec:'basic',
+ given:'A = {1,2}\nB = {2,3}',
+ q:'A∪B의 원소 개수는?',
+ type:'text', ans:'3',
+ expl:'<div class="step">A∪B = {1,2,3}</div>원소: 1, 2, 3 → 총 <span class="hi">3개</span>'
+},
+{id:9,sec:'basic',
+ given:'A = {1,2,3}\nB = {2,3,4}',
+ q:'A−B의 원소 개수는?',
+ type:'text', ans:'1',
+ expl:'<div class="step">A−B = {1,2,3} − {2,3,4} = {1}</div>원소: 1 → 총 <span class="hi">1개</span>'
+},
+{id:10,sec:'basic',
+ given:'',
+ q:'다음 중 항상 참인 것은?',
+ type:'choice',
+ opts:['A∩A = A','A∪A = ∅','A−B = B−A','A∩∅ = A'],
+ ans:'①', ansIdx:0,
+ expl:'① <span class="hi">A∩A = A</span> — 멱등 법칙, 항상 성립 ✅<br>② A∪A = ∅ — 거짓 (A∪A = A)<br>③ A−B = B−A — 일반적으로 거짓<br>④ A∩∅ = A — 거짓 (A∩∅ = ∅)'
+},
+// ── 심화 11~20 ──
+{id:11,sec:'adv',
+ given:'A = {1,2,3,4}\nB = {2,4,6}',
+ q:'(A∪B)의 원소 개수는?',
+ type:'text', ans:'5',
+ expl:'<div class="step">A∪B = {1,2,3,4} ∪ {2,4,6} = {1,2,3,4,6}</div>원소: 1,2,3,4,6 → <span class="hi">5개</span>'
+},
+{id:12,sec:'adv',
+ given:'A = {1,2,3}\nB = {2,3,4}',
+ q:'A△B는?',
+ type:'text', ans:'{1,4}',
+ expl:'<div class="fml">A△B = (A−B) ∪ (B−A)</div><div class="step">공통: {2,3}</div><div class="step">A−B = {1},  B−A = {4}</div><div class="step">A△B = {1} ∪ {4} = {1,4}</div>'
+},
+{id:13,sec:'adv',
+ given:"U = {1,2,3,4,5,6}\nA = {2,4}\nB = {1,4,6}",
+ q:"A'∩B는?",
+ type:'text', ans:'{1,6}',
+ expl:"<div class=\"step\">A' = U − A = {1,3,5,6}</div><div class=\"step\">A'∩B = {1,3,5,6} ∩ {1,4,6} = {1,6}</div>"
+},
+{id:14,sec:'adv',
+ given:'A = {1,2,3}\nB = {3,4}',
+ q:'(A∪B) − (A∩B)는?',
+ type:'text', ans:'{1,2,4}',
+ expl:'<div class="step">A∪B = {1,2,3,4}</div><div class="step">A∩B = {3}</div><div class="step">(A∪B)−(A∩B) = {1,2,3,4}−{3} = {1,2,4}</div>이것은 대칭차집합 A△B와 같습니다!'
+},
+{id:15,sec:'adv',
+ given:'A = {1,2,3}\nB = {3,4,5}',
+ q:'(A−B) ∪ (B−A)는?',
+ type:'text', ans:'{1,2,4,5}',
+ expl:'<div class="step">A−B = {1,2}</div><div class="step">B−A = {4,5}</div><div class="step">(A−B)∪(B−A) = {1,2,4,5}</div>이것이 바로 <span class="hi">A△B</span>의 정의입니다!'
+},
+{id:16,sec:'adv',
+ given:'A = {1,2}\nB = {2,3}',
+ q:'(A∪B) ∩ A는?',
+ type:'text', ans:'{1,2}',
+ expl:'<div class="step">A∪B = {1,2,3}</div><div class="step">(A∪B)∩A = {1,2,3}∩{1,2} = {1,2}</div>흡수 법칙: A∩(A∪B) = A 이므로 결과는 항상 A입니다.'
+},
+{id:17,sec:'adv',
+ given:'A = {1,2,3}\nB = {2,3}',
+ q:'A∩B = B 인가?',
+ type:'choice',
+ opts:['예, 성립한다','아니오, 성립하지 않는다'],
+ ans:'①', ansIdx:0,
+ expl:'<div class="step">A∩B = {1,2,3}∩{2,3} = {2,3} = B</div>B⊆A 이면 A∩B = B 가 항상 성립합니다. ✅'
+},
+{id:18,sec:'adv',
+ given:'A = {1,2}\nB = {1,2,3}',
+ q:'(A−B) ∪ (B−A)는?',
+ type:'text', ans:'{3}',
+ expl:'<div class="step">A−B = {1,2}−{1,2,3} = ∅  (A⊂B이므로)</div><div class="step">B−A = {1,2,3}−{1,2} = {3}</div><div class="step">∅ ∪ {3} = {3}</div>'
+},
+{id:19,sec:'adv',
+ given:"U = {1,2,3,4,5}\nA = {1,3}\nB = {2,3}",
+ q:"A'∪B는?",
+ type:'text', ans:'{2,3,4,5}',
+ expl:"<div class=\"step\">A' = {2,4,5}</div><div class=\"step\">A'∪B = {2,4,5}∪{2,3} = {2,3,4,5}</div>"
+},
+{id:20,sec:'adv',
+ given:'',
+ q:'다음 중 항상 참인 것은?',
+ type:'choice',
+ opts:['A∪∅ = A','A∩∅ = A','A△A = A','A−A = A'],
+ ans:'①', ansIdx:0,
+ expl:'① <span class="hi">A∪∅ = A</span> — 항등 법칙, 항상 성립 ✅<br>② A∩∅ = A — 거짓 (A∩∅ = ∅)<br>③ A△A = A — 거짓 (A△A = ∅)<br>④ A−A = A — 거짓 (A−A = ∅)'
+},
+// ── 올림피아드 21~30 ──
+{id:21,sec:'koi',
+ given:'A = {1,2,3}\nB = {2,4}',
+ q:'다음을 모두 구하시오.',
+ type:'multi',
+ parts:[
+   {label:'A∪B =', key:'union', ans:'{1,2,3,4}'},
+   {label:'A∩B =', key:'inter', ans:'{2}'},
+   {label:'A−B =', key:'diff',  ans:'{1,3}'},
+   {label:'A△B =', key:'sym',   ans:'{1,3,4}'}
+ ],
+ expl:'<div class="step">A∪B = {1,2,3}∪{2,4} = {1,2,3,4}</div><div class="step">A∩B = {2}</div><div class="step">A−B = {1,3}</div><div class="step">B−A = {4}</div><div class="step">A△B = {1,3}∪{4} = {1,3,4}</div>'
+},
+{id:22,sec:'koi',
+ given:"U = {1,2,3,4,5,6,7,8,9,10}\nA = {2,4,6,8,10}",
+ q:"A' (여집합)를 구하시오.",
+ type:'text', ans:'{1,3,5,7,9}',
+ expl:"<div class=\"step\">A' = U−A = {1,3,5,7,9}</div>짝수 제외 → 홀수만 남습니다."
+},
+{id:23,sec:'koi',
+ given:'A = {1,2,3}\nB = {3,4,5}\nC = {3,5,6}',
+ q:'A∩B∩C는?',
+ type:'text', ans:'{3}',
+ expl:'<div class="step">A∩B = {3}</div><div class="step">{3}∩C = {3}∩{3,5,6} = {3}</div>세 집합 모두에 속하는 원소는 3뿐입니다.'
+},
+{id:24,sec:'koi',
+ given:'A = {1,2,3,4}\nB = {2,3}',
+ q:'(A∩B)의 원소 개수는?',
+ type:'text', ans:'2',
+ expl:'<div class="step">A∩B = {2,3}</div>원소 개수 = <span class="hi">2</span>'
+},
+{id:25,sec:'koi',
+ given:'A = {1,2,3}\nB = {3,4}',
+ q:'(A∪B)의 원소 개수는?',
+ type:'text', ans:'4',
+ expl:'<div class="step">A∪B = {1,2,3,4}</div>원소 개수 = <span class="hi">4</span>'
+},
+{id:26,sec:'koi',
+ given:'A = {1,2,3,4}\nB = {2,4}\nC = {1,3}',
+ q:'(A−B)∩C는?',
+ type:'text', ans:'{1,3}',
+ expl:'<div class="step">A−B = {1,2,3,4}−{2,4} = {1,3}</div><div class="step">{1,3}∩C = {1,3}∩{1,3} = {1,3}</div>'
+},
+{id:27,sec:'koi',
+ given:"U = {1,2,3,4,5,6,7,8}\nA = {2,4,6}\nB = {4,5}",
+ q:"(A'∩B)를 구하시오.",
+ type:'text', ans:'{5}',
+ expl:"<div class=\"step\">A' = {1,3,5,7,8}</div><div class=\"step\">A'∩B = {1,3,5,7,8}∩{4,5} = {5}</div>"
+},
+{id:28,sec:'koi',
+ given:'A = {1,2}\nB = {2,3}\nC = {3,4}',
+ q:'(A∪B)∩C는?',
+ type:'text', ans:'{3}',
+ expl:'<div class="step">A∪B = {1,2,3}</div><div class="step">{1,2,3}∩{3,4} = {3}</div>'
+},
+{id:29,sec:'koi',
+ given:'A = {1,2,3}\nB = {2,3,4}',
+ q:'(A∩B) ∪ (A−B)는?',
+ type:'text', ans:'{1,2,3}',
+ expl:'<div class="step">A∩B = {2,3}</div><div class="step">A−B = {1}</div><div class="step">{2,3}∪{1} = {1,2,3} = A</div>공식: (A∩B)∪(A−B) = A 항상 성립!'
+},
+{id:30,sec:'koi',
+ given:'A = {1,2,3,4}\nB = {2,4,6}',
+ q:'다음을 모두 구하시오.',
+ type:'multi',
+ parts:[
+   {label:'① A∪B =',  key:'union',  ans:'{1,2,3,4,6}'},
+   {label:'② A∩B =',  key:'inter',  ans:'{2,4}'},
+   {label:'③ A−B =',  key:'diffAB', ans:'{1,3}'},
+   {label:'④ B−A =',  key:'diffBA', ans:'{6}'},
+   {label:'⑤ A△B =', key:'sym',    ans:'{1,3,6}'}
+ ],
+ expl:'<div class="step">A∪B = {1,2,3,4,6}</div><div class="step">A∩B = {2,4}</div><div class="step">A−B = {1,3}</div><div class="step">B−A = {6}</div><div class="step">A△B = {1,3}∪{6} = {1,3,6}</div>'
+}
+];
+
+// ═══════════════════ STATE ═══════════════════
+var UA = {}; // {id: {correct, given, parts(for multi)}}
+
+// ═══════════════════ NAVIGATION ═══════════════════
+var tabs = document.querySelectorAll('.ntab');
+function goPage(n) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  tabs.forEach(function(t){t.classList.remove('active');});
+  document.getElementById('pg'+n).classList.add('active');
+  tabs[n].classList.add('active');
+  window.scrollTo(0,0);
+  updateOv();
+  if(n===4) renderResults();
+}
+
+// ═══════════════════ BUILD QUESTION ═══════════════════
+function buildQ(q) {
+  var a = UA[q.id];
+  var cardCls = a ? (a.correct?'q-ok':'q-ng') : '';
+  var tagCls = q.sec==='basic'?'qt-basic':q.sec==='adv'?'qt-adv':'qt-koi';
+  var tagLbl = q.sec==='basic'?'기본':q.sec==='adv'?'심화':'올림피아드';
+
+  var stHtml = a ?
+    (a.correct ? '<span class="dot dok"></span><span style="color:var(--green)">정답</span>' :
+                 '<span class="dot dng"></span><span style="color:var(--rose)">오답</span>') :
+    '<span class="dot dun"></span><span style="color:var(--ink3)">미응답</span>';
+
+  // Given info
+  var givenHtml = q.given ? '<div class="given">'+q.given.replace(/\n/g,'<br>')+'</div>' : '';
+
+  // Input area
+  var inputHtml = '';
+  var nums = ['①','②','③','④','⑤'];
+  if(q.type==='choice') {
+    inputHtml = '<div class="opts" id="opts-'+q.id+'">';
+    q.opts.forEach(function(opt,i){
+      var cls='';
+      if(a){
+        if(i===q.ansIdx) cls='reveal';
+        if(i===a.givenIdx && !a.correct) cls='ng';
+        if(i===a.givenIdx && a.correct) cls='ok';
+      }
+      inputHtml+='<button class="obt '+cls+'" id="ob-'+q.id+'-'+i+'" onclick="subChoice('+q.id+','+i+')" '+(a?'disabled':'')+'>'+
+        '<span class="onum">'+nums[i]+'</span>'+opt+'</button>';
+    });
+    inputHtml += '</div>';
+  } else if(q.type==='text') {
+    var inCls = a ? (a.correct?'tok':'tng') : '';
+    inputHtml = '<div class="tinp-wrap">'+
+      '<input class="tinp '+inCls+'" id="ti-'+q.id+'" placeholder="답 입력..." value="'+(a?a.given:'')+'" '+(a?'disabled':'')+'>'+
+      '<button class="subm" id="sb-'+q.id+'" onclick="subText('+q.id+')" '+(a?'disabled':'')+'>제출</button>'+
+    '</div>';
+  } else if(q.type==='multi') {
+    inputHtml = '<div class="multi-part" id="mp-'+q.id+'">';
+    q.parts.forEach(function(p,i){
+      var pAns = a && a.parts ? a.parts[i] : null;
+      var cls = pAns ? (pAns.correct?'tok':'tng') : '';
+      inputHtml += '<div class="mp-row">'+
+        '<span class="mp-label">'+p.label+'</span>'+
+        '<input class="mp-inp '+cls+'" id="mpi-'+q.id+'-'+i+'" placeholder="..." value="'+(pAns?pAns.given:'')+'" '+(a?'disabled':'')+'>'+
+        (a?'<span class="mp-ans show '+(pAns&&pAns.correct?'mp-ok':'mp-ng')+'">'+(pAns&&pAns.correct?'✅':'❌ '+p.ans)+'</span>':'<span class="mp-ans" id="mpa-'+q.id+'-'+i+'"></span>')+
+      '</div>';
+    });
+    inputHtml += '</div>';
+    if(!a) inputHtml += '<button class="subm" id="sb-'+q.id+'" onclick="subMulti('+q.id+')">제출</button>';
+  }
+
+  // Feedback
+  var fbHtml = '';
+  if(a) {
+    var fbCls = a.correct ? 'tok-txt' : 'tng-txt';
+    var fbMsg = a.correct ? '✅ 정답입니다!' : '❌ 오답입니다. &nbsp;정답: <span class="ans-badge">'+q.ans+'</span>';
+    if(q.type==='multi') fbMsg = a.correct ? '✅ 모두 정답!' : '❌ 일부 오답 — 해설을 확인하세요.';
+    fbHtml = '<div class="qfb show" id="fb-'+q.id+'">'+
+      '<div class="fbtxt"><span class="'+fbCls+'">'+fbMsg+'</span></div>'+
+      '<button class="exbtn" id="exb-'+q.id+'" onclick="togEx('+q.id+')">📖 해설 보기 <span class="arr">▼</span></button>'+
+      '<div class="exbox" id="exbox-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  } else {
+    fbHtml = '<div class="qfb" id="fb-'+q.id+'">'+
+      '<div class="fbtxt" id="fbm-'+q.id+'"></div>'+
+      '<button class="exbtn" id="exb-'+q.id+'" onclick="togEx('+q.id+')" style="display:none">📖 해설 보기 <span class="arr">▼</span></button>'+
+      '<div class="exbox" id="exbox-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  }
+
+  return '<div class="qcard '+cardCls+'" id="qc-'+q.id+'">'+
+    '<div class="qhdr">'+
+      '<div class="qnum">'+q.id+'</div>'+
+      '<span class="qtag '+tagCls+'">'+tagLbl+'</span>'+
+      '<div class="qst" id="qs-'+q.id+'">'+stHtml+'</div>'+
+    '</div>'+
+    '<div class="qbody">'+
+      givenHtml+
+      '<div class="qtext">'+q.q+'</div>'+
+      inputHtml+
+      fbHtml+
+    '</div>'+
+  '</div>';
+}
+
+// ═══════════════════ SUBMIT HANDLERS ═══════════════════
+function subChoice(qid, ci) {
+  var q = QS.find(function(x){return x.id===qid;});
+  var ok = ci===q.ansIdx;
+  UA[qid] = {correct:ok, given:q.opts[ci], givenIdx:ci};
+  for(var i=0;i<q.opts.length;i++){
+    var b=document.getElementById('ob-'+qid+'-'+i);
+    if(!b) continue;
+    b.disabled=true;
+    b.className='obt'+(i===q.ansIdx?' reveal':'')+(i===ci&&!ok?' ng':'')+(i===ci&&ok?' ok':'');
+  }
+  showFB(qid, ok, q.ans, q.type);
+  updCard(qid, ok);
+  updProg(); updateOv();
+}
+
+function subText(qid) {
+  var q = QS.find(function(x){return x.id===qid;});
+  var inp = document.getElementById('ti-'+qid);
+  var v = inp.value.trim();
+  if(!v) return;
+  var norm = function(s){return s.replace(/\s/g,'').replace(/，/g,',').toLowerCase();};
+  var ok = norm(v)===norm(q.ans);
+  inp.disabled=true; inp.className='tinp '+(ok?'tok':'tng');
+  document.getElementById('sb-'+qid).disabled=true;
+  UA[qid] = {correct:ok, given:v};
+  showFB(qid, ok, q.ans, q.type);
+  updCard(qid, ok);
+  updProg(); updateOv();
+}
+
+function subMulti(qid) {
+  var q = QS.find(function(x){return x.id===qid;});
+  var norm = function(s){return s.replace(/\s/g,'').replace(/，/g,',').toLowerCase();};
+  var parts = [];
+  var allOk = true;
+  q.parts.forEach(function(p,i){
+    var inp = document.getElementById('mpi-'+qid+'-'+i);
+    var v = inp ? inp.value.trim() : '';
+    var ok = norm(v)===norm(p.ans);
+    if(!ok) allOk=false;
+    parts.push({given:v, correct:ok});
+    if(inp) {inp.disabled=true; inp.className='mp-inp '+(ok?'tok':'tng');}
+    var mpa = document.getElementById('mpa-'+qid+'-'+i);
+    if(mpa){mpa.className='mp-ans show '+(ok?'mp-ok':'mp-ng');mpa.textContent=ok?'✅':'❌ '+p.ans;}
+  });
+  var sb = document.getElementById('sb-'+qid);
+  if(sb) sb.style.display='none';
+  UA[qid] = {correct:allOk, parts:parts};
+  showFB(qid, allOk, '', 'multi');
+  updCard(qid, allOk);
+  updProg(); updateOv();
+}
+
+function showFB(qid, ok, ans, type) {
+  var fb = document.getElementById('fb-'+qid);
+  var msg = document.getElementById('fbm-'+qid);
+  var exb = document.getElementById('exb-'+qid);
+  fb.classList.add('show');
+  if(msg) {
+    if(type==='multi') msg.innerHTML = ok?'<span class="tok-txt">✅ 모두 정답!</span>':'<span class="tng-txt">❌ 일부 오답 — 해설을 확인하세요.</span>';
+    else msg.innerHTML = ok?'<span class="tok-txt">✅ 정답입니다!</span>':'<span class="tng-txt">❌ 오답입니다. &nbsp;정답: <span class="ans-badge">'+ans+'</span></span>';
+  }
+  if(exb) exb.style.display='inline-flex';
+}
+
+function updCard(qid, ok) {
+  var card=document.getElementById('qc-'+qid);
+  var st=document.getElementById('qs-'+qid);
+  if(card){card.classList.remove('q-ok','q-ng');card.classList.add(ok?'q-ok':'q-ng');}
+  if(st) st.innerHTML=ok?'<span class="dot dok"></span><span style="color:var(--green)">정답</span>':'<span class="dot dng"></span><span style="color:var(--rose)">오답</span>';
+}
+
+function togEx(qid) {
+  var box=document.getElementById('exbox-'+qid);
+  var btn=document.getElementById('exb-'+qid);
+  if(!box) return;
+  var showing=box.classList.toggle('show');
+  if(btn){
+    btn.classList.toggle('open',showing);
+    btn.querySelector('.arr').textContent=showing?'▲':'▼';
+  }
+}
+
+// ═══════════════════ PROGRESS & OVERVIEW ═══════════════════
+function updProg() {
+  var n=Object.keys(UA).length;
+  var fill=document.getElementById('prog-fill');
+  if(fill) fill.style.width=(n/30*100)+'%';
+  var fp=document.getElementById('fp-n');
+  if(fp) fp.textContent=n;
+}
+function updateOv() {
+  var n=Object.keys(UA).length;
+  var ok=Object.values(UA).filter(function(a){return a.correct;}).length;
+  var ng=n-ok;
+  var e=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  e('ov-ans',n); e('ov-ok',ok); e('ov-ng',ng); e('ov-rem',30-n);
+  var grid=document.getElementById('ov-grid');
+  if(!grid) return;
+  var h='';
+  for(var i=1;i<=30;i++){
+    var a=UA[i];
+    var cls=a?(a.correct?'ov-ok':'ov-ng'):'';
+    var sec=i<=10?1:i<=20?2:3;
+    h+='<div class="ovdot '+cls+'" onclick="goPage('+sec+');setTimeout(function(){scQ('+i+')},80)" title="문제 '+i+'">'+i+'</div>';
+  }
+  grid.innerHTML=h;
+}
+function scQ(id){var e=document.getElementById('qc-'+id);if(e)e.scrollIntoView({behavior:'smooth',block:'center'});}
+
+// ═══════════════════ RESULTS ═══════════════════
+function renderResults() {
+  var n=Object.keys(UA).length;
+  var ok=Object.values(UA).filter(function(a){return a.correct;}).length;
+  var ng=n-ok;
+  var rem=30-n;
+  var pct=Math.round(ok/30*100);
+  var grade=ok>=28?'🏆 완벽! KOI 준비 완료':ok>=24?'⭐⭐⭐ 우수':ok>=18?'⭐⭐ 양호':ok>=12?'⭐ 보통':'📚 기초 재학습 필요';
+
+  var h='<div class="res-big">'+
+    '<div class="res-score">'+ok+'<span style="font-size:32px;color:var(--ink3)">/30</span></div>'+
+    '<div class="res-grade">'+grade+'</div>'+
+    '<div style="font-size:14px;color:var(--ink3);margin-bottom:12px">정답률 '+pct+'%</div>'+
+    '<div class="res-bar-wrap"><div class="res-bar" id="rbar" style="width:0%"></div></div>'+
+    '<div class="res-grid">'+
+      '<div class="rgi"><div class="rn" style="color:var(--green)">'+ok+'</div><div class="rl">✅ 정답</div></div>'+
+      '<div class="rgi"><div class="rn" style="color:var(--rose)">'+ng+'</div><div class="rl">❌ 오답</div></div>'+
+      '<div class="rgi"><div class="rn" style="color:var(--ink3)">'+rem+'</div><div class="rl">⬜ 미응답</div></div>'+
+    '</div>'+
+    '<button class="rbtn rbtn-i" onclick="resetAll()">🔄 처음부터 다시</button>'+
+    '<button class="rbtn rbtn-t" onclick="goPage(0)">🏠 개요로</button>'+
+  '</div>';
+
+  // Wrong list
+  var wqs=Object.keys(UA).filter(function(id){return !UA[id].correct;}).map(Number);
+  if(wqs.length){
+    h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:16px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:17px;font-weight:900;margin-bottom:12px;color:var(--rose)">❌ 틀린 문제 복습</div>';
+    wqs.forEach(function(id){
+      var q=QS.find(function(x){return x.id===id;});
+      var sec=q.sec==='basic'?1:q.sec==='adv'?2:3;
+      var ans=q.type==='multi'?'(각 항목 확인)':q.ans;
+      h+='<div class="wrong-item" onclick="goPage('+sec+');setTimeout(function(){scQ('+id+');togEx('+id+')},80)">'+
+        '<div class="wi-q">문제 '+id+'. '+q.q+'</div>'+
+        '<div class="wi-a">정답: '+ans+' | 내 답: '+(UA[id].given||'(미입력)')+'</div>'+
+      '</div>';
+    });
+    h+='</div>';
+  }
+
+  // Unanswered
+  var uan=[];for(var i=1;i<=30;i++){if(!UA[i])uan.push(i);}
+  if(uan.length){
+    h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:17px;font-weight:900;margin-bottom:10px;color:var(--ink3)">⬜ 미응답 문제</div><div style="display:flex;gap:7px;flex-wrap:wrap">';
+    uan.forEach(function(id){
+      var sec=id<=10?1:id<=20?2:3;
+      h+='<div style="width:42px;height:42px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;border:1.5px solid var(--border);font-family:\'JetBrains Mono\',monospace" onclick="goPage('+sec+');setTimeout(function(){scQ('+id+')},80)">'+id+'</div>';
+    });
+    h+='</div></div>';
+  }
+
+  // All explanations
+  h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+    '<div style="font-size:17px;font-weight:900;margin-bottom:14px">📖 전체 해설 모아보기</div>';
+  QS.forEach(function(q){
+    var a=UA[q.id];
+    var ic=a?(a.correct?'✅':'❌'):'⬜';
+    var ac=a?(a.correct?'var(--green)':'var(--rose)'):'var(--ink3)';
+    var ansLbl=q.type==='multi'?'(복합)':q.ans;
+    h+='<div class="allexp-item">'+
+      '<div class="allexp-hdr" onclick="this.nextElementSibling.classList.toggle(\'show\')">'+
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-weight:900;font-size:13px;background:var(--indigo);color:#fff;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+q.id+'</span>'+
+        '<span style="font-size:14px;font-weight:700;flex:1">'+q.q.substring(0,40)+(q.q.length>40?'…':'')+'</span>'+
+        '<span style="color:'+ac+';font-weight:700;font-size:13px;flex-shrink:0">'+ic+' 정답:'+ansLbl+'</span>'+
+        '<span style="color:var(--ink3);margin-left:8px">▼</span>'+
+      '</div>'+
+      '<div class="allexp-body">'+q.expl+'</div>'+
+    '</div>';
+  });
+  h+='</div>';
+
+  // KOI 공식 카드
+  h+='<div class="fcard" style="margin-top:14px">'+
+    '<h3>⚡ 반드시 암기할 집합 연산 성질</h3>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px;font-family:\'JetBrains Mono\',monospace">'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A∪∅ = A</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A∩∅ = ∅</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A∩A = A</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A∪A = A</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A−A = ∅</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A△A = ∅</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A△∅ = A</div>'+
+      '<div style="background:var(--bg2);padding:8px 12px;border-radius:7px">A△B = B△A</div>'+
+      '<div style="background:var(--ilt);padding:8px 12px;border-radius:7px;grid-column:1/-1">(A∩B)∪(A−B) = A</div>'+
+      '<div style="background:var(--tlt);padding:8px 12px;border-radius:7px;grid-column:1/-1">A∪B = (A−B)∪(A∩B)∪(B−A)</div>'+
+    '</div>'+
+  '</div>';
+
+  document.getElementById('result-area').innerHTML=h;
+  setTimeout(function(){var b=document.getElementById('rbar');if(b)b.style.width=pct+'%';},100);
+}
+
+// ═══════════════════ RESET ═══════════════════
+function resetAll(){
+  UA={};
+  renderSections();
+  updProg(); updateOv();
+  goPage(0);
+}
+
+// ═══════════════════ RENDER ═══════════════════
+function renderSections(){
+  var s1='',s2='',s3='';
+  QS.forEach(function(q){
+    var h=buildQ(q);
+    if(q.sec==='basic') s1+=h;
+    else if(q.sec==='adv') s2+=h;
+    else s3+=h;
+  });
+  document.getElementById('sec1').innerHTML=s1;
+  document.getElementById('sec2').innerHTML=s2;
+  document.getElementById('sec3').innerHTML=s3;
+}
+
+// ═══════════════════ INIT ═══════════════════
+window.onload=function(){renderSections();updateOv();updProg();};
+</script>
+</body>
+</html>

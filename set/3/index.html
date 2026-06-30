@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>집합의 법칙 문제집 | 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+  --bg:#fdfaf3;--bg2:#f5f0e4;--bg3:#ede6d6;
+  --ink:#1a1408;--ink2:#3d3420;--ink3:#6b5c3e;
+  --gold:#c8860a;--glt:#fff4d0;
+  --teal:#0e7c72;--tlt:#d4f0ec;
+  --rose:#b03a2e;--rlt:#fde8e6;
+  --indigo:#2c3e8c;--ilt:#e0e6ff;
+  --green:#1e7a3c;--glt2:#d6f5e3;
+  --purple:#6b2d8c;--plt:#f0e0ff;
+  --amber:#d97706;--alt:#fef3c7;
+  --border:#d6c9a8;--shadow:rgba(26,20,8,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.82}
+
+/* HEADER */
+header{background:var(--ink);color:var(--bg);padding:15px 30px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 18px rgba(0,0,0,.5)}
+.brand{font-size:10px;color:var(--glt);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+header h1{font-size:19px;font-weight:900}
+.hbadge{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.bdg{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.bdg-g{background:var(--gold);color:var(--ink)}
+.bdg-i{background:var(--indigo);color:#fff}
+.bdg-t{background:var(--teal);color:#fff}
+.bdg-a{background:var(--amber);color:var(--ink)}
+
+/* PROGRESS */
+.prog-bar{height:6px;background:var(--bg3)}
+.prog-fill{height:6px;background:linear-gradient(90deg,var(--indigo),var(--gold));transition:width .5s;width:0%}
+
+/* NAV */
+.nav-tabs{display:flex;background:var(--bg3);border-bottom:2px solid var(--border);overflow-x:auto;position:sticky;top:58px;z-index:190;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:12px 20px;font-size:13.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:'Noto Sans KR',sans-serif}
+.ntab:hover{background:var(--bg2);color:var(--ink)}
+.ntab.active{background:var(--bg);color:var(--indigo);border-bottom-color:var(--indigo)}
+
+/* PAGES */
+.page{display:none;max-width:940px;margin:0 auto;padding:30px 22px 100px}
+.page.active{display:block}
+
+/* SCORE DASH */
+.sdash{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:22px}
+.sc{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:15px 16px;text-align:center;box-shadow:0 2px 8px var(--shadow)}
+.sc .n{font-size:30px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.sc .l{font-size:12px;color:var(--ink3);margin-top:4px;font-weight:700}
+
+/* SECTION HEADER */
+.sec-h{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.sec-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.sec-h h2{font-size:23px;font-weight:900}
+.sec-h p{font-size:13px;color:var(--ink3);margin-top:2px}
+
+/* LAW CHIPS */
+.law-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.lchip{padding:6px 13px;border-radius:20px;font-size:13px;font-weight:700;border:1.5px solid}
+.lc1{background:var(--ilt);border-color:var(--indigo);color:var(--indigo)}
+.lc2{background:var(--tlt);border-color:var(--teal);color:var(--teal)}
+.lc3{background:var(--plt);border-color:var(--purple);color:var(--purple)}
+.lc4{background:var(--glt);border-color:var(--gold);color:#7a5000}
+.lc5{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+.lc6{background:var(--glt2);border-color:var(--green);color:var(--green)}
+.lc7{background:var(--alt);border-color:var(--amber);color:var(--amber)}
+
+/* QUESTION CARD */
+.qcard{background:#fff;border:2px solid var(--border);border-radius:16px;margin-bottom:16px;overflow:hidden;transition:border-color .2s;box-shadow:0 2px 8px var(--shadow)}
+.qcard.q-ok{border-color:var(--green)}
+.qcard.q-ng{border-color:var(--rose)}
+
+/* CARD HEADER */
+.qhdr{display:flex;align-items:center;gap:12px;padding:14px 20px 12px;border-bottom:1.5px solid var(--border);background:var(--bg2)}
+.qnum{width:40px;height:40px;border-radius:10px;background:var(--indigo);color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.qtag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.qt-b{background:var(--tlt);color:var(--teal);border-color:var(--teal)}
+.qt-a{background:var(--plt);color:var(--purple);border-color:var(--purple)}
+.qt-k{background:var(--glt);color:var(--gold);border-color:var(--gold)}
+.law-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid;font-family:'JetBrains Mono',monospace}
+.qst{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.dot{width:9px;height:9px;border-radius:50%}
+.dok{background:var(--green)} .dng{background:var(--rose)} .dun{background:var(--border)}
+
+/* CARD BODY */
+.qbody{padding:18px 20px}
+
+/* QUESTION MATH DISPLAY */
+.q-formula{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;color:var(--indigo);background:var(--ilt);border:2px solid var(--indigo);border-radius:12px;padding:14px 22px;text-align:center;margin-bottom:16px;letter-spacing:.5px}
+.q-formula.sm{font-size:17px}
+.qtext{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:14px;line-height:1.7}
+
+/* CHOICE OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.obt{display:flex;align-items:center;gap:11px;padding:11px 16px;border:2px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);transition:all .14s;font-family:'JetBrains Mono',monospace;text-align:left}
+.obt:hover:not(:disabled){border-color:var(--indigo);background:var(--ilt)}
+.onum{width:26px;height:26px;border-radius:7px;background:var(--bg3);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink3);transition:all .14s}
+.obt:hover:not(:disabled) .onum{background:var(--indigo);color:#fff}
+.obt.ok{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.ok .onum{background:var(--green)!important;color:#fff!important}
+.obt.ng{border-color:var(--rose)!important;background:var(--rlt)!important}
+.obt.ng .onum{background:var(--rose)!important;color:#fff!important}
+.obt.reveal{border-color:var(--green)!important;background:var(--glt2)!important}
+.obt.reveal .onum{background:var(--green)!important;color:#fff!important}
+.obt:disabled{cursor:not-allowed}
+
+/* TEXT INPUT */
+.tinp-wrap{display:flex;gap:9px;align-items:center;margin-bottom:12px}
+.tinp{padding:10px 16px;border:2px solid var(--border);border-radius:10px;font-size:17px;font-family:'JetBrains Mono',monospace;font-weight:700;background:#fff;color:var(--ink);min-width:180px;transition:border-color .14s;letter-spacing:.5px}
+.tinp:focus{outline:none;border-color:var(--indigo)}
+.tinp.tok{border-color:var(--green)!important;background:var(--glt2)!important;color:var(--green)}
+.tinp.tng{border-color:var(--rose)!important;background:var(--rlt)!important;color:var(--rose)}
+.subm{padding:10px 20px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .14s}
+.subm:hover:not(:disabled){background:#1f2d6a}
+.subm:disabled{background:var(--border);cursor:not-allowed}
+.hint-txt{font-size:13px;color:var(--ink3);margin-top:6px}
+
+/* FEEDBACK */
+.qfb{margin-top:12px;display:none}
+.qfb.show{display:block}
+.fbtxt{font-size:16px;font-weight:700;margin-bottom:8px}
+.tok-t{color:var(--green)} .tng-t{color:var(--rose)}
+.ans-badge{font-family:'JetBrains Mono',monospace;background:var(--glt2);color:var(--green);padding:2px 9px;border-radius:6px;font-size:16px;font-weight:700}
+
+/* EXPLANATION */
+.exbtn{display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border:1.5px solid var(--teal);border-radius:8px;background:#fff;color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .14s}
+.exbtn:hover{background:var(--tlt)}
+.exbtn .arr{transition:transform .2s;display:inline-block}
+.exbtn.open .arr{transform:rotate(180deg)}
+.exbox{margin-top:10px;background:var(--bg2);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;display:none}
+.exbox.show{display:block}
+
+/* STEP DISPLAY */
+.step-chain{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.step-row{display:flex;align-items:center;gap:10px}
+.step-expr{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--indigo);background:#fff;border:1.5px solid var(--indigo);border-radius:8px;padding:8px 14px;min-width:200px;text-align:center}
+.step-law{font-size:12px;color:var(--ink3);font-weight:700;min-width:100px}
+.step-arrow{color:var(--teal);font-size:18px;font-weight:900}
+
+/* LAW LABEL */
+.law-lbl{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;margin-right:4px}
+.ll-교환{background:var(--ilt);color:var(--indigo)}
+.ll-결합{background:var(--tlt);color:var(--teal)}
+.ll-분배{background:var(--plt);color:var(--purple)}
+.ll-항등{background:var(--glt);color:#7a5000}
+.ll-보원{background:var(--rlt);color:var(--rose)}
+.ll-흡수{background:var(--glt2);color:var(--green)}
+.ll-멱등{background:var(--alt);color:var(--amber)}
+
+/* OVERVIEW GRID */
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:7px;margin:12px 0}
+.ovdot{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;cursor:pointer;border:2px solid var(--border);background:#fff;color:var(--ink3);transition:all .14s;font-family:'JetBrains Mono',monospace}
+.ovdot:hover{border-color:var(--indigo);color:var(--indigo)}
+.ovdot.ov-ok{background:var(--glt2);border-color:var(--green);color:var(--green)}
+.ovdot.ov-ng{background:var(--rlt);border-color:var(--rose);color:var(--rose)}
+
+/* NAV BTNS */
+.navbtns{margin-top:18px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.nb{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .14s}
+.nb-out{background:#fff;border:1.5px solid var(--border);color:var(--ink3)}.nb-out:hover{border-color:var(--indigo);color:var(--indigo)}
+.nb-fill{background:var(--indigo);color:#fff;border:none}.nb-fill:hover{background:#1f2d6a}
+.nb-teal{background:var(--teal);color:#fff;border:none}.nb-teal:hover{background:#0a5f57}
+
+/* LAW REFERENCE TABLE */
+.law-table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+.law-table th{background:var(--ink);color:var(--bg);padding:9px 14px;font-weight:700;text-align:left}
+.law-table td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.law-table tr:nth-child(even) td{background:var(--bg2)}
+.law-table .mono{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--indigo);font-size:13px}
+
+/* RESULTS */
+.res-big{text-align:center;padding:26px 14px 18px}
+.res-score{font-size:66px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+.res-grade{font-size:20px;font-weight:700;margin:7px 0;color:var(--ink2)}
+.res-bar-wrap{max-width:360px;margin:14px auto;background:var(--bg3);border-radius:8px;height:14px;overflow:hidden}
+.res-bar{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--indigo),var(--gold));transition:width 1s;width:0%}
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:18px 0}
+.rgi{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:13px;text-align:center;box-shadow:0 2px 6px var(--shadow)}
+.rgi .rn{font-size:26px;font-weight:900;font-family:'JetBrains Mono',monospace}
+.rgi .rl{font-size:12px;color:var(--ink3);font-weight:700;margin-top:4px}
+.rbtn{padding:12px 28px;border:none;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .14s;margin:7px 5px}
+.rbtn-i{background:var(--indigo);color:#fff}.rbtn-i:hover{background:#1f2d6a}
+.rbtn-t{background:var(--teal);color:#fff}.rbtn-t:hover{background:#0a5f57}
+
+/* ALL-EXPL */
+.allexp-item{border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.allexp-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;background:var(--bg2);transition:background .14s}
+.allexp-hdr:hover{background:var(--bg3)}
+.allexp-body{padding:14px 18px;font-size:15px;color:var(--ink2);line-height:1.9;background:#fff;display:none;border-top:1.5px solid var(--border)}
+.allexp-body.show{display:block}
+
+/* WRONG LIST */
+.wi{background:#fff;border:1.5px solid var(--rlt);border-left:4px solid var(--rose);border-radius:10px;padding:12px 16px;margin-bottom:9px;cursor:pointer;transition:border-color .14s}
+.wi:hover{border-color:var(--rose)}
+.wi-q{font-weight:700;font-size:15px;margin-bottom:3px}
+.wi-a{font-size:13px;color:var(--rose);font-family:'JetBrains Mono',monospace}
+
+/* FLOAT PROGRESS */
+.fprog{position:fixed;bottom:20px;right:20px;background:white;border:1.5px solid var(--border);border-radius:14px;padding:11px 14px;box-shadow:0 4px 18px rgba(0,0,0,.13);font-size:12px;z-index:150;min-width:108px}
+.fprog .fpl{color:var(--ink3);font-weight:700;margin-bottom:5px}
+.fprog .fpn{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--indigo)}
+
+@media(max-width:600px){
+  .sdash{grid-template-columns:1fr 1fr}
+  .res-grid{grid-template-columns:1fr 1fr}
+  .page{padding:16px 12px 80px}
+  header{padding:12px 14px}
+  header h1{font-size:15px}
+  .q-formula{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">세영코딩연구소 · ph.D Kim</div>
+    <h1>⚡ 집합의 법칙 문제집</h1>
+  </div>
+  <div class="hbadge">
+    <span class="bdg bdg-a">교환·결합·분배</span>
+    <span class="bdg bdg-t">항등·보원·흡수·멱등</span>
+    <span class="bdg bdg-i">30문제</span>
+  </div>
+</header>
+<div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+
+<div class="nav-tabs">
+  <button class="ntab active" onclick="goPage(0)">🏠 개요</button>
+  <button class="ntab" onclick="goPage(1)">📘 기본 1~10</button>
+  <button class="ntab" onclick="goPage(2)">📗 심화 11~20</button>
+  <button class="ntab" onclick="goPage(3)">🏆 올림피아드 21~30</button>
+  <button class="ntab" onclick="goPage(4)">📊 결과 &amp; 해설</button>
+</div>
+
+<!-- ═══ PAGE 0: 개요 ═══ -->
+<div class="page active" id="pg0">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏠</div>
+    <div><h2>집합의 법칙 문제집</h2><p>교환·결합·분배·항등·보원·흡수·멱등 법칙 · 30문제</p></div>
+  </div>
+
+  <div class="sdash">
+    <div class="sc"><div class="n" id="ov-ans" style="color:var(--indigo)">0</div><div class="l">답한 문제</div></div>
+    <div class="sc"><div class="n" id="ov-ok" style="color:var(--green)">0</div><div class="l">✅ 정답</div></div>
+    <div class="sc"><div class="n" id="ov-ng" style="color:var(--rose)">0</div><div class="l">❌ 오답</div></div>
+    <div class="sc"><div class="n" id="ov-rem" style="color:var(--ink3)">30</div><div class="l">남은 문제</div></div>
+  </div>
+
+  <!-- 문제 현황판 -->
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:12px">📋 문제 현황판 (클릭하면 이동)</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;font-weight:700">
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--glt2);border:1.5px solid var(--green);margin-right:4px;vertical-align:middle"></span>정답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--rlt);border:1.5px solid var(--rose);margin-right:4px;vertical-align:middle"></span>오답</span>
+      <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fff;border:1.5px solid var(--border);margin-right:4px;vertical-align:middle"></span>미응답</span>
+    </div>
+    <div class="ovgrid" id="ov-grid"></div>
+  </div>
+
+  <!-- 법칙 빠른 참조 -->
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:16px;box-shadow:0 2px 8px var(--shadow)">
+    <div style="font-size:17px;font-weight:900;margin-bottom:14px">📚 반드시 암기할 집합의 법칙 7가지</div>
+    <div class="law-chips">
+      <span class="lchip lc1">① 교환법칙</span>
+      <span class="lchip lc2">② 결합법칙</span>
+      <span class="lchip lc3">③ 분배법칙</span>
+      <span class="lchip lc4">④ 항등법칙</span>
+      <span class="lchip lc5">⑤ 보원법칙</span>
+      <span class="lchip lc6">⑥ 흡수법칙</span>
+      <span class="lchip lc7">⑦ 멱등법칙</span>
+    </div>
+    <table class="law-table">
+      <tr><th>법칙</th><th>∪ 공식</th><th>∩ 공식</th></tr>
+      <tr><td><span class="law-lbl ll-교환">교환</span>Commutative</td><td class="mono">A∪B = B∪A</td><td class="mono">A∩B = B∩A</td></tr>
+      <tr><td><span class="law-lbl ll-결합">결합</span>Associative</td><td class="mono">(A∪B)∪C = A∪(B∪C)</td><td class="mono">(A∩B)∩C = A∩(B∩C)</td></tr>
+      <tr><td><span class="law-lbl ll-분배">분배</span>Distributive</td><td class="mono">A∪(B∩C) = (A∪B)∩(A∪C)</td><td class="mono">A∩(B∪C) = (A∩B)∪(A∩C)</td></tr>
+      <tr><td><span class="law-lbl ll-항등">항등</span>Identity</td><td class="mono">A∪∅ = A</td><td class="mono">A∩U = A</td></tr>
+      <tr><td><span class="law-lbl ll-보원">보원</span>Complement</td><td class="mono">A∪A' = U</td><td class="mono">A∩A' = ∅</td></tr>
+      <tr><td><span class="law-lbl ll-흡수">흡수</span>Absorption</td><td class="mono">A∪(A∩B) = A</td><td class="mono">A∩(A∪B) = A</td></tr>
+      <tr><td><span class="law-lbl ll-멱등">멱등</span>Idempotent</td><td class="mono">A∪A = A</td><td class="mono">A∩A = A</td></tr>
+    </table>
+    <div style="background:var(--ilt);border-radius:10px;padding:12px 16px;font-size:14px;margin-top:10px">
+      <strong style="color:var(--indigo)">추가 항등법칙:</strong>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px"> &nbsp;A∪U = U &nbsp;|&nbsp; A∩∅ = ∅</span>
+    </div>
+  </div>
+
+  <!-- 섹션 이동 카드 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <div style="background:#fff;border:1.5px solid var(--teal);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(1)">
+      <div style="font-size:24px;margin-bottom:6px">📘</div>
+      <div style="font-weight:900;color:var(--teal);font-size:15px">기본문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">1~10번<br>법칙 식별 · 단순 간소화</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--purple);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(2)">
+      <div style="font-size:24px;margin-bottom:6px">📗</div>
+      <div style="font-weight:900;color:var(--purple);font-size:15px">심화문제</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">11~20번<br>흡수·결합·항등·보원 적용</div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gold);border-radius:14px;padding:18px;cursor:pointer" onclick="goPage(3)">
+      <div style="font-size:24px;margin-bottom:6px">🏆</div>
+      <div style="font-weight:900;color:var(--gold);font-size:15px">올림피아드</div>
+      <div style="font-size:13px;color:var(--ink3);margin-top:3px">21~30번<br>복합 법칙 연쇄 적용</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 1: 기본 ═══ -->
+<div class="page" id="pg1">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--tlt)">📘</div>
+    <div><h2>기본문제</h2><p>문제 1~10 · 법칙 식별 및 기본 식 간소화</p></div>
+  </div>
+  <div id="sec1"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(0)">← 개요</button>
+    <button class="nb nb-fill" onclick="goPage(2)">심화문제 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: 심화 ═══ -->
+<div class="page" id="pg2">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--plt)">📗</div>
+    <div><h2>심화문제</h2><p>문제 11~20 · 흡수·결합·보원 법칙 연쇄 적용</p></div>
+  </div>
+  <div id="sec2"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(1)">← 기본문제</button>
+    <button class="nb nb-fill" onclick="goPage(3)">올림피아드 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 3: 올림피아드 ═══ -->
+<div class="page" id="pg3">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt)">🏆</div>
+    <div><h2>올림피아드 스타일</h2><p>문제 21~30 · 여러 법칙 연쇄 적용 · KOI 중등 대비</p></div>
+  </div>
+  <div id="sec3"></div>
+  <div class="navbtns">
+    <button class="nb nb-out" onclick="goPage(2)">← 심화문제</button>
+    <button class="nb nb-teal" onclick="goPage(4)">📊 결과 보기 →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 4: 결과 ═══ -->
+<div class="page" id="pg4">
+  <div class="sec-h">
+    <div class="sec-icon" style="background:var(--glt2)">📊</div>
+    <div><h2>결과 &amp; 해설</h2><p>채점 결과 · 틀린 문제 복습 · 전체 풀이 해설</p></div>
+  </div>
+  <div id="result-area"></div>
+</div>
+
+<div class="fprog">
+  <div class="fpl">진행 현황</div>
+  <div><span class="fpn" id="fp-n">0</span><span style="color:var(--ink3);font-size:13px"> / 30</span></div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// HELPER: build step-chain HTML
+// steps: array of {expr, law}
+// ═══════════════════════════════════
+function steps(arr) {
+  var lawClass = {
+    '교환법칙':'ll-교환','결합법칙':'ll-결합','분배법칙':'ll-분배',
+    '항등법칙':'ll-항등','보원법칙':'ll-보원','흡수법칙':'ll-흡수','멱등법칙':'ll-멱등'
+  };
+  var h = '<div class="step-chain">';
+  arr.forEach(function(s, i) {
+    h += '<div class="step-row">';
+    if(i>0) h += '<span class="step-arrow">↓</span>';
+    else h += '<span style="width:18px"></span>';
+    h += '<div class="step-expr">'+s.expr+'</div>';
+    if(s.law) h += '<span class="law-lbl '+(lawClass[s.law]||'')+'">'+s.law+'</span>';
+    h += '</div>';
+  });
+  h += '</div>';
+  return h;
+}
+
+// ═══════════════════════════════════
+// QUESTION DATA
+// ═══════════════════════════════════
+var QS = [
+// ── 기본 1~10 ──
+{id:1, sec:'basic', law:'교환법칙',
+ q:'다음 중 <strong>교환법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪A = A','A∪B = B∪A','A∪∅ = A','A∩U = A'],
+ ans:'②', ansIdx:1,
+ expl: '교환법칙(Commutative Law): <strong>순서를 바꾸어도 결과가 같다</strong>는 법칙입니다.<br><br>' +
+   steps([{expr:'A∪B = B∪A',law:'교환법칙'},{expr:'A∩B = B∩A',law:'교환법칙'}]) +
+   '<br>① 멱등법칙 &nbsp; ③ 항등법칙(∪∅) &nbsp; ④ 항등법칙(∩U)'
+},
+{id:2, sec:'basic', law:'결합법칙',
+ q:'다음 중 <strong>결합법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['(A∪B)∪C = A∪(B∪C)','A∪B = B∪A','A∪∅ = A','A∩A = A'],
+ ans:'①', ansIdx:0,
+ expl: '결합법칙(Associative Law): <strong>괄호의 위치를 바꾸어도 결과가 같다</strong>는 법칙입니다.<br><br>' +
+   steps([{expr:'(A∪B)∪C = A∪(B∪C)',law:'결합법칙'},{expr:'(A∩B)∩C = A∩(B∩C)',law:'결합법칙'}]) +
+   '<br>② 교환법칙 &nbsp; ③ 항등법칙 &nbsp; ④ 멱등법칙'
+},
+{id:3, sec:'basic', law:'분배법칙',
+ q:'다음 중 <strong>분배법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪A = A','A∪(B∩C) = (A∪B)∩(A∪C)','A∪∅ = A','A∩A\' = ∅'],
+ ans:'②', ansIdx:1,
+ expl: '분배법칙(Distributive Law): <strong>수의 곱셈 분배법칙과 유사</strong>하게 ∪와 ∩이 서로 분배됩니다.<br><br>' +
+   steps([{expr:'A∪(B∩C) = (A∪B)∩(A∪C)',law:'분배법칙'},{expr:'A∩(B∪C) = (A∩B)∪(A∩C)',law:'분배법칙'}]) +
+   '<br>① 멱등법칙 &nbsp; ③ 항등법칙 &nbsp; ④ 보원법칙'
+},
+{id:4, sec:'basic', law:'항등법칙',
+ q:'다음 중 <strong>항등법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪∅ = A','A∪A\' = U','A∪A = A','A∩A = A'],
+ ans:'①', ansIdx:0,
+ expl: '항등법칙(Identity Law): <strong>∅와 U는 집합 연산의 항등원</strong> 역할을 합니다.<br><br>' +
+   steps([{expr:'A∪∅ = A',law:'항등법칙'},{expr:'A∩U = A',law:'항등법칙'}]) +
+   '<br>② 보원법칙 &nbsp; ③④ 멱등법칙'
+},
+{id:5, sec:'basic', law:'보원법칙',
+ q:'다음 중 <strong>보원법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪A = A','A∪A\' = U','A∪∅ = A','A∩U = U'],
+ ans:'②', ansIdx:1,
+ expl: '보원법칙(Complement Law): <strong>A와 A\'(여집합)를 연산하면</strong> 전체집합 U 또는 공집합 ∅이 됩니다.<br><br>' +
+   steps([{expr:'A∪A\' = U',law:'보원법칙'},{expr:'A∩A\' = ∅',law:'보원법칙'}]) +
+   '<br>① 멱등법칙 &nbsp; ③ 항등법칙 &nbsp; ④ 거짓(A∩U = A)'
+},
+{id:6, sec:'basic', law:'흡수법칙',
+ q:'다음 중 <strong>흡수법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪(A∩B) = A','A∪A = A','A∪∅ = A','A∩A\' = ∅'],
+ ans:'①', ansIdx:0,
+ expl: '흡수법칙(Absorption Law): A∩B는 A의 부분집합이므로 A와 합해도 <strong>A에 "흡수"</strong>됩니다.<br><br>' +
+   steps([{expr:'A∪(A∩B) = A',law:'흡수법칙'},{expr:'A∩(A∪B) = A',law:'흡수법칙'}]) +
+   '<br>② 멱등법칙 &nbsp; ③ 항등법칙 &nbsp; ④ 보원법칙'
+},
+{id:7, sec:'basic', law:'멱등법칙',
+ q:'다음 중 <strong>멱등법칙</strong>을 나타내는 것은?',
+ type:'choice',
+ opts:['A∪A = A','A∪A\' = U','A∪∅ = A','A∩U = A'],
+ ans:'①', ansIdx:0,
+ expl: '멱등법칙(Idempotent Law): <strong>같은 집합을 여러 번 연산해도 변하지 않습니다</strong>.<br><br>' +
+   steps([{expr:'A∪A = A',law:'멱등법칙'},{expr:'A∩A = A',law:'멱등법칙'}]) +
+   '<br>② 보원법칙 &nbsp; ③ 항등법칙(∪∅) &nbsp; ④ 항등법칙(∩U)'
+},
+{id:8, sec:'basic', law:'멱등법칙',
+ formula:'A ∪ A',
+ q:'다음 식을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([{expr:'A∪A'},{expr:'A',law:'멱등법칙'}]) +
+   '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">같은 집합끼리의 합집합은 자기 자신입니다.</div>'
+},
+{id:9, sec:'basic', law:'항등법칙',
+ formula:'A ∩ U',
+ q:'다음 식을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([{expr:'A∩U'},{expr:'A',law:'항등법칙'}]) +
+   '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">전체집합 U와의 교집합은 항상 자기 자신입니다.</div>'
+},
+{id:10, sec:'basic', law:'보원법칙',
+ formula:"A ∩ A'",
+ q:'다음 식을 간단히 하시오.',
+ type:'text', ans:'∅',
+ expl: steps([{expr:"A∩A'"},{expr:'∅',law:'보원법칙'}]) +
+   '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A와 A\'(여집합)의 교집합은 항상 공집합입니다.</div>'
+},
+// ── 심화 11~20 ──
+{id:11, sec:'adv', law:'흡수법칙',
+ formula:'A ∪ (A ∩ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([{expr:'A∪(A∩B)'},{expr:'A',law:'흡수법칙'}]) +
+   '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A∩B ⊆ A이므로 A에 합해도 새 원소가 없습니다. A에 "흡수"됩니다.</div>'
+},
+{id:12, sec:'adv', law:'흡수법칙',
+ formula:'A ∩ (A ∪ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([{expr:'A∩(A∪B)'},{expr:'A',law:'흡수법칙'}]) +
+   '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A ⊆ A∪B이므로 A∪B와 교집합을 취하면 A가 됩니다.</div>'
+},
+{id:13, sec:'adv', law:'결합·멱등',
+ formula:'(A ∪ B) ∪ A',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∪B',
+ expl: steps([
+   {expr:'(A∪B)∪A'},
+   {expr:'A∪B∪A', law:'결합법칙'},
+   {expr:'A∪A∪B', law:'교환법칙'},
+   {expr:'A∪B', law:'멱등법칙'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A∪A = A이므로 최종 결과는 A∪B</div>'
+},
+{id:14, sec:'adv', law:'결합·멱등',
+ formula:'(A ∩ B) ∩ A',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∩B',
+ expl: steps([
+   {expr:'(A∩B)∩A'},
+   {expr:'A∩B∩A', law:'결합법칙'},
+   {expr:'A∩A∩B', law:'교환법칙'},
+   {expr:'A∩B', law:'멱등법칙'}
+ ])
+},
+{id:15, sec:'adv', law:'결합·멱등',
+ formula:'A ∪ (A ∪ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∪B',
+ expl: steps([
+   {expr:'A∪(A∪B)'},
+   {expr:'A∪A∪B', law:'결합법칙'},
+   {expr:'A∪B', law:'멱등법칙'}
+ ])
+},
+{id:16, sec:'adv', law:'결합·멱등',
+ formula:'A ∩ (A ∩ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∩B',
+ expl: steps([
+   {expr:'A∩(A∩B)'},
+   {expr:'A∩A∩B', law:'결합법칙'},
+   {expr:'A∩B', law:'멱등법칙'}
+ ])
+},
+{id:17, sec:'adv', law:'항등법칙',
+ formula:"(A ∩ U) ∪ ∅",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:'(A∩U)∪∅'},
+   {expr:'A∪∅', law:'항등법칙(∩U)'},
+   {expr:'A', law:'항등법칙(∪∅)'}
+ ])
+},
+{id:18, sec:'adv', law:'보원·항등',
+ formula:"(A ∪ A') ∩ B",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'B',
+ expl: steps([
+   {expr:"(A∪A')∩B"},
+   {expr:'U∩B', law:'보원법칙'},
+   {expr:'B', law:'항등법칙(∩U)'}
+ ])
+},
+{id:19, sec:'adv', law:'보원·항등',
+ formula:"(A ∩ A') ∪ B",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'B',
+ expl: steps([
+   {expr:"(A∩A')∪B"},
+   {expr:'∅∪B', law:'보원법칙'},
+   {expr:'B', law:'항등법칙(∪∅)'}
+ ])
+},
+{id:20, sec:'adv', law:'흡수법칙',
+ formula:'(A ∪ B) ∩ A',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:'(A∪B)∩A'},
+   {expr:'A∩(A∪B)', law:'교환법칙'},
+   {expr:'A', law:'흡수법칙'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A∩(A∪B)=A 흡수법칙 직접 적용</div>'
+},
+// ── 올림피아드 21~30 ──
+{id:21, sec:'koi', law:'보원·항등',
+ formula:"(A ∪ A') ∩ (B ∪ ∅)",
+ q:'다음을 가장 간단한 형태로 나타내시오.',
+ type:'text', ans:'B',
+ expl: steps([
+   {expr:"(A∪A')∩(B∪∅)"},
+   {expr:'U∩B', law:'보원법칙 + 항등법칙(∪∅)'},
+   {expr:'B', law:'항등법칙(∩U)'}
+ ])
+},
+{id:22, sec:'koi', law:'항등·보원',
+ formula:"(A ∩ U) ∪ (A ∩ A')",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:"(A∩U)∪(A∩A')"},
+   {expr:'A∪∅', law:'항등법칙(∩U) + 보원법칙'},
+   {expr:'A', law:'항등법칙(∪∅)'}
+ ])
+},
+{id:23, sec:'koi', law:'흡수·포함',
+ formula:'(A ∪ B) ∪ (A ∩ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∪B',
+ expl: steps([
+   {expr:'(A∪B)∪(A∩B)'},
+   {expr:'A∪B', law:'흡수법칙'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A∩B ⊆ A∪B이므로 A∪B에 "흡수"됩니다. 즉 (A∪B)∪(A∩B) = A∪B</div>'
+},
+{id:24, sec:'koi', law:'흡수·포함',
+ formula:'(A ∩ B) ∩ (A ∪ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∩B',
+ expl: steps([
+   {expr:'(A∩B)∩(A∪B)'},
+   {expr:'A∩B', law:'흡수법칙'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A∩B ⊆ A∪B이므로 A∪B와의 교집합은 A∩B 자신입니다.</div>'
+},
+{id:25, sec:'koi', law:'항등·보원',
+ formula:"(A ∪ ∅) ∩ (A ∪ A')",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:"(A∪∅)∩(A∪A')"},
+   {expr:'A∩U', law:'항등법칙(∪∅) + 보원법칙'},
+   {expr:'A', law:'항등법칙(∩U)'}
+ ])
+},
+{id:26, sec:'koi', law:'항등법칙',
+ formula:"(A ∩ U) ∪ (B ∩ ∅)",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:"(A∩U)∪(B∩∅)"},
+   {expr:'A∪∅', law:'항등법칙(∩U) + 추가항등(∩∅=∅)'},
+   {expr:'A', law:'항등법칙(∪∅)'}
+ ])
+},
+{id:27, sec:'koi', law:'보원·항등',
+ formula:"(A ∪ B) ∩ (A ∪ A')",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∪B',
+ expl: steps([
+   {expr:"(A∪B)∩(A∪A')"},
+   {expr:'(A∪B)∩U', law:'보원법칙'},
+   {expr:'A∪B', law:'항등법칙(∩U)'}
+ ])
+},
+{id:28, sec:'koi', law:'분배·보원',
+ formula:"(A ∩ B) ∪ (A ∩ B')",
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:"(A∩B)∪(A∩B')"},
+   {expr:"A∩(B∪B')", law:'분배법칙 역적용 (인수분해)'},
+   {expr:'A∩U', law:'보원법칙'},
+   {expr:'A', law:'항등법칙(∩U)'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">A를 공통 인수로 묶는 것이 핵심입니다!</div>'
+},
+{id:29, sec:'koi', law:'멱등법칙',
+ formula:'(A ∩ A) ∪ (B ∩ B)',
+ q:'다음을 간단히 하시오.',
+ type:'text', ans:'A∪B',
+ expl: steps([
+   {expr:'(A∩A)∪(B∩B)'},
+   {expr:'A∪B', law:'멱등법칙 (각각 A∩A=A, B∩B=B)'}
+ ])
+},
+{id:30, sec:'koi', law:'분배·보원',
+ formula:"(A ∪ B) ∩ (A ∪ B')",
+ q:'다음을 가장 간단하게 나타내시오.',
+ type:'text', ans:'A',
+ expl: steps([
+   {expr:"(A∪B)∩(A∪B')"},
+   {expr:"A∪(B∩B')", law:'분배법칙 역적용 (인수분해)'},
+   {expr:'A∪∅', law:'보원법칙'},
+   {expr:'A', law:'항등법칙(∪∅)'}
+ ]) + '<div style="margin-top:8px;font-size:14px;color:var(--ink3)">분배법칙을 <strong>역방향(인수분해)</strong>으로 적용하는 것이 핵심입니다!</div>'
+}
+];
+
+// ═══════════════════ STATE ═══════════════════
+var UA = {};
+
+// ═══════════════════ NAVIGATION ═══════════════════
+var tabs = document.querySelectorAll('.ntab');
+function goPage(n) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  tabs.forEach(function(t){t.classList.remove('active');});
+  document.getElementById('pg'+n).classList.add('active');
+  tabs[n].classList.add('active');
+  window.scrollTo(0,0);
+  updateOv();
+  if(n===4) renderResults();
+}
+
+// ═══════════════════ LAW TAG HTML ═══════════════════
+var LAW_CLS = {
+  '교환법칙':'lc1','결합법칙':'lc2','분배법칙':'lc3',
+  '항등법칙':'lc4','보원법칙':'lc5','흡수법칙':'lc6','멱등법칙':'lc7',
+  '결합·멱등':'lc2','보원·항등':'lc5','분배·보원':'lc3','항등·보원':'lc4',
+  '흡수·포함':'lc6','항등법칙':'lc4'
+};
+function lawTag(law) {
+  var cls = LAW_CLS[law] || 'lc1';
+  return '<span class="lchip '+cls+'" style="font-size:11px;padding:2px 8px">'+law+'</span>';
+}
+
+// ═══════════════════ BUILD QUESTION ═══════════════════
+function buildQ(q) {
+  var a = UA[q.id];
+  var cardCls = a ? (a.correct?'q-ok':'q-ng') : '';
+  var secCls = q.sec==='basic'?'qt-b':q.sec==='adv'?'qt-a':'qt-k';
+  var secLbl = q.sec==='basic'?'기본':q.sec==='adv'?'심화':'올림피아드';
+  var stHtml = a
+    ? (a.correct?'<span class="dot dok"></span><span style="color:var(--green)">정답</span>':'<span class="dot dng"></span><span style="color:var(--rose)">오답</span>')
+    : '<span class="dot dun"></span><span style="color:var(--ink3)">미응답</span>';
+
+  // Formula box (심화·올림피아드)
+  var fHtml = q.formula ? '<div class="q-formula">' + q.formula + '</div>' : '';
+
+  // Input
+  var nums = ['①','②','③','④'];
+  var inputHtml = '';
+  if(q.type==='choice') {
+    inputHtml = '<div class="opts" id="opts-'+q.id+'">';
+    q.opts.forEach(function(o,i){
+      var cls='';
+      if(a){cls=(i===q.ansIdx?'reveal':'')+(i===a.givenIdx&&!a.correct?' ng':'')+(i===a.givenIdx&&a.correct?' ok':'');}
+      inputHtml+='<button class="obt '+cls+'" id="ob-'+q.id+'-'+i+'" onclick="subChoice('+q.id+','+i+')" '+(a?'disabled':'')+'>'+
+        '<span class="onum">'+nums[i]+'</span>'+o+'</button>';
+    });
+    inputHtml+='</div>';
+  } else {
+    var iCls = a?(a.correct?'tok':'tng'):'';
+    inputHtml = '<div class="tinp-wrap">'+
+      '<input class="tinp '+iCls+'" id="ti-'+q.id+'" placeholder="간소화된 식 입력 (예: A, A∪B, ∅)" value="'+(a?a.given:'')+'" '+(a?'disabled':'')+'>'+
+      '<button class="subm" id="sb-'+q.id+'" onclick="subText('+q.id+')" '+(a?'disabled':'')+'>제출</button>'+
+    '</div>'+
+    '<div class="hint-txt">💡 특수문자: ∅ (공집합) &nbsp;|&nbsp; ∪ (합집합) &nbsp;|&nbsp; ∩ (교집합) &nbsp;|&nbsp; A\' (여집합)</div>';
+  }
+
+  // Feedback
+  var fbHtml='';
+  if(a){
+    var fbMsg = a.correct
+      ? '<span class="tok-t">✅ 정답입니다!</span>'
+      : '<span class="tng-t">❌ 오답입니다. &nbsp;정답: <span class="ans-badge">'+q.ans+'</span></span>';
+    fbHtml='<div class="qfb show" id="fb-'+q.id+'">'+
+      '<div class="fbtxt">'+fbMsg+'</div>'+
+      '<button class="exbtn" id="exb-'+q.id+'" onclick="togEx('+q.id+')">📖 해설 보기 <span class="arr">▼</span></button>'+
+      '<div class="exbox" id="exbox-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  } else {
+    fbHtml='<div class="qfb" id="fb-'+q.id+'">'+
+      '<div class="fbtxt" id="fbm-'+q.id+'"></div>'+
+      '<button class="exbtn" id="exb-'+q.id+'" onclick="togEx('+q.id+')" style="display:none">📖 해설 보기 <span class="arr">▼</span></button>'+
+      '<div class="exbox" id="exbox-'+q.id+'">'+q.expl+'</div>'+
+    '</div>';
+  }
+
+  return '<div class="qcard '+cardCls+'" id="qc-'+q.id+'">'+
+    '<div class="qhdr">'+
+      '<div class="qnum">'+q.id+'</div>'+
+      '<span class="qtag '+secCls+'">'+secLbl+'</span>'+
+      lawTag(q.law)+
+      '<div class="qst" id="qs-'+q.id+'">'+stHtml+'</div>'+
+    '</div>'+
+    '<div class="qbody">'+
+      fHtml+
+      '<div class="qtext">'+q.q+'</div>'+
+      inputHtml+
+      fbHtml+
+    '</div>'+
+  '</div>';
+}
+
+// ═══════════════════ SUBMIT ═══════════════════
+function norm(s) {
+  return s.trim().replace(/\s/g,'')
+    .replace(/∪/g,'U').replace(/∩/g,'N')
+    .replace(/∅/g,'E').replace(/'/g,"'")
+    .toLowerCase();
+}
+
+function subChoice(qid, ci) {
+  var q=QS.find(function(x){return x.id===qid;});
+  var ok=ci===q.ansIdx;
+  UA[qid]={correct:ok,given:q.opts[ci],givenIdx:ci};
+  for(var i=0;i<q.opts.length;i++){
+    var b=document.getElementById('ob-'+qid+'-'+i);
+    if(!b)continue;
+    b.disabled=true;
+    b.className='obt'+(i===q.ansIdx?' reveal':'')+(i===ci&&!ok?' ng':'')+(i===ci&&ok?' ok':'');
+  }
+  showFB(qid,ok,q.ans);
+  updCard(qid,ok);
+  updProg();updateOv();
+}
+
+function subText(qid) {
+  var q=QS.find(function(x){return x.id===qid;});
+  var inp=document.getElementById('ti-'+qid);
+  var v=inp.value.trim(); if(!v)return;
+  var ok=norm(v)===norm(q.ans);
+  inp.disabled=true; inp.className='tinp '+(ok?'tok':'tng');
+  document.getElementById('sb-'+qid).disabled=true;
+  UA[qid]={correct:ok,given:v};
+  showFB(qid,ok,q.ans);
+  updCard(qid,ok);
+  updProg();updateOv();
+}
+
+function showFB(qid, ok, ans) {
+  var fb=document.getElementById('fb-'+qid);
+  var msg=document.getElementById('fbm-'+qid);
+  var exb=document.getElementById('exb-'+qid);
+  fb.classList.add('show');
+  if(msg) msg.innerHTML=ok?'<span class="tok-t">✅ 정답입니다!</span>':'<span class="tng-t">❌ 오답입니다. &nbsp;정답: <span class="ans-badge">'+ans+'</span></span>';
+  if(exb) exb.style.display='inline-flex';
+}
+
+function updCard(qid,ok){
+  var c=document.getElementById('qc-'+qid);
+  var s=document.getElementById('qs-'+qid);
+  if(c){c.classList.remove('q-ok','q-ng');c.classList.add(ok?'q-ok':'q-ng');}
+  if(s) s.innerHTML=ok?'<span class="dot dok"></span><span style="color:var(--green)">정답</span>':'<span class="dot dng"></span><span style="color:var(--rose)">오답</span>';
+}
+
+function togEx(qid){
+  var box=document.getElementById('exbox-'+qid);
+  var btn=document.getElementById('exb-'+qid);
+  if(!box)return;
+  var show=box.classList.toggle('show');
+  if(btn){btn.classList.toggle('open',show);btn.querySelector('.arr').textContent=show?'▲':'▼';}
+}
+
+// ═══════════════════ PROGRESS ═══════════════════
+function updProg(){
+  var n=Object.keys(UA).length;
+  var f=document.getElementById('prog-fill');if(f)f.style.width=(n/30*100)+'%';
+  var fp=document.getElementById('fp-n');if(fp)fp.textContent=n;
+}
+function updateOv(){
+  var n=Object.keys(UA).length;
+  var ok=Object.values(UA).filter(function(a){return a.correct;}).length;
+  var e=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  e('ov-ans',n);e('ov-ok',ok);e('ov-ng',n-ok);e('ov-rem',30-n);
+  var grid=document.getElementById('ov-grid');if(!grid)return;
+  var h='';
+  for(var i=1;i<=30;i++){
+    var a=UA[i];
+    var cls=a?(a.correct?'ov-ok':'ov-ng'):'';
+    var sec=i<=10?1:i<=20?2:3;
+    h+='<div class="ovdot '+cls+'" onclick="goPage('+sec+');setTimeout(function(){scQ('+i+')},80)" title="문제 '+i+'">'+i+'</div>';
+  }
+  grid.innerHTML=h;
+}
+function scQ(id){var e=document.getElementById('qc-'+id);if(e)e.scrollIntoView({behavior:'smooth',block:'center'});}
+
+// ═══════════════════ RESULTS ═══════════════════
+function renderResults(){
+  var n=Object.keys(UA).length;
+  var ok=Object.values(UA).filter(function(a){return a.correct;}).length;
+  var ng=n-ok,rem=30-n;
+  var pct=Math.round(ok/30*100);
+  var grade=ok>=28?'🏆 완벽! KOI 준비 완료':ok>=24?'⭐⭐⭐ 우수':ok>=18?'⭐⭐ 양호':ok>=12?'⭐ 보통':'📚 법칙 재암기 필요';
+
+  var h='<div class="res-big">'+
+    '<div class="res-score">'+ok+'<span style="font-size:30px;color:var(--ink3)">/30</span></div>'+
+    '<div class="res-grade">'+grade+'</div>'+
+    '<div style="font-size:13px;color:var(--ink3);margin-bottom:10px">정답률 '+pct+'%</div>'+
+    '<div class="res-bar-wrap"><div class="res-bar" id="rbar" style="width:0%"></div></div>'+
+    '<div class="res-grid">'+
+      '<div class="rgi"><div class="rn" style="color:var(--green)">'+ok+'</div><div class="rl">✅ 정답</div></div>'+
+      '<div class="rgi"><div class="rn" style="color:var(--rose)">'+ng+'</div><div class="rl">❌ 오답</div></div>'+
+      '<div class="rgi"><div class="rn" style="color:var(--ink3)">'+rem+'</div><div class="rl">⬜ 미응답</div></div>'+
+    '</div>'+
+    '<button class="rbtn rbtn-i" onclick="resetAll()">🔄 처음부터 다시</button>'+
+    '<button class="rbtn rbtn-t" onclick="goPage(0)">🏠 개요로</button>'+
+  '</div>';
+
+  // 틀린 문제 분석 (법칙별)
+  var wqs=Object.keys(UA).filter(function(id){return !UA[id].correct;}).map(Number);
+  if(wqs.length){
+    // 법칙별 집계
+    var lawFail={};
+    wqs.forEach(function(id){
+      var q=QS.find(function(x){return x.id===id;});
+      var l=q.law; lawFail[l]=(lawFail[l]||0)+1;
+    });
+    h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:17px;font-weight:900;margin-bottom:6px;color:var(--rose)">❌ 틀린 문제 복습</div>';
+    // 법칙 분석
+    if(Object.keys(lawFail).length>0){
+      h+='<div style="margin-bottom:12px;font-size:14px;color:var(--ink3)">취약한 법칙: ';
+      Object.keys(lawFail).forEach(function(l){h+=lawTag(l)+'&nbsp;<span style="font-size:12px;color:var(--rose)">×'+lawFail[l]+'</span>&nbsp;&nbsp;';});
+      h+='</div>';
+    }
+    wqs.forEach(function(id){
+      var q=QS.find(function(x){return x.id===id;});
+      var sec=q.sec==='basic'?1:q.sec==='adv'?2:3;
+      h+='<div class="wi" onclick="goPage('+sec+');setTimeout(function(){scQ('+id+');togEx('+id+')},80)">'+
+        '<div class="wi-q">문제 '+id+'. '+(q.formula||q.q.replace(/<[^>]+>/g,'').substring(0,30))+'</div>'+
+        '<div class="wi-a">정답: '+q.ans+' | 내 답: '+(UA[id].given||'(미입력)') + ' &nbsp; '+q.law+'</div>'+
+      '</div>';
+    });
+    h+='</div>';
+  }
+
+  // 미응답
+  var uan=[];for(var i=1;i<=30;i++){if(!UA[i])uan.push(i);}
+  if(uan.length){
+    h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+      '<div style="font-size:17px;font-weight:900;margin-bottom:10px;color:var(--ink3)">⬜ 미응답 문제</div><div style="display:flex;gap:7px;flex-wrap:wrap">';
+    uan.forEach(function(id){
+      var sec=id<=10?1:id<=20?2:3;
+      h+='<div style="width:42px;height:42px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;border:1.5px solid var(--border);font-family:\'JetBrains Mono\',monospace" onclick="goPage('+sec+');setTimeout(function(){scQ('+id+')},80)">'+id+'</div>';
+    });
+    h+='</div></div>';
+  }
+
+  // 전체 해설
+  h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+    '<div style="font-size:17px;font-weight:900;margin-bottom:14px">📖 전체 해설 모아보기</div>';
+  QS.forEach(function(q){
+    var a=UA[q.id];
+    var ic=a?(a.correct?'✅':'❌'):'⬜';
+    var ac=a?(a.correct?'var(--green)':'var(--rose)'):'var(--ink3)';
+    h+='<div class="allexp-item">'+
+      '<div class="allexp-hdr" onclick="this.nextElementSibling.classList.toggle(\'show\')">'+
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-weight:900;font-size:13px;background:var(--indigo);color:#fff;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+q.id+'</span>'+
+        '<span style="font-size:14px;font-weight:700;flex:1">'+(q.formula||q.q.replace(/<[^>]+>/g,'').substring(0,38))+'</span>'+
+        lawTag(q.law)+
+        '<span style="color:'+ac+';font-weight:700;font-size:13px;flex-shrink:0;margin-left:6px">'+ic+' '+q.ans+'</span>'+
+        '<span style="color:var(--ink3);margin-left:8px">▼</span>'+
+      '</div>'+
+      '<div class="allexp-body">'+q.expl+'</div>'+
+    '</div>';
+  });
+  h+='</div>';
+
+  // 암기 공식 카드
+  h+='<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:14px;box-shadow:0 2px 8px var(--shadow)">'+
+    '<div style="font-size:17px;font-weight:900;margin-bottom:12px">⚡ KOI 필수 암기 16가지 집합 법칙</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;font-family:\'JetBrains Mono\',monospace">';
+  var laws16=[
+    ['A∪B = B∪A','var(--ilt)'],['A∩B = B∩A','var(--ilt)'],
+    ['(A∪B)∪C = A∪(B∪C)','var(--tlt)'],['(A∩B)∩C = A∩(B∩C)','var(--tlt)'],
+    ['A∪(B∩C) = (A∪B)∩(A∪C)','var(--plt)'],['A∩(B∪C) = (A∩B)∪(A∩C)','var(--plt)'],
+    ['A∪∅ = A','var(--glt)'],['A∩U = A','var(--glt)'],
+    ["A∪A' = U",'var(--rlt)'],["A∩A' = ∅",'var(--rlt)'],
+    ['A∪(A∩B) = A','var(--glt2)'],['A∩(A∪B) = A','var(--glt2)'],
+    ['A∪A = A','var(--alt)'],['A∩A = A','var(--alt)'],
+    ['A∪U = U','var(--glt)'],['A∩∅ = ∅','var(--rlt)']
+  ];
+  laws16.forEach(function(l){
+    h+='<div style="background:'+l[1]+';padding:7px 11px;border-radius:7px">'+l[0]+'</div>';
+  });
+  h+='</div></div>';
+
+  document.getElementById('result-area').innerHTML=h;
+  setTimeout(function(){var b=document.getElementById('rbar');if(b)b.style.width=pct+'%';},100);
+}
+
+// ═══════════════════ RESET ═══════════════════
+function resetAll(){UA={};renderSecs();updProg();updateOv();goPage(0);}
+
+// ═══════════════════ RENDER ═══════════════════
+function renderSecs(){
+  var s1='',s2='',s3='';
+  QS.forEach(function(q){
+    var h=buildQ(q);
+    if(q.sec==='basic')s1+=h;
+    else if(q.sec==='adv')s2+=h;
+    else s3+=h;
+  });
+  document.getElementById('sec1').innerHTML=s1;
+  document.getElementById('sec2').innerHTML=s2;
+  document.getElementById('sec3').innerHTML=s3;
+}
+
+window.onload=function(){renderSecs();updateOv();updProg();};
+</script>
+</body>
+</html>

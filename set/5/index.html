@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>멱집합 · 곱집합 문제집</title>
+<style>
+:root{
+  --bg:#0a1929;
+  --bg2:#0f2438;
+  --panel:#102a40;
+  --panel2:#0c2031;
+  --teal:#2dd4bf;
+  --teal-dim:#0e7c70;
+  --text:#e6f1f5;
+  --text-dim:#9fb8c8;
+  --border:#1c3a52;
+  --correct:#34d399;
+  --wrong:#f87171;
+  --accent:#facc15;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:linear-gradient(180deg,var(--bg) 0%, #081420 100%);
+  color:var(--text);
+  font-family:'Noto Sans KR', sans-serif;
+  line-height:1.6;
+}
+code, .mono{font-family:'JetBrains Mono', monospace;}
+
+header{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(90deg,#0c1f30,#0f2c40);
+  border-bottom:1px solid var(--teal-dim);
+  padding:14px 20px;
+  display:flex; align-items:center; gap:16px;
+  flex-wrap:wrap;
+}
+header h1{
+  font-size:1.05rem; margin:0; color:var(--teal); font-weight:700;
+  letter-spacing:0.3px;
+}
+nav{display:flex; gap:8px; flex-wrap:wrap; margin-left:auto;}
+nav button{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:0.82rem;
+  transition:.15s;
+}
+nav button:hover{border-color:var(--teal); color:var(--teal);}
+nav button.active{background:var(--teal); color:#04221d; border-color:var(--teal); font-weight:700;}
+
+main{max-width:920px; margin:0 auto; padding:24px 18px 80px;}
+section.tab{display:none;}
+section.tab.active{display:block; animation:fade .25s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.concept-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 22px;
+  margin-bottom:18px;
+}
+.concept-card h2{
+  color:var(--teal); margin-top:0; font-size:1.05rem;
+  display:flex; align-items:center; gap:8px;
+}
+.concept-card h2 .badge{
+  background:var(--teal-dim); color:#bdf3ec; font-size:.7rem;
+  padding:2px 8px; border-radius:6px; font-family:'JetBrains Mono',monospace;
+}
+.formula{
+  font-family:'JetBrains Mono', monospace;
+  background:var(--panel2);
+  border-left:3px solid var(--teal);
+  padding:10px 14px;
+  border-radius:6px;
+  margin:10px 0;
+  color:var(--accent);
+  font-size:1.05rem;
+}
+.example{
+  font-family:'JetBrains Mono', monospace;
+  background:#081625;
+  border:1px dashed var(--border);
+  padding:10px 14px;
+  border-radius:8px;
+  color:var(--text-dim);
+  font-size:.88rem;
+  white-space:pre-wrap;
+}
+
+.progress-bar{
+  height:8px; background:var(--panel2); border-radius:5px; overflow:hidden;
+  margin-bottom:20px; border:1px solid var(--border);
+}
+.progress-fill{
+  height:100%; width:0%; background:linear-gradient(90deg,var(--teal-dim),var(--teal));
+  transition:width .3s ease;
+}
+.progress-label{font-size:.78rem; color:var(--text-dim); margin-bottom:6px; display:flex; justify-content:space-between;}
+
+.qcard{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:16px;
+  overflow:hidden;
+  transition:border-color .2s;
+}
+.qcard.solved-correct{border-color:var(--correct);}
+.qcard.solved-wrong{border-color:var(--wrong);}
+.qhead{
+  display:flex; align-items:center; gap:10px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  background:var(--panel2);
+}
+.qnum{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--teal-dim); color:#dffaf5;
+  font-weight:700; font-size:.8rem;
+  padding:3px 10px; border-radius:20px;
+}
+.qstatus{margin-left:auto; font-size:.75rem; font-family:'JetBrains Mono',monospace; color:var(--text-dim);}
+.qstatus.correct{color:var(--correct);}
+.qstatus.wrong{color:var(--wrong);}
+
+.qbody{padding:16px 18px 18px;}
+.given{
+  font-family:'JetBrains Mono',monospace;
+  color:#cfeeea;
+  background:var(--panel2);
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:8px;
+  margin:3px 6px 3px 0;
+  font-size:.92rem;
+}
+.qtext{margin:12px 0 14px; font-size:.98rem;}
+
+.choices{display:flex; flex-direction:column; gap:8px; margin-bottom:12px;}
+.choice-btn{
+  text-align:left;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  transition:.15s;
+}
+.choice-btn:hover{border-color:var(--teal);}
+.choice-btn.picked-correct{background:rgba(52,211,153,.15); border-color:var(--correct); color:var(--correct);}
+.choice-btn.picked-wrong{background:rgba(248,113,113,.15); border-color:var(--wrong); color:var(--wrong);}
+.choice-btn.reveal-correct{border-color:var(--correct); color:var(--correct);}
+.choice-btn:disabled{cursor:default;}
+
+.input-row{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+.input-row input{
+  flex:1; min-width:180px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.92rem;
+}
+.input-row input:focus{outline:none; border-color:var(--teal);}
+.btn{
+  background:var(--teal); color:#04221d; border:none;
+  font-weight:700; padding:10px 16px; border-radius:8px;
+  cursor:pointer; font-family:inherit; font-size:.85rem;
+  transition:.15s;
+}
+.btn:hover{background:#5eead4;}
+.btn.secondary{
+  background:transparent; color:var(--text-dim); border:1px solid var(--border);
+}
+.btn.secondary:hover{color:var(--teal); border-color:var(--teal);}
+
+.feedback{
+  padding:10px 14px; border-radius:8px; margin:10px 0; font-size:.88rem;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.correct{background:rgba(52,211,153,.12); color:var(--correct); border:1px solid var(--correct);}
+.feedback.wrong{background:rgba(248,113,113,.12); color:var(--wrong); border:1px solid var(--wrong);}
+
+.answer-box{
+  margin-top:10px; display:none;
+  background:#081625; border:1px solid var(--teal-dim);
+  border-radius:10px; padding:14px 16px;
+}
+.answer-box.show{display:block; animation:fade .2s ease;}
+.answer-box .label{color:var(--teal); font-weight:700; font-size:.8rem; margin-bottom:6px; font-family:'JetBrains Mono',monospace;}
+.answer-box .ans{font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:1rem; margin-bottom:10px;}
+.answer-box .expl{color:var(--text-dim); font-size:.88rem; white-space:pre-line;}
+
+.toolbar{display:flex; gap:8px; margin-top:10px;}
+
+footer.summary{
+  position:sticky; bottom:0; z-index:40;
+  background:linear-gradient(0deg,#0c1f30,#0f2c40);
+  border-top:1px solid var(--teal-dim);
+  padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;
+  flex-wrap:wrap;
+}
+footer.summary .stat{color:var(--text-dim);}
+footer.summary .stat b{color:var(--teal);}
+footer.summary button{margin-left:auto;}
+
+@media (max-width:600px){
+  header{padding:12px;}
+  header h1{font-size:.9rem;}
+  main{padding:16px 10px 90px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>멱집합 · 곱집합 문제집</h1>
+  <nav id="tabNav">
+    <button data-tab="concept" class="active">개념</button>
+    <button data-tab="basic">기본 (1-10)</button>
+    <button data-tab="advanced">심화 (11-20)</button>
+    <button data-tab="koi">정올스타일 (21-30)</button>
+  </nav>
+</header>
+
+<main>
+
+<section id="tab-concept" class="tab active">
+  <div class="concept-card">
+    <h2>1. 멱집합 (Power Set) <span class="badge">P(A)</span></h2>
+    <p>집합 A의 <b>모든 부분집합을 원소로 갖는 집합</b>이다.</p>
+    <div class="example">A = {1,2}
+P(A) = {∅, {1}, {2}, {1,2}}</div>
+    <div class="formula">| P(A) | = 2<sup>N</sup>  (N = 원소 개수)</div>
+  </div>
+
+  <div class="concept-card">
+    <h2>2. 곱집합 (Cartesian Product) <span class="badge">A×B</span></h2>
+    <p>두 집합에서 하나씩 순서대로 뽑아 만든 <b>순서쌍의 집합</b>이다. 첫 번째 자리는 반드시 A, 두 번째 자리는 반드시 B에서 선택한다.</p>
+    <div class="example">A = {1,2}, B = {a,b}
+A×B = {(1,a), (1,b), (2,a), (2,b)}</div>
+    <div class="formula">| A×B | = | A | × | B |</div>
+  </div>
+
+  <div class="concept-card">
+    <h2>3. 순서쌍의 특징</h2>
+    <p>순서쌍은 순서가 다르면 다른 원소로 취급한다.</p>
+    <div class="example">(1,2) ≠ (2,1)</div>
+  </div>
+
+  <div class="concept-card">
+    <h2>정보올림피아드 응용 포인트 <span class="badge">심화</span></h2>
+    <p>실전에서는 아래 개념과 함께 출제되는 경우가 많다.</p>
+    <div class="formula" style="font-size:.92rem;">크기가 K인 부분집합의 개수 = ₙC<sub>K</sub></div>
+    <div class="formula" style="font-size:.92rem;">반복 멱집합: | P(P(A)) | = 2^(2<sup>N</sup>)</div>
+    <p style="margin-bottom:0; color:var(--text-dim); font-size:.9rem;">
+      비트마스킹으로 멱집합 생성 · DFS/백트래킹으로 부분집합 탐색 · 브루트포스 + 멱집합 · 그래프 간선 생성(곱집합) · 관계(Relation)는 A×B의 부분집합
+    </p>
+  </div>
+</section>
+
+<section id="tab-basic" class="tab"></section>
+<section id="tab-advanced" class="tab"></section>
+<section id="tab-koi" class="tab"></section>
+
+</main>
+
+<footer class="summary">
+  <span class="stat">진행 <b id="sumProgress">0/30</b></span>
+  <span class="stat">정답 <b id="sumCorrect" style="color:var(--correct)">0</b></span>
+  <span class="stat">오답 <b id="sumWrong" style="color:var(--wrong)">0</b></span>
+  <button class="btn secondary" id="resetBtn">전체 초기화</button>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+// ---------- 문제 데이터 ----------
+// type: 'mc' (객관식, choices + correctIndex) / 'text' (주관식, answer 문자열, 자유 채점)
+const problems = {
+  basic: [
+    {
+      n:1, given:"A = {1,2}",
+      q:"P(A)의 원소 개수는?",
+      type:"mc",
+      choices:["2","3","4","5"],
+      correct:2,
+      answer:"③ 4",
+      expl:"원소가 2개이므로 |P(A)| = 2^2 = 4.\nP(A) = {∅, {1}, {2}, {1,2}}"
+    },
+    {
+      n:2, given:"A = {a,b}",
+      q:"P(A)를 모두 쓰시오.",
+      type:"text",
+      acceptable:["{∅,{a},{b},{a,b}}","∅,{a},{b},{a,b}"],
+      answer:"{∅, {a}, {b}, {a,b}}",
+      expl:"원소가 2개이므로 부분집합은 2^2 = 4개이다.\n공집합부터 빠짐없이 나열하면 ∅, {a}, {b}, {a,b}이다."
+    },
+    {
+      n:3, given:"A = {1,2}, B = {x,y}",
+      q:"A×B를 모두 쓰시오.",
+      type:"text",
+      acceptable:["{(1,x),(1,y),(2,x),(2,y)}"],
+      answer:"{(1,x), (1,y), (2,x), (2,y)}",
+      expl:"첫 번째 자리는 A에서, 두 번째 자리는 B에서 순서대로 선택한다.\n1과 짝지을 수 있는 것: x, y → (1,x),(1,y)\n2와 짝지을 수 있는 것: x, y → (2,x),(2,y)"
+    },
+    {
+      n:4, given:"A = {1,2,3}",
+      q:"P(A)의 원소 개수는?",
+      type:"text",
+      acceptable:["8"],
+      answer:"8",
+      expl:"원소가 3개이므로 |P(A)| = 2^3 = 8."
+    },
+    {
+      n:5, given:"A = {1,2}, B = {a,b,c}",
+      q:"A×B의 원소 개수는?",
+      type:"text",
+      acceptable:["6"],
+      answer:"6",
+      expl:"|A×B| = |A| × |B| = 2 × 3 = 6."
+    },
+    {
+      n:6, given:"",
+      q:"다음 중 같은 순서쌍은?",
+      type:"mc",
+      choices:["(1,2)","(2,1)"],
+      correct:null,
+      answer:"(1,2)만 동일 — 즉 ‘서로 같은 순서쌍’은 존재하지 않는다",
+      expl:"(1,2)와 (2,1)은 순서가 다르므로 서로 다른 원소이다.\n즉 보기 ①, ②는 서로 같지 않으며, 정답은 ‘둘은 같지 않다’이다.",
+      special:true
+    },
+    {
+      n:7, given:"A = {1}, B = {a,b}",
+      q:"A×B는?",
+      type:"text",
+      acceptable:["{(1,a),(1,b)}"],
+      answer:"{(1,a), (1,b)}",
+      expl:"A의 원소가 1뿐이므로 1과 B의 각 원소를 짝짓는다.\n→ (1,a), (1,b)"
+    },
+    {
+      n:8, given:"A = {1,2}",
+      q:"P(A)에 포함되는 것은?",
+      type:"mc",
+      choices:["{1}","{3}","{1,3}","{2,3}"],
+      correct:0,
+      answer:"① {1}",
+      expl:"P(A) = {∅, {1}, {2}, {1,2}}이므로 A의 원소가 아닌 3이 포함된 보기는 모두 제외된다.\n{1}만 P(A)에 속한다."
+    },
+    {
+      n:9, given:"A = {1,2}, B = {3}",
+      q:"B×A를 모두 쓰시오.",
+      type:"text",
+      acceptable:["{(3,1),(3,2)}"],
+      answer:"{(3,1), (3,2)}",
+      expl:"B×A는 첫 번째 자리가 B, 두 번째 자리가 A이다.\nB의 원소는 3뿐이므로 → (3,1), (3,2)"
+    },
+    {
+      n:10, given:"원소가 5개인 집합",
+      q:"이 집합의 멱집합 원소 개수는?",
+      type:"text",
+      acceptable:["32"],
+      answer:"32",
+      expl:"|P(A)| = 2^5 = 32."
+    },
+  ],
+  advanced: [
+    {
+      n:11, given:"A = {1,2,3}",
+      q:"원소가 정확히 2개인 부분집합은 모두 몇 개인가?",
+      type:"text",
+      acceptable:["3"],
+      answer:"3개",
+      expl:"3개의 원소 중 2개를 고르는 조합이므로 ₃C₂ = 3.\n{1,2}, {1,3}, {2,3}"
+    },
+    {
+      n:12, given:"A = {1,2}, B = {a,b}",
+      q:"(A×B)의 원소 개수는?",
+      type:"text",
+      acceptable:["4"],
+      answer:"4",
+      expl:"|A|=2, |B|=2 → 2×2 = 4."
+    },
+    {
+      n:13, given:"A = {1,2}, B = {a,b}",
+      q:"(B×A)의 원소 개수는?",
+      type:"text",
+      acceptable:["4"],
+      answer:"4",
+      expl:"순서가 바뀌어도 개수는 같다. 2×2 = 4.\n(단, 원소 자체는 A×B와 다르다)"
+    },
+    {
+      n:14, given:"A = {1,2}, B = {3,4}",
+      q:"A×B와 B×A는 같은가?",
+      type:"mc",
+      choices:["같다","같지 않다"],
+      correct:1,
+      answer:"아니다 (같지 않다)",
+      expl:"A×B의 순서쌍은 (1,3)처럼 ‘숫자, 숫자’ 형태이지만, B×A의 순서쌍은 (3,1)처럼 순서가 다르다.\n순서쌍은 순서가 다르면 다른 원소이므로 두 곱집합은 같지 않다."
+    },
+    {
+      n:15, given:"A = {1,2,3}, B = {a,b}",
+      q:"A×B의 원소 개수는?",
+      type:"text",
+      acceptable:["6"],
+      answer:"6",
+      expl:"|A|×|B| = 3×2 = 6."
+    },
+    {
+      n:16, given:"A = {1,2}",
+      q:"P(P(A))의 원소 개수는?",
+      type:"text",
+      acceptable:["16"],
+      answer:"16",
+      expl:"|A|=2 → |P(A)| = 2^2 = 4.\n이제 P(A) 자체를 원소가 4개인 집합으로 보고 다시 멱집합을 구하면\n|P(P(A))| = 2^4 = 16."
+    },
+    {
+      n:17, given:"A = {1,2,3,4}",
+      q:"멱집합의 원소 개수는?",
+      type:"text",
+      acceptable:["16"],
+      answer:"16",
+      expl:"원소 4개 → 2^4 = 16."
+    },
+    {
+      n:18, given:"A = {1,2}, B = {a,b}",
+      q:"(A×B)∩(B×A)는?",
+      type:"text",
+      acceptable:["∅","공집합","{}"],
+      answer:"∅ (공집합)",
+      expl:"A×B의 순서쌍은 (숫자, 문자) 형태이고 B×A의 순서쌍은 (문자, 숫자) 형태이다.\n형태 자체가 겹치지 않으므로 공통 원소가 없다 → ∅"
+    },
+    {
+      n:19, given:"A = {1,2}",
+      q:"A×A의 원소 개수는?",
+      type:"text",
+      acceptable:["4"],
+      answer:"4",
+      expl:"A×A = {(1,1),(1,2),(2,1),(2,2)} → 2×2 = 4."
+    },
+    {
+      n:20, given:"원소가 N개인 집합",
+      q:"멱집합 원소 개수 공식은?",
+      type:"text",
+      acceptable:["2^N","2^n","2ⁿ"],
+      answer:"2^N",
+      expl:"멱집합 공식은 정보올림피아드 필수 암기 사항이다: |P(A)| = 2^N"
+    },
+  ],
+  koi: [
+    {
+      n:21, given:"A = {1,2,3}",
+      q:"P(A)의 모든 원소를 출력하시오.",
+      type:"text",
+      acceptable:["{∅,{1},{2},{3},{1,2},{1,3},{2,3},{1,2,3}}"],
+      answer:"∅, {1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}",
+      expl:"원소 3개 → 부분집합 2^3 = 8개.\n크기 0부터 3까지 순서대로 나열하면 위와 같다.\n(비트마스크 0~7을 이용해 생성할 수도 있다)"
+    },
+    {
+      n:22, given:"A = {1,2}, B = {3,4}",
+      q:"A×B를 모두 출력하시오.",
+      type:"text",
+      acceptable:["{(1,3),(1,4),(2,3),(2,4)}"],
+      answer:"(1,3), (1,4), (2,3), (2,4)",
+      expl:"첫 번째는 A에서, 두 번째는 B에서 순서대로 선택한다."
+    },
+    {
+      n:23, given:"A = {a,b,c}, B = {1,2}",
+      q:"곱집합의 원소 개수는?",
+      type:"text",
+      acceptable:["6"],
+      answer:"6",
+      expl:"|A|×|B| = 3×2 = 6."
+    },
+    {
+      n:24, given:"A = {1,2,3,4}",
+      q:"멱집합의 원소 개수는?",
+      type:"text",
+      acceptable:["16"],
+      answer:"16",
+      expl:"원소 4개 → 2^4 = 16."
+    },
+    {
+      n:25, given:"A = {1,2}, B = {a,b,c}",
+      q:"B×A의 원소 개수는?",
+      type:"text",
+      acceptable:["6"],
+      answer:"6",
+      expl:"|B|×|A| = 3×2 = 6. 순서가 바뀌어도 개수는 동일하다."
+    },
+    {
+      n:26, given:"A = {1,2}",
+      q:"P(A)의 원소 중 원소가 정확히 1개인 집합은 몇 개인가?",
+      type:"text",
+      acceptable:["2"],
+      answer:"2개",
+      expl:"P(A) = {∅, {1}, {2}, {1,2}}에서 원소가 1개인 것은 {1}, {2} → 2개."
+    },
+    {
+      n:27, given:"A = {1,2,3}, B = {x}",
+      q:"A×B를 출력하시오.",
+      type:"text",
+      acceptable:["{(1,x),(2,x),(3,x)}"],
+      answer:"(1,x), (2,x), (3,x)",
+      expl:"B의 원소가 x 하나뿐이므로 A의 각 원소와 x를 짝짓는다."
+    },
+    {
+      n:28, given:"원소가 6개인 집합",
+      q:"이 집합의 멱집합 원소 개수는?",
+      type:"text",
+      acceptable:["64"],
+      answer:"64",
+      expl:"2^6 = 64."
+    },
+    {
+      n:29, given:"A = {1,2}, B = {3,4}",
+      q:"(A×B)의 첫 번째 순서쌍은? (사전식으로 나열했을 때)",
+      type:"text",
+      acceptable:["(1,3)"],
+      answer:"(1,3)",
+      expl:"A의 가장 작은 원소 1과 B의 가장 작은 원소 3을 먼저 짝짓는다."
+    },
+    {
+      n:30, given:"A = {1,2}, B = {a,b}",
+      q:"다음을 모두 구하시오: ① P(A)  ② A×B  ③ |P(A)|  ④ |A×B|",
+      type:"text",
+      acceptable:["다답형"],
+      answer:"① {∅,{1},{2},{1,2}}   ② {(1,a),(1,b),(2,a),(2,b)}   ③ 4   ④ 4",
+      expl:"멱집합과 곱집합 공식을 종합적으로 적용하는 문제이다.\n① |A|=2 → 부분집합 4개\n② A×B는 (1,a),(1,b),(2,a),(2,b)\n③, ④ 모두 2^2 = 2×2 = 4로 동일하게 4가 나온다."
+    },
+  ]
+};
+
+const state = {}; // n -> 'correct' | 'wrong' | undefined
+
+// ---------- 렌더링 ----------
+function normalize(s){
+  return s.replace(/\s+/g,"").toLowerCase()
+    .replace(/[{}]/g,"")
+    .replace(/[()]/g,"")
+    .replace(/empty|emptyset/g,"∅");
+}
+
+function buildQuestionCard(p){
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.id = "q" + p.n;
+
+  const head = document.createElement("div");
+  head.className = "qhead";
+  const numEl = document.createElement("span");
+  numEl.className = "qnum";
+  numEl.textContent = "문제 " + p.n;
+  const statusEl = document.createElement("span");
+  statusEl.className = "qstatus";
+  statusEl.id = "status" + p.n;
+  statusEl.textContent = "미응답";
+  head.appendChild(numEl);
+  head.appendChild(statusEl);
+  card.appendChild(head);
+
+  const body = document.createElement("div");
+  body.className = "qbody";
+
+  if(p.given){
+    const g = document.createElement("span");
+    g.className = "given";
+    g.textContent = p.given;
+    body.appendChild(g);
+  }
+
+  const qtext = document.createElement("div");
+  qtext.className = "qtext";
+  qtext.textContent = p.q;
+  body.appendChild(qtext);
+
+  const feedback = document.createElement("div");
+  feedback.className = "feedback";
+  feedback.id = "fb" + p.n;
+  body.appendChild(feedback);
+
+  if(p.type === "mc"){
+    const choicesWrap = document.createElement("div");
+    choicesWrap.className = "choices";
+    const circled = ["①","②","③","④"];
+    p.choices.forEach((c, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = circled[idx] + " " + c;
+      btn.addEventListener("click", () => handleMC(p, idx, choicesWrap, feedback, card));
+      choicesWrap.appendChild(btn);
+    });
+    body.appendChild(choicesWrap);
+  } else {
+    const row = document.createElement("div");
+    row.className = "input-row";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "답을 입력하세요 (예: {(1,a),(1,b)})";
+    input.id = "input" + p.n;
+    input.addEventListener("keydown", (e) => { if(e.key === "Enter") checkBtn.click(); });
+    const checkBtn = document.createElement("button");
+    checkBtn.className = "btn";
+    checkBtn.textContent = "정답 확인";
+    checkBtn.addEventListener("click", () => handleText(p, input, feedback, card));
+    row.appendChild(input);
+    row.appendChild(checkBtn);
+    body.appendChild(row);
+  }
+
+  const answerBox = document.createElement("div");
+  answerBox.className = "answer-box";
+  answerBox.id = "ans" + p.n;
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = "정답 · 해설";
+  const ansLine = document.createElement("div");
+  ansLine.className = "ans";
+  ansLine.textContent = "정답: " + p.answer;
+  const explLine = document.createElement("div");
+  explLine.className = "expl";
+  explLine.textContent = p.expl;
+  answerBox.appendChild(label);
+  answerBox.appendChild(ansLine);
+  answerBox.appendChild(explLine);
+  body.appendChild(answerBox);
+
+  const toolbar = document.createElement("div");
+  toolbar.className = "toolbar";
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "btn secondary";
+  toggleBtn.textContent = "해설 보기";
+  toggleBtn.addEventListener("click", () => {
+    answerBox.classList.toggle("show");
+    toggleBtn.textContent = answerBox.classList.contains("show") ? "해설 닫기" : "해설 보기";
+  });
+  toolbar.appendChild(toggleBtn);
+  body.appendChild(toolbar);
+
+  card.appendChild(body);
+  return card;
+}
+
+function setSolved(p, isCorrect, card, feedback){
+  state[p.n] = isCorrect ? "correct" : "wrong";
+  card.classList.remove("solved-correct","solved-wrong");
+  card.classList.add(isCorrect ? "solved-correct" : "solved-wrong");
+  const statusEl = document.getElementById("status" + p.n);
+  statusEl.textContent = isCorrect ? "정답" : "오답";
+  statusEl.classList.remove("correct","wrong");
+  statusEl.classList.add(isCorrect ? "correct" : "wrong");
+  feedback.classList.add("show");
+  feedback.classList.remove("correct","wrong");
+  feedback.classList.add(isCorrect ? "correct" : "wrong");
+  feedback.textContent = isCorrect ? "정답입니다! 🎉" : "오답입니다. 해설을 확인해 보세요.";
+  document.getElementById("ans" + p.n).classList.add("show");
+  updateSummary();
+}
+
+function handleMC(p, idx, wrap, feedback, card){
+  const buttons = wrap.querySelectorAll(".choice-btn");
+  buttons.forEach(b => b.disabled = true);
+  const isCorrect = (p.correct !== null && idx === p.correct);
+  if(p.special){
+    // 문제6: 정답이 없는 특수 문제, 해설로 설명
+    buttons.forEach(b => b.classList.add("picked-wrong"));
+    feedback.classList.add("show","wrong");
+    feedback.textContent = "두 순서쌍은 서로 같지 않습니다 — 해설을 확인하세요.";
+    document.getElementById("ans" + p.n).classList.add("show");
+    state[p.n] = "wrong";
+    card.classList.add("solved-wrong");
+    document.getElementById("status" + p.n).textContent = "확인";
+    updateSummary();
+    return;
+  }
+  buttons[idx].classList.add(isCorrect ? "picked-correct" : "picked-wrong");
+  if(!isCorrect && p.correct !== null){
+    buttons[p.correct].classList.add("reveal-correct");
+  }
+  setSolved(p, isCorrect, card, feedback);
+}
+
+function handleText(p, input, feedback, card){
+  const userVal = normalize(input.value || "");
+  const isCorrect = p.acceptable.some(a => normalize(a) === userVal) && userVal.length > 0;
+  setSolved(p, isCorrect, card, feedback);
+}
+
+function renderTab(tabId, list){
+  const section = document.getElementById("tab-" + tabId);
+  const wrap = document.createElement("div");
+  list.forEach(p => wrap.appendChild(buildQuestionCard(p)));
+  section.appendChild(wrap);
+}
+
+renderTab("basic", problems.basic);
+renderTab("advanced", problems.advanced);
+renderTab("koi", problems.koi);
+
+// ---------- 탭 전환 ----------
+const navButtons = document.querySelectorAll("#tabNav button");
+navButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    navButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll("section.tab").forEach(s => s.classList.remove("active"));
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+
+// ---------- 요약/초기화 ----------
+function updateSummary(){
+  const total = 30;
+  const answered = Object.keys(state).length;
+  const correct = Object.values(state).filter(v => v === "correct").length;
+  const wrong = Object.values(state).filter(v => v === "wrong").length;
+  document.getElementById("sumProgress").textContent = answered + "/" + total;
+  document.getElementById("sumCorrect").textContent = correct;
+  document.getElementById("sumWrong").textContent = wrong;
+}
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if(!confirm("모든 풀이 기록을 초기화할까요?")) return;
+  location.reload();
+});
+
+updateSummary();
+})();
+</script>
+</body>
+</html>

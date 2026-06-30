@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포함-배제 원리 문제집</title>
+<style>
+:root{
+  --bg:#0a1929;
+  --bg2:#0f2438;
+  --panel:#102a40;
+  --panel2:#0c2031;
+  --teal:#2dd4bf;
+  --teal-dim:#0e7c70;
+  --text:#e6f1f5;
+  --text-dim:#9fb8c8;
+  --border:#1c3a52;
+  --correct:#34d399;
+  --wrong:#f87171;
+  --accent:#facc15;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:linear-gradient(180deg,var(--bg) 0%, #081420 100%);
+  color:var(--text);
+  font-family:'Noto Sans KR', sans-serif;
+  line-height:1.6;
+}
+code, .mono{font-family:'JetBrains Mono', monospace;}
+
+header{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(90deg,#0c1f30,#0f2c40);
+  border-bottom:1px solid var(--teal-dim);
+  padding:14px 20px;
+  display:flex; align-items:center; gap:16px;
+  flex-wrap:wrap;
+}
+header h1{
+  font-size:1.05rem; margin:0; color:var(--teal); font-weight:700;
+  letter-spacing:0.3px;
+}
+nav{display:flex; gap:8px; flex-wrap:wrap; margin-left:auto;}
+nav button{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:inherit;
+  font-size:0.82rem;
+  transition:.15s;
+}
+nav button:hover{border-color:var(--teal); color:var(--teal);}
+nav button.active{background:var(--teal); color:#04221d; border-color:var(--teal); font-weight:700;}
+
+main{max-width:920px; margin:0 auto; padding:24px 18px 80px;}
+section.tab{display:none;}
+section.tab.active{display:block; animation:fade .25s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.concept-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 22px;
+  margin-bottom:18px;
+}
+.concept-card h2{
+  color:var(--teal); margin-top:0; font-size:1.05rem;
+  display:flex; align-items:center; gap:8px;
+}
+.concept-card h2 .badge{
+  background:var(--teal-dim); color:#bdf3ec; font-size:.7rem;
+  padding:2px 8px; border-radius:6px; font-family:'JetBrains Mono',monospace;
+}
+.formula{
+  font-family:'JetBrains Mono', monospace;
+  background:var(--panel2);
+  border-left:3px solid var(--teal);
+  padding:10px 14px;
+  border-radius:6px;
+  margin:10px 0;
+  color:var(--accent);
+  font-size:1.02rem;
+}
+.example{
+  font-family:'JetBrains Mono', monospace;
+  background:#081625;
+  border:1px dashed var(--border);
+  padding:10px 14px;
+  border-radius:8px;
+  color:var(--text-dim);
+  font-size:.88rem;
+  white-space:pre-wrap;
+}
+.venn-wrap{display:flex; justify-content:center; margin:14px 0;}
+
+.qcard{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:16px;
+  overflow:hidden;
+  transition:border-color .2s;
+}
+.qcard.solved-correct{border-color:var(--correct);}
+.qcard.solved-wrong{border-color:var(--wrong);}
+.qhead{
+  display:flex; align-items:center; gap:10px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  background:var(--panel2);
+}
+.qnum{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--teal-dim); color:#dffaf5;
+  font-weight:700; font-size:.8rem;
+  padding:3px 10px; border-radius:20px;
+}
+.qstatus{margin-left:auto; font-size:.75rem; font-family:'JetBrains Mono',monospace; color:var(--text-dim);}
+.qstatus.correct{color:var(--correct);}
+.qstatus.wrong{color:var(--wrong);}
+
+.qbody{padding:16px 18px 18px;}
+.given{
+  font-family:'JetBrains Mono',monospace;
+  color:#cfeeea;
+  background:var(--panel2);
+  display:inline-block;
+  padding:8px 12px;
+  border-radius:8px;
+  margin:3px 6px 3px 0;
+  font-size:.9rem;
+  white-space:pre-line;
+}
+.qtext{margin:12px 0 14px; font-size:.98rem;}
+
+.choices{display:flex; flex-direction:column; gap:8px; margin-bottom:12px;}
+.choice-btn{
+  text-align:left;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  transition:.15s;
+}
+.choice-btn:hover{border-color:var(--teal);}
+.choice-btn.picked-correct{background:rgba(52,211,153,.15); border-color:var(--correct); color:var(--correct);}
+.choice-btn.picked-wrong{background:rgba(248,113,113,.15); border-color:var(--wrong); color:var(--wrong);}
+.choice-btn.reveal-correct{border-color:var(--correct); color:var(--correct);}
+.choice-btn:disabled{cursor:default;}
+
+.input-row{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+.input-row input{
+  flex:1; min-width:140px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.92rem;
+}
+.input-row input:focus{outline:none; border-color:var(--teal);}
+.btn{
+  background:var(--teal); color:#04221d; border:none;
+  font-weight:700; padding:10px 16px; border-radius:8px;
+  cursor:pointer; font-family:inherit; font-size:.85rem;
+  transition:.15s;
+}
+.btn:hover{background:#5eead4;}
+.btn.secondary{
+  background:transparent; color:var(--text-dim); border:1px solid var(--border);
+}
+.btn.secondary:hover{color:var(--teal); border-color:var(--teal);}
+
+.feedback{
+  padding:10px 14px; border-radius:8px; margin:10px 0; font-size:.88rem;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.correct{background:rgba(52,211,153,.12); color:var(--correct); border:1px solid var(--correct);}
+.feedback.wrong{background:rgba(248,113,113,.12); color:var(--wrong); border:1px solid var(--wrong);}
+
+.answer-box{
+  margin-top:10px; display:none;
+  background:#081625; border:1px solid var(--teal-dim);
+  border-radius:10px; padding:14px 16px;
+}
+.answer-box.show{display:block; animation:fade .2s ease;}
+.answer-box .label{color:var(--teal); font-weight:700; font-size:.8rem; margin-bottom:6px; font-family:'JetBrains Mono',monospace;}
+.answer-box .ans{font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:1rem; margin-bottom:10px;}
+.answer-box .expl{color:var(--text-dim); font-size:.88rem; white-space:pre-line;}
+
+.toolbar{display:flex; gap:8px; margin-top:10px;}
+
+footer.summary{
+  position:sticky; bottom:0; z-index:40;
+  background:linear-gradient(0deg,#0c1f30,#0f2c40);
+  border-top:1px solid var(--teal-dim);
+  padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;
+  flex-wrap:wrap;
+}
+footer.summary .stat{color:var(--text-dim);}
+footer.summary .stat b{color:var(--teal);}
+footer.summary button{margin-left:auto;}
+
+@media (max-width:600px){
+  header{padding:12px;}
+  header h1{font-size:.9rem;}
+  main{padding:16px 10px 90px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>포함-배제 원리 문제집</h1>
+  <nav id="tabNav">
+    <button data-tab="concept" class="active">개념</button>
+    <button data-tab="basic">기본 (1-10)</button>
+    <button data-tab="advanced">심화 (11-20)</button>
+    <button data-tab="koi">정올스타일 (21-30)</button>
+  </nav>
+</header>
+
+<main>
+
+<section id="tab-concept" class="tab active">
+  <div class="concept-card">
+    <h2>1. 두 집합의 포함-배제 원리 <span class="badge">|A∪B|</span></h2>
+    <p>두 집합을 단순히 더하면 <b>교집합이 두 번 더해진다.</b> 그래서 한 번 빼주어야 정확한 합집합 원소 개수가 나온다.</p>
+    <div class="venn-wrap">
+      <svg width="260" height="180" viewBox="0 0 260 180">
+        <circle cx="100" cy="90" r="70" fill="#2dd4bf" fill-opacity="0.22" stroke="#2dd4bf" stroke-width="2"/>
+        <circle cx="160" cy="90" r="70" fill="#facc15" fill-opacity="0.22" stroke="#facc15" stroke-width="2"/>
+        <text x="65" y="55" fill="#cfeeea" font-family="JetBrains Mono, monospace" font-size="13">A: 8</text>
+        <text x="175" y="55" fill="#cfeeea" font-family="JetBrains Mono, monospace" font-size="13">B: 5</text>
+        <text x="118" y="95" fill="#e6f1f5" font-family="JetBrains Mono, monospace" font-size="13">3</text>
+        <text x="50" y="160" fill="#9fb8c8" font-family="JetBrains Mono, monospace" font-size="12">|A∪B| = 8 + 5 - 3 = 10</text>
+      </svg>
+    </div>
+    <div class="formula">| A∪B | = | A | + | B | - | A∩B |</div>
+    <div class="example">예) A학생 20명, B학생 15명, 둘 다 속한 학생 5명
+전체 학생 수 = 20 + 15 - 5 = 30</div>
+  </div>
+
+  <div class="concept-card">
+    <h2>2. 세 집합의 포함-배제 원리 <span class="badge">|A∪B∪C|</span></h2>
+    <div class="formula" style="font-size:.9rem;">| A∪B∪C | = | A | + | B | + | C |
+&nbsp;&nbsp;&nbsp;&nbsp;- | A∩B | - | A∩C | - | B∩C |
+&nbsp;&nbsp;&nbsp;&nbsp;+ | A∩B∩C |</div>
+    <p><b>암기법:</b> 한 개씩 더한다 → 두 개 겹치는 건 뺀다 → 세 개 겹치는 건 다시 더한다.</p>
+    <p style="color:var(--text-dim); font-size:.9rem;">세 집합이 모두 겹치는 부분은 더하는 과정에서 3번, 빼는 과정에서 3번 처리되어 결과적으로 0번 세어진 셈이 된다. 그래서 마지막에 한 번 다시 더해 정확히 1번만 세어지도록 보정한다.</p>
+  </div>
+
+  <div class="concept-card">
+    <h2>3. 차집합 · 대칭차집합 <span class="badge">보조 공식</span></h2>
+    <div class="formula" style="font-size:.92rem;">| A - B | = | A | - | A∩B |</div>
+    <div class="formula" style="font-size:.92rem;">| A△B | = | A | + | B | - 2| A∩B |</div>
+    <p style="color:var(--text-dim); font-size:.9rem; margin-bottom:0;">대칭차집합(A△B)은 ‘A에만 속하거나 B에만 속하는’ 원소들의 집합으로, (A-B)와 (B-A)를 더한 것과 같다.</p>
+  </div>
+
+  <div class="concept-card">
+    <h2>정보올림피아드 응용 포인트 <span class="badge">심화</span></h2>
+    <p style="margin-bottom:0; color:var(--text-dim); font-size:.9rem;">
+      포함-배제 원리는 집합·경우의 수 문제뿐 아니라 비트마스킹, 그래프, 브루트포스 문제에서도 자주 활용된다. 네 개 이상의 집합에서는 더하기와 빼기를 번갈아 반복하여 계산한다.
+    </p>
+  </div>
+</section>
+
+<section id="tab-basic" class="tab"></section>
+<section id="tab-advanced" class="tab"></section>
+<section id="tab-koi" class="tab"></section>
+
+</main>
+
+<footer class="summary">
+  <span class="stat">진행 <b id="sumProgress">0/30</b></span>
+  <span class="stat">정답 <b id="sumCorrect" style="color:var(--correct)">0</b></span>
+  <span class="stat">오답 <b id="sumWrong" style="color:var(--wrong)">0</b></span>
+  <button class="btn secondary" id="resetBtn">전체 초기화</button>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+// type: 'mc' (객관식) / 'text' (주관식, 숫자/문자열 채점)
+const problems = {
+  basic: [
+    {
+      n:1, given:"|A| = 20, |B| = 15, |A∩B| = 5",
+      q:"합집합의 원소 개수는?",
+      type:"text", acceptable:["30"], answer:"30",
+      expl:"|A∪B| = |A| + |B| - |A∩B| = 20 + 15 - 5 = 30"
+    },
+    {
+      n:2, given:"|A| = 12, |B| = 9, |A∩B| = 4",
+      q:"합집합은?",
+      type:"text", acceptable:["17"], answer:"17",
+      expl:"12 + 9 - 4 = 17"
+    },
+    {
+      n:3, given:"|A| = 30, |B| = 18, |A∩B| = 10",
+      q:"합집합은?",
+      type:"text", acceptable:["38"], answer:"38",
+      expl:"30 + 18 - 10 = 38"
+    },
+    {
+      n:4, given:"A = {1,2,3}, B = {3,4,5}",
+      q:"합집합의 원소 개수는?",
+      type:"text", acceptable:["5"], answer:"5",
+      expl:"A∪B = {1,2,3,4,5} → 원소 개수 5.\n공식으로 확인하면 |A|+|B|-|A∩B| = 3+3-1 = 5."
+    },
+    {
+      n:5, given:"A = {1,2}, B = {3,4}",
+      q:"합집합 원소 개수는?",
+      type:"text", acceptable:["4"], answer:"4",
+      expl:"교집합이 없으므로(서로소) |A∩B| = 0.\n2 + 2 - 0 = 4"
+    },
+    {
+      n:6, given:"교집합이 없는 두 집합, |A| = 8, |B| = 5",
+      q:"합집합 원소 개수는?",
+      type:"text", acceptable:["13"], answer:"13",
+      expl:"겹치는 원소가 없으므로 그냥 더한다. 8 + 5 = 13"
+    },
+    {
+      n:7, given:"|A| = 25, |B| = 17, |A∩B| = 7",
+      q:"합집합은?",
+      type:"text", acceptable:["35"], answer:"35",
+      expl:"25 + 17 - 7 = 35"
+    },
+    {
+      n:8, given:"|A∪B| = |A| + |B| - ___",
+      q:"공식의 빈칸을 채우시오.",
+      type:"text", acceptable:["|A∩B|","A∩B","교집합","|a∩b|"], answer:"|A∩B|",
+      expl:"포함-배제 원리의 핵심은 중복으로 두 번 세어진 교집합을 한 번 빼주는 것이다."
+    },
+    {
+      n:9, given:"",
+      q:"교집합을 빼는 이유는?",
+      type:"mc",
+      choices:["두 번 세기 때문","없애기 위해","더 크게 만들기 위해","상관없다"],
+      correct:0, answer:"① 두 번 세기 때문",
+      expl:"교집합의 원소는 A에서도 세어지고 B에서도 세어지므로, 단순히 더하면 두 번 카운트된다. 그래서 한 번 빼서 정확히 한 번만 세어지도록 보정한다."
+    },
+    {
+      n:10, given:"|A| = 100, |B| = 80, |A∩B| = 40",
+      q:"합집합은?",
+      type:"text", acceptable:["140"], answer:"140",
+      expl:"100 + 80 - 40 = 140"
+    },
+  ],
+  advanced: [
+    {
+      n:11, given:"|A| = 30, |B| = 25, |A∩B| = 8",
+      q:"합집합은?",
+      type:"text", acceptable:["47"], answer:"47",
+      expl:"30 + 25 - 8 = 47"
+    },
+    {
+      n:12, given:"|A| = 40, |B| = 30, |A∪B| = 60",
+      q:"교집합은?",
+      type:"text", acceptable:["10"], answer:"10",
+      expl:"공식을 변형: |A∩B| = |A| + |B| - |A∪B| = 40 + 30 - 60 = 10"
+    },
+    {
+      n:13, given:"|A| = 25, |B| = 20, |A∩B| = x, |A∪B| = 35",
+      q:"x는?",
+      type:"text", acceptable:["10"], answer:"10",
+      expl:"25 + 20 - x = 35 → 45 - x = 35 → x = 10"
+    },
+    {
+      n:14, given:"|A| = 18, |B| = 12, |A∩B| = 6",
+      q:"A-B의 원소 개수는?",
+      type:"text", acceptable:["12"], answer:"12",
+      expl:"|A-B| = |A| - |A∩B| = 18 - 6 = 12"
+    },
+    {
+      n:15, given:"|A| = 40, |B| = 35, |A∩B| = 15",
+      q:"대칭차집합 원소 개수는?",
+      type:"text", acceptable:["45"], answer:"45",
+      expl:"|A△B| = |A| + |B| - 2|A∩B| = 40 + 35 - 30 = 45\n(또는 (A-B)+(B-A) = 25 + 20 = 45)"
+    },
+    {
+      n:16, given:"|A|=15, |B|=20, |C|=18\n|A∩B|=5, |A∩C|=4, |B∩C|=6, |A∩B∩C|=2",
+      q:"합집합은?",
+      type:"text", acceptable:["40"], answer:"40",
+      expl:"15+20+18-5-4-6+2 = 53-15+2 = 40"
+    },
+    {
+      n:17, given:"|A|=50, |B|=45, |C|=35\n|A∩B|=20, |A∩C|=15, |B∩C|=10, |A∩B∩C|=5",
+      q:"합집합은?",
+      type:"text", acceptable:["90"], answer:"90",
+      expl:"50+45+35-20-15-10+5 = 130-45+5 = 90"
+    },
+    {
+      n:18, given:"|A|=30, |B|=25, |C|=20\n|A∩B|=10, |A∩C|=6, |B∩C|=5, |A∩B∩C|=3",
+      q:"합집합은?",
+      type:"text", acceptable:["57"], answer:"57",
+      expl:"30+25+20-10-6-5+3 = 75-21+3 = 57"
+    },
+    {
+      n:19, given:"|A|=60, |B|=50, |C|=40\n|A∩B|=20, |A∩C|=15, |B∩C|=10, |A∩B∩C|=5",
+      q:"합집합은?",
+      type:"text", acceptable:["110"], answer:"110",
+      expl:"60+50+40-20-15-10+5 = 150-45+5 = 110"
+    },
+    {
+      n:20, given:"",
+      q:"세 집합 공식에서 마지막에 |A∩B∩C|를 더하는 이유는?",
+      type:"text",
+      acceptable:["세번빠졌기때문","세번빠짐","3번빠졌기때문"],
+      answer:"세 번 빠졌기 때문",
+      expl:"세 집합이 모두 겹치는 부분은 |A|+|B|+|C|를 더할 때 3번 더해진다.\n그런데 |A∩B|, |A∩C|, |B∩C|를 빼는 과정에서 이 부분이 다시 3번 빠지게 되어 결과적으로 0번 세어진 셈이 된다.\n원래 1번만 세어져야 하므로, 마지막에 |A∩B∩C|를 한 번 더해 정확히 보정한다."
+    },
+  ],
+  koi: [
+    {
+      n:21, given:"축구를 좋아하는 학생 40명, 농구를 좋아하는 학생 35명, 둘 다 좋아하는 학생 12명",
+      q:"적어도 하나를 좋아하는 학생 수는?",
+      type:"text", acceptable:["63"], answer:"63",
+      expl:"40 + 35 - 12 = 63"
+    },
+    {
+      n:22, given:"영어 동아리 28명, 수학 동아리 25명, 둘 다 가입 9명",
+      q:"동아리에 가입한 학생 수는?",
+      type:"text", acceptable:["44"], answer:"44",
+      expl:"28 + 25 - 9 = 44"
+    },
+    {
+      n:23, given:"|A| = 70, |B| = 50, |A∪B| = 95",
+      q:"교집합은?",
+      type:"text", acceptable:["25"], answer:"25",
+      expl:"|A∩B| = |A| + |B| - |A∪B| = 70 + 50 - 95 = 25"
+    },
+    {
+      n:24, given:"|A| = 80, |B| = 55, |A∩B| = 25",
+      q:"합집합은?",
+      type:"text", acceptable:["110"], answer:"110",
+      expl:"80 + 55 - 25 = 110"
+    },
+    {
+      n:25, given:"|A| = 100, |B| = 90, |A∩B| = 30",
+      q:"대칭차집합 원소 개수는?",
+      type:"text", acceptable:["130"], answer:"130",
+      expl:"|A△B| = (A-B)+(B-A) = (100-30)+(90-30) = 70+60 = 130"
+    },
+    {
+      n:26, given:"|A|=40, |B|=30, |C|=20\n|A∩B|=12, |A∩C|=5, |B∩C|=6, |A∩B∩C|=3",
+      q:"합집합은?",
+      type:"text", acceptable:["67"], answer:"67",
+      expl:"40+30+20-12-5-6+3 = 90-23+3 = 67\n(주의: 일부 정답표에는 40으로 표기되어 있으나 이는 오타이며, 올바른 계산 결과는 67이다.)"
+    },
+    {
+      n:27, given:"|A|=50, |B|=40, |C|=30\n|A∩B|=10, |A∩C|=8, |B∩C|=6, |A∩B∩C|=2",
+      q:"합집합은?",
+      type:"text", acceptable:["98"], answer:"98",
+      expl:"50+40+30-10-8-6+2 = 120-24+2 = 98"
+    },
+    {
+      n:28, given:"|A|=15, |B|=12, |C|=10\n|A∩B|=4, |A∩C|=2, |B∩C|=3, |A∩B∩C|=1",
+      q:"합집합은?",
+      type:"text", acceptable:["29"], answer:"29",
+      expl:"15+12+10-4-2-3+1 = 37-9+1 = 29"
+    },
+    {
+      n:29, given:"|A|=100, |B|=70, |C|=50\n|A∩B|=30, |A∩C|=20, |B∩C|=15, |A∩B∩C|=5",
+      q:"합집합은?",
+      type:"text", acceptable:["160"], answer:"160",
+      expl:"100+70+50-30-20-15+5 = 220-65+5 = 160"
+    },
+    {
+      n:30, given:"축구 60명, 농구 50명, 배드민턴 40명\n축구·농구 20명, 축구·배드민턴 15명, 농구·배드민턴 10명, 세 종목 모두 5명",
+      q:"적어도 한 종목 이상 하는 학생은?",
+      type:"text", acceptable:["110"], answer:"110",
+      expl:"60+50+40-20-15-10+5 = 150-45+5 = 110"
+    },
+  ]
+};
+
+const state = {}; // n -> 'correct' | 'wrong'
+
+function normalize(s){
+  return s.replace(/\s+/g,"").toLowerCase()
+    .replace(/[{}]/g,"")
+    .replace(/[()]/g,"");
+}
+
+function buildQuestionCard(p){
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.id = "q" + p.n;
+
+  const head = document.createElement("div");
+  head.className = "qhead";
+  const numEl = document.createElement("span");
+  numEl.className = "qnum";
+  numEl.textContent = "문제 " + p.n;
+  const statusEl = document.createElement("span");
+  statusEl.className = "qstatus";
+  statusEl.id = "status" + p.n;
+  statusEl.textContent = "미응답";
+  head.appendChild(numEl);
+  head.appendChild(statusEl);
+  card.appendChild(head);
+
+  const body = document.createElement("div");
+  body.className = "qbody";
+
+  if(p.given){
+    const g = document.createElement("span");
+    g.className = "given";
+    g.textContent = p.given;
+    body.appendChild(g);
+  }
+
+  const qtext = document.createElement("div");
+  qtext.className = "qtext";
+  qtext.textContent = p.q;
+  body.appendChild(qtext);
+
+  const feedback = document.createElement("div");
+  feedback.className = "feedback";
+  feedback.id = "fb" + p.n;
+  body.appendChild(feedback);
+
+  if(p.type === "mc"){
+    const choicesWrap = document.createElement("div");
+    choicesWrap.className = "choices";
+    const circled = ["①","②","③","④"];
+    p.choices.forEach((c, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = circled[idx] + " " + c;
+      btn.addEventListener("click", () => handleMC(p, idx, choicesWrap, feedback, card));
+      choicesWrap.appendChild(btn);
+    });
+    body.appendChild(choicesWrap);
+  } else {
+    const row = document.createElement("div");
+    row.className = "input-row";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "답을 입력하세요 (숫자 또는 식)";
+    input.id = "input" + p.n;
+    input.addEventListener("keydown", (e) => { if(e.key === "Enter") checkBtn.click(); });
+    const checkBtn = document.createElement("button");
+    checkBtn.className = "btn";
+    checkBtn.textContent = "정답 확인";
+    checkBtn.addEventListener("click", () => handleText(p, input, feedback, card));
+    row.appendChild(input);
+    row.appendChild(checkBtn);
+    body.appendChild(row);
+  }
+
+  const answerBox = document.createElement("div");
+  answerBox.className = "answer-box";
+  answerBox.id = "ans" + p.n;
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = "정답 · 해설";
+  const ansLine = document.createElement("div");
+  ansLine.className = "ans";
+  ansLine.textContent = "정답: " + p.answer;
+  const explLine = document.createElement("div");
+  explLine.className = "expl";
+  explLine.textContent = p.expl;
+  answerBox.appendChild(label);
+  answerBox.appendChild(ansLine);
+  answerBox.appendChild(explLine);
+  body.appendChild(answerBox);
+
+  const toolbar = document.createElement("div");
+  toolbar.className = "toolbar";
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "btn secondary";
+  toggleBtn.textContent = "해설 보기";
+  toggleBtn.addEventListener("click", () => {
+    answerBox.classList.toggle("show");
+    toggleBtn.textContent = answerBox.classList.contains("show") ? "해설 닫기" : "해설 보기";
+  });
+  toolbar.appendChild(toggleBtn);
+  body.appendChild(toolbar);
+
+  card.appendChild(body);
+  return card;
+}
+
+function setSolved(p, isCorrect, card, feedback){
+  state[p.n] = isCorrect ? "correct" : "wrong";
+  card.classList.remove("solved-correct","solved-wrong");
+  card.classList.add(isCorrect ? "solved-correct" : "solved-wrong");
+  const statusEl = document.getElementById("status" + p.n);
+  statusEl.textContent = isCorrect ? "정답" : "오답";
+  statusEl.classList.remove("correct","wrong");
+  statusEl.classList.add(isCorrect ? "correct" : "wrong");
+  feedback.classList.add("show");
+  feedback.classList.remove("correct","wrong");
+  feedback.classList.add(isCorrect ? "correct" : "wrong");
+  feedback.textContent = isCorrect ? "정답입니다! 🎉" : "오답입니다. 해설을 확인해 보세요.";
+  document.getElementById("ans" + p.n).classList.add("show");
+  updateSummary();
+}
+
+function handleMC(p, idx, wrap, feedback, card){
+  const buttons = wrap.querySelectorAll(".choice-btn");
+  buttons.forEach(b => b.disabled = true);
+  const isCorrect = idx === p.correct;
+  buttons[idx].classList.add(isCorrect ? "picked-correct" : "picked-wrong");
+  if(!isCorrect){
+    buttons[p.correct].classList.add("reveal-correct");
+  }
+  setSolved(p, isCorrect, card, feedback);
+}
+
+function handleText(p, input, feedback, card){
+  const userVal = normalize(input.value || "");
+  const isCorrect = p.acceptable.some(a => normalize(a) === userVal) && userVal.length > 0;
+  setSolved(p, isCorrect, card, feedback);
+}
+
+function renderTab(tabId, list){
+  const section = document.getElementById("tab-" + tabId);
+  const wrap = document.createElement("div");
+  list.forEach(p => wrap.appendChild(buildQuestionCard(p)));
+  section.appendChild(wrap);
+}
+
+renderTab("basic", problems.basic);
+renderTab("advanced", problems.advanced);
+renderTab("koi", problems.koi);
+
+const navButtons = document.querySelectorAll("#tabNav button");
+navButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    navButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll("section.tab").forEach(s => s.classList.remove("active"));
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+
+function updateSummary(){
+  const total = 30;
+  const answered = Object.keys(state).length;
+  const correct = Object.values(state).filter(v => v === "correct").length;
+  const wrong = Object.values(state).filter(v => v === "wrong").length;
+  document.getElementById("sumProgress").textContent = answered + "/" + total;
+  document.getElementById("sumCorrect").textContent = correct;
+  document.getElementById("sumWrong").textContent = wrong;
+}
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if(!confirm("모든 풀이 기록을 초기화할까요?")) return;
+  location.reload();
+});
+
+updateSummary();
+})();
+</script>
+</body>
+</html>
