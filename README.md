@@ -9,7 +9,7 @@ ch2glq   :  gcd lcm 문제
 ch2q     :  정수론 문제
 ch2c     :  코딩
 
-
+gl :  gcd lcm 문제
 
 set  :  집합 개념 
   1  01. 기초개념문제정답
