@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>최대공약수 · 최소공배수 연습장 | 세영코딩연구소 사고력수학</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fdfaf3;          /* 밝은 아이보리 */
+  --panel:#ffffff;
+  --panel2:#f4eede;
+  --line:#d9cfb4;
+  --ink:#243447;         /* 본문 잉크 */
+  --sub:#5b6b7c;
+  --teal:#0f766e;        /* 진한 청록 */
+  --blue:#1d4ed8;
+  --orange:#c2410c;
+  --good:#15803d;
+  --goodbg:#e7f6ec;
+  --bad:#b91c1c;
+  --badbg:#fdecec;
+  --star:#b45309;
+  --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:18px;}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.75;}
+
+header.hero{padding:2.4rem 1.2rem 1.5rem;text-align:center;background:linear-gradient(180deg,#fff7e6 0%,var(--bg) 100%);border-bottom:2px solid var(--line);}
+.hero .lab{font-family:var(--mono);color:var(--teal);font-size:.95rem;letter-spacing:.16em;font-weight:700;}
+.hero h1{font-size:2.05rem;font-weight:900;margin:.45rem 0 .3rem;line-height:1.35;color:#16324f;}
+.hero h1 .fx{color:var(--orange);}
+.hero .desc{color:var(--sub);font-size:1.02rem;font-weight:500;}
+
+nav.tabs{position:sticky;top:0;z-index:50;display:flex;justify-content:center;flex-wrap:wrap;gap:.45rem;padding:.7rem .6rem;background:rgba(253,250,243,.96);backdrop-filter:blur(8px);border-bottom:2px solid var(--line);}
+nav.tabs button{font-family:var(--sans);font-size:1rem;font-weight:700;color:#40536a;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:.5rem 1rem;cursor:pointer;transition:all .15s;}
+nav.tabs button:hover{border-color:var(--teal);color:var(--teal);}
+nav.tabs button.on{color:#ffffff;background:var(--teal);border-color:var(--teal);}
+nav.tabs button:focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+
+main{max-width:940px;margin:0 auto;padding:1.6rem 1.1rem 4rem;}
+section.page{display:none;}
+section.page.on{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.page-title{font-size:1.5rem;font-weight:900;margin:.6rem 0 .4rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;color:#16324f;}
+.page-title .chip{font-family:var(--mono);font-size:.8rem;font-weight:700;color:#fff;background:var(--teal);border-radius:8px;padding:.18rem .6rem;}
+.page-sub{color:var(--sub);margin-bottom:1.3rem;font-size:1rem;}
+
+.tcard{background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:1.3rem 1.4rem;margin-bottom:1.15rem;box-shadow:0 2px 6px rgba(120,100,60,.06);}
+.tcard h3{font-size:1.18rem;font-weight:900;color:var(--blue);margin-bottom:.55rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.tcard h3 .num{font-family:var(--mono);font-size:.85rem;color:var(--orange);}
+.tcard p{margin:.35rem 0;}
+.tcard .note{color:var(--sub);font-size:.96rem;}
+.tcard .big{
+  font-family:var(--mono);font-size:1.05rem;font-weight:700;
+  background:var(--panel2);border:2px solid var(--line);border-left:6px solid var(--teal);
+  border-radius:10px;padding:.7rem 1rem;margin:.7rem 0;color:#173a36;white-space:pre-wrap;
+}
+
+.lab-box{background:#fbf6e9;border:2px solid var(--line);border-left:6px solid var(--blue);border-radius:14px;padding:1rem 1.15rem;margin:.85rem 0;}
+.lab-box .lab-title{font-family:var(--mono);font-weight:700;color:var(--blue);font-size:.9rem;letter-spacing:.06em;margin-bottom:.6rem;}
+.ctrl{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center;margin:.55rem 0;}
+.ctrl label{font-size:.96rem;color:#40536a;font-weight:700;}
+.ctrl input[type=number],.ctrl input[type=text]{
+  font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--ink);
+  background:#fff;border:2px solid var(--line);border-radius:10px;padding:.45rem .65rem;width:110px;
+}
+.ctrl input:focus-visible{outline:3px solid var(--orange);}
+button.act{font-family:var(--sans);font-size:.98rem;font-weight:800;color:#fff;background:var(--teal);border:2px solid var(--teal);border-radius:10px;padding:.5rem .95rem;cursor:pointer;transition:all .12s;}
+button.act:hover{filter:brightness(1.08);}
+button.act.alt{background:#fff;color:var(--teal);}
+button.act.orange{background:#fff;color:var(--orange);border-color:var(--orange);}
+button.act:focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+.result{font-family:var(--mono);font-size:1rem;background:#fff;border:2px solid var(--line);border-radius:10px;padding:.65rem .9rem;margin-top:.6rem;color:#173a36;min-height:2.4rem;white-space:pre-wrap;font-weight:600;}
+
+.chips{display:flex;gap:.45rem;flex-wrap:wrap;margin:.55rem 0;}
+.chip-n{
+  font-family:var(--mono);font-weight:700;font-size:1.02rem;
+  min-width:52px;text-align:center;padding:.45rem .55rem;
+  background:#fff;border:2px solid var(--line);border-radius:10px;color:#334a63;
+}
+.chip-n.common{background:#e6f4f2;border-color:var(--teal);color:#0b5a54;}
+.chip-n.star{background:#fff3e0;border-color:var(--orange);color:#9a3412;box-shadow:0 0 0 3px rgba(194,65,12,.15);position:relative;}
+.chip-n.star::after{content:"★";position:absolute;top:-13px;right:-7px;color:var(--star);font-size:.95rem;}
+.rowlabel{font-weight:800;color:#16324f;margin-top:.5rem;font-size:1rem;}
+
+/* 사다리(거꾸로 나눗셈) */
+.ladder2{display:inline-block;margin:.6rem 0;}
+.ladder2 .lrow{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:700;font-size:1.12rem;}
+.ladder2 .div{color:var(--orange);min-width:2.4rem;text-align:right;}
+.ladder2 .pair{border-left:3px solid #16324f;border-top:0;padding:.15rem .9rem;display:flex;gap:1.4rem;position:relative;}
+.ladder2 .lrow + .lrow .pair{border-top:0;}
+.ladder2 .lrow .pair{border-bottom:2px solid #16324f;}
+.ladder2 .lrow:last-child .pair{border-bottom:0;}
+.ladder2 .pair span{min-width:2.2rem;text-align:center;color:#16324f;}
+.ladder2 .lrow:last-child .pair span{color:var(--blue);}
+
+/* 연습문제 */
+.scorebar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:.85rem 1.15rem;margin-bottom:1.2rem;}
+.scorebar .sc{font-family:var(--mono);font-weight:800;font-size:1.1rem;color:var(--teal);}
+.scorebar button.reset{margin-left:auto;font-weight:800;font-size:.92rem;color:#40536a;background:#fff;border:2px solid var(--line);border-radius:10px;padding:.4rem .9rem;cursor:pointer;font-family:var(--sans);}
+.scorebar button.reset:hover{border-color:var(--teal);color:var(--teal);}
+.pcard{background:var(--panel);border:2px solid var(--line);border-left:6px solid var(--teal);border-radius:16px;padding:1.2rem 1.35rem;margin-bottom:1.15rem;box-shadow:0 2px 6px rgba(120,100,60,.06);}
+.pcard .phead{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.35rem;}
+.pcard .pno{font-family:var(--mono);font-weight:800;color:var(--orange);white-space:nowrap;font-size:1rem;}
+.pcard .ptext{font-weight:700;font-size:1.07rem;flex:1;min-width:230px;}
+.ansrow{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin:.6rem 0 .2rem;}
+.ansrow .fld{display:flex;gap:.4rem;align-items:center;}
+.ansrow label{font-weight:800;color:#16324f;font-size:.98rem;}
+.ansrow input{
+  font-family:var(--mono);font-size:1.1rem;font-weight:800;color:var(--ink);
+  background:#fff;border:2px solid var(--line);border-radius:10px;padding:.45rem .6rem;width:100px;text-align:center;
+}
+.ansrow input.ok{border-color:var(--good);background:var(--goodbg);}
+.ansrow input.no{border-color:var(--bad);background:var(--badbg);}
+.ansrow input:focus-visible{outline:3px solid var(--orange);}
+.verdict{font-weight:900;font-size:1rem;margin-top:.35rem;min-height:1.5rem;}
+.verdict.ok{color:var(--good);}
+.verdict.no{color:var(--bad);}
+.helpwrap{display:none;margin-top:.6rem;}
+.helpwrap.show{display:block;animation:fade .2s ease;}
+.helpbox{background:#fbf6e9;border:2px solid var(--line);border-left:6px solid var(--orange);border-radius:12px;padding:.8rem 1rem;margin-top:.5rem;font-size:.98rem;}
+.helpbox .htag{font-family:var(--mono);font-weight:800;color:var(--orange);margin-right:.4rem;font-size:.88rem;}
+
+footer{text-align:center;color:var(--sub);font-family:var(--mono);font-size:.88rem;padding:2rem 1rem;border-top:2px solid var(--line);}
+
+@media (max-width:560px){
+  html{font-size:17px;}
+  .hero h1{font-size:1.5rem;}
+  nav.tabs button{font-size:.9rem;padding:.45rem .7rem;}
+  .ladder2 .lrow{font-size:1rem;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="lab">SEYEONG CODING LAB · 사고력수학</div>
+  <h1>최대공약수 · 최소공배수 <span class="fx">연습장</span></h1>
+  <div class="desc">약수 탐험 → 공약수·공배수 눈으로 보기 → 거꾸로 나눗셈 → 연습문제 10제 도전!</div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-p="0" class="on">1. 약수와 배수</button>
+  <button data-p="1">2. 눈으로 보기</button>
+  <button data-p="2">3. 거꾸로 나눗셈</button>
+  <button data-p="3">4. 연습문제 10제</button>
+</nav>
+
+<main>
+
+<!-- ============ 0. 약수와 배수 ============ -->
+<section class="page on" id="page0">
+  <div class="page-title"><span class="chip">CONCEPT</span>약수와 배수부터 차근차근!</div>
+  <div class="page-sub">최대공약수와 최소공배수를 배우기 전에, 약수와 배수를 먼저 확인해요.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>약수란? 배수란?</h3>
+    <p><b>약수</b> : 어떤 수를 나누어떨어지게 하는 수. <span class="note">예) 12의 약수 → 1, 2, 3, 4, 6, 12</span></p>
+    <p><b>배수</b> : 어떤 수를 1배, 2배, 3배… 한 수. <span class="note">예) 4의 배수 → 4, 8, 12, 16, …</span></p>
+    <div class="big">최대공약수(GCD) = 두 수의 공통 약수 중 가장 큰 수
+최소공배수(LCM) = 두 수의 공통 배수 중 가장 작은 수</div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>약수 탐험기 🔍</h3>
+    <p class="note">수를 넣으면 약수를 모두 찾아줘요. 약수는 짝을 지어 나온답니다! (예: 12 = 1×12 = 2×6 = 3×4)</p>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 1부터 100까지의 수를 넣어 보세요</div>
+      <div class="ctrl">
+        <label>수 =</label>
+        <input type="number" id="dvN" value="12" min="1" max="100">
+        <button class="act" id="dvBtn">약수 찾기!</button>
+        <button class="act alt" data-dv="18">18</button>
+        <button class="act alt" data-dv="24">24</button>
+        <button class="act alt" data-dv="36">36</button>
+      </div>
+      <div class="chips" id="dvChips"></div>
+      <div class="result" id="dvOut"></div>
+    </div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">03</span>배수 생성기 🚀</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 배수를 10개까지 만들어 보세요</div>
+      <div class="ctrl">
+        <label>수 =</label>
+        <input type="number" id="mlN" value="4" min="1" max="50">
+        <button class="act" id="mlBtn">배수 만들기!</button>
+      </div>
+      <div class="chips" id="mlChips"></div>
+      <div class="result" id="mlOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1. 눈으로 보기 ============ -->
+<section class="page" id="page1">
+  <div class="page-title"><span class="chip">SEE</span>공약수·공배수를 눈으로!</div>
+  <div class="page-sub">두 수의 약수와 배수를 나란히 놓으면, 공통인 것(초록)과 답(★주황)이 보여요.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>공약수 비교기 — 최대공약수 찾기</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 두 수를 바꿔 보세요</div>
+      <div class="ctrl">
+        <label>A =</label><input type="number" id="cdA" value="12" min="1" max="100">
+        <label>B =</label><input type="number" id="cdB" value="18" min="1" max="100">
+        <button class="act" id="cdBtn">비교하기!</button>
+        <button class="act alt" data-cd="8,12">8과 12</button>
+        <button class="act alt" data-cd="15,20">15와 20</button>
+        <button class="act alt" data-cd="16,24">16과 24</button>
+      </div>
+      <div class="rowlabel" id="cdLabA"></div>
+      <div class="chips" id="cdChipsA"></div>
+      <div class="rowlabel" id="cdLabB"></div>
+      <div class="chips" id="cdChipsB"></div>
+      <div class="result" id="cdOut"></div>
+    </div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>공배수 비교기 — 최소공배수 찾기</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 배수를 나란히 놓고 처음 만나는 곳을 찾아요</div>
+      <div class="ctrl">
+        <label>A =</label><input type="number" id="cmA" value="4" min="1" max="30">
+        <label>B =</label><input type="number" id="cmB" value="6" min="1" max="30">
+        <button class="act" id="cmBtn">비교하기!</button>
+        <button class="act alt" data-cm="6,8">6과 8</button>
+        <button class="act alt" data-cm="3,5">3과 5</button>
+        <button class="act alt" data-cm="10,15">10과 15</button>
+      </div>
+      <div class="rowlabel" id="cmLabA"></div>
+      <div class="chips" id="cmChipsA"></div>
+      <div class="rowlabel" id="cmLabB"></div>
+      <div class="chips" id="cmChipsB"></div>
+      <div class="result" id="cmOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 거꾸로 나눗셈 ============ -->
+<section class="page" id="page2">
+  <div class="page-title"><span class="chip">METHOD</span>거꾸로 나눗셈으로 한 번에!</div>
+  <div class="page-sub">두 수를 공약수로 계속 나누면, 최대공약수와 최소공배수를 한 번에 구할 수 있어요.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>방법 정리</h3>
+    <div class="big">① 두 수를 나란히 쓰고, 둘 다 나누어지는 수(공약수)로 계속 나눈다
+② 더 이상 같이 나눌 수 없으면 멈춘다
+③ 최대공약수 = 왼쪽에 쓴 수들을 모두 곱한 것
+④ 최소공배수 = 왼쪽 수들 × 마지막 남은 두 수까지 모두 곱한 것</div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>거꾸로 나눗셈 시뮬레이터 🪜</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 두 수를 넣으면 사다리를 자동으로 그려줘요</div>
+      <div class="ctrl">
+        <label>A =</label><input type="number" id="ldA" value="12" min="2" max="200">
+        <label>B =</label><input type="number" id="ldB" value="18" min="2" max="200">
+        <button class="act" id="ldBtn">사다리 그리기!</button>
+        <button class="act alt" data-ld="24,36">24와 36</button>
+        <button class="act alt" data-ld="16,24">16과 24</button>
+        <button class="act alt" data-ld="9,14">9와 14 (서로소!)</button>
+      </div>
+      <div class="ladder2" id="ldBox"></div>
+      <div class="result" id="ldOut"></div>
+    </div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">03</span>신기한 관계 — 곱하면 같아요!</h3>
+    <div class="big">최대공약수 × 최소공배수 = A × B</div>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 위에서 넣은 두 수로 확인해 보세요</div>
+      <div class="ctrl">
+        <button class="act" id="relBtn">관계 확인하기!</button>
+      </div>
+      <div class="result" id="relOut">「관계 확인하기」를 누르면 시뮬레이터의 A, B로 계산해 보여줘요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. 연습문제 ============ -->
+<section class="page" id="page3">
+  <div class="page-title"><span class="chip">PRACTICE</span>연습문제 10제 도전! 💪</div>
+  <div class="page-sub">답을 쓰고 「채점」을 눌러요. 막히면 「힌트」(약수·배수 보기), 그래도 어려우면 「풀이」(사다리)를 열어 보세요.</div>
+  <div id="probArea"></div>
+</section>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력수학 — 최대공약수와 최소공배수</footer>
+
+<script>
+"use strict";
+
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function divisorsOf(n){
+  var d = [];
+  for (var i = 1; i <= n; i++) if (n % i === 0) d.push(i);
+  return d;
+}
+function gcdOf(a, b){ while (b){ var t = a % b; a = b; b = t; } return a; }
+function lcmOf(a, b){ return a / gcdOf(a, b) * b; }
+function clampInt(id, lo, hi, def){
+  var v = parseInt(document.getElementById(id).value, 10);
+  if (isNaN(v)) v = def;
+  if (v < lo) v = lo;
+  if (v > hi) v = hi;
+  document.getElementById(id).value = v;
+  return v;
+}
+function chipRow(container, nums, commonSet, starVal){
+  while (container.firstChild) container.removeChild(container.firstChild);
+  nums.forEach(function(n){
+    var cls = "chip-n";
+    if (commonSet && commonSet.indexOf(n) !== -1) cls += " common";
+    if (starVal === n) cls = "chip-n star";
+    container.appendChild(el("div", cls, String(n)));
+  });
+}
+/* 사다리 단계 계산: 최소 공약수(>1)로 반복해서 나눔 */
+function ladderSteps(a, b){
+  var steps = [];
+  var g = gcdOf(a, b);
+  while (g > 1){
+    var d = 2;
+    while (g % d !== 0) d++;
+    steps.push({d: d, a: a, b: b});
+    a = a / d; b = b / d;
+    g = gcdOf(a, b);
+  }
+  return {steps: steps, restA: a, restB: b};
+}
+function drawLadder(box, a, b){
+  while (box.firstChild) box.removeChild(box.firstChild);
+  var L = ladderSteps(a, b);
+  L.steps.forEach(function(s){
+    var row = el("div", "lrow");
+    row.appendChild(el("span", "div", String(s.d) + " )"));
+    var pair = el("div", "pair");
+    pair.appendChild(el("span", "", String(s.a)));
+    pair.appendChild(el("span", "", String(s.b)));
+    row.appendChild(pair);
+    box.appendChild(row);
+  });
+  var last = el("div", "lrow");
+  last.appendChild(el("span", "div", ""));
+  var pair2 = el("div", "pair");
+  pair2.appendChild(el("span", "", String(L.restA)));
+  pair2.appendChild(el("span", "", String(L.restB)));
+  last.appendChild(pair2);
+  box.appendChild(last);
+  return L;
+}
+function ladderText(a, b){
+  var L = ladderSteps(a, b);
+  var g = gcdOf(a, b), l = lcmOf(a, b);
+  var lines = [];
+  L.steps.forEach(function(s){
+    lines.push(s.d + " ) " + s.a + "   " + s.b);
+  });
+  lines.push("    " + L.restA + "   " + L.restB + "   ← 더 이상 같이 못 나눠요");
+  var gExpr = L.steps.length ? L.steps.map(function(s){ return s.d; }).join(" × ") : "(공약수가 1뿐!)";
+  var lExpr = (L.steps.length ? L.steps.map(function(s){ return s.d; }).join(" × ") + " × " : "") + L.restA + " × " + L.restB;
+  lines.push("");
+  lines.push("최대공약수 = " + gExpr + " = " + g);
+  lines.push("최소공배수 = " + lExpr + " = " + l);
+  return lines.join("\n");
+}
+
+/* ============ 0. 약수 탐험기 ============ */
+(function(){
+  function run(){
+    var n = clampInt("dvN", 1, 100, 12);
+    var d = divisorsOf(n);
+    chipRow(document.getElementById("dvChips"), d, null, null);
+    var pairs = [];
+    for (var i = 0; i < d.length / 2; i++){
+      pairs.push(d[i] + "×" + (n / d[i]));
+    }
+    if (d.length % 2 === 1) {
+      var mid = d[(d.length - 1) / 2];
+      if (pairs.indexOf(mid + "×" + mid) === -1) pairs.push(mid + "×" + mid);
+    }
+    document.getElementById("dvOut").textContent =
+      n + "의 약수는 모두 " + d.length + "개!\n짝지어 보기: " + n + " = " + pairs.join(" = ");
+  }
+  document.getElementById("dvBtn").addEventListener("click", run);
+  document.querySelectorAll("button[data-dv]").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.getElementById("dvN").value = b.dataset.dv;
+      run();
+    });
+  });
+  run();
+})();
+
+/* ============ 0. 배수 생성기 ============ */
+(function(){
+  function run(){
+    var n = clampInt("mlN", 1, 50, 4);
+    var m = [];
+    for (var i = 1; i <= 10; i++) m.push(n * i);
+    chipRow(document.getElementById("mlChips"), m, null, null);
+    document.getElementById("mlOut").textContent =
+      n + "의 배수: " + n + "×1, " + n + "×2, " + n + "×3 … 끝없이 계속돼요!";
+  }
+  document.getElementById("mlBtn").addEventListener("click", run);
+  run();
+})();
+
+/* ============ 1. 공약수 비교기 ============ */
+(function(){
+  function run(){
+    var a = clampInt("cdA", 1, 100, 12);
+    var b = clampInt("cdB", 1, 100, 18);
+    var da = divisorsOf(a), db = divisorsOf(b);
+    var common = da.filter(function(x){ return db.indexOf(x) !== -1; });
+    var g = gcdOf(a, b);
+    document.getElementById("cdLabA").textContent = a + "의 약수";
+    document.getElementById("cdLabB").textContent = b + "의 약수";
+    chipRow(document.getElementById("cdChipsA"), da, common, g);
+    chipRow(document.getElementById("cdChipsB"), db, common, g);
+    document.getElementById("cdOut").textContent =
+      "공약수(초록): " + common.join(", ") + "\n그중 가장 큰 수 ★ 최대공약수 = " + g;
+  }
+  document.getElementById("cdBtn").addEventListener("click", run);
+  document.querySelectorAll("button[data-cd]").forEach(function(bn){
+    bn.addEventListener("click", function(){
+      var p = bn.dataset.cd.split(",");
+      document.getElementById("cdA").value = p[0];
+      document.getElementById("cdB").value = p[1];
+      run();
+    });
+  });
+  run();
+})();
+
+/* ============ 1. 공배수 비교기 ============ */
+(function(){
+  function run(){
+    var a = clampInt("cmA", 1, 30, 4);
+    var b = clampInt("cmB", 1, 30, 6);
+    var l = lcmOf(a, b);
+    var limit = l * 2;
+    var ma = [], mb = [];
+    for (var i = a; i <= limit && ma.length < 14; i += a) ma.push(i);
+    for (var j = b; j <= limit && mb.length < 14; j += b) mb.push(j);
+    var common = ma.filter(function(x){ return mb.indexOf(x) !== -1; });
+    document.getElementById("cmLabA").textContent = a + "의 배수";
+    document.getElementById("cmLabB").textContent = b + "의 배수";
+    chipRow(document.getElementById("cmChipsA"), ma, common, l);
+    chipRow(document.getElementById("cmChipsB"), mb, common, l);
+    document.getElementById("cmOut").textContent =
+      "공배수(초록): " + common.join(", ") + " …\n처음 만나는 수 ★ 최소공배수 = " + l;
+  }
+  document.getElementById("cmBtn").addEventListener("click", run);
+  document.querySelectorAll("button[data-cm]").forEach(function(bn){
+    bn.addEventListener("click", function(){
+      var p = bn.dataset.cm.split(",");
+      document.getElementById("cmA").value = p[0];
+      document.getElementById("cmB").value = p[1];
+      run();
+    });
+  });
+  run();
+})();
+
+/* ============ 2. 사다리 시뮬레이터 ============ */
+(function(){
+  function run(){
+    var a = clampInt("ldA", 2, 200, 12);
+    var b = clampInt("ldB", 2, 200, 18);
+    drawLadder(document.getElementById("ldBox"), a, b);
+    document.getElementById("ldOut").textContent = ladderText(a, b);
+  }
+  document.getElementById("ldBtn").addEventListener("click", run);
+  document.querySelectorAll("button[data-ld]").forEach(function(bn){
+    bn.addEventListener("click", function(){
+      var p = bn.dataset.ld.split(",");
+      document.getElementById("ldA").value = p[0];
+      document.getElementById("ldB").value = p[1];
+      run();
+    });
+  });
+  document.getElementById("relBtn").addEventListener("click", function(){
+    var a = clampInt("ldA", 2, 200, 12);
+    var b = clampInt("ldB", 2, 200, 18);
+    var g = gcdOf(a, b), l = lcmOf(a, b);
+    document.getElementById("relOut").textContent =
+      "최대공약수 × 최소공배수 = " + g + " × " + l + " = " + (g * l)
+      + "\nA × B = " + a + " × " + b + " = " + (a * b)
+      + "\n" + (g * l === a * b ? "정말 똑같아요! ✔ 이 관계는 언제나 성립해요." : "");
+  });
+  run();
+})();
+
+/* ============ 3. 연습문제 10 ============ */
+(function(){
+  var PROBS = [
+    {a: 12, b: 18, story: null},
+    {a: 8,  b: 12, story: null},
+    {a: 15, b: 20, story: null},
+    {a: 16, b: 24, story: null},
+    {a: 14, b: 21, story: null},
+    {a: 10, b: 25, story: null},
+    {a: 18, b: 27, story: null},
+    {a: 20, b: 30, story: null},
+    {a: 24, b: 36, story: "🍎 사과 24개와 🍊 귤 36개를 최대한 많은 친구에게 남김없이 똑같이 나누어 주려고 해요. 최대 몇 명에게 나누어 줄 수 있을까요?", ask: "gcd", unit: "명"},
+    {a: 6,  b: 8,  story: "🚌 마을버스는 6분마다, 시내버스는 8분마다 출발해요. 두 버스가 동시에 출발했다면, 다음에 다시 동시에 출발하는 것은 몇 분 뒤일까요?", ask: "lcm", unit: "분"}
+  ];
+
+  var area = document.getElementById("probArea");
+  var solvedMap = {};
+
+  var bar = el("div", "scorebar");
+  var sc = el("span", "sc", "맞힌 문제 0 / " + PROBS.length);
+  bar.appendChild(sc);
+  var rst = el("button", "reset", "전체 다시 풀기");
+  rst.type = "button";
+  bar.appendChild(rst);
+  area.appendChild(bar);
+  var listWrap = el("div");
+  area.appendChild(listWrap);
+
+  function updateScore(){
+    var c = 0;
+    for (var k in solvedMap) if (solvedMap[k]) c++;
+    sc.textContent = "맞힌 문제 " + c + " / " + PROBS.length;
+  }
+
+  function build(){
+    while (listWrap.firstChild) listWrap.removeChild(listWrap.firstChild);
+    PROBS.forEach(function(pr, idx){
+      var no = idx + 1;
+      var g = gcdOf(pr.a, pr.b), l = lcmOf(pr.a, pr.b);
+
+      var card = el("div", "pcard");
+      var head = el("div", "phead");
+      head.appendChild(el("span", "pno", "문제 " + (no < 10 ? "0" + no : no)));
+      var text;
+      if (pr.story){
+        text = pr.story;
+      } else {
+        text = pr.a + "와(과) " + pr.b + "의 최대공약수와 최소공배수를 구하세요.";
+      }
+      head.appendChild(el("span", "ptext", text));
+      card.appendChild(head);
+
+      var fields = [];
+      var row = el("div", "ansrow");
+      function addField(labelText, ans){
+        var w = el("div", "fld");
+        w.appendChild(el("label", "", labelText));
+        var f = el("input");
+        f.type = "number";
+        f.setAttribute("aria-label", "문제" + no + " " + labelText);
+        w.appendChild(f);
+        row.appendChild(w);
+        fields.push({input: f, ans: ans});
+      }
+      if (pr.story){
+        addField(pr.ask === "gcd" ? "답 (" + pr.unit + ")" : "답 (" + pr.unit + ")", pr.ask === "gcd" ? g : l);
+      } else {
+        addField("최대공약수 =", g);
+        addField("최소공배수 =", l);
+      }
+      card.appendChild(row);
+
+      var btnRow = el("div", "ctrl");
+      var grade = el("button", "act", "채점하기 ✔");
+      grade.type = "button";
+      btnRow.appendChild(grade);
+      var hintB = el("button", "act orange", "힌트 보기");
+      hintB.type = "button";
+      btnRow.appendChild(hintB);
+      var solB = el("button", "act alt", "풀이 보기");
+      solB.type = "button";
+      btnRow.appendChild(solB);
+      card.appendChild(btnRow);
+
+      var verdict = el("div", "verdict", "");
+      card.appendChild(verdict);
+
+      var hintWrap = el("div", "helpwrap");
+      var hintBox = el("div", "helpbox");
+      hintBox.appendChild(el("span", "htag", "힌트"));
+      var da = divisorsOf(pr.a), db = divisorsOf(pr.b);
+      var hintText;
+      if (pr.story && pr.ask === "lcm"){
+        var ma = [], mb = [];
+        for (var i2 = 1; i2 <= 8; i2++){ ma.push(pr.a * i2); mb.push(pr.b * i2); }
+        hintText = pr.a + "의 배수: " + ma.join(", ") + " …\n" + pr.b + "의 배수: " + mb.join(", ") + " …\n두 줄에 같이 나오는 가장 작은 수를 찾아보세요!";
+      } else {
+        hintText = pr.a + "의 약수: " + da.join(", ") + "\n" + pr.b + "의 약수: " + db.join(", ")
+          + (pr.story ? "\n\"최대한 많이, 똑같이 나누기\"는 최대공약수 문제예요!" : "\n공통 약수 중 가장 큰 수가 최대공약수!");
+      }
+      var hintPre = el("div");
+      hintPre.style.whiteSpace = "pre-wrap";
+      hintPre.style.fontFamily = "var(--mono)";
+      hintPre.style.fontSize = ".95rem";
+      hintPre.textContent = hintText;
+      hintBox.appendChild(hintPre);
+      hintWrap.appendChild(hintBox);
+      card.appendChild(hintWrap);
+
+      var solWrap = el("div", "helpwrap");
+      var solBox = el("div", "helpbox");
+      solBox.appendChild(el("span", "htag", "풀이 · 거꾸로 나눗셈"));
+      var solPre = el("div");
+      solPre.style.whiteSpace = "pre-wrap";
+      solPre.style.fontFamily = "var(--mono)";
+      solPre.style.fontSize = ".95rem";
+      var solText = ladderText(pr.a, pr.b);
+      if (pr.story){
+        solText += "\n\n답: " + (pr.ask === "gcd" ? g : l) + pr.unit
+          + (pr.ask === "gcd" ? "  (최대공약수를 묻는 문제!)" : "  (최소공배수를 묻는 문제!)");
+      }
+      solPre.textContent = solText;
+      solBox.appendChild(solPre);
+      solWrap.appendChild(solBox);
+      card.appendChild(solWrap);
+
+      grade.addEventListener("click", function(){
+        var allOk = true, anyEmpty = false;
+        fields.forEach(function(fd){
+          var v = parseInt(fd.input.value, 10);
+          fd.input.classList.remove("ok", "no");
+          if (fd.input.value.trim() === "" || isNaN(v)){
+            anyEmpty = true; allOk = false;
+            fd.input.classList.add("no");
+            return;
+          }
+          if (v === fd.ans) fd.input.classList.add("ok");
+          else { fd.input.classList.add("no"); allOk = false; }
+        });
+        if (anyEmpty){
+          verdict.textContent = "빈칸이 있어요! 답을 모두 써 주세요.";
+          verdict.className = "verdict no";
+        } else if (allOk){
+          verdict.textContent = "🎉 정답이에요! 참 잘했어요!";
+          verdict.className = "verdict ok";
+          solvedMap[idx] = true;
+        } else {
+          verdict.textContent = "빨간 칸을 다시 생각해 보세요. 힌트를 열어봐도 좋아요!";
+          verdict.className = "verdict no";
+          solvedMap[idx] = false;
+        }
+        updateScore();
+      });
+      hintB.addEventListener("click", function(){
+        var showing = hintWrap.classList.toggle("show");
+        hintB.textContent = showing ? "힌트 닫기" : "힌트 보기";
+      });
+      solB.addEventListener("click", function(){
+        var showing = solWrap.classList.toggle("show");
+        solB.textContent = showing ? "풀이 닫기" : "풀이 보기";
+      });
+
+      listWrap.appendChild(card);
+    });
+    updateScore();
+  }
+  rst.addEventListener("click", function(){ solvedMap = {}; build(); });
+  build();
+})();
+
+/* ============ 탭 ============ */
+document.getElementById("tabs").addEventListener("click", function(ev){
+  var b = ev.target.closest("button");
+  if (!b) return;
+  var n = Number(b.dataset.p);
+  document.querySelectorAll("section.page").forEach(function(p, i){ p.classList.toggle("on", i === n); });
+  document.querySelectorAll("nav.tabs button").forEach(function(t){ t.classList.toggle("on", Number(t.dataset.p) === n); });
+  window.scrollTo({top: 0, behavior: "auto"});
+});
+</script>
+</body>
+</html>
