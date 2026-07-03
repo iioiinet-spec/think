@@ -19,6 +19,7 @@ set  :  집합 개념
   5  05. 멱집합(Power Set) · 곱집합(Cartesian Product) 문제집정답
   6  06. 포함-배제 원리(Inclusion-Exclusion Principle) 문제집정답
   7  07. 관계와 함수 문제집정답
+  11   집합의 분할
   
 
 
