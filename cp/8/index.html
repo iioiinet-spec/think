@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C & 파이썬 튜플·집합 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#6741D9;
+  --accent-light:#EDE9FB;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --setcol:#7048E8;--tupcol:#C2410C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#382812);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'( , ) { , }';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.05);pointer-events:none;letter-spacing:.06em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.2}
+header h1 .cc{color:#5CC8F5} header h1 .pp{color:#78E89A}
+header p{font-size:13.5px;color:#A0906E;margin-top:6px}
+
+.tnav{background:var(--panel);border-bottom:2px solid var(--bdr);padding:0 34px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:13px 15px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{max-width:960px;margin:0 auto;padding:34px 22px 90px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:14px;margin-bottom:24px}
+.sh-icon{font-size:30px}
+.sh-info h2{font-size:19px;font-weight:900;line-height:1.2}
+.sh-info p{font-size:13px;opacity:.78;margin-top:2px}
+
+.step{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--soft);border-bottom:1.5px solid var(--bdr)}
+.step-badge{font-family:var(--mono);font-size:13px;font-weight:700;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.step-title{font-size:16px;font-weight:900;color:var(--ink)}
+.step-sub{font-size:12px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.step-body{padding:20px 24px}
+.step-body p{font-size:15px;color:var(--ink2);line-height:1.85;margin-bottom:12px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--ink)}
+.step-body .hl{background:#FFF2CC;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.step-body .cw{font-family:var(--mono);color:var(--c-color);font-weight:700}
+.step-body .pw{font-family:var(--mono);color:var(--py-color);font-weight:700}
+
+/* collection visualization (tuple = ordered fixed, set = unique bubbles) */
+.coll-viz{margin:16px 0}
+.coll-title{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:8px;font-family:var(--mono)}
+.tup-cells{display:flex;gap:0;align-items:center;flex-wrap:wrap}
+.tup-paren{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--tupcol)}
+.tcell{position:relative;min-width:44px;height:44px;margin:0 3px;background:#FFF3EC;border:2px solid var(--tupcol);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--tupcol)}
+.tcell .idx{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--ink3);font-family:var(--mono)}
+.tcell.lock::after{content:'🔒';position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:11px}
+.set-bubbles{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sbubble{min-width:44px;height:44px;padding:0 12px;background:#F0EBFC;border:2px solid var(--setcol);border-radius:22px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--setcol)}
+.sbubble.dup{border-color:var(--ng);background:#FDEDEC;color:var(--ng);opacity:.6;text-decoration:line-through}
+.set-brace{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--setcol)}
+
+.cmp-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.cmp-col{border-radius:12px;overflow:hidden;border:1.5px solid var(--bdr)}
+.cmp-col-head{font-family:var(--mono);font-size:12px;font-weight:700;padding:9px 14px;color:#fff;display:flex;align-items:center;gap:6px}
+.cmp-col.c .cmp-col-head{background:var(--c-color)}
+.cmp-col.py .cmp-col-head{background:var(--py-color)}
+.cmp-code{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--code-bg);color:#D8CAB0;padding:14px 16px;overflow-x:auto;white-space:pre;min-height:60px}
+
+.syn-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.syn-table th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--bdr);background:var(--soft)}
+.syn-table th.c-col{color:var(--c-color)} .syn-table th.py-col{color:var(--py-color)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.syn-table td.label{font-weight:700;color:var(--ink2);font-size:13px}
+.syn-table td.code{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.syn-table td.code.c-bg{background:rgba(11,110,153,.05)}
+.syn-table td.code.py-bg{background:rgba(42,140,74,.05)}
+.syn-table tr:hover td{background:rgba(0,0,0,.015)}
+
+.pg{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.pg-head{background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pg-head .pt{color:#FFF9F0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.lang-tabs{display:flex;gap:6px}
+.ltab{font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 16px;border-radius:7px;border:none;cursor:pointer;transition:background .15s,color .15s}
+.ltab-c{background:rgba(11,110,153,.25);color:#5CC8F5}
+.ltab-c.on{background:var(--c-color);color:#fff}
+.ltab-py{background:rgba(42,140,74,.25);color:#78E89A}
+.ltab-py.on{background:var(--py-color);color:#fff}
+.pg-body{padding:20px 22px}
+
+.code-wrap{position:relative;margin-bottom:16px}
+.code-block{font-family:var(--mono);font-size:13.5px;line-height:1.8;background:var(--code-bg);color:#D8CAB0;border-radius:10px;padding:18px 20px;overflow-x:auto;white-space:pre;display:none;border:1.5px solid #2C2C3A}
+.code-block.on{display:block}
+.kw{color:#FF8A5C} .fn{color:#FFD37A} .cm{color:#5E5E72;font-style:italic}
+.nm{color:#9AEEB4} .st{color:#A8D8FF} .pp{color:#FF9FCC} .tp{color:#84E2FF} .op{color:#FF9868}
+.copy-btn{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;background:#2C2C3A;color:#9090B0;border:1px solid #40405A;border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#fff}
+
+.line-explain{background:var(--soft);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px}
+.lex{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+.lex-code{font-family:var(--mono);font-weight:700;color:var(--accent);min-width:150px;font-size:13px}
+.lex-desc{color:var(--ink2);line-height:1.7}
+
+.io-console{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.io-panel{border-radius:10px;overflow:hidden;border:1.5px solid var(--bdr)}
+.io-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:8px 14px;display:flex;align-items:center;gap:6px}
+.io-label.stdin{background:var(--c-light);color:var(--c-color)}
+.io-label.stdout{background:#FBF3D8;color:var(--out)}
+.stdin-area{width:100%;font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#8CD9FF;border:none;padding:14px 16px;line-height:1.8;resize:vertical;min-height:80px;outline:none;display:block}
+.stdin-area:focus{box-shadow:inset 0 0 0 2px rgba(11,110,153,.4)}
+.stdout-area{font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#B8F0C8;padding:14px 16px;line-height:1.8;min-height:80px;white-space:pre-wrap;word-break:break-word;overflow-y:auto}
+.stdout-area .out-dim{color:#4A5060}
+.stdout-area .out-err{color:#FF8080}
+
+.run-bar{display:flex;align-items:center;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+.run-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:9px;border:none;cursor:pointer;color:#fff;background:var(--accent);transition:filter .15s,transform .1s;display:flex;align-items:center;gap:7px}
+.run-btn:active{transform:scale(.96)} .run-btn:hover{filter:brightness(1.12)}
+.run-hint{font-size:12.5px;color:var(--ink3)}
+.reset-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);cursor:pointer;background:var(--panel);color:var(--ink2);transition:background .15s}
+.reset-btn:hover{background:var(--soft)}
+
+.tip{font-size:14px;color:var(--ink2);background:rgba(103,65,217,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;line-height:1.8}
+.tip strong{color:var(--ink)}
+.tip code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+
+.warn-box{font-size:14px;color:var(--ink2);background:#FDF0E8;border:1.5px solid #F0C0A0;border-radius:10px;padding:14px 18px;margin-top:14px;line-height:1.8}
+.warn-box strong{color:var(--ng)}
+.warn-box code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--ng)}
+
+@media(max-width:680px){
+  header{padding:20px 18px 16px}
+  .tnav{padding:0 10px}
+  main{padding:20px 12px 70px}
+  .step-body,.pg-body{padding:16px 14px}
+  .io-console,.cmp-2col{grid-template-columns:1fr}
+  .lex-code{min-width:110px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 자료구조 기초 · 튜플·집합</div>
+  <h1><span class="cc">C 배열</span> vs <span class="pp">파이썬 튜플·집합</span> — 직접 구현 비교</h1>
+  <p>불변 튜플과 중복 없는 집합을 C 배열로 흉내내며 원리를 이해하세요</p>
+</header>
+
+<nav class="tnav">
+  <button class="tbtn on" onclick="goSec('s0',this)">🚀 시작하기 (개념)</button>
+  <button class="tbtn" onclick="goSec('s1',this)">① 튜플 기본</button>
+  <button class="tbtn" onclick="goSec('s2',this)">② 집합 만들기</button>
+  <button class="tbtn" onclick="goSec('s3',this)">③ 집합 연산</button>
+  <button class="tbtn" onclick="goSec('s4',this)">④ 활용</button>
+  <button class="tbtn" onclick="goSec('s5',this)">⑤ 플레이그라운드</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ S0: 시작하기 ══════════════ -->
+<div id="s0" class="sec on">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(103,65,217,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🚀</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">시작하기 — 튜플과 집합</h2><p>못 바꾸는 묶음(튜플)과 중복 없는 모음(집합)</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">리스트와 무엇이 다를까?</span><span class="step-sub">3형제 비교</span></div>
+    <div class="step-body">
+      <p>파이썬에는 여러 값을 묶는 자료구조가 여러 개 있어요. 리스트를 배웠으니 <strong>튜플</strong>과 <strong>집합</strong>도 금방 이해할 수 있어요!</p>
+      <table class="syn-table">
+        <thead><tr><th>비교</th><th>리스트 (list)</th><th style="color:var(--tupcol)">튜플 (tuple)</th><th style="color:var(--setcol)">집합 (set)</th></tr></thead>
+        <tbody>
+          <tr><td class="label">기호</td><td class="code">[1, 2, 3]</td><td class="code">(1, 2, 3)</td><td class="code">{1, 2, 3}</td></tr>
+          <tr><td class="label">수정</td><td>가능</td><td><strong>불가! (불변)</strong></td><td>추가/삭제 가능</td></tr>
+          <tr><td class="label">순서</td><td>있음</td><td>있음</td><td><strong>없음</strong></td></tr>
+          <tr><td class="label">중복</td><td>허용</td><td>허용</td><td><strong>불허 (자동제거)</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>한 줄 요약:</strong> 튜플 = <span style="color:var(--tupcol);font-weight:700">"못 바꾸는 리스트"</span>, 집합 = <span style="color:var(--setcol);font-weight:700">"중복 없는 모음"</span>. 대괄호[], 소괄호(), 중괄호{} 로 구분해요!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">튜플 — 자물쇠 걸린 묶음</span><span class="step-sub">불변</span></div>
+    <div class="step-body">
+      <p><strong>튜플(tuple)</strong>은 순서가 있지만 <span class="hl">한 번 만들면 바꿀 수 없어요.</span> 좌표(x, y)처럼 <strong>세트로 절대 안 바뀌는 값</strong>에 딱이에요!</p>
+      <div class="coll-viz">
+        <div class="coll-title">point = (3, 5)  — 좌표 쌍</div>
+        <div class="tup-cells">
+          <span class="tup-paren">(</span>
+          <div class="tcell lock"><span class="idx">0</span>3</div>
+          <div class="tcell lock"><span class="idx">1</span>5</div>
+          <span class="tup-paren">)</span>
+        </div>
+      </div>
+      <p style="margin-top:24px"><span class="hl">point[0]</span>은 3, <span class="hl">point[1]</span>은 5. 읽기는 리스트와 같아요. 하지만 <code>point[0] = 9</code>처럼 <strong>바꾸려 하면 오류!</strong> 🔒</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">3</span><span class="step-title">집합 — 중복을 허용 안 함</span><span class="step-sub">유일한 값</span></div>
+    <div class="step-body">
+      <p><strong>집합(set)</strong>은 수학의 집합과 같아요. <span class="hl">같은 값은 하나만!</span> 중복을 넣어도 자동으로 하나로 합쳐져요.</p>
+      <div class="coll-viz">
+        <div class="coll-title">{1, 2, 2, 3, 3, 3} → 중복 제거됨</div>
+        <div class="set-bubbles">
+          <span class="set-brace">{</span>
+          <div class="sbubble">1</div>
+          <div class="sbubble">2</div>
+          <div class="sbubble dup">2</div>
+          <div class="sbubble">3</div>
+          <div class="sbubble dup">3</div>
+          <div class="sbubble dup">3</div>
+          <span class="set-brace">}</span>
+        </div>
+      </div>
+      <p style="margin-top:14px">결과는 <span class="hl">{1, 2, 3}</span>! 중복(빨간색)은 사라져요. 그래서 <strong>중복 제거</strong>와 <strong>포함 여부 확인</strong>에 아주 강력해요.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">4</span><span class="step-title">C에는 튜플도 집합도 없다!</span><span class="step-sub">배열로 흉내</span></div>
+    <div class="step-body">
+      <p>딕셔너리처럼 C에는 튜플·집합이 <strong>기본으로 없어요.</strong> 그래서 <strong>배열</strong>로 흉내내요.</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 배열로 흉내</div><div class="cmp-code">// 튜플 → 고정 배열 (바꾸지 않기로 약속)
+int point[2] = {3, 5};
+
+// 집합 → 배열 + 중복 검사
+int set[100], size = 0;
+// 추가 전에 "이미 있나?" 확인!</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 내장</div><div class="cmp-code"># 튜플
+point = (3, 5)
+
+# 집합
+s = set()
+s.add(3)   # 중복은 알아서 무시</div></div>
+      </div>
+      <div class="tip">💡 <strong>이 페이지의 핵심:</strong> 파이썬이 자동으로 해주는 "중복 제거"를 C는 <strong>추가할 때마다 배열을 훑어 이미 있는지 확인</strong>해야 해요. 집합 연산(합·교·차집합)도 <strong>이중 반복문</strong>으로 직접 만들죠!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: 튜플 기본 ══════════════ -->
+<div id="s1" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(194,65,12,.1),transparent);border-left:5px solid var(--tupcol)">
+    <div class="sh-icon">🔒</div>
+    <div class="sh-info"><h2 style="color:var(--tupcol)">튜플 기본</h2><p>만들기·접근·불변성·언패킹</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--tupcol)">1</span><span class="step-title">만들기와 접근</span><span class="step-sub">( )</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>동작</th><th class="c-col">C (고정 배열)</th><th class="py-col">파이썬 튜플</th></tr></thead>
+        <tbody>
+          <tr><td class="label">만들기</td><td class="code c-bg">int t[3] = {1, 2, 3};</td><td class="code py-bg">t = (1, 2, 3)</td></tr>
+          <tr><td class="label">접근</td><td class="code c-bg">t[0]  // 1</td><td class="code py-bg">t[0]  # 1</td></tr>
+          <tr><td class="label">개수</td><td class="code c-bg">고정 (3)</td><td class="code py-bg">len(t)</td></tr>
+          <tr><td class="label">수정</td><td class="code c-bg">t[0] = 9;  // 됨(배열이라)</td><td class="code py-bg">t[0] = 9  # 오류!</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>튜플은 수정 불가!</strong> 파이썬 <code>t[0] = 9</code>는 <strong>TypeError</strong>가 나요.<br>
+      C 배열은 기술적으론 바꿀 수 있지만, "튜플처럼 쓰려면 바꾸지 않기로 약속"하는 거예요. 파이썬은 아예 막아줘요!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--tupcol)">2</span><span class="step-title">언패킹 — 한 번에 여러 변수로</span><span class="step-sub">a, b = t</span></div>
+    <div class="step-body">
+      <p>튜플의 강력한 기능! <span class="hl">여러 값을 한 번에 변수로 풀기(언패킹)</span>. 값 교환(swap)도 한 줄에 돼요!</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 임시 변수 필요</div><div class="cmp-code">// 두 값 교환
+int a = 3, b = 5;
+int tmp = a;   // 임시 변수
+a = b;
+b = tmp;
+// 3줄 필요!</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 튜플 언패킹</div><div class="cmp-code"># 두 값 교환
+a, b = 3, 5
+a, b = b, a    # 한 줄!
+
+# 튜플로 묶었다 풀기</div></div>
+      </div>
+      <div class="tip">💡 파이썬 <code>a, b = b, a</code>는 오른쪽이 <strong>튜플 (b, a)로 묶인 뒤</strong> 왼쪽 변수로 풀려요. 그래서 임시 변수 없이 교환이 돼요! C에서 가장 부러워하는 기능 중 하나예요.</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 좌표 두 개를 받아 값 교환(swap)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t1','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t1','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t1-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a, b;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>a, <span class="op">&amp;</span>b);
+    <span class="fn">printf</span>(<span class="st">"교환 전: (%d, %d)\n"</span>, a, b);
+    <span class="kw">int</span> tmp <span class="op">=</span> a;   <span class="cm">// 임시 변수</span>
+    a <span class="op">=</span> b;
+    b <span class="op">=</span> tmp;
+    <span class="fn">printf</span>(<span class="st">"교환 후: (%d, %d)\n"</span>, a, b);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t1-py"><span class="cm"># 두 값 교환 — 튜플 언패킹</span>
+a, b <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+<span class="fn">print</span>(<span class="st">f"교환 전: ({a}, {b})"</span>)
+a, b <span class="op">=</span> b, a       <span class="cm"># 한 줄로 교환!</span>
+<span class="fn">print</span>(<span class="st">f"교환 후: ({a}, {b})"</span>)</pre>
+        <button class="copy-btn" id="t1-copy" onclick="doCopy('t1')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: tmp 사용</span><span class="lex-desc">임시 변수로 값을 잠시 보관해야 교환됨</span></div>
+        <div class="lex"><span class="lex-code">Py: a, b = b, a</span><span class="lex-desc">튜플 언패킹으로 임시 변수 없이 한 줄!</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t1')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t1','3 5')">↺ 입력 초기화</button>
+        <span class="run-hint">두 수 입력. 3 5 → 교환 후 (5, 3)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t1-in" spellcheck="false">3 5</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t1-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S2: 집합 만들기 ══════════════ -->
+<div id="s2" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(112,72,232,.1),transparent);border-left:5px solid var(--setcol)">
+    <div class="sh-icon">🎯</div>
+    <div class="sh-info"><h2 style="color:var(--setcol)">집합 만들기</h2><p>중복 자동 제거 — C는 추가 전 중복 검사</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--setcol)">1</span><span class="step-title">집합의 핵심 — 중복 검사</span><span class="step-sub">이미 있나?</span></div>
+    <div class="step-body">
+      <p>집합에 값을 넣을 때, C는 <strong>"이미 있는지 먼저 확인"</strong>하고 없을 때만 추가해요. 파이썬은 <span class="pw">add</span>가 알아서!</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — contains 후 추가</div><div class="cmp-code">// 이미 있는지 검사
+int contains(int x) {
+    for (int i = 0; i < size; i++)
+        if (set[i] == x) return 1;  // 있음
+    return 0;
+}
+// 없을 때만 추가
+if (!contains(x)) set[size++] = x;</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — add 하나</div><div class="cmp-code">s = set()
+s.add(3)
+s.add(3)   # 중복! 무시됨
+
+# 또는 리스트에서 한 번에
+s = set([1, 2, 2, 3])  # {1,2,3}</div></div>
+      </div>
+      <div class="tip">💡 C에서 집합의 원리는 딕셔너리의 <code>findKey</code>와 똑같아요 — <strong>선형 탐색</strong>으로 중복을 찾죠! 이게 집합 = "중복 없는 배열"의 비밀이에요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--setcol)">2</span><span class="step-title">집합 기본 동작</span><span class="step-sub">add·remove·in</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>동작</th><th class="py-col">파이썬</th><th class="c-col">C (직접 구현)</th></tr></thead>
+        <tbody>
+          <tr><td class="label">추가</td><td class="code py-bg">s.add(x)</td><td class="code c-bg">중복검사 후 set[size++]=x</td></tr>
+          <tr><td class="label">삭제</td><td class="code py-bg">s.remove(x)</td><td class="code c-bg">찾아서 당기기</td></tr>
+          <tr><td class="label">포함 여부</td><td class="code py-bg">x in s</td><td class="code c-bg">contains(x)</td></tr>
+          <tr><td class="label">크기</td><td class="code py-bg">len(s)</td><td class="code c-bg">size</td></tr>
+          <tr><td class="label">중복 제거</td><td class="code py-bg">set(리스트)</td><td class="code c-bg">하나씩 중복검사하며 복사</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>집합은 순서가 없어요!</strong> 파이썬 집합을 출력하면 넣은 순서와 다를 수 있어요.<br>
+      여기 시뮬레이터는 이해를 돕기 위해 <strong>처음 등장한 순서</strong>로 보여줘요(실제 파이썬 set은 순서 보장 안 함).</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 숫자들에서 중복 제거하기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t2','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t2','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t2-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> set[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+
+<span class="kw">int</span> <span class="fn">contains</span>(<span class="kw">int</span> x) {
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> size; i<span class="op">++</span>)
+        <span class="kw">if</span> (set[i] <span class="op">==</span> x) <span class="kw">return</span> <span class="nm">1</span>;
+    <span class="kw">return</span> <span class="nm">0</span>;
+}
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+        <span class="kw">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>x);
+        <span class="kw">if</span> (<span class="op">!</span><span class="fn">contains</span>(x))     <span class="cm">// 중복 아니면</span>
+            set[size<span class="op">++</span>] <span class="op">=</span> x;   <span class="cm">// 추가</span>
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> size; i<span class="op">++</span>)
+        <span class="fn">printf</span>(<span class="st">"%d "</span>, set[i]);
+    <span class="fn">printf</span>(<span class="st">"\n개수: %d\n"</span>, size);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t2-py"><span class="cm"># 중복 제거 — set 한 방!</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+nums <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+
+s <span class="op">=</span> <span class="fn">set</span>(nums)    <span class="cm"># 중복 자동 제거!</span>
+
+<span class="fn">print</span>(<span class="op">*</span><span class="fn">sorted</span>(s))
+<span class="fn">print</span>(<span class="st">f"개수: {len(s)}"</span>)</pre>
+        <button class="copy-btn" id="t2-copy" onclick="doCopy('t2')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: contains(x)</span><span class="lex-desc">선형 탐색으로 이미 있는지 확인</span></div>
+        <div class="lex"><span class="lex-code">C: if(!contains) 추가</span><span class="lex-desc">없을 때만 배열에 넣어 중복 방지</span></div>
+        <div class="lex"><span class="lex-code">Py: set(nums)</span><span class="lex-desc">리스트를 집합으로! 중복이 알아서 사라짐</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t2')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t2','8\n3 1 4 1 5 9 2 6')">↺ 입력 초기화</button>
+        <span class="run-hint">1줄=개수, 2줄=숫자들. 중복 3,1이 있어요!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t2-in" spellcheck="false" style="min-height:100px">8
+3 1 4 1 5 9 2 6</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t2-out" style="min-height:100px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S3: 집합 연산 ══════════════ -->
+<div id="s3" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(42,140,74,.1),transparent);border-left:5px solid var(--py-color)">
+    <div class="sh-icon">🔗</div>
+    <div class="sh-info"><h2 style="color:var(--py-color)">집합 연산</h2><p>합집합 · 교집합 · 차집합 — C는 이중 반복문</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--py-color)">1</span><span class="step-title">세 가지 집합 연산</span><span class="step-sub">∪ ∩ −</span></div>
+    <div class="step-body">
+      <p>수학에서 배운 집합 연산이 그대로예요! 두 집합 A, B가 있을 때:</p>
+      <table class="syn-table">
+        <thead><tr><th>연산</th><th>의미</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr><td class="label" style="color:var(--setcol)">합집합 (∪)</td><td>A 또는 B에 있는 모든 원소</td><td class="code py-bg">A | B</td></tr>
+          <tr><td class="label" style="color:var(--ok)">교집합 (∩)</td><td>A와 B <strong>둘 다</strong>에 있는 원소</td><td class="code py-bg">A &amp; B</td></tr>
+          <tr><td class="label" style="color:var(--ng)">차집합 (−)</td><td>A에는 있고 B에는 <strong>없는</strong> 원소</td><td class="code py-bg">A - B</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 파이썬은 기호 하나로! <code>|</code>(합), <code>&amp;</code>(교), <code>-</code>(차). 메소드로도 <code>A.union(B)</code>, <code>A.intersection(B)</code>, <code>A.difference(B)</code>를 써요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--py-color)">2</span><span class="step-title">C로 교집합 만들기</span><span class="step-sub">이중 반복</span></div>
+    <div class="step-body">
+      <p>C는 집합 연산이 없어서 <strong>이중 반복문</strong>으로 직접! 교집합은 "A의 각 원소가 B에도 있나?" 확인해요.</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 교집합 직접 구현</div><div class="cmp-code">// A의 각 원소가 B에 있으면 결과에
+for (int i = 0; i < sizeA; i++) {
+    for (int j = 0; j < sizeB; j++) {
+        if (A[i] == B[j]) {
+            result[rsize++] = A[i];
+            break;  // 찾았으니 그만
+        }
+    }
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 기호 하나</div><div class="cmp-code">A = {1, 2, 3, 4}
+B = {3, 4, 5, 6}
+
+print(A & B)   # {3, 4}
+# 교집합 끝!</div></div>
+      </div>
+      <div class="tip">💡 합집합은 "A를 다 넣고, B에서 중복 아닌 것만 추가", 차집합은 "A 중 B에 없는 것만". 모두 <strong>선형 탐색 + 반복문</strong>의 조합이에요!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 두 집합의 교집합 구하기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t3','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t3','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t3-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> A[<span class="nm">100</span>], B[<span class="nm">100</span>], na, nb;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>na);
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>na;i<span class="op">++</span>) <span class="fn">scanf</span>(<span class="st">"%d"</span>,<span class="op">&amp;</span>A[i]);
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>nb);
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>nb;i<span class="op">++</span>) <span class="fn">scanf</span>(<span class="st">"%d"</span>,<span class="op">&amp;</span>B[i]);
+    <span class="cm">// 교집합: A의 원소가 B에도 있으면</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> na; i<span class="op">++</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">0</span>; j <span class="op">&lt;</span> nb; j<span class="op">++</span>) {
+            <span class="kw">if</span> (A[i] <span class="op">==</span> B[j]) {
+                <span class="fn">printf</span>(<span class="st">"%d "</span>, A[i]);
+                <span class="kw">break</span>;
+            }
+        }
+    }
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t3-py"><span class="cm"># 교집합 — 기호 하나!</span>
+na <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+A <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+nb <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+B <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+
+<span class="fn">print</span>(<span class="op">*</span><span class="fn">sorted</span>(A <span class="op">&amp;</span> B))   <span class="cm"># 교집합!</span>
+
+<span class="cm"># 합집합: A | B</span>
+<span class="cm"># 차집합: A - B</span></pre>
+        <button class="copy-btn" id="t3-copy" onclick="doCopy('t3')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: 이중 for</span><span class="lex-desc">A[i]가 B에 있는지 하나씩 대조</span></div>
+        <div class="lex"><span class="lex-code">A[i]==B[j] → 출력</span><span class="lex-desc">양쪽에 다 있으면 교집합 원소!</span></div>
+        <div class="lex"><span class="lex-code">Py: A &amp; B</span><span class="lex-desc">이 모든 걸 기호 하나로 압축</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t3')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t3','4\n1 2 3 4\n4\n3 4 5 6')">↺ 입력 초기화</button>
+        <span class="run-hint">A={1,2,3,4}, B={3,4,5,6} → 교집합 3 4</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t3-in" spellcheck="false" style="min-height:100px">4
+1 2 3 4
+4
+3 4 5 6</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t3-out" style="min-height:100px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S4: 활용 ══════════════ -->
+<div id="s4" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(184,134,11,.12),transparent);border-left:5px solid var(--out)">
+    <div class="sh-icon">💡</div>
+    <div class="sh-info"><h2 style="color:var(--out)">활용</h2><p>중복 제거·멤버십 검사·튜플 좌표 — 실전에서 빛나는 순간</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--out)">1</span><span class="step-title">집합이 빛나는 순간</span><span class="step-sub">빠른 검사</span></div>
+    <div class="step-body">
+      <p>집합의 진짜 강점은 <strong>"들어있나?" 확인이 매우 빠르다</strong>는 거예요. 리스트보다 훨씬!</p>
+      <table class="syn-table">
+        <thead><tr><th>상황</th><th>리스트 사용</th><th style="color:var(--setcol)">집합 사용</th></tr></thead>
+        <tbody>
+          <tr><td class="label">중복 제거</td><td>직접 반복 검사</td><td class="code">set(리스트)</td></tr>
+          <tr><td class="label">포함 확인</td><td>처음부터 다 훑음(느림)</td><td>바로 확인(빠름)</td></tr>
+          <tr><td class="label">공통 원소</td><td>이중 반복</td><td class="code">A &amp; B</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 파이썬 집합은 내부에 <strong>해시(hash)</strong>를 써서 <code>x in s</code>가 아주 빨라요. C 배열 흉내는 선형 탐색이라 느리지만, 원리를 이해하는 데는 딱이에요!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 두 튜플(좌표) 사이 거리 계산</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t4','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t4','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t4-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="cm">// 두 점 (x1,y1), (x2,y2)</span>
+    <span class="kw">int</span> x1, y1, x2, y2;
+    <span class="fn">scanf</span>(<span class="st">"%d %d %d %d"</span>,
+          <span class="op">&amp;</span>x1, <span class="op">&amp;</span>y1, <span class="op">&amp;</span>x2, <span class="op">&amp;</span>y2);
+    <span class="kw">int</span> dx <span class="op">=</span> x1 <span class="op">-</span> x2;
+    <span class="kw">int</span> dy <span class="op">=</span> y1 <span class="op">-</span> y2;
+    <span class="cm">// 거리의 제곱 (루트 없이)</span>
+    <span class="kw">int</span> d2 <span class="op">=</span> dx<span class="op">*</span>dx <span class="op">+</span> dy<span class="op">*</span>dy;
+    <span class="fn">printf</span>(<span class="st">"거리제곱: %d\n"</span>, d2);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t4-py"><span class="cm"># 튜플로 좌표 다루기</span>
+x1, y1, x2, y2 <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+p1 <span class="op">=</span> (x1, y1)     <span class="cm"># 튜플 좌표</span>
+p2 <span class="op">=</span> (x2, y2)
+
+dx <span class="op">=</span> p1[<span class="nm">0</span>] <span class="op">-</span> p2[<span class="nm">0</span>]
+dy <span class="op">=</span> p1[<span class="nm">1</span>] <span class="op">-</span> p2[<span class="nm">1</span>]
+d2 <span class="op">=</span> dx<span class="op">*</span>dx <span class="op">+</span> dy<span class="op">*</span>dy
+<span class="fn">print</span>(<span class="st">f"거리제곱: {d2}"</span>)</pre>
+        <button class="copy-btn" id="t4-copy" onclick="doCopy('t4')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">Py: p1 = (x1, y1)</span><span class="lex-desc">좌표를 튜플로 묶어 의미를 명확히</span></div>
+        <div class="lex"><span class="lex-code">p1[0], p1[1]</span><span class="lex-desc">튜플에서 x, y를 인덱스로 꺼냄</span></div>
+        <div class="lex"><span class="lex-code">dx*dx + dy*dy</span><span class="lex-desc">거리의 제곱 (루트는 정수 아니라 생략)</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t4')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t4','0 0 3 4')">↺ 입력 초기화</button>
+        <span class="run-hint">x1 y1 x2 y2. 0 0 3 4 → 거리제곱 25 (=5²)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t4-in" spellcheck="false">0 0 3 4</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t4-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 튜플은 <strong>"함께 다니는 값"</strong>에 딱이에요 — 좌표(x,y), 색(r,g,b), 날짜(년,월,일) 등. 실수로 바뀔 걱정 없이 안전하게 묶어 다닐 수 있죠!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S5: 플레이그라운드 ══════════════ -->
+<div id="s5" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.08),rgba(42,140,74,.08));border-left:5px solid var(--accent)">
+    <div class="sh-icon">🎮</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">플레이그라운드</h2><p>튜플·집합 연산을 골라 C 직접구현과 비교하며 실행하세요</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">▶</span><span class="step-title">예제 선택 & 실험</span><span class="step-sub">골라서 실행</span></div>
+    <div class="step-body">
+      <p>예제를 선택하면 C/파이썬 코드가 바뀌어요. STDIN을 수정하고 실행해 동작을 관찰하세요!</p>
+      <div class="run-bar">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2)">예제:</span>
+        <select id="pg-select" onchange="loadTemplate()" style="font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 14px;border:2px solid var(--bdr);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;outline:none">
+          <option value="dedup">중복 제거 (set)</option>
+          <option value="union">합집합 (A | B)</option>
+          <option value="intersect">교집합 (A &amp; B)</option>
+          <option value="diff">차집합 (A - B)</option>
+          <option value="contains">포함 확인 (in)</option>
+          <option value="subset">부분집합 판별</option>
+          <option value="swap">값 교환 (튜플 언패킹)</option>
+          <option value="count_unique">서로 다른 값 개수</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🎮 <span id="pg-title">중복 제거</span></div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('pg','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('pg','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+        <pre class="code-block on" id="pg-c"></pre>
+        <pre class="code-block" id="pg-py"></pre>
+        <button class="copy-btn" id="pg-copy" onclick="doCopy('pg')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('pg')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetPgStdin()">↺ 입력 초기화</button>
+        <span class="run-hint" id="pg-hint">STDIN을 수정하고 실행해보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="pg-in" spellcheck="false" style="min-height:120px"></textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="pg-out" style="min-height:120px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip" id="pg-tip">💡 파이썬 한 줄 연산이 C에서는 선형 탐색·이중 반복문으로 구현돼요. 두 코드를 번갈아 보세요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════ NAV
+function goSec(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ══════════════════════════════════════════════════ LANG SWITCH
+function switchLang(prefix, lang, btn){
+  const cBlock=document.getElementById(prefix+'-c');
+  const pyBlock=document.getElementById(prefix+'-py');
+  const head=btn.closest('.pg-head');
+  const cBtn=head.querySelector('.ltab-c');
+  const pyBtn=head.querySelector('.ltab-py');
+  if(lang==='c'){
+    cBlock.classList.add('on'); pyBlock.classList.remove('on');
+    cBtn.classList.add('on'); pyBtn.classList.remove('on');
+  } else {
+    pyBlock.classList.add('on'); cBlock.classList.remove('on');
+    pyBtn.classList.add('on'); cBtn.classList.remove('on');
+  }
+}
+// ══════════════════════════════════════════════════ COPY
+function doCopy(prefix){
+  const active=document.querySelector('#'+prefix+'-c.on, #'+prefix+'-py.on');
+  if(!active)return;
+  navigator.clipboard.writeText(active.innerText).then(()=>{
+    const btn=document.getElementById(prefix+'-copy');
+    btn.textContent='✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='복사'; btn.classList.remove('copied');},1800);
+  });
+}
+// ══════════════════════════════════════════════════ STDIN
+function resetStdin(prefix, val){
+  document.getElementById(prefix+'-in').value = val.replace(/\\n/g,'\n');
+  document.getElementById(prefix+'-out').innerHTML='<span class="out-dim">입력을 초기화했어요. 실행해보세요...</span>';
+}
+// parse ints from a line
+function parseInts(line){
+  return (line||'').trim().split(/\s+/).filter(x=>x.length>0).map(Number);
+}
+// build ordered set (first-seen order), skip dups
+function toSet(arr){
+  const out=[];
+  for(const x of arr) if(!out.includes(x)) out.push(x);
+  return out;
+}
+function fmtSet(arr){ return '{' + arr.join(', ') + '}'; }
+// ══════════════════════════════════════════════════ SIM ENGINE
+const SIM = {
+  // S1 swap
+  t1(stdin){
+    const v=parseInts(stdin);
+    if(v.length<2 || v.some(isNaN)) return {err:"두 정수를 입력하세요"};
+    const a=v[0], b=v[1];
+    return `교환 전: (${a}, ${b})\n교환 후: (${b}, ${a})`;
+  },
+  // S2 dedup
+  t2(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>100) return {err:"첫 줄에 개수(0~100)를 넣어주세요"};
+    const nums=parseInts(lines[1]||'');
+    if(nums.some(isNaN)) return {err:"숫자를 정수로 입력하세요"};
+    const s=toSet(nums);
+    return s.join(' ') + `\n개수: ${s.length}`;
+  },
+  // S3 intersection
+  t3(stdin){
+    const lines=stdin.split('\n');
+    const na=parseInt((lines[0]||'').trim());
+    if(isNaN(na)) return {err:"A의 개수를 첫 줄에 넣어주세요"};
+    const A=toSet(parseInts(lines[1]||''));
+    const nb=parseInt((lines[2]||'').trim());
+    if(isNaN(nb)) return {err:"B의 개수를 3번째 줄에 넣어주세요"};
+    const B=toSet(parseInts(lines[3]||''));
+    if(A.some(isNaN)||B.some(isNaN)) return {err:"숫자를 정수로 입력하세요"};
+    const inter=A.filter(x=>B.includes(x));
+    return inter.sort((a,b)=>a-b).join(' ') || '(교집합 없음)';
+  },
+  // S4 distance squared between two points
+  t4(stdin){
+    const v=parseInts(stdin);
+    if(v.length<4 || v.some(isNaN)) return {err:"x1 y1 x2 y2 네 정수를 입력하세요"};
+    const dx=v[0]-v[2], dy=v[1]-v[3];
+    return `거리제곱: ${dx*dx+dy*dy}`;
+  },
+  // ── playground ──
+  dedup(stdin){
+    const nums=parseInts(stdin);
+    if(!nums.length||nums.some(isNaN)) return {err:"숫자들을 입력하세요"};
+    const s=toSet(nums);
+    return `입력: [${nums.join(', ')}]\nset() → ${fmtSet(s)}\n(${nums.length}개 → ${s.length}개)`;
+  },
+  union(stdin){
+    const lines=stdin.split('\n');
+    const A=toSet(parseInts(lines[0]||''));
+    const B=toSet(parseInts(lines[1]||''));
+    if(!A.length&&!B.length) return {err:"두 줄에 각각 집합 원소를 입력하세요"};
+    if(A.some(isNaN)||B.some(isNaN)) return {err:"정수만 입력하세요"};
+    const u=toSet([...A,...B]).sort((a,b)=>a-b);
+    return `A=${fmtSet(A)}\nB=${fmtSet(B)}\nA | B = ${fmtSet(u)}`;
+  },
+  intersect(stdin){
+    const lines=stdin.split('\n');
+    const A=toSet(parseInts(lines[0]||''));
+    const B=toSet(parseInts(lines[1]||''));
+    if(!A.length&&!B.length) return {err:"두 줄에 각각 집합 원소를 입력하세요"};
+    if(A.some(isNaN)||B.some(isNaN)) return {err:"정수만 입력하세요"};
+    const inter=A.filter(x=>B.includes(x)).sort((a,b)=>a-b);
+    return `A=${fmtSet(A)}\nB=${fmtSet(B)}\nA & B = ${fmtSet(inter)}`;
+  },
+  diff(stdin){
+    const lines=stdin.split('\n');
+    const A=toSet(parseInts(lines[0]||''));
+    const B=toSet(parseInts(lines[1]||''));
+    if(!A.length&&!B.length) return {err:"두 줄에 각각 집합 원소를 입력하세요"};
+    if(A.some(isNaN)||B.some(isNaN)) return {err:"정수만 입력하세요"};
+    const d=A.filter(x=>!B.includes(x)).sort((a,b)=>a-b);
+    return `A=${fmtSet(A)}\nB=${fmtSet(B)}\nA - B = ${fmtSet(d)}`;
+  },
+  contains(stdin){
+    const lines=stdin.split('\n');
+    const s=toSet(parseInts(lines[0]||''));
+    const q=parseInt((lines[1]||'').trim());
+    if(!s.length||s.some(isNaN)) return {err:"1줄=집합 원소, 2줄=찾을 값"};
+    if(isNaN(q)) return {err:"2번째 줄에 찾을 정수를 넣어주세요"};
+    const has=s.includes(q);
+    return `${fmtSet(s)}\n${q} in s → ${has?'True (있음)':'False (없음)'}`;
+  },
+  subset(stdin){
+    const lines=stdin.split('\n');
+    const A=toSet(parseInts(lines[0]||''));
+    const B=toSet(parseInts(lines[1]||''));
+    if(!A.length&&!B.length) return {err:"1줄=A, 2줄=B 원소 입력"};
+    if(A.some(isNaN)||B.some(isNaN)) return {err:"정수만 입력하세요"};
+    const isSub=A.every(x=>B.includes(x));
+    return `A=${fmtSet(A)}\nB=${fmtSet(B)}\nA ⊆ B ? → ${isSub?'True (A는 B의 부분집합)':'False'}`;
+  },
+  swap(stdin){
+    const v=parseInts(stdin);
+    if(v.length<2||v.some(isNaN)) return {err:"두 정수를 입력하세요"};
+    return `a, b = ${v[0]}, ${v[1]}\na, b = b, a\n→ a=${v[1]}, b=${v[0]}`;
+  },
+  count_unique(stdin){
+    const nums=parseInts(stdin);
+    if(!nums.length||nums.some(isNaN)) return {err:"숫자들을 입력하세요"};
+    const s=toSet(nums);
+    return `입력 ${nums.length}개 중\n서로 다른 값: ${s.length}개\n${fmtSet(s)}`;
+  }
+};
+// ══════════════════════════════════════════════════ RUN
+function runIO(prefix){
+  const outEl=document.getElementById(prefix+'-out');
+  const inEl=document.getElementById(prefix+'-in');
+  const stdin = inEl ? inEl.value : '';
+  let simKey = prefix;
+  if(prefix==='pg') simKey = currentTemplate;
+  const fn = SIM[simKey];
+  if(!fn){ outEl.innerHTML='<span class="out-err">시뮬레이터를 찾을 수 없습니다</span>'; return; }
+  let result;
+  try{ result = fn(stdin); }
+  catch(e){ outEl.innerHTML='<span class="out-err">실행 오류: '+e.message+'</span>'; return; }
+  if(result && typeof result==='object' && result.err){
+    outEl.innerHTML='<span class="out-err">⚠ '+result.err+'</span>'; return;
+  }
+  outEl.textContent='';
+  const text=String(result);
+  let i=0;
+  (function type(){
+    if(i>text.length){return;}
+    outEl.textContent=text.slice(0,i);
+    i+=3;
+    if(i<=text.length+1) setTimeout(type, 10);
+    else outEl.textContent=text;
+  })();
+}
+// ══════════════════════════════════════════════════ TEMPLATES
+let currentTemplate='dedup';
+const TEMPLATES = {
+  dedup:{
+    title:'중복 제거 (set)', stdin:'3 1 4 1 5 9 2 6 5', hint:'숫자들 (공백 구분). 중복이 사라져요',
+    c:`<span class="cm">// 중복 검사 후 추가</span>
+<span class="kw">int</span> set[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+    <span class="kw">int</span> dup <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">0</span>; j <span class="op">&lt;</span> size; j<span class="op">++</span>)
+        <span class="kw">if</span> (set[j] <span class="op">==</span> a[i]) dup <span class="op">=</span> <span class="nm">1</span>;
+    <span class="kw">if</span> (<span class="op">!</span>dup) set[size<span class="op">++</span>] <span class="op">=</span> a[i];
+}`,
+    py:`nums <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+s <span class="op">=</span> <span class="fn">set</span>(nums)   <span class="cm"># 중복 자동 제거!</span>
+<span class="fn">print</span>(<span class="fn">sorted</span>(s))`
+  },
+  union:{
+    title:'합집합 (A | B)', stdin:'1 2 3 4\n3 4 5 6', hint:'1줄=A, 2줄=B. A 또는 B에 있는 모든 원소',
+    c:`<span class="cm">// 합집합: A 다 넣고 B 중복 아닌 것 추가</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>na;i<span class="op">++</span>) res[rs<span class="op">++</span>]<span class="op">=</span>A[i];
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>nb;i<span class="op">++</span>) {
+    <span class="kw">int</span> dup <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>rs;j<span class="op">++</span>)
+        <span class="kw">if</span> (res[j]<span class="op">==</span>B[i]) dup<span class="op">=</span><span class="nm">1</span>;
+    <span class="kw">if</span> (<span class="op">!</span>dup) res[rs<span class="op">++</span>]<span class="op">=</span>B[i];
+}`,
+    py:`A <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+B <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+<span class="fn">print</span>(<span class="fn">sorted</span>(A <span class="op">|</span> B))   <span class="cm"># 합집합!</span>`
+  },
+  intersect:{
+    title:'교집합 (A & B)', stdin:'1 2 3 4\n3 4 5 6', hint:'1줄=A, 2줄=B. 둘 다에 있는 원소',
+    c:`<span class="cm">// 교집합: A의 원소가 B에도 있으면</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>na;i<span class="op">++</span>)
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>nb;j<span class="op">++</span>)
+        <span class="kw">if</span> (A[i] <span class="op">==</span> B[j]) {
+            res[rs<span class="op">++</span>] <span class="op">=</span> A[i];
+            <span class="kw">break</span>;
+        }`,
+    py:`A <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+B <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+<span class="fn">print</span>(<span class="fn">sorted</span>(A <span class="op">&amp;</span> B))   <span class="cm"># 교집합!</span>`
+  },
+  diff:{
+    title:'차집합 (A - B)', stdin:'1 2 3 4\n3 4 5 6', hint:'1줄=A, 2줄=B. A에만 있는 원소',
+    c:`<span class="cm">// 차집합: A 중 B에 없는 것만</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>na;i<span class="op">++</span>) {
+    <span class="kw">int</span> found <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>nb;j<span class="op">++</span>)
+        <span class="kw">if</span> (A[i]<span class="op">==</span>B[j]) found<span class="op">=</span><span class="nm">1</span>;
+    <span class="kw">if</span> (<span class="op">!</span>found) res[rs<span class="op">++</span>]<span class="op">=</span>A[i];
+}`,
+    py:`A <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+B <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+<span class="fn">print</span>(<span class="fn">sorted</span>(A <span class="op">-</span> B))   <span class="cm"># 차집합!</span>`
+  },
+  contains:{
+    title:'포함 확인 (in)', stdin:'1 2 3 4 5\n3', hint:'1줄=집합, 2줄=찾을 값',
+    c:`<span class="cm">// 포함 확인 = 선형 탐색</span>
+<span class="kw">int</span> found <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>)
+    <span class="kw">if</span> (set[i] <span class="op">==</span> q) { found <span class="op">=</span> <span class="nm">1</span>; <span class="kw">break</span>; }
+<span class="fn">printf</span>(found <span class="op">?</span> <span class="st">"있음\\n"</span> : <span class="st">"없음\\n"</span>);`,
+    py:`s <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+q <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="fn">print</span>(q <span class="kw">in</span> s)   <span class="cm"># True/False, 아주 빠름!</span>`
+  },
+  subset:{
+    title:'부분집합 판별', stdin:'2 3\n1 2 3 4 5', hint:'1줄=A, 2줄=B. A가 B에 다 포함되나?',
+    c:`<span class="cm">// A의 모든 원소가 B에 있나?</span>
+<span class="kw">int</span> isSubset <span class="op">=</span> <span class="nm">1</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>na;i<span class="op">++</span>) {
+    <span class="kw">int</span> found <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>nb;j<span class="op">++</span>)
+        <span class="kw">if</span> (A[i]<span class="op">==</span>B[j]) found<span class="op">=</span><span class="nm">1</span>;
+    <span class="kw">if</span> (<span class="op">!</span>found) { isSubset<span class="op">=</span><span class="nm">0</span>; <span class="kw">break</span>; }
+}`,
+    py:`A <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+B <span class="op">=</span> <span class="fn">set</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+<span class="fn">print</span>(A <span class="op">&lt;=</span> B)   <span class="cm"># A ⊆ B ? (issubset)</span>`
+  },
+  swap:{
+    title:'값 교환 (튜플 언패킹)', stdin:'7 3', hint:'두 정수. 튜플로 한 줄 교환!',
+    c:`<span class="cm">// C는 임시 변수 필요</span>
+<span class="kw">int</span> a <span class="op">=</span> <span class="nm">7</span>, b <span class="op">=</span> <span class="nm">3</span>;
+<span class="kw">int</span> tmp <span class="op">=</span> a;
+a <span class="op">=</span> b;
+b <span class="op">=</span> tmp;
+<span class="cm">// 이제 a=3, b=7</span>`,
+    py:`a, b <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+a, b <span class="op">=</span> b, a   <span class="cm"># 튜플 언패킹으로 한 줄!</span>
+<span class="fn">print</span>(a, b)`
+  },
+  count_unique:{
+    title:'서로 다른 값 개수', stdin:'1 2 2 3 3 3 4', hint:'숫자들. 종류가 몇 개?',
+    c:`<span class="cm">// 중복 제거 후 size가 답</span>
+<span class="kw">int</span> set[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>n;i<span class="op">++</span>) {
+    <span class="kw">if</span> (<span class="op">!</span><span class="fn">contains</span>(a[i]))
+        set[size<span class="op">++</span>] <span class="op">=</span> a[i];
+}
+<span class="fn">printf</span>(<span class="st">"%d\\n"</span>, size);  <span class="cm">// 종류 수</span>`,
+    py:`nums <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+<span class="fn">print</span>(<span class="fn">len</span>(<span class="fn">set</span>(nums)))   <span class="cm"># 서로 다른 값 개수!</span>`
+  }
+};
+function loadTemplate(){
+  const key=document.getElementById('pg-select').value;
+  currentTemplate=key;
+  const t=TEMPLATES[key];
+  document.getElementById('pg-c').innerHTML=t.c;
+  document.getElementById('pg-py').innerHTML=t.py;
+  document.getElementById('pg-title').textContent=t.title;
+  document.getElementById('pg-hint').textContent=t.hint;
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">실행 버튼을 눌러보세요...</span>';
+}
+function resetPgStdin(){
+  const t=TEMPLATES[currentTemplate];
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">입력을 초기화했어요...</span>';
+}
+// init
+loadTemplate();
+</script>
+</body>
+</html>

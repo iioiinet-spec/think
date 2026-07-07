@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C & 파이썬 2차원 배열 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#0F766E;
+  --accent-light:#DEF3F0;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#382812);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'arr[i][j]';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.05);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.2}
+header h1 .cc{color:#5CC8F5} header h1 .pp{color:#78E89A}
+header p{font-size:13.5px;color:#A0906E;margin-top:6px}
+
+.tnav{background:var(--panel);border-bottom:2px solid var(--bdr);padding:0 34px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:13px 15px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{max-width:960px;margin:0 auto;padding:34px 22px 90px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:14px;margin-bottom:24px}
+.sh-icon{font-size:30px}
+.sh-info h2{font-size:19px;font-weight:900;line-height:1.2}
+.sh-info p{font-size:13px;opacity:.78;margin-top:2px}
+
+.step{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--soft);border-bottom:1.5px solid var(--bdr)}
+.step-badge{font-family:var(--mono);font-size:13px;font-weight:700;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.step-title{font-size:16px;font-weight:900;color:var(--ink)}
+.step-sub{font-size:12px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.step-body{padding:20px 24px}
+.step-body p{font-size:15px;color:var(--ink2);line-height:1.85;margin-bottom:12px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--ink)}
+.step-body .hl{background:#FFF2CC;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.step-body .cw{font-family:var(--mono);color:var(--c-color);font-weight:700}
+.step-body .pw{font-family:var(--mono);color:var(--py-color);font-weight:700}
+
+/* grid visualization */
+.grid-viz{margin:18px 0;overflow-x:auto}
+.grid-title{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:10px;font-family:var(--mono)}
+.grid-wrap{display:inline-block}
+.grid-row{display:flex;gap:5px;margin-bottom:5px;align-items:center}
+.gcell{position:relative;width:46px;height:46px;background:var(--panel);border:2px solid var(--cell);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:16px;color:var(--ink);flex-shrink:0}
+.gcell.hi{background:#FBF0D2;border-color:var(--cell-hi);color:#8A6D0F;box-shadow:0 0 0 3px rgba(232,184,75,.25)}
+.gcell.path{background:#FDEAE7;border-color:var(--cell-path);color:#B03A2E}
+.gcell.dim{opacity:.35}
+.rlabel,.clabel{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink3);width:22px;text-align:center;flex-shrink:0}
+.clabel-row{display:flex;gap:5px;margin-bottom:4px;margin-left:27px}
+.clabel-row .clabel{width:46px}
+
+.cmp-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.cmp-col{border-radius:12px;overflow:hidden;border:1.5px solid var(--bdr)}
+.cmp-col-head{font-family:var(--mono);font-size:12px;font-weight:700;padding:9px 14px;color:#fff;display:flex;align-items:center;gap:6px}
+.cmp-col.c .cmp-col-head{background:var(--c-color)}
+.cmp-col.py .cmp-col-head{background:var(--py-color)}
+.cmp-code{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--code-bg);color:#D8CAB0;padding:14px 16px;overflow-x:auto;white-space:pre;min-height:60px}
+
+.syn-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.syn-table th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--bdr);background:var(--soft)}
+.syn-table th.c-col{color:var(--c-color)} .syn-table th.py-col{color:var(--py-color)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.syn-table td.label{font-weight:700;color:var(--ink2);font-size:13px}
+.syn-table td.code{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.syn-table td.code.c-bg{background:rgba(11,110,153,.05)}
+.syn-table td.code.py-bg{background:rgba(42,140,74,.05)}
+.syn-table tr:hover td{background:rgba(0,0,0,.015)}
+
+.pg{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.pg-head{background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pg-head .pt{color:#FFF9F0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.lang-tabs{display:flex;gap:6px}
+.ltab{font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 16px;border-radius:7px;border:none;cursor:pointer;transition:background .15s,color .15s}
+.ltab-c{background:rgba(11,110,153,.25);color:#5CC8F5}
+.ltab-c.on{background:var(--c-color);color:#fff}
+.ltab-py{background:rgba(42,140,74,.25);color:#78E89A}
+.ltab-py.on{background:var(--py-color);color:#fff}
+.pg-body{padding:20px 22px}
+
+.code-wrap{position:relative;margin-bottom:16px}
+.code-block{font-family:var(--mono);font-size:13.5px;line-height:1.8;background:var(--code-bg);color:#D8CAB0;border-radius:10px;padding:18px 20px;overflow-x:auto;white-space:pre;display:none;border:1.5px solid #2C2C3A}
+.code-block.on{display:block}
+.kw{color:#FF8A5C} .fn{color:#FFD37A} .cm{color:#5E5E72;font-style:italic}
+.nm{color:#9AEEB4} .st{color:#A8D8FF} .pp{color:#FF9FCC} .tp{color:#84E2FF} .op{color:#FF9868}
+.copy-btn{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;background:#2C2C3A;color:#9090B0;border:1px solid #40405A;border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#fff}
+
+.line-explain{background:var(--soft);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px}
+.lex{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+.lex-code{font-family:var(--mono);font-weight:700;color:var(--accent);min-width:150px;font-size:13px}
+.lex-desc{color:var(--ink2);line-height:1.7}
+
+.io-console{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.io-panel{border-radius:10px;overflow:hidden;border:1.5px solid var(--bdr)}
+.io-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:8px 14px;display:flex;align-items:center;gap:6px}
+.io-label.stdin{background:var(--c-light);color:var(--c-color)}
+.io-label.stdout{background:#FBF3D8;color:var(--out)}
+.stdin-area{width:100%;font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#8CD9FF;border:none;padding:14px 16px;line-height:1.8;resize:vertical;min-height:80px;outline:none;display:block}
+.stdin-area:focus{box-shadow:inset 0 0 0 2px rgba(11,110,153,.4)}
+.stdout-area{font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#B8F0C8;padding:14px 16px;line-height:1.8;min-height:80px;white-space:pre-wrap;word-break:break-word;overflow-y:auto}
+.stdout-area .out-dim{color:#4A5060}
+.stdout-area .out-err{color:#FF8080}
+
+.run-bar{display:flex;align-items:center;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+.run-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:9px;border:none;cursor:pointer;color:#fff;background:var(--accent);transition:filter .15s,transform .1s;display:flex;align-items:center;gap:7px}
+.run-btn:active{transform:scale(.96)} .run-btn:hover{filter:brightness(1.12)}
+.run-hint{font-size:12.5px;color:var(--ink3)}
+.reset-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);cursor:pointer;background:var(--panel);color:var(--ink2);transition:background .15s}
+.reset-btn:hover{background:var(--soft)}
+
+.tip{font-size:14px;color:var(--ink2);background:rgba(15,118,110,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;line-height:1.8}
+.tip strong{color:var(--ink)}
+.tip code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+
+.warn-box{font-size:14px;color:var(--ink2);background:#FDF0E8;border:1.5px solid #F0C0A0;border-radius:10px;padding:14px 18px;margin-top:14px;line-height:1.8}
+.warn-box strong{color:var(--ng)}
+.warn-box code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--ng)}
+
+@media(max-width:680px){
+  header{padding:20px 18px 16px}
+  .tnav{padding:0 10px}
+  main{padding:20px 12px 70px}
+  .step-body,.pg-body{padding:16px 14px}
+  .io-console,.cmp-2col{grid-template-columns:1fr}
+  .lex-code{min-width:110px}
+  .gcell{width:38px;height:38px;font-size:14px}
+  .clabel-row .clabel{width:38px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 자료구조 기초 · 2차원 배열</div>
+  <h1><span class="cc">C</span>와 <span class="pp">파이썬</span> 2차원 배열 실습</h1>
+  <p>격자·행렬·좌표를 다루는 이중 반복문 · 상하좌우 이동까지 · 입력을 바꿔 직접 확인하세요</p>
+</header>
+
+<nav class="tnav">
+  <button class="tbtn on" onclick="goSec('s0',this)">🚀 시작하기 (격자 개념)</button>
+  <button class="tbtn" onclick="goSec('s1',this)">① 만들기·접근</button>
+  <button class="tbtn" onclick="goSec('s2',this)">② 순회 (이중 for)</button>
+  <button class="tbtn" onclick="goSec('s3',this)">③ 격자 이동 (dx·dy)</button>
+  <button class="tbtn" onclick="goSec('s4',this)">④ 활용</button>
+  <button class="tbtn" onclick="goSec('s5',this)">⑤ 플레이그라운드</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ S0: 시작하기 ══════════════ -->
+<div id="s0" class="sec on">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(15,118,110,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🚀</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">시작하기 — 2차원 배열이란?</h2><p>줄지어 있던 배열을 격자(표)로 펼치기</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">1차원 → 2차원, 표가 되다</span><span class="step-sub">행 × 열</span></div>
+    <div class="step-body">
+      <p>1차원 배열이 <strong>한 줄</strong>이라면, 2차원 배열은 <span class="hl">여러 줄이 쌓인 표(격자)</span>예요. 엑셀 표, 바둑판, 지도를 떠올리면 돼요!</p>
+      <div class="grid-viz">
+        <div class="grid-title">arr = 3행 4열 격자 (arr[행][열])</div>
+        <div class="grid-wrap">
+          <div class="clabel-row"><span class="clabel">0</span><span class="clabel">1</span><span class="clabel">2</span><span class="clabel">3</span></div>
+          <div class="grid-row"><span class="rlabel">0</span><div class="gcell">1</div><div class="gcell">2</div><div class="gcell">3</div><div class="gcell">4</div></div>
+          <div class="grid-row"><span class="rlabel">1</span><div class="gcell">5</div><div class="gcell hi">6</div><div class="gcell">7</div><div class="gcell">8</div></div>
+          <div class="grid-row"><span class="rlabel">2</span><div class="gcell">9</div><div class="gcell">10</div><div class="gcell">11</div><div class="gcell">12</div></div>
+        </div>
+      </div>
+      <p>노란 칸은 <span class="hl">arr[1][1]</span> = 6이에요. <strong>앞이 행(row), 뒤가 열(column)</strong>! 행 번호와 열 번호로 정확한 한 칸을 찍어요.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">arr[i][j] 읽는 법</span><span class="step-sub">행 먼저, 열 나중</span></div>
+    <div class="step-body">
+      <p>가장 헷갈리는 부분! <span class="hl">arr[i][j]</span>에서 <strong>i는 행(세로 위치), j는 열(가로 위치)</strong>이에요.</p>
+      <table class="syn-table">
+        <thead><tr><th>표현</th><th>의미</th><th>위 격자에서</th></tr></thead>
+        <tbody>
+          <tr><td class="code">arr[0][0]</td><td>0행 0열 (왼쪽 위 첫 칸)</td><td>1</td></tr>
+          <tr><td class="code">arr[1][1]</td><td>1행 1열</td><td>6</td></tr>
+          <tr><td class="code">arr[2][3]</td><td>2행 3열 (오른쪽 아래 끝)</td><td>12</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>행과 열 순서 주의!</strong> <code>arr[i][j]</code>는 <strong>arr[세로][가로]</strong> 순서예요.<br>
+      좌표 (x, y)를 생각할 때 x가 가로라 헷갈리기 쉬워요. 배열에서는 보통 <strong>[행][열] = [y][x]</strong>로 씁니다!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">3</span><span class="step-title">어디에 쓸까?</span><span class="step-sub">격자의 세계</span></div>
+    <div class="step-body">
+      <p>2차원 배열은 <strong>격자 형태의 모든 것</strong>에 쓰여요. KOI에서 정말 자주 나와요!</p>
+      <table class="syn-table">
+        <thead><tr><th>분야</th><th>예시</th></tr></thead>
+        <tbody>
+          <tr><td class="label">게임 맵</td><td>미로, 지뢰찾기, 오목판, 테트리스</td></tr>
+          <tr><td class="label">이미지</td><td>픽셀 격자 (각 칸 = 색상값)</td></tr>
+          <tr><td class="label">수학</td><td>행렬(matrix), 표 데이터</td></tr>
+          <tr><td class="label">알고리즘</td><td>BFS/DFS 탐색, 동적계획법(DP) 표</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 특히 <strong>격자 위 이동</strong>(상하좌우로 한 칸씩)은 미로 찾기·최단 경로의 기초예요. 이번 ③번 탭에서 <code>dx/dy</code> 방향 배열로 배워볼게요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: 만들기·접근 ══════════════ -->
+<div id="s1" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(15,118,110,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">📐</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">만들기·접근</h2><p>격자 선언하고 값 넣고 읽기</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">2차원 배열 만들기</span><span class="step-sub">C 고정 vs Python 유연</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>동작</th><th class="c-col">C</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr><td class="label">선언</td><td class="code c-bg">int arr[3][4];</td><td class="code py-bg">arr = [[0]*4 for _ in range(3)]</td></tr>
+          <tr><td class="label">초기값</td><td class="code c-bg">int a[2][2]={{1,2},{3,4}};</td><td class="code py-bg">a = [[1,2],[3,4]]</td></tr>
+          <tr><td class="label">접근</td><td class="code c-bg">arr[1][2]</td><td class="code py-bg">arr[1][2]</td></tr>
+          <tr><td class="label">크기</td><td class="code c-bg">고정 (3, 4)</td><td class="code py-bg">len(arr), len(arr[0])</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>파이썬 격자 만들기 함정!</strong> <code>[[0]*4]*3</code>은 <strong>같은 행을 3번 참조</strong>해서 한 칸만 바꿔도 세 행이 다 바뀌어요!<br>
+      반드시 <code>[[0]*4 for _ in range(3)]</code>처럼 <strong>for로 각 행을 새로 만들어야</strong> 해요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">값 넣고 읽기</span><span class="step-sub">arr[i][j] = v</span></div>
+    <div class="step-body">
+      <p>한 칸에 값을 넣는 건 1차원과 똑같아요. 인덱스만 <strong>두 개</strong>일 뿐이죠!</p>
+      <div class="grid-viz">
+        <div class="grid-title">arr[1][2] = 99 로 바꾸면?</div>
+        <div class="grid-wrap">
+          <div class="clabel-row"><span class="clabel">0</span><span class="clabel">1</span><span class="clabel">2</span></div>
+          <div class="grid-row"><span class="rlabel">0</span><div class="gcell">0</div><div class="gcell">0</div><div class="gcell">0</div></div>
+          <div class="grid-row"><span class="rlabel">1</span><div class="gcell">0</div><div class="gcell">0</div><div class="gcell hi">99</div></div>
+        </div>
+      </div>
+      <p><span class="hl">arr[1][2] = 99</span> — 1행 2열 칸만 바뀌었어요! 나머지는 그대로예요.</p>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 격자를 입력받아 특정 칸 읽기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t1','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t1','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t1-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> R, C;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>R, <span class="op">&amp;</span>C);
+    <span class="kw">int</span> arr[<span class="nm">20</span>][<span class="nm">20</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> R; i<span class="op">++</span>)
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">0</span>; j <span class="op">&lt;</span> C; j<span class="op">++</span>)
+            <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>arr[i][j]);
+    <span class="kw">int</span> r, c;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>r, <span class="op">&amp;</span>c);
+    <span class="fn">printf</span>(<span class="st">"arr[%d][%d] = %d\n"</span>, r, c, arr[r][c]);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t1-py"><span class="cm"># 격자 입력받고 특정 칸 읽기</span>
+R, C <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+arr <span class="op">=</span> []
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(R):
+    row <span class="op">=</span> <span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+    arr.<span class="fn">append</span>(row)
+
+r, c <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+<span class="fn">print</span>(<span class="st">f"arr[{r}][{c}] = {arr[r][c]}"</span>)</pre>
+        <button class="copy-btn" id="t1-copy" onclick="doCopy('t1')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">이중 for로 입력</span><span class="lex-desc">행마다 열을 돌며 R×C개 값을 채움</span></div>
+        <div class="lex"><span class="lex-code">Py: append(row)</span><span class="lex-desc">한 줄씩 리스트로 만들어 격자에 추가</span></div>
+        <div class="lex"><span class="lex-code">arr[r][c]</span><span class="lex-desc">r행 c열의 한 칸을 정확히 읽음</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t1')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t1','2 3\n1 2 3\n4 5 6\n1 2')">↺ 입력 초기화</button>
+        <span class="run-hint">1줄=행 열, 격자 값들, 마지막=읽을 위치</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t1-in" spellcheck="false" style="min-height:110px">2 3
+1 2 3
+4 5 6
+1 2</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t1-out" style="min-height:110px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 arr[1][2]는 2번째 행(4 5 6)의 3번째 값 = <strong>6</strong>! 행·열 모두 0부터 세는 걸 잊지 마세요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S2: 순회 ══════════════ -->
+<div id="s2" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.1),transparent);border-left:5px solid var(--c-color)">
+    <div class="sh-icon">🔁</div>
+    <div class="sh-info"><h2 style="color:var(--c-color)">순회 (이중 for)</h2><p>격자 전체 훑기 · 행별/열별 합 구하기</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">1</span><span class="step-title">이중 반복문으로 전체 훑기</span><span class="step-sub">행 × 열</span></div>
+    <div class="step-body">
+      <p>2차원 배열을 다 보려면 <strong>반복문 두 개를 겹쳐요.</strong> 바깥은 행(i), 안쪽은 열(j)!</p>
+      <div class="grid-viz">
+        <div class="grid-title">순회 순서: 왼→오, 위→아래 (① → ⑥)</div>
+        <div class="grid-wrap">
+          <div class="grid-row"><div class="gcell hi">①</div><div class="gcell hi">②</div><div class="gcell hi">③</div></div>
+          <div class="grid-row"><div class="gcell path">④</div><div class="gcell path">⑤</div><div class="gcell path">⑥</div></div>
+        </div>
+      </div>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C</div><div class="cmp-code">for (int i = 0; i < R; i++)
+    for (int j = 0; j < C; j++)
+        printf("%d ", arr[i][j]);
+    // 한 행 끝나면 줄바꿈</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python</div><div class="cmp-code">for i in range(R):
+    for j in range(C):
+        print(arr[i][j], end=" ")
+    print()  # 행 끝 줄바꿈
+
+# 또는 for row in arr:</div></div>
+      </div>
+      <div class="tip">💡 파이썬은 <code>for row in arr:</code>로 <strong>행을 통째로</strong> 꺼낼 수도 있어요! 그 안에서 <code>for x in row:</code>로 각 칸을 봐요. 인덱스가 필요 없을 때 편해요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">2</span><span class="step-title">행별 합 vs 열별 합</span><span class="step-sub">방향 주의</span></div>
+    <div class="step-body">
+      <p><strong>행별 합</strong>은 한 행의 가로줄을 더하고, <strong>열별 합</strong>은 한 열의 세로줄을 더해요. 반복문 순서가 바뀌어요!</p>
+      <div class="grid-viz">
+        <div class="grid-title">1행의 합 = 4+5+6 = 15 (가로)</div>
+        <div class="grid-wrap">
+          <div class="grid-row"><div class="gcell dim">1</div><div class="gcell dim">2</div><div class="gcell dim">3</div></div>
+          <div class="grid-row"><div class="gcell hi">4</div><div class="gcell hi">5</div><div class="gcell hi">6</div></div>
+        </div>
+      </div>
+      <div class="tip">💡 행별 합은 <code>for i: for j: rowSum[i] += arr[i][j]</code>, 열별 합은 <code>for j: for i: colSum[j] += arr[i][j]</code>. <strong>어느 인덱스를 고정하느냐</strong>가 핵심!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 격자 전체 합과 각 행의 합</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t2','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t2','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t2-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> R, C;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>R, <span class="op">&amp;</span>C);
+    <span class="kw">int</span> arr[<span class="nm">20</span>][<span class="nm">20</span>], total <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> R; i<span class="op">++</span>) {
+        <span class="kw">int</span> rowSum <span class="op">=</span> <span class="nm">0</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">0</span>; j <span class="op">&lt;</span> C; j<span class="op">++</span>) {
+            <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>arr[i][j]);
+            rowSum <span class="op">+=</span> arr[i][j];
+            total <span class="op">+=</span> arr[i][j];
+        }
+        <span class="fn">printf</span>(<span class="st">"%d행 합: %d\n"</span>, i, rowSum);
+    }
+    <span class="fn">printf</span>(<span class="st">"전체 합: %d\n"</span>, total);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t2-py"><span class="cm"># 전체 합 + 각 행의 합</span>
+R, C <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+arr <span class="op">=</span> [<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(R)]
+
+total <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> i, row <span class="kw">in</span> <span class="fn">enumerate</span>(arr):
+    <span class="fn">print</span>(<span class="st">f"{i}행 합: {sum(row)}"</span>)  <span class="cm"># sum!</span>
+    total <span class="op">+=</span> <span class="fn">sum</span>(row)
+<span class="fn">print</span>(<span class="st">f"전체 합: {total}"</span>)</pre>
+        <button class="copy-btn" id="t2-copy" onclick="doCopy('t2')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: rowSum 초기화</span><span class="lex-desc">각 행 시작마다 0으로 리셋</span></div>
+        <div class="lex"><span class="lex-code">Py: sum(row)</span><span class="lex-desc">한 행을 통째로 더함! 반복문 불필요</span></div>
+        <div class="lex"><span class="lex-code">enumerate(arr)</span><span class="lex-desc">행 번호와 행을 짝으로 순회</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t2')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t2','3 3\n1 2 3\n4 5 6\n7 8 9')">↺ 입력 초기화</button>
+        <span class="run-hint">3×3 격자. 각 행 합과 전체 합(=45)!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t2-in" spellcheck="false" style="min-height:110px">3 3
+1 2 3
+4 5 6
+7 8 9</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t2-out" style="min-height:110px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S3: 격자 이동 dx/dy ══════════════ -->
+<div id="s3" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(240,119,108,.13),transparent);border-left:5px solid var(--cell-path)">
+    <div class="sh-icon">🧭</div>
+    <div class="sh-info"><h2 style="color:var(--cell-path)">격자 이동 (dx·dy)</h2><p>상하좌우 한 칸씩 — 미로·BFS의 기초</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--cell-path)">1</span><span class="step-title">방향 배열 — dx, dy</span><span class="step-sub">4방향</span></div>
+    <div class="step-body">
+      <p>격자에서 현재 위치 (r, c)에서 <strong>상하좌우</strong>로 움직이려면? <span class="hl">방향 배열 dx, dy</span>를 써요!</p>
+      <div class="grid-viz">
+        <div class="grid-title">현재 위치(가운데)에서 갈 수 있는 4방향</div>
+        <div class="grid-wrap">
+          <div class="grid-row"><div class="gcell dim"></div><div class="gcell hi">↑</div><div class="gcell dim"></div></div>
+          <div class="grid-row"><div class="gcell hi">←</div><div class="gcell path">●</div><div class="gcell hi">→</div></div>
+          <div class="grid-row"><div class="gcell dim"></div><div class="gcell hi">↓</div><div class="gcell dim"></div></div>
+        </div>
+      </div>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C</div><div class="cmp-code">// 상, 하, 좌, 우
+int dr[4] = {-1, 1, 0, 0};
+int dc[4] = {0, 0, -1, 1};
+for (int d = 0; d < 4; d++) {
+    int nr = r + dr[d];
+    int nc = c + dc[d];
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python</div><div class="cmp-code"># 상, 하, 좌, 우
+dr = [-1, 1, 0, 0]
+dc = [0, 0, -1, 1]
+for d in range(4):
+    nr = r + dr[d]
+    nc = c + dc[d]</div></div>
+      </div>
+      <div class="tip">💡 <code>dr[d], dc[d]</code>를 현재 위치에 더하면 <strong>다음 칸(nr, nc)</strong>이 나와요! 이 4방향 탐색이 미로 찾기, BFS/DFS, 최단 경로의 <strong>핵심 뼈대</strong>예요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--cell-path)">2</span><span class="step-title">격자 밖으로 나가지 않기</span><span class="step-sub">경계 검사</span></div>
+    <div class="step-body">
+      <p>이동한 칸이 <strong>격자 안에 있는지</strong> 꼭 확인해야 해요! 안 그러면 배열 밖을 읽어 오류가 나요.</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 범위 검사</div><div class="cmp-code">if (nr >= 0 && nr < R &&
+    nc >= 0 && nc < C) {
+    // 격자 안! 안전하게 사용
+    printf("%d ", arr[nr][nc]);
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 범위 검사</div><div class="cmp-code">if 0 <= nr < R and 0 <= nc < C:
+    # 격자 안! (연쇄 비교 가능)
+    print(arr[nr][nc])</div></div>
+      </div>
+      <div class="warn-box">⚠️ <strong>경계 검사는 필수!</strong> <code>nr &gt;= 0</code>(위쪽), <code>nr &lt; R</code>(아래쪽), <code>nc &gt;= 0</code>(왼쪽), <code>nc &lt; C</code>(오른쪽) 네 조건을 모두 확인!<br>
+      파이썬은 <code>0 &lt;= nr &lt; R</code>처럼 <strong>연쇄 비교</strong>로 짧게 쓸 수 있어요.</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 특정 칸의 상하좌우 이웃 값 구하기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t3','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t3','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t3-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> dr[<span class="nm">4</span>] <span class="op">=</span> {<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>};  <span class="cm">// 상하좌우</span>
+<span class="kw">int</span> dc[<span class="nm">4</span>] <span class="op">=</span> {<span class="nm">0</span>,<span class="nm">0</span>,<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>};
+<span class="kw">char</span><span class="op">*</span> name[<span class="nm">4</span>] <span class="op">=</span> {<span class="st">"상"</span>,<span class="st">"하"</span>,<span class="st">"좌"</span>,<span class="st">"우"</span>};
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> R, C;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>R, <span class="op">&amp;</span>C);
+    <span class="kw">int</span> arr[<span class="nm">20</span>][<span class="nm">20</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>)
+      <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>) <span class="fn">scanf</span>(<span class="st">"%d"</span>,<span class="op">&amp;</span>arr[i][j]);
+    <span class="kw">int</span> r, c; <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>r, <span class="op">&amp;</span>c);
+    <span class="kw">for</span> (<span class="kw">int</span> d <span class="op">=</span> <span class="nm">0</span>; d <span class="op">&lt;</span> <span class="nm">4</span>; d<span class="op">++</span>) {
+        <span class="kw">int</span> nr <span class="op">=</span> r<span class="op">+</span>dr[d], nc <span class="op">=</span> c<span class="op">+</span>dc[d];
+        <span class="kw">if</span> (nr<span class="op">&gt;=</span><span class="nm">0</span> <span class="op">&amp;&amp;</span> nr<span class="op">&lt;</span>R <span class="op">&amp;&amp;</span> nc<span class="op">&gt;=</span><span class="nm">0</span> <span class="op">&amp;&amp;</span> nc<span class="op">&lt;</span>C)
+            <span class="fn">printf</span>(<span class="st">"%s: %d\n"</span>, name[d], arr[nr][nc]);
+        <span class="kw">else</span>
+            <span class="fn">printf</span>(<span class="st">"%s: 벽\n"</span>, name[d]);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t3-py"><span class="cm"># 상하좌우 이웃 구하기</span>
+dr <span class="op">=</span> [<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>]      <span class="cm"># 상하좌우</span>
+dc <span class="op">=</span> [<span class="nm">0</span>,<span class="nm">0</span>,<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>]
+name <span class="op">=</span> [<span class="st">"상"</span>,<span class="st">"하"</span>,<span class="st">"좌"</span>,<span class="st">"우"</span>]
+
+R, C <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+arr <span class="op">=</span> [<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(R)]
+r, c <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+
+<span class="kw">for</span> d <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">4</span>):
+    nr, nc <span class="op">=</span> r<span class="op">+</span>dr[d], c<span class="op">+</span>dc[d]
+    <span class="kw">if</span> <span class="nm">0</span> <span class="op">&lt;=</span> nr <span class="op">&lt;</span> R <span class="kw">and</span> <span class="nm">0</span> <span class="op">&lt;=</span> nc <span class="op">&lt;</span> C:
+        <span class="fn">print</span>(<span class="st">f"{name[d]}: {arr[nr][nc]}"</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">f"{name[d]}: 벽"</span>)</pre>
+        <button class="copy-btn" id="t3-copy" onclick="doCopy('t3')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">dr/dc 방향 배열</span><span class="lex-desc">상하좌우 4방향을 숫자로 표현</span></div>
+        <div class="lex"><span class="lex-code">nr=r+dr[d]</span><span class="lex-desc">현재 위치에 방향을 더해 다음 칸</span></div>
+        <div class="lex"><span class="lex-code">경계 검사</span><span class="lex-desc">격자 밖이면 "벽"으로 처리</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t3')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t3','3 3\n1 2 3\n4 5 6\n7 8 9\n1 1')">↺ 입력 초기화</button>
+        <span class="run-hint">가운데(1,1)=5의 이웃: 상2 하8 좌4 우6</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t3-in" spellcheck="false" style="min-height:130px">3 3
+1 2 3
+4 5 6
+7 8 9
+1 1</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t3-out" style="min-height:130px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 모서리 칸(예: 0 0)을 넣어보세요! 격자 밖 방향은 "벽"으로 나와요. 이게 미로에서 <strong>벽 체크</strong>의 기본이에요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S4: 활용 ══════════════ -->
+<div id="s4" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(184,134,11,.12),transparent);border-left:5px solid var(--out)">
+    <div class="sh-icon">💡</div>
+    <div class="sh-info"><h2 style="color:var(--out)">활용</h2><p>대각선 합·전치·최댓값 위치 — 격자 문제의 단골</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--out)">1</span><span class="step-title">대각선 — i와 j의 관계</span><span class="step-sub">i==j</span></div>
+    <div class="step-body">
+      <p>정사각 격자의 <strong>주대각선</strong>은 <span class="hl">행과 열이 같은 칸(i==j)</span>이에요! 왼쪽 위 → 오른쪽 아래.</p>
+      <div class="grid-viz">
+        <div class="grid-title">주대각선: arr[0][0], arr[1][1], arr[2][2]</div>
+        <div class="grid-wrap">
+          <div class="grid-row"><div class="gcell hi">1</div><div class="gcell dim">2</div><div class="gcell dim">3</div></div>
+          <div class="grid-row"><div class="gcell dim">4</div><div class="gcell hi">5</div><div class="gcell dim">6</div></div>
+          <div class="grid-row"><div class="gcell dim">7</div><div class="gcell dim">8</div><div class="gcell hi">9</div></div>
+        </div>
+      </div>
+      <p>주대각선 합 = 1+5+9 = <strong>15</strong>. 반대쪽 <strong>부대각선</strong>은 <span class="hl">i+j == N-1</span>인 칸이에요 (3+5+7)!</p>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 정사각 격자의 두 대각선 합</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('t4','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('t4','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="t4-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> N; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>N);
+    <span class="kw">int</span> arr[<span class="nm">20</span>][<span class="nm">20</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>N;i<span class="op">++</span>)
+      <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>N;j<span class="op">++</span>) <span class="fn">scanf</span>(<span class="st">"%d"</span>,<span class="op">&amp;</span>arr[i][j]);
+    <span class="kw">int</span> main_d <span class="op">=</span> <span class="nm">0</span>, anti_d <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> N; i<span class="op">++</span>) {
+        main_d <span class="op">+=</span> arr[i][i];        <span class="cm">// i==j</span>
+        anti_d <span class="op">+=</span> arr[i][N<span class="op">-</span><span class="nm">1</span><span class="op">-</span>i];  <span class="cm">// i+j==N-1</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"주대각선: %d\n"</span>, main_d);
+    <span class="fn">printf</span>(<span class="st">"부대각선: %d\n"</span>, anti_d);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="t4-py"><span class="cm"># 두 대각선 합</span>
+N <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+arr <span class="op">=</span> [<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(N)]
+
+main_d <span class="op">=</span> <span class="fn">sum</span>(arr[i][i] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(N))
+anti_d <span class="op">=</span> <span class="fn">sum</span>(arr[i][N<span class="op">-</span><span class="nm">1</span><span class="op">-</span>i] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(N))
+
+<span class="fn">print</span>(<span class="st">f"주대각선: {main_d}"</span>)
+<span class="fn">print</span>(<span class="st">f"부대각선: {anti_d}"</span>)</pre>
+        <button class="copy-btn" id="t4-copy" onclick="doCopy('t4')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">arr[i][i]</span><span class="lex-desc">주대각선 — 행과 열이 같음 (i==j)</span></div>
+        <div class="lex"><span class="lex-code">arr[i][N-1-i]</span><span class="lex-desc">부대각선 — i+j가 N-1 (오른쪽 위→왼쪽 아래)</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('t4')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('t4','3\n1 2 3\n4 5 6\n7 8 9')">↺ 입력 초기화</button>
+        <span class="run-hint">3×3. 주대각선 1+5+9=15, 부대각선 3+5+7=15</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="t4-in" spellcheck="false" style="min-height:110px">3
+1 2 3
+4 5 6
+7 8 9</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="t4-out" style="min-height:110px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 대각선 문제는 <strong>인덱스 사이의 규칙</strong>을 찾는 게 핵심! 주대각선 i==j, 부대각선 i+j==N-1. 이 패턴만 알면 마방진 같은 문제도 풀 수 있어요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S5: 플레이그라운드 ══════════════ -->
+<div id="s5" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.08),rgba(42,140,74,.08));border-left:5px solid var(--accent)">
+    <div class="sh-icon">🎮</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">플레이그라운드</h2><p>격자 예제를 골라 입력을 바꿔가며 실험하세요</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">▶</span><span class="step-title">예제 선택 & 실험</span><span class="step-sub">골라서 실행</span></div>
+    <div class="step-body">
+      <p>예제를 선택하면 C/파이썬 코드가 바뀌어요. 격자 STDIN을 수정하고 실행해 결과를 관찰하세요!</p>
+      <div class="run-bar">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2)">예제:</span>
+        <select id="pg-select" onchange="loadTemplate()" style="font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 14px;border:2px solid var(--bdr);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;outline:none">
+          <option value="printgrid">격자 그대로 출력</option>
+          <option value="rowsum">각 행의 합</option>
+          <option value="colsum">각 열의 합</option>
+          <option value="maxpos">최댓값과 위치 찾기</option>
+          <option value="transpose">행렬 전치 (행↔열)</option>
+          <option value="diagonal">대각선 합</option>
+          <option value="neighbors">이웃 4방향 합</option>
+          <option value="rotate">90도 회전</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🎮 <span id="pg-title">격자 그대로 출력</span></div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('pg','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('pg','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+        <pre class="code-block on" id="pg-c"></pre>
+        <pre class="code-block" id="pg-py"></pre>
+        <button class="copy-btn" id="pg-copy" onclick="doCopy('pg')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('pg')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetPgStdin()">↺ 입력 초기화</button>
+        <span class="run-hint" id="pg-hint">STDIN을 수정하고 실행해보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="pg-in" spellcheck="false" style="min-height:130px"></textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="pg-out" style="min-height:130px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip" id="pg-tip">💡 대부분 예제는 1줄에 "행 열", 다음 줄들에 격자 값을 넣어요. 힌트를 참고하세요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════ NAV
+function goSec(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ══════════════════════════════════════════════════ LANG SWITCH
+function switchLang(prefix, lang, btn){
+  const cBlock=document.getElementById(prefix+'-c');
+  const pyBlock=document.getElementById(prefix+'-py');
+  const head=btn.closest('.pg-head');
+  const cBtn=head.querySelector('.ltab-c');
+  const pyBtn=head.querySelector('.ltab-py');
+  if(lang==='c'){
+    cBlock.classList.add('on'); pyBlock.classList.remove('on');
+    cBtn.classList.add('on'); pyBtn.classList.remove('on');
+  } else {
+    pyBlock.classList.add('on'); cBlock.classList.remove('on');
+    pyBtn.classList.add('on'); cBtn.classList.remove('on');
+  }
+}
+// ══════════════════════════════════════════════════ COPY
+function doCopy(prefix){
+  const active=document.querySelector('#'+prefix+'-c.on, #'+prefix+'-py.on');
+  if(!active)return;
+  navigator.clipboard.writeText(active.innerText).then(()=>{
+    const btn=document.getElementById(prefix+'-copy');
+    btn.textContent='✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='복사'; btn.classList.remove('copied');},1800);
+  });
+}
+// ══════════════════════════════════════════════════ STDIN
+function resetStdin(prefix, val){
+  document.getElementById(prefix+'-in').value = val.replace(/\\n/g,'\n');
+  document.getElementById(prefix+'-out').innerHTML='<span class="out-dim">입력을 초기화했어요. 실행해보세요...</span>';
+}
+// parse a grid: first line "R C", then R lines of C ints
+function readGrid(stdin){
+  const lines=stdin.split('\n');
+  const dim=(lines[0]||'').trim().split(/\s+/).map(Number);
+  if(dim.length<2||isNaN(dim[0])||isNaN(dim[1])) return {err:"첫 줄에 '행 열'을 넣어주세요"};
+  const R=dim[0], C=dim[1];
+  if(R<1||C<1||R>20||C>20) return {err:"행·열은 1~20 범위로 넣어주세요"};
+  const g=[];
+  for(let i=0;i<R;i++){
+    const row=(lines[1+i]||'').trim().split(/\s+/).filter(x=>x.length>0).map(Number);
+    if(row.length<C||row.some(isNaN)) return {err:`${i+1}번째 행에 정수 ${C}개가 필요해요`};
+    g.push(row.slice(0,C));
+  }
+  return {R, C, g, rest:lines.slice(1+R)};
+}
+function gridToStr(g){ return g.map(row=>row.join(' ')).join('\n'); }
+// parse a square grid: first line "N", then N lines of N ints
+function readSquare(stdin){
+  const lines=stdin.split('\n');
+  const N=parseInt((lines[0]||'').trim());
+  if(isNaN(N)||N<1||N>20) return {err:"첫 줄에 N(1~20)을 넣어주세요"};
+  const g=[];
+  for(let i=0;i<N;i++){
+    const row=(lines[1+i]||'').trim().split(/\s+/).filter(x=>x.length>0).map(Number);
+    if(row.length<N||row.some(isNaN)) return {err:`${i+1}번째 행에 정수 ${N}개가 필요해요`};
+    g.push(row.slice(0,N));
+  }
+  return {N, g};
+}
+// ══════════════════════════════════════════════════ SIM ENGINE
+const SIM = {
+  // S1 read cell
+  t1(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const pos=(p.rest[0]||'').trim().split(/\s+/).map(Number);
+    if(pos.length<2||isNaN(pos[0])||isNaN(pos[1])) return {err:"마지막 줄에 '행 열'을 넣어주세요"};
+    const [r,c]=pos;
+    if(r<0||r>=p.R||c<0||c>=p.C) return {err:`위치가 격자를 벗어났어요 (0~${p.R-1}, 0~${p.C-1})`};
+    return `arr[${r}][${c}] = ${p.g[r][c]}`;
+  },
+  // S2 total + row sums
+  t2(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    let total=0; const out=[];
+    for(let i=0;i<p.R;i++){
+      const rs=p.g[i].reduce((a,b)=>a+b,0);
+      out.push(`${i}행 합: ${rs}`); total+=rs;
+    }
+    out.push(`전체 합: ${total}`);
+    return out.join('\n');
+  },
+  // S3 neighbors
+  t3(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const pos=(p.rest[0]||'').trim().split(/\s+/).map(Number);
+    if(pos.length<2||isNaN(pos[0])||isNaN(pos[1])) return {err:"마지막 줄에 '행 열'을 넣어주세요"};
+    const [r,c]=pos;
+    if(r<0||r>=p.R||c<0||c>=p.C) return {err:`위치가 격자를 벗어났어요`};
+    const dr=[-1,1,0,0], dc=[0,0,-1,1], nm=['상','하','좌','우'];
+    const out=[];
+    for(let d=0;d<4;d++){
+      const nr=r+dr[d], nc=c+dc[d];
+      if(nr>=0&&nr<p.R&&nc>=0&&nc<p.C) out.push(`${nm[d]}: ${p.g[nr][nc]}`);
+      else out.push(`${nm[d]}: 벽`);
+    }
+    return out.join('\n');
+  },
+  // S4 diagonals
+  t4(stdin){
+    const p=readSquare(stdin); if(p.err)return{err:p.err};
+    let md=0, ad=0;
+    for(let i=0;i<p.N;i++){ md+=p.g[i][i]; ad+=p.g[i][p.N-1-i]; }
+    return `주대각선: ${md}\n부대각선: ${ad}`;
+  },
+  // ── playground ──
+  printgrid(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    return `${p.R}행 ${p.C}열 격자:\n${gridToStr(p.g)}`;
+  },
+  rowsum(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const out=[];
+    for(let i=0;i<p.R;i++) out.push(`${i}행: ${p.g[i].reduce((a,b)=>a+b,0)}`);
+    return out.join('\n');
+  },
+  colsum(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const out=[];
+    for(let j=0;j<p.C;j++){
+      let s=0; for(let i=0;i<p.R;i++) s+=p.g[i][j];
+      out.push(`${j}열: ${s}`);
+    }
+    return out.join('\n');
+  },
+  maxpos(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    let mv=p.g[0][0], mr=0, mc=0;
+    for(let i=0;i<p.R;i++)for(let j=0;j<p.C;j++){
+      if(p.g[i][j]>mv){mv=p.g[i][j];mr=i;mc=j;}
+    }
+    return `최댓값: ${mv}\n위치: arr[${mr}][${mc}]`;
+  },
+  transpose(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const t=[];
+    for(let j=0;j<p.C;j++){
+      const row=[];
+      for(let i=0;i<p.R;i++) row.push(p.g[i][j]);
+      t.push(row);
+    }
+    return `원본 (${p.R}×${p.C}):\n${gridToStr(p.g)}\n\n전치 (${p.C}×${p.R}):\n${gridToStr(t)}`;
+  },
+  diagonal(stdin){
+    const p=readSquare(stdin); if(p.err)return{err:p.err};
+    let md=0, ad=0;
+    for(let i=0;i<p.N;i++){ md+=p.g[i][i]; ad+=p.g[i][p.N-1-i]; }
+    return `주대각선(i==j): ${md}\n부대각선(i+j==N-1): ${ad}`;
+  },
+  neighbors(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    const pos=(p.rest[0]||'').trim().split(/\s+/).map(Number);
+    if(pos.length<2||isNaN(pos[0])||isNaN(pos[1])) return {err:"마지막 줄에 '행 열'을 넣어주세요"};
+    const [r,c]=pos;
+    if(r<0||r>=p.R||c<0||c>=p.C) return {err:"위치가 격자를 벗어났어요"};
+    const dr=[-1,1,0,0], dc=[0,0,-1,1];
+    let sum=0; const parts=[];
+    for(let d=0;d<4;d++){
+      const nr=r+dr[d], nc=c+dc[d];
+      if(nr>=0&&nr<p.R&&nc>=0&&nc<p.C){ sum+=p.g[nr][nc]; parts.push(String(p.g[nr][nc])); }
+    }
+    return `arr[${r}][${c}]=${p.g[r][c]}의 이웃 합\n${parts.join(' + ')} = ${sum}`;
+  },
+  rotate(stdin){
+    const p=readGrid(stdin); if(p.err)return{err:p.err};
+    // 90 clockwise: new[j][R-1-i] = old[i][j]; result is C×R
+    const res=[];
+    for(let j=0;j<p.C;j++){
+      const row=[];
+      for(let i=p.R-1;i>=0;i--) row.push(p.g[i][j]);
+      res.push(row);
+    }
+    return `원본 (${p.R}×${p.C}):\n${gridToStr(p.g)}\n\n90도 회전 (${p.C}×${p.R}):\n${gridToStr(res)}`;
+  }
+};
+// ══════════════════════════════════════════════════ RUN
+function runIO(prefix){
+  const outEl=document.getElementById(prefix+'-out');
+  const inEl=document.getElementById(prefix+'-in');
+  const stdin = inEl ? inEl.value : '';
+  let simKey = prefix;
+  if(prefix==='pg') simKey = currentTemplate;
+  const fn = SIM[simKey];
+  if(!fn){ outEl.innerHTML='<span class="out-err">시뮬레이터를 찾을 수 없습니다</span>'; return; }
+  let result;
+  try{ result = fn(stdin); }
+  catch(e){ outEl.innerHTML='<span class="out-err">실행 오류: '+e.message+'</span>'; return; }
+  if(result && typeof result==='object' && result.err){
+    outEl.innerHTML='<span class="out-err">⚠ '+result.err+'</span>'; return;
+  }
+  outEl.textContent='';
+  const text=String(result);
+  let i=0;
+  (function type(){
+    if(i>text.length){return;}
+    outEl.textContent=text.slice(0,i);
+    i+=3;
+    if(i<=text.length+1) setTimeout(type, 10);
+    else outEl.textContent=text;
+  })();
+}
+// ══════════════════════════════════════════════════ TEMPLATES
+let currentTemplate='printgrid';
+const TEMPLATES = {
+  printgrid:{
+    title:'격자 그대로 출력', stdin:'2 3\n1 2 3\n4 5 6', hint:'1줄=행 열, 다음 줄들=격자 값',
+    c:`<span class="kw">int</span> R, C; <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>R, <span class="op">&amp;</span>C);
+<span class="kw">int</span> arr[<span class="nm">20</span>][<span class="nm">20</span>];
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>)
+  <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>)
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>arr[i][j]);
+<span class="cm">// 출력</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>) {
+  <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>)
+    <span class="fn">printf</span>(<span class="st">"%d "</span>, arr[i][j]);
+  <span class="fn">printf</span>(<span class="st">"\\n"</span>);
+}`,
+    py:`R, C <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+arr <span class="op">=</span> [<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>()))
+       <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(R)]
+<span class="kw">for</span> row <span class="kw">in</span> arr:
+    <span class="fn">print</span>(<span class="op">*</span>row)   <span class="cm"># 언팩으로 공백 출력</span>`
+  },
+  rowsum:{
+    title:'각 행의 합', stdin:'3 3\n1 2 3\n4 5 6\n7 8 9', hint:'각 가로줄의 합',
+    c:`<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>) {
+    <span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>)
+        sum <span class="op">+=</span> arr[i][j];
+    <span class="fn">printf</span>(<span class="st">"%d행: %d\\n"</span>, i, sum);
+}`,
+    py:`<span class="kw">for</span> i, row <span class="kw">in</span> <span class="fn">enumerate</span>(arr):
+    <span class="fn">print</span>(<span class="st">f"{i}행: {sum(row)}"</span>)
+    <span class="cm"># sum(row)로 한 행 합 즉시!</span>`
+  },
+  colsum:{
+    title:'각 열의 합', stdin:'3 3\n1 2 3\n4 5 6\n7 8 9', hint:'각 세로줄의 합 (반복 순서 주의!)',
+    c:`<span class="cm">// 열 고정, 행을 돌며 더함</span>
+<span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>) {
+    <span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>)
+        sum <span class="op">+=</span> arr[i][j];
+    <span class="fn">printf</span>(<span class="st">"%d열: %d\\n"</span>, j, sum);
+}`,
+    py:`<span class="cm"># zip으로 열을 묶어서!</span>
+<span class="kw">for</span> j, col <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="fn">zip</span>(<span class="op">*</span>arr)):
+    <span class="fn">print</span>(<span class="st">f"{j}열: {sum(col)}"</span>)
+<span class="cm"># zip(*arr)가 행렬을 열 단위로 전치</span>`
+  },
+  maxpos:{
+    title:'최댓값과 위치 찾기', stdin:'3 3\n3 7 2\n9 1 5\n4 8 6', hint:'가장 큰 값과 그 [행][열]',
+    c:`<span class="kw">int</span> mv <span class="op">=</span> arr[<span class="nm">0</span>][<span class="nm">0</span>], mr <span class="op">=</span> <span class="nm">0</span>, mc <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>)
+  <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>)
+    <span class="kw">if</span> (arr[i][j] <span class="op">&gt;</span> mv) {
+        mv <span class="op">=</span> arr[i][j];
+        mr <span class="op">=</span> i; mc <span class="op">=</span> j;
+    }
+<span class="fn">printf</span>(<span class="st">"최댓값 %d at [%d][%d]\\n"</span>, mv, mr, mc);`,
+    py:`mv <span class="op">=</span> arr[<span class="nm">0</span>][<span class="nm">0</span>]; mr <span class="op">=</span> mc <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(arr)):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(arr[<span class="nm">0</span>])):
+        <span class="kw">if</span> arr[i][j] <span class="op">&gt;</span> mv:
+            mv, mr, mc <span class="op">=</span> arr[i][j], i, j
+<span class="fn">print</span>(<span class="st">f"최댓값 {mv} at [{mr}][{mc}]"</span>)`
+  },
+  transpose:{
+    title:'행렬 전치 (행↔열)', stdin:'2 3\n1 2 3\n4 5 6', hint:'행과 열을 뒤바꿈 (R×C → C×R)',
+    c:`<span class="cm">// 전치: new[j][i] = old[i][j]</span>
+<span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>) {
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>R;i<span class="op">++</span>)
+        <span class="fn">printf</span>(<span class="st">"%d "</span>, arr[i][j]);
+    <span class="fn">printf</span>(<span class="st">"\\n"</span>);
+}`,
+    py:`<span class="cm"># zip(*arr)로 전치 한 방!</span>
+<span class="kw">for</span> col <span class="kw">in</span> <span class="fn">zip</span>(<span class="op">*</span>arr):
+    <span class="fn">print</span>(<span class="op">*</span>col)
+<span class="cm"># (1,4) (2,5) (3,6) 순으로 나옴</span>`
+  },
+  diagonal:{
+    title:'대각선 합', stdin:'3\n1 2 3\n4 5 6\n7 8 9', hint:'1줄=N (정사각), 주+부 대각선',
+    c:`<span class="kw">int</span> N; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>N);
+<span class="cm">// ... 입력 ...</span>
+<span class="kw">int</span> md <span class="op">=</span> <span class="nm">0</span>, ad <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>N;i<span class="op">++</span>) {
+    md <span class="op">+=</span> arr[i][i];        <span class="cm">// 주대각선</span>
+    ad <span class="op">+=</span> arr[i][N<span class="op">-</span><span class="nm">1</span><span class="op">-</span>i];  <span class="cm">// 부대각선</span>
+}
+<span class="fn">printf</span>(<span class="st">"주:%d 부:%d\\n"</span>, md, ad);`,
+    py:`N <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+arr <span class="op">=</span> [<span class="fn">list</span>(<span class="fn">map</span>(<span class="fn">int</span>,<span class="fn">input</span>().<span class="fn">split</span>())) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(N)]
+md <span class="op">=</span> <span class="fn">sum</span>(arr[i][i] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(N))
+ad <span class="op">=</span> <span class="fn">sum</span>(arr[i][N<span class="op">-</span><span class="nm">1</span><span class="op">-</span>i] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(N))
+<span class="fn">print</span>(md, ad)`
+  },
+  neighbors:{
+    title:'이웃 4방향 합', stdin:'3 3\n1 2 3\n4 5 6\n7 8 9\n1 1', hint:'마지막 줄=위치. 상하좌우 합',
+    c:`<span class="kw">int</span> dr[<span class="nm">4</span>]<span class="op">=</span>{<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>}, dc[<span class="nm">4</span>]<span class="op">=</span>{<span class="nm">0</span>,<span class="nm">0</span>,<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>};
+<span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> d<span class="op">=</span><span class="nm">0</span>;d<span class="op">&lt;</span><span class="nm">4</span>;d<span class="op">++</span>) {
+    <span class="kw">int</span> nr<span class="op">=</span>r<span class="op">+</span>dr[d], nc<span class="op">=</span>c<span class="op">+</span>dc[d];
+    <span class="kw">if</span> (nr<span class="op">&gt;=</span><span class="nm">0</span><span class="op">&amp;&amp;</span>nr<span class="op">&lt;</span>R<span class="op">&amp;&amp;</span>nc<span class="op">&gt;=</span><span class="nm">0</span><span class="op">&amp;&amp;</span>nc<span class="op">&lt;</span>C)
+        sum <span class="op">+=</span> arr[nr][nc];
+}
+<span class="fn">printf</span>(<span class="st">"이웃 합: %d\\n"</span>, sum);`,
+    py:`dr, dc <span class="op">=</span> [<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>], [<span class="nm">0</span>,<span class="nm">0</span>,<span class="op">-</span><span class="nm">1</span>,<span class="nm">1</span>]
+s <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> d <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">4</span>):
+    nr, nc <span class="op">=</span> r<span class="op">+</span>dr[d], c<span class="op">+</span>dc[d]
+    <span class="kw">if</span> <span class="nm">0</span><span class="op">&lt;=</span>nr<span class="op">&lt;</span>R <span class="kw">and</span> <span class="nm">0</span><span class="op">&lt;=</span>nc<span class="op">&lt;</span>C:
+        s <span class="op">+=</span> arr[nr][nc]
+<span class="fn">print</span>(<span class="st">f"이웃 합: {s}"</span>)`
+  },
+  rotate:{
+    title:'90도 회전', stdin:'2 3\n1 2 3\n4 5 6', hint:'시계방향 90도 (R×C → C×R)',
+    c:`<span class="cm">// 시계방향 90도</span>
+<span class="cm">// new[j][R-1-i] = old[i][j]</span>
+<span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span><span class="nm">0</span>;j<span class="op">&lt;</span>C;j<span class="op">++</span>) {
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span>R<span class="op">-</span><span class="nm">1</span>;i<span class="op">&gt;=</span><span class="nm">0</span>;i<span class="op">--</span>)
+        <span class="fn">printf</span>(<span class="st">"%d "</span>, arr[i][j]);
+    <span class="fn">printf</span>(<span class="st">"\\n"</span>);
+}`,
+    py:`<span class="cm"># zip + reversed로 90도 회전!</span>
+rotated <span class="op">=</span> [<span class="fn">list</span>(row) <span class="kw">for</span> row <span class="kw">in</span> <span class="fn">zip</span>(<span class="op">*</span>arr[::<span class="op">-</span><span class="nm">1</span>])]
+<span class="kw">for</span> row <span class="kw">in</span> rotated:
+    <span class="fn">print</span>(<span class="op">*</span>row)
+<span class="cm"># arr 뒤집고 zip = 시계방향 회전</span>`
+  }
+};
+function loadTemplate(){
+  const key=document.getElementById('pg-select').value;
+  currentTemplate=key;
+  const t=TEMPLATES[key];
+  document.getElementById('pg-c').innerHTML=t.c;
+  document.getElementById('pg-py').innerHTML=t.py;
+  document.getElementById('pg-title').textContent=t.title;
+  document.getElementById('pg-hint').textContent=t.hint;
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">실행 버튼을 눌러보세요...</span>';
+}
+function resetPgStdin(){
+  const t=TEMPLATES[currentTemplate];
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">입력을 초기화했어요...</span>';
+}
+// init
+loadTemplate();
+</script>
+</body>
+</html>
