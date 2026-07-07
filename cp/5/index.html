@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C 구조체배열 vs 파이썬 딕셔너리 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#A6339E;
+  --accent-light:#F7E8F6;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --keycol:#B33A9E;--valcol:#2A8C4A;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#382812);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'d[key] = value';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:28px;font-weight:700;color:rgba(255,255,255,.045);pointer-events:none;letter-spacing:.03em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:23px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.2}
+header h1 .cc{color:#5CC8F5} header h1 .pp{color:#78E89A}
+header p{font-size:13.5px;color:#A0906E;margin-top:6px}
+
+.tnav{background:var(--panel);border-bottom:2px solid var(--bdr);padding:0 34px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:13px 15px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{max-width:960px;margin:0 auto;padding:34px 22px 90px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:14px;margin-bottom:24px}
+.sh-icon{font-size:30px}
+.sh-info h2{font-size:19px;font-weight:900;line-height:1.2}
+.sh-info p{font-size:13px;opacity:.78;margin-top:2px}
+
+.step{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--soft);border-bottom:1.5px solid var(--bdr)}
+.step-badge{font-family:var(--mono);font-size:13px;font-weight:700;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.step-title{font-size:16px;font-weight:900;color:var(--ink)}
+.step-sub{font-size:12px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.step-body{padding:20px 24px}
+.step-body p{font-size:15px;color:var(--ink2);line-height:1.85;margin-bottom:12px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--ink)}
+.step-body .hl{background:#FFF2CC;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.step-body .cw{font-family:var(--mono);color:var(--c-color);font-weight:700}
+.step-body .pw{font-family:var(--mono);color:var(--py-color);font-weight:700}
+
+/* dict key-value visualization */
+.dict-viz{margin:16px 0;display:flex;flex-direction:column;gap:6px}
+.dict-title{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:4px;font-family:var(--mono)}
+.kv-row{display:flex;align-items:center;gap:0;font-family:var(--mono);font-weight:700;font-size:14px}
+.kv-key{background:#F7E8F6;border:2px solid var(--keycol);color:var(--keycol);border-radius:8px 0 0 8px;padding:8px 16px;min-width:90px;text-align:center}
+.kv-link{width:22px;height:2px;background:var(--ink3);position:relative}
+.kv-link::after{content:'▶';position:absolute;right:-4px;top:-8px;font-size:10px;color:var(--ink3)}
+.kv-val{background:#E5F5EA;border:2px solid var(--valcol);color:var(--valcol);border-radius:0 8px 8px 0;padding:8px 16px;min-width:70px;text-align:center;border-left:none}
+.kv-row.hi .kv-key{background:#FFF7E0;border-color:var(--out);color:var(--out)}
+.kv-row.hi .kv-val{background:#FFF7E0;border-color:var(--out);color:var(--out)}
+
+.cmp-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.cmp-col{border-radius:12px;overflow:hidden;border:1.5px solid var(--bdr)}
+.cmp-col-head{font-family:var(--mono);font-size:12px;font-weight:700;padding:9px 14px;color:#fff;display:flex;align-items:center;gap:6px}
+.cmp-col.c .cmp-col-head{background:var(--c-color)}
+.cmp-col.py .cmp-col-head{background:var(--py-color)}
+.cmp-code{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--code-bg);color:#D8CAB0;padding:14px 16px;overflow-x:auto;white-space:pre;min-height:60px}
+
+.syn-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.syn-table th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--bdr);background:var(--soft)}
+.syn-table th.c-col{color:var(--c-color)} .syn-table th.py-col{color:var(--py-color)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.syn-table td.label{font-weight:700;color:var(--ink2);font-size:13px}
+.syn-table td.code{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.syn-table td.code.c-bg{background:rgba(11,110,153,.05)}
+.syn-table td.code.py-bg{background:rgba(42,140,74,.05)}
+.syn-table tr:hover td{background:rgba(0,0,0,.015)}
+
+.pg{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.pg-head{background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pg-head .pt{color:#FFF9F0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.lang-tabs{display:flex;gap:6px}
+.ltab{font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 16px;border-radius:7px;border:none;cursor:pointer;transition:background .15s,color .15s}
+.ltab-c{background:rgba(11,110,153,.25);color:#5CC8F5}
+.ltab-c.on{background:var(--c-color);color:#fff}
+.ltab-py{background:rgba(42,140,74,.25);color:#78E89A}
+.ltab-py.on{background:var(--py-color);color:#fff}
+.pg-body{padding:20px 22px}
+
+.code-wrap{position:relative;margin-bottom:16px}
+.code-block{font-family:var(--mono);font-size:13.5px;line-height:1.8;background:var(--code-bg);color:#D8CAB0;border-radius:10px;padding:18px 20px;overflow-x:auto;white-space:pre;display:none;border:1.5px solid #2C2C3A}
+.code-block.on{display:block}
+.kw{color:#FF8A5C} .fn{color:#FFD37A} .cm{color:#5E5E72;font-style:italic}
+.nm{color:#9AEEB4} .st{color:#A8D8FF} .pp{color:#FF9FCC} .tp{color:#84E2FF} .op{color:#FF9868}
+.copy-btn{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;background:#2C2C3A;color:#9090B0;border:1px solid #40405A;border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#fff}
+
+.line-explain{background:var(--soft);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px}
+.lex{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+.lex-code{font-family:var(--mono);font-weight:700;color:var(--accent);min-width:150px;font-size:13px}
+.lex-desc{color:var(--ink2);line-height:1.7}
+
+.io-console{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.io-panel{border-radius:10px;overflow:hidden;border:1.5px solid var(--bdr)}
+.io-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:8px 14px;display:flex;align-items:center;gap:6px}
+.io-label.stdin{background:var(--c-light);color:var(--c-color)}
+.io-label.stdout{background:#FBF3D8;color:var(--out)}
+.stdin-area{width:100%;font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#8CD9FF;border:none;padding:14px 16px;line-height:1.8;resize:vertical;min-height:80px;outline:none;display:block}
+.stdin-area:focus{box-shadow:inset 0 0 0 2px rgba(11,110,153,.4)}
+.stdout-area{font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#B8F0C8;padding:14px 16px;line-height:1.8;min-height:80px;white-space:pre-wrap;word-break:break-word;overflow-y:auto}
+.stdout-area .out-dim{color:#4A5060}
+.stdout-area .out-err{color:#FF8080}
+
+.run-bar{display:flex;align-items:center;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+.run-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:9px;border:none;cursor:pointer;color:#fff;background:var(--accent);transition:filter .15s,transform .1s;display:flex;align-items:center;gap:7px}
+.run-btn:active{transform:scale(.96)} .run-btn:hover{filter:brightness(1.12)}
+.run-hint{font-size:12.5px;color:var(--ink3)}
+.reset-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);cursor:pointer;background:var(--panel);color:var(--ink2);transition:background .15s}
+.reset-btn:hover{background:var(--soft)}
+
+.tip{font-size:14px;color:var(--ink2);background:rgba(166,51,158,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;line-height:1.8}
+.tip strong{color:var(--ink)}
+.tip code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+
+.warn-box{font-size:14px;color:var(--ink2);background:#FDF0E8;border:1.5px solid #F0C0A0;border-radius:10px;padding:14px 18px;margin-top:14px;line-height:1.8}
+.warn-box strong{color:var(--ng)}
+.warn-box code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--ng)}
+
+@media(max-width:680px){
+  header{padding:20px 18px 16px}
+  .tnav{padding:0 10px}
+  main{padding:20px 12px 70px}
+  .step-body,.pg-body{padding:16px 14px}
+  .io-console,.cmp-2col{grid-template-columns:1fr}
+  .lex-code{min-width:110px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 자료구조 기초 · 딕셔너리</div>
+  <h1><span class="cc">C 구조체배열</span> vs <span class="pp">파이썬 딕셔너리</span> — 메소드 직접 구현 비교</h1>
+  <p>파이썬 딕셔너리 메소드를 C 배열+선형탐색으로 직접 구현하며 내부 동작을 이해하세요</p>
+</header>
+
+<nav class="tnav">
+  <button class="tbtn on" onclick="goSec('s0',this)">🚀 시작하기 (개념 차이)</button>
+  <button class="tbtn" onclick="goSec('s1',this)">① 기본 (만들기·접근)</button>
+  <button class="tbtn" onclick="goSec('s2',this)">② 조회 · 존재확인</button>
+  <button class="tbtn" onclick="goSec('s3',this)">③ 추가 · 삭제</button>
+  <button class="tbtn" onclick="goSec('s4',this)">④ 순회 · 활용</button>
+  <button class="tbtn" onclick="goSec('s5',this)">⑤ 플레이그라운드</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ S0: 시작하기 ══════════════ -->
+<div id="s0" class="sec on">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(166,51,158,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🚀</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">시작하기 — 딕셔너리란?</h2><p>번호가 아니라 "이름표(키)"로 값을 찾는 자료구조</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">리스트와 무엇이 다를까?</span><span class="step-sub">번호 vs 이름표</span></div>
+    <div class="step-body">
+      <p>리스트는 <strong>번호(인덱스)</strong>로 값을 찾아요. 딕셔너리는 <strong>이름표(키)</strong>로 값을 찾아요!</p>
+      <table class="syn-table">
+        <thead><tr><th>비교</th><th>리스트 (list)</th><th style="color:var(--accent)">딕셔너리 (dict)</th></tr></thead>
+        <tbody>
+          <tr><td class="label">찾는 방법</td><td class="code">a[0], a[1] (번호)</td><td class="code">d["사과"] (이름)</td></tr>
+          <tr><td class="label">저장 형태</td><td>값만 순서대로</td><td><strong>키:값</strong> 짝으로</td></tr>
+          <tr><td class="label">예시</td><td class="code">[90, 85, 70]</td><td class="code">{"국어":90, "수학":85}</td></tr>
+          <tr><td class="label">쓰는 때</td><td>순서가 중요할 때</td><td>이름으로 빠르게 찾을 때</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>딕셔너리 = 사전!</strong> 영어 사전에서 단어(키)로 뜻(값)을 찾듯이,<br>
+      <code>d["apple"]</code>로 "사과"를 찾아요. 번호를 몰라도 이름만 알면 바로 찾죠!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">딕셔너리는 어떻게 생겼나?</span><span class="step-sub">키 → 값</span></div>
+    <div class="step-body">
+      <p>딕셔너리는 <strong>키(key)</strong>와 <strong>값(value)</strong>이 짝을 이뤄요. 키로 값을 바로 찾을 수 있어요!</p>
+      <div class="dict-viz">
+        <div class="dict-title">scores = {"국어": 90, "수학": 85, "영어": 70}</div>
+        <div class="kv-row"><span class="kv-key">"국어"</span><span class="kv-link"></span><span class="kv-val">90</span></div>
+        <div class="kv-row hi"><span class="kv-key">"수학"</span><span class="kv-link"></span><span class="kv-val">85</span></div>
+        <div class="kv-row"><span class="kv-key">"영어"</span><span class="kv-link"></span><span class="kv-val">70</span></div>
+      </div>
+      <p><span class="hl">scores["수학"]</span>이라고 쓰면 "수학"이라는 키에 연결된 값 <strong>85</strong>가 바로 나와요!</p>
+      <div class="warn-box">⚠️ <strong>키는 중복될 수 없어요!</strong> 같은 키에 값을 또 넣으면 <strong>덮어써져요.</strong><br>
+      <code>d["국어"]=90</code> 후 <code>d["국어"]=100</code>이면 90은 사라지고 100만 남아요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">3</span><span class="step-title">C에는 딕셔너리가 없다!</span><span class="step-sub">배열로 흉내</span></div>
+    <div class="step-body">
+      <p>C에는 딕셔너리가 <strong>기본으로 없어요.</strong> 그래서 <strong>키 배열 + 값 배열</strong>을 나란히 두고,<br>
+      키를 찾을 땐 <strong>처음부터 하나씩 비교(선형 탐색)</strong>해요.</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 키/값 병렬 배열</div><div class="cmp-code">char keys[100][20];  // 키들
+int  vals[100];      // 값들
+int  size = 0;       // 개수
+
+// "수학" 찾기 = keys를 훑어
+// 같은 키의 위치 i를 찾고 vals[i]</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 딕셔너리</div><div class="cmp-code">d = {}   # 빈 딕셔너리
+
+d["수학"] = 85
+
+# 키로 바로 접근!
+# 탐색을 파이썬이 알아서</div></div>
+      </div>
+      <div class="tip">💡 <strong>이 페이지의 핵심:</strong> 파이썬이 <code>d["수학"]</code> 한 번에 찾는 걸,<br>
+      C는 <strong>배열을 처음부터 훑어 키를 비교</strong>해야 해요. 이 "선형 탐색"이 딕셔너리 내부의 비밀입니다! 🔑<br>
+      (진짜 딕셔너리는 '해시'로 더 빠르지만, 원리 이해엔 선형 탐색이 딱이에요.)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: 기본 ══════════════ -->
+<div id="s1" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(166,51,158,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">📖</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">기본 — 만들기·접근·수정</h2><p>키로 값을 넣고, 읽고, 바꾸기</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">만들기와 접근</span><span class="step-sub">d[key]</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>동작</th><th class="c-col">C (키/값 배열)</th><th class="py-col">파이썬 딕셔너리</th></tr></thead>
+        <tbody>
+          <tr><td class="label">만들기</td><td class="code c-bg">char k[100][20]; int v[100];</td><td class="code py-bg">d = {}</td></tr>
+          <tr><td class="label">값 넣기</td><td class="code c-bg">strcpy(k[0],"수학"); v[0]=85;</td><td class="code py-bg">d["수학"] = 85</td></tr>
+          <tr><td class="label">값 읽기</td><td class="code c-bg">find("수학") → v[i]</td><td class="code py-bg">d["수학"]  # 85</td></tr>
+          <tr><td class="label">값 수정</td><td class="code c-bg">v[i] = 100;</td><td class="code py-bg">d["수학"] = 100</td></tr>
+          <tr><td class="label">개수</td><td class="code c-bg">size 변수</td><td class="code py-bg">len(d)</td></tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>없는 키 접근 주의!</strong> 파이썬에서 <code>d["없는키"]</code>는 <strong>KeyError</strong> 오류가 나요.<br>
+      안전하게 찾으려면 <code>d.get("키")</code>를 쓰면 없을 때 None을 돌려줘요. (다음 탭에서!)</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 과목별 점수 딕셔너리 만들기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('d1','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('d1','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="d1-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span> keys[<span class="nm">100</span>][<span class="nm">20</span>];
+    <span class="kw">int</span> vals[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+        <span class="fn">scanf</span>(<span class="st">"%s %d"</span>, keys[size], <span class="op">&amp;</span>vals[size]);
+        size<span class="op">++</span>;        <span class="cm">// d[key]=val 직접 구현</span>
+    }
+    <span class="cm">// 전체 출력</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> size; i<span class="op">++</span>)
+        <span class="fn">printf</span>(<span class="st">"%s: %d\n"</span>, keys[i], vals[i]);
+    <span class="fn">printf</span>(<span class="st">"과목 수: %d\n"</span>, size);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="d1-py"><span class="cm"># 과목별 점수 딕셔너리</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+d <span class="op">=</span> {}                <span class="cm"># 빈 딕셔너리</span>
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+    key, val <span class="op">=</span> <span class="fn">input</span>().<span class="fn">split</span>()
+    d[key] <span class="op">=</span> <span class="fn">int</span>(val)  <span class="cm"># 키:값 저장</span>
+
+<span class="kw">for</span> key, val <span class="kw">in</span> d.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"{key}: {val}"</span>)
+<span class="fn">print</span>(<span class="st">f"과목 수: {len(d)}"</span>)</pre>
+        <button class="copy-btn" id="d1-copy" onclick="doCopy('d1')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: keys[]/vals[]</span><span class="lex-desc">키와 값을 두 배열에 나란히 저장</span></div>
+        <div class="lex"><span class="lex-code">Py: d[key]=int(val)</span><span class="lex-desc">키:값 짝을 한 줄로! size 관리 자동</span></div>
+        <div class="lex"><span class="lex-code">Py: d.items()</span><span class="lex-desc">키와 값을 짝으로 순회 (C는 인덱스로)</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('d1')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('d1','3\n국어 90\n수학 85\n영어 70')">↺ 입력 초기화</button>
+        <span class="run-hint">1줄=개수, 이후 각 줄=키 값 (공백 구분)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="d1-in" spellcheck="false" style="min-height:100px">3
+국어 90
+수학 85
+영어 70</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="d1-out" style="min-height:100px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 파이썬 <code>d[key]=val</code>은 <strong>키가 이미 있으면 수정, 없으면 추가</strong>예요. C에서는 "이미 있는지 먼저 찾고" 분기해야 해요 (다음 탭에서!).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S2: 조회 · 존재확인 ══════════════ -->
+<div id="s2" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.1),transparent);border-left:5px solid var(--c-color)">
+    <div class="sh-icon">🔍</div>
+    <div class="sh-info"><h2 style="color:var(--c-color)">조회 · 존재확인</h2><p>get · in · keys · values — C는 선형 탐색으로</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">1</span><span class="step-title">키 찾기의 핵심 — findKey()</span><span class="step-sub">선형 탐색</span></div>
+    <div class="step-body">
+      <p>C 딕셔너리의 모든 동작은 <strong>"키가 몇 번째에 있나?"</strong>를 찾는 데서 시작해요. 이걸 함수로 만들어요!</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — findKey 직접 구현</div><div class="cmp-code">// 키를 찾아 위치 반환 (없으면 -1)
+int findKey(char target[]) {
+    for (int i = 0; i < size; i++) {
+        if (strcmp(keys[i], target) == 0)
+            return i;   // 찾음!
+    }
+    return -1;          // 없음
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 필요 없음</div><div class="cmp-code"># 파이썬은 내부에서 자동!
+d["수학"]        # 바로 접근
+"수학" in d      # 존재 확인
+
+# 탐색을 직접 짤 필요 없음</div></div>
+      </div>
+      <div class="tip">💡 <code>strcmp(a,b)==0</code>은 <strong>두 문자열이 같다</strong>는 뜻이에요. C에서 문자열 비교는 <code>==</code>가 아니라 <code>strcmp</code>를 써야 해요! 이 findKey가 있으면 get·in·수정·삭제를 모두 만들 수 있어요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">2</span><span class="step-title">get · in — 안전하게 조회</span><span class="step-sub">없어도 OK</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>하고 싶은 것</th><th class="py-col">파이썬</th><th class="c-col">C (findKey 활용)</th></tr></thead>
+        <tbody>
+          <tr><td class="label">값 조회</td><td class="code py-bg">d["수학"]</td><td class="code c-bg">vals[findKey("수학")]</td></tr>
+          <tr><td class="label">안전 조회</td><td class="code py-bg">d.get("수학", 0)</td><td class="code c-bg">i&lt;0 ? 0 : vals[i]</td></tr>
+          <tr><td class="label">존재 확인</td><td class="code py-bg">"수학" in d</td><td class="code c-bg">findKey("수학") &gt;= 0</td></tr>
+          <tr><td class="label">키 목록</td><td class="code py-bg">d.keys()</td><td class="code c-bg">keys[0..size-1]</td></tr>
+          <tr><td class="label">값 목록</td><td class="code py-bg">d.values()</td><td class="code c-bg">vals[0..size-1]</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <code>d.get("키", 기본값)</code>은 키가 없어도 오류 대신 <strong>기본값</strong>을 돌려줘요. 빈도수 세기 같은 곳에서 아주 유용해요! (④번 탭에서 활용)</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 이름으로 점수 조회 (있으면 점수, 없으면 안내)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('d2','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('d2','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="d2-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="kw">char</span> keys[<span class="nm">100</span>][<span class="nm">20</span>]; <span class="kw">int</span> vals[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+
+<span class="kw">int</span> <span class="fn">findKey</span>(<span class="kw">char</span> t[]) {
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> size; i<span class="op">++</span>)
+        <span class="kw">if</span> (<span class="fn">strcmp</span>(keys[i], t) <span class="op">==</span> <span class="nm">0</span>) <span class="kw">return</span> i;
+    <span class="kw">return</span> <span class="op">-</span><span class="nm">1</span>;   <span class="cm">// 없음</span>
+}
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+        <span class="fn">scanf</span>(<span class="st">"%s %d"</span>, keys[size], <span class="op">&amp;</span>vals[size]); size<span class="op">++</span>;
+    }
+    <span class="kw">char</span> q[<span class="nm">20</span>]; <span class="fn">scanf</span>(<span class="st">"%s"</span>, q);
+    <span class="kw">int</span> idx <span class="op">=</span> <span class="fn">findKey</span>(q);   <span class="cm">// 선형 탐색</span>
+    <span class="kw">if</span> (idx <span class="op">&gt;=</span> <span class="nm">0</span>) <span class="fn">printf</span>(<span class="st">"%s: %d\n"</span>, q, vals[idx]);
+    <span class="kw">else</span> <span class="fn">printf</span>(<span class="st">"%s 없음\n"</span>, q);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="d2-py"><span class="cm"># 이름으로 점수 조회</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+d <span class="op">=</span> {}
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+    key, val <span class="op">=</span> <span class="fn">input</span>().<span class="fn">split</span>()
+    d[key] <span class="op">=</span> <span class="fn">int</span>(val)
+
+q <span class="op">=</span> <span class="fn">input</span>()
+<span class="kw">if</span> q <span class="kw">in</span> d:            <span class="cm"># 존재 확인</span>
+    <span class="fn">print</span>(<span class="st">f"{q}: {d[q]}"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"{q} 없음"</span>)
+
+<span class="cm"># 한 줄로: print(d.get(q, f"{q} 없음"))</span></pre>
+        <button class="copy-btn" id="d2-copy" onclick="doCopy('d2')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: findKey(q)</span><span class="lex-desc">배열을 훑어 키 위치를 찾음 (없으면 -1)</span></div>
+        <div class="lex"><span class="lex-code">Py: q in d</span><span class="lex-desc">한 단어로 존재 확인! 내부는 똑같은 탐색</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('d2')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('d2','3\n국어 90\n수학 85\n영어 70\n수학')">↺ 입력 초기화</button>
+        <span class="run-hint">마지막 줄에 찾을 이름. '과학'처럼 없는 것도!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="d2-in" spellcheck="false" style="min-height:120px">3
+국어 90
+수학 85
+영어 70
+수학</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="d2-out" style="min-height:120px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S3: 추가 · 삭제 ══════════════ -->
+<div id="s3" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(42,140,74,.1),transparent);border-left:5px solid var(--py-color)">
+    <div class="sh-icon">✏️</div>
+    <div class="sh-info"><h2 style="color:var(--py-color)">추가 · 삭제</h2><p>d[k]=v · del · pop — C는 있는지 먼저 확인</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--py-color)">1</span><span class="step-title">추가 vs 수정 — 같은 문법!</span><span class="step-sub">d[k]=v</span></div>
+    <div class="step-body">
+      <p>파이썬에서 <span class="pw">d[key]=val</span>은 <strong>키가 없으면 추가, 있으면 수정</strong>이에요. C에서는 이 둘을 직접 나눠야 해요.</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 직접 구현</div><div class="cmp-code">int i = findKey(key);
+if (i >= 0) {
+    vals[i] = val;   // 있으면 수정
+} else {
+    strcpy(keys[size], key);
+    vals[size] = val;
+    size++;          // 없으면 추가
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 내장</div><div class="cmp-code">d[key] = val
+
+# 있으면 수정, 없으면 추가
+# 알아서 판단!</div></div>
+      </div>
+      <div class="warn-box">⚠️ <strong>키 중복 = 덮어쓰기!</strong> <code>d["국어"]=90</code> 후 <code>d["국어"]=100</code>이면<br>
+      새 항목이 생기는 게 아니라 <strong>90이 100으로 바뀌어요.</strong> 딕셔너리 키는 항상 유일해요.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--py-color)">2</span><span class="step-title">del · pop — 키로 삭제</span><span class="step-sub">찾고 당기기</span></div>
+    <div class="step-body">
+      <p>삭제는 <strong>키를 찾은 뒤, 그 자리를 없애고 뒤 원소를 당겨요</strong> (리스트 삭제와 같은 원리!).</p>
+      <div class="cmp-2col">
+        <div class="cmp-col c"><div class="cmp-col-head">🔵 C — 직접 구현</div><div class="cmp-code">int i = findKey(key);
+if (i >= 0) {
+    for (int j = i; j < size-1; j++) {
+        strcpy(keys[j], keys[j+1]);
+        vals[j] = vals[j+1];   // 당기기
+    }
+    size--;
+}</div></div>
+        <div class="cmp-col py"><div class="cmp-col-head">🟢 Python — 내장</div><div class="cmp-code">del d[key]        # 키로 삭제
+# 또는
+v = d.pop(key)    # 삭제+값 반환</div></div>
+      </div>
+      <div class="tip">💡 <code>del d[k]</code>는 그냥 삭제, <code>d.pop(k)</code>는 <strong>삭제하면서 그 값을 돌려줘요.</strong> 없는 키를 지우려 하면 둘 다 오류가 나니, <code>d.pop(k, 기본값)</code>으로 안전하게!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 점수 추가/수정 후 특정 키 삭제</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('d3','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('d3','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="d3-c"><span class="cm">// findKey는 위와 동일하다고 가정</span>
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+        <span class="kw">char</span> k[<span class="nm">20</span>]; <span class="kw">int</span> v;
+        <span class="fn">scanf</span>(<span class="st">"%s %d"</span>, k, <span class="op">&amp;</span>v);
+        <span class="kw">int</span> idx <span class="op">=</span> <span class="fn">findKey</span>(k);
+        <span class="kw">if</span> (idx <span class="op">&gt;=</span> <span class="nm">0</span>) vals[idx] <span class="op">=</span> v;   <span class="cm">// 수정</span>
+        <span class="kw">else</span> { <span class="fn">strcpy</span>(keys[size],k); vals[size]<span class="op">=</span>v; size<span class="op">++</span>; }
+    }
+    <span class="kw">char</span> del[<span class="nm">20</span>]; <span class="fn">scanf</span>(<span class="st">"%s"</span>, del);
+    <span class="kw">int</span> di <span class="op">=</span> <span class="fn">findKey</span>(del);         <span class="cm">// 삭제</span>
+    <span class="kw">if</span> (di <span class="op">&gt;=</span> <span class="nm">0</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> di; j <span class="op">&lt;</span> size<span class="op">-</span><span class="nm">1</span>; j<span class="op">++</span>) {
+            <span class="fn">strcpy</span>(keys[j],keys[j<span class="op">+</span><span class="nm">1</span>]); vals[j]<span class="op">=</span>vals[j<span class="op">+</span><span class="nm">1</span>];
+        }
+        size<span class="op">--</span>;
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>) <span class="fn">printf</span>(<span class="st">"%s:%d\n"</span>,keys[i],vals[i]);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="d3-py"><span class="cm"># 추가/수정 후 삭제</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+d <span class="op">=</span> {}
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+    k, v <span class="op">=</span> <span class="fn">input</span>().<span class="fn">split</span>()
+    d[k] <span class="op">=</span> <span class="fn">int</span>(v)     <span class="cm"># 추가 or 수정</span>
+
+target <span class="op">=</span> <span class="fn">input</span>()
+<span class="kw">if</span> target <span class="kw">in</span> d:
+    <span class="kw">del</span> d[target]     <span class="cm"># 삭제</span>
+
+<span class="kw">for</span> k, v <span class="kw">in</span> d.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"{k}:{v}"</span>)</pre>
+        <button class="copy-btn" id="d3-copy" onclick="doCopy('d3')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">C: findKey로 분기</span><span class="lex-desc">있으면 수정, 없으면 추가를 직접 나눔</span></div>
+        <div class="lex"><span class="lex-code">Py: d[k]=v</span><span class="lex-desc">추가·수정을 자동 판단! 한 줄로 끝</span></div>
+        <div class="lex"><span class="lex-code">C: 삭제 시 당기기</span><span class="lex-desc">뒤 원소를 앞으로 옮겨 빈틈 메움</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('d3')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('d3','4\n국어 90\n수학 85\n국어 100\n영어 70\n수학')">↺ 입력 초기화</button>
+        <span class="run-hint">국어가 90→100 수정됨에 주목! 마지막=삭제할 키</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="d3-in" spellcheck="false" style="min-height:140px">4
+국어 90
+수학 85
+국어 100
+영어 70
+수학</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="d3-out" style="min-height:140px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 입력에서 "국어"가 두 번 나오죠? 두 번째 <code>국어 100</code>이 첫 90을 <strong>덮어써요.</strong> 그래서 결과엔 국어가 100으로 한 번만 나와요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S4: 순회 · 활용 ══════════════ -->
+<div id="s4" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(184,134,11,.12),transparent);border-left:5px solid var(--out)">
+    <div class="sh-icon">🔄</div>
+    <div class="sh-info"><h2 style="color:var(--out)">순회 · 활용</h2><p>items 순회 · 빈도수 세기 — 딕셔너리의 대표 활용</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--out)">1</span><span class="step-title">딕셔너리 순회</span><span class="step-sub">키·값 짝으로</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>순회 방법</th><th class="py-col">파이썬</th><th class="c-col">C</th></tr></thead>
+        <tbody>
+          <tr><td class="label">키만</td><td class="code py-bg">for k in d:</td><td class="code c-bg">for i: keys[i]</td></tr>
+          <tr><td class="label">값만</td><td class="code py-bg">for v in d.values():</td><td class="code c-bg">for i: vals[i]</td></tr>
+          <tr><td class="label">키+값</td><td class="code py-bg">for k,v in d.items():</td><td class="code c-bg">for i: keys[i],vals[i]</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 C에서는 결국 <strong>인덱스 i로 keys[i]와 vals[i]를 함께</strong> 보는 거예요. 파이썬 <code>items()</code>가 하는 일과 똑같아요!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 글자 빈도수 세기 (딕셔너리의 대표 활용!)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('d4','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('d4','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="d4-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span> s[<span class="nm">200</span>]; <span class="fn">scanf</span>(<span class="st">"%s"</span>, s);
+    <span class="kw">char</span> keys[<span class="nm">100</span>]; <span class="kw">int</span> cnt[<span class="nm">100</span>], size <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; s[i]; i<span class="op">++</span>) {
+        <span class="kw">int</span> idx <span class="op">=</span> <span class="op">-</span><span class="nm">1</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">0</span>; j <span class="op">&lt;</span> size; j<span class="op">++</span>)  <span class="cm">// findKey</span>
+            <span class="kw">if</span> (keys[j] <span class="op">==</span> s[i]) { idx <span class="op">=</span> j; <span class="kw">break</span>; }
+        <span class="kw">if</span> (idx <span class="op">&gt;=</span> <span class="nm">0</span>) cnt[idx]<span class="op">++</span>;       <span class="cm">// 있으면 +1</span>
+        <span class="kw">else</span> { keys[size]<span class="op">=</span>s[i]; cnt[size]<span class="op">=</span><span class="nm">1</span>; size<span class="op">++</span>; }
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>)
+        <span class="fn">printf</span>(<span class="st">"%c: %d\n"</span>, keys[i], cnt[i]);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="d4-py"><span class="cm"># 글자 빈도수 — 딕셔너리 대표 예제!</span>
+s <span class="op">=</span> <span class="fn">input</span>()
+count <span class="op">=</span> {}
+<span class="kw">for</span> ch <span class="kw">in</span> s:
+    <span class="kw">if</span> ch <span class="kw">in</span> count:
+        count[ch] <span class="op">+=</span> <span class="nm">1</span>    <span class="cm"># 있으면 +1</span>
+    <span class="kw">else</span>:
+        count[ch] <span class="op">=</span> <span class="nm">1</span>     <span class="cm"># 없으면 1로 시작</span>
+
+<span class="kw">for</span> ch, c <span class="kw">in</span> count.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"{ch}: {c}"</span>)
+
+<span class="cm"># 더 짧게: count[ch] = count.get(ch, 0) + 1</span></pre>
+        <button class="copy-btn" id="d4-copy" onclick="doCopy('d4')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">"있으면 +1, 없으면 1"</span><span class="lex-desc">빈도수 세기의 핵심 패턴</span></div>
+        <div class="lex"><span class="lex-code">Py: count.get(ch,0)+1</span><span class="lex-desc">get으로 없으면 0에서 시작 — 한 줄로!</span></div>
+        <div class="lex"><span class="lex-code">C: 선형 탐색으로 findKey</span><span class="lex-desc">글자가 이미 있는지 매번 훑어 확인</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('d4')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('d4','banana')">↺ 입력 초기화</button>
+        <span class="run-hint">banana → b:1 a:3 n:2. 다른 단어도 넣어보세요!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="d4-in" spellcheck="false">banana</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="d4-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <strong>빈도수 세기</strong>는 딕셔너리가 가장 빛나는 활용이에요! 키(글자)마다 값(개수)을 저장하니, 리스트로는 번거로운 일이 딕셔너리론 간단해져요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S5: 플레이그라운드 ══════════════ -->
+<div id="s5" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.08),rgba(42,140,74,.08));border-left:5px solid var(--accent)">
+    <div class="sh-icon">🎮</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">플레이그라운드</h2><p>딕셔너리 메소드를 골라 C 직접구현과 비교하며 실행하세요</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">▶</span><span class="step-title">메소드 선택 & 실험</span><span class="step-sub">골라서 실행</span></div>
+    <div class="step-body">
+      <p>파이썬 메소드를 선택하면 C 직접구현과 파이썬 코드가 나란히 바뀌어요. STDIN을 수정하고 실행해 동작을 관찰하세요!</p>
+      <div class="run-bar">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2)">메소드:</span>
+        <select id="pg-select" onchange="loadTemplate()" style="font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 14px;border:2px solid var(--bdr);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;outline:none">
+          <option value="setget">d[k]=v / d[k] — 저장·조회</option>
+          <option value="get">get — 안전 조회</option>
+          <option value="contains">in — 키 존재 확인</option>
+          <option value="delkey">del — 키 삭제</option>
+          <option value="pop">pop — 삭제+반환</option>
+          <option value="keys">keys / values — 목록</option>
+          <option value="freq">빈도수 세기 (get 활용)</option>
+          <option value="maxval">최고값 키 찾기</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🎮 <span id="pg-title">d[k]=v / d[k] — 저장·조회</span></div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('pg','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('pg','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+        <pre class="code-block on" id="pg-c"></pre>
+        <pre class="code-block" id="pg-py"></pre>
+        <button class="copy-btn" id="pg-copy" onclick="doCopy('pg')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('pg')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetPgStdin()">↺ 입력 초기화</button>
+        <span class="run-hint" id="pg-hint">STDIN을 수정하고 실행해보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="pg-in" spellcheck="false" style="min-height:120px"></textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="pg-out" style="min-height:120px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip" id="pg-tip">💡 파이썬 한 줄 메소드가 C에서는 선형 탐색 반복문으로 구현돼요. 두 코드를 번갈아 보며 내부 동작을 이해하세요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════ NAV
+function goSec(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ══════════════════════════════════════════════════ LANG SWITCH
+function switchLang(prefix, lang, btn){
+  const cBlock=document.getElementById(prefix+'-c');
+  const pyBlock=document.getElementById(prefix+'-py');
+  const head=btn.closest('.pg-head');
+  const cBtn=head.querySelector('.ltab-c');
+  const pyBtn=head.querySelector('.ltab-py');
+  if(lang==='c'){
+    cBlock.classList.add('on'); pyBlock.classList.remove('on');
+    cBtn.classList.add('on'); pyBtn.classList.remove('on');
+  } else {
+    pyBlock.classList.add('on'); cBlock.classList.remove('on');
+    pyBtn.classList.add('on'); cBtn.classList.remove('on');
+  }
+}
+// ══════════════════════════════════════════════════ COPY
+function doCopy(prefix){
+  const active=document.querySelector('#'+prefix+'-c.on, #'+prefix+'-py.on');
+  if(!active)return;
+  navigator.clipboard.writeText(active.innerText).then(()=>{
+    const btn=document.getElementById(prefix+'-copy');
+    btn.textContent='✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='복사'; btn.classList.remove('copied');},1800);
+  });
+}
+// ══════════════════════════════════════════════════ STDIN
+function resetStdin(prefix, val){
+  document.getElementById(prefix+'-in').value = val.replace(/\\n/g,'\n');
+  document.getElementById(prefix+'-out').innerHTML='<span class="out-dim">입력을 초기화했어요. 실행해보세요...</span>';
+}
+// dict reader: builds ordered key-value store from "n" then n lines of "key val"
+function readDict(lines, n){
+  const keys=[], vals=[];
+  function set(k,v){
+    const i=keys.indexOf(k);
+    if(i>=0) vals[i]=v;           // 수정
+    else { keys.push(k); vals.push(v); }  // 추가
+  }
+  for(let i=0;i<n;i++){
+    const parts=(lines[i]||'').trim().split(/\s+/);
+    if(parts.length<2||parts[0]==='') return {err:`${n}개의 '키 값' 줄이 필요해요 (${i+1}번째 줄 확인)`};
+    const v=parseInt(parts[1]);
+    if(isNaN(v)) return {err:`값은 정수여야 해요 (${i+1}번째 줄: ${parts[1]})`};
+    set(parts[0], v);
+  }
+  return {keys, vals, set};
+}
+function fmtDict(keys,vals){
+  return '{' + keys.map((k,i)=>`${k}: ${vals[i]}`).join(', ') + '}';
+}
+// ══════════════════════════════════════════════════ SIM ENGINE
+const SIM = {
+  // S1 make + print
+  d1(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수(0~50)를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const out=d.keys.map((k,i)=>`${k}: ${d.vals[i]}`);
+    out.push(`과목 수: ${d.keys.length}`);
+    return out.join('\n');
+  },
+  // S2 lookup
+  d2(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    if(!q) return {err:"마지막 줄에 찾을 키를 넣어주세요"};
+    const i=d.keys.indexOf(q);
+    return i>=0 ? `${q}: ${d.vals[i]}` : `${q} 없음`;
+  },
+  // S3 add/modify + delete
+  d3(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const target=(lines[1+n]||'').trim();
+    if(target){
+      const i=d.keys.indexOf(target);
+      if(i>=0){ d.keys.splice(i,1); d.vals.splice(i,1); }
+    }
+    return d.keys.map((k,i)=>`${k}:${d.vals[i]}`).join('\n') || '(빈 딕셔너리)';
+  },
+  // S4 char frequency
+  d4(stdin){
+    const s=stdin.trim().split(/\s+/)[0]||'';
+    if(!s) return {err:"단어를 입력해주세요"};
+    const keys=[], cnt=[];
+    for(const ch of s){
+      const i=keys.indexOf(ch);
+      if(i>=0) cnt[i]++;
+      else { keys.push(ch); cnt.push(1); }
+    }
+    return keys.map((k,i)=>`${k}: ${cnt[i]}`).join('\n');
+  },
+  // ── playground ──
+  setget(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    const out=[`딕셔너리: ${fmtDict(d.keys,d.vals)}`];
+    if(q){
+      const i=d.keys.indexOf(q);
+      out.push(i>=0 ? `d["${q}"] → ${d.vals[i]}` : `d["${q}"] → KeyError! (없는 키)`);
+    }
+    return out.join('\n');
+  },
+  get(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    if(!q) return {err:"찾을 키를 넣어주세요"};
+    const i=d.keys.indexOf(q);
+    return `${fmtDict(d.keys,d.vals)}\nd.get("${q}", 0) → ${i>=0?d.vals[i]:'0 (없어서 기본값)'}`;
+  },
+  contains(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    if(!q) return {err:"확인할 키를 넣어주세요"};
+    const has=d.keys.indexOf(q)>=0;
+    return `${fmtDict(d.keys,d.vals)}\n"${q}" in d → ${has?'True (있음)':'False (없음)'}`;
+  },
+  delkey(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    if(!q) return {err:"삭제할 키를 넣어주세요"};
+    const i=d.keys.indexOf(q);
+    if(i<0) return `${fmtDict(d.keys,d.vals)}\ndel d["${q}"] → KeyError! (없는 키)`;
+    const before=fmtDict(d.keys,d.vals);
+    d.keys.splice(i,1); d.vals.splice(i,1);
+    return `삭제 전: ${before}\ndel d["${q}"]\n삭제 후: ${fmtDict(d.keys,d.vals)}`;
+  },
+  pop(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    const q=(lines[1+n]||'').trim();
+    if(!q) return {err:"pop할 키를 넣어주세요"};
+    const i=d.keys.indexOf(q);
+    if(i<0) return `${fmtDict(d.keys,d.vals)}\nd.pop("${q}") → KeyError! (없는 키)`;
+    const v=d.vals[i];
+    d.keys.splice(i,1); d.vals.splice(i,1);
+    return `d.pop("${q}") → ${v} 반환\n남은 딕셔너리: ${fmtDict(d.keys,d.vals)}`;
+  },
+  keys(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<0||n>50) return {err:"첫 줄에 개수를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    return `딕셔너리: ${fmtDict(d.keys,d.vals)}\nkeys() → [${d.keys.join(', ')}]\nvalues() → [${d.vals.join(', ')}]`;
+  },
+  freq(stdin){
+    const s=stdin.trim().split(/\s+/)[0]||'';
+    if(!s) return {err:"단어를 입력해주세요"};
+    const keys=[], cnt=[];
+    for(const ch of s){
+      const i=keys.indexOf(ch);
+      if(i>=0) cnt[i]++; else { keys.push(ch); cnt.push(1); }
+    }
+    return `"${s}" 빈도수:\n`+keys.map((k,i)=>`${k}: ${cnt[i]}`).join('\n');
+  },
+  maxval(stdin){
+    const lines=stdin.split('\n');
+    const n=parseInt((lines[0]||'').trim());
+    if(isNaN(n)||n<1||n>50) return {err:"첫 줄에 개수(1 이상)를 넣어주세요"};
+    const d=readDict(lines.slice(1), n); if(d.err)return{err:d.err};
+    let mi=0;
+    for(let i=1;i<d.vals.length;i++) if(d.vals[i]>d.vals[mi]) mi=i;
+    return `${fmtDict(d.keys,d.vals)}\n최고값 키: "${d.keys[mi]}" (값 ${d.vals[mi]})`;
+  }
+};
+// ══════════════════════════════════════════════════ RUN
+function runIO(prefix){
+  const outEl=document.getElementById(prefix+'-out');
+  const inEl=document.getElementById(prefix+'-in');
+  const stdin = inEl ? inEl.value : '';
+  let simKey = prefix;
+  if(prefix==='pg') simKey = currentTemplate;
+  const fn = SIM[simKey];
+  if(!fn){ outEl.innerHTML='<span class="out-err">시뮬레이터를 찾을 수 없습니다</span>'; return; }
+  let result;
+  try{ result = fn(stdin); }
+  catch(e){ outEl.innerHTML='<span class="out-err">실행 오류: '+e.message+'</span>'; return; }
+  if(result && typeof result==='object' && result.err){
+    outEl.innerHTML='<span class="out-err">⚠ '+result.err+'</span>'; return;
+  }
+  outEl.textContent='';
+  const text=String(result);
+  let i=0;
+  (function type(){
+    if(i>text.length){return;}
+    outEl.textContent=text.slice(0,i);
+    i+=3;
+    if(i<=text.length+1) setTimeout(type, 10);
+    else outEl.textContent=text;
+  })();
+}
+// ══════════════════════════════════════════════════ TEMPLATES
+let currentTemplate='setget';
+const TEMPLATES = {
+  setget:{
+    title:'d[k]=v / d[k] — 저장·조회', stdin:'3\n국어 90\n수학 85\n영어 70\n수학', hint:'1줄=개수, 이후 키 값, 마지막=조회할 키',
+    c:`<span class="cm">// 저장: findKey로 있으면 수정</span>
+<span class="kw">int</span> i <span class="op">=</span> <span class="fn">findKey</span>(key);
+<span class="kw">if</span> (i <span class="op">&gt;=</span> <span class="nm">0</span>) vals[i] <span class="op">=</span> val;
+<span class="kw">else</span> { <span class="fn">strcpy</span>(keys[size],key);
+        vals[size]<span class="op">=</span>val; size<span class="op">++</span>; }
+<span class="cm">// 조회: vals[findKey(key)]</span>`,
+    py:`<span class="cm"># 파이썬 저장·조회</span>
+d <span class="op">=</span> {}
+d[<span class="st">"수학"</span>] <span class="op">=</span> <span class="nm">85</span>   <span class="cm"># 저장</span>
+<span class="fn">print</span>(d[<span class="st">"수학"</span>])  <span class="cm"># 조회 → 85</span>`
+  },
+  get:{
+    title:'get — 안전 조회', stdin:'3\n국어 90\n수학 85\n영어 70\n과학', hint:'없는 키를 넣어도 오류 대신 기본값!',
+    c:`<span class="cm">// get(key, 0) 직접 구현</span>
+<span class="kw">int</span> i <span class="op">=</span> <span class="fn">findKey</span>(key);
+<span class="kw">int</span> result <span class="op">=</span> (i <span class="op">&gt;=</span> <span class="nm">0</span>) <span class="op">?</span> vals[i] : <span class="nm">0</span>;
+<span class="cm">// 없으면 기본값 0</span>`,
+    py:`<span class="cm"># get은 없어도 오류 안 남!</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>: <span class="nm">90</span>, <span class="st">"수학"</span>: <span class="nm">85</span>}
+<span class="fn">print</span>(d.<span class="fn">get</span>(<span class="st">"과학"</span>, <span class="nm">0</span>))  <span class="cm"># 0</span>
+<span class="cm"># d["과학"]는 KeyError!</span>`
+  },
+  contains:{
+    title:'in — 키 존재 확인', stdin:'3\n국어 90\n수학 85\n영어 70\n수학', hint:'키가 딕셔너리에 있는지 True/False',
+    c:`<span class="cm">// in 직접 구현</span>
+<span class="kw">int</span> found <span class="op">=</span> (<span class="fn">findKey</span>(key) <span class="op">&gt;=</span> <span class="nm">0</span>);
+<span class="cm">// findKey가 -1이 아니면 있음</span>`,
+    py:`<span class="cm"># in 연산자</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>: <span class="nm">90</span>, <span class="st">"수학"</span>: <span class="nm">85</span>}
+<span class="kw">if</span> <span class="st">"수학"</span> <span class="kw">in</span> d:
+    <span class="fn">print</span>(<span class="st">"있음"</span>)`
+  },
+  delkey:{
+    title:'del — 키 삭제', stdin:'4\n국어 90\n수학 85\n영어 70\n과학 95\n영어', hint:'키를 찾아 삭제 후 뒤 원소 당기기',
+    c:`<span class="cm">// del 직접 구현: 찾고 당기기</span>
+<span class="kw">int</span> i <span class="op">=</span> <span class="fn">findKey</span>(key);
+<span class="kw">if</span> (i <span class="op">&gt;=</span> <span class="nm">0</span>) {
+    <span class="kw">for</span> (<span class="kw">int</span> j<span class="op">=</span>i; j<span class="op">&lt;</span>size<span class="op">-</span><span class="nm">1</span>; j<span class="op">++</span>) {
+        <span class="fn">strcpy</span>(keys[j], keys[j<span class="op">+</span><span class="nm">1</span>]);
+        vals[j] <span class="op">=</span> vals[j<span class="op">+</span><span class="nm">1</span>];
+    }
+    size<span class="op">--</span>;
+}`,
+    py:`<span class="cm"># del로 키 삭제</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>:<span class="nm">90</span>, <span class="st">"영어"</span>:<span class="nm">70</span>}
+<span class="kw">del</span> d[<span class="st">"영어"</span>]
+<span class="cm"># {"국어": 90}</span>`
+  },
+  pop:{
+    title:'pop — 삭제+반환', stdin:'3\n국어 90\n수학 85\n영어 70\n수학', hint:'삭제하면서 그 값을 돌려받기',
+    c:`<span class="cm">// pop 직접 구현: 값 저장 후 삭제</span>
+<span class="kw">int</span> i <span class="op">=</span> <span class="fn">findKey</span>(key);
+<span class="kw">int</span> popped <span class="op">=</span> vals[i];  <span class="cm">// 먼저 저장</span>
+<span class="cm">// 그 후 당기기로 삭제 (위와 동일)</span>
+size<span class="op">--</span>;
+<span class="cm">// popped에 꺼낸 값</span>`,
+    py:`<span class="cm"># pop: 삭제하며 값 반환</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>:<span class="nm">90</span>, <span class="st">"수학"</span>:<span class="nm">85</span>}
+v <span class="op">=</span> d.<span class="fn">pop</span>(<span class="st">"수학"</span>)  <span class="cm"># 85 반환</span>
+<span class="fn">print</span>(v)          <span class="cm"># 85</span>`
+  },
+  keys:{
+    title:'keys / values — 목록', stdin:'3\n국어 90\n수학 85\n영어 70', hint:'키만, 값만 모아서 보기',
+    c:`<span class="cm">// keys/values = 배열 그 자체</span>
+<span class="cm">// 키 목록:</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>)
+    <span class="fn">printf</span>(<span class="st">"%s "</span>, keys[i]);
+<span class="cm">// 값 목록:</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>;i<span class="op">&lt;</span>size;i<span class="op">++</span>)
+    <span class="fn">printf</span>(<span class="st">"%d "</span>, vals[i]);`,
+    py:`<span class="cm"># keys()와 values()</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>:<span class="nm">90</span>, <span class="st">"수학"</span>:<span class="nm">85</span>}
+<span class="fn">print</span>(<span class="fn">list</span>(d.<span class="fn">keys</span>()))    <span class="cm"># ['국어','수학']</span>
+<span class="fn">print</span>(<span class="fn">list</span>(d.<span class="fn">values</span>()))  <span class="cm"># [90, 85]</span>`
+  },
+  freq:{
+    title:'빈도수 세기 (get 활용)', stdin:'mississippi', hint:'단어 하나 → 글자별 등장 횟수',
+    c:`<span class="cm">// 글자 빈도수 (선형 탐색)</span>
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">0</span>; s[i]; i<span class="op">++</span>) {
+    <span class="kw">int</span> idx <span class="op">=</span> <span class="fn">findChar</span>(s[i]);
+    <span class="kw">if</span> (idx <span class="op">&gt;=</span> <span class="nm">0</span>) cnt[idx]<span class="op">++</span>;
+    <span class="kw">else</span> { keys[size]<span class="op">=</span>s[i];
+            cnt[size]<span class="op">=</span><span class="nm">1</span>; size<span class="op">++</span>; }
+}`,
+    py:`<span class="cm"># 빈도수 — get 한 줄로!</span>
+s <span class="op">=</span> <span class="fn">input</span>()
+count <span class="op">=</span> {}
+<span class="kw">for</span> ch <span class="kw">in</span> s:
+    count[ch] <span class="op">=</span> count.<span class="fn">get</span>(ch, <span class="nm">0</span>) <span class="op">+</span> <span class="nm">1</span>
+<span class="fn">print</span>(count)`
+  },
+  maxval:{
+    title:'최고값 키 찾기', stdin:'4\n국어 90\n수학 85\n영어 70\n과학 95', hint:'값이 가장 큰 키는? (순회하며 갱신)',
+    c:`<span class="cm">// 최고값 키 찾기</span>
+<span class="kw">int</span> mi <span class="op">=</span> <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i<span class="op">=</span><span class="nm">1</span>; i<span class="op">&lt;</span>size; i<span class="op">++</span>) {
+    <span class="kw">if</span> (vals[i] <span class="op">&gt;</span> vals[mi]) mi <span class="op">=</span> i;
+}
+<span class="cm">// keys[mi]가 최고값 키</span>`,
+    py:`<span class="cm"># 최고값 키 (max + key)</span>
+d <span class="op">=</span> {<span class="st">"국어"</span>:<span class="nm">90</span>, <span class="st">"과학"</span>:<span class="nm">95</span>}
+best <span class="op">=</span> <span class="fn">max</span>(d, key<span class="op">=</span>d.get)
+<span class="fn">print</span>(best)   <span class="cm"># 과학</span>`
+  }
+};
+function loadTemplate(){
+  const key=document.getElementById('pg-select').value;
+  currentTemplate=key;
+  const t=TEMPLATES[key];
+  document.getElementById('pg-c').innerHTML=t.c;
+  document.getElementById('pg-py').innerHTML=t.py;
+  document.getElementById('pg-title').textContent=t.title;
+  document.getElementById('pg-hint').textContent=t.hint;
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">실행 버튼을 눌러보세요...</span>';
+}
+function resetPgStdin(){
+  const t=TEMPLATES[currentTemplate];
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">입력을 초기화했어요...</span>';
+}
+// init
+loadTemplate();
+</script>
+</body>
+</html>

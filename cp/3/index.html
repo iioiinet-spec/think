@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C & 파이썬 반복문 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#0E8C86;
+  --accent-light:#E1F4F2;
+  --loop:#0E8C86;
+  --ctrl:#D35400;
+  --tval:#1E8449;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#382812);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'for ( ; ; ) · while ( )';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:28px;font-weight:700;color:rgba(255,255,255,.045);pointer-events:none;letter-spacing:.03em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.2}
+header h1 .cc{color:#5CC8F5} header h1 .pp{color:#78E89A}
+header p{font-size:13.5px;color:#A0906E;margin-top:6px}
+
+.tnav{background:var(--panel);border-bottom:2px solid var(--bdr);padding:0 34px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:13px 15px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{max-width:960px;margin:0 auto;padding:34px 22px 90px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:14px;margin-bottom:24px}
+.sh-icon{font-size:30px}
+.sh-info h2{font-size:19px;font-weight:900;line-height:1.2}
+.sh-info p{font-size:13px;opacity:.78;margin-top:2px}
+
+.step{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--soft);border-bottom:1.5px solid var(--bdr)}
+.step-badge{font-family:var(--mono);font-size:13px;font-weight:700;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.step-title{font-size:16px;font-weight:900;color:var(--ink)}
+.step-sub{font-size:12px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.step-body{padding:20px 24px}
+.step-body p{font-size:15px;color:var(--ink2);line-height:1.85;margin-bottom:12px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--ink)}
+.step-body .hl{background:#FFF2CC;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.step-body .cw{font-family:var(--mono);color:var(--c-color);font-weight:700}
+.step-body .pw{font-family:var(--mono);color:var(--py-color);font-weight:700}
+
+.for-anat{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0;padding:20px;background:var(--soft);border-radius:12px}
+.fa-part{background:var(--panel);border:2px solid var(--bdr);border-radius:10px;padding:12px 18px;text-align:center;min-width:130px;position:relative}
+.fa-part .fa-tag{position:absolute;top:-9px;left:12px;background:var(--panel);font-family:var(--sans);font-size:10px;padding:0 6px;font-weight:700}
+.fa-part.init{border-color:var(--tval)}
+.fa-part.init .fa-tag{color:var(--tval)}
+.fa-part.cond{border-color:var(--accent)}
+.fa-part.cond .fa-tag{color:var(--accent)}
+.fa-part.step{border-color:var(--ctrl)}
+.fa-part.step .fa-tag{color:var(--ctrl)}
+.fa-code{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink)}
+.fa-desc{font-size:11.5px;color:var(--ink3);margin-top:3px}
+
+.trace{background:var(--soft);border-radius:10px;padding:14px 18px;margin:14px 0;font-family:var(--mono);font-size:13px}
+.trace-row{display:flex;gap:10px;padding:3px 0;align-items:center;flex-wrap:wrap}
+.trace-i{background:var(--accent);color:#fff;border-radius:5px;padding:2px 10px;font-weight:700;min-width:52px;text-align:center}
+.trace-arrow{color:var(--ink3)}
+.trace-act{color:var(--ink2)}
+
+.syn-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.syn-table th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--bdr);background:var(--soft)}
+.syn-table th.c-col{color:var(--c-color)} .syn-table th.py-col{color:var(--py-color)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.syn-table td.label{font-weight:700;color:var(--ink2);font-size:13px}
+.syn-table td.code{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.syn-table td.code.c-bg{background:rgba(11,110,153,.05)}
+.syn-table td.code.py-bg{background:rgba(42,140,74,.05)}
+.syn-table tr:hover td{background:rgba(0,0,0,.015)}
+
+.pg{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.pg-head{background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pg-head .pt{color:#FFF9F0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.lang-tabs{display:flex;gap:6px}
+.ltab{font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 16px;border-radius:7px;border:none;cursor:pointer;transition:background .15s,color .15s}
+.ltab-c{background:rgba(11,110,153,.25);color:#5CC8F5}
+.ltab-c.on{background:var(--c-color);color:#fff}
+.ltab-py{background:rgba(42,140,74,.25);color:#78E89A}
+.ltab-py.on{background:var(--py-color);color:#fff}
+.pg-body{padding:20px 22px}
+
+.code-wrap{position:relative;margin-bottom:16px}
+.code-block{font-family:var(--mono);font-size:13.5px;line-height:1.8;background:var(--code-bg);color:#D8CAB0;border-radius:10px;padding:18px 20px;overflow-x:auto;white-space:pre;display:none;border:1.5px solid #2C2C3A}
+.code-block.on{display:block}
+.kw{color:#FF8A5C} .fn{color:#FFD37A} .cm{color:#5E5E72;font-style:italic}
+.nm{color:#9AEEB4} .st{color:#A8D8FF} .pp{color:#FF9FCC} .tp{color:#84E2FF} .op{color:#FF9868}
+.copy-btn{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;background:#2C2C3A;color:#9090B0;border:1px solid #40405A;border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#fff}
+
+.line-explain{background:var(--soft);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px}
+.lex{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+.lex-code{font-family:var(--mono);font-weight:700;color:var(--accent);min-width:160px;font-size:13px}
+.lex-desc{color:var(--ink2);line-height:1.7}
+
+.io-console{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.io-panel{border-radius:10px;overflow:hidden;border:1.5px solid var(--bdr)}
+.io-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:8px 14px;display:flex;align-items:center;gap:6px}
+.io-label.stdin{background:var(--c-light);color:var(--c-color)}
+.io-label.stdout{background:#FBF3D8;color:var(--out)}
+.stdin-area{width:100%;font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#8CD9FF;border:none;padding:14px 16px;line-height:1.8;resize:vertical;min-height:80px;outline:none;display:block}
+.stdin-area:focus{box-shadow:inset 0 0 0 2px rgba(11,110,153,.4)}
+.stdout-area{font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#B8F0C8;padding:14px 16px;line-height:1.8;min-height:80px;white-space:pre-wrap;word-break:break-word;overflow-y:auto}
+.stdout-area .out-dim{color:#4A5060}
+.stdout-area .out-err{color:#FF8080}
+
+.run-bar{display:flex;align-items:center;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+.run-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:9px;border:none;cursor:pointer;color:#fff;background:var(--accent);transition:filter .15s,transform .1s;display:flex;align-items:center;gap:7px}
+.run-btn:active{transform:scale(.96)} .run-btn:hover{filter:brightness(1.12)}
+.run-hint{font-size:12.5px;color:var(--ink3)}
+.reset-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);cursor:pointer;background:var(--panel);color:var(--ink2);transition:background .15s}
+.reset-btn:hover{background:var(--soft)}
+
+.tip{font-size:14px;color:var(--ink2);background:rgba(14,140,134,.07);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;line-height:1.8}
+.tip strong{color:var(--ink)}
+.tip code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+
+.warn-box{font-size:14px;color:var(--ink2);background:#FDF0E8;border:1.5px solid #F0C0A0;border-radius:10px;padding:14px 18px;margin-top:14px;line-height:1.8}
+.warn-box strong{color:var(--ng)}
+.warn-box code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--ng)}
+
+@media(max-width:680px){
+  header{padding:20px 18px 16px}
+  .tnav{padding:0 10px}
+  main{padding:20px 12px 70px}
+  .step-body,.pg-body{padding:16px 14px}
+  .io-console{grid-template-columns:1fr}
+  .lex-code{min-width:120px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 코딩 기초 · 반복문</div>
+  <h1><span class="cc">C</span>와 <span class="pp">파이썬</span> 반복문 실습</h1>
+  <p>for·while부터 중첩 반복·break/continue까지 · 입력을 바꿔 결과를 직접 확인하세요</p>
+</header>
+
+<nav class="tnav">
+  <button class="tbtn on" onclick="goSec('s0',this)">🚀 시작하기 (반복 개념)</button>
+  <button class="tbtn" onclick="goSec('s1',this)">① for 문</button>
+  <button class="tbtn" onclick="goSec('s2',this)">② while 문</button>
+  <button class="tbtn" onclick="goSec('s3',this)">③ 중첩 반복</button>
+  <button class="tbtn" onclick="goSec('s4',this)">④ break / continue</button>
+  <button class="tbtn" onclick="goSec('s5',this)">⑤ 플레이그라운드</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ S0: 시작하기 ══════════════ -->
+<div id="s0" class="sec on">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(14,140,134,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🚀</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">시작하기 — 반복문이란?</h2><p>같은 일을 여러 번 — 컴퓨터가 가장 잘하는 일!</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">왜 반복문이 필요할까?</span><span class="step-sub">반복의 힘</span></div>
+    <div class="step-body">
+      <p>"안녕"을 <strong>100번</strong> 출력하려면 어떻게 할까요? <code>print</code>를 100번 쓸 수는 없죠!<br>
+      <span class="hl">반복문(loop)</span>은 같은 코드를 <strong>정해진 횟수</strong>나 <strong>조건이 만족되는 동안</strong> 자동으로 반복해줘요.</p>
+      <table class="syn-table">
+        <thead><tr><th>😫 반복문 없이</th><th>😎 반복문으로</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code">print("안녕")<br>print("안녕")<br>print("안녕")<br>... (100번)</td>
+            <td class="code" style="background:var(--accent-light)">for i in range(100):<br>&nbsp;&nbsp;&nbsp;&nbsp;print("안녕")<br><br><span style="color:var(--accent)">단 2줄로 끝!</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">for와 while — 두 가지 반복문</span><span class="step-sub">언제 무엇을</span></div>
+    <div class="step-body">
+      <p>반복문은 크게 두 종류예요. <strong>언제 쓰는지</strong>가 다릅니다.</p>
+      <table class="syn-table">
+        <thead><tr><th>종류</th><th>언제 쓰나?</th><th>예시</th></tr></thead>
+        <tbody>
+          <tr><td class="label" style="color:var(--accent)">for 문</td><td>반복 <strong>횟수</strong>를 알 때</td><td style="font-size:13px;color:var(--ink2)">"10번 반복", "1부터 N까지"</td></tr>
+          <tr><td class="label" style="color:var(--c-color)">while 문</td><td><strong>조건</strong>이 만족되는 동안</td><td style="font-size:13px;color:var(--ink2)">"0이 입력될 때까지"</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>기억하기:</strong> 몇 번 도는지 <strong>세어질 때</strong>는 <span class="pw">for</span>,<br>
+      몇 번 돌지 모르고 <strong>어떤 조건까지</strong> 돌 때는 <span class="cw">while</span>을 씁니다!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">3</span><span class="step-title">반복문의 3요소</span><span class="step-sub">시작·조건·변화</span></div>
+    <div class="step-body">
+      <p>모든 반복문에는 <strong>3가지 요소</strong>가 있어요. 이걸 이해하면 무한루프에 빠지지 않아요!</p>
+      <div class="for-anat">
+        <div class="fa-part init"><span class="fa-tag">① 시작값</span><div class="fa-code">i = 1</div><div class="fa-desc">어디서 시작?</div></div>
+        <div class="fa-part cond"><span class="fa-tag">② 조건</span><div class="fa-code">i &lt;= 10</div><div class="fa-desc">언제까지?</div></div>
+        <div class="fa-part step"><span class="fa-tag">③ 변화</span><div class="fa-code">i++</div><div class="fa-desc">어떻게 변해?</div></div>
+      </div>
+      <div class="warn-box">⚠️ <strong>무한 루프 주의!</strong> ③ 변화가 없으면 조건이 영원히 참이라 프로그램이 멈추지 않아요.<br>
+      예: <code>while (i &lt; 10)</code> 안에서 i를 안 바꾸면 무한 반복! 꼭 <code>i++</code> 같은 변화를 넣으세요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: for 문 ══════════════ -->
+<div id="s1" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(14,140,134,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🔁</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">for 문 (횟수 반복)</h2><p>정해진 횟수만큼 반복 · C의 3요소 vs 파이썬 range</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">for 문의 구조</span><span class="step-sub">한 줄에 3요소</span></div>
+    <div class="step-body">
+      <p>C의 for는 <strong>한 줄에 3요소</strong>를 세미콜론(;)으로 나눠 써요. 파이썬은 <span class="pw">range</span>로 간단하게!</p>
+      <table class="syn-table">
+        <thead><tr><th class="c-col">C 언어</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code c-bg">for (int i = 1; i &lt;= 5; i++) {<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("%d ", i);<br>}<br><span class="cm">// 시작; 조건; 변화</span></td>
+            <td class="code py-bg">for i in range(1, 6):<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i, end=" ")<br><br><span class="cm"># range(시작, 끝+1)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>파이썬 range 끝값 주의!</strong> <code>range(1, 6)</code>은 1,2,3,4,5 — <strong>6은 포함 안 됨!</strong><br>
+      1부터 N까지 원하면 <code>range(1, N+1)</code>로 써야 해요. 가장 흔한 실수랍니다!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">range 3가지 사용법</span><span class="step-sub">파이썬 핵심</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th class="py-col">range 형태</th><th>의미</th><th>결과</th></tr></thead>
+        <tbody>
+          <tr><td class="code py-bg">range(5)</td><td class="label">0부터 4까지</td><td class="code">0 1 2 3 4</td></tr>
+          <tr><td class="code py-bg">range(1, 6)</td><td class="label">1부터 5까지</td><td class="code">1 2 3 4 5</td></tr>
+          <tr><td class="code py-bg">range(1, 10, 2)</td><td class="label">1부터 2씩 증가</td><td class="code">1 3 5 7 9</td></tr>
+          <tr><td class="code py-bg">range(10, 0, -1)</td><td class="label">10부터 거꾸로</td><td class="code">10 9 8 ... 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 1부터 N까지 합 구하기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l1','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l1','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l1-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        sum <span class="op">+=</span> i;      <span class="cm">// 1부터 n까지 누적</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"1부터 %d까지 합: %d\n"</span>, n, sum);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l1-py"><span class="cm"># 1부터 N까지 합</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+total <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):
+    total <span class="op">+=</span> i        <span class="cm"># 누적</span>
+<span class="fn">print</span>(<span class="st">f"1부터 {n}까지 합: {total}"</span>)
+
+<span class="cm"># 참고: sum(range(1, n+1)) 로도 가능!</span></pre>
+        <button class="copy-btn" id="l1-copy" onclick="doCopy('l1')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">sum = 0</span><span class="lex-desc">누적할 변수를 0으로 시작 (중요!)</span></div>
+        <div class="lex"><span class="lex-code">sum += i</span><span class="lex-desc">매 반복마다 i를 더해 쌓기</span></div>
+        <div class="lex"><span class="lex-code">range(1, n+1)</span><span class="lex-desc">n을 포함하려면 n+1까지!</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l1')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l1','10')">↺ 입력 초기화</button>
+        <span class="run-hint">10을 넣으면 55 (1+2+...+10). 100도 넣어보세요!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l1-in" spellcheck="false">10</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l1-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <code>sum += i</code>는 <strong>누적 합</strong> 패턴이에요. 반복문에서 값을 계속 쌓아가는 가장 기본적이고 중요한 기술입니다!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S2: while 문 ══════════════ -->
+<div id="s2" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.1),transparent);border-left:5px solid var(--c-color)">
+    <div class="sh-icon">🔄</div>
+    <div class="sh-info"><h2 style="color:var(--c-color)">while 문 (조건 반복)</h2><p>조건이 참인 동안 계속 반복 · 횟수를 모를 때</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">1</span><span class="step-title">while 문의 구조</span><span class="step-sub">조건이 참인 동안</span></div>
+    <div class="step-body">
+      <p><strong>while</strong>은 "~하는 동안"이라는 뜻이에요. 조건이 <strong>참인 동안 계속</strong> 반복해요.<br>
+      C와 파이썬이 거의 똑같아요!</p>
+      <table class="syn-table">
+        <thead><tr><th class="c-col">C 언어</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code c-bg">int i = 1;<br>while (i &lt;= 5) {<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("%d ", i);<br>&nbsp;&nbsp;&nbsp;&nbsp;i++;  <span class="cm">// 꼭 변화!</span><br>}</td>
+            <td class="code py-bg">i = 1<br>while i &lt;= 5:<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i, end=" ")<br>&nbsp;&nbsp;&nbsp;&nbsp;i += 1  <span class="cm"># 꼭 변화!</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="warn-box">⚠️ <strong>while은 무한루프 위험이 커요!</strong> for는 변화(i++)가 구조에 들어있지만,<br>
+      while은 <strong>직접 안에서 i를 바꿔줘야</strong> 해요. 안 그러면 영원히 멈추지 않아요!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 N을 반으로 계속 나누기 (몇 번?)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l2','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l2','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l2-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> count <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">while</span> (n <span class="op">&gt;</span> <span class="nm">1</span>) {       <span class="cm">// n이 1보다 큰 동안</span>
+        n <span class="op">/=</span> <span class="nm">2</span>;           <span class="cm">// 반으로 나누기</span>
+        count<span class="op">++</span>;          <span class="cm">// 횟수 세기</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"%d번 나눴습니다\n"</span>, count);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l2-py"><span class="cm"># N을 1이 될 때까지 반으로 나누기</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+count <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> n <span class="op">&gt;</span> <span class="nm">1</span>:            <span class="cm"># n이 1보다 큰 동안</span>
+    n <span class="op">//=</span> <span class="nm">2</span>              <span class="cm"># 정수 나눗셈 (몫)</span>
+    count <span class="op">+=</span> <span class="nm">1</span>
+<span class="fn">print</span>(<span class="st">f"{count}번 나눴습니다"</span>)</pre>
+        <button class="copy-btn" id="l2-copy" onclick="doCopy('l2')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">while (n &gt; 1)</span><span class="lex-desc">몇 번 도는지 미리 모름 — while이 딱 맞음</span></div>
+        <div class="lex"><span class="lex-code">n /= 2 (C) // n //= 2 (Py)</span><span class="lex-desc">파이썬은 정수 나눗셈에 // 사용!</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l2')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l2','16')">↺ 입력 초기화</button>
+        <span class="run-hint">16→4번, 100→6번. 2의 거듭제곱을 넣어보세요!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l2-in" spellcheck="false">16</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l2-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 이건 <strong>로그(log₂)</strong>를 구하는 것과 같아요! 16=2⁴이라 4번, 컴퓨터가 데이터를 절반씩 줄이는 알고리즘의 핵심 원리예요.</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 0이 입력될 때까지 합산 (종료 조건)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l3','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l3','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l3-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>, x;
+    <span class="kw">while</span> (<span class="nm">1</span>) {           <span class="cm">// 일단 무한 반복</span>
+        <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>x);
+        <span class="kw">if</span> (x <span class="op">==</span> <span class="nm">0</span>) <span class="kw">break</span>;  <span class="cm">// 0이면 탈출</span>
+        sum <span class="op">+=</span> x;
+    }
+    <span class="fn">printf</span>(<span class="st">"합계: %d\n"</span>, sum);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l3-py"><span class="cm"># 0이 나올 때까지 계속 더하기</span>
+total <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> <span class="kw">True</span>:             <span class="cm"># 일단 무한 반복</span>
+    x <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+    <span class="kw">if</span> x <span class="op">==</span> <span class="nm">0</span>:
+        <span class="kw">break</span>            <span class="cm"># 0이면 탈출</span>
+    total <span class="op">+=</span> x
+<span class="fn">print</span>(<span class="st">f"합계: {total}"</span>)</pre>
+        <button class="copy-btn" id="l3-copy" onclick="doCopy('l3')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l3')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l3','10\n20\n5\n0')">↺ 입력 초기화</button>
+        <span class="run-hint">각 줄에 수를 넣고 마지막에 0. (예: 10, 20, 5, 0 → 35)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l3-in" spellcheck="false" style="min-height:120px">10
+20
+5
+0</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l3-out" style="min-height:120px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <code>while(1)</code> / <code>while True</code>는 일부러 무한 반복을 만들고, 안에서 <code>break</code>로 탈출하는 패턴이에요. "0을 만나면 멈춤" 같은 종료 조건에 유용해요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S3: 중첩 반복 ══════════════ -->
+<div id="s3" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(184,134,11,.12),transparent);border-left:5px solid var(--out)">
+    <div class="sh-icon">🎡</div>
+    <div class="sh-info"><h2 style="color:var(--out)">중첩 반복문 (이중 for)</h2><p>반복문 안의 반복문 · 표·별찍기·구구단표</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--out)">1</span><span class="step-title">반복문 속 반복문</span><span class="step-sub">바깥 × 안쪽</span></div>
+    <div class="step-body">
+      <p><strong>중첩 반복문</strong>은 반복문 안에 또 반복문을 넣는 거예요.<br>
+      바깥 반복 1번마다 <strong>안쪽 반복이 전부 실행</strong>돼요. 표(격자)를 만들 때 필수!</p>
+      <div class="trace">
+        <div class="trace-row"><span class="trace-i">바깥 i=1</span><span class="trace-arrow">→</span><span class="trace-act">안쪽 j=1,2,3 전부 실행</span></div>
+        <div class="trace-row"><span class="trace-i">바깥 i=2</span><span class="trace-arrow">→</span><span class="trace-act">안쪽 j=1,2,3 전부 실행 (다시!)</span></div>
+        <div class="trace-row"><span class="trace-i">바깥 i=3</span><span class="trace-arrow">→</span><span class="trace-act">안쪽 j=1,2,3 전부 실행 (또!)</span></div>
+      </div>
+      <p>바깥이 3번, 안쪽이 3번이면 총 <strong>3×3 = 9번</strong> 실행돼요.</p>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 별(★) 삼각형 그리기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l4','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l4','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l4-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {      <span class="cm">// 바깥: 줄</span>
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">1</span>; j <span class="op">&lt;=</span> i; j<span class="op">++</span>) {  <span class="cm">// 안쪽: 별 개수</span>
+            <span class="fn">printf</span>(<span class="st">"*"</span>);
+        }
+        <span class="fn">printf</span>(<span class="st">"\n"</span>);              <span class="cm">// 한 줄 끝나면 줄바꿈</span>
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l4-py"><span class="cm"># 별 삼각형</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):      <span class="cm"># 바깥: 줄</span>
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i):          <span class="cm"># 안쪽: 별 개수</span>
+        <span class="fn">print</span>(<span class="st">"*"</span>, end<span class="op">=</span><span class="st">""</span>)
+    <span class="fn">print</span>()                    <span class="cm"># 줄바꿈</span>
+
+<span class="cm"># 참고: print("*" * i) 로 한 줄에!</span></pre>
+        <button class="copy-btn" id="l4-copy" onclick="doCopy('l4')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">바깥 for (i)</span><span class="lex-desc">줄 번호 — i번째 줄엔 별 i개</span></div>
+        <div class="lex"><span class="lex-code">안쪽 for (j)</span><span class="lex-desc">i개의 별을 출력 (j를 i까지)</span></div>
+        <div class="lex"><span class="lex-code">바깥 끝의 줄바꿈</span><span class="lex-desc">안쪽이 끝나면 다음 줄로!</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l4')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l4','5')">↺ 입력 초기화</button>
+        <span class="run-hint">5를 넣으면 별 5줄. 3, 7도 넣어보세요!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l4-in" spellcheck="false">5</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l4-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 구구단 전체 표 (2~9단)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l5','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l5','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l5-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">for</span> (<span class="kw">int</span> dan <span class="op">=</span> <span class="nm">2</span>; dan <span class="op">&lt;=</span> <span class="nm">9</span>; dan<span class="op">++</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> <span class="nm">9</span>; i<span class="op">++</span>) {
+            <span class="fn">printf</span>(<span class="st">"%d*%d=%d  "</span>, dan, i, dan <span class="op">*</span> i);
+        }
+        <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l5-py"><span class="cm"># 구구단 2~9단</span>
+<span class="kw">for</span> dan <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">10</span>):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">10</span>):
+        <span class="fn">print</span>(<span class="st">f"{dan}*{i}={dan*i}"</span>, end<span class="op">=</span><span class="st">"  "</span>)
+    <span class="fn">print</span>()</pre>
+        <button class="copy-btn" id="l5-copy" onclick="doCopy('l5')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l5')">▶ 실행</button>
+        <span class="run-hint">입력 없이 바로 실행! 8×9=72칸의 표가 나와요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT (출력)</div><div class="stdout-area" id="l5-out" style="grid-column:1/-1;font-size:12px"><span class="out-dim">실행 버튼을 눌러보세요...</span></div></div>
+      </div>
+      <div class="tip">💡 바깥 for(단)가 8번, 안쪽 for(곱)가 9번이니 총 72번 곱셈이 출력돼요. 중첩 반복의 대표 예제죠!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S4: break / continue ══════════════ -->
+<div id="s4" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(211,84,0,.1),transparent);border-left:5px solid var(--ctrl)">
+    <div class="sh-icon">🚦</div>
+    <div class="sh-info"><h2 style="color:var(--ctrl)">break / continue (반복 제어)</h2><p>반복을 멈추거나 건너뛰기</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--ctrl)">1</span><span class="step-title">break와 continue의 차이</span><span class="step-sub">멈춤 vs 건너뛰기</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>키워드</th><th>동작</th><th>비유</th></tr></thead>
+        <tbody>
+          <tr><td class="label" style="color:var(--ng)">break</td><td>반복문을 <strong>완전히 탈출</strong></td><td style="font-size:13px;color:var(--ink2)">"그만! 나가자" 🚪</td></tr>
+          <tr><td class="label" style="color:var(--c-color)">continue</td><td>이번 회차만 <strong>건너뛰고</strong> 다음 반복</td><td style="font-size:13px;color:var(--ink2)">"이건 넘기고 다음!" ⏭️</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>break</strong>는 반복문 밖으로 완전히 나가고, <strong>continue</strong>는 안쪽 남은 코드만 건너뛰고 반복은 계속해요.<br>
+      C와 파이썬 모두 <code>break</code>, <code>continue</code> 단어가 똑같아요!</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 break — 특정 수를 찾으면 멈추기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l6','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l6','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l6-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> target;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>target);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> <span class="nm">100</span>; i<span class="op">++</span>) {
+        <span class="kw">if</span> (i <span class="op">==</span> target) {
+            <span class="fn">printf</span>(<span class="st">"%d 찾음! (i=%d)\n"</span>, target, i);
+            <span class="kw">break</span>;         <span class="cm">// 찾았으니 반복 종료</span>
+        }
+        <span class="fn">printf</span>(<span class="st">"%d 확인...\n"</span>, i);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l6-py"><span class="cm"># target을 찾으면 멈추기</span>
+target <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">101</span>):
+    <span class="kw">if</span> i <span class="op">==</span> target:
+        <span class="fn">print</span>(<span class="st">f"{target} 찾음! (i={i})"</span>)
+        <span class="kw">break</span>              <span class="cm"># 반복 종료</span>
+    <span class="fn">print</span>(<span class="st">f"{i} 확인..."</span>)</pre>
+        <button class="copy-btn" id="l6-copy" onclick="doCopy('l6')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l6')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l6','5')">↺ 입력 초기화</button>
+        <span class="run-hint">5를 넣으면 1~4 확인 후 5에서 멈춰요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l6-in" spellcheck="false">5</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l6-out" style="min-height:120px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 continue — 짝수만 건너뛰고 홀수만 출력</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('l7','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('l7','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="l7-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">if</span> (i <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>) {
+            <span class="kw">continue</span>;      <span class="cm">// 짝수면 건너뛰기</span>
+        }
+        <span class="fn">printf</span>(<span class="st">"%d "</span>, i);   <span class="cm">// 홀수만 출력됨</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"\n"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="l7-py"><span class="cm"># 홀수만 출력 (짝수는 건너뛰기)</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):
+    <span class="kw">if</span> i <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>:
+        <span class="kw">continue</span>          <span class="cm"># 짝수면 건너뛰기</span>
+    <span class="fn">print</span>(i, end<span class="op">=</span><span class="st">" "</span>)
+<span class="fn">print</span>()</pre>
+        <button class="copy-btn" id="l7-copy" onclick="doCopy('l7')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">if 짝수: continue</span><span class="lex-desc">짝수면 아래 print를 건너뛰고 다음 i로</span></div>
+        <div class="lex"><span class="lex-code">print(i)</span><span class="lex-desc">continue를 안 만난 홀수만 여기 도달</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('l7')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('l7','10')">↺ 입력 초기화</button>
+        <span class="run-hint">10을 넣으면 1 3 5 7 9 (홀수만)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="l7-in" spellcheck="false">10</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="l7-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <code>continue</code>를 만나면 그 아래 코드는 실행되지 않고 바로 다음 반복으로 넘어가요. 짝수일 때 print를 건너뛰니 홀수만 남는 거예요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S5: 플레이그라운드 ══════════════ -->
+<div id="s5" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.08),rgba(42,140,74,.08));border-left:5px solid var(--accent)">
+    <div class="sh-icon">🎮</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">플레이그라운드</h2><p>반복문 예제를 골라 입력을 바꿔가며 실험하세요</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">▶</span><span class="step-title">예제 선택 & 실험</span><span class="step-sub">골라서 실행</span></div>
+    <div class="step-body">
+      <p>예제를 선택하면 C/파이썬 코드가 바뀌어요. STDIN을 수정하고 실행해 반복의 결과를 관찰하세요!</p>
+      <div class="run-bar">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2)">예제:</span>
+        <select id="pg-select" onchange="loadTemplate()" style="font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 14px;border:2px solid var(--bdr);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;outline:none">
+          <option value="factorial">팩토리얼 (N!)</option>
+          <option value="power">거듭제곱 (2ⁿ)</option>
+          <option value="digit_sum">자릿수 합</option>
+          <option value="count_digits">자릿수 개수</option>
+          <option value="multiples">약수 구하기</option>
+          <option value="is_prime">소수 판별</option>
+          <option value="pyramid">숫자 피라미드</option>
+          <option value="collatz">콜라츠 수열</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🎮 <span id="pg-title">팩토리얼 (N!)</span></div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('pg','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('pg','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+        <pre class="code-block on" id="pg-c"></pre>
+        <pre class="code-block" id="pg-py"></pre>
+        <button class="copy-btn" id="pg-copy" onclick="doCopy('pg')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('pg')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetPgStdin()">↺ 입력 초기화</button>
+        <span class="run-hint" id="pg-hint">STDIN을 수정하고 실행해보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="pg-in" spellcheck="false" style="min-height:110px"></textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="pg-out" style="min-height:110px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip" id="pg-tip">💡 예제마다 STDIN 형식이 달라요. 힌트를 참고해 입력을 바꿔보세요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════ NAV
+function goSec(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ══════════════════════════════════════════════════ LANG SWITCH
+function switchLang(prefix, lang, btn){
+  const cBlock=document.getElementById(prefix+'-c');
+  const pyBlock=document.getElementById(prefix+'-py');
+  const head=btn.closest('.pg-head');
+  const cBtn=head.querySelector('.ltab-c');
+  const pyBtn=head.querySelector('.ltab-py');
+  if(lang==='c'){
+    cBlock.classList.add('on'); pyBlock.classList.remove('on');
+    cBtn.classList.add('on'); pyBtn.classList.remove('on');
+  } else {
+    pyBlock.classList.add('on'); cBlock.classList.remove('on');
+    pyBtn.classList.add('on'); cBtn.classList.remove('on');
+  }
+}
+// ══════════════════════════════════════════════════ COPY
+function doCopy(prefix){
+  const active=document.querySelector('#'+prefix+'-c.on, #'+prefix+'-py.on');
+  if(!active)return;
+  navigator.clipboard.writeText(active.innerText).then(()=>{
+    const btn=document.getElementById(prefix+'-copy');
+    btn.textContent='✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='복사'; btn.classList.remove('copied');},1800);
+  });
+}
+// ══════════════════════════════════════════════════ STDIN
+function resetStdin(prefix, val){
+  document.getElementById(prefix+'-in').value = val.replace(/\\n/g,'\n');
+  document.getElementById(prefix+'-out').innerHTML='<span class="out-dim">입력을 초기화했어요. 실행해보세요...</span>';
+}
+function makeReader(text){
+  const tokens = text.trim().split(/\s+/).filter(x=>x.length>0);
+  let ti=0;
+  return {
+    nextToken(){ return ti<tokens.length ? tokens[ti++] : ''; },
+    nextInt(){ return parseInt(this.nextToken()); },
+    nextFloat(){ return parseFloat(this.nextToken()); },
+    all(){ return tokens; }
+  };
+}
+// ══════════════════════════════════════════════════ SIM ENGINE
+const SIM = {
+  // inline demos
+  l1(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    if(n>100000) return {err:"너무 큰 수예요 (100000 이하)"};
+    let sum=0; for(let i=1;i<=n;i++)sum+=i;
+    return `1부터 ${n}까지 합: ${sum}`;
+  },
+  l2(stdin){
+    const r=makeReader(stdin); let n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    let count=0; while(n>1){n=Math.floor(n/2);count++;}
+    return `${count}번 나눴습니다`;
+  },
+  l3(stdin){
+    const toks=stdin.trim().split(/\s+/).filter(x=>x.length>0);
+    let sum=0, found=false;
+    for(const t of toks){
+      const x=parseInt(t);
+      if(isNaN(x)) return {err:"정수만 입력하세요"};
+      if(x===0){found=true;break;}
+      sum+=x;
+    }
+    if(!found) return {err:"종료값 0이 없어요! 마지막에 0을 넣어주세요"};
+    return `합계: ${sum}`;
+  },
+  l4(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n>30) return {err:"30 이하로 입력하세요"};
+    const lines=[];
+    for(let i=1;i<=n;i++)lines.push('*'.repeat(i));
+    return lines.join('\n');
+  },
+  l5(){
+    const lines=[];
+    for(let dan=2;dan<=9;dan++){
+      let row=[];
+      for(let i=1;i<=9;i++)row.push(`${dan}*${i}=${dan*i}`);
+      lines.push(row.join('  '));
+    }
+    return lines.join('\n');
+  },
+  l6(stdin){
+    const r=makeReader(stdin); const target=r.nextInt();
+    if(isNaN(target)||target<1||target>100) return {err:"1~100 사이 정수를 입력하세요"};
+    const lines=[];
+    for(let i=1;i<=100;i++){
+      if(i===target){lines.push(`${target} 찾음! (i=${i})`);break;}
+      lines.push(`${i} 확인...`);
+    }
+    return lines.join('\n');
+  },
+  l7(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n>200) return {err:"200 이하로 입력하세요"};
+    const arr=[];
+    for(let i=1;i<=n;i++){ if(i%2===0)continue; arr.push(i); }
+    return arr.join(' ');
+  },
+  // playground
+  factorial(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<0) return {err:"0 이상의 정수를 입력하세요"};
+    if(n>50) return {err:"50 이하로 입력하세요 (수가 너무 커져요)"};
+    let f=1n; for(let i=1;i<=n;i++)f*=BigInt(i);
+    return `${n}! = ${f.toString()}`;
+  },
+  power(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<0) return {err:"0 이상의 지수를 입력하세요"};
+    if(n>100) return {err:"100 이하로 입력하세요"};
+    let p=1n; for(let i=0;i<n;i++)p*=2n;
+    return `2^${n} = ${p.toString()}`;
+  },
+  digit_sum(stdin){
+    const r=makeReader(stdin); let n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    n=Math.abs(n);
+    let sum=0, orig=n;
+    if(n===0)sum=0;
+    while(n>0){sum+=n%10;n=Math.floor(n/10);}
+    return `${orig}의 자릿수 합: ${sum}`;
+  },
+  count_digits(stdin){
+    const r=makeReader(stdin); let n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    n=Math.abs(n);
+    let cnt=0, orig=n;
+    if(n===0)cnt=1;
+    while(n>0){cnt++;n=Math.floor(n/10);}
+    return `${orig}은(는) ${cnt}자리 수입니다`;
+  },
+  multiples(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n>100000) return {err:"100000 이하로 입력하세요"};
+    const div=[];
+    for(let i=1;i<=n;i++) if(n%i===0)div.push(i);
+    return `${n}의 약수: ${div.join(' ')}\n약수 개수: ${div.length}개`;
+  },
+  is_prime(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n===1) return `${n}은(는) 소수가 아닙니다 (1은 소수 아님)`;
+    let prime=true;
+    for(let i=2;i*i<=n;i++){ if(n%i===0){prime=false;break;} }
+    return `${n}은(는) ${prime?'소수입니다 ✓':'소수가 아닙니다'}`;
+  },
+  pyramid(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n>20) return {err:"20 이하로 입력하세요"};
+    const lines=[];
+    for(let i=1;i<=n;i++){
+      let row=[];
+      for(let j=1;j<=i;j++)row.push(j);
+      lines.push(row.join(' '));
+    }
+    return lines.join('\n');
+  },
+  collatz(stdin){
+    const r=makeReader(stdin); let n=r.nextInt();
+    if(isNaN(n)||n<1) return {err:"1 이상의 정수를 입력하세요"};
+    if(n>1000000) return {err:"1000000 이하로 입력하세요"};
+    const seq=[n]; let steps=0;
+    while(n!==1){
+      if(n%2===0)n=n/2; else n=3*n+1;
+      seq.push(n); steps++;
+      if(steps>500) return {err:"단계가 너무 많아요"};
+    }
+    return `수열: ${seq.join(' → ')}\n총 ${steps}단계`;
+  }
+};
+// ══════════════════════════════════════════════════ RUN
+function runIO(prefix){
+  const outEl=document.getElementById(prefix+'-out');
+  const inEl=document.getElementById(prefix+'-in');
+  const stdin = inEl ? inEl.value : '';
+  let simKey = prefix;
+  if(prefix==='pg') simKey = currentTemplate;
+  const fn = SIM[simKey];
+  if(!fn){ outEl.innerHTML='<span class="out-err">시뮬레이터를 찾을 수 없습니다</span>'; return; }
+  let result;
+  try{ result = fn(stdin); }
+  catch(e){ outEl.innerHTML='<span class="out-err">실행 오류: '+e.message+'</span>'; return; }
+  if(result && typeof result==='object' && result.err){
+    outEl.innerHTML='<span class="out-err">⚠ '+result.err+'</span>'; return;
+  }
+  outEl.textContent='';
+  const text=String(result);
+  let i=0;
+  (function type(){
+    if(i>text.length){return;}
+    outEl.textContent=text.slice(0,i);
+    i+=3;
+    if(i<=text.length+1) setTimeout(type, 10);
+    else outEl.textContent=text;
+  })();
+}
+// ══════════════════════════════════════════════════ TEMPLATES
+let currentTemplate='factorial';
+const TEMPLATES = {
+  factorial:{
+    title:'팩토리얼 (N!)', stdin:'5', hint:'0~50 사이 정수 (5!=120)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">long long</span> fact <span class="op">=</span> <span class="nm">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        fact <span class="op">*=</span> i;      <span class="cm">// 1×2×...×n</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"%d! = %lld\\n"</span>, n, fact);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+fact <span class="op">=</span> <span class="nm">1</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):
+    fact <span class="op">*=</span> i          <span class="cm"># 누적 곱</span>
+<span class="fn">print</span>(<span class="st">f"{n}! = {fact}"</span>)
+
+<span class="cm"># 파이썬은 큰 수도 정확! (import math; math.factorial)</span>`
+  },
+  power:{
+    title:'거듭제곱 (2ⁿ)', stdin:'10', hint:'0~100 사이 지수 (2^10=1024)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">long long</span> p <span class="op">=</span> <span class="nm">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">0</span>; i <span class="op">&lt;</span> n; i<span class="op">++</span>) {
+        p <span class="op">*=</span> <span class="nm">2</span>;         <span class="cm">// 2를 n번 곱하기</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"2^%d = %lld\\n"</span>, n, p);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+p <span class="op">=</span> <span class="nm">1</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n):
+    p <span class="op">*=</span> <span class="nm">2</span>            <span class="cm"># 2를 n번 곱하기</span>
+<span class="fn">print</span>(<span class="st">f"2^{n} = {p}"</span>)
+
+<span class="cm"># 파이썬은 2 ** n 으로 한 번에!</span>`
+  },
+  digit_sum:{
+    title:'자릿수 합', stdin:'1234', hint:'정수 입력 (1234 → 1+2+3+4=10)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> sum <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">while</span> (n <span class="op">&gt;</span> <span class="nm">0</span>) {
+        sum <span class="op">+=</span> n <span class="op">%</span> <span class="nm">10</span>;   <span class="cm">// 마지막 자릿수 더하기</span>
+        n <span class="op">/=</span> <span class="nm">10</span>;         <span class="cm">// 마지막 자릿수 제거</span>
+    }
+    <span class="fn">printf</span>(<span class="st">"자릿수 합: %d\\n"</span>, sum);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+total <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> n <span class="op">&gt;</span> <span class="nm">0</span>:
+    total <span class="op">+=</span> n <span class="op">%</span> <span class="nm">10</span>   <span class="cm"># 마지막 자릿수</span>
+    n <span class="op">//=</span> <span class="nm">10</span>          <span class="cm"># 자릿수 제거</span>
+<span class="fn">print</span>(<span class="st">f"자릿수 합: {total}"</span>)`
+  },
+  count_digits:{
+    title:'자릿수 개수', stdin:'12345', hint:'정수 입력 (12345 → 5자리)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> cnt <span class="op">=</span> <span class="nm">0</span>;
+    <span class="kw">while</span> (n <span class="op">&gt;</span> <span class="nm">0</span>) {
+        cnt<span class="op">++</span>;           <span class="cm">// 자릿수 하나 세기</span>
+        n <span class="op">/=</span> <span class="nm">10</span>;
+    }
+    <span class="fn">printf</span>(<span class="st">"%d자리 수\\n"</span>, cnt);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+cnt <span class="op">=</span> <span class="nm">0</span>
+<span class="kw">while</span> n <span class="op">&gt;</span> <span class="nm">0</span>:
+    cnt <span class="op">+=</span> <span class="nm">1</span>
+    n <span class="op">//=</span> <span class="nm">10</span>
+<span class="fn">print</span>(<span class="st">f"{cnt}자리 수"</span>)
+
+<span class="cm"># 파이썬은 len(str(n)) 으로도!</span>`
+  },
+  multiples:{
+    title:'약수 구하기', stdin:'24', hint:'정수 입력 (24의 약수 나열)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="fn">printf</span>(<span class="st">"%d의 약수: "</span>, n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">if</span> (n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>) {   <span class="cm">// 나누어 떨어지면 약수</span>
+            <span class="fn">printf</span>(<span class="st">"%d "</span>, i);
+        }
+    }
+    <span class="fn">printf</span>(<span class="st">"\\n"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="fn">print</span>(<span class="st">f"{n}의 약수:"</span>, end<span class="op">=</span><span class="st">" "</span>)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):
+    <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>:      <span class="cm"># 나누어 떨어지면 약수</span>
+        <span class="fn">print</span>(i, end<span class="op">=</span><span class="st">" "</span>)
+<span class="fn">print</span>()`
+  },
+  is_prime:{
+    title:'소수 판별', stdin:'17', hint:'정수 입력 (2 이상이면 소수 검사)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> prime <span class="op">=</span> <span class="nm">1</span>;     <span class="cm">// 일단 소수라 가정</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">2</span>; i <span class="op">*</span> i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">if</span> (n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>) {
+            prime <span class="op">=</span> <span class="nm">0</span>;   <span class="cm">// 약수 발견 → 소수 아님</span>
+            <span class="kw">break</span>;
+        }
+    }
+    <span class="kw">if</span> (n <span class="op">&lt;</span> <span class="nm">2</span>) prime <span class="op">=</span> <span class="nm">0</span>;
+    <span class="fn">printf</span>(<span class="st">"%s\\n"</span>, prime <span class="op">?</span> <span class="st">"소수"</span> : <span class="st">"소수 아님"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+prime <span class="op">=</span> <span class="kw">True</span>
+<span class="kw">if</span> n <span class="op">&lt;</span> <span class="nm">2</span>:
+    prime <span class="op">=</span> <span class="kw">False</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="fn">int</span>(n <span class="op">**</span> <span class="nm">0.5</span>) <span class="op">+</span> <span class="nm">1</span>):
+    <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>:
+        prime <span class="op">=</span> <span class="kw">False</span>
+        <span class="kw">break</span>
+<span class="fn">print</span>(<span class="st">"소수"</span> <span class="kw">if</span> prime <span class="kw">else</span> <span class="st">"소수 아님"</span>)`
+  },
+  pyramid:{
+    title:'숫자 피라미드', stdin:'5', hint:'1~20 사이 정수',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">for</span> (<span class="kw">int</span> i <span class="op">=</span> <span class="nm">1</span>; i <span class="op">&lt;=</span> n; i<span class="op">++</span>) {
+        <span class="kw">for</span> (<span class="kw">int</span> j <span class="op">=</span> <span class="nm">1</span>; j <span class="op">&lt;=</span> i; j<span class="op">++</span>) {
+            <span class="fn">printf</span>(<span class="st">"%d "</span>, j);
+        }
+        <span class="fn">printf</span>(<span class="st">"\\n"</span>);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n <span class="op">+</span> <span class="nm">1</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, i <span class="op">+</span> <span class="nm">1</span>):
+        <span class="fn">print</span>(j, end<span class="op">=</span><span class="st">" "</span>)
+    <span class="fn">print</span>()`
+  },
+  collatz:{
+    title:'콜라츠 수열', stdin:'6', hint:'짝수면 ÷2, 홀수면 ×3+1 (1이 될 때까지)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">int</span> steps <span class="op">=</span> <span class="nm">0</span>;
+    <span class="fn">printf</span>(<span class="st">"%d "</span>, n);
+    <span class="kw">while</span> (n <span class="op">!=</span> <span class="nm">1</span>) {
+        <span class="kw">if</span> (n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>) n <span class="op">/=</span> <span class="nm">2</span>;    <span class="cm">// 짝수</span>
+        <span class="kw">else</span> n <span class="op">=</span> <span class="nm">3</span> <span class="op">*</span> n <span class="op">+</span> <span class="nm">1</span>;         <span class="cm">// 홀수</span>
+        <span class="fn">printf</span>(<span class="st">"%d "</span>, n);
+        steps<span class="op">++</span>;
+    }
+    <span class="fn">printf</span>(<span class="st">"\\n총 %d단계\\n"</span>, steps);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+steps <span class="op">=</span> <span class="nm">0</span>
+<span class="fn">print</span>(n, end<span class="op">=</span><span class="st">" "</span>)
+<span class="kw">while</span> n <span class="op">!=</span> <span class="nm">1</span>:
+    <span class="kw">if</span> n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>:
+        n <span class="op">//=</span> <span class="nm">2</span>          <span class="cm"># 짝수</span>
+    <span class="kw">else</span>:
+        n <span class="op">=</span> <span class="nm">3</span> <span class="op">*</span> n <span class="op">+</span> <span class="nm">1</span>    <span class="cm"># 홀수</span>
+    <span class="fn">print</span>(n, end<span class="op">=</span><span class="st">" "</span>)
+    steps <span class="op">+=</span> <span class="nm">1</span>
+<span class="fn">print</span>(<span class="st">f"\\n총 {steps}단계"</span>)`
+  }
+};
+function loadTemplate(){
+  const key=document.getElementById('pg-select').value;
+  currentTemplate=key;
+  const t=TEMPLATES[key];
+  document.getElementById('pg-c').innerHTML=t.c;
+  document.getElementById('pg-py').innerHTML=t.py;
+  document.getElementById('pg-title').textContent=t.title;
+  document.getElementById('pg-hint').textContent=t.hint;
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">실행 버튼을 눌러보세요...</span>';
+}
+function resetPgStdin(){
+  const t=TEMPLATES[currentTemplate];
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">입력을 초기화했어요...</span>';
+}
+// init
+loadTemplate();
+</script>
+</body>
+</html>

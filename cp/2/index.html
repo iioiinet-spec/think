@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C & 파이썬 조건문 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#7B3FA0;      /* 조건문 보라 */
+  --accent-light:#F1E8F7;
+  --tval:#1E8449;        /* true 초록 */
+  --fval:#C0392B;        /* false 빨강 */
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#382812);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'if ( ) { } else { }';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.045);pointer-events:none;letter-spacing:.03em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.2}
+header h1 .cc{color:#5CC8F5} header h1 .pp{color:#78E89A}
+header p{font-size:13.5px;color:#A0906E;margin-top:6px}
+
+.tnav{background:var(--panel);border-bottom:2px solid var(--bdr);padding:0 34px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:100}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink3);background:none;border:none;border-bottom:3px solid transparent;padding:13px 15px 10px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{max-width:960px;margin:0 auto;padding:34px 22px 90px}
+.sec{display:none}
+.sec.on{display:block}
+
+.sec-head{display:flex;align-items:center;gap:14px;padding:18px 22px;border-radius:14px;margin-bottom:24px}
+.sh-icon{font-size:30px}
+.sh-info h2{font-size:19px;font-weight:900;line-height:1.2}
+.sh-info p{font-size:13px;opacity:.78;margin-top:2px}
+
+.step{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 22px;background:var(--soft);border-bottom:1.5px solid var(--bdr)}
+.step-badge{font-family:var(--mono);font-size:13px;font-weight:700;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.step-title{font-size:16px;font-weight:900;color:var(--ink)}
+.step-sub{font-size:12px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.step-body{padding:20px 24px}
+.step-body p{font-size:15px;color:var(--ink2);line-height:1.85;margin-bottom:12px}
+.step-body p:last-child{margin-bottom:0}
+.step-body p strong{color:var(--ink)}
+.step-body .hl{background:#FFF2CC;padding:1px 6px;border-radius:4px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)}
+.step-body .cw{font-family:var(--mono);color:var(--c-color);font-weight:700}
+.step-body .pw{font-family:var(--mono);color:var(--py-color);font-weight:700}
+.step-body .tw{color:var(--tval);font-weight:700}
+.step-body .fw{color:var(--fval);font-weight:700}
+
+/* flow diagram for if */
+.if-flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:18px 0;padding:20px;background:var(--soft);border-radius:12px}
+.if-cond{background:var(--accent-light);border:2px solid var(--accent);border-radius:10px;padding:12px 24px;font-family:var(--mono);font-weight:700;color:var(--accent);font-size:14px;position:relative}
+.if-cond::after{content:'조건 검사';position:absolute;top:-9px;left:14px;background:var(--panel);font-family:var(--sans);font-size:10px;color:var(--ink3);padding:0 6px}
+.if-branch{display:flex;gap:40px;margin-top:8px;align-items:flex-start}
+.if-arm{display:flex;flex-direction:column;align-items:center;gap:6px}
+.if-arm-lbl{font-family:var(--mono);font-size:12px;font-weight:700}
+.if-arm.true .if-arm-lbl{color:var(--tval)} .if-arm.false .if-arm-lbl{color:var(--fval)}
+.if-arm-box{background:var(--panel);border:2px solid var(--bdr);border-radius:8px;padding:10px 18px;font-size:13px;color:var(--ink2);text-align:center;min-width:120px}
+.if-arm.true .if-arm-box{border-color:var(--tval)} .if-arm.false .if-arm-box{border-color:var(--fval)}
+
+.syn-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.syn-table th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;border-bottom:2px solid var(--bdr);background:var(--soft)}
+.syn-table th.c-col{color:var(--c-color)} .syn-table th.py-col{color:var(--py-color)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.syn-table td.label{font-weight:700;color:var(--ink2);font-size:13px}
+.syn-table td.code{font-family:var(--mono);font-size:13px;color:var(--ink)}
+.syn-table td.code.c-bg{background:rgba(11,110,153,.05)}
+.syn-table td.code.py-bg{background:rgba(42,140,74,.05)}
+.syn-table tr:hover td{background:rgba(0,0,0,.015)}
+
+/* comparison operators grid */
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:14px 0}
+.op-card{background:var(--soft);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;text-align:center}
+.op-sym{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent)}
+.op-desc{font-size:12.5px;color:var(--ink2);margin-top:4px;font-weight:600}
+.op-ex{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:4px}
+
+.pg{background:var(--panel);border:1.5px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.pg-head{background:var(--ink);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pg-head .pt{color:#FFF9F0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.lang-tabs{display:flex;gap:6px}
+.ltab{font-family:var(--mono);font-size:12px;font-weight:700;padding:5px 16px;border-radius:7px;border:none;cursor:pointer;transition:background .15s,color .15s}
+.ltab-c{background:rgba(11,110,153,.25);color:#5CC8F5}
+.ltab-c.on{background:var(--c-color);color:#fff}
+.ltab-py{background:rgba(42,140,74,.25);color:#78E89A}
+.ltab-py.on{background:var(--py-color);color:#fff}
+.pg-body{padding:20px 22px}
+
+.code-wrap{position:relative;margin-bottom:16px}
+.code-block{font-family:var(--mono);font-size:13.5px;line-height:1.8;background:var(--code-bg);color:#D8CAB0;border-radius:10px;padding:18px 20px;overflow-x:auto;white-space:pre;display:none;border:1.5px solid #2C2C3A}
+.code-block.on{display:block}
+.kw{color:#FF8A5C} .fn{color:#FFD37A} .cm{color:#5E5E72;font-style:italic}
+.nm{color:#9AEEB4} .st{color:#A8D8FF} .pp{color:#FF9FCC} .tp{color:#84E2FF} .op{color:#FF9868}
+.copy-btn{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11px;font-weight:700;background:#2C2C3A;color:#9090B0;border:1px solid #40405A;border-radius:5px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#fff}
+
+.line-explain{background:var(--soft);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px}
+.lex{display:flex;gap:10px;padding:4px 0;align-items:flex-start}
+.lex-code{font-family:var(--mono);font-weight:700;color:var(--accent);min-width:160px;font-size:13px}
+.lex-desc{color:var(--ink2);line-height:1.7}
+
+.io-console{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.io-panel{border-radius:10px;overflow:hidden;border:1.5px solid var(--bdr)}
+.io-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:8px 14px;display:flex;align-items:center;gap:6px}
+.io-label.stdin{background:var(--c-light);color:var(--c-color)}
+.io-label.stdout{background:#FBF3D8;color:var(--out)}
+.stdin-area{width:100%;font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#8CD9FF;border:none;padding:14px 16px;line-height:1.8;resize:vertical;min-height:96px;outline:none;display:block}
+.stdin-area:focus{box-shadow:inset 0 0 0 2px rgba(11,110,153,.4)}
+.stdout-area{font-family:var(--mono);font-size:14px;background:var(--term-bg);color:#B8F0C8;padding:14px 16px;line-height:1.8;min-height:96px;white-space:pre-wrap;word-break:break-word;overflow-y:auto}
+.stdout-area .out-dim{color:#4A5060}
+.stdout-area .out-err{color:#FF8080}
+
+.run-bar{display:flex;align-items:center;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+.run-btn{font-family:var(--sans);font-size:14px;font-weight:700;padding:10px 24px;border-radius:9px;border:none;cursor:pointer;color:#fff;background:var(--accent);transition:filter .15s,transform .1s;display:flex;align-items:center;gap:7px}
+.run-btn:active{transform:scale(.96)} .run-btn:hover{filter:brightness(1.12)}
+.run-hint{font-size:12.5px;color:var(--ink3)}
+.reset-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:8px;border:1px solid var(--bdr);cursor:pointer;background:var(--panel);color:var(--ink2);transition:background .15s}
+.reset-btn:hover{background:var(--soft)}
+
+.tip{font-size:14px;color:var(--ink2);background:rgba(123,63,160,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:14px;line-height:1.8}
+.tip strong{color:var(--ink)}
+.tip code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+
+.warn-box{font-size:14px;color:var(--ink2);background:#FDF0E8;border:1.5px solid #F0C0A0;border-radius:10px;padding:14px 18px;margin-top:14px;line-height:1.8}
+.warn-box strong{color:var(--fval)}
+.warn-box code{font-family:var(--mono);background:rgba(0,0,0,.05);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--fval)}
+
+@media(max-width:680px){
+  header{padding:20px 18px 16px}
+  .tnav{padding:0 10px}
+  main{padding:20px 12px 70px}
+  .step-body,.pg-body{padding:16px 14px}
+  .io-console{grid-template-columns:1fr}
+  .lex-code{min-width:120px}
+  .if-branch{gap:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">세영코딩연구소 · 코딩 기초 · 조건문</div>
+  <h1><span class="cc">C</span>와 <span class="pp">파이썬</span> 조건문 실습</h1>
+  <p>참·거짓 판단부터 if·elif·논리연산자까지 · 입력을 바꿔 결과를 직접 확인하세요</p>
+</header>
+
+<nav class="tnav">
+  <button class="tbtn on" onclick="goSec('s0',this)">🚀 시작하기 (참/거짓)</button>
+  <button class="tbtn" onclick="goSec('s1',this)">① if 문</button>
+  <button class="tbtn" onclick="goSec('s2',this)">② if-else</button>
+  <button class="tbtn" onclick="goSec('s3',this)">③ else if / elif</button>
+  <button class="tbtn" onclick="goSec('s4',this)">④ 논리 연산자</button>
+  <button class="tbtn" onclick="goSec('s5',this)">⑤ 플레이그라운드</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ S0: 시작하기 ══════════════ -->
+<div id="s0" class="sec on">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(123,63,160,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">🚀</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">시작하기 — 참과 거짓</h2><p>조건문은 "참이면 실행, 거짓이면 건너뛰기"입니다</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">조건문이란?</span><span class="step-sub">참/거짓 판단</span></div>
+    <div class="step-body">
+      <p><strong>조건문(conditional)</strong>은 어떤 <span class="hl">조건이 참(True)인지 거짓(False)인지</span> 판단해서<br>
+      실행할 코드를 고르는 문장이에요. 프로그램이 <strong>"생각하고 선택하게"</strong> 만드는 핵심 도구입니다!</p>
+      <p>예: "점수가 60점 이상이면 <span class="tw">합격</span>, 아니면 <span class="fw">불합격</span>"</p>
+      <div class="if-flow">
+        <div class="if-cond">점수 &gt;= 60 ?</div>
+        <div class="if-branch">
+          <div class="if-arm true"><span class="if-arm-lbl">참 (True) ↓</span><div class="if-arm-box">"합격" 출력</div></div>
+          <div class="if-arm false"><span class="if-arm-lbl">거짓 (False) ↓</span><div class="if-arm-box">"불합격" 출력</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">2</span><span class="step-title">비교 연산자</span><span class="step-sub">조건 만들기</span></div>
+    <div class="step-body">
+      <p>조건은 <strong>비교 연산자</strong>로 만들어요. C와 파이썬은 거의 똑같아요!</p>
+      <div class="op-grid">
+        <div class="op-card"><div class="op-sym">==</div><div class="op-desc">같다</div><div class="op-ex">a == b</div></div>
+        <div class="op-card"><div class="op-sym">!=</div><div class="op-desc">다르다</div><div class="op-ex">a != b</div></div>
+        <div class="op-card"><div class="op-sym">&gt;</div><div class="op-desc">크다</div><div class="op-ex">a &gt; b</div></div>
+        <div class="op-card"><div class="op-sym">&lt;</div><div class="op-desc">작다</div><div class="op-ex">a &lt; b</div></div>
+        <div class="op-card"><div class="op-sym">&gt;=</div><div class="op-desc">크거나 같다</div><div class="op-ex">a &gt;= b</div></div>
+        <div class="op-card"><div class="op-sym">&lt;=</div><div class="op-desc">작거나 같다</div><div class="op-ex">a &lt;= b</div></div>
+      </div>
+      <div class="warn-box">⚠️ <strong>가장 많이 하는 실수!</strong> <code>=</code>는 <strong>대입</strong>(값 넣기), <code>==</code>는 <strong>비교</strong>(같은지 확인)예요.<br>
+      조건문에서 <code>if (a = 5)</code>처럼 <code>=</code> 하나만 쓰면 완전히 다른 뜻이 됩니다! 꼭 <code>==</code> 두 개!</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">3</span><span class="step-title">C와 파이썬의 조건문 모양</span><span class="step-sub">중괄호 vs 들여쓰기</span></div>
+    <div class="step-body">
+      <table class="syn-table">
+        <thead><tr><th>요소</th><th class="c-col">C 언어</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr><td class="label">조건 감싸기</td><td class="code c-bg">if (조건) { ... }</td><td class="code py-bg">if 조건:</td></tr>
+          <tr><td class="label">블록 표시</td><td class="code c-bg">중괄호 { }</td><td class="code py-bg">들여쓰기 (스페이스 4칸)</td></tr>
+          <tr><td class="label">조건 끝</td><td class="code c-bg">괄호 ( )</td><td class="code py-bg">콜론 :</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>C는 중괄호 { }</strong>로 코드 묶음을 표시하고, <strong>파이썬은 들여쓰기</strong>로 표시해요.<br>
+      파이썬에서 들여쓰기를 안 하면 오류가 나니 꼭 <strong>스페이스 4칸(또는 Tab)</strong>으로 맞춰주세요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S1: if 문 ══════════════ -->
+<div id="s1" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(30,132,73,.1),transparent);border-left:5px solid var(--tval)">
+    <div class="sh-icon">✅</div>
+    <div class="sh-info"><h2 style="color:var(--tval)">if 문 (기본)</h2><p>조건이 참일 때만 실행 · 거짓이면 그냥 넘어감</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--tval)">1</span><span class="step-title">가장 단순한 if</span><span class="step-sub">참이면 실행</span></div>
+    <div class="step-body">
+      <p><strong>if 문</strong>은 조건이 <span class="tw">참</span>일 때만 안쪽 코드를 실행해요. 거짓이면 아무 일도 안 하고 넘어가요.</p>
+      <table class="syn-table">
+        <thead><tr><th class="c-col">C 언어</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code c-bg">if (n &gt; 0) {<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("양수");<br>}</td>
+            <td class="code py-bg">if n &gt; 0:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("양수")</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 양수인지 확인하기</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('c1','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('c1','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="c1-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">if</span> (n <span class="op">&gt;</span> <span class="nm">0</span>) {           <span class="cm">// 조건: n이 0보다 큰가?</span>
+        <span class="fn">printf</span>(<span class="st">"%d은(는) 양수입니다\n"</span>, n);
+    }
+    <span class="fn">printf</span>(<span class="st">"검사 끝\n"</span>);      <span class="cm">// 조건과 무관하게 항상 실행</span>
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="c1-py"><span class="cm"># 양수인지 확인</span>
+n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> n <span class="op">&gt;</span> <span class="nm">0</span>:                 <span class="cm"># 조건: n이 0보다 큰가?</span>
+    <span class="fn">print</span>(<span class="st">f"{n}은(는) 양수입니다"</span>)
+<span class="fn">print</span>(<span class="st">"검사 끝"</span>)          <span class="cm"># 조건과 무관하게 항상 실행</span></pre>
+        <button class="copy-btn" id="c1-copy" onclick="doCopy('c1')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">if (n &gt; 0) {</span><span class="lex-desc">n이 0보다 크면 중괄호 안 실행, 아니면 건너뜀</span></div>
+        <div class="lex"><span class="lex-code">"검사 끝"</span><span class="lex-desc">if 밖의 문장 — 조건과 상관없이 항상 실행됨</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('c1')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('c1','7')">↺ 입력 초기화</button>
+        <span class="run-hint">양수(7), 음수(-3), 0을 각각 넣어보며 차이를 관찰!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="c1-in" spellcheck="false">7</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="c1-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <strong>-3</strong>을 넣으면 "양수입니다"는 안 나오고 "검사 끝"만 나와요. if 조건이 거짓이라 안쪽을 건너뛴 거예요!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S2: if-else ══════════════ -->
+<div id="s2" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(123,63,160,.1),transparent);border-left:5px solid var(--accent)">
+    <div class="sh-icon">⚖️</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">if-else (양자택일)</h2><p>참이면 이것, 거짓이면 저것 — 둘 중 하나는 반드시 실행</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">1</span><span class="step-title">if-else 구조</span><span class="step-sub">둘 중 하나</span></div>
+    <div class="step-body">
+      <p><strong>else</strong>는 "그렇지 않으면"이라는 뜻이에요. if 조건이 <span class="fw">거짓</span>일 때 else 블록이 실행돼요.</p>
+      <div class="if-flow">
+        <div class="if-cond">score &gt;= 60 ?</div>
+        <div class="if-branch">
+          <div class="if-arm true"><span class="if-arm-lbl">참 → if 블록</span><div class="if-arm-box">"합격" 출력</div></div>
+          <div class="if-arm false"><span class="if-arm-lbl">거짓 → else 블록</span><div class="if-arm-box">"불합격" 출력</div></div>
+        </div>
+      </div>
+      <table class="syn-table">
+        <thead><tr><th class="c-col">C 언어</th><th class="py-col">파이썬</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code c-bg">if (score &gt;= 60) {<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("합격");<br>} else {<br>&nbsp;&nbsp;&nbsp;&nbsp;printf("불합격");<br>}</td>
+            <td class="code py-bg">if score &gt;= 60:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("합격")<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("불합격")</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 합격/불합격 판정 (60점 기준)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('c2','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('c2','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="c2-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> score;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>score);
+    <span class="kw">if</span> (score <span class="op">&gt;=</span> <span class="nm">60</span>) {
+        <span class="fn">printf</span>(<span class="st">"합격! (%d점)\n"</span>, score);
+    } <span class="kw">else</span> {
+        <span class="fn">printf</span>(<span class="st">"불합격 (%d점)\n"</span>, score);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="c2-py"><span class="cm"># 합격/불합격 판정</span>
+score <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> score <span class="op">&gt;=</span> <span class="nm">60</span>:
+    <span class="fn">print</span>(<span class="st">f"합격! ({score}점)"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"불합격 ({score}점)"</span>)</pre>
+        <button class="copy-btn" id="c2-copy" onclick="doCopy('c2')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">} else {</span><span class="lex-desc">C에서 else는 if 닫는 중괄호 뒤에 붙여요</span></div>
+        <div class="lex"><span class="lex-code">else:</span><span class="lex-desc">파이썬 else는 콜론(:)으로 끝나고 들여쓰기</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('c2')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('c2','75')">↺ 입력 초기화</button>
+        <span class="run-hint">75(합격), 45(불합격), 60(경계값)을 넣어보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="c2-in" spellcheck="false">75</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="c2-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 정확히 <strong>60</strong>을 넣으면? <code>&gt;=</code>는 "크거나 같다"이므로 60도 합격이에요! 경계값 확인은 중요한 습관입니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S3: else if / elif ══════════════ -->
+<div id="s3" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(184,134,11,.12),transparent);border-left:5px solid var(--out)">
+    <div class="sh-icon">🪜</div>
+    <div class="sh-info"><h2 style="color:var(--out)">else if / elif (다중 조건)</h2><p>여러 조건을 위에서 아래로 차례로 검사</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--out)">1</span><span class="step-title">여러 갈래로 나누기</span><span class="step-sub">계단식 검사</span></div>
+    <div class="step-body">
+      <p>조건이 3개 이상일 때는 <span class="cw">else if</span>(C) / <span class="pw">elif</span>(파이썬)를 써요.<br>
+      <strong>위에서 아래로 차례차례</strong> 검사하다가 <span class="tw">참인 조건</span>을 만나면 거기만 실행하고 끝나요!</p>
+      <table class="syn-table">
+        <thead><tr><th class="c-col">C — else if</th><th class="py-col">파이썬 — elif</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="code c-bg">if (s &gt;= 90) g = 'A';<br>else if (s &gt;= 80) g = 'B';<br>else if (s &gt;= 70) g = 'C';<br>else g = 'F';</td>
+            <td class="code py-bg">if s &gt;= 90: g = "A"<br>elif s &gt;= 80: g = "B"<br>elif s &gt;= 70: g = "C"<br>else: g = "F"</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>순서가 중요해요!</strong> 위에서부터 검사하므로 <strong>큰 조건부터</strong> 써야 해요.<br>
+      만약 <code>s &gt;= 70</code>을 맨 위에 두면, 95점도 70 이상이라 C등급이 되어버려요! (위에서 먼저 걸림)</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 점수 → 등급 (A/B/C/D/F)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('c3','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('c3','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="c3-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> s;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>s);
+    <span class="kw">char</span> grade;
+    <span class="kw">if</span> (s <span class="op">&gt;=</span> <span class="nm">90</span>)      grade <span class="op">=</span> <span class="st">'A'</span>;
+    <span class="kw">else if</span> (s <span class="op">&gt;=</span> <span class="nm">80</span>) grade <span class="op">=</span> <span class="st">'B'</span>;
+    <span class="kw">else if</span> (s <span class="op">&gt;=</span> <span class="nm">70</span>) grade <span class="op">=</span> <span class="st">'C'</span>;
+    <span class="kw">else if</span> (s <span class="op">&gt;=</span> <span class="nm">60</span>) grade <span class="op">=</span> <span class="st">'D'</span>;
+    <span class="kw">else</span>              grade <span class="op">=</span> <span class="st">'F'</span>;
+    <span class="fn">printf</span>(<span class="st">"%d점 -&gt; %c등급\n"</span>, s, grade);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="c3-py"><span class="cm"># 점수 → 등급</span>
+s <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> s <span class="op">&gt;=</span> <span class="nm">90</span>:
+    grade <span class="op">=</span> <span class="st">"A"</span>
+<span class="kw">elif</span> s <span class="op">&gt;=</span> <span class="nm">80</span>:
+    grade <span class="op">=</span> <span class="st">"B"</span>
+<span class="kw">elif</span> s <span class="op">&gt;=</span> <span class="nm">70</span>:
+    grade <span class="op">=</span> <span class="st">"C"</span>
+<span class="kw">elif</span> s <span class="op">&gt;=</span> <span class="nm">60</span>:
+    grade <span class="op">=</span> <span class="st">"D"</span>
+<span class="kw">else</span>:
+    grade <span class="op">=</span> <span class="st">"F"</span>
+<span class="fn">print</span>(<span class="st">f"{s}점 -&gt; {grade}등급"</span>)</pre>
+        <button class="copy-btn" id="c3-copy" onclick="doCopy('c3')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">else if / elif</span><span class="lex-desc">앞 조건이 거짓일 때만 다음 조건 검사</span></div>
+        <div class="lex"><span class="lex-code">마지막 else</span><span class="lex-desc">위 조건이 모두 거짓일 때 실행 (나머지 전부)</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('c3')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('c3','85')">↺ 입력 초기화</button>
+        <span class="run-hint">95, 85, 72, 55 등 여러 점수로 등급 변화를 확인!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="c3-in" spellcheck="false">85</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="c3-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S4: 논리 연산자 ══════════════ -->
+<div id="s4" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.1),transparent);border-left:5px solid var(--c-color)">
+    <div class="sh-icon">🔗</div>
+    <div class="sh-info"><h2 style="color:var(--c-color)">논리 연산자</h2><p>여러 조건을 동시에 · 그리고(AND) · 또는(OR) · 부정(NOT)</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--c-color)">1</span><span class="step-title">AND · OR · NOT</span><span class="step-sub">조건 결합</span></div>
+    <div class="step-body">
+      <p>조건을 <strong>여러 개 묶을 때</strong> 논리 연산자를 써요.</p>
+      <table class="syn-table">
+        <thead><tr><th>의미</th><th class="c-col">C 언어</th><th class="py-col">파이썬</th><th>설명</th></tr></thead>
+        <tbody>
+          <tr><td class="label">그리고 (AND)</td><td class="code c-bg">&amp;&amp;</td><td class="code py-bg">and</td><td style="font-size:13px;color:var(--ink2)">둘 다 참이어야 참</td></tr>
+          <tr><td class="label">또는 (OR)</td><td class="code c-bg">||</td><td class="code py-bg">or</td><td style="font-size:13px;color:var(--ink2)">하나라도 참이면 참</td></tr>
+          <tr><td class="label">부정 (NOT)</td><td class="code c-bg">!</td><td class="code py-bg">not</td><td style="font-size:13px;color:var(--ink2)">참↔거짓 뒤집기</td></tr>
+        </tbody>
+      </table>
+      <div class="tip">💡 <strong>예시:</strong> "13살 이상 <strong>그리고</strong> 19살 미만이면 청소년"<br>
+      • C: <code>if (age &gt;= 13 &amp;&amp; age &lt; 19)</code><br>
+      • 파이썬: <code>if age &gt;= 13 and age &lt; 19:</code> (또는 <code>13 &lt;= age &lt; 19</code>도 가능!)</div>
+      <div class="tip">🐍 <strong>파이썬만의 편리함:</strong> <code>13 &lt;= age &lt; 19</code>처럼 <strong>연속 비교</strong>가 돼요! C에서는 불가능하고 반드시 <code>&amp;&amp;</code>로 묶어야 해요.</div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 나이로 연령대 판별 (AND 사용)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('c4','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('c4','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="c4-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> age;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>age);
+    <span class="kw">if</span> (age <span class="op">&lt;</span> <span class="nm">13</span>) {
+        <span class="fn">printf</span>(<span class="st">"어린이\n"</span>);
+    } <span class="kw">else if</span> (age <span class="op">&gt;=</span> <span class="nm">13</span> <span class="op">&amp;&amp;</span> age <span class="op">&lt;</span> <span class="nm">19</span>) {
+        <span class="fn">printf</span>(<span class="st">"청소년\n"</span>);   <span class="cm">// 13 이상 AND 19 미만</span>
+    } <span class="kw">else</span> {
+        <span class="fn">printf</span>(<span class="st">"성인\n"</span>);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="c4-py"><span class="cm"># 나이로 연령대 판별</span>
+age <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> age <span class="op">&lt;</span> <span class="nm">13</span>:
+    <span class="fn">print</span>(<span class="st">"어린이"</span>)
+<span class="kw">elif</span> <span class="nm">13</span> <span class="op">&lt;=</span> age <span class="op">&lt;</span> <span class="nm">19</span>:   <span class="cm"># 연속 비교! (파이썬 전용)</span>
+    <span class="fn">print</span>(<span class="st">"청소년"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"성인"</span>)</pre>
+        <button class="copy-btn" id="c4-copy" onclick="doCopy('c4')">복사</button>
+      </div>
+      <div class="line-explain">
+        <div class="lex"><span class="lex-code">age &gt;= 13 && age &lt; 19</span><span class="lex-desc">C: 두 조건을 &&로 묶어 "동시에 만족"</span></div>
+        <div class="lex"><span class="lex-code">13 &lt;= age &lt; 19</span><span class="lex-desc">파이썬: 연속 비교로 간결하게!</span></div>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('c4')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('c4','15')">↺ 입력 초기화</button>
+        <span class="run-hint">8, 15, 25 등 여러 나이로 연령대를 확인!</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="c4-in" spellcheck="false">15</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="c4-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🖥 윤년 판별 (AND · OR 복합)</div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('c5','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('c5','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+<pre class="code-block on" id="c5-c"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> y;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>y);
+    <span class="cm">// 4의 배수 AND (100의 배수 아님 OR 400의 배수)</span>
+    <span class="kw">if</span> ((y <span class="op">%</span> <span class="nm">4</span> <span class="op">==</span> <span class="nm">0</span> <span class="op">&amp;&amp;</span> y <span class="op">%</span> <span class="nm">100</span> <span class="op">!=</span> <span class="nm">0</span>) <span class="op">||</span> y <span class="op">%</span> <span class="nm">400</span> <span class="op">==</span> <span class="nm">0</span>) {
+        <span class="fn">printf</span>(<span class="st">"%d년은 윤년\n"</span>, y);
+    } <span class="kw">else</span> {
+        <span class="fn">printf</span>(<span class="st">"%d년은 평년\n"</span>, y);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}</pre>
+<pre class="code-block" id="c5-py"><span class="cm"># 윤년 판별</span>
+y <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="cm"># 4의 배수 and (100의 배수 아님 or 400의 배수)</span>
+<span class="kw">if</span> (y <span class="op">%</span> <span class="nm">4</span> <span class="op">==</span> <span class="nm">0</span> <span class="kw">and</span> y <span class="op">%</span> <span class="nm">100</span> <span class="op">!=</span> <span class="nm">0</span>) <span class="kw">or</span> y <span class="op">%</span> <span class="nm">400</span> <span class="op">==</span> <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{y}년은 윤년"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"{y}년은 평년"</span>)</pre>
+        <button class="copy-btn" id="c5-copy" onclick="doCopy('c5')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('c5')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetStdin('c5','2024')">↺ 입력 초기화</button>
+        <span class="run-hint">2024(윤년), 2023(평년), 1900(평년!), 2000(윤년!)</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="c5-in" spellcheck="false">2024</textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="c5-out"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip">💡 <strong>윤년 규칙:</strong> 4로 나눠지면 윤년, 단 100으로 나눠지면 평년, 그래도 400으로 나눠지면 윤년.<br>
+      그래서 <strong>1900년은 평년</strong>(100의 배수), <strong>2000년은 윤년</strong>(400의 배수)! AND와 OR을 잘 조합한 대표 예제예요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ S5: 플레이그라운드 ══════════════ -->
+<div id="s5" class="sec">
+  <div class="sec-head" style="background:linear-gradient(135deg,rgba(11,110,153,.08),rgba(42,140,74,.08));border-left:5px solid var(--accent)">
+    <div class="sh-icon">🎮</div>
+    <div class="sh-info"><h2 style="color:var(--accent)">플레이그라운드</h2><p>조건문 예제를 골라 입력을 바꿔가며 실험하세요</p></div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-badge" style="background:var(--accent)">▶</span><span class="step-title">예제 선택 & 실험</span><span class="step-sub">골라서 실행</span></div>
+    <div class="step-body">
+      <p>예제를 선택하면 C/파이썬 코드가 바뀌어요. STDIN을 수정하고 실행해 조건 분기를 관찰하세요!</p>
+      <div class="run-bar">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2)">예제:</span>
+        <select id="pg-select" onchange="loadTemplate()" style="font-family:var(--sans);font-size:14px;font-weight:700;padding:9px 14px;border:2px solid var(--bdr);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;outline:none">
+          <option value="abs_val">절댓값 구하기</option>
+          <option value="max3">세 수 중 최댓값</option>
+          <option value="odd_even">홀짝 판별</option>
+          <option value="sign">양수/음수/0 판별</option>
+          <option value="leap">윤년 판별</option>
+          <option value="triangle">삼각형 성립 조건</option>
+          <option value="bmi">체질량 판정</option>
+          <option value="rps">가위바위보 승패</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="pg-head">
+      <div class="pt">🎮 <span id="pg-title">절댓값 구하기</span></div>
+      <div class="lang-tabs">
+        <button class="ltab ltab-c on" onclick="switchLang('pg','c',this)">C</button>
+        <button class="ltab ltab-py" onclick="switchLang('pg','py',this)">Python</button>
+      </div>
+    </div>
+    <div class="pg-body">
+      <div class="code-wrap">
+        <pre class="code-block on" id="pg-c"></pre>
+        <pre class="code-block" id="pg-py"></pre>
+        <button class="copy-btn" id="pg-copy" onclick="doCopy('pg')">복사</button>
+      </div>
+      <div class="run-bar">
+        <button class="run-btn" onclick="runIO('pg')">▶ 실행</button>
+        <button class="reset-btn" onclick="resetPgStdin()">↺ 입력 초기화</button>
+        <span class="run-hint" id="pg-hint">STDIN을 수정하고 실행해보세요</span>
+      </div>
+      <div class="io-console">
+        <div class="io-panel"><div class="io-label stdin">📥 STDIN</div><textarea class="stdin-area" id="pg-in" spellcheck="false" style="min-height:110px"></textarea></div>
+        <div class="io-panel"><div class="io-label stdout">📤 STDOUT</div><div class="stdout-area" id="pg-out" style="min-height:110px"><span class="out-dim">실행 결과가 여기 나와요...</span></div></div>
+      </div>
+      <div class="tip" id="pg-tip">💡 예제마다 STDIN 형식이 달라요. 힌트를 참고해 입력을 바꿔보세요!</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════ NAV
+function goSec(id, btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+// ══════════════════════════════════════════════════ LANG SWITCH
+function switchLang(prefix, lang, btn){
+  const cBlock=document.getElementById(prefix+'-c');
+  const pyBlock=document.getElementById(prefix+'-py');
+  const head=btn.closest('.pg-head');
+  const cBtn=head.querySelector('.ltab-c');
+  const pyBtn=head.querySelector('.ltab-py');
+  if(lang==='c'){
+    cBlock.classList.add('on'); pyBlock.classList.remove('on');
+    cBtn.classList.add('on'); pyBtn.classList.remove('on');
+  } else {
+    pyBlock.classList.add('on'); cBlock.classList.remove('on');
+    pyBtn.classList.add('on'); cBtn.classList.remove('on');
+  }
+}
+// ══════════════════════════════════════════════════ COPY
+function doCopy(prefix){
+  const active=document.querySelector('#'+prefix+'-c.on, #'+prefix+'-py.on');
+  if(!active)return;
+  navigator.clipboard.writeText(active.innerText).then(()=>{
+    const btn=document.getElementById(prefix+'-copy');
+    btn.textContent='✓ 복사됨'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='복사'; btn.classList.remove('copied');},1800);
+  });
+}
+// ══════════════════════════════════════════════════ STDIN
+function resetStdin(prefix, val){
+  document.getElementById(prefix+'-in').value = val.replace(/\\n/g,'\n');
+  document.getElementById(prefix+'-out').innerHTML='<span class="out-dim">입력을 초기화했어요. 실행해보세요...</span>';
+}
+function makeReader(text){
+  const tokens = text.trim().split(/\s+/).filter(x=>x.length>0);
+  let ti=0;
+  return {
+    nextToken(){ return ti<tokens.length ? tokens[ti++] : ''; },
+    nextInt(){ return parseInt(this.nextToken()); },
+    nextFloat(){ return parseFloat(this.nextToken()); },
+    all(){ return tokens; }
+  };
+}
+// ══════════════════════════════════════════════════ SIM ENGINE
+const SIM = {
+  // inline demos
+  c1(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    let out='';
+    if(n>0) out += `${n}은(는) 양수입니다\n`;
+    out += '검사 끝';
+    return out;
+  },
+  c2(stdin){
+    const r=makeReader(stdin); const s=r.nextInt();
+    if(isNaN(s)) return {err:"점수를 입력하세요"};
+    return s>=60 ? `합격! (${s}점)` : `불합격 (${s}점)`;
+  },
+  c3(stdin){
+    const r=makeReader(stdin); const s=r.nextInt();
+    if(isNaN(s)) return {err:"점수를 입력하세요"};
+    let g;
+    if(s>=90)g='A';else if(s>=80)g='B';else if(s>=70)g='C';else if(s>=60)g='D';else g='F';
+    return `${s}점 -> ${g}등급`;
+  },
+  c4(stdin){
+    const r=makeReader(stdin); const age=r.nextInt();
+    if(isNaN(age)) return {err:"나이를 입력하세요"};
+    if(age<13) return '어린이';
+    else if(age>=13 && age<19) return '청소년';
+    else return '성인';
+  },
+  c5(stdin){
+    const r=makeReader(stdin); const y=r.nextInt();
+    if(isNaN(y)) return {err:"연도를 입력하세요"};
+    const leap = (y%4===0 && y%100!==0) || y%400===0;
+    return `${y}년은 ${leap?'윤년':'평년'}`;
+  },
+  // playground
+  abs_val(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    const a = n<0 ? -n : n;
+    return `|${n}| = ${a}`;
+  },
+  max3(stdin){
+    const r=makeReader(stdin);
+    const a=r.nextInt(),b=r.nextInt(),c=r.nextInt();
+    if(isNaN(a)||isNaN(b)||isNaN(c)) return {err:"세 정수를 입력하세요 (예: 3 9 5)"};
+    let mx=a;
+    if(b>mx)mx=b;
+    if(c>mx)mx=c;
+    return `최댓값: ${mx}`;
+  },
+  odd_even(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    return `${n}은(는) ${n%2===0?'짝수':'홀수'}입니다`;
+  },
+  sign(stdin){
+    const r=makeReader(stdin); const n=r.nextInt();
+    if(isNaN(n)) return {err:"정수를 입력하세요"};
+    let s;
+    if(n>0)s='양수';else if(n<0)s='음수';else s='0(영)';
+    return `${n}은(는) ${s}입니다`;
+  },
+  leap(stdin){
+    const r=makeReader(stdin); const y=r.nextInt();
+    if(isNaN(y)) return {err:"연도를 입력하세요"};
+    const leap = (y%4===0 && y%100!==0) || y%400===0;
+    return `${y}년은 ${leap?'윤년 (366일)':'평년 (365일)'}`;
+  },
+  triangle(stdin){
+    const r=makeReader(stdin);
+    const a=r.nextInt(),b=r.nextInt(),c=r.nextInt();
+    if(isNaN(a)||isNaN(b)||isNaN(c)) return {err:"세 변의 길이를 입력하세요 (예: 3 4 5)"};
+    if(a<=0||b<=0||c<=0) return {err:"변의 길이는 양수여야 해요"};
+    const ok = (a+b>c) && (a+c>b) && (b+c>a);
+    if(!ok) return `${a}, ${b}, ${c} -> 삼각형이 될 수 없습니다`;
+    let kind;
+    if(a===b && b===c) kind='정삼각형';
+    else if(a===b || b===c || a===c) kind='이등변삼각형';
+    else kind='일반삼각형';
+    return `${a}, ${b}, ${c} -> ${kind}`;
+  },
+  bmi(stdin){
+    const r=makeReader(stdin);
+    const h=r.nextFloat(), w=r.nextFloat();
+    if(isNaN(h)||isNaN(w)||h<=0) return {err:"키(cm)와 몸무게(kg)를 입력하세요 (예: 170 65)"};
+    const m=h/100;
+    const bmi=w/(m*m);
+    let cat;
+    if(bmi<18.5)cat='저체중';
+    else if(bmi<23)cat='정상';
+    else if(bmi<25)cat='과체중';
+    else cat='비만';
+    return `BMI: ${bmi.toFixed(1)} -> ${cat}`;
+  },
+  rps(stdin){
+    const r=makeReader(stdin);
+    const me=r.nextToken(), you=r.nextToken();
+    const valid=['가위','바위','보'];
+    if(!valid.includes(me)||!valid.includes(you)) return {err:"가위/바위/보 중 두 개를 입력 (예: 가위 보)"};
+    if(me===you) return `나:${me} vs 상대:${you} -> 비김`;
+    const win = (me==='가위'&&you==='보')||(me==='바위'&&you==='가위')||(me==='보'&&you==='바위');
+    return `나:${me} vs 상대:${you} -> ${win?'이김! 🎉':'짐 😢'}`;
+  }
+};
+// ══════════════════════════════════════════════════ RUN
+function runIO(prefix){
+  const outEl=document.getElementById(prefix+'-out');
+  const inEl=document.getElementById(prefix+'-in');
+  const stdin = inEl ? inEl.value : '';
+  let simKey = prefix;
+  if(prefix==='pg') simKey = currentTemplate;
+  const fn = SIM[simKey];
+  if(!fn){ outEl.innerHTML='<span class="out-err">시뮬레이터를 찾을 수 없습니다</span>'; return; }
+  let result;
+  try{ result = fn(stdin); }
+  catch(e){ outEl.innerHTML='<span class="out-err">실행 오류: '+e.message+'</span>'; return; }
+  if(result && typeof result==='object' && result.err){
+    outEl.innerHTML='<span class="out-err">⚠ '+result.err+'</span>'; return;
+  }
+  outEl.textContent='';
+  const text=String(result);
+  let i=0;
+  (function type(){
+    if(i>text.length){return;}
+    outEl.textContent=text.slice(0,i);
+    i+=2;
+    if(i<=text.length+1) setTimeout(type, 12);
+    else outEl.textContent=text;
+  })();
+}
+// ══════════════════════════════════════════════════ TEMPLATES
+let currentTemplate='abs_val';
+const TEMPLATES = {
+  abs_val:{
+    title:'절댓값 구하기', stdin:'-8', hint:'정수 하나 입력 (음수도 OK)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">if</span> (n <span class="op">&lt;</span> <span class="nm">0</span>) n <span class="op">=</span> <span class="op">-</span>n;   <span class="cm">// 음수면 부호 바꾸기</span>
+    <span class="fn">printf</span>(<span class="st">"%d\\n"</span>, n);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> n <span class="op">&lt;</span> <span class="nm">0</span>:
+    n <span class="op">=</span> <span class="op">-</span>n        <span class="cm"># 음수면 부호 바꾸기</span>
+<span class="fn">print</span>(n)
+<span class="cm"># 참고: 파이썬은 abs(n) 함수도 있어요!</span>`
+  },
+  max3:{
+    title:'세 수 중 최댓값', stdin:'3 9 5', hint:'세 정수를 공백으로 (예: 3 9 5)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a, b, c;
+    <span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, <span class="op">&amp;</span>a, <span class="op">&amp;</span>b, <span class="op">&amp;</span>c);
+    <span class="kw">int</span> mx <span class="op">=</span> a;
+    <span class="kw">if</span> (b <span class="op">&gt;</span> mx) mx <span class="op">=</span> b;
+    <span class="kw">if</span> (c <span class="op">&gt;</span> mx) mx <span class="op">=</span> c;
+    <span class="fn">printf</span>(<span class="st">"최댓값: %d\\n"</span>, mx);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`a, b, c <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+mx <span class="op">=</span> a
+<span class="kw">if</span> b <span class="op">&gt;</span> mx: mx <span class="op">=</span> b
+<span class="kw">if</span> c <span class="op">&gt;</span> mx: mx <span class="op">=</span> c
+<span class="fn">print</span>(<span class="st">"최댓값:"</span>, mx)
+<span class="cm"># 참고: max(a, b, c) 로도 가능!</span>`
+  },
+  odd_even:{
+    title:'홀짝 판별', stdin:'17', hint:'정수 하나 입력',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">if</span> (n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>)
+        <span class="fn">printf</span>(<span class="st">"%d은(는) 짝수입니다\\n"</span>, n);
+    <span class="kw">else</span>
+        <span class="fn">printf</span>(<span class="st">"%d은(는) 홀수입니다\\n"</span>, n);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> n <span class="op">%</span> <span class="nm">2</span> <span class="op">==</span> <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{n}은(는) 짝수입니다"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"{n}은(는) 홀수입니다"</span>)`
+  },
+  sign:{
+    title:'양수/음수/0 판별', stdin:'-5', hint:'정수 하나 입력 (양수/음수/0)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>n);
+    <span class="kw">if</span> (n <span class="op">&gt;</span> <span class="nm">0</span>)
+        <span class="fn">printf</span>(<span class="st">"%d은(는) 양수입니다\\n"</span>, n);
+    <span class="kw">else if</span> (n <span class="op">&lt;</span> <span class="nm">0</span>)
+        <span class="fn">printf</span>(<span class="st">"%d은(는) 음수입니다\\n"</span>, n);
+    <span class="kw">else</span>
+        <span class="fn">printf</span>(<span class="st">"0(영)입니다\\n"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`n <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> n <span class="op">&gt;</span> <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{n}은(는) 양수입니다"</span>)
+<span class="kw">elif</span> n <span class="op">&lt;</span> <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{n}은(는) 음수입니다"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"0(영)입니다"</span>)`
+  },
+  leap:{
+    title:'윤년 판별', stdin:'2000', hint:'연도 입력 (2024, 1900, 2000 등)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> y;
+    <span class="fn">scanf</span>(<span class="st">"%d"</span>, <span class="op">&amp;</span>y);
+    <span class="kw">if</span> ((y <span class="op">%</span> <span class="nm">4</span> <span class="op">==</span> <span class="nm">0</span> <span class="op">&amp;&amp;</span> y <span class="op">%</span> <span class="nm">100</span> <span class="op">!=</span> <span class="nm">0</span>) <span class="op">||</span> y <span class="op">%</span> <span class="nm">400</span> <span class="op">==</span> <span class="nm">0</span>)
+        <span class="fn">printf</span>(<span class="st">"%d년은 윤년\\n"</span>, y);
+    <span class="kw">else</span>
+        <span class="fn">printf</span>(<span class="st">"%d년은 평년\\n"</span>, y);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`y <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>())
+<span class="kw">if</span> (y <span class="op">%</span> <span class="nm">4</span> <span class="op">==</span> <span class="nm">0</span> <span class="kw">and</span> y <span class="op">%</span> <span class="nm">100</span> <span class="op">!=</span> <span class="nm">0</span>) <span class="kw">or</span> y <span class="op">%</span> <span class="nm">400</span> <span class="op">==</span> <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">f"{y}년은 윤년"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">f"{y}년은 평년"</span>)`
+  },
+  triangle:{
+    title:'삼각형 성립 조건', stdin:'3 4 5', hint:'세 변의 길이 (예: 3 4 5)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> a, b, c;
+    <span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, <span class="op">&amp;</span>a, <span class="op">&amp;</span>b, <span class="op">&amp;</span>c);
+    <span class="cm">// 두 변의 합이 나머지 한 변보다 커야 함</span>
+    <span class="kw">if</span> (a <span class="op">+</span> b <span class="op">&gt;</span> c <span class="op">&amp;&amp;</span> a <span class="op">+</span> c <span class="op">&gt;</span> b <span class="op">&amp;&amp;</span> b <span class="op">+</span> c <span class="op">&gt;</span> a) {
+        <span class="kw">if</span> (a <span class="op">==</span> b <span class="op">&amp;&amp;</span> b <span class="op">==</span> c)
+            <span class="fn">printf</span>(<span class="st">"정삼각형\\n"</span>);
+        <span class="kw">else if</span> (a <span class="op">==</span> b <span class="op">||</span> b <span class="op">==</span> c <span class="op">||</span> a <span class="op">==</span> c)
+            <span class="fn">printf</span>(<span class="st">"이등변삼각형\\n"</span>);
+        <span class="kw">else</span>
+            <span class="fn">printf</span>(<span class="st">"일반삼각형\\n"</span>);
+    } <span class="kw">else</span> {
+        <span class="fn">printf</span>(<span class="st">"삼각형이 될 수 없습니다\\n"</span>);
+    }
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`a, b, c <span class="op">=</span> <span class="fn">map</span>(<span class="fn">int</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+<span class="kw">if</span> a <span class="op">+</span> b <span class="op">&gt;</span> c <span class="kw">and</span> a <span class="op">+</span> c <span class="op">&gt;</span> b <span class="kw">and</span> b <span class="op">+</span> c <span class="op">&gt;</span> a:
+    <span class="kw">if</span> a <span class="op">==</span> b <span class="op">==</span> c:
+        <span class="fn">print</span>(<span class="st">"정삼각형"</span>)
+    <span class="kw">elif</span> a <span class="op">==</span> b <span class="kw">or</span> b <span class="op">==</span> c <span class="kw">or</span> a <span class="op">==</span> c:
+        <span class="fn">print</span>(<span class="st">"이등변삼각형"</span>)
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(<span class="st">"일반삼각형"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"삼각형이 될 수 없습니다"</span>)`
+  },
+  bmi:{
+    title:'체질량 판정', stdin:'170 65', hint:'키(cm) 몸무게(kg) (예: 170 65)',
+    c:`<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">double</span> h, w;
+    <span class="fn">scanf</span>(<span class="st">"%lf %lf"</span>, <span class="op">&amp;</span>h, <span class="op">&amp;</span>w);
+    <span class="kw">double</span> m <span class="op">=</span> h / <span class="nm">100</span>;
+    <span class="kw">double</span> bmi <span class="op">=</span> w / (m <span class="op">*</span> m);
+    <span class="kw">if</span> (bmi <span class="op">&lt;</span> <span class="nm">18.5</span>)      <span class="fn">printf</span>(<span class="st">"저체중"</span>);
+    <span class="kw">else if</span> (bmi <span class="op">&lt;</span> <span class="nm">23</span>)  <span class="fn">printf</span>(<span class="st">"정상"</span>);
+    <span class="kw">else if</span> (bmi <span class="op">&lt;</span> <span class="nm">25</span>)  <span class="fn">printf</span>(<span class="st">"과체중"</span>);
+    <span class="kw">else</span>                <span class="fn">printf</span>(<span class="st">"비만"</span>);
+    <span class="fn">printf</span>(<span class="st">" (BMI %.1f)\\n"</span>, bmi);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`h, w <span class="op">=</span> <span class="fn">map</span>(<span class="fn">float</span>, <span class="fn">input</span>().<span class="fn">split</span>())
+bmi <span class="op">=</span> w / (h / <span class="nm">100</span>) <span class="op">**</span> <span class="nm">2</span>
+<span class="kw">if</span> bmi <span class="op">&lt;</span> <span class="nm">18.5</span>: cat <span class="op">=</span> <span class="st">"저체중"</span>
+<span class="kw">elif</span> bmi <span class="op">&lt;</span> <span class="nm">23</span>: cat <span class="op">=</span> <span class="st">"정상"</span>
+<span class="kw">elif</span> bmi <span class="op">&lt;</span> <span class="nm">25</span>: cat <span class="op">=</span> <span class="st">"과체중"</span>
+<span class="kw">else</span>: cat <span class="op">=</span> <span class="st">"비만"</span>
+<span class="fn">print</span>(<span class="st">f"BMI {bmi:.1f} -> {cat}"</span>)`
+  },
+  rps:{
+    title:'가위바위보 승패', stdin:'가위 보', hint:'나 상대 순서로 (예: 가위 보)',
+    c:`<span class="cm">// C는 한글 문자열 비교가 까다로워</span>
+<span class="cm">// 파이썬 버전으로 배워보세요!</span>
+<span class="cm">// (숫자로 0=가위,1=바위,2=보 코딩이 일반적)</span>
+<span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">int</span> me, you;  <span class="cm">// 0=가위 1=바위 2=보</span>
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, <span class="op">&amp;</span>me, <span class="op">&amp;</span>you);
+    <span class="kw">if</span> (me <span class="op">==</span> you) <span class="fn">printf</span>(<span class="st">"비김\\n"</span>);
+    <span class="kw">else if</span> ((me <span class="op">+</span> <span class="nm">1</span>) <span class="op">%</span> <span class="nm">3</span> <span class="op">==</span> you) <span class="fn">printf</span>(<span class="st">"짐\\n"</span>);
+    <span class="kw">else</span> <span class="fn">printf</span>(<span class="st">"이김\\n"</span>);
+    <span class="kw">return</span> <span class="nm">0</span>;
+}`,
+    py:`me, you <span class="op">=</span> <span class="fn">input</span>().<span class="fn">split</span>()
+<span class="kw">if</span> me <span class="op">==</span> you:
+    <span class="fn">print</span>(<span class="st">"비김"</span>)
+<span class="kw">elif</span> (me <span class="op">==</span> <span class="st">"가위"</span> <span class="kw">and</span> you <span class="op">==</span> <span class="st">"보"</span>) <span class="kw">or</span> \\
+     (me <span class="op">==</span> <span class="st">"바위"</span> <span class="kw">and</span> you <span class="op">==</span> <span class="st">"가위"</span>) <span class="kw">or</span> \\
+     (me <span class="op">==</span> <span class="st">"보"</span> <span class="kw">and</span> you <span class="op">==</span> <span class="st">"바위"</span>):
+    <span class="fn">print</span>(<span class="st">"이김!"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"짐"</span>)`
+  }
+};
+function loadTemplate(){
+  const key=document.getElementById('pg-select').value;
+  currentTemplate=key;
+  const t=TEMPLATES[key];
+  document.getElementById('pg-c').innerHTML=t.c;
+  document.getElementById('pg-py').innerHTML=t.py;
+  document.getElementById('pg-title').textContent=t.title;
+  document.getElementById('pg-hint').textContent=t.hint;
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">실행 버튼을 눌러보세요...</span>';
+}
+function resetPgStdin(){
+  const t=TEMPLATES[currentTemplate];
+  document.getElementById('pg-in').value=t.stdin.replace(/\\n/g,'\n');
+  document.getElementById('pg-out').innerHTML='<span class="out-dim">입력을 초기화했어요...</span>';
+}
+// init
+loadTemplate();
+</script>
+</body>
+</html>
