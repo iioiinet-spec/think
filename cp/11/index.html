@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C &amp; 파이썬 최단 경로 다익스트라 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#B45309;
+  --accent-light:#FBEEDC;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#3A2410);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'dist[v] > dist[u]+w';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.06);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.35}
+header p{color:#E3C39A;font-size:14px;margin-top:6px}
+header .langchips{margin-top:12px;display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.chip.c{background:var(--c-color);color:#fff}
+.chip.py{background:var(--py-color);color:#fff}
+.chip.js{background:#5A4A38;color:#F0E6D2}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);border-bottom:2px solid var(--bdr);padding:10px 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.navbtn{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1.5px solid var(--bdr);border-radius:22px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.navbtn .num{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--soft);color:var(--ink3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.navbtn.on .num{background:rgba(255,255,255,.25);color:#fff}
+
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 90px}
+.page{display:none}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:28px 30px;margin-bottom:28px;box-shadow:0 1px 3px rgba(30,21,9,.04)}
+.card h2{font-size:22px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2 .bar{width:6px;height:24px;background:var(--accent);border-radius:3px;flex:none}
+.card h3{font-size:18px;font-weight:800;margin:26px 0 12px;color:var(--ink)}
+.card p{margin-bottom:12px;color:var(--ink)}
+.card p b{color:var(--accent)}
+.small{font-size:14.5px;color:var(--ink2)}
+
+.tip{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.tip b{color:var(--accent)}
+.warn{background:#FBEBE8;border-left:5px solid var(--ng);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.warn b{color:var(--ng)}
+.link-prev{background:var(--soft);border:1.5px dashed var(--ink3);border-radius:10px;padding:12px 18px;margin:16px 0;font-size:15px;color:var(--ink2)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.col .lang{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.col.c .lang{background:var(--c-color)}
+.col.py .lang{background:var(--py-color)}
+.copybtn{font-family:var(--sans);font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer}
+.copybtn:hover{background:rgba(255,255,255,.32)}
+pre.code{background:var(--code-bg);color:#E8E6E3;font-family:var(--mono);font-size:14px;line-height:1.7;padding:16px 18px;border-radius:0 0 10px 10px;overflow-x:auto;white-space:pre;tab-size:4}
+.col.c pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--c-color)}
+.col.py pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--py-color)}
+pre.code .cm{color:#7A8B7A;font-style:italic}
+pre.code .kw{color:#C792EA}
+pre.code .fn{color:#82AAFF}
+pre.code .st{color:#C3E88D}
+pre.code .nb{color:#F78C6C}
+pre.code .hl{background:rgba(180,83,9,.25);border-radius:3px;padding:0 2px}
+
+.term{background:var(--term-bg);border-radius:10px;padding:13px 18px;margin:12px 0;font-family:var(--mono);font-size:14px}
+.term .tl{color:#6B7280;font-size:11.5px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+.term .to{color:#7CE38B;white-space:pre-wrap;line-height:1.65}
+.term .ti{color:#E8B84B}
+
+table.cmp{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.cmp th{background:var(--soft);color:var(--ink2);font-weight:800;padding:10px 14px;border:1px solid var(--bdr);text-align:left}
+table.cmp td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.cmp td.mono{font-family:var(--mono);font-size:13.5px}
+table.cmp tr td:first-child{font-weight:700;background:#FDFBF6}
+
+.btn{font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:9px;padding:9px 18px;cursor:pointer;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.teal{background:var(--cell);color:#fff}
+.btn.warm{background:var(--cell-hi);color:#3A2A05}
+.btn.ghost{background:var(--panel);color:var(--ink2);border:1.5px solid var(--bdr)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:12px 0}
+select.sel,input.inp{font-family:var(--mono);font-size:15px;font-weight:600;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;background:var(--panel);color:var(--ink)}
+
+.simpanel{background:var(--soft);border:1.5px solid var(--bdr);border-radius:12px;padding:20px;margin:16px 0}
+.simpanel h4{font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.simpanel h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.simflex{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.simflex{grid-template-columns:1fr}}
+.svgbox{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+
+.statecard{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.statecard .sl{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:7px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;align-items:center}
+.nchip{font-family:var(--mono);font-size:14.5px;font-weight:700;min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent);padding:0 6px}
+.nchip.q{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell)}
+.nchip.top{background:var(--cell-hi);color:#3A2A05;border-color:#C79A2E}
+.nchip.ord{background:var(--panel);color:var(--ink2);border-color:var(--bdr)}
+.nchip.ord.new{background:var(--accent);color:#fff;border-color:var(--accent)}
+.emptymsg{font-size:13.5px;color:var(--ink3);font-style:italic}
+.msgline{background:var(--panel);border:1.5px solid var(--accent);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);min-height:48px;display:flex;align-items:center;margin-top:4px}
+.msgline.done{border-color:var(--ok);background:#EAF7EE}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.lgdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink3);background:var(--panel);flex:none}
+.lgdot.cur{background:var(--cell-hi);border-color:#C79A2E}
+.lgdot.vis{background:var(--accent);border-color:var(--accent)}
+.lgdot.inq{background:#DFF5F1;border-color:var(--cell)}
+
+.grid7{display:grid;grid-template-columns:repeat(7,46px);gap:5px;margin:14px 0}
+.gcell{width:46px;height:46px;border-radius:8px;background:var(--panel);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;user-select:none;transition:transform .08s}
+.gcell:hover{transform:scale(1.06)}
+.gcell.wall{background:#4A3B28;border-color:#4A3B28;color:#4A3B28}
+@media(max-width:480px){.grid7{grid-template-columns:repeat(7,40px)}.gcell{width:40px;height:40px;font-size:12.5px}}
+
+.q{background:var(--panel);border:1.5px solid var(--bdr);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.q .qt{font-size:16.5px;font-weight:800;margin-bottom:12px}
+.q .qt .qn{font-family:var(--mono);color:#fff;background:var(--accent);border-radius:7px;padding:2px 10px;font-size:13.5px;margin-right:9px}
+.opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:15.5px;font-weight:600;background:#FDFBF6;border:1.5px solid var(--bdr);border-radius:9px;padding:10px 15px;margin-bottom:8px;cursor:pointer;color:var(--ink);transition:all .12s}
+.opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt.pick-ok{background:#EAF7EE;border-color:var(--ok);color:var(--ok);font-weight:800}
+.opt.pick-ng{background:#FBEBE8;border-color:var(--ng);color:var(--ng)}
+.opt.reveal{border-color:var(--ok);background:#EAF7EE}
+.opt:disabled{cursor:default}
+.expl{display:none;background:var(--soft);border-radius:9px;padding:11px 15px;font-size:14.5px;color:var(--ink2);margin-top:6px}
+.expl.show{display:block}
+.scorebox{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px}
+
+footer{border-top:2px solid var(--bdr);padding:26px 22px 40px;text-align:center;color:var(--ink3);font-size:13.5px}
+footer b{color:var(--ink2)}
+.pagenav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+/* ===== ⑫ 다익스트라 전용 추가 ===== */
+.nchip.fix{background:var(--accent);color:#fff;border-color:var(--accent)}
+.nchip.inf{background:var(--panel);color:var(--ink3);border-color:var(--bdr)}
+.nchip.upd{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell);animation:pulseChip .5s}
+@keyframes pulseChip{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+.distgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:480px){.distgrid{grid-template-columns:repeat(4,1fr)}}
+.dcell{background:var(--panel);border:1.5px solid var(--bdr);border-radius:8px;padding:5px 4px;text-align:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink2)}
+.dcell .dv{display:block;font-size:16px;color:var(--ink)}
+.dcell.fix{background:var(--accent-light);border-color:var(--accent)}
+.dcell.fix .dv{color:var(--accent)}
+.dcell.upd{border-color:var(--cell);background:#DFF5F1}
+.dcell.upd .dv{color:#0E7A6E}
+.wbadge{font-family:var(--mono);font-weight:700;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="hbadge">SEYOUNG CODING LAB · KOI 대비 시리즈 ⑫</span>
+  <h1>C &amp; 파이썬 나란히 배우는 <span style="color:#F2C185">최단 경로 다익스트라</span></h1>
+  <p>BFS는 간선 "개수", 다익스트라는 가중치의 "합" — 진짜 최단 거리를 찾아서</p>
+  <div class="langchips">
+    <span class="chip c">C</span>
+    <span class="chip py">Python</span>
+    <span class="chip js">SIM: JavaScript</span>
+  </div>
+</header>
+
+<nav id="topnav">
+  <button class="navbtn on" onclick="goPage(0)"><span class="num">0</span>시작하기</button>
+  <button class="navbtn" onclick="goPage(1)"><span class="num">1</span>가중 그래프 저장</button>
+  <button class="navbtn" onclick="goPage(2)"><span class="num">2</span>알고리즘 원리</button>
+  <button class="navbtn" onclick="goPage(3)"><span class="num">3</span>코드 구현</button>
+  <button class="navbtn" onclick="goPage(4)"><span class="num">4</span>경로 복원</button>
+  <button class="navbtn" onclick="goPage(5)"><span class="num">5</span>플레이그라운드</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= PAGE 0 : 시작하기 ================= -->
+<section class="page on">
+  <div class="card">
+    <h2><span class="bar"></span>간선에 "무게"가 생겼다 — 가중 그래프</h2>
+    <p>지금까지의 그래프는 간선이 <b>있다 / 없다</b>만 중요했습니다. 하지만 실제 세상의 연결에는 대부분 <b>비용</b>이 붙어 있죠. 도로의 길이, 버스 요금, 걸리는 시간… 이렇게 간선마다 숫자가 붙은 그래프를 <b>가중 그래프(weighted graph)</b>, 그 숫자를 <b>가중치(weight)</b>라고 부릅니다.</p>
+    <table class="cmp">
+      <tr><th>비교</th><th>BFS (⑪편)</th><th>다익스트라 (이번 편)</th></tr>
+      <tr><td>최단의 기준</td><td>지나는 <b>간선 개수</b></td><td>지나는 간선들의 <b>가중치 합</b></td></tr>
+      <tr><td>쓰는 도구</td><td>큐 (deque)</td><td>우선순위 큐 (최소 힙)</td></tr>
+      <tr><td>가중치 조건</td><td>모두 1 (또는 동일)</td><td>0 이상 아무 값 (단, <b>음수 금지</b>)</td></tr>
+      <tr><td>시간복잡도</td><td class="mono">O(V+E)</td><td class="mono">O(E log V)</td></tr>
+    </table>
+    <div class="link-prev">🔗 <b>이전 편 연결</b> — ⑪편 BFS에서 dist[v] = dist[u] + 1로 거리를 구했죠? 다익스트라는 그 +1이 <b>+w(간선 가중치)</b>로 바뀐 것뿐입니다. 다만 "가까운 순서"가 뒤죽박죽되기 때문에 큐 대신 <b>우선순위 큐</b>가 필요해집니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>BFS로는 왜 안 될까?</h2>
+    <p>아래 미니 그래프에서 <b>1번 → 2번</b> 최단 거리를 생각해 봅시다.</p>
+    <div class="simflex">
+      <div class="svgbox">
+        <svg viewBox="0 0 420 200">
+          <line x1="90" y1="100" x2="330" y2="100" stroke="#D8CDB8" stroke-width="3"/>
+          <line x1="90" y1="100" x2="210" y2="38" stroke="#0E7A6E" stroke-width="4"/>
+          <line x1="210" y1="38" x2="330" y2="100" stroke="#0E7A6E" stroke-width="4"/>
+          <rect x="196" y="118" width="28" height="22" rx="5" fill="#FAF6EF"/>
+          <text x="210" y="134" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="15" font-weight="700" fill="#C0392B">3</text>
+          <rect x="132" y="52" width="28" height="22" rx="5" fill="#FAF6EF"/>
+          <text x="146" y="68" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="15" font-weight="700" fill="#0E7A6E">1</text>
+          <rect x="262" y="52" width="28" height="22" rx="5" fill="#FAF6EF"/>
+          <text x="276" y="68" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="15" font-weight="700" fill="#0E7A6E">1</text>
+          <circle cx="90" cy="100" r="21" fill="#B45309" stroke="#8A3E06" stroke-width="2.5"/>
+          <text x="90" y="106" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="17" font-weight="700" fill="#fff">1</text>
+          <circle cx="210" cy="38" r="21" fill="#FFFFFF" stroke="#9A876B" stroke-width="2.5"/>
+          <text x="210" y="44" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="17" font-weight="700" fill="#1E1509">3</text>
+          <circle cx="330" cy="100" r="21" fill="#B45309" stroke="#8A3E06" stroke-width="2.5"/>
+          <text x="330" y="106" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="17" font-weight="700" fill="#fff">2</text>
+        </svg>
+      </div>
+      <div>
+        <p><b>BFS의 답</b> — "직행 간선 1개가 제일 빨라!" → 거리 <span class="wbadge" style="color:var(--ng)">3</span></p>
+        <p><b>진짜 최단</b> — 3번을 거쳐 돌아가면 1 + 1 = <span class="wbadge" style="color:#0E7A6E">2</span></p>
+        <p class="small">간선 개수는 많아도 가중치 합이 더 작을 수 있습니다. BFS는 이런 "싸게 돌아가는 길"을 놓칩니다. 그래서 새 알고리즘이 필요합니다 — 1956년 네덜란드의 컴퓨터과학자 <b>에츠허르 다익스트라(Edsger Dijkstra)</b>가 커피숍에서 20분 만에 떠올렸다는 바로 그 방법입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>다익스트라의 핵심 아이디어 — "확실한 것부터 확정"</h2>
+    <p>규칙은 단 세 줄입니다:</p>
+    <table class="cmp">
+      <tr><th>순서</th><th>규칙</th></tr>
+      <tr><td>①</td><td>아직 확정되지 않은 정점 중 <b>dist가 가장 작은 정점 u</b>를 고른다</td></tr>
+      <tr><td>②</td><td>u를 <b>확정</b>한다 — 이 값은 앞으로 절대 바뀌지 않는다!</td></tr>
+      <tr><td>③</td><td>u의 이웃 v마다 <b>dist[u] + w &lt; dist[v]</b>이면 dist[v]를 갱신한다 — 이것이 <b>완화(relaxation)</b></td></tr>
+    </table>
+    <div class="tip">💡 <b>왜 최솟값은 확정해도 될까?</b> 모든 가중치가 0 이상이라면, 지금 dist가 가장 작은 정점 u로 "다른 길로 돌아서" 더 싸게 도착하는 건 불가능합니다. 돌아가는 길은 u보다 dist가 큰 정점을 거쳐야 하는데, 거기서 출발해 봤자 더 커지기만 하니까요.</div>
+    <div class="warn">⚠️ <b>음수 가중치 금지!</b> 위 논리는 "가중치 ≥ 0"일 때만 성립합니다. 음수 간선이 하나라도 있으면 다익스트라의 답은 틀릴 수 있습니다 (그때는 벨만-포드 알고리즘을 씁니다 — 고급 편 예고).</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>실험용 가중 그래프</h2>
+    <p>이번 편 내내 함께할 그래프입니다. 정점 8개, 간선 10개 — 간선 위 숫자가 가중치입니다.</p>
+    <div class="svgbox" id="introSvg"></div>
+    <p class="small" style="margin-top:10px">눈으로 먼저 예측해 보세요 — <b>1번에서 2번</b>까지 최단은 얼마일까요? 직행(3)일까요, 3번을 거친 우회(1+1=2)일까요? 2번 탭의 시뮬레이터에서 확인합니다.</p>
+    <div class="term">
+      <div class="tl">INPUT — 이 그래프의 입력 데이터 (정점 8, 간선 10)</div>
+      <div class="to">8 10
+1 2 3
+1 3 1
+2 3 1
+2 4 5
+2 5 2
+3 6 4
+3 7 7
+4 5 3
+5 8 6
+6 8 2</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1 : 가중 그래프 저장 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>가중치까지 담으려면?</h2>
+    <p>⑪편의 인접리스트에서 <b>"이웃 번호"만 저장하던 것을 "(이웃, 가중치) 쌍"으로</b> 바꾸면 끝입니다. C는 배열을 하나 더 두고, Python은 튜플을 넣습니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 배열 두 개로 (이웃, 가중치)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="cm">/* adjv[u][k] : u의 k번째 이웃
+   adjw[u][k] : 그 간선의 가중치 */</span>
+<span class="kw">int</span> adjv[<span class="nb">101</span>][<span class="nb">101</span>], adjw[<span class="nb">101</span>][<span class="nb">101</span>], deg[<span class="nb">101</span>];
+
+scanf(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">0</span>; i &lt; m; i++) {
+    <span class="kw">int</span> u, v, w;
+    scanf(<span class="st">"%d %d %d"</span>, &amp;u, &amp;v, &amp;w);
+    <span class="hl">adjv[u][deg[u]] = v; adjw[u][deg[u]] = w;</span> deg[u]++;
+    <span class="hl">adjv[v][deg[v]] = u; adjw[v][deg[v]] = w;</span> deg[v]++;
+}</pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — 튜플 (이웃, 가중치)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">import</span> sys
+input = sys.stdin.readline
+
+n, m = map(<span class="fn">int</span>, input().split())
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> range(n + <span class="nb">1</span>)]
+<span class="kw">for</span> _ <span class="kw">in</span> range(m):
+    u, v, w = map(<span class="fn">int</span>, input().split())
+    <span class="hl">adj[u].append((v, w))</span>
+    <span class="hl">adj[v].append((u, w))</span>  <span class="cm"># 무방향이므로 양쪽</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>단방향(유방향) 문제라면?</b> "u에서 v로 가는 도로"처럼 방향이 있으면 <b>한 줄만</b> 넣습니다: <span class="wbadge">adj[u].append((v, w))</span>. KOI 문제는 지문을 잘 읽고 방향 여부부터 확인하세요!</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>저장 시뮬레이터 — 간선을 넣으면 리스트가 자란다</h2>
+    <div class="simpanel">
+      <h4><span class="dot"></span>간선 (u, v, 가중치 w) 추가하기</h4>
+      <div class="btnrow">
+        <select class="sel" id="sEdgeU"></select>
+        <span style="font-weight:800;color:var(--ink3)">—</span>
+        <select class="sel" id="sEdgeV"></select>
+        <input class="inp" id="sEdgeW" type="number" min="1" max="99" value="5" style="width:80px">
+        <button class="btn acc" onclick="storeAdd()">간선 추가</button>
+        <button class="btn ghost" onclick="storeExample()">실험 그래프 불러오기</button>
+        <button class="btn ghost" onclick="storeReset()">초기화</button>
+      </div>
+      <div class="msgline" id="storeMsg">간선을 추가하거나, [실험 그래프 불러오기]를 눌러 보세요.</div>
+      <div class="statecard" style="margin-top:14px">
+        <div class="sl">PYTHON — adj (리스트의 리스트)</div>
+        <div class="term" style="margin:0"><div class="to" id="storePy">adj[1] = []
+adj[2] = []
+adj[3] = []
+adj[4] = []
+adj[5] = []
+adj[6] = []
+adj[7] = []
+adj[8] = []</div></div>
+      </div>
+      <div class="statecard">
+        <div class="sl">C — adjv / adjw / deg 배열</div>
+        <div class="term" style="margin:0"><div class="to" id="storeC">아직 간선이 없습니다. deg[] = 모두 0</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : 알고리즘 원리 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>다익스트라 한 걸음씩 — 확정과 완화</h2>
+    <p>출발점의 dist는 0, 나머지는 전부 <b>∞ (무한대)</b>로 시작합니다. 그리고 세 규칙을 반복합니다: <b>① 미확정 중 최소 dist 정점 선택 → ② 확정 → ③ 이웃 완화</b>. 모든 정점이 확정되면 끝!</p>
+    <p>말로는 어렵죠? 아래 시뮬레이터에서 <b>dist 표가 ∞에서 하나씩 줄어드는 과정</b>을 직접 보세요. 특히 <b>2번 정점의 dist가 3 → 2로 갱신되는 순간</b>(우회로 발견!)과 <b>8번이 10 → 7로 갱신되는 순간</b>을 놓치지 마세요.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>다익스트라 스텝 시뮬레이터</h2>
+    <div class="simpanel">
+      <h4><span class="dot"></span>시작 정점을 고르고 한 단계씩 진행해 보세요</h4>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">시작 정점</label>
+        <select class="sel" id="dijStart"></select>
+        <button class="btn ghost" onclick="dijInit()">처음으로</button>
+        <button class="btn ghost" onclick="dijStep(-1)" id="dijPrev">◀ 이전</button>
+        <button class="btn acc" onclick="dijStep(1)" id="dijNext">다음 ▶</button>
+        <button class="btn teal" onclick="dijAuto()" id="dijAutoBtn">자동 재생</button>
+      </div>
+      <div class="simflex">
+        <div class="svgbox" id="dijSvg"></div>
+        <div>
+          <div class="statecard">
+            <div class="sl">DIST 표 — 출발점에서의 최단 거리 (주황 = 확정)</div>
+            <div class="distgrid" id="dijDist"></div>
+          </div>
+          <div class="statecard">
+            <div class="sl">확정된 순서</div>
+            <div class="chiprow" id="dijFixed"><span class="emptymsg">아직 없음</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="msgline" id="dijMsg">시작 정점을 고르고 [다음]을 눌러 보세요.</div>
+      <div class="legend">
+        <span><span class="lgdot cur"></span>지금 확정된 정점</span>
+        <span><span class="lgdot" style="background:var(--accent);border-color:var(--accent)"></span>확정 완료</span>
+        <span><span class="lgdot inq"></span>방금 dist 갱신됨</span>
+        <span><span style="width:22px;height:4px;background:var(--accent);border-radius:2px;display:inline-block"></span>최단 경로 트리</span>
+      </div>
+    </div>
+    <div class="tip">💡 <b>관찰 포인트</b> — 확정되는 순서를 보세요. 항상 <b>dist가 작은 정점부터</b> 확정됩니다. 마치 출발점에서 물이 차오르듯, 가까운 곳부터 차례로 "물에 잠기는" 그림입니다. BFS의 물결과 똑같은 원리인데, 이번엔 물결이 가중치를 따라 퍼집니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : 코드 구현 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>1단계 — 기본형 O(V²) : 원리 그대로 옮기기</h2>
+    <p>시뮬레이터에서 본 것을 그대로 코드로 씁니다. "미확정 중 최솟값 찾기"를 <b>for문으로 전부 훑어서</b> 처리하는, 가장 정직한 버전입니다. 정점이 수천 개 이하라면 이걸로 충분합니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 기본형 다익스트라 O(V²)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code">#include &lt;stdio.h&gt;
+#define INF 1000000000
+
+<span class="kw">int</span> n, m;
+<span class="kw">int</span> adjv[<span class="nb">101</span>][<span class="nb">101</span>], adjw[<span class="nb">101</span>][<span class="nb">101</span>], deg[<span class="nb">101</span>];
+<span class="kw">int</span> dist[<span class="nb">101</span>], done[<span class="nb">101</span>], pre[<span class="nb">101</span>];
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    scanf(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">0</span>; i &lt; m; i++) {
+        <span class="kw">int</span> u, v, w;
+        scanf(<span class="st">"%d %d %d"</span>, &amp;u, &amp;v, &amp;w);
+        adjv[u][deg[u]] = v; adjw[u][deg[u]] = w; deg[u]++;
+        adjv[v][deg[v]] = u; adjw[v][deg[v]] = w; deg[v]++;
+    }
+    <span class="kw">int</span> s = <span class="nb">1</span>;                        <span class="cm">/* 출발 정점 */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++) dist[i] = INF;
+    dist[s] = <span class="nb">0</span>;
+
+    <span class="kw">for</span> (<span class="kw">int</span> t = <span class="nb">0</span>; t &lt; n; t++) {
+        <span class="kw">int</span> u = <span class="nb">0</span>;                    <span class="cm">/* ① 미확정 중 최소 */</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++)
+            <span class="kw">if</span> (!done[i] &amp;&amp; (u == <span class="nb">0</span> || dist[i] &lt; dist[u])) u = i;
+        <span class="kw">if</span> (u == <span class="nb">0</span> || dist[u] == INF) <span class="kw">break</span>;
+        done[u] = <span class="nb">1</span>;                  <span class="cm">/* ② u 확정! */</span>
+        <span class="kw">for</span> (<span class="kw">int</span> k = <span class="nb">0</span>; k &lt; deg[u]; k++) {
+            <span class="kw">int</span> v = adjv[u][k], w = adjw[u][k];
+            <span class="hl"><span class="kw">if</span> (dist[u] + w &lt; dist[v]) {</span>  <span class="cm">/* ③ 완화 */</span>
+                dist[v] = dist[u] + w;
+                pre[v] = u;           <span class="cm">/* 경로 복원용 */</span>
+            }
+        }
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++)
+        printf(<span class="st">"dist[%d] = %d\n"</span>, i, dist[i]);
+    <span class="kw">return</span> <span class="nb">0</span>;
+}</pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — 기본형 다익스트라 O(V²)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">import</span> sys
+input = sys.stdin.readline
+INF = float(<span class="st">'inf'</span>)
+
+n, m = map(<span class="fn">int</span>, input().split())
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> range(n + <span class="nb">1</span>)]
+<span class="kw">for</span> _ <span class="kw">in</span> range(m):
+    u, v, w = map(<span class="fn">int</span>, input().split())
+    adj[u].append((v, w))
+    adj[v].append((u, w))
+
+s = <span class="nb">1</span>                          <span class="cm"># 출발 정점</span>
+dist = [INF] * (n + <span class="nb">1</span>)
+done = [<span class="nb">False</span>] * (n + <span class="nb">1</span>)
+pre  = [<span class="nb">0</span>] * (n + <span class="nb">1</span>)
+dist[s] = <span class="nb">0</span>
+
+<span class="kw">for</span> _ <span class="kw">in</span> range(n):
+    u, best = <span class="nb">0</span>, INF           <span class="cm"># ① 미확정 중 최소</span>
+    <span class="kw">for</span> i <span class="kw">in</span> range(<span class="nb">1</span>, n + <span class="nb">1</span>):
+        <span class="kw">if</span> <span class="kw">not</span> done[i] <span class="kw">and</span> dist[i] &lt; best:
+            u, best = i, dist[i]
+    <span class="kw">if</span> u == <span class="nb">0</span>:                 <span class="cm"># 남은 정점에 못 감</span>
+        <span class="kw">break</span>
+    done[u] = <span class="nb">True</span>             <span class="cm"># ② 확정</span>
+    <span class="kw">for</span> v, w <span class="kw">in</span> adj[u]:        <span class="cm"># ③ 완화</span>
+        <span class="hl"><span class="kw">if</span> dist[u] + w &lt; dist[v]:</span>
+            dist[v] = dist[u] + w
+            pre[v] = u             <span class="cm"># 경로 복원용</span>
+
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nb">1</span>, n + <span class="nb">1</span>):
+    print(f<span class="st">'dist[{i}] = {dist[i]}'</span>)</pre>
+      </div>
+    </div>
+    <div class="term">
+      <div class="tl">OUTPUT — 실험 그래프 (시작 정점 1)</div>
+      <div class="to">dist[1] = 0
+dist[2] = 2
+dist[3] = 1
+dist[4] = 7
+dist[5] = 4
+dist[6] = 5
+dist[7] = 8
+dist[8] = 7</div>
+    </div>
+    <p class="small">2번의 dist가 3이 아니라 <b>2</b>인 것 확인! (1→3→2 우회) — 시뮬레이터의 결과와 정확히 같습니다.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>2단계 — 실전형 O(E log V) : 우선순위 큐</h2>
+    <p>정점이 10만 개라면 "전부 훑어 최소 찾기"는 너무 느립니다. <b>최소 힙(우선순위 큐)</b>에게 "제일 작은 것 꺼내기"를 맡기면 매번 log 시간에 끝납니다. Python은 <b>heapq</b> 한 줄, C는 힙을 직접 만듭니다 (힙 코드는 한 번 이해해 두면 평생 재사용!).</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 최소 힙 다익스트라 O(E log V)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code">#include &lt;stdio.h&gt;
+#define INF 1000000000
+#define MAXH 400005
+
+<span class="kw">int</span> n, m;
+<span class="kw">int</span> adjv[<span class="nb">101</span>][<span class="nb">101</span>], adjw[<span class="nb">101</span>][<span class="nb">101</span>], deg[<span class="nb">101</span>];
+<span class="kw">int</span> dist[<span class="nb">101</span>];
+
+<span class="cm">/* ---- 최소 힙: (거리 hd, 정점 hv) 쌍 ---- */</span>
+<span class="kw">int</span> hd[MAXH], hv[MAXH], hs;
+
+<span class="kw">void</span> <span class="fn">swap2</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+    <span class="kw">int</span> t;
+    t = hd[a]; hd[a] = hd[b]; hd[b] = t;
+    t = hv[a]; hv[a] = hv[b]; hv[b] = t;
+}
+<span class="kw">void</span> <span class="fn">push</span>(<span class="kw">int</span> d, <span class="kw">int</span> v) {
+    <span class="kw">int</span> i = ++hs;
+    hd[i] = d; hv[i] = v;
+    <span class="kw">while</span> (i &gt; <span class="nb">1</span> &amp;&amp; hd[i] &lt; hd[i / <span class="nb">2</span>]) {  <span class="cm">/* 부모보다 작으면 위로 */</span>
+        swap2(i, i / <span class="nb">2</span>);
+        i /= <span class="nb">2</span>;
+    }
+}
+<span class="kw">void</span> <span class="fn">pop</span>(<span class="kw">void</span>) {
+    hd[<span class="nb">1</span>] = hd[hs]; hv[<span class="nb">1</span>] = hv[hs]; hs--;
+    <span class="kw">int</span> i = <span class="nb">1</span>;
+    <span class="kw">while</span> (<span class="nb">1</span>) {                          <span class="cm">/* 작은 자식과 교환하며 아래로 */</span>
+        <span class="kw">int</span> c = i * <span class="nb">2</span>;
+        <span class="kw">if</span> (c &gt; hs) <span class="kw">break</span>;
+        <span class="kw">if</span> (c + <span class="nb">1</span> &lt;= hs &amp;&amp; hd[c + <span class="nb">1</span>] &lt; hd[c]) c++;
+        <span class="kw">if</span> (hd[i] &lt;= hd[c]) <span class="kw">break</span>;
+        swap2(i, c);
+        i = c;
+    }
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    scanf(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">0</span>; i &lt; m; i++) {
+        <span class="kw">int</span> u, v, w;
+        scanf(<span class="st">"%d %d %d"</span>, &amp;u, &amp;v, &amp;w);
+        adjv[u][deg[u]] = v; adjw[u][deg[u]] = w; deg[u]++;
+        adjv[v][deg[v]] = u; adjw[v][deg[v]] = w; deg[v]++;
+    }
+    <span class="kw">int</span> s = <span class="nb">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++) dist[i] = INF;
+    dist[s] = <span class="nb">0</span>;
+    push(<span class="nb">0</span>, s);
+
+    <span class="kw">while</span> (hs &gt; <span class="nb">0</span>) {
+        <span class="kw">int</span> d = hd[<span class="nb">1</span>], u = hv[<span class="nb">1</span>];
+        pop();
+        <span class="hl"><span class="kw">if</span> (d &gt; dist[u]) <span class="kw">continue</span>;</span>   <span class="cm">/* 낡은 기록 스킵 */</span>
+        <span class="kw">for</span> (<span class="kw">int</span> k = <span class="nb">0</span>; k &lt; deg[u]; k++) {
+            <span class="kw">int</span> v = adjv[u][k], w = adjw[u][k];
+            <span class="kw">if</span> (d + w &lt; dist[v]) {
+                dist[v] = d + w;
+                push(dist[v], v);
+            }
+        }
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++)
+        printf(<span class="st">"dist[%d] = %d\n"</span>, i, dist[i]);
+    <span class="kw">return</span> <span class="nb">0</span>;
+}</pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — heapq 다익스트라 O(E log V)<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">import</span> heapq, sys
+input = sys.stdin.readline
+INF = float(<span class="st">'inf'</span>)
+
+n, m = map(<span class="fn">int</span>, input().split())
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> range(n + <span class="nb">1</span>)]
+<span class="kw">for</span> _ <span class="kw">in</span> range(m):
+    u, v, w = map(<span class="fn">int</span>, input().split())
+    adj[u].append((v, w))
+    adj[v].append((u, w))
+
+s = <span class="nb">1</span>
+dist = [INF] * (n + <span class="nb">1</span>)
+dist[s] = <span class="nb">0</span>
+pq = [(<span class="nb">0</span>, s)]        <span class="cm"># (거리, 정점) 순서가 중요!</span>
+
+<span class="kw">while</span> pq:
+    d, u = heapq.heappop(pq)   <span class="cm"># 최소 거리부터 나옴</span>
+    <span class="hl"><span class="kw">if</span> d &gt; dist[u]:</span>            <span class="cm"># 낡은 기록 스킵</span>
+        <span class="kw">continue</span>
+    <span class="kw">for</span> v, w <span class="kw">in</span> adj[u]:
+        nd = d + w
+        <span class="kw">if</span> nd &lt; dist[v]:           <span class="cm"># 완화</span>
+            dist[v] = nd
+            heapq.heappush(pq, (nd, v))
+
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nb">1</span>, n + <span class="nb">1</span>):
+    print(f<span class="st">'dist[{i}] = {dist[i]}'</span>)</pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>(거리, 정점) 순서인 이유</b> — heapq는 튜플의 <b>첫 번째 원소</b>부터 비교합니다. 거리를 앞에 둬야 "거리가 가장 작은 것"이 먼저 나옵니다. (정점, 거리) 순서로 넣는 실수가 정말 많아요!</div>
+    <div class="warn">⚠️ <b>if d &gt; dist[u]: continue를 빼먹으면?</b> 같은 정점이 힙에 여러 번 들어갈 수 있는데(더 짧은 길을 찾을 때마다 push하니까), 이미 확정된 정점의 <b>낡은(더 큰) 기록</b>이 나중에 튀어나옵니다. 이 한 줄이 없으면 답은 맞아도 <b>시간 초과</b>가 나는 문제가 많습니다. 이 줄이 사실상 O(V²) 버전의 done[] 역할입니다.</div>
+    <table class="cmp">
+      <tr><th>버전</th><th>최소 찾기</th><th>시간복잡도</th><th>추천 상황</th></tr>
+      <tr><td>기본형</td><td>for문 전체 훑기</td><td class="mono">O(V²)</td><td>V ≤ 5,000 · 원리 학습</td></tr>
+      <tr><td>실전형</td><td>최소 힙 pop</td><td class="mono">O(E log V)</td><td>V가 큰 실전 문제 전부</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= PAGE 4 : 경로 복원 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>거리 말고 "길"도 알고 싶다 — pre 배열</h2>
+    <p>KOI 문제는 종종 "최단 거리"가 아니라 <b>"최단 경로를 출력하라"</b>고 요구합니다. 방법은 간단합니다 — 완화에 성공할 때마다 <b>"v에 오기 직전 정점은 u였다"</b>를 pre[v]에 적어 두면, 도착점에서 pre를 따라 <b>거꾸로 거슬러 올라가</b> 출발점까지 갈 수 있습니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 재귀로 뒤집어 출력<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="cm">/* 완화 성공 시: pre[v] = u; (3번 탭 코드 참고) */</span>
+
+<span class="kw">void</span> <span class="fn">print_path</span>(<span class="kw">int</span> v) {
+    <span class="kw">if</span> (v == <span class="nb">0</span>) <span class="kw">return</span>;   <span class="cm">/* pre[출발점]=0에서 멈춤 */</span>
+    <span class="hl">print_path(pre[v]);</span>   <span class="cm">/* 먼저 앞부분을 출력 */</span>
+    printf(<span class="st">"%d "</span>, v);
+}
+
+<span class="cm">/* main 마지막에: */</span>
+printf(<span class="st">"1 -&gt; 8 최단 경로: "</span>);
+print_path(<span class="nb">8</span>);        <span class="cm">/* 1 3 6 8 */</span></pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — while로 모아서 뒤집기<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="cm"># 완화 성공 시: pre[v] = u  (3번 탭 코드 참고)</span>
+
+<span class="kw">def</span> <span class="fn">path</span>(v):
+    p = []
+    <span class="kw">while</span> v:              <span class="cm"># pre[출발점]=0에서 멈춤</span>
+        p.append(v)
+        v = pre[v]
+    <span class="kw">return</span> <span class="hl">p[::-1]</span>        <span class="cm"># 뒤집어서 출발→도착 순서로</span>
+
+print(<span class="st">'1 -&gt; 8 최단 경로:'</span>, *path(<span class="nb">8</span>))  <span class="cm"># 1 3 6 8</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 재귀 DFS에서 "콜스택이 자동으로 되돌아온다"를 배웠죠? C의 print_path가 딱 그 원리입니다 — 재귀가 풀리면서 <b>자동으로 순서가 뒤집힙니다</b>.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>경로 역추적 시뮬레이터</h2>
+    <p>시작 정점은 <b>1번 고정</b>입니다. 목적지를 고르면 pre 배열을 따라 <b>도착점에서 출발점으로</b> 한 칸씩 거슬러 올라가는 과정을 보여줍니다.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>목적지를 고르고 역추적을 시작하세요</h4>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">목적지</label>
+        <select class="sel" id="pathTarget"></select>
+        <button class="btn acc" onclick="pathTrace()" id="pathBtn">역추적 시작</button>
+        <button class="btn ghost" onclick="pathReset()">처음으로</button>
+      </div>
+      <div class="simflex">
+        <div class="svgbox" id="pathSvg"></div>
+        <div>
+          <div class="statecard">
+            <div class="sl">역추적 기록 (도착 → 출발)</div>
+            <div class="chiprow" id="pathChips"><span class="emptymsg">아직 없음</span></div>
+          </div>
+          <div class="statecard">
+            <div class="sl">완성된 경로 (출발 → 도착)</div>
+            <div class="term" style="margin:0"><div class="to" id="pathOut">목적지를 골라 주세요.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="msgline" id="pathMsg">pre 배열은 1번 출발 다익스트라의 결과를 사용합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 5 : 플레이그라운드 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>내 그래프로 다익스트라 돌려 보기</h2>
+    <p>한 줄에 <b>u v w</b> (정점, 정점, 가중치) 형식으로 간선을 적고 실행하세요. 정점 번호는 1~100, 무방향 그래프로 처리합니다.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>간선 목록 입력</h4>
+      <textarea id="pgInput" style="width:100%;height:170px;font-family:var(--mono);font-size:14.5px;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;background:var(--panel);color:var(--ink);resize:vertical" spellcheck="false">1 2 3
+1 3 1
+2 3 1
+2 4 5
+2 5 2
+3 6 4
+3 7 7
+4 5 3
+5 8 6
+6 8 2</textarea>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">시작 정점</label>
+        <input class="inp" id="pgStart" type="number" min="1" max="100" value="1" style="width:90px">
+        <button class="btn acc" onclick="pgRun()">다익스트라 실행</button>
+      </div>
+      <div class="term">
+        <div class="tl">RESULT</div>
+        <div class="to" id="pgOut">[다익스트라 실행]을 눌러 보세요.</div>
+      </div>
+    </div>
+    <div class="tip">💡 간선 하나를 지워 보거나 가중치를 바꿔 보세요. <b>2 3 1</b> 줄(우회로)을 지우면 dist[2]가 2에서 3으로 되돌아갑니다!</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>도전 퀴즈 — 다익스트라 8문제</h2>
+    <div id="quizArea"></div>
+    <div class="btnrow">
+      <button class="btn acc" onclick="quizGrade()">점수 확인</button>
+      <button class="btn ghost" onclick="quizReset()">다시 풀기</button>
+    </div>
+    <div class="scorebox" id="quizScore" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>다음 편 예고 — 최소 신장 트리 (MST)</h2>
+    <p>다익스트라가 "한 점에서 모든 점까지 <b>가장 싸게 가는 길</b>"이라면, 다음 주제는 "모든 점을 <b>가장 싸게 연결하는 전선망</b>"입니다. 프림(Prim)은 다익스트라와 놀랄 만큼 닮았고(우선순위 큐 재활용!), 크루스칼(Kruskal)은 이산수학 편에서 배운 <b>Union-Find</b>가 주인공으로 돌아옵니다. 지금까지의 퍼즐 조각이 전부 맞물리는 편이 될 거예요.</p>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <b>세영코딩연구소 · SEYOUNG CODING LAB</b> — C &amp; 파이썬 나란히 배우는 KOI 대비 시리즈 ⑫ 최단 경로 다익스트라<br>
+  ⑪ BFS·DFS에서 이어집니다 · 다음 편: 최소 신장 트리 (프림 · 크루스칼)
+</footer>
+
+<script>
+'use strict';
+/* ================= 공통 ================= */
+var AUTOTIMERS = { dij: null, path: null };
+function stopAuto(key) {
+  if (AUTOTIMERS[key]) { clearInterval(AUTOTIMERS[key]); AUTOTIMERS[key] = null; }
+  if (key === 'dij') { var b = document.getElementById('dijAutoBtn'); if (b) b.textContent = '자동 재생'; }
+}
+
+function goPage(i) {
+  var pages = document.querySelectorAll('.page');
+  var btns = document.querySelectorAll('#topnav .navbtn');
+  for (var k = 0; k < pages.length; k++) pages[k].classList.toggle('on', k === i);
+  for (var k2 = 0; k2 < btns.length; k2++) btns[k2].classList.toggle('on', k2 === i);
+  stopAuto('dij'); stopAuto('path');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyCode(btn) {
+  var col = btn.closest('.col');
+  var pre = col ? col.querySelector('pre.code') : null;
+  if (!pre) return;
+  var txt = pre.textContent;
+  function ok() { var o = btn.textContent; btn.textContent = '복사됨!'; setTimeout(function(){ btn.textContent = o; }, 1200); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(ok, function(){ fallbackCopy(txt); ok(); });
+  } else { fallbackCopy(txt); ok(); }
+}
+function fallbackCopy(txt) {
+  var ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* ================= 실험용 가중 그래프 ================= */
+var INF = Infinity;
+var GPOS = { 1:[280,45], 2:[150,125], 3:[410,125], 4:[65,225], 5:[215,225], 6:[345,225], 7:[495,225], 8:[280,292] };
+var WEDGES = [[1,2,3],[1,3,1],[2,3,1],[2,4,5],[2,5,2],[3,6,4],[3,7,7],[4,5,3],[5,8,6],[6,8,2]];
+var WADJ = {};
+(function buildAdj(){
+  for (var i = 1; i <= 8; i++) WADJ[i] = [];
+  for (var e = 0; e < WEDGES.length; e++) {
+    var u = WEDGES[e][0], v = WEDGES[e][1], w = WEDGES[e][2];
+    WADJ[u].push([v, w]); WADJ[v].push([u, w]);
+  }
+  for (var j = 1; j <= 8; j++) WADJ[j].sort(function(a,b){ return a[0]-b[0]; });
+})();
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+function edgeKey(u, v) { return Math.min(u,v) + '_' + Math.max(u,v); }
+
+function makeWGraphSVG(containerId, prefix) {
+  var box = document.getElementById(containerId);
+  if (!box) return;
+  var svg = document.createElementNS(SVGNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 560 340');
+  for (var e = 0; e < WEDGES.length; e++) {
+    var u = WEDGES[e][0], v = WEDGES[e][1], w = WEDGES[e][2];
+    var ln = document.createElementNS(SVGNS, 'line');
+    ln.setAttribute('x1', GPOS[u][0]); ln.setAttribute('y1', GPOS[u][1]);
+    ln.setAttribute('x2', GPOS[v][0]); ln.setAttribute('y2', GPOS[v][1]);
+    ln.setAttribute('stroke', '#D8CDB8'); ln.setAttribute('stroke-width', '3');
+    ln.id = prefix + 'E' + edgeKey(u, v);
+    svg.appendChild(ln);
+    var mx = (GPOS[u][0] + GPOS[v][0]) / 2, my = (GPOS[u][1] + GPOS[v][1]) / 2;
+    var wt = document.createElementNS(SVGNS, 'text');
+    wt.setAttribute('x', mx); wt.setAttribute('y', my + 5);
+    wt.setAttribute('text-anchor', 'middle');
+    wt.setAttribute('font-family', "'JetBrains Mono',monospace");
+    wt.setAttribute('font-size', '15'); wt.setAttribute('font-weight', '700');
+    wt.setAttribute('fill', '#8A5A17');
+    wt.setAttribute('stroke', '#FAF6EF'); wt.setAttribute('stroke-width', '5');
+    wt.setAttribute('paint-order', 'stroke');
+    wt.textContent = String(w);
+    svg.appendChild(wt);
+  }
+  for (var i = 1; i <= 8; i++) {
+    var g = document.createElementNS(SVGNS, 'g');
+    var c = document.createElementNS(SVGNS, 'circle');
+    c.setAttribute('cx', GPOS[i][0]); c.setAttribute('cy', GPOS[i][1]); c.setAttribute('r', '21');
+    c.setAttribute('fill', '#FFFFFF'); c.setAttribute('stroke', '#9A876B'); c.setAttribute('stroke-width', '2.5');
+    c.id = prefix + 'N' + i;
+    var t = document.createElementNS(SVGNS, 'text');
+    t.setAttribute('x', GPOS[i][0]); t.setAttribute('y', GPOS[i][1] + 6);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', "'JetBrains Mono',monospace");
+    t.setAttribute('font-size', '17'); t.setAttribute('font-weight', '700'); t.setAttribute('fill', '#1E1509');
+    t.textContent = String(i);
+    t.id = prefix + 'T' + i;
+    var d = document.createElementNS(SVGNS, 'text');
+    d.setAttribute('x', GPOS[i][0]); d.setAttribute('y', GPOS[i][1] - 28);
+    d.setAttribute('text-anchor', 'middle');
+    d.setAttribute('font-family', "'JetBrains Mono',monospace");
+    d.setAttribute('font-size', '13'); d.setAttribute('font-weight', '700'); d.setAttribute('fill', '#0E7A6E');
+    d.textContent = '';
+    d.id = prefix + 'D' + i;
+    g.appendChild(c); g.appendChild(t); g.appendChild(d);
+    svg.appendChild(g);
+  }
+  box.appendChild(svg);
+}
+
+/* ================= 1탭: 저장 SIM ================= */
+var SADJ = {};
+function storeInitState() {
+  SADJ = {};
+  for (var i = 1; i <= 8; i++) SADJ[i] = [];
+}
+function storeRender(lastU, lastV) {
+  var py = [];
+  for (var i = 1; i <= 8; i++) {
+    var parts = SADJ[i].map(function(p){ return '(' + p[0] + ', ' + p[1] + ')'; });
+    py.push('adj[' + i + '] = [' + parts.join(', ') + ']');
+  }
+  document.getElementById('storePy').textContent = py.join('\n');
+  var anyEdge = false;
+  var cl = [];
+  for (var j = 1; j <= 8; j++) {
+    if (SADJ[j].length === 0) continue;
+    anyEdge = true;
+    var vs = SADJ[j].map(function(p){ return p[0]; }).join(' ');
+    var ws = SADJ[j].map(function(p){ return p[1]; }).join(' ');
+    cl.push('adjv[' + j + '] : ' + vs + '    adjw[' + j + '] : ' + ws + '    deg[' + j + '] = ' + SADJ[j].length);
+  }
+  document.getElementById('storeC').textContent = anyEdge ? cl.join('\n') : '아직 간선이 없습니다. deg[] = 모두 0';
+}
+function storeAdd() {
+  var u = parseInt(document.getElementById('sEdgeU').value, 10);
+  var v = parseInt(document.getElementById('sEdgeV').value, 10);
+  var w = parseInt(document.getElementById('sEdgeW').value, 10);
+  var msg = document.getElementById('storeMsg');
+  if (u === v) { msg.textContent = '⚠️ 자기 자신으로 가는 간선은 넣지 않기로 해요.'; return; }
+  if (isNaN(w) || w < 1 || w > 99) { msg.textContent = '⚠️ 가중치는 1~99 사이 숫자로!'; return; }
+  for (var k = 0; k < SADJ[u].length; k++) {
+    if (SADJ[u][k][0] === v) { msg.textContent = '⚠️ ' + u + '—' + v + ' 간선은 이미 있어요.'; return; }
+  }
+  SADJ[u].push([v, w]); SADJ[v].push([u, w]);
+  storeRender(u, v);
+  msg.textContent = '간선 ' + u + '—' + v + ' (w=' + w + ') 추가! adj[' + u + ']에 (' + v + ', ' + w + '), adj[' + v + ']에 (' + u + ', ' + w + ') — 양쪽 모두 들어갔습니다.';
+}
+function storeExample() {
+  storeInitState();
+  for (var e = 0; e < WEDGES.length; e++) {
+    var u = WEDGES[e][0], v = WEDGES[e][1], w = WEDGES[e][2];
+    SADJ[u].push([v, w]); SADJ[v].push([u, w]);
+  }
+  storeRender();
+  document.getElementById('storeMsg').textContent = '실험 그래프의 간선 10개를 모두 넣었습니다. 간선 하나가 리스트 두 곳에 들어가므로 (v,w) 쌍은 총 20개!';
+}
+function storeReset() {
+  storeInitState(); storeRender();
+  document.getElementById('storeMsg').textContent = '초기화했습니다. 간선을 추가해 보세요.';
+}
+
+/* ================= 2탭: 다익스트라 스텝 SIM ================= */
+var DIJSTEPS = [], DIJIDX = 0;
+function distStr(d) { return d === INF ? '∞' : String(d); }
+
+function genDijkSteps(start) {
+  var steps = [];
+  var dist = {}, fixed = {}, pre = {};
+  for (var i = 1; i <= 8; i++) { dist[i] = INF; pre[i] = 0; }
+  dist[start] = 0;
+  function treeEdges() {
+    var t = [];
+    for (var v = 1; v <= 8; v++) if (pre[v]) t.push(edgeKey(pre[v], v));
+    return t;
+  }
+  var fixedOrder = [];
+  function snap(msg, cur, updated, done) {
+    var d2 = {}; for (var i2 = 1; i2 <= 8; i2++) d2[i2] = dist[i2];
+    steps.push({ msg: msg, cur: cur, updated: updated || [],
+      fixed: fixedOrder.slice(), dist: d2, tree: treeEdges(), done: !!done });
+  }
+  snap('준비 완료 — dist[' + start + ']=0, 나머지는 전부 ∞ (아직 아무 데도 못 가 본 상태)', null);
+  for (var t = 0; t < 8; t++) {
+    var u = 0;
+    for (var i3 = 1; i3 <= 8; i3++)
+      if (!fixed[i3] && dist[i3] < INF && (u === 0 || dist[i3] < dist[u])) u = i3;
+    if (u === 0) break;
+    fixed[u] = true; fixedOrder.push(u);
+    snap('① 미확정 중 dist 최소는 ' + u + '번(dist=' + dist[u] + ') → ② 확정! 이 값은 이제 절대 안 바뀝니다.', u);
+    var nb = WADJ[u];
+    for (var k = 0; k < nb.length; k++) {
+      var v = nb[k][0], w = nb[k][1];
+      if (fixed[v]) {
+        snap('이웃 ' + v + '번은 이미 확정 → 건너뜀', u);
+      } else if (dist[u] + w < dist[v]) {
+        var oldD = distStr(dist[v]);
+        dist[v] = dist[u] + w; pre[v] = u;
+        snap('③ 완화 성공! dist[' + v + '] : ' + oldD + ' → ' + dist[v] + '  (' + u + '번 경유, ' + dist[u] + '+' + w + ')', u, [v]);
+      } else {
+        snap('③ ' + u + '번 경유는 ' + dist[u] + '+' + w + '=' + (dist[u]+w) + ' ≥ 현재 dist[' + v + ']=' + dist[v] + ' → 갱신 없음', u);
+      }
+    }
+  }
+  var summary = [];
+  for (var i4 = 1; i4 <= 8; i4++) summary.push(distStr(dist[i4]));
+  snap('탐색 완료! dist[1..8] = ' + summary.join(' ') + ' — 확정 순서를 다시 살펴보세요 (작은 dist부터!)', null, [], true);
+  return steps;
+}
+
+function dijRender() {
+  var st = DIJSTEPS[DIJIDX];
+  for (var e = 0; e < WEDGES.length; e++) {
+    var ek = edgeKey(WEDGES[e][0], WEDGES[e][1]);
+    var ln = document.getElementById('dijE' + ek);
+    var onTree = st.tree.indexOf(ek) >= 0;
+    ln.setAttribute('stroke', onTree ? '#B45309' : '#D8CDB8');
+    ln.setAttribute('stroke-width', onTree ? '5' : '3');
+  }
+  for (var i = 1; i <= 8; i++) {
+    var c = document.getElementById('dijN' + i);
+    var t = document.getElementById('dijT' + i);
+    var d = document.getElementById('dijD' + i);
+    var isFixed = st.fixed.indexOf(i) >= 0;
+    var isCur = st.cur === i;
+    var isUpd = st.updated.indexOf(i) >= 0;
+    if (isCur) {
+      c.setAttribute('fill', '#E8B84B'); c.setAttribute('stroke', '#C79A2E'); t.setAttribute('fill', '#3A2A05');
+    } else if (isFixed) {
+      c.setAttribute('fill', '#B45309'); c.setAttribute('stroke', '#8A3E06'); t.setAttribute('fill', '#FFFFFF');
+    } else {
+      c.setAttribute('fill', isUpd ? '#DFF5F1' : '#FFFFFF');
+      c.setAttribute('stroke', isUpd ? '#14B8A6' : '#9A876B');
+      t.setAttribute('fill', '#1E1509');
+    }
+    d.textContent = st.dist[i] === INF ? '' : 'd=' + st.dist[i];
+  }
+  var dg = document.getElementById('dijDist');
+  dg.textContent = '';
+  for (var v = 1; v <= 8; v++) {
+    var cell = document.createElement('div');
+    cell.className = 'dcell';
+    if (st.fixed.indexOf(v) >= 0) cell.className += ' fix';
+    if (st.updated.indexOf(v) >= 0) cell.className += ' upd';
+    var lab = document.createTextNode(String(v) + '번');
+    var val = document.createElement('span');
+    val.className = 'dv';
+    val.textContent = distStr(st.dist[v]);
+    cell.appendChild(lab); cell.appendChild(val);
+    dg.appendChild(cell);
+  }
+  var fx = document.getElementById('dijFixed');
+  fx.textContent = '';
+  if (st.fixed.length === 0) {
+    var em = document.createElement('span'); em.className = 'emptymsg'; em.textContent = '아직 없음';
+    fx.appendChild(em);
+  } else {
+    for (var f = 0; f < st.fixed.length; f++) {
+      var ch = document.createElement('span');
+      ch.className = 'nchip fix';
+      ch.textContent = String(st.fixed[f]);
+      fx.appendChild(ch);
+    }
+  }
+  var msg = document.getElementById('dijMsg');
+  msg.textContent = '[' + DIJIDX + '/' + (DIJSTEPS.length - 1) + '] ' + st.msg;
+  msg.classList.toggle('done', st.done);
+  document.getElementById('dijPrev').disabled = (DIJIDX === 0);
+  document.getElementById('dijNext').disabled = (DIJIDX === DIJSTEPS.length - 1);
+}
+function dijInit() {
+  stopAuto('dij');
+  var s = parseInt(document.getElementById('dijStart').value, 10);
+  DIJSTEPS = genDijkSteps(s);
+  DIJIDX = 0;
+  dijRender();
+}
+function dijStep(dir) {
+  var ni = DIJIDX + dir;
+  if (ni < 0 || ni >= DIJSTEPS.length) return;
+  DIJIDX = ni;
+  dijRender();
+}
+function dijAuto() {
+  var btn = document.getElementById('dijAutoBtn');
+  if (AUTOTIMERS.dij) { stopAuto('dij'); return; }
+  if (DIJIDX >= DIJSTEPS.length - 1) DIJIDX = 0;
+  btn.textContent = '정지';
+  AUTOTIMERS.dij = setInterval(function(){
+    if (DIJIDX >= DIJSTEPS.length - 1) { stopAuto('dij'); return; }
+    DIJIDX++;
+    dijRender();
+  }, 900);
+}
+
+/* ================= 4탭: 경로 역추적 SIM ================= */
+var DIST1 = {}, PRE1 = {};
+function computeFrom1() {
+  var dist = {}, fixed = {}, pre = {};
+  for (var i = 1; i <= 8; i++) { dist[i] = INF; pre[i] = 0; }
+  dist[1] = 0;
+  for (var t = 0; t < 8; t++) {
+    var u = 0;
+    for (var i2 = 1; i2 <= 8; i2++)
+      if (!fixed[i2] && dist[i2] < INF && (u === 0 || dist[i2] < dist[u])) u = i2;
+    if (u === 0) break;
+    fixed[u] = true;
+    var nb = WADJ[u];
+    for (var k = 0; k < nb.length; k++) {
+      var v = nb[k][0], w = nb[k][1];
+      if (dist[u] + w < dist[v]) { dist[v] = dist[u] + w; pre[v] = u; }
+    }
+  }
+  DIST1 = dist; PRE1 = pre;
+}
+function pathResetVisual() {
+  for (var e = 0; e < WEDGES.length; e++) {
+    var ek = edgeKey(WEDGES[e][0], WEDGES[e][1]);
+    var ln = document.getElementById('pathE' + ek);
+    ln.setAttribute('stroke', '#D8CDB8'); ln.setAttribute('stroke-width', '3');
+  }
+  for (var i = 1; i <= 8; i++) {
+    var c = document.getElementById('pathN' + i);
+    var t = document.getElementById('pathT' + i);
+    var d = document.getElementById('pathD' + i);
+    if (i === 1) { c.setAttribute('fill', '#B45309'); c.setAttribute('stroke', '#8A3E06'); t.setAttribute('fill', '#FFFFFF'); }
+    else { c.setAttribute('fill', '#FFFFFF'); c.setAttribute('stroke', '#9A876B'); t.setAttribute('fill', '#1E1509'); }
+    d.textContent = 'd=' + (DIST1[i] === INF ? '∞' : DIST1[i]);
+  }
+}
+function pathReset() {
+  stopAuto('path');
+  pathResetVisual();
+  var pc = document.getElementById('pathChips');
+  pc.textContent = '';
+  var em = document.createElement('span'); em.className = 'emptymsg'; em.textContent = '아직 없음';
+  pc.appendChild(em);
+  document.getElementById('pathOut').textContent = '목적지를 골라 주세요.';
+  document.getElementById('pathMsg').textContent = 'pre 배열은 1번 출발 다익스트라의 결과를 사용합니다.';
+  document.getElementById('pathMsg').classList.remove('done');
+  document.getElementById('pathBtn').disabled = false;
+}
+function pathTrace() {
+  stopAuto('path');
+  pathResetVisual();
+  var target = parseInt(document.getElementById('pathTarget').value, 10);
+  var chain = [];
+  var v = target;
+  while (v) { chain.push(v); v = PRE1[v]; }
+  var pc = document.getElementById('pathChips');
+  pc.textContent = '';
+  var msg = document.getElementById('pathMsg');
+  msg.classList.remove('done');
+  document.getElementById('pathBtn').disabled = true;
+  var idx = 0;
+  AUTOTIMERS.path = setInterval(function(){
+    if (idx >= chain.length) {
+      stopAuto('path');
+      var fwd = chain.slice().reverse();
+      document.getElementById('pathOut').textContent =
+        fwd.join(' -> ') + '\n총 가중치 = ' + DIST1[target];
+      msg.textContent = '완성! pre를 따라 출발점 1번까지 거슬러 왔습니다 — 뒤집으면 최단 경로!';
+      msg.classList.add('done');
+      document.getElementById('pathBtn').disabled = false;
+      return;
+    }
+    var node = chain[idx];
+    var c = document.getElementById('pathN' + node);
+    var t = document.getElementById('pathT' + node);
+    if (node === target) { c.setAttribute('fill', '#E8B84B'); c.setAttribute('stroke', '#C79A2E'); t.setAttribute('fill', '#3A2A05'); }
+    else { c.setAttribute('fill', '#B45309'); c.setAttribute('stroke', '#8A3E06'); t.setAttribute('fill', '#FFFFFF'); }
+    if (idx + 1 < chain.length) {
+      var ln = document.getElementById('pathE' + edgeKey(node, chain[idx + 1]));
+      if (ln) { ln.setAttribute('stroke', '#B45309'); ln.setAttribute('stroke-width', '5'); }
+    }
+    var ch = document.createElement('span');
+    ch.className = 'nchip fix';
+    ch.textContent = String(node);
+    pc.appendChild(ch);
+    if (idx + 1 < chain.length) {
+      msg.textContent = node + '번의 pre는 ' + chain[idx + 1] + '번 — 한 칸 거슬러 갑니다.';
+    }
+    idx++;
+  }, 650);
+}
+
+/* ================= 5탭: 플레이그라운드 ================= */
+function pgRun() {
+  var out = document.getElementById('pgOut');
+  var raw = document.getElementById('pgInput').value;
+  var start = parseInt(document.getElementById('pgStart').value, 10);
+  var lines = raw.split('\n');
+  var edges = [], maxV = 0;
+  for (var li = 0; li < lines.length; li++) {
+    var s = lines[li].trim();
+    if (s === '') continue;
+    var ps = s.split(/\s+/);
+    if (ps.length !== 3) { out.textContent = '⚠️ ' + (li+1) + '번째 줄: "u v w" 세 숫자가 필요해요 → "' + s + '"'; return; }
+    var u = parseInt(ps[0], 10), v = parseInt(ps[1], 10), w = parseInt(ps[2], 10);
+    if (isNaN(u) || isNaN(v) || isNaN(w)) { out.textContent = '⚠️ ' + (li+1) + '번째 줄: 숫자가 아닌 값이 있어요 → "' + s + '"'; return; }
+    if (u < 1 || u > 100 || v < 1 || v > 100) { out.textContent = '⚠️ 정점 번호는 1~100 사이로! (' + (li+1) + '번째 줄)'; return; }
+    if (w < 0) { out.textContent = '⚠️ 음수 가중치 발견 (w=' + w + ')! 다익스트라는 음수 간선에서 오답이 날 수 있어 실행하지 않습니다. (벨만-포드가 필요한 상황)'; return; }
+    if (u === v) { out.textContent = '⚠️ 자기 자신으로 가는 간선은 빼 주세요. (' + (li+1) + '번째 줄)'; return; }
+    edges.push([u, v, w]);
+    if (u > maxV) maxV = u;
+    if (v > maxV) maxV = v;
+  }
+  if (edges.length === 0) { out.textContent = '⚠️ 간선이 하나도 없어요.'; return; }
+  if (isNaN(start) || start < 1 || start > maxV) { out.textContent = '⚠️ 시작 정점은 1~' + maxV + ' 사이로!'; return; }
+  var adj = {};
+  for (var i = 1; i <= maxV; i++) adj[i] = [];
+  for (var e = 0; e < edges.length; e++) {
+    adj[edges[e][0]].push([edges[e][1], edges[e][2]]);
+    adj[edges[e][1]].push([edges[e][0], edges[e][2]]);
+  }
+  var dist = {}, fixed = {}, pre = {};
+  for (var i2 = 1; i2 <= maxV; i2++) { dist[i2] = INF; pre[i2] = 0; }
+  dist[start] = 0;
+  for (var t = 0; t < maxV; t++) {
+    var u2 = 0;
+    for (var i3 = 1; i3 <= maxV; i3++)
+      if (!fixed[i3] && dist[i3] < INF && (u2 === 0 || dist[i3] < dist[u2])) u2 = i3;
+    if (u2 === 0) break;
+    fixed[u2] = true;
+    for (var k = 0; k < adj[u2].length; k++) {
+      var v2 = adj[u2][k][0], w2 = adj[u2][k][1];
+      if (dist[u2] + w2 < dist[v2]) { dist[v2] = dist[u2] + w2; pre[v2] = u2; }
+    }
+  }
+  var res = ['정점 ' + maxV + '개 · 간선 ' + edges.length + '개 · 시작 ' + start + '번', ''];
+  for (var v3 = 1; v3 <= maxV; v3++) {
+    if (dist[v3] === INF) { res.push('dist[' + v3 + '] = 도달 불가'); continue; }
+    var chain = [], c2 = v3;
+    while (c2) { chain.push(c2); c2 = pre[c2]; }
+    chain.reverse();
+    res.push('dist[' + v3 + '] = ' + dist[v3] + '   경로: ' + chain.join(' -> '));
+  }
+  out.textContent = res.join('\n');
+}
+
+/* ================= 퀴즈 ================= */
+var QZ = [
+  { q: '다익스트라에서 우선순위 큐(최소 힙)가 맡는 일은?',
+    o: ['방문한 정점 순서 기억', '미확정 정점 중 dist가 가장 작은 것을 빨리 찾기', '간선을 가중치순 정렬', '경로를 거꾸로 뒤집기'], a: 1,
+    e: 'O(V²) 버전의 "for문으로 최소 찾기"를 힙이 log 시간에 대신해 줍니다. 그래서 O(E log V)!' },
+  { q: '다익스트라를 쓰면 안 되는 그래프는?',
+    o: ['간선이 아주 많은 그래프', '음수 가중치 간선이 있는 그래프', '사이클이 있는 그래프', '정점이 1개뿐인 그래프'], a: 1,
+    e: '"최솟값은 확정해도 된다"는 논리가 음수 간선에서 무너집니다. 그때는 벨만-포드! 사이클 자체는 전혀 문제없습니다.' },
+  { q: '모든 간선의 가중치가 1이라면 가장 알맞은 선택은?',
+    o: ['다익스트라', 'BFS', 'DFS', '완전탐색'], a: 1,
+    e: '가중치가 전부 같으면 "가중치 합 최소 = 간선 개수 최소"이므로 더 단순하고 빠른 BFS면 충분합니다 (⑪편!).' },
+  { q: '완화(relaxation)가 일어나는 정확한 조건은?',
+    o: ['dist[u] + w > dist[v]', 'dist[u] + w < dist[v]', 'dist[u] < dist[v]', 'w < dist[v]'], a: 1,
+    e: '"u를 거쳐 가는 새 길(dist[u]+w)이 기존 기록(dist[v])보다 짧으면" 갱신 — 헤더의 수식이 바로 이것입니다.' },
+  { q: '실험 그래프(1번 출발)에서 dist[2]는?',
+    o: ['3', '2', '1', '4'], a: 1,
+    e: '직행 1—2는 3이지만, 1→3→2 = 1+1 = 2가 더 짧습니다. 완화가 3을 2로 고쳐 줍니다!' },
+  { q: '실험 그래프(1번 출발)에서 dist[8]과 그 경로는?',
+    o: ['10, 경로 1→2→5→8', '7, 경로 1→3→6→8', '8, 경로 1→2→3→8', '9, 경로 1→3→7→8'], a: 1,
+    e: '처음엔 5번 경유로 10이 적히지만, 6번이 확정되며 5+2=7로 완화됩니다. 시뮬레이터에서 이 순간을 확인해 보세요!' },
+  { q: 'Python heapq에 (거리, 정점) 순서의 튜플을 넣는 이유는?',
+    o: ['메모리를 아끼려고', '튜플은 첫 원소부터 비교하므로 거리가 작은 것이 먼저 나오게 하려고', '정점 번호가 커서', '문법 규칙이라서'], a: 1,
+    e: '힙은 튜플의 첫 원소 기준으로 최솟값을 꺼냅니다. (정점, 거리) 순서로 넣으면 "번호 작은 정점"부터 나와 엉망이 됩니다.' },
+  { q: '힙 버전의 "if d > dist[u]: continue"가 하는 일은?',
+    o: ['음수 간선 차단', '이미 더 짧게 확정된 정점의 낡은 힙 기록을 건너뛰기', '무한 루프 방지용 안전장치일 뿐 없어도 무방', '경로 복원'], a: 1,
+    e: '같은 정점이 힙에 여러 번 들어갈 수 있어요. 낡은(더 큰) 기록을 스킵하지 않으면 답은 맞아도 시간 초과가 납니다. O(V²) 버전의 done[]과 같은 역할!' }
+];
+var QSTATE = [];
+function quizBuild() {
+  var area = document.getElementById('quizArea');
+  area.textContent = '';
+  QSTATE = [];
+  for (var i = 0; i < QZ.length; i++) {
+    QSTATE.push(null);
+    var qd = document.createElement('div');
+    qd.className = 'q';
+    var qt = document.createElement('div');
+    qt.className = 'qt';
+    var qn = document.createElement('span');
+    qn.className = 'qn'; qn.textContent = 'Q' + (i + 1);
+    qt.appendChild(qn);
+    qt.appendChild(document.createTextNode(QZ[i].q));
+    qd.appendChild(qt);
+    var expl = document.createElement('div');
+    expl.className = 'expl';
+    expl.textContent = '해설: ' + QZ[i].e;
+    (function(qi, qdEl, explEl){
+      for (var j = 0; j < QZ[qi].o.length; j++) {
+        var ob = document.createElement('button');
+        ob.className = 'opt';
+        ob.textContent = '① ② ③ ④'.split(' ')[j] + ' ' + QZ[qi].o[j];
+        (function(oj, obEl){
+          obEl.addEventListener('click', function(){
+            if (QSTATE[qi] !== null) return;
+            QSTATE[qi] = oj;
+            var opts = qdEl.querySelectorAll('.opt');
+            for (var k = 0; k < opts.length; k++) {
+              opts[k].disabled = true;
+              if (k === QZ[qi].a) opts[k].classList.add(oj === QZ[qi].a ? 'pick-ok' : 'reveal');
+            }
+            if (oj !== QZ[qi].a) obEl.classList.add('pick-ng');
+            explEl.classList.add('show');
+          });
+        })(j, ob);
+        qdEl.appendChild(ob);
+      }
+    })(i, qd, expl);
+    qd.appendChild(expl);
+    area.appendChild(qd);
+  }
+  var sc = document.getElementById('quizScore');
+  sc.style.display = 'none';
+}
+function quizGrade() {
+  var answered = 0, correct = 0;
+  for (var i = 0; i < QZ.length; i++) {
+    if (QSTATE[i] !== null) {
+      answered++;
+      if (QSTATE[i] === QZ[i].a) correct++;
+    }
+  }
+  var sc = document.getElementById('quizScore');
+  sc.style.display = 'block';
+  if (answered < QZ.length) {
+    sc.textContent = '아직 ' + (QZ.length - answered) + '문제가 남았어요! (현재 ' + correct + '개 정답)';
+  } else if (correct === QZ.length) {
+    sc.textContent = '🏆 8문제 전부 정답! 다익스트라 완전 정복 — 다음은 MST(프림·크루스칼)로!';
+  } else {
+    sc.textContent = '결과: ' + correct + ' / ' + QZ.length + ' — 틀린 문제의 해설을 읽고 시뮬레이터로 다시 실험해 보세요!';
+  }
+}
+function quizReset() { quizBuild(); }
+
+/* ================= 초기화 ================= */
+document.addEventListener('DOMContentLoaded', function(){
+  makeWGraphSVG('introSvg', 'intro');
+  makeWGraphSVG('dijSvg', 'dij');
+  makeWGraphSVG('pathSvg', 'path');
+  var su = document.getElementById('sEdgeU');
+  var sv = document.getElementById('sEdgeV');
+  var ds = document.getElementById('dijStart');
+  var pt = document.getElementById('pathTarget');
+  for (var i = 1; i <= 8; i++) {
+    var o1 = document.createElement('option'); o1.value = i; o1.textContent = i + '번'; su.appendChild(o1);
+    var o2 = document.createElement('option'); o2.value = i; o2.textContent = i + '번'; sv.appendChild(o2);
+    var o3 = document.createElement('option'); o3.value = i; o3.textContent = i + '번'; ds.appendChild(o3);
+    if (i >= 2) { var o4 = document.createElement('option'); o4.value = i; o4.textContent = i + '번'; pt.appendChild(o4); }
+  }
+  sv.value = '2';
+  pt.value = '8';
+  ds.addEventListener('change', dijInit);
+  storeInitState(); storeRender();
+  computeFrom1();
+  dijInit();
+  pathReset();
+  quizBuild();
+});
+</script>
+</body>
+</html>

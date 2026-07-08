@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C &amp; 파이썬 위상 정렬 실습 — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#0C7A8C;
+  --accent-light:#DCF0F3;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#0A3540);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'indeg == 0';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.06);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.35}
+header p{color:#9FD4DE;font-size:14px;margin-top:6px}
+header .langchips{margin-top:12px;display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.chip.c{background:var(--c-color);color:#fff}
+.chip.py{background:var(--py-color);color:#fff}
+.chip.js{background:#5A4A38;color:#F0E6D2}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);border-bottom:2px solid var(--bdr);padding:10px 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.navbtn{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1.5px solid var(--bdr);border-radius:22px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.navbtn .num{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--soft);color:var(--ink3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.navbtn.on .num{background:rgba(255,255,255,.25);color:#fff}
+
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 90px}
+.page{display:none}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:28px 30px;margin-bottom:28px;box-shadow:0 1px 3px rgba(30,21,9,.04)}
+.card h2{font-size:22px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2 .bar{width:6px;height:24px;background:var(--accent);border-radius:3px;flex:none}
+.card h3{font-size:18px;font-weight:800;margin:26px 0 12px;color:var(--ink)}
+.card p{margin-bottom:12px;color:var(--ink)}
+.card p b{color:var(--accent)}
+.small{font-size:14.5px;color:var(--ink2)}
+
+.tip{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.tip b{color:var(--accent)}
+.warn{background:#FBEBE8;border-left:5px solid var(--ng);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.warn b{color:var(--ng)}
+.link-prev{background:var(--soft);border:1.5px dashed var(--ink3);border-radius:10px;padding:12px 18px;margin:16px 0;font-size:15px;color:var(--ink2)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.col .lang{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.col.c .lang{background:var(--c-color)}
+.col.py .lang{background:var(--py-color)}
+.copybtn{font-family:var(--sans);font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer}
+.copybtn:hover{background:rgba(255,255,255,.32)}
+pre.code{background:var(--code-bg);color:#E8E6E3;font-family:var(--mono);font-size:14px;line-height:1.7;padding:16px 18px;border-radius:0 0 10px 10px;overflow-x:auto;white-space:pre;tab-size:4}
+.col.c pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--c-color)}
+.col.py pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--py-color)}
+pre.code .cm{color:#7A8B7A;font-style:italic}
+pre.code .kw{color:#C792EA}
+pre.code .fn{color:#82AAFF}
+pre.code .st{color:#C3E88D}
+pre.code .nb{color:#F78C6C}
+pre.code .hl{background:rgba(12,122,140,.22);border-radius:3px;padding:0 2px}
+
+.term{background:var(--term-bg);border-radius:10px;padding:13px 18px;margin:12px 0;font-family:var(--mono);font-size:14px}
+.term .tl{color:#6B7280;font-size:11.5px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+.term .to{color:#7CE38B;white-space:pre-wrap;line-height:1.65}
+.term .ti{color:#E8B84B}
+
+table.cmp{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.cmp th{background:var(--soft);color:var(--ink2);font-weight:800;padding:10px 14px;border:1px solid var(--bdr);text-align:left}
+table.cmp td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.cmp td.mono{font-family:var(--mono);font-size:13.5px}
+table.cmp tr td:first-child{font-weight:700;background:#FDFBF6}
+
+.btn{font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:9px;padding:9px 18px;cursor:pointer;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.teal{background:var(--cell);color:#fff}
+.btn.warm{background:var(--cell-hi);color:#3A2A05}
+.btn.ghost{background:var(--panel);color:var(--ink2);border:1.5px solid var(--bdr)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:12px 0}
+select.sel,input.inp{font-family:var(--mono);font-size:15px;font-weight:600;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;background:var(--panel);color:var(--ink)}
+
+.simpanel{background:var(--soft);border:1.5px solid var(--bdr);border-radius:12px;padding:20px;margin:16px 0}
+.simpanel h4{font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.simpanel h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.simflex{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.simflex{grid-template-columns:1fr}}
+.svgbox{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+
+.statecard{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.statecard .sl{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:7px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;align-items:center}
+.nchip{font-family:var(--mono);font-size:14.5px;font-weight:700;min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent);padding:0 6px}
+.nchip.q{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell)}
+.nchip.top{background:var(--cell-hi);color:#3A2A05;border-color:#C79A2E}
+.nchip.ord{background:var(--panel);color:var(--ink2);border-color:var(--bdr)}
+.nchip.ord.new{background:var(--accent);color:#fff;border-color:var(--accent)}
+.emptymsg{font-size:13.5px;color:var(--ink3);font-style:italic}
+.msgline{background:var(--panel);border:1.5px solid var(--accent);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);min-height:48px;display:flex;align-items:center;margin-top:4px}
+.msgline.done{border-color:var(--ok);background:#EAF7EE}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.lgdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink3);background:var(--panel);flex:none}
+.lgdot.cur{background:var(--cell-hi);border-color:#C79A2E}
+.lgdot.vis{background:var(--accent);border-color:var(--accent)}
+.lgdot.inq{background:#DFF5F1;border-color:var(--cell)}
+
+.grid7{display:grid;grid-template-columns:repeat(7,46px);gap:5px;margin:14px 0}
+.gcell{width:46px;height:46px;border-radius:8px;background:var(--panel);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;user-select:none;transition:transform .08s}
+.gcell:hover{transform:scale(1.06)}
+.gcell.wall{background:#4A3B28;border-color:#4A3B28;color:#4A3B28}
+@media(max-width:480px){.grid7{grid-template-columns:repeat(7,40px)}.gcell{width:40px;height:40px;font-size:12.5px}}
+
+.q{background:var(--panel);border:1.5px solid var(--bdr);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.q .qt{font-size:16.5px;font-weight:800;margin-bottom:12px}
+.q .qt .qn{font-family:var(--mono);color:#fff;background:var(--accent);border-radius:7px;padding:2px 10px;font-size:13.5px;margin-right:9px}
+.opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:15.5px;font-weight:600;background:#FDFBF6;border:1.5px solid var(--bdr);border-radius:9px;padding:10px 15px;margin-bottom:8px;cursor:pointer;color:var(--ink);transition:all .12s}
+.opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt.pick-ok{background:#EAF7EE;border-color:var(--ok);color:var(--ok);font-weight:800}
+.opt.pick-ng{background:#FBEBE8;border-color:var(--ng);color:var(--ng)}
+.opt.reveal{border-color:var(--ok);background:#EAF7EE}
+.opt:disabled{cursor:default}
+.expl{display:none;background:var(--soft);border-radius:9px;padding:11px 15px;font-size:14.5px;color:var(--ink2);margin-top:6px}
+.expl.show{display:block}
+.scorebox{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px}
+
+footer{border-top:2px solid var(--bdr);padding:26px 22px 40px;text-align:center;color:var(--ink3);font-size:13.5px}
+footer b{color:var(--ink2)}
+.pagenav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+/* ===== ⑮ 위상 정렬 전용 추가 ===== */
+.idgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.idcell{background:var(--panel);border:1.5px solid var(--bdr);border-radius:8px;padding:5px 4px;text-align:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink2)}
+.idcell .idv{display:block;font-size:17px;color:var(--ink)}
+.idcell.zero{background:var(--accent-light);border-color:var(--accent)}
+.idcell.zero .idv{color:var(--accent)}
+.idcell.dec{background:#FEF2E0;border-color:#E8B84B}
+.idcell.dec .idv{color:#8A5A17}
+.idcell.done{background:#EFEFEF;border-color:#DDD;opacity:.55}
+.orderbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:40px}
+.oitem{background:var(--accent);color:#fff;border-radius:8px;padding:6px 12px;font-family:var(--mono);font-weight:700;font-size:15px}
+.oarrow{color:var(--ink3);font-weight:700}
+.qchip{background:#FEF2E0;color:#8A5A17;border:1.5px solid #E8B84B;border-radius:7px;padding:4px 10px;font-family:var(--mono);font-weight:700;font-size:14px}
+.stackcol{display:flex;flex-direction:column-reverse;gap:4px;min-height:40px}
+.sitem{background:var(--c-color);color:#fff;border-radius:7px;padding:5px 12px;font-family:var(--mono);font-weight:700;font-size:14px;text-align:center}
+.postbar{display:flex;flex-wrap:wrap;gap:5px;min-height:34px}
+.pitem{background:#DFF5F1;color:#0E7A6E;border:1.5px solid var(--cell);border-radius:7px;padding:4px 10px;font-family:var(--mono);font-weight:700;font-size:14px}
+svg .arrowline{stroke:#C7BCA6;stroke-width:2.5}
+svg .arrowline.tree{stroke:var(--accent);stroke-width:4}
+svg .arrowline.cur{stroke:#E8B84B;stroke-width:4}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="hbadge">SEYOUNG CODING LAB · KOI 대비 시리즈 ⑮</span>
+  <h1>C &amp; 파이썬 나란히 배우는 <span style="color:#8FD9E5">위상 정렬 Topological Sort</span></h1>
+  <p>"먼저 해야 할 일"의 순서 정하기 — 선수과목·빌드 순서·작업 스케줄링의 기초</p>
+  <div class="langchips">
+    <span class="chip c">C</span>
+    <span class="chip py">Python</span>
+    <span class="chip js">SIM: JavaScript</span>
+  </div>
+</header>
+
+<nav id="topnav">
+  <button class="navbtn on" onclick="goPage(0)"><span class="num">0</span>시작하기</button>
+  <button class="navbtn" onclick="goPage(1)"><span class="num">1</span>진입차수(Kahn)</button>
+  <button class="navbtn" onclick="goPage(2)"><span class="num">2</span>DFS 방식</button>
+  <button class="navbtn" onclick="goPage(3)"><span class="num">3</span>코드 구현</button>
+  <button class="navbtn" onclick="goPage(4)"><span class="num">4</span>사이클과 활용</button>
+  <button class="navbtn" onclick="goPage(5)"><span class="num">5</span>플레이그라운드</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= PAGE 0 : 시작하기 ================= -->
+<section class="page on">
+  <div class="card">
+    <h2><span class="bar"></span>순서가 있는 일들 — 위상 정렬</h2>
+    <p>대학 수강신청을 떠올려 보세요. "자료구조"를 들으려면 "프로그래밍기초"를 먼저 들어야 하고, "알고리즘"을 들으려면 "자료구조"가 선행되어야 합니다. 이렇게 <b>선후 관계</b>가 있는 일들을 <b>규칙을 어기지 않는 하나의 순서</b>로 줄 세우는 것이 <b>위상 정렬</b>입니다.</p>
+    <p>화살표 <span class="mono">u → v</span>는 "u를 <b>먼저</b> 해야 v를 할 수 있다"는 뜻입니다. 위상 정렬은 <b>모든 화살표가 왼쪽→오른쪽을 향하도록</b> 정점을 일렬로 세우는 것과 같습니다.</p>
+    <div class="tip">💡 <b>어디에 쓰나?</b> 과목 선수관계, 프로젝트 작업 순서(간트 차트), 소스 파일 컴파일 순서(Makefile), 스프레드시트 수식 계산 순서, 게임 기술 트리… "먼저/나중"이 있는 곳엔 어디든 위상 정렬이 숨어 있습니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>두 가지 전제 — 방향과 무사이클 (DAG)</h2>
+    <p>위상 정렬이 가능하려면 그래프가 반드시 <b>DAG</b>여야 합니다.</p>
+    <table class="cmp">
+      <tr><th>DAG의 조건</th><th>뜻</th></tr>
+      <tr><td><b>D</b>irected (방향)</td><td>화살표에 방향이 있다 — "누가 먼저"가 정해짐</td></tr>
+      <tr><td><b>A</b>cyclic (무사이클)</td><td>순환 고리가 없다</td></tr>
+      <tr><td>+ <b>G</b>raph</td><td>그래프</td></tr>
+    </table>
+    <div class="warn">⚠️ <b>사이클이 있으면 위상 정렬 불가!</b> A→B→C→A라면 "A가 먼저? C가 먼저?" 답이 없습니다. 뱀이 자기 꼬리를 무는 셈이죠. 뒤에서 배울 두 알고리즘은 이 사이클을 <b>자동으로 감지</b>합니다.</div>
+    <div class="link-prev">🔗 <b>⑪편 연결</b> — DFS와 큐(BFS의 도구)가 다시 등장합니다. 위상 정렬은 사실상 "순서를 기억하는 특별한 탐색"이에요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>정답은 하나가 아니다</h2>
+    <p>중요한 성질: <b>유효한 위상 순서는 여러 개일 수 있습니다.</b> 선후 관계만 지키면 되니까요. 예를 들어 "양말과 셔츠는 아무 순서나 먼저 신어도 되지만, 둘 다 신발보다는 먼저"인 것과 같습니다.</p>
+    <p>그래서 두 대표 알고리즘이 <b>서로 다른(그러나 둘 다 올바른) 순서</b>를 내놓기도 합니다. 이 편에서 직접 확인하게 됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>실험용 DAG — 선수과목 그래프</h2>
+    <p>이번 편의 예제입니다. 정점 8개, 방향 간선 10개. 화살표 방향(먼저→나중)에 주목하세요.</p>
+    <div class="svgbox" id="introSvg"></div>
+    <p class="small" style="margin-top:10px">진입차수(들어오는 화살표 수)를 눈으로 세어 보세요. <b>1번과 2번은 들어오는 화살표가 0개</b> — 아무 선수과목 없이 바로 들을 수 있는 과목입니다. 여기서부터 순서가 시작됩니다.</p>
+    <div class="term">
+      <div class="tl">INPUT — 방향 간선 u→v (u 먼저, v 나중)</div>
+      <div class="to">8 10
+1 3
+2 3
+3 4
+3 5
+2 5
+4 6
+5 6
+5 7
+6 8
+7 8</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1 : 진입차수(Kahn) ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>진입차수 방식 (Kahn 알고리즘) — "선수과목 다 들은 것부터"</h2>
+    <p>가장 직관적인 방법입니다. <b>진입차수(in-degree)</b>는 "그 정점으로 들어오는 화살표의 개수" = "아직 안 들은 선수과목의 수"입니다. 규칙은 세 줄:</p>
+    <table class="cmp">
+      <tr><th>순서</th><th>규칙</th></tr>
+      <tr><td>①</td><td>진입차수가 <b>0인 정점</b>(선수과목 없음)을 모두 큐에 넣는다</td></tr>
+      <tr><td>②</td><td>큐에서 하나 꺼내 순서에 추가 — 그 정점이 가리키는 이웃들의 <b>진입차수를 1씩 감소</b></td></tr>
+      <tr><td>③</td><td>감소하다 <b>0이 된 정점</b>을 큐에 넣는다 — 큐가 빌 때까지 반복</td></tr>
+    </table>
+    <div class="tip">💡 "이번 과목을 다 들었으니, 이걸 선수과목으로 하던 과목들의 남은 선수과목 수가 하나 줄어든다." 그러다 남은 선수과목이 0이 되면 그 과목도 이제 들을 수 있게 되는 것 — 딱 그 논리입니다.</div>
+    <div class="link-prev">🔗 <b>⑪편 BFS 연결</b> — 큐를 쓰는 구조가 BFS와 똑같습니다. 다만 "방문했나"가 아니라 "진입차수가 0이 됐나"로 큐에 넣는 조건이 바뀐 것뿐이에요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>Kahn 스텝 시뮬레이터</h2>
+    <p>진입차수가 <b>0인 칸은 청록</b>, 이번에 <b>감소한 칸은 노랑</b>으로 표시됩니다. 큐에서 작은 번호부터 꺼내(사전순 위상 정렬) 순서를 완성합니다.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>한 단계씩 진행하며 진입차수가 줄어드는 과정을 보세요</h4>
+      <div class="btnrow">
+        <button class="btn ghost" onclick="kahnInit()">처음으로</button>
+        <button class="btn ghost" onclick="kahnStep(-1)" id="kahnPrev">◀ 이전</button>
+        <button class="btn acc" onclick="kahnStep(1)" id="kahnNext">다음 ▶</button>
+        <button class="btn teal" onclick="kahnAuto()" id="kahnAutoBtn">자동 재생</button>
+      </div>
+      <div class="simflex">
+        <div class="svgbox" id="kahnSvg"></div>
+        <div>
+          <div class="statecard">
+            <div class="sl">진입차수 (청록 = 0, 노랑 = 방금 감소)</div>
+            <div class="idgrid" id="kahnIndeg"></div>
+          </div>
+          <div class="statecard">
+            <div class="sl">큐 (진입차수 0 대기열 · 작은 번호부터)</div>
+            <div class="chiprow" id="kahnQueue"><span class="emptymsg">비어 있음</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="statecard">
+        <div class="sl">완성된 위상 순서</div>
+        <div class="orderbar" id="kahnOrder"><span class="emptymsg">아직 없음</span></div>
+      </div>
+      <div class="msgline" id="kahnMsg">[다음]을 눌러 시작하세요.</div>
+    </div>
+    <div class="tip">💡 <b>KOI 포인트</b> — 큐에 여러 개가 동시에 있을 때 <b>어느 것을 먼저 꺼내느냐</b>에 따라 순서가 달라집니다. "사전순으로 가장 빠른 위상 정렬"을 요구하면 일반 큐 대신 <b>우선순위 큐(최소 힙)</b>를 씁니다. 이 시뮬레이터는 항상 작은 번호를 먼저 꺼냅니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : DFS 방식 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>DFS 방식 — "가장 나중에 끝나는 것이 맨 앞"</h2>
+    <p>두 번째 방법은 DFS를 이용합니다. 핵심 통찰: DFS로 깊이 들어갔다가 <b>함수가 끝나는(빠져나오는) 순서</b>를 기록하면, 그 역순이 위상 정렬입니다.</p>
+    <table class="cmp">
+      <tr><th>순서</th><th>규칙</th></tr>
+      <tr><td>①</td><td>모든 정점에 대해 아직 방문 안 했으면 DFS 시작</td></tr>
+      <tr><td>②</td><td>이웃을 모두 재귀 방문한 <b>뒤에</b>, 자신을 리스트에 추가 (후위 기록)</td></tr>
+      <tr><td>③</td><td>완성된 리스트를 <b>뒤집으면</b> 위상 순서!</td></tr>
+    </table>
+    <div class="tip">💡 <b>왜 역순일까?</b> "가장 나중에 끝난 정점"은 자신에게 딸린 후속 작업이 하나도 없다는 뜻 = 가장 먼저 해도 되는 일. 그래서 <b>후위 순서를 뒤집으면</b> 자연스럽게 "먼저 할 것 → 나중 할 것" 순서가 됩니다.</div>
+    <div class="link-prev">🔗 <b>⑪편 DFS 연결</b> — 재귀 DFS에서 "이웃을 다 본 뒤 함수가 끝나며 되돌아온다"를 배웠죠? 바로 그 "끝나는 순간"을 기록하는 것뿐입니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>DFS 위상 정렬 시뮬레이터</h2>
+    <p>재귀 <b>콜스택</b>(파랑)이 쌓이고, 함수가 끝날 때마다 <b>후위 리스트</b>(청록)에 정점이 추가됩니다. 마지막에 뒤집으면 위상 순서 완성.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>작은 번호부터 DFS를 시작합니다 — 한 단계씩 진행</h4>
+      <div class="btnrow">
+        <button class="btn ghost" onclick="dfsInit()">처음으로</button>
+        <button class="btn ghost" onclick="dfsStep(-1)" id="dfsPrev">◀ 이전</button>
+        <button class="btn acc" onclick="dfsStep(1)" id="dfsNext">다음 ▶</button>
+        <button class="btn teal" onclick="dfsAuto()" id="dfsAutoBtn">자동 재생</button>
+      </div>
+      <div class="simflex">
+        <div class="svgbox" id="dfsSvg"></div>
+        <div>
+          <div class="statecard">
+            <div class="sl">콜스택 (현재 재귀 깊이)</div>
+            <div class="stackcol" id="dfsStack"><span class="emptymsg">비어 있음</span></div>
+          </div>
+          <div class="statecard">
+            <div class="sl">후위 기록 (끝난 순서대로)</div>
+            <div class="postbar" id="dfsPost"><span class="emptymsg">아직 없음</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="statecard">
+        <div class="sl">위상 순서 = 후위 기록의 역순</div>
+        <div class="orderbar" id="dfsOrder"><span class="emptymsg">DFS 완료 후 표시</span></div>
+      </div>
+      <div class="msgline" id="dfsMsg">[다음]을 눌러 시작하세요.</div>
+    </div>
+    <div class="warn">⚠️ 결과를 Kahn 시뮬레이터와 비교해 보세요. Kahn은 <b>1 2 3 4 5 6 7 8</b>, DFS는 <b>2 1 3 5 7 4 6 8</b> — 서로 다르지만 <b>둘 다 올바른 위상 순서</b>입니다! 모든 화살표가 여전히 왼→오를 향하는지 직접 확인해 보세요.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : 코드 구현 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>Kahn 방식 — 큐 + 진입차수 배열</h2>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — Kahn 위상 정렬<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code">#include &lt;stdio.h&gt;
+
+<span class="kw">int</span> n, m;
+<span class="kw">int</span> adjv[<span class="nb">101</span>][<span class="nb">101</span>], deg[<span class="nb">101</span>];  <span class="cm">/* 인접 리스트 */</span>
+<span class="kw">int</span> indeg[<span class="nb">101</span>];                <span class="cm">/* 진입차수 */</span>
+<span class="kw">int</span> queue[<span class="nb">101</span>], head, tail;
+<span class="kw">int</span> order[<span class="nb">101</span>], oc;
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    scanf(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="kw">for</span> (<span class="kw">int</span> e = <span class="nb">0</span>; e &lt; m; e++) {
+        <span class="kw">int</span> u, v;
+        scanf(<span class="st">"%d %d"</span>, &amp;u, &amp;v);   <span class="cm">/* u -&gt; v */</span>
+        adjv[u][deg[u]++] = v;
+        <span class="hl">indeg[v]++;</span>                <span class="cm">/* v로 들어오는 화살표 +1 */</span>
+    }
+    <span class="cm">/* ① 진입차수 0을 큐에 (작은 번호부터) */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++)
+        <span class="kw">if</span> (indeg[i] == <span class="nb">0</span>) queue[tail++] = i;
+
+    <span class="kw">while</span> (head &lt; tail) {
+        <span class="kw">int</span> u = queue[head++];      <span class="cm">/* ② 꺼내서 순서에 추가 */</span>
+        order[oc++] = u;
+        <span class="kw">for</span> (<span class="kw">int</span> k = <span class="nb">0</span>; k &lt; deg[u]; k++) {
+            <span class="kw">int</span> v = adjv[u][k];
+            <span class="hl"><span class="kw">if</span> (--indeg[v] == <span class="nb">0</span>)</span>    <span class="cm">/* ③ 0이 되면 큐에 */</span>
+                queue[tail++] = v;
+        }
+    }
+    <span class="kw">if</span> (oc &lt; n) {                  <span class="cm">/* 다 못 넣음 = 사이클! */</span>
+        printf(<span class="st">"CYCLE (위상 정렬 불가)\n"</span>);
+    } <span class="kw">else</span> {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">0</span>; i &lt; oc; i++)
+            printf(<span class="st">"%d "</span>, order[i]);
+        printf(<span class="st">"\n"</span>);
+    }
+    <span class="kw">return</span> <span class="nb">0</span>;
+}</pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — Kahn 위상 정렬<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">import</span> sys
+<span class="kw">from</span> collections <span class="kw">import</span> deque
+input = sys.stdin.readline
+
+n, m = map(<span class="fn">int</span>, input().split())
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> range(n + <span class="nb">1</span>)]
+indeg = [<span class="nb">0</span>] * (n + <span class="nb">1</span>)
+<span class="kw">for</span> _ <span class="kw">in</span> range(m):
+    u, v = map(<span class="fn">int</span>, input().split())  <span class="cm"># u -&gt; v</span>
+    adj[u].append(v)
+    <span class="hl">indeg[v] += <span class="nb">1</span></span>
+
+<span class="cm"># ① 진입차수 0을 큐에</span>
+q = deque(i <span class="kw">for</span> i <span class="kw">in</span> range(<span class="nb">1</span>, n + <span class="nb">1</span>) <span class="kw">if</span> indeg[i] == <span class="nb">0</span>)
+order = []
+<span class="kw">while</span> q:
+    u = q.popleft()          <span class="cm"># ② 꺼내서 순서에 추가</span>
+    order.append(u)
+    <span class="kw">for</span> v <span class="kw">in</span> adj[u]:
+        <span class="hl">indeg[v] -= <span class="nb">1</span></span>
+        <span class="kw">if</span> indeg[v] == <span class="nb">0</span>:      <span class="cm"># ③ 0이 되면 큐에</span>
+            q.append(v)
+
+<span class="kw">if</span> len(order) &lt; n:           <span class="cm"># 사이클!</span>
+    print(<span class="st">'CYCLE (위상 정렬 불가)'</span>)
+<span class="kw">else</span>:
+    print(*order)</pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>사전순 위상 정렬이 필요하면</b> deque 대신 <span class="mono">heapq</span>를 쓰고 <span class="mono">heappush/heappop</span>으로 바꾸면 됩니다. 큐에 여러 후보가 있을 때 항상 가장 작은 번호를 꺼내게 되죠. (C는 최소 힙을 직접 구현 — ⑫편 다익스트라의 힙 코드 재활용!)</div>
+    <div class="term">
+      <div class="tl">OUTPUT — 실험 DAG (Kahn, 사전순)</div>
+      <div class="to">1 2 3 4 5 6 7 8</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>DFS 방식 — 후위 순서를 뒤집기</h2>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — DFS 위상 정렬<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code">#include &lt;stdio.h&gt;
+
+<span class="kw">int</span> n, m;
+<span class="kw">int</span> adjv[<span class="nb">101</span>][<span class="nb">101</span>], deg[<span class="nb">101</span>];
+<span class="kw">int</span> visited[<span class="nb">101</span>];
+<span class="kw">int</span> post[<span class="nb">101</span>], pc;   <span class="cm">/* 후위 기록 */</span>
+
+<span class="kw">void</span> <span class="fn">dfs</span>(<span class="kw">int</span> u) {
+    visited[u] = <span class="nb">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> k = <span class="nb">0</span>; k &lt; deg[u]; k++) {
+        <span class="kw">int</span> v = adjv[u][k];
+        <span class="kw">if</span> (!visited[v]) dfs(v);
+    }
+    <span class="hl">post[pc++] = u;</span>   <span class="cm">/* 이웃 다 본 뒤 자신 기록 */</span>
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    scanf(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="kw">for</span> (<span class="kw">int</span> e = <span class="nb">0</span>; e &lt; m; e++) {
+        <span class="kw">int</span> u, v;
+        scanf(<span class="st">"%d %d"</span>, &amp;u, &amp;v);
+        adjv[u][deg[u]++] = v;
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nb">1</span>; i &lt;= n; i++)
+        <span class="kw">if</span> (!visited[i]) dfs(i);
+
+    <span class="cm">/* 후위 기록을 뒤집어 출력 */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = pc - <span class="nb">1</span>; i &gt;= <span class="nb">0</span>; i--)
+        <span class="hl">printf(<span class="st">"%d "</span>, post[i]);</span>
+    printf(<span class="st">"\n"</span>);
+    <span class="kw">return</span> <span class="nb">0</span>;
+}</pre>
+      </div>
+      <div class="col py">
+        <div class="lang">Python — DFS 위상 정렬<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">import</span> sys
+input = sys.stdin.readline
+sys.setrecursionlimit(<span class="nb">300000</span>)  <span class="cm"># 깊은 재귀 보험</span>
+
+n, m = map(<span class="fn">int</span>, input().split())
+adj = [[] <span class="kw">for</span> _ <span class="kw">in</span> range(n + <span class="nb">1</span>)]
+<span class="kw">for</span> _ <span class="kw">in</span> range(m):
+    u, v = map(<span class="fn">int</span>, input().split())
+    adj[u].append(v)
+
+visited = [<span class="nb">False</span>] * (n + <span class="nb">1</span>)
+post = []
+
+<span class="kw">def</span> <span class="fn">dfs</span>(u):
+    visited[u] = <span class="nb">True</span>
+    <span class="kw">for</span> v <span class="kw">in</span> adj[u]:
+        <span class="kw">if</span> <span class="kw">not</span> visited[v]:
+            dfs(v)
+    <span class="hl">post.append(u)</span>   <span class="cm"># 이웃 다 본 뒤 자신 기록</span>
+
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="nb">1</span>, n + <span class="nb">1</span>):
+    <span class="kw">if</span> <span class="kw">not</span> visited[i]:
+        dfs(i)
+
+<span class="hl">print(*post[::-1])</span>   <span class="cm"># 뒤집으면 위상 순서</span></pre>
+      </div>
+    </div>
+    <div class="term">
+      <div class="tl">OUTPUT — 실험 DAG (DFS 역후위)</div>
+      <div class="to">2 1 3 5 7 4 6 8</div>
+    </div>
+    <table class="cmp">
+      <tr><th>비교</th><th>Kahn (진입차수)</th><th>DFS (후위 역순)</th></tr>
+      <tr><td>도구</td><td>큐 + 진입차수 배열</td><td>재귀 + 방문 배열</td></tr>
+      <tr><td>사이클 감지</td><td>순서 개수 &lt; n이면 사이클</td><td>DFS 중 회색 정점 재방문 (아래 탭)</td></tr>
+      <tr><td>사전순 순서</td><td>우선순위 큐로 쉽게 가능</td><td>까다로움</td></tr>
+      <tr><td>재귀 깊이 부담</td><td>없음 (반복문)</td><td>깊으면 스택 오버플로 주의</td></tr>
+    </table>
+    <div class="tip">💡 <b>어느 걸 쓸까?</b> 대부분 <b>Kahn(진입차수)</b>가 무난합니다 — 사이클 감지가 쉽고, 사전순 요구도 우선순위 큐로 대응됩니다. 정점 수가 매우 많아 재귀가 부담될 때 특히 Kahn을 추천합니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 4 : 사이클과 활용 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>사이클 감지 — 위상 정렬의 덤</h2>
+    <p>위상 정렬 알고리즘은 <b>사이클 여부를 공짜로 알려줍니다.</b> Kahn 방식이 특히 명쾌합니다:</p>
+    <div class="statecard">
+      <div class="sl">Kahn의 사이클 판정</div>
+      <div class="term" style="margin:0"><div class="to">큐가 다 비었는데
+순서에 담긴 정점 수 &lt; 전체 정점 수(n)
+→ 사이클 존재!
+
+(사이클 안의 정점들은 서로가 서로의 선수과목이라
+ 진입차수가 영영 0이 되지 못해 큐에 못 들어감)</div></div>
+    </div>
+    <p style="margin-top:12px">아래에서 실험 DAG에 <b>되돌아가는 간선(6→2)</b>을 추가해 사이클을 만들어 보세요. 몇 개 정점이 "갇히는지" 보여줍니다.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn acc" onclick="cycleDemo(true)">6→2 간선 추가 (사이클 생성)</button>
+        <button class="btn ghost" onclick="cycleDemo(false)">원래 DAG로 복원</button>
+      </div>
+      <div class="simflex">
+        <div class="svgbox" id="cycleSvg"></div>
+        <div class="statecard" style="align-self:center">
+          <div class="sl">Kahn 실행 결과</div>
+          <div class="term" style="margin:0"><div class="to" id="cycleOut">버튼을 눌러 실험해 보세요.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>DFS 방식의 사이클 감지 — 3색 칠하기</h2>
+    <p>DFS로 사이클을 잡으려면 정점을 3가지 상태로 관리합니다:</p>
+    <table class="cmp">
+      <tr><th>색</th><th>상태</th></tr>
+      <tr><td>흰색 (0)</td><td>아직 방문 안 함</td></tr>
+      <tr><td>회색 (1)</td><td><b>현재 재귀 경로 위에 있음</b> (방문 중, 아직 안 끝남)</td></tr>
+      <tr><td>검은색 (2)</td><td>완전히 끝남 (후위 기록 완료)</td></tr>
+    </table>
+    <div class="warn">⚠️ DFS 도중 <b>회색 정점</b>으로 가는 간선을 만나면 → 그 회색 정점은 지금 내가 밟고 온 길 위에 있으므로, 되돌아가는 <b>사이클(back edge)</b>입니다! 검은색으로 가는 건 사이클이 아니니 헷갈리지 마세요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>활용 — 어디서 만날까</h2>
+    <table class="cmp">
+      <tr><th>분야</th><th>위상 정렬의 역할</th></tr>
+      <tr><td>빌드 시스템 (Make, npm)</td><td>의존성 순서대로 컴파일·설치</td></tr>
+      <tr><td>수강 계획</td><td>선수과목을 어기지 않는 수강 순서</td></tr>
+      <tr><td>스프레드시트</td><td>수식 셀의 계산 순서 결정 (순환 참조 = 사이클 오류!)</td></tr>
+      <tr><td>작업 스케줄링</td><td>선행 작업 완료 후 다음 작업 실행</td></tr>
+      <tr><td>DAG 최장 경로</td><td>위상 순서로 DP — "최소 학기 수" 같은 문제</td></tr>
+    </table>
+    <div class="tip">💡 <b>KOI 확장</b> — 위상 순서대로 훑으며 DP를 얹으면 "각 작업의 가장 이른 시작 시각", "전체를 끝내는 최소 시간(임계 경로)" 같은 문제로 이어집니다. 위상 정렬은 그 자체로도, DP의 발판으로도 자주 출제됩니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 5 : 플레이그라운드 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>내 DAG로 위상 정렬 돌려 보기</h2>
+    <p>한 줄에 <b>u v</b> (u→v, "u 먼저") 형식으로 방향 간선을 적고 실행하세요. Kahn(사전순)과 DFS 두 결과를 모두 보여주고, 사이클이 있으면 감지합니다.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>방향 간선 목록 입력</h4>
+      <textarea id="pgInput" style="width:100%;height:170px;font-family:var(--mono);font-size:14.5px;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;background:var(--panel);color:var(--ink);resize:vertical" spellcheck="false">1 3
+2 3
+3 4
+3 5
+2 5
+4 6
+5 6
+5 7
+6 8
+7 8</textarea>
+      <div class="btnrow">
+        <button class="btn acc" onclick="pgRun()">위상 정렬 실행</button>
+      </div>
+      <div class="term">
+        <div class="tl">RESULT</div>
+        <div class="to" id="pgOut">[위상 정렬 실행]을 눌러 보세요.</div>
+      </div>
+    </div>
+    <div class="tip">💡 실험: <b>3 1</b>을 추가해 보세요. 1→3→...→? 관계에 3→1이 더해지면 1과 3이 서로 선수과목이 되어 사이클! "CYCLE"이 뜹니다. 또 간선을 지워 진입차수 0인 정점을 여러 개 만들면 사전순 정렬 효과를 볼 수 있어요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>도전 퀴즈 — 위상 정렬 8문제</h2>
+    <div id="quizArea"></div>
+    <div class="btnrow">
+      <button class="btn acc" onclick="quizGrade()">점수 확인</button>
+      <button class="btn ghost" onclick="quizReset()">다시 풀기</button>
+    </div>
+    <div class="scorebox" id="quizScore" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>그래프 시리즈를 마치며</h2>
+    <p>⑪ BFS·DFS → ⑫ 다익스트라 → ⑬ 프림·크루스칼 → ⑭ 플로이드-워셜 → ⑮ 위상 정렬로 그래프의 핵심 알고리즘을 두루 다뤘습니다. 탐색, 최단 경로(단일·전체 쌍), 최소 연결망, 순서 결정까지 — KOI 그래프 파트의 뼈대가 완성됐습니다. 각 편의 시뮬레이터를 다시 열어 같은 원리가 어떻게 변주되는지 비교해 보면 실력이 한 겹 더 단단해질 거예요.</p>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <b>세영코딩연구소 · SEYOUNG CODING LAB</b> — C &amp; 파이썬 나란히 배우는 KOI 대비 시리즈 ⑮ 위상 정렬 Topological Sort<br>
+  ⑭ 플로이드-워셜에서 이어집니다 · 그래프 알고리즘 시리즈 완결
+</footer>
+
+<script>
+'use strict';
+/* ================= 공통 ================= */
+var AUTOTIMERS = { kahn: null, dfs: null };
+function stopAuto(key) {
+  if (AUTOTIMERS[key]) { clearInterval(AUTOTIMERS[key]); AUTOTIMERS[key] = null; }
+  var ids = { kahn: 'kahnAutoBtn', dfs: 'dfsAutoBtn' };
+  var b = document.getElementById(ids[key]);
+  if (b) b.textContent = '자동 재생';
+}
+function stopAllAuto() { stopAuto('kahn'); stopAuto('dfs'); }
+function goPage(i) {
+  var pages = document.querySelectorAll('.page');
+  var btns = document.querySelectorAll('#topnav .navbtn');
+  for (var k = 0; k < pages.length; k++) pages[k].classList.toggle('on', k === i);
+  for (var k2 = 0; k2 < btns.length; k2++) btns[k2].classList.toggle('on', k2 === i);
+  stopAllAuto();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function copyCode(btn) {
+  var col = btn.closest('.col');
+  var pre = col ? col.querySelector('pre.code') : null;
+  if (!pre) return;
+  var txt = pre.textContent;
+  function ok() { var o = btn.textContent; btn.textContent = '복사됨!'; setTimeout(function(){ btn.textContent = o; }, 1200); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(ok, function(){ fallbackCopy(txt); ok(); });
+  } else { fallbackCopy(txt); ok(); }
+}
+function fallbackCopy(txt) {
+  var ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+/* ================= 실험용 DAG ================= */
+var GPOS = { 1:[55,90], 2:[55,225], 3:[190,155], 4:[325,90], 5:[325,225], 6:[460,90], 7:[460,225], 8:[585,155] };
+var DEDGES = [[1,3],[2,3],[3,4],[3,5],[2,5],[4,6],[5,6],[5,7],[6,8],[7,8]];
+var DADJ = {};
+(function(){
+  for (var i = 1; i <= 8; i++) DADJ[i] = [];
+  for (var e = 0; e < DEDGES.length; e++) DADJ[DEDGES[e][0]].push(DEDGES[e][1]);
+  for (var j = 1; j <= 8; j++) DADJ[j].sort(function(a,b){ return a-b; });
+})();
+var SVGNS = 'http://www.w3.org/2000/svg';
+var R = 21;
+function eId(u, v) { return u + '_' + v; }
+
+function makeDAGSVG(containerId, prefix, edges) {
+  var box = document.getElementById(containerId);
+  if (!box) return;
+  box.textContent = '';
+  var svg = document.createElementNS(SVGNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 640 320');
+  /* arrow markers: default, cur, tree */
+  var defs = document.createElementNS(SVGNS, 'defs');
+  var markerDefs = [['arrowD', '#C7BCA6'], ['arrowCur', '#E8B84B'], ['arrowTree', '#0C7A8C']];
+  for (var md = 0; md < markerDefs.length; md++) {
+    var mk = document.createElementNS(SVGNS, 'marker');
+    mk.setAttribute('id', prefix + markerDefs[md][0]);
+    mk.setAttribute('viewBox', '0 0 10 10');
+    mk.setAttribute('refX', '9'); mk.setAttribute('refY', '5');
+    mk.setAttribute('markerWidth', '7'); mk.setAttribute('markerHeight', '7');
+    mk.setAttribute('orient', 'auto-start-reverse');
+    var pa = document.createElementNS(SVGNS, 'path');
+    pa.setAttribute('d', 'M0,0 L10,5 L0,10 z');
+    pa.setAttribute('fill', markerDefs[md][1]);
+    mk.appendChild(pa);
+    defs.appendChild(mk);
+  }
+  svg.appendChild(defs);
+  for (var e = 0; e < edges.length; e++) {
+    var u = edges[e][0], v = edges[e][1];
+    var x1 = GPOS[u][0], y1 = GPOS[u][1], x2 = GPOS[v][0], y2 = GPOS[v][1];
+    var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy);
+    var ux = dx / len, uy = dy / len;
+    var sx = x1 + ux * R, sy = y1 + uy * R;
+    var tx = x2 - ux * (R + 4), ty = y2 - uy * (R + 4);
+    var ln = document.createElementNS(SVGNS, 'line');
+    ln.setAttribute('x1', sx); ln.setAttribute('y1', sy);
+    ln.setAttribute('x2', tx); ln.setAttribute('y2', ty);
+    ln.setAttribute('class', 'arrowline');
+    ln.setAttribute('marker-end', 'url(#' + prefix + 'arrowD)');
+    ln.id = prefix + 'E' + eId(u, v);
+    svg.appendChild(ln);
+  }
+  for (var i = 1; i <= 8; i++) {
+    var g = document.createElementNS(SVGNS, 'g');
+    var c = document.createElementNS(SVGNS, 'circle');
+    c.setAttribute('cx', GPOS[i][0]); c.setAttribute('cy', GPOS[i][1]); c.setAttribute('r', R);
+    c.setAttribute('fill', '#FFFFFF'); c.setAttribute('stroke', '#9A876B'); c.setAttribute('stroke-width', '2.5');
+    c.id = prefix + 'N' + i;
+    var t = document.createElementNS(SVGNS, 'text');
+    t.setAttribute('x', GPOS[i][0]); t.setAttribute('y', GPOS[i][1] + 6);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-family', "'JetBrains Mono',monospace");
+    t.setAttribute('font-size', '17'); t.setAttribute('font-weight', '700'); t.setAttribute('fill', '#1E1509');
+    t.textContent = String(i);
+    t.id = prefix + 'T' + i;
+    g.appendChild(c); g.appendChild(t);
+    svg.appendChild(g);
+  }
+  box.appendChild(svg);
+}
+function setNode(prefix, i, fill, stroke, textColor) {
+  var c = document.getElementById(prefix + 'N' + i);
+  var t = document.getElementById(prefix + 'T' + i);
+  if (c) { c.setAttribute('fill', fill); c.setAttribute('stroke', stroke); }
+  if (t) t.setAttribute('fill', textColor);
+}
+function setEdge(prefix, u, v, mode) {
+  var ln = document.getElementById(prefix + 'E' + eId(u, v));
+  if (!ln) return;
+  if (mode === 'tree') { ln.setAttribute('class', 'arrowline tree'); ln.setAttribute('marker-end', 'url(#' + prefix + 'arrowTree)'); }
+  else if (mode === 'cur') { ln.setAttribute('class', 'arrowline cur'); ln.setAttribute('marker-end', 'url(#' + prefix + 'arrowCur)'); }
+  else { ln.setAttribute('class', 'arrowline'); ln.setAttribute('marker-end', 'url(#' + prefix + 'arrowD)'); }
+}
+
+/* ================= 1탭: Kahn SIM ================= */
+var KAHNSTEPS = [], KAHNIDX = 0;
+function genKahnSteps() {
+  var steps = [];
+  var indeg = {};
+  for (var i = 1; i <= 8; i++) indeg[i] = 0;
+  for (var e = 0; e < DEDGES.length; e++) indeg[DEDGES[e][1]]++;
+  var order = [];
+  var done = {};
+  function snap(msg, cur, decNodes, queueArr, zeroNew) {
+    var id2 = {};
+    for (var i2 = 1; i2 <= 8; i2++) id2[i2] = indeg[i2];
+    steps.push({ msg: msg, indeg: id2, order: order.slice(), queue: queueArr.slice(),
+      cur: cur || null, dec: decNodes || [], done: {}, zeroNew: zeroNew || [] });
+    var last = steps[steps.length - 1];
+    for (var k in done) last.done[k] = true;
+  }
+  var queue = [];
+  for (var s = 1; s <= 8; s++) if (indeg[s] === 0) queue.push(s);
+  queue.sort(function(a,b){ return a-b; });
+  snap('① 진입차수 0인 정점을 큐에 넣었습니다: ' + queue.join(', ') + ' (선수과목 없는 과목들)', null, [], queue, queue.slice());
+  while (queue.length > 0) {
+    var u = queue.shift();
+    order.push(u); done[u] = true;
+    snap('② 큐에서 ' + u + '번을 꺼내 순서에 추가 — 이웃들의 진입차수를 줄입니다', u, [], queue);
+    var nb = DADJ[u];
+    var newlyZero = [];
+    for (var k2 = 0; k2 < nb.length; k2++) {
+      var v = nb[k2];
+      indeg[v]--;
+      if (indeg[v] === 0) newlyZero.push(v);
+    }
+    if (nb.length > 0) {
+      for (var z = 0; z < newlyZero.length; z++) queue.push(newlyZero[z]);
+      queue.sort(function(a,b){ return a-b; });
+      var decMsg = nb.map(function(x){ return x + '번'; }).join(', ');
+      var zmsg = newlyZero.length > 0 ? ' → ' + newlyZero.join(', ') + '번이 0이 되어 큐에 합류!' : ' → 아직 0이 된 정점 없음';
+      snap('③ ' + u + '번의 이웃 ' + decMsg + '의 진입차수 감소' + zmsg, u, nb.slice(), queue, newlyZero);
+    } else {
+      snap('③ ' + u + '번은 나가는 화살표가 없습니다 (마지막 과목 계열)', u, [], queue);
+    }
+  }
+  snap('완성! 위상 순서 = ' + order.join(' ') + ' — 모든 화살표가 이 순서에서 왼→오를 향합니다.', null, [], [], []);
+  steps[steps.length - 1].fin = true;
+  return steps;
+}
+function kahnRender() {
+  var st = KAHNSTEPS[KAHNIDX];
+  for (var e = 0; e < DEDGES.length; e++) setEdge('kahn', DEDGES[e][0], DEDGES[e][1], 'def');
+  for (var i = 1; i <= 8; i++) {
+    if (st.order.indexOf(i) >= 0) setNode('kahn', i, '#0C7A8C', '#075463', '#FFFFFF');
+    else if (st.cur === i) setNode('kahn', i, '#E8B84B', '#C79A2E', '#3A2A05');
+    else if (st.indeg[i] === 0) setNode('kahn', i, '#DCF0F3', '#0C7A8C', '#075463');
+    else setNode('kahn', i, '#FFFFFF', '#9A876B', '#1E1509');
+  }
+  if (st.cur) for (var d = 0; d < st.dec.length; d++) setEdge('kahn', st.cur, st.dec[d], 'cur');
+  var ig = document.getElementById('kahnIndeg');
+  ig.textContent = '';
+  for (var v = 1; v <= 8; v++) {
+    var cell = document.createElement('div');
+    cell.className = 'idcell';
+    if (st.order.indexOf(v) >= 0) cell.className += ' done';
+    else if (st.indeg[v] === 0) cell.className += ' zero';
+    if (st.dec.indexOf(v) >= 0) cell.className += ' dec';
+    var lab = document.createTextNode(v + '번');
+    var val = document.createElement('span');
+    val.className = 'idv'; val.textContent = st.indeg[v];
+    cell.appendChild(lab); cell.appendChild(val);
+    ig.appendChild(cell);
+  }
+  var q = document.getElementById('kahnQueue');
+  q.textContent = '';
+  if (st.queue.length === 0) { var em = document.createElement('span'); em.className='emptymsg'; em.textContent='비어 있음'; q.appendChild(em); }
+  else for (var k = 0; k < st.queue.length; k++) {
+    var ch = document.createElement('span'); ch.className = 'qchip'; ch.textContent = st.queue[k]; q.appendChild(ch);
+  }
+  var ob = document.getElementById('kahnOrder');
+  ob.textContent = '';
+  if (st.order.length === 0) { var em2 = document.createElement('span'); em2.className='emptymsg'; em2.textContent='아직 없음'; ob.appendChild(em2); }
+  else for (var o = 0; o < st.order.length; o++) {
+    if (o > 0) { var ar = document.createElement('span'); ar.className = 'oarrow'; ar.textContent = '→'; ob.appendChild(ar); }
+    var it = document.createElement('span'); it.className = 'oitem'; it.textContent = st.order[o]; ob.appendChild(it);
+  }
+  var msg = document.getElementById('kahnMsg');
+  msg.textContent = '[' + KAHNIDX + '/' + (KAHNSTEPS.length - 1) + '] ' + st.msg;
+  msg.classList.toggle('done', !!st.fin);
+  document.getElementById('kahnPrev').disabled = (KAHNIDX === 0);
+  document.getElementById('kahnNext').disabled = (KAHNIDX === KAHNSTEPS.length - 1);
+}
+function kahnInit() { stopAuto('kahn'); KAHNSTEPS = genKahnSteps(); KAHNIDX = 0; kahnRender(); }
+function kahnStep(d) { var ni = KAHNIDX + d; if (ni < 0 || ni >= KAHNSTEPS.length) return; KAHNIDX = ni; kahnRender(); }
+function kahnAuto() {
+  if (AUTOTIMERS.kahn) { stopAuto('kahn'); return; }
+  if (KAHNIDX >= KAHNSTEPS.length - 1) KAHNIDX = 0;
+  document.getElementById('kahnAutoBtn').textContent = '정지';
+  AUTOTIMERS.kahn = setInterval(function(){
+    if (KAHNIDX >= KAHNSTEPS.length - 1) { stopAuto('kahn'); return; }
+    KAHNIDX++; kahnRender();
+  }, 1100);
+}
+
+/* ================= 2탭: DFS SIM ================= */
+var DFSSTEPS = [], DFSIDX = 0;
+function genDfsSteps() {
+  var steps = [];
+  var visited = {}, stack = [], post = [];
+  function snap(msg, curEdge, treeEdges) {
+    steps.push({ msg: msg, visited: Object.assign({}, visited),
+      stack: stack.slice(), post: post.slice(), cur: stack.length ? stack[stack.length-1] : null,
+      curEdge: curEdge || null, tree: (treeEdges || []).slice() });
+  }
+  var treeEdges = [];
+  function dfs(u, parent) {
+    visited[u] = true; stack.push(u);
+    if (parent) treeEdges.push([parent, u]);
+    snap((parent ? parent + '→' + u + ' 진입: ' : '시작 정점 ') + u + '번 방문 (콜스택에 push)', parent ? [parent, u] : null, treeEdges);
+    var nb = DADJ[u];
+    for (var k = 0; k < nb.length; k++) {
+      var v = nb[k];
+      if (!visited[v]) {
+        dfs(v, u);
+      } else {
+        snap(u + '번의 이웃 ' + v + '번은 이미 방문함 — 건너뜀', [u, v], treeEdges);
+      }
+    }
+    post.push(u); stack.pop();
+    snap(u + '번의 이웃을 모두 처리 → 후위 기록에 추가하고 콜스택에서 pop', null, treeEdges);
+  }
+  for (var s = 1; s <= 8; s++) {
+    if (!visited[s]) dfs(s, 0);
+  }
+  var revp = post.slice().reverse();
+  snap('DFS 완료! 후위 = ' + post.join(' ') + ' → 뒤집으면 위상 순서 = ' + revp.join(' '), null, treeEdges);
+  steps[steps.length - 1].fin = true;
+  steps[steps.length - 1].revorder = revp;
+  return steps;
+}
+function dfsRender() {
+  var st = DFSSTEPS[DFSIDX];
+  for (var e = 0; e < DEDGES.length; e++) setEdge('dfs', DEDGES[e][0], DEDGES[e][1], 'def');
+  for (var ti = 0; ti < st.tree.length; ti++) setEdge('dfs', st.tree[ti][0], st.tree[ti][1], 'tree');
+  if (st.curEdge) setEdge('dfs', st.curEdge[0], st.curEdge[1], 'cur');
+  for (var i = 1; i <= 8; i++) {
+    var onStack = st.stack.indexOf(i) >= 0;
+    var inPost = st.post.indexOf(i) >= 0;
+    if (onStack) setNode('dfs', i, '#0B6E99', '#084E6E', '#FFFFFF');
+    else if (inPost) setNode('dfs', i, '#DFF5F1', '#14B8A6', '#0E7A6E');
+    else if (st.visited[i]) setNode('dfs', i, '#F3EEE3', '#9A876B', '#1E1509');
+    else setNode('dfs', i, '#FFFFFF', '#9A876B', '#1E1509');
+  }
+  var sc = document.getElementById('dfsStack');
+  sc.textContent = '';
+  if (st.stack.length === 0) { var em = document.createElement('span'); em.className='emptymsg'; em.textContent='비어 있음'; sc.appendChild(em); }
+  else for (var k = 0; k < st.stack.length; k++) { var it = document.createElement('div'); it.className='sitem'; it.textContent = st.stack[k] + '번'; sc.appendChild(it); }
+  var pb = document.getElementById('dfsPost');
+  pb.textContent = '';
+  if (st.post.length === 0) { var em2 = document.createElement('span'); em2.className='emptymsg'; em2.textContent='아직 없음'; pb.appendChild(em2); }
+  else for (var p = 0; p < st.post.length; p++) { var pi = document.createElement('span'); pi.className='pitem'; pi.textContent = st.post[p]; pb.appendChild(pi); }
+  var ob = document.getElementById('dfsOrder');
+  ob.textContent = '';
+  if (st.fin && st.revorder) {
+    for (var o = 0; o < st.revorder.length; o++) {
+      if (o > 0) { var ar = document.createElement('span'); ar.className='oarrow'; ar.textContent='→'; ob.appendChild(ar); }
+      var oi = document.createElement('span'); oi.className='oitem'; oi.textContent = st.revorder[o]; ob.appendChild(oi);
+    }
+  } else { var em3 = document.createElement('span'); em3.className='emptymsg'; em3.textContent='DFS 완료 후 표시'; ob.appendChild(em3); }
+  var msg = document.getElementById('dfsMsg');
+  msg.textContent = '[' + DFSIDX + '/' + (DFSSTEPS.length - 1) + '] ' + st.msg;
+  msg.classList.toggle('done', !!st.fin);
+  document.getElementById('dfsPrev').disabled = (DFSIDX === 0);
+  document.getElementById('dfsNext').disabled = (DFSIDX === DFSSTEPS.length - 1);
+}
+function dfsInit() { stopAuto('dfs'); DFSSTEPS = genDfsSteps(); DFSIDX = 0; dfsRender(); }
+function dfsStep(d) { var ni = DFSIDX + d; if (ni < 0 || ni >= DFSSTEPS.length) return; DFSIDX = ni; dfsRender(); }
+function dfsAuto() {
+  if (AUTOTIMERS.dfs) { stopAuto('dfs'); return; }
+  if (DFSIDX >= DFSSTEPS.length - 1) DFSIDX = 0;
+  document.getElementById('dfsAutoBtn').textContent = '정지';
+  AUTOTIMERS.dfs = setInterval(function(){
+    if (DFSIDX >= DFSSTEPS.length - 1) { stopAuto('dfs'); return; }
+    DFSIDX++; dfsRender();
+  }, 950);
+}
+
+/* ================= 4탭: 사이클 데모 ================= */
+function runKahnCount(edges) {
+  var indeg = {}, adj = {};
+  for (var i = 1; i <= 8; i++) { indeg[i] = 0; adj[i] = []; }
+  for (var e = 0; e < edges.length; e++) { adj[edges[e][0]].push(edges[e][1]); indeg[edges[e][1]]++; }
+  var q = [];
+  for (var s = 1; s <= 8; s++) if (indeg[s] === 0) q.push(s);
+  q.sort(function(a,b){ return a-b; });
+  var order = [];
+  while (q.length) {
+    var u = q.shift(); order.push(u);
+    for (var k = 0; k < adj[u].length; k++) { var v = adj[u][k]; if (--indeg[v] === 0) q.push(v); }
+    q.sort(function(a,b){ return a-b; });
+  }
+  var stuck = [];
+  for (var i2 = 1; i2 <= 8; i2++) if (order.indexOf(i2) < 0) stuck.push(i2);
+  return { order: order, stuck: stuck };
+}
+function cycleDemo(withCycle) {
+  var edges = DEDGES.slice();
+  if (withCycle) edges = edges.concat([[6, 2]]);
+  makeDAGSVG('cycleSvg', 'cycle', edges);
+  if (withCycle) setEdge('cycle', 6, 2, 'cur');
+  var r = runKahnCount(edges);
+  var out = document.getElementById('cycleOut');
+  if (r.stuck.length === 0) {
+    out.textContent = '처리된 정점 8 / 8\n위상 순서: ' + r.order.join(' ') + '\n→ 사이클 없음, 정상 DAG!';
+  } else {
+    out.textContent = '처리된 정점 ' + r.order.length + ' / 8\n큐에서 나온 순서: ' + r.order.join(' ') + '\n갇힌 정점(진입차수가 0이 안 됨): ' + r.stuck.join(', ') +
+      '\n→ ' + r.stuck.length + '개가 사이클에 갇힘. 위상 정렬 불가!';
+  }
+}
+
+/* ================= 5탭: 플레이그라운드 ================= */
+function pgRun() {
+  var out = document.getElementById('pgOut');
+  var raw = document.getElementById('pgInput').value;
+  var lines = raw.split('\n');
+  var edges = [], maxV = 0, seen = {};
+  for (var li = 0; li < lines.length; li++) {
+    var s = lines[li].trim();
+    if (s === '') continue;
+    var ps = s.split(/\s+/);
+    if (ps.length !== 2) { out.textContent = '⚠️ ' + (li+1) + '번째 줄: "u v" 두 숫자가 필요해요 → "' + s + '"'; return; }
+    var u = parseInt(ps[0], 10), v = parseInt(ps[1], 10);
+    if (isNaN(u) || isNaN(v)) { out.textContent = '⚠️ ' + (li+1) + '번째 줄: 숫자가 아닌 값이 있어요 → "' + s + '"'; return; }
+    if (u < 1 || u > 50 || v < 1 || v > 50) { out.textContent = '⚠️ 정점 번호는 1~50 사이로! (' + (li+1) + '번째 줄)'; return; }
+    if (u === v) { out.textContent = '⚠️ 자기 자신을 가리키는 간선(' + u + '→' + u + ')은 그 자체로 사이클입니다. (' + (li+1) + '번째 줄)'; return; }
+    var key = u + '_' + v;
+    if (!seen[key]) { seen[key] = true; edges.push([u, v]); }
+    if (u > maxV) maxV = u;
+    if (v > maxV) maxV = v;
+  }
+  if (edges.length === 0) { out.textContent = '⚠️ 간선이 하나도 없어요.'; return; }
+  var n = maxV;
+  var adj = {}, indeg = {};
+  for (var i = 1; i <= n; i++) { adj[i] = []; indeg[i] = 0; }
+  for (var e = 0; e < edges.length; e++) { adj[edges[e][0]].push(edges[e][1]); indeg[edges[e][1]]++; }
+  for (var a = 1; a <= n; a++) adj[a].sort(function(x,y){ return x-y; });
+  /* Kahn with min (사전순) */
+  var ind2 = Object.assign({}, indeg);
+  var q = [];
+  for (var s2 = 1; s2 <= n; s2++) if (ind2[s2] === 0) q.push(s2);
+  q.sort(function(x,y){ return x-y; });
+  var korder = [];
+  while (q.length) {
+    var u2 = q.shift(); korder.push(u2);
+    for (var k = 0; k < adj[u2].length; k++) { var v2 = adj[u2][k]; if (--ind2[v2] === 0) q.push(v2); }
+    q.sort(function(x,y){ return x-y; });
+  }
+  var res = ['정점 ' + n + '개 · 방향 간선 ' + edges.length + '개', ''];
+  if (korder.length < n) {
+    var stuck = [];
+    for (var i3 = 1; i3 <= n; i3++) if (korder.indexOf(i3) < 0) stuck.push(i3);
+    res.push('⚠️ CYCLE — 위상 정렬 불가!');
+    res.push('처리된 정점 ' + korder.length + ' / ' + n);
+    res.push('사이클에 갇힌 정점: ' + stuck.join(', '));
+    out.textContent = res.join('\n');
+    return;
+  }
+  res.push('Kahn (사전순): ' + korder.join(' '));
+  /* DFS revpost */
+  var visited = {}, post = [];
+  function dfs(u) {
+    visited[u] = true;
+    for (var k2 = 0; k2 < adj[u].length; k2++) { if (!visited[adj[u][k2]]) dfs(adj[u][k2]); }
+    post.push(u);
+  }
+  for (var s3 = 1; s3 <= n; s3++) if (!visited[s3]) dfs(s3);
+  res.push('DFS (역후위): ' + post.slice().reverse().join(' '));
+  res.push('');
+  res.push('두 결과가 다를 수 있지만, 둘 다 유효한 위상 순서입니다.');
+  out.textContent = res.join('\n');
+}
+
+/* ================= 퀴즈 ================= */
+var QZ = [
+  { q: '위상 정렬이 가능한 그래프의 조건은?',
+    o: ['무방향 연결 그래프', '방향이 있고 사이클이 없는 그래프(DAG)', '가중치가 양수인 그래프', '완전 그래프'], a: 1,
+    e: '방향(누가 먼저)과 무사이클(모순 없음)이 둘 다 필요합니다. 이런 그래프를 DAG라고 부릅니다.' },
+  { q: '진입차수(in-degree)란?',
+    o: ['정점에서 나가는 화살표 수', '정점으로 들어오는 화살표 수', '정점의 번호', '이웃의 개수'], a: 1,
+    e: '들어오는 화살표 수 = "아직 끝내지 않은 선행 작업의 수". 이것이 0이면 지금 바로 할 수 있습니다.' },
+  { q: 'Kahn 알고리즘에서 큐에 처음 들어가는 정점은?',
+    o: ['진입차수가 가장 큰 정점', '진입차수가 0인 정점', '번호가 1인 정점', '아무거나'], a: 1,
+    e: '선수과목이 없는(진입차수 0) 정점부터 시작합니다. 실험 DAG에서는 1번과 2번이 여기 해당합니다.' },
+  { q: 'DFS 방식에서 위상 순서를 얻으려면?',
+    o: ['방문 순서 그대로 사용', '후위(끝난) 순서를 뒤집기', '진입차수 순으로 정렬', '번호순 정렬'], a: 1,
+    e: '"가장 나중에 끝난 정점"이 맨 앞에 와야 하므로 후위 순서를 뒤집습니다.' },
+  { q: 'Kahn 알고리즘의 사이클 판정 방법은?',
+    o: ['큐가 비면 사이클', '순서에 담긴 정점 수가 n보다 적으면 사이클', '진입차수 합이 0이면 사이클', '판정 불가'], a: 1,
+    e: '사이클 안 정점들은 진입차수가 영영 0이 못 되어 큐에 못 들어갑니다. 그래서 결과 개수 < n이면 사이클!' },
+  { q: '한 DAG의 유효한 위상 순서는?',
+    o: ['항상 정확히 하나', '여러 개일 수 있다', '항상 두 개', '없을 수도 많을 수도 있는데 DAG면 최소 2개'], a: 1,
+    e: '선후 관계만 지키면 되므로 보통 여러 개입니다. 실험 DAG도 Kahn과 DFS가 서로 다른 유효 순서를 냈죠.' },
+  { q: 'DFS 사이클 감지에서 "회색(방문 중) 정점"으로 가는 간선의 의미는?',
+    o: ['정상 트리 간선', '되돌아가는 간선 = 사이클', '이미 끝난 정점이라 무시', '중복 간선'], a: 1,
+    e: '회색은 "지금 내가 밟고 온 경로 위"라는 뜻. 거기로 되돌아가면 사이클입니다. 검은색(끝난 정점)으로 가는 건 사이클 아님!' },
+  { q: '"사전순으로 가장 빠른 위상 정렬"을 구하려면 Kahn에서?',
+    o: ['일반 큐(FIFO) 사용', '스택 사용', '우선순위 큐(최소 힙) 사용', '불가능'], a: 2,
+    e: '큐에 후보가 여럿일 때 항상 가장 작은 번호를 꺼내야 하므로 최소 힙을 씁니다. KOI 단골 조건!' }
+];
+var QSTATE = [];
+function quizBuild() {
+  var area = document.getElementById('quizArea');
+  area.textContent = '';
+  QSTATE = [];
+  for (var i = 0; i < QZ.length; i++) {
+    QSTATE.push(null);
+    var qd = document.createElement('div'); qd.className = 'q';
+    var qt = document.createElement('div'); qt.className = 'qt';
+    var qn = document.createElement('span'); qn.className = 'qn'; qn.textContent = 'Q' + (i + 1);
+    qt.appendChild(qn); qt.appendChild(document.createTextNode(QZ[i].q));
+    qd.appendChild(qt);
+    var expl = document.createElement('div'); expl.className = 'expl'; expl.textContent = '해설: ' + QZ[i].e;
+    (function(qi, qdEl, explEl){
+      for (var j = 0; j < QZ[qi].o.length; j++) {
+        var ob = document.createElement('button'); ob.className = 'opt';
+        ob.textContent = '① ② ③ ④'.split(' ')[j] + ' ' + QZ[qi].o[j];
+        (function(oj, obEl){
+          obEl.addEventListener('click', function(){
+            if (QSTATE[qi] !== null) return;
+            QSTATE[qi] = oj;
+            var opts = qdEl.querySelectorAll('.opt');
+            for (var k = 0; k < opts.length; k++) {
+              opts[k].disabled = true;
+              if (k === QZ[qi].a) opts[k].classList.add(oj === QZ[qi].a ? 'pick-ok' : 'reveal');
+            }
+            if (oj !== QZ[qi].a) obEl.classList.add('pick-ng');
+            explEl.classList.add('show');
+          });
+        })(j, ob);
+        qdEl.appendChild(ob);
+      }
+    })(i, qd, expl);
+    qd.appendChild(expl);
+    area.appendChild(qd);
+  }
+  document.getElementById('quizScore').style.display = 'none';
+}
+function quizGrade() {
+  var answered = 0, correct = 0;
+  for (var i = 0; i < QZ.length; i++) { if (QSTATE[i] !== null) { answered++; if (QSTATE[i] === QZ[i].a) correct++; } }
+  var sc = document.getElementById('quizScore');
+  sc.style.display = 'block';
+  if (answered < QZ.length) sc.textContent = '아직 ' + (QZ.length - answered) + '문제가 남았어요! (현재 ' + correct + '개 정답)';
+  else if (correct === QZ.length) sc.textContent = '🏆 8문제 전부 정답! 그래프 알고리즘 시리즈(⑪~⑮) 완주 — 정말 수고했습니다!';
+  else sc.textContent = '결과: ' + correct + ' / ' + QZ.length + ' — 틀린 문제의 해설을 읽고 시뮬레이터로 다시 실험해 보세요!';
+}
+function quizReset() { quizBuild(); }
+
+/* ================= 초기화 ================= */
+document.addEventListener('DOMContentLoaded', function(){
+  makeDAGSVG('introSvg', 'intro', DEDGES);
+  makeDAGSVG('kahnSvg', 'kahn', DEDGES);
+  makeDAGSVG('dfsSvg', 'dfs', DEDGES);
+  makeDAGSVG('cycleSvg', 'cycle', DEDGES);
+  kahnInit();
+  dfsInit();
+  cycleDemo(false);
+  quizBuild();
+});
+</script>
+</body>
+</html>
