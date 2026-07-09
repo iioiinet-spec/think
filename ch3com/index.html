@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조합론 문제은행 — 경우의 수 · 곱의 법칙 · 순열</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ivory:#FAF6EF; --ink:#22252B; --sub:#565B66;
+  --card:#FFFFFF; --line:#E4DCCB;
+  --count:#2A6E8F; --mult:#B0641E; --perm1:#3D5AA8; --perm2:#8A2A6B;
+  --ok:#1E7A46; --okbg:#E6F4EA; --no:#C0392B; --nobg:#FBEAE7;
+  --hintbg:#FFF7DF; --hintbd:#E8C95A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:19px}
+body{background:var(--ivory);color:var(--ink);font-family:'Noto Sans KR',sans-serif;line-height:1.65;padding-bottom:80px}
+.mono{font-family:'JetBrains Mono','Noto Sans KR',monospace}
+
+header{padding:34px 20px 10px;text-align:center}
+header .eyebrow{font-family:'JetBrains Mono',monospace;font-size:.85rem;letter-spacing:.25em;color:var(--sub);font-weight:700}
+header h1{font-size:2rem;font-weight:900;margin-top:8px}
+header h1 .dice{display:inline-block;transform:rotate(-8deg)}
+header p{color:var(--sub);font-size:1rem;margin-top:6px}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);
+  border-bottom:3px solid var(--ink);padding:12px 10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+nav button{font-family:'Noto Sans KR',sans-serif;font-size:1rem;font-weight:700;padding:10px 16px;border-radius:999px;
+  border:2.5px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;transition:transform .12s}
+nav button:hover{transform:translateY(-2px)}
+nav button:focus-visible{outline:3px solid var(--perm1);outline-offset:2px}
+nav button.active{background:var(--ink);color:#fff}
+nav button .mini{font-family:'JetBrains Mono',monospace;font-size:.8rem;margin-left:6px;opacity:.85}
+
+main{max-width:880px;margin:0 auto;padding:26px 18px}
+.page{display:none}
+.page.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- 홈 ---------- */
+.hero{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:30px 26px;box-shadow:8px 8px 0 var(--line)}
+.hero h2{font-size:1.5rem;font-weight:900;margin-bottom:10px}
+.hero p{font-size:1.05rem;color:var(--sub)}
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:22px}
+.concept{border:3px solid;border-radius:16px;padding:18px;background:#fff;cursor:pointer;transition:transform .12s;text-align:left;font-family:inherit}
+.concept:hover{transform:translateY(-3px)}
+.concept:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.concept h3{font-size:1.15rem;font-weight:900;display:flex;align-items:center;gap:8px}
+.concept .num{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:#fff;border-radius:8px;padding:2px 9px}
+.concept p{font-size:.95rem;color:var(--sub);margin-top:8px}
+.concept .ex{font-family:'JetBrains Mono','Noto Sans KR',monospace;font-size:.9rem;margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--ivory);font-weight:700}
+
+/* ---------- 문제 페이지 ---------- */
+.sec-head{border:3px solid var(--ink);border-radius:18px;padding:20px 22px;background:#fff;box-shadow:6px 6px 0 var(--line);margin-bottom:22px}
+.sec-head h2{font-size:1.45rem;font-weight:900}
+.sec-head p{color:var(--sub);font-size:1rem;margin-top:6px}
+.progress-wrap{margin-top:14px;display:flex;align-items:center;gap:12px}
+.pbar{flex:1;height:16px;border:2.5px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden}
+.pbar>div{height:100%;width:0%;transition:width .3s ease;border-radius:999px}
+.pcount{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem}
+
+.prob{background:var(--card);border:3px solid var(--line);border-left:10px solid var(--ink);border-radius:16px;padding:20px 22px;margin-bottom:18px}
+.prob.done-ok{border-color:var(--ok);border-left-color:var(--ok);background:linear-gradient(0deg,var(--okbg),var(--okbg))}
+.prob.done-rev{border-left-color:var(--sub)}
+.prob-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qnum{font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff;border-radius:10px;padding:3px 12px;font-size:1rem}
+.tag{font-size:.85rem;font-weight:700;border-radius:999px;padding:2px 12px;display:none}
+.tag.ok{display:inline-block;background:var(--ok);color:#fff}
+.tag.rev{display:inline-block;background:var(--sub);color:#fff}
+.qtext{font-size:1.15rem;font-weight:500;margin-top:10px}
+.answer-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.answer-row input{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;width:150px;padding:10px 14px;
+  border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
+.answer-row input:focus-visible{outline:3px solid var(--perm1);outline-offset:2px}
+.answer-row .unit{font-size:1.05rem;font-weight:700;color:var(--sub)}
+.btn{font-family:'Noto Sans KR',sans-serif;font-size:1.02rem;font-weight:700;padding:10px 20px;border-radius:12px;
+  border:3px solid var(--ink);cursor:pointer;transition:transform .1s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--perm1);outline-offset:2px}
+.btn.check{background:var(--ink);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.feedback{display:none;margin-top:14px;border-radius:12px;padding:12px 16px;font-size:1.02rem;font-weight:700;border:3px solid}
+.feedback.ok{display:block;background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.feedback.no{display:block;background:var(--nobg);border-color:var(--no);color:var(--no)}
+.hintbox{display:none;margin-top:12px;background:var(--hintbg);border:3px dashed var(--hintbd);border-radius:12px;padding:12px 16px;font-size:1rem}
+.hintbox.show{display:block}
+.expbox{display:none;margin-top:12px;background:var(--ivory);border:3px solid var(--line);border-radius:12px;padding:14px 16px;font-size:1.02rem}
+.expbox.show{display:block}
+.expbox b{font-weight:900}
+
+/* ---------- 결과 ---------- */
+.result-card{background:#fff;border:3px solid var(--ink);border-radius:22px;padding:30px 26px;box-shadow:8px 8px 0 var(--line);text-align:center}
+.result-card h2{font-size:1.5rem;font-weight:900}
+.total-score{font-family:'JetBrains Mono',monospace;font-size:3.2rem;font-weight:700;margin:14px 0 4px}
+.total-score span{font-size:1.4rem;color:var(--sub)}
+.result-msg{font-size:1.15rem;font-weight:700;margin-bottom:20px}
+.sec-scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:8px}
+.sec-score{border:3px solid;border-radius:14px;padding:14px}
+.sec-score h4{font-size:1rem;font-weight:900}
+.sec-score .s{font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:700;margin-top:4px}
+.reset-row{margin-top:24px}
+footer{margin-top:36px;text-align:center;color:var(--sub);font-size:.9rem}
+@media (max-width:560px){
+  html{font-size:17px}
+  header h1{font-size:1.55rem}
+  .qtext{font-size:1.1rem}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SEYOUNG CODING LAB · 사고력수학</div>
+  <h1><span class="dice">🎲</span> 조합론 문제은행</h1>
+  <p>경우의 수 · 곱의 법칙 · 순열 기본 · 순열 심화 — 총 40문제</p>
+</header>
+
+<nav id="nav"></nav>
+
+<main>
+  <!-- 홈 -->
+  <section class="page" id="pg0">
+    <div class="hero">
+      <h2>차근차근 세는 힘을 길러요!</h2>
+      <p>문제를 읽고 답을 숫자로 입력한 뒤 <b>확인</b> 버튼을 누르세요. 틀리면 힌트가 나오고, 맞히면 풀이를 볼 수 있어요. 모든 문제를 풀면 <b>결과</b> 탭에서 점수를 확인할 수 있습니다.</p>
+      <div class="concepts" id="conceptGrid"></div>
+    </div>
+  </section>
+
+  <!-- 문제 페이지 4개: pg1~pg4 (JS에서 생성) -->
+  <section class="page" id="pg1"></section>
+  <section class="page" id="pg2"></section>
+  <section class="page" id="pg3"></section>
+  <section class="page" id="pg4"></section>
+
+  <!-- 결과 -->
+  <section class="page" id="pg5">
+    <div class="result-card">
+      <h2>🏅 나의 결과</h2>
+      <div class="total-score"><span id="totalNum">0</span><span> / 40</span></div>
+      <div class="result-msg" id="resultMsg"></div>
+      <div class="sec-scores" id="secScores"></div>
+      <div class="reset-row"><button class="btn ghost" id="resetBtn">처음부터 다시 풀기</button></div>
+    </div>
+  </section>
+</main>
+
+<footer>한 문제씩 손으로 그려 가며 세어 보는 것이 조합론 공부의 지름길이에요 ✏️</footer>
+
+<script>
+"use strict";
+var DATA = [{"id": "count", "title": "\u2460 \uacbd\uc6b0\uc758 \uc218", "badge": "\uacbd\uc6b0\uc758 \uc218", "desc": "\uc77c\uc5b4\ub0a0 \uc218 \uc788\ub294 \ubaa8\ub4e0 \uacbd\uc6b0\ub97c \ube60\uc9d0\uc5c6\uc774, \uacb9\uce58\uc9c0 \uc54a\uac8c \uc138\uc5b4 \ubcf4\uc138\uc694. \ub450 \uc0ac\uac74\uc774 \ub3d9\uc2dc\uc5d0 \uc77c\uc5b4\ub098\uc9c0 \uc54a\uc73c\uba74 \ub354\ud569\ub2c8\ub2e4(\ud569\uc758 \ubc95\uce59).", "color": "#2A6E8F", "problems": [{"q": "\uc8fc\uc0ac\uc704 \ud55c \uac1c\ub97c \ub358\uc9c8 \ub54c, \ub098\uc62c \uc218 \uc788\ub294 \ubaa8\ub4e0 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 6, "hint": "\uc8fc\uc0ac\uc704\uc758 \ub208\uc744 \ud558\ub098\uc529 \ubaa8\ub450 \uc801\uc5b4 \ubcf4\uc138\uc694.", "exp": "\uc8fc\uc0ac\uc704\uc758 \ub208\uc740 1, 2, 3, 4, 5, 6 \u2192 \ubaa8\ub450 6\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub3d9\uc804 \ud55c \uac1c\ub97c \ub358\uc9c8 \ub54c, \ub098\uc62c \uc218 \uc788\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 2, "hint": "\ub3d9\uc804\uc5d0\ub294 \ub450 \uac1c\uc758 \uba74\uc774 \uc788\uc5b4\uc694.", "exp": "\uc55e\uba74, \ub4b7\uba74 \u2192 2\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ube68\uac15, \ud30c\ub791, \ub178\ub791, \ucd08\ub85d \uc0c9\uc5f0\ud544 \uc911\uc5d0\uc11c \ud55c \uc790\ub8e8\ub97c \uace0\ub974\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 4, "hint": "\uc0c9\uae54\uc758 \uac1c\uc218\ub97c \uc138\uc5b4 \ubcf4\uc138\uc694.", "exp": "\ube68\uac15, \ud30c\ub791, \ub178\ub791, \ucd08\ub85d \u2192 4\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc8fc\uc0ac\uc704 \ud55c \uac1c\ub97c \ub358\uc838\uc11c \uc9dd\uc218\uc758 \ub208\uc774 \ub098\uc624\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 3, "hint": "1~6 \uc911\uc5d0\uc11c \uc9dd\uc218\ub9cc \uace8\ub77c \ubcf4\uc138\uc694.", "exp": "\uc9dd\uc218\uc758 \ub208\uc740 2, 4, 6 \u2192 3\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc8fc\uc0ac\uc704 \ud55c \uac1c\ub97c \ub358\uc838\uc11c 3\uc758 \ubc30\uc218\uc758 \ub208\uc774 \ub098\uc624\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 2, "hint": "1~6 \uc911\uc5d0\uc11c 3\uc758 \ubc30\uc218\ub97c \ucc3e\uc544 \ubcf4\uc138\uc694.", "exp": "3\uc758 \ubc30\uc218\uc758 \ub208\uc740 3, 6 \u2192 2\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "1\ubd80\ud130 20\uae4c\uc9c0\uc758 \uc218\uac00 \uc801\ud78c \uce74\ub4dc \uc911\uc5d0\uc11c 5\uc758 \ubc30\uc218 \uce74\ub4dc \ud55c \uc7a5\uc744 \ubf51\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 4, "hint": "20\uae4c\uc9c0\uc758 5\uc758 \ubc30\uc218\ub97c \uc21c\uc11c\ub300\ub85c \uc801\uc5b4 \ubcf4\uc138\uc694.", "exp": "5\uc758 \ubc30\uc218\ub294 5, 10, 15, 20 \u2192 4\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uacfc\uc77c \uac00\uac8c\uc5d0 \uc0ac\uacfc\uac00 3\uc885\ub958, \ubc30\uac00 2\uc885\ub958 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc911\uc5d0\uc11c \uacfc\uc77c \ud55c \uac1c\ub97c \uace0\ub974\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 5, "hint": "\uc0ac\uacfc\ub97c \uace0\ub974\uac70\ub098 '\ub610\ub294' \ubc30\ub97c \uace0\ub974\ub294 \uac70\uc608\uc694. \ud569\uc758 \ubc95\uce59!", "exp": "\uc0ac\uacfc 3\uac00\uc9c0 + \ubc30 2\uac00\uc9c0 = 5\uac00\uc9c0. \ub3d9\uc2dc\uc5d0 \uace0\ub97c \uc218 \uc5c6\uc73c\ubbc0\ub85c \ub354\ud569\ub2c8\ub2e4(\ud569\uc758 \ubc95\uce59)."}, {"q": "\uc9d1\uc5d0\uc11c \ud559\uad50\uae4c\uc9c0 \uac00\ub294 \ubc84\uc2a4 \ub178\uc120\uc774 3\uac1c, \uc9c0\ud558\ucca0 \ub178\uc120\uc774 2\uac1c \uc788\uc2b5\ub2c8\ub2e4. \ubc84\uc2a4 \ub610\ub294 \uc9c0\ud558\ucca0 \uc911 \ud55c \uac00\uc9c0\ub97c \ud0c0\uace0 \ud559\uad50\uc5d0 \uac00\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 5, "hint": "\ubc84\uc2a4\uc640 \uc9c0\ud558\ucca0\uc744 \ub3d9\uc2dc\uc5d0 \ud0c8 \uc218\ub294 \uc5c6\uc5b4\uc694.", "exp": "\ubc84\uc2a4 3\uac00\uc9c0 + \uc9c0\ud558\ucca0 2\uac00\uc9c0 = 5\uac00\uc9c0 (\ud569\uc758 \ubc95\uce59)."}, {"q": "\uc11c\ub85c \ub2e4\ub978 \ub450 \uac1c\uc758 \uc8fc\uc0ac\uc704\ub97c \ub3d9\uc2dc\uc5d0 \ub358\uc9c8 \ub54c, \ub098\uc628 \ub208\uc758 \ud569\uc774 5\uac00 \ub418\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 4, "hint": "(\uccab\uc9f8 \ub208, \ub458\uc9f8 \ub208) \uc9dd\uc744 \ubaa8\ub450 \uc801\uc5b4 \ubcf4\uc138\uc694. (1,4)\ubd80\ud130!", "exp": "(1,4), (2,3), (3,2), (4,1) \u2192 4\uac00\uc9c0\uc785\ub2c8\ub2e4. (2,3)\uacfc (3,2)\ub294 \uc11c\ub85c \ub2e4\ub978 \uacbd\uc6b0\uc608\uc694."}, {"q": "\uc11c\ub85c \ub2e4\ub978 \ub450 \uac1c\uc758 \uc8fc\uc0ac\uc704\ub97c \ub3d9\uc2dc\uc5d0 \ub358\uc9c8 \ub54c, \ub098\uc628 \ub208\uc758 \ud569\uc774 12\uac00 \ub418\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 1, "hint": "\ud569\uc774 12\uac00 \ub418\ub824\uba74 \ub450 \ub208\uc774 \ubaa8\ub450 \uc544\uc8fc \ucee4\uc57c \ud574\uc694.", "exp": "(6,6) \ud55c \uac00\uc9c0\ubfd0\uc785\ub2c8\ub2e4 \u2192 1\uac00\uc9c0."}]}, {"id": "mult", "title": "\u2461 \uacf1\uc758 \ubc95\uce59", "badge": "\uacf1\uc758 \ubc95\uce59", "desc": "\ub450 \uc0ac\uac74\uc774 '\uc5f0\ub2ec\uc544' \ub610\ub294 '\ub3d9\uc2dc\uc5d0' \uc77c\uc5b4\ub098\uba74 \uac01 \uacbd\uc6b0\uc758 \uc218\ub97c \uacf1\ud569\ub2c8\ub2e4. (A\uc758 \uacbd\uc6b0\uc758 \uc218) \u00d7 (B\uc758 \uacbd\uc6b0\uc758 \uc218)", "color": "#B0641E", "problems": [{"q": "\ud2f0\uc154\uce20\uac00 3\ubc8c, \ubc14\uc9c0\uac00 2\ubc8c \uc788\uc2b5\ub2c8\ub2e4. \ud2f0\uc154\uce20\uc640 \ubc14\uc9c0\ub97c \ud558\ub098\uc529 \uace8\ub77c \uc785\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 6, "hint": "\ud2f0\uc154\uce20 \ud558\ub098\ub9c8\ub2e4 \ubc14\uc9c0\ub97c 2\uac00\uc9c0\uc529 \uace0\ub97c \uc218 \uc788\uc5b4\uc694.", "exp": "3 \u00d7 2 = 6\uac00\uc9c0. \ud2f0\uc154\uce20 \uac01\uac01\uc5d0 \ub300\ud574 \ubc14\uc9c0 2\uac00\uc9c0\uc529 \uc9dd\uc9c0\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4."}, {"q": "\uc11c\ub85c \ub2e4\ub978 \ub3d9\uc804 \ub450 \uac1c\ub97c \ub3d9\uc2dc\uc5d0 \ub358\uc9c8 \ub54c, \ub098\uc62c \uc218 \uc788\ub294 \ubaa8\ub4e0 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 4, "hint": "\uccab \ubc88\uc9f8 \ub3d9\uc804 2\uac00\uc9c0 \u00d7 \ub450 \ubc88\uc9f8 \ub3d9\uc804 2\uac00\uc9c0", "exp": "2 \u00d7 2 = 4\uac00\uc9c0. (\uc55e,\uc55e), (\uc55e,\ub4a4), (\ub4a4,\uc55e), (\ub4a4,\ub4a4)"}, {"q": "\uc9d1\uc5d0\uc11c \ud559\uad50\uae4c\uc9c0 \uac00\ub294 \uae38\uc774 2\uac00\uc9c0, \ud559\uad50\uc5d0\uc11c \ub3c4\uc11c\uad00\uae4c\uc9c0 \uac00\ub294 \uae38\uc774 3\uac00\uc9c0 \uc788\uc2b5\ub2c8\ub2e4. \uc9d1\uc5d0\uc11c \ud559\uad50\ub97c \uac70\uccd0 \ub3c4\uc11c\uad00\uae4c\uc9c0 \uac00\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 6, "hint": "\ud559\uad50\uae4c\uc9c0 \uac04 '\ub2e4\uc74c\uc5d0' \ub3c4\uc11c\uad00\uc73c\ub85c \uac00\uc694. \uc5f0\ub2ec\uc544 \uc77c\uc5b4\ub098\uba74 \uacf1\ud558\uae30!", "exp": "2 \u00d7 3 = 6\uac00\uc9c0. \ud559\uad50\uae4c\uc9c0 \uac00\ub294 \uac01 \uae38\ub9c8\ub2e4 \ub3c4\uc11c\uad00 \uac00\ub294 \uae38\uc774 3\uac00\uc9c0\uc529 \uc788\uc2b5\ub2c8\ub2e4."}, {"q": "\uc11c\ub85c \ub2e4\ub978 \ub450 \uac1c\uc758 \uc8fc\uc0ac\uc704\ub97c \ub3d9\uc2dc\uc5d0 \ub358\uc9c8 \ub54c, \ub098\uc62c \uc218 \uc788\ub294 \ubaa8\ub4e0 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 36, "hint": "\uccab \ubc88\uc9f8 \uc8fc\uc0ac\uc704 6\uac00\uc9c0 \u00d7 \ub450 \ubc88\uc9f8 \uc8fc\uc0ac\uc704 6\uac00\uc9c0", "exp": "6 \u00d7 6 = 36\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc544\uc774\uc2a4\ud06c\ub9bc \uac00\uac8c\uc5d0 \ub9db\uc774 5\uac00\uc9c0, \ucf58 \uc885\ub958\uac00 2\uac00\uc9c0 \uc788\uc2b5\ub2c8\ub2e4. \ub9db \ud558\ub098\uc640 \ucf58 \ud558\ub098\ub97c \uace8\ub77c \uc8fc\ubb38\ud558\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 10, "hint": "\ub9db\uc744 \uace0\ub974\uace0 '\uadf8\ub9ac\uace0' \ucf58\uc744 \uace8\ub77c\uc694.", "exp": "5 \u00d7 2 = 10\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub3d9\uc804 \ud55c \uac1c\uc640 \uc8fc\uc0ac\uc704 \ud55c \uac1c\ub97c \ub3d9\uc2dc\uc5d0 \ub358\uc9c8 \ub54c, \ub098\uc62c \uc218 \uc788\ub294 \ubaa8\ub4e0 \uacbd\uc6b0\uc758 \uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "\ub3d9\uc804 2\uac00\uc9c0 \u00d7 \uc8fc\uc0ac\uc704 6\uac00\uc9c0", "exp": "2 \u00d7 6 = 12\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc22b\uc790 1, 2, 3\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub450 \uc790\ub9ac \uc218\ub97c \ub9cc\ub4e4\ub824\uace0 \ud569\ub2c8\ub2e4. \uac19\uc740 \uc22b\uc790\ub97c \ub450 \ubc88 \uc0ac\uc6a9\ud574\ub3c4 \ub41c\ub2e4\uba74, \ub9cc\ub4e4 \uc218 \uc788\ub294 \ub450 \uc790\ub9ac \uc218\ub294 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 9, "hint": "\uc2ed\uc758 \uc790\ub9ac 3\uac00\uc9c0, \uc77c\uc758 \uc790\ub9ac\ub3c4 3\uac00\uc9c0 (\uc911\ubcf5 OK!)", "exp": "3 \u00d7 3 = 9\uac1c. 11, 12, 13, 21, 22, 23, 31, 32, 33"}, {"q": "\ubaa8\uc790 2\uac1c, \ud2f0\uc154\uce20 3\ubc8c, \ubc14\uc9c0 2\ubc8c\uc774 \uc788\uc2b5\ub2c8\ub2e4. \ubaa8\uc790, \ud2f0\uc154\uce20, \ubc14\uc9c0\ub97c \ud558\ub098\uc529 \uace8\ub77c \uc785\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "\uc138 \uac00\uc9c0\ub97c \uc5f0\ub2ec\uc544 \uace0\ub974\ub2c8 \uc138 \uc218\ub97c \ubaa8\ub450 \uacf1\ud574\uc694.", "exp": "2 \u00d7 3 \u00d7 2 = 12\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "4\uac1c\uc758 \ubcf4\uae30 \uc911 \ud558\ub098\ub97c \uace0\ub974\ub294 \uac1d\uad00\uc2dd \ubb38\uc81c\uac00 3\ubb38\uc81c \uc788\uc2b5\ub2c8\ub2e4. \uc138 \ubb38\uc81c\uc758 \ub2f5\uc744 \ubaa8\ub450 \ucc0d\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 64, "hint": "\ubb38\uc81c\ub9c8\ub2e4 4\uac00\uc9c0\uc529, 3\ubb38\uc81c \uc5f0\ub2ec\uc544!", "exp": "4 \u00d7 4 \u00d7 4 = 64\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc790\uc74c \uce74\ub4dc \u3131, \u3134, \u3137, \u3139 4\uc7a5\uacfc \ubaa8\uc74c \uce74\ub4dc \u314f, \u3153, \u3157 3\uc7a5\uc774 \uc788\uc2b5\ub2c8\ub2e4. \uc790\uc74c \ud55c \uc7a5\uacfc \ubaa8\uc74c \ud55c \uc7a5\uc744 \uace8\ub77c \uae00\uc790\ub97c \ub9cc\ub4dc\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "\uc790\uc74c 4\uac00\uc9c0 \u00d7 \ubaa8\uc74c 3\uac00\uc9c0", "exp": "4 \u00d7 3 = 12\uac00\uc9c0. \uc608: \uac00, \uac70, \uace0, \ub098, \ub108, \ub178, \u2026"}]}, {"id": "perm1", "title": "\u2462 \uc21c\uc5f4 \uae30\ubcf8", "badge": "\uc21c\uc5f4 \uae30\ubcf8", "desc": "\uc11c\ub85c \ub2e4\ub978 \uac83\uc744 '\uc21c\uc11c \uc788\uac8c' \ud55c \uc904\ub85c \ub298\uc5b4\ub193\ub294 \ubc29\ubc95\uc758 \uc218\uc785\ub2c8\ub2e4. \uccab \uc790\ub9ac\ubd80\ud130 \ucc28\ub840\ub85c \uace0\ub97c \uc218 \uc788\ub294 \uac1c\uc218\ub97c \uacf1\ud558\uc138\uc694.", "color": "#3D5AA8", "problems": [{"q": "\ubbfc\uc900, \uc11c\uc5f0, \ud558\uc900 \uc138 \uba85\uc774 \ud55c \uc904\ub85c \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 6, "hint": "\ub9e8 \uc55e 3\uac00\uc9c0 \u00d7 \uadf8\ub2e4\uc74c 2\uac00\uc9c0 \u00d7 \ub9c8\uc9c0\ub9c9 1\uac00\uc9c0", "exp": "3 \u00d7 2 \u00d7 1 = 6\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub124 \uba85\uc758 \uce5c\uad6c\uac00 \ud55c \uc904\ub85c \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 24, "hint": "4 \u00d7 3 \u00d7 2 \u00d7 1\uc744 \uacc4\uc0b0\ud574 \ubcf4\uc138\uc694.", "exp": "4 \u00d7 3 \u00d7 2 \u00d7 1 = 24\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub2e4\uc12f \uba85\uc758 \uce5c\uad6c\uac00 \ud55c \uc904\ub85c \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 120, "hint": "5 \u00d7 4 \u00d7 3 \u00d7 2 \u00d7 1", "exp": "5 \u00d7 4 \u00d7 3 \u00d7 2 \u00d7 1 = 120\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub2e4\uc12f \uba85 \uc911\uc5d0\uc11c \ub450 \uba85\uc744 \ubf51\uc544 \ud55c \uc904\ub85c \uc138\uc6b0\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 20, "hint": "\uccab\uc9f8 \uc790\ub9ac 5\uac00\uc9c0 \u00d7 \ub458\uc9f8 \uc790\ub9ac 4\uac00\uc9c0", "exp": "5 \u00d7 4 = 20\uac00\uc9c0. \ub450 \uc790\ub9ac\ub9cc \ucc44\uc6b0\uba74 \ub418\ub2c8\uae4c \ub450 \uac1c\ub9cc \uacf1\ud569\ub2c8\ub2e4."}, {"q": "\ub124 \uba85 \uc911\uc5d0\uc11c \ud68c\uc7a5 \ud55c \uba85, \ubd80\ud68c\uc7a5 \ud55c \uba85\uc744 \ubf51\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "\ud68c\uc7a5 4\uac00\uc9c0 \u00d7 \ub0a8\uc740 \uc0ac\ub78c \uc911 \ubd80\ud68c\uc7a5 3\uac00\uc9c0", "exp": "4 \u00d7 3 = 12\uac00\uc9c0. \ud68c\uc7a5\uacfc \ubd80\ud68c\uc7a5\uc740 \uc5ed\ud560\uc774 \ub2e4\ub974\ubbc0\ub85c \uc21c\uc11c\uac00 \uc788\ub294 \ubf51\uae30\uc785\ub2c8\ub2e4."}, {"q": "\uc22b\uc790 \uce74\ub4dc 1, 2, 3, 4 \uc911\uc5d0\uc11c \uc11c\ub85c \ub2e4\ub978 \ub450 \uc7a5\uc744 \ubf51\uc544 \ub450 \uc790\ub9ac \uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 12, "hint": "\uc2ed\uc758 \uc790\ub9ac 4\uac00\uc9c0 \u00d7 \uc77c\uc758 \uc790\ub9ac 3\uac00\uc9c0", "exp": "4 \u00d7 3 = 12\uac1c\uc785\ub2c8\ub2e4."}, {"q": "\uc22b\uc790 \uce74\ub4dc 1, 2, 3\uc744 \ud55c \ubc88\uc529\ub9cc \uc0ac\uc6a9\ud558\uc5ec \uc138 \uc790\ub9ac \uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 6, "hint": "3 \u00d7 2 \u00d7 1", "exp": "3 \u00d7 2 \u00d7 1 = 6\uac1c. 123, 132, 213, 231, 312, 321"}, {"q": "\uc11c\ub85c \ub2e4\ub978 \ucc45 5\uad8c \uc911\uc5d0\uc11c 3\uad8c\uc744 \uace8\ub77c \ucc45\uaf42\uc774\uc5d0 \ub098\ub780\ud788 \uaf42\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 60, "hint": "5 \u00d7 4 \u00d7 3", "exp": "\uccab \uce78 5\uac00\uc9c0 \u00d7 \ub458\uc9f8 \uce78 4\uac00\uc9c0 \u00d7 \uc14b\uc9f8 \uce78 3\uac00\uc9c0 = 60\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\ub2ec\ub9ac\uae30 \uc2dc\ud569\uc5d0 6\uba85\uc774 \ucc38\uac00\ud588\uc2b5\ub2c8\ub2e4. 1\ub4f1\uacfc 2\ub4f1\uc774 \uc815\ud574\uc9c0\ub294 \uacbd\uc6b0\uc758 \uc218\ub294 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 30, "hint": "1\ub4f1 6\uac00\uc9c0 \u00d7 2\ub4f1 5\uac00\uc9c0", "exp": "6 \u00d7 5 = 30\uac00\uc9c0\uc785\ub2c8\ub2e4."}, {"q": "\uc11c\ub85c \ub2e4\ub978 \uc778\ud615 4\uac1c \uc911\uc5d0\uc11c 3\uac1c\ub97c \uace8\ub77c \uc120\ubc18\uc5d0 \ub098\ub780\ud788 \ub193\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 24, "hint": "4 \u00d7 3 \u00d7 2", "exp": "4 \u00d7 3 \u00d7 2 = 24\uac00\uc9c0\uc785\ub2c8\ub2e4."}]}, {"id": "perm2", "title": "\u2463 \uc21c\uc5f4 \uc2ec\ud654", "badge": "\uc21c\uc5f4 \uc2ec\ud654", "desc": "\uc870\uac74\uc774 \ubd99\uc740 \uc21c\uc5f4\uc785\ub2c8\ub2e4. \uc870\uac74\uc774 \uc788\ub294 \uc790\ub9ac\ubd80\ud130 \uba3c\uc800 \uc815\ud558\uace0, \ub098\uba38\uc9c0 \uc790\ub9ac\ub97c \ucc44\uc6cc \ubcf4\uc138\uc694.", "color": "#8A2A6B", "problems": [{"q": "\uc22b\uc790 \uce74\ub4dc 0, 1, 2, 3 \uc911\uc5d0\uc11c \uc11c\ub85c \ub2e4\ub978 \uc138 \uc7a5\uc744 \ubf51\uc544 \uc138 \uc790\ub9ac \uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694? (0\uc740 \ub9e8 \uc55e\uc5d0 \uc62c \uc218 \uc5c6\uc5b4\uc694!)", "a": 18, "hint": "\ubc31\uc758 \uc790\ub9ac\uc5d0\ub294 0\uc744 \ube80 3\uac00\uc9c0\ub9cc! \uadf8\ub2e4\uc74c \uc790\ub9ac\ub294 0\ub3c4 \uac00\ub2a5\ud574\uc694.", "exp": "\ubc31\uc758 \uc790\ub9ac 3\uac00\uc9c0(1,2,3) \u00d7 \uc2ed\uc758 \uc790\ub9ac 3\uac00\uc9c0(0 \ud3ec\ud568, \uc4f4 \uce74\ub4dc \uc81c\uc678) \u00d7 \uc77c\uc758 \uc790\ub9ac 2\uac00\uc9c0 = 18\uac1c"}, {"q": "\uc544\ube60, \uc5c4\ub9c8, \ub450 \uc544\uc774 \ub124 \uba85\uc774 \ud55c \uc904\ub85c \uc0ac\uc9c4\uc744 \ucc0d\ub294\ub370, \uc544\ube60\uc640 \uc5c4\ub9c8\uac00 \uc591\ucabd \ub05d\uc5d0 \uc11c\ub824\uace0 \ud569\ub2c8\ub2e4. \uc904\uc744 \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 4, "hint": "\uc591 \ub05d\uc5d0 \uc544\ube60\u00b7\uc5c4\ub9c8\ub97c \ubc30\uce58\ud558\ub294 \ubc29\ubc95 \u00d7 \uac00\uc6b4\ub370 \ub450 \uc544\uc774 \ubc30\uce58", "exp": "\uc591 \ub05d: (\uc544\ube60-\uc5c4\ub9c8) \ub610\ub294 (\uc5c4\ub9c8-\uc544\ube60) 2\uac00\uc9c0 \u00d7 \uac00\uc6b4\ub370 \uc544\uc774 \ub458 2\uac00\uc9c0 = 2 \u00d7 2 = 4\uac00\uc9c0"}, {"q": "A, B, C, D \ub124 \uba85\uc774 \ud55c \uc904\ub85c \uc11c\ub294\ub370, A\uc640 B\uac00 \ubc18\ub4dc\uc2dc \uc774\uc6c3\ud558\ub3c4\ub85d \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "A\uc640 B\ub97c \ud55c \ub369\uc5b4\ub9ac\ub85c \ubb36\uc5b4 \ubcf4\uc138\uc694. \ubb36\uc74c \uc548\uc5d0\uc11c \uc790\ub9ac\ub97c \ubc14\uafc0 \uc218\ub3c4 \uc788\uc5b4\uc694!", "exp": "(AB\ubb36\uc74c, C, D) 3\uac1c\ub97c \uc904 \uc138\uc6b0\uae30 3\u00d72\u00d71=6\uac00\uc9c0 \u00d7 \ubb36\uc74c \uc548\uc5d0\uc11c AB/BA 2\uac00\uc9c0 = 12\uac00\uc9c0"}, {"q": "\uc22b\uc790 \uce74\ub4dc 1, 2, 3, 4, 5 \uc911\uc5d0\uc11c \uc11c\ub85c \ub2e4\ub978 \uc138 \uc7a5\uc744 \ubf51\uc544 \uc138 \uc790\ub9ac \uc9dd\uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 24, "hint": "\uc77c\uc758 \uc790\ub9ac\ubd80\ud130! \uc9dd\uc218\uac00 \ub418\ub824\uba74 \uc77c\uc758 \uc790\ub9ac\uc5d0 \ubb34\uc5c7\uc774 \uc640\uc57c \ud560\uae4c\uc694?", "exp": "\uc77c\uc758 \uc790\ub9ac 2\uac00\uc9c0(2, 4) \u00d7 \ubc31\uc758 \uc790\ub9ac 4\uac00\uc9c0 \u00d7 \uc2ed\uc758 \uc790\ub9ac 3\uac00\uc9c0 = 24\uac1c"}, {"q": "\ub2e4\uc12f \uba85\uc774 \ud55c \uc904\ub85c \uc11c\ub294\ub370, \ubc18\uc7a5\uc774 \ubc18\ub4dc\uc2dc \ub9e8 \uc55e\uc5d0 \uc11c\uae30\ub85c \ud588\uc2b5\ub2c8\ub2e4. \uc904\uc744 \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 24, "hint": "\ubc18\uc7a5 \uc790\ub9ac\ub294 \uc774\ubbf8 \uc815\ud574\uc84c\uc73c\ub2c8, \ub098\uba38\uc9c0 \ub124 \uba85\ub9cc \uc904 \uc138\uc6b0\uba74 \ub3fc\uc694.", "exp": "\ub098\uba38\uc9c0 4\uba85\uc744 \uc904 \uc138\uc6b0\uae30: 4 \u00d7 3 \u00d7 2 \u00d7 1 = 24\uac00\uc9c0"}, {"q": "A, B, C, D \ub124 \uba85\uc774 \ud55c \uc904\ub85c \uc11c\ub294\ub370, A\uc640 B\uac00 \uc11c\ub85c \uc774\uc6c3\ud558\uc9c0 \uc54a\ub3c4\ub85d \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 12, "hint": "(\uc804\uccb4 \uacbd\uc6b0) \u2212 (\uc774\uc6c3\ud558\ub294 \uacbd\uc6b0)\ub97c \uacc4\uc0b0\ud574 \ubcf4\uc138\uc694.", "exp": "\uc804\uccb4 24\uac00\uc9c0 \u2212 \uc774\uc6c3\ud558\ub294 \uacbd\uc6b0 12\uac00\uc9c0 = 12\uac00\uc9c0 (\uc5ec\uc0ac\uac74 \uc774\uc6a9!)"}, {"q": "\uc22b\uc790 \uce74\ub4dc 0, 1, 2, 3, 4 \uc911\uc5d0\uc11c \uc11c\ub85c \ub2e4\ub978 \ub450 \uc7a5\uc744 \ubf51\uc544 \ub450 \uc790\ub9ac \uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 16, "hint": "\uc2ed\uc758 \uc790\ub9ac\uc5d0\ub294 0\uc774 \uc62c \uc218 \uc5c6\uc5b4\uc694.", "exp": "\uc2ed\uc758 \uc790\ub9ac 4\uac00\uc9c0(1~4) \u00d7 \uc77c\uc758 \uc790\ub9ac 4\uac00\uc9c0(0 \ud3ec\ud568, \uc4f4 \uce74\ub4dc \uc81c\uc678) = 16\uac1c"}, {"q": "\ub124 \uba85\uc774 \uc6d0\ud0c1(\ub465\uadfc \ud0c1\uc790)\uc5d0 \ub458\ub7ec\uc549\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694? (\ube59\uae00 \ub3cc\ub824\uc11c \uac19\uc544\uc9c0\uba74 \uac19\uc740 \ubc29\ubc95\uc774\uc5d0\uc694!)", "a": 6, "hint": "\ud55c \uba85\uc744 \uba3c\uc800 \uc549\ud788\uace0 \uae30\uc900\uc73c\ub85c \uc0bc\uc73c\uba74, \ub098\uba38\uc9c0 \uc138 \uba85\ub9cc \ubc30\uce58\ud558\uba74 \ub3fc\uc694.", "exp": "\ud55c \uba85\uc744 \uace0\uc815\ud558\uace0 \ub098\uba38\uc9c0 3\uba85\uc744 \ubc30\uce58: 3 \u00d7 2 \u00d7 1 = 6\uac00\uc9c0 (\uc6d0\uc21c\uc5f4)"}, {"q": "\uc22b\uc790 \uce74\ub4dc 1, 2, 3, 4, 5 \uc911\uc5d0\uc11c \uc11c\ub85c \ub2e4\ub978 \uc138 \uc7a5\uc744 \ubf51\uc544 \uc138 \uc790\ub9ac \ud640\uc218\ub97c \ub9cc\ub4e4\uba74 \ubaa8\ub450 \uba87 \uac1c\uc77c\uae4c\uc694?", "a": 36, "hint": "\uc77c\uc758 \uc790\ub9ac\uc5d0 \uc62c \uc218 \uc788\ub294 \ud640\uc218\ub294 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "exp": "\uc77c\uc758 \uc790\ub9ac 3\uac00\uc9c0(1, 3, 5) \u00d7 \ubc31\uc758 \uc790\ub9ac 4\uac00\uc9c0 \u00d7 \uc2ed\uc758 \uc790\ub9ac 3\uac00\uc9c0 = 36\uac1c"}, {"q": "\ub0a8\ud559\uc0dd 2\uba85\uacfc \uc5ec\ud559\uc0dd 2\uba85\uc774 \ub0a8\ub140\uac00 \ubc88\uac08\uc544 \uc11c\ub3c4\ub85d \ud55c \uc904\ub85c \uc11c\ub294 \ubc29\ubc95\uc740 \ubaa8\ub450 \uba87 \uac00\uc9c0\uc77c\uae4c\uc694?", "a": 8, "hint": "\ub0a8\ub140\ub0a8\ub140 \ub610\ub294 \uc5ec\ub0a8\uc5ec\ub0a8, \ub450 \uac00\uc9c0 \ubaa8\uc591\uc774 \uc788\uc5b4\uc694.", "exp": "\ubaa8\uc591 2\uac00\uc9c0(\ub0a8\ub140\ub0a8\ub140 / \uc5ec\ub0a8\uc5ec\ub0a8) \u00d7 \ub0a8\ud559\uc0dd \ubc30\uce58 2\uac00\uc9c0 \u00d7 \uc5ec\ud559\uc0dd \ubc30\uce58 2\uac00\uc9c0 = 8\uac00\uc9c0"}]}];
+var MSG = {"correct": "\uc815\ub2f5\uc785\ub2c8\ub2e4! \ud83c\udf89", "wrong": "\uc544\uc26c\uc6cc\uc694! \ub2e4\uc2dc \ud55c\ubc88 \uc0dd\uac01\ud574 \ubcf4\uc138\uc694.", "empty": "\ub2f5\uc744 \uba3c\uc800 \uc785\ub825\ud574 \uc8fc\uc138\uc694!", "revealed": "\uc815\ub2f5 \uacf5\uac1c", "hintLabel": "\ud83d\udca1 \ud78c\ud2b8", "expLabel": "\ud83d\udcd6 \ud480\uc774", "check": "\ud655\uc778", "showAnswer": "\uc815\ub2f5 \ubcf4\uae30", "answerIs": "\uc815\ub2f5: ", "solvedTag": "\ud574\uacb0!", "revealTag": "\uc815\ub2f5 \ubd04", "perfect": "\uc644\ubcbd\ud574\uc694! \uc870\ud569\ub860 \ucc9c\uc7ac\uac00 \ub098\ud0c0\ub0ac\uc5b4\uc694! \ud83c\udfc6", "great": "\ud6cc\ub96d\ud574\uc694! \uc870\uae08\ub9cc \ub354 \uc5f0\uc2b5\ud558\uba74 \ub9cc\uc810\uc774\uc5d0\uc694! \ud83c\udf1f", "good": "\uc798\ud558\uace0 \uc788\uc5b4\uc694! \ud2c0\ub9b0 \ubb38\uc81c\ub97c \ub2e4\uc2dc \ud480\uc5b4 \ubcf4\uc138\uc694. \ud83d\udcaa", "tryAgain": "\uad1c\ucc2e\uc544\uc694! \ud78c\ud2b8\ub97c \ubcf4\uba70 \ucc28\uadfc\ucc28\uadfc \ub2e4\uc2dc \ub3c4\uc804\ud574\uc694. \ud83c\udf31"};
+var NAV_LABELS = ["\ud83c\udfe0 \ud648", "\u2460 \uacbd\uc6b0\uc758 \uc218", "\u2461 \uacf1\uc758 \ubc95\uce59", "\u2462 \uc21c\uc5f4 \uae30\ubcf8", "\u2463 \uc21c\uc5f4 \uc2ec\ud654", "\ud83c\udfc5 \uacb0\uacfc"];
+
+var state = DATA.map(function(sec){
+  return sec.problems.map(function(){ return {status:"none", tried:false}; });
+});
+
+var navEl = document.getElementById("nav");
+var navBtns = [];
+
+function goPage(n){
+  for(var i=0;i<=5;i++){
+    var pg = document.getElementById("pg"+i);
+    if(pg) pg.classList.toggle("show", i===n);
+    if(navBtns[i]) navBtns[i].classList.toggle("active", i===n);
+  }
+  if(n===5) renderResults();
+  window.scrollTo({top:0, behavior:"auto"});
+}
+
+function makeNav(){
+  for(var i=0;i<NAV_LABELS.length;i++){
+    (function(idx){
+      var b = document.createElement("button");
+      b.textContent = NAV_LABELS[idx];
+      if(idx>=1 && idx<=4){
+        var mini = document.createElement("span");
+        mini.className = "mini";
+        mini.id = "navmini"+idx;
+        mini.textContent = "0/10";
+        b.appendChild(mini);
+      }
+      b.addEventListener("click", function(){ goPage(idx); });
+      navEl.appendChild(b);
+      navBtns.push(b);
+    })(i);
+  }
+}
+
+function makeConceptCards(){
+  var grid = document.getElementById("conceptGrid");
+  var exs = ["\uc608) \uc8fc\uc0ac\uc704 \ub208 \u2192 1,2,3,4,5,6 = 6\uac00\uc9c0", "\uc608) \uc637 3\ubc8c \u00d7 \ubc14\uc9c0 2\ubc8c = 6\uac00\uc9c0", "\uc608) 3\uba85 \uc904 \uc138\uc6b0\uae30 \u2192 3\u00d72\u00d71 = 6", "\uc608) 0 \ud3ec\ud568, \uc774\uc6c3 \uc870\uac74, \uc6d0\ud0c1 \uc549\uae30"];
+  for(var s=0;s<DATA.length;s++){
+    (function(si){
+      var sec = DATA[si];
+      var card = document.createElement("button");
+      card.className = "concept";
+      card.style.borderColor = sec.color;
+      var h = document.createElement("h3");
+      var num = document.createElement("span");
+      num.className = "num";
+      num.style.background = sec.color;
+      num.textContent = String(si+1);
+      h.appendChild(num);
+      h.appendChild(document.createTextNode(sec.badge));
+      var p = document.createElement("p");
+      p.textContent = sec.desc;
+      var ex = document.createElement("div");
+      ex.className = "ex";
+      ex.style.color = sec.color;
+      ex.textContent = exs[si];
+      card.appendChild(h); card.appendChild(p); card.appendChild(ex);
+      card.addEventListener("click", function(){ goPage(si+1); });
+      grid.appendChild(card);
+    })(s);
+  }
+}
+
+function buildSection(si){
+  var sec = DATA[si];
+  var page = document.getElementById("pg"+(si+1));
+
+  var head = document.createElement("div");
+  head.className = "sec-head";
+  var h2 = document.createElement("h2");
+  h2.textContent = sec.title;
+  h2.style.color = sec.color;
+  var pd = document.createElement("p");
+  pd.textContent = sec.desc;
+  var pw = document.createElement("div");
+  pw.className = "progress-wrap";
+  var pbar = document.createElement("div");
+  pbar.className = "pbar";
+  var fill = document.createElement("div");
+  fill.style.background = sec.color;
+  fill.id = "fill"+si;
+  pbar.appendChild(fill);
+  var pc = document.createElement("div");
+  pc.className = "pcount";
+  pc.id = "pcount"+si;
+  pc.textContent = "0 / "+sec.problems.length;
+  pw.appendChild(pbar); pw.appendChild(pc);
+  head.appendChild(h2); head.appendChild(pd); head.appendChild(pw);
+  page.appendChild(head);
+
+  for(var pi=0; pi<sec.problems.length; pi++){
+    page.appendChild(buildProblem(si, pi));
+  }
+}
+
+function buildProblem(si, pi){
+  var sec = DATA[si];
+  var prob = sec.problems[pi];
+
+  var card = document.createElement("div");
+  card.className = "prob";
+  card.style.borderLeftColor = sec.color;
+  card.id = "prob-"+si+"-"+pi;
+
+  var top = document.createElement("div");
+  top.className = "prob-top";
+  var qn = document.createElement("span");
+  qn.className = "qnum";
+  qn.style.background = sec.color;
+  qn.textContent = "Q"+(pi+1);
+  var tagOk = document.createElement("span");
+  tagOk.className = "tag";
+  tagOk.id = "tagok-"+si+"-"+pi;
+  tagOk.textContent = MSG.solvedTag;
+  var tagRev = document.createElement("span");
+  tagRev.className = "tag";
+  tagRev.id = "tagrev-"+si+"-"+pi;
+  tagRev.textContent = MSG.revealTag;
+  top.appendChild(qn); top.appendChild(tagOk); top.appendChild(tagRev);
+
+  var q = document.createElement("div");
+  q.className = "qtext";
+  q.textContent = prob.q;
+
+  var row = document.createElement("div");
+  row.className = "answer-row";
+  var input = document.createElement("input");
+  input.type = "number";
+  input.inputMode = "numeric";
+  input.id = "in-"+si+"-"+pi;
+  input.setAttribute("aria-label", sec.title+" Q"+(pi+1));
+  var unit = document.createElement("span");
+  unit.className = "unit";
+  unit.textContent = "\uAC00\uC9C0";
+  var checkBtn = document.createElement("button");
+  checkBtn.className = "btn check";
+  checkBtn.textContent = MSG.check;
+  checkBtn.id = "chk-"+si+"-"+pi;
+  var revBtn = document.createElement("button");
+  revBtn.className = "btn ghost";
+  revBtn.textContent = MSG.showAnswer;
+  revBtn.id = "rev-"+si+"-"+pi;
+  row.appendChild(input); row.appendChild(unit); row.appendChild(checkBtn); row.appendChild(revBtn);
+
+  var fb = document.createElement("div");
+  fb.className = "feedback";
+  fb.id = "fb-"+si+"-"+pi;
+
+  var hint = document.createElement("div");
+  hint.className = "hintbox";
+  hint.id = "hint-"+si+"-"+pi;
+  var hb = document.createElement("b");
+  hb.textContent = MSG.hintLabel+" ";
+  hint.appendChild(hb);
+  hint.appendChild(document.createTextNode(prob.hint));
+
+  var exp = document.createElement("div");
+  exp.className = "expbox";
+  exp.id = "exp-"+si+"-"+pi;
+  var eb = document.createElement("b");
+  eb.textContent = MSG.expLabel+" ";
+  exp.appendChild(eb);
+  exp.appendChild(document.createTextNode(prob.exp));
+
+  checkBtn.addEventListener("click", function(){ checkAnswer(si, pi); });
+  input.addEventListener("keydown", function(e){ if(e.key==="Enter") checkAnswer(si, pi); });
+  revBtn.addEventListener("click", function(){ revealAnswer(si, pi); });
+
+  card.appendChild(top); card.appendChild(q); card.appendChild(row);
+  card.appendChild(fb); card.appendChild(hint); card.appendChild(exp);
+  return card;
+}
+
+function checkAnswer(si, pi){
+  var st = state[si][pi];
+  if(st.status !== "none") return;
+  var input = document.getElementById("in-"+si+"-"+pi);
+  var fb = document.getElementById("fb-"+si+"-"+pi);
+  var val = input.value.trim();
+  if(val === ""){
+    fb.className = "feedback no";
+    fb.textContent = MSG.empty;
+    return;
+  }
+  var num = Number(val);
+  var ans = DATA[si].problems[pi].a;
+  if(num === ans){
+    st.status = "ok";
+    fb.className = "feedback ok";
+    fb.textContent = MSG.correct;
+    document.getElementById("exp-"+si+"-"+pi).classList.add("show");
+    document.getElementById("hint-"+si+"-"+pi).classList.remove("show");
+    document.getElementById("tagok-"+si+"-"+pi).classList.add("ok");
+    lockProblem(si, pi, "done-ok");
+  } else {
+    st.tried = true;
+    fb.className = "feedback no";
+    fb.textContent = MSG.wrong;
+    document.getElementById("hint-"+si+"-"+pi).classList.add("show");
+  }
+  updateProgress(si);
+}
+
+function revealAnswer(si, pi){
+  var st = state[si][pi];
+  if(st.status !== "none") return;
+  st.status = "rev";
+  var fb = document.getElementById("fb-"+si+"-"+pi);
+  fb.className = "feedback no";
+  fb.textContent = MSG.revealed+" \u2014 "+MSG.answerIs+DATA[si].problems[pi].a;
+  document.getElementById("exp-"+si+"-"+pi).classList.add("show");
+  document.getElementById("tagrev-"+si+"-"+pi).classList.add("rev");
+  lockProblem(si, pi, "done-rev");
+  updateProgress(si);
+}
+
+function lockProblem(si, pi, cls){
+  var card = document.getElementById("prob-"+si+"-"+pi);
+  card.classList.add(cls);
+  document.getElementById("in-"+si+"-"+pi).disabled = true;
+  document.getElementById("chk-"+si+"-"+pi).disabled = true;
+  document.getElementById("rev-"+si+"-"+pi).disabled = true;
+}
+
+function sectionScore(si){
+  var ok = 0, done = 0;
+  for(var i=0;i<state[si].length;i++){
+    if(state[si][i].status==="ok") ok++;
+    if(state[si][i].status!=="none") done++;
+  }
+  return {ok:ok, done:done, total:state[si].length};
+}
+
+function updateProgress(si){
+  var s = sectionScore(si);
+  var fill = document.getElementById("fill"+si);
+  var pc = document.getElementById("pcount"+si);
+  fill.style.width = (s.done/s.total*100)+"%";
+  pc.textContent = s.done+" / "+s.total;
+  var mini = document.getElementById("navmini"+(si+1));
+  if(mini) mini.textContent = s.ok+"/"+s.total;
+}
+
+function renderResults(){
+  var total = 0;
+  var wrap = document.getElementById("secScores");
+  while(wrap.firstChild) wrap.removeChild(wrap.firstChild);
+  for(var si=0; si<DATA.length; si++){
+    var s = sectionScore(si);
+    total += s.ok;
+    var box = document.createElement("div");
+    box.className = "sec-score";
+    box.style.borderColor = DATA[si].color;
+    var h4 = document.createElement("h4");
+    h4.textContent = DATA[si].badge;
+    h4.style.color = DATA[si].color;
+    var sc = document.createElement("div");
+    sc.className = "s";
+    sc.textContent = s.ok+" / "+s.total;
+    box.appendChild(h4); box.appendChild(sc);
+    wrap.appendChild(box);
+  }
+  document.getElementById("totalNum").textContent = String(total);
+  var msg = document.getElementById("resultMsg");
+  if(total===40) msg.textContent = MSG.perfect;
+  else if(total>=30) msg.textContent = MSG.great;
+  else if(total>=20) msg.textContent = MSG.good;
+  else msg.textContent = MSG.tryAgain;
+}
+
+document.getElementById("resetBtn").addEventListener("click", function(){
+  for(var si=0; si<state.length; si++){
+    for(var pi=0; pi<state[si].length; pi++){
+      state[si][pi] = {status:"none", tried:false};
+      var card = document.getElementById("prob-"+si+"-"+pi);
+      card.classList.remove("done-ok","done-rev");
+      var input = document.getElementById("in-"+si+"-"+pi);
+      input.disabled = false; input.value = "";
+      document.getElementById("chk-"+si+"-"+pi).disabled = false;
+      document.getElementById("rev-"+si+"-"+pi).disabled = false;
+      var fb = document.getElementById("fb-"+si+"-"+pi);
+      fb.className = "feedback"; fb.textContent = "";
+      document.getElementById("hint-"+si+"-"+pi).classList.remove("show");
+      document.getElementById("exp-"+si+"-"+pi).classList.remove("show");
+      document.getElementById("tagok-"+si+"-"+pi).classList.remove("ok");
+      document.getElementById("tagrev-"+si+"-"+pi).classList.remove("rev");
+    }
+    updateProgress(si);
+  }
+  goPage(0);
+});
+
+makeNav();
+makeConceptCards();
+for(var i=0;i<DATA.length;i++) buildSection(i);
+goPage(0);
+</script>
+</body>
+</html>
