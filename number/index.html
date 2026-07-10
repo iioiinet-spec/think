@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수의 체계와 사칙연산 — 유리수 · 무리수 · 지수 · 로그</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6EF;
+  --ink:#2A2320;
+  --sub:#6B6157;
+  --accent:#0E7C86;
+  --accent-deep:#095A62;
+  --accent-soft:#E2F1F2;
+  --accent-line:#BBDEE1;
+  --card:#FFFFFF;
+  --line:#E6DECD;
+  --gold:#C89B12;
+  --gold-soft:#FFF3C8;
+  --warn-bg:#FBEFE7;
+  --ok:#1F7A4D;
+  --no:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:19px;
+  line-height:1.75;
+  padding-bottom:80px;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+/* ───── 헤더 ───── */
+header{
+  border-bottom:3px solid var(--accent);
+  background:linear-gradient(180deg,#E9F4F5 0%,var(--bg) 100%);
+  padding:38px 0 26px;
+}
+.series{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:700;
+  color:var(--accent-deep);
+  background:var(--accent-soft);
+  border:1.5px solid var(--accent-line);
+  border-radius:999px;
+  padding:4px 16px;letter-spacing:.5px;
+}
+h1.title{font-size:44px;font-weight:900;line-height:1.25;margin-top:14px;letter-spacing:-1px}
+h1.title .hl{color:var(--accent)}
+.subtitle{font-size:20px;color:var(--sub);margin-top:8px;font-weight:500}
+
+/* ───── 탭 ───── */
+nav.tabs{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--line);padding:12px 0}
+nav.tabs .wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tabbtn{
+  font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;
+  color:var(--ink);background:var(--card);
+  border:2px solid var(--line);border-radius:12px;
+  padding:9px 16px;cursor:pointer;transition:all .15s;
+}
+.tabbtn .no{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);margin-right:6px;font-weight:700}
+.tabbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tabbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabbtn.on .no{color:#C4E8EB}
+
+/* ───── 페이지 공통 ───── */
+.page{display:none;padding-top:34px}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-size:33px;font-weight:900;letter-spacing:-.5px;padding-left:16px;border-left:8px solid var(--accent);margin:38px 0 16px}
+h2.sec:first-child{margin-top:0}
+h3.sub{font-size:24px;font-weight:700;color:var(--accent-deep);margin:28px 0 10px}
+p.body{margin:10px 0;font-size:19.5px}
+strong{font-weight:700;color:var(--accent-deep)}
+.mono{font-family:'JetBrains Mono',monospace}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:16px 0}
+.card.tint{background:var(--accent-soft);border-color:var(--accent-line)}
+.point{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--accent-soft);border-left:8px solid var(--accent);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.point .ico{font-size:26px;line-height:1.4}
+.warn{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--warn-bg);border-left:8px solid #D07030;
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.warn .ico{font-size:26px;line-height:1.4}
+
+/* ───── 공식 카드 ───── */
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.fcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px}
+.fcard .fname{font-weight:900;font-size:19px;color:var(--accent-deep);margin-bottom:8px}
+.fcard .formula{
+  font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;
+  text-align:center;color:var(--accent-deep);
+  background:var(--accent-soft);border-radius:10px;padding:12px 10px;
+}
+.fcard .fex{
+  margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:18px;
+  background:var(--gold-soft);border-left:5px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:9px 14px;
+}
+.fcard .fex .lab{font-family:'Noto Sans KR',sans-serif;font-size:14px;color:#8a6d00;display:block;font-weight:700}
+.bigformula{
+  font-family:'JetBrains Mono',monospace;font-size:25px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);
+  border:2px dashed var(--accent);border-radius:14px;
+  padding:18px 12px;margin:18px 0;letter-spacing:.3px;
+}
+
+/* ───── 표 ───── */
+table.tb{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:19px}
+table.tb th{background:var(--accent);color:#fff;font-weight:700;padding:10px 14px;border:2px solid var(--accent-deep)}
+table.tb td{padding:10px 14px;border:2px solid var(--line);text-align:center}
+table.tb td.l{text-align:left}
+table.tb td.rowh{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+table.tb td.m{font-family:'JetBrains Mono',monospace}
+
+/* ───── 수 체계 SVG ───── */
+.nsdiag{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:18px;margin:18px 0}
+.nsdiag svg{width:100%;height:auto;display:block}
+.nsdiag .setbox{fill:#FDFBF6;stroke:#B9AE97;stroke-width:2.5;rx:16}
+.nsdiag .setbox.lit{fill:var(--accent-soft);stroke:var(--accent);stroke-width:5}
+.nsdiag text{font-family:'Noto Sans KR',sans-serif}
+.nsdiag .setname{font-size:21px;font-weight:900;fill:#4d4438}
+.nsdiag .lit-label{fill:var(--accent-deep)}
+.nsdiag .sym{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;fill:#8d8270}
+.nsdiag .samp{font-family:'JetBrains Mono',monospace;font-size:16px;fill:#6B6157}
+
+/* ───── 판별기 ───── */
+.clsbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:26px;margin:18px 0}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;
+  background:var(--bg);border:2px solid var(--line);border-radius:999px;
+  padding:8px 18px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.pin{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.pin label{font-weight:700;font-size:19px}
+.pin input{
+  flex:1;min-width:200px;font-family:'JetBrains Mono',monospace;font-size:20px;
+  border:2px solid var(--line);border-radius:10px;padding:10px 14px;
+  background:var(--bg);color:var(--ink);
+}
+.pin input:focus{outline:none;border-color:var(--accent)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.bdg{
+  font-size:18px;font-weight:700;border-radius:999px;padding:7px 18px;
+  background:var(--bg);border:2px solid var(--line);color:#9a8f7d;
+}
+.bdg.lit{background:var(--accent);border-color:var(--accent);color:#fff}
+.clsexpl{
+  background:var(--accent-soft);border-left:6px solid var(--accent);
+  border-radius:0 12px 12px 0;padding:14px 18px;font-size:19px;min-height:56px;
+}
+button.btn{
+  font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;
+  border:none;border-radius:12px;padding:11px 24px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:all .15s;
+}
+button.btn:hover{background:var(--accent-deep);transform:translateY(-1px)}
+button.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent)}
+button.btn.ghost:hover{background:var(--accent-soft)}
+
+/* ───── 계산기 ───── */
+.playbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:26px;margin:18px 0}
+.fracrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.frac{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+.frac input{
+  width:96px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:22px;
+  border:2px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);
+}
+.frac input:focus{outline:none;border-color:var(--accent)}
+.frac .bar{width:100px;height:3px;background:var(--ink);border-radius:2px}
+.opbtns{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;justify-content:center}
+.opbtns .btn{font-size:21px;min-width:84px}
+.presult{
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+  background:var(--accent-soft);border:2px dashed var(--accent);border-radius:12px;
+  padding:16px 20px;margin-top:10px;white-space:pre-wrap;line-height:1.9;
+  color:var(--accent-deep);min-height:60px;
+}
+.pin2{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.pin2 label{font-weight:700;font-size:18px}
+.pin2 input{
+  width:120px;font-family:'JetBrains Mono',monospace;font-size:20px;text-align:center;
+  border:2px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);
+}
+.pin2 input:focus{outline:none;border-color:var(--accent)}
+
+/* ───── 퀴즈 ───── */
+.qz{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:18px 0}
+.qz .qt{font-size:21px;font-weight:900;margin-bottom:14px}
+.qz .qt .qno{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:18px;margin-right:10px;
+}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:500;text-align:left;
+  background:var(--bg);border:2px solid var(--line);border-radius:12px;
+  padding:12px 16px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{background:#E3F5EA;border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.no{background:#FBE8E5;border-color:var(--no);color:var(--no);font-weight:700}
+.qz.done .opt{cursor:default}
+.expl{
+  display:none;margin-top:14px;background:var(--accent-soft);
+  border-left:6px solid var(--accent);border-radius:0 12px 12px 0;
+  padding:13px 18px;font-size:18.5px;
+}
+.expl.show{display:block}
+.scorebox{
+  text-align:center;font-size:24px;font-weight:900;
+  background:var(--accent-soft);border:2.5px solid var(--accent);
+  border-radius:16px;padding:18px;margin:20px 0;color:var(--accent-deep);
+}
+.scorebox .mono{font-size:30px}
+.pgnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px;border-top:2px dashed var(--line);padding-top:22px}
+
+@media (max-width:860px){
+  h1.title{font-size:32px}
+  .flist{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  body{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="series">정수론 기초 · 수 체계 편</span>
+    <h1 class="title">수의 체계와 사칙연산<br><span class="hl">유리수 · 무리수 · 지수 · 로그</span></h1>
+    <p class="subtitle">어떤 수가 어디에 속하는지부터, 유리수 · 무리수 · 지수 · 로그의 연산 법칙까지 예제와 함께 정리합니다.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tabbtn on" id="tab0" onclick="goPage(0)"><span class="no">0</span>수의 체계</button>
+    <button class="tabbtn" id="tab1" onclick="goPage(1)"><span class="no">1</span>유리수 연산</button>
+    <button class="tabbtn" id="tab2" onclick="goPage(2)"><span class="no">2</span>무리수 연산</button>
+    <button class="tabbtn" id="tab3" onclick="goPage(3)"><span class="no">3</span>지수법칙</button>
+    <button class="tabbtn" id="tab4" onclick="goPage(4)"><span class="no">4</span>로그법칙</button>
+    <button class="tabbtn" id="tab5" onclick="goPage(5)"><span class="no">5</span>퀴즈</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ═══════════════ 0. 수의 체계 ═══════════════ -->
+<section class="page on" id="pg0">
+  <h2 class="sec">수의 전체 체계 — 러시아 인형처럼 포개져 있다</h2>
+  <p class="body">수의 집합은 <strong>자연수 ⊂ 정수 ⊂ 유리수 ⊂ 실수</strong>로 차곡차곡 포개져 있고, 실수 안에서 <strong>유리수가 아닌 나머지</strong>가 무리수입니다. 아래 그림에서 각 상자가 바깥 상자에 완전히 포함되는 것에 주목하세요.</p>
+
+  <div class="nsdiag">
+    <svg viewBox="0 0 940 470" xmlns="http://www.w3.org/2000/svg">
+      <!-- 실수 -->
+      <rect id="setR" class="setbox" x="10" y="10" width="920" height="450" rx="18"/>
+      <text id="labR" class="setname" x="34" y="48">실수 <tspan class="sym">&#8477;</tspan></text>
+      <!-- 유리수 -->
+      <rect id="setQ" class="setbox" x="34" y="70" width="580" height="366" rx="16"/>
+      <text id="labQ" class="setname" x="56" y="106">유리수 <tspan class="sym">&#8474;</tspan></text>
+      <text class="samp" x="56" y="132">2/3,  -7/2,  0.75,  0.333...</text>
+      <!-- 정수 -->
+      <rect id="setZ" class="setbox" x="58" y="150" width="410" height="262" rx="14"/>
+      <text id="labZ" class="setname" x="80" y="186">정수 <tspan class="sym">&#8484;</tspan></text>
+      <text class="samp" x="80" y="212">-3,  -1,  0</text>
+      <!-- 자연수 -->
+      <rect id="setN" class="setbox" x="82" y="232" width="270" height="152" rx="12"/>
+      <text id="labN" class="setname" x="104" y="268">자연수 <tspan class="sym">&#8469;</tspan></text>
+      <text class="samp" x="104" y="296">1,  2,  3,  7,  100, ...</text>
+      <!-- 무리수 -->
+      <rect id="setIR" class="setbox" x="646" y="70" width="264" height="366" rx="16"/>
+      <text id="labIR" class="setname" x="668" y="106">무리수</text>
+      <text class="samp" x="668" y="134">&#8730;2 = 1.41421...</text>
+      <text class="samp" x="668" y="160">&#960; = 3.14159...</text>
+      <text class="samp" x="668" y="186">e = 2.71828...</text>
+      <text class="samp" x="668" y="212">0.10100100010...</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3 class="sub" style="margin-top:0">각 집합의 정의</h3>
+    <table class="tb">
+      <tr><th style="width:150px">집합</th><th>정의</th><th style="width:250px">예</th></tr>
+      <tr><td class="rowh">자연수 ℕ</td><td class="l">개수를 셀 때 쓰는 수 1, 2, 3, …</td><td class="m">1, 7, 2026</td></tr>
+      <tr><td class="rowh">정수 ℤ</td><td class="l">자연수 + 0 + 음의 정수</td><td class="m">-3, 0, 5</td></tr>
+      <tr><td class="rowh">유리수 ℚ</td><td class="l">두 정수의 비 p/q (q ≠ 0)로 나타낼 수 있는 수</td><td class="m">2/3, -7/2, 0.75</td></tr>
+      <tr><td class="rowh">무리수</td><td class="l">실수 중 분수로 나타낼 수 <strong>없는</strong> 수</td><td class="m">√2, π, e</td></tr>
+      <tr><td class="rowh">실수 ℝ</td><td class="l">유리수 ∪ 무리수 = 수직선 위의 모든 점</td><td class="m">위 전부</td></tr>
+    </table>
+  </div>
+
+  <div class="point"><span class="ico">🔍</span><div><strong>소수 표현으로 한 방에 구분!</strong> 소수로 썼을 때 <strong>유한소수</strong>이거나 <strong>순환소수</strong>(0.333…, 0.121212…)면 유리수, <strong>순환하지 않는 무한소수</strong>면 무리수입니다. 0.101001000100001… 은 규칙은 있어도 <strong>같은 마디가 반복되지 않으므로</strong> 무리수입니다.</div></div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>겉모습에 속지 말 것!</strong> √9 는 근호가 있지만 √9 = 3 이므로 <strong>자연수</strong>입니다. 근호를 벗겨서 <strong>가장 간단한 형태로 만든 뒤</strong> 판별해야 합니다. 참고로 실수 바깥에는 x² = −1의 해 같은 <strong>허수</strong>를 포함하는 <strong>복소수 ℂ</strong>가 있습니다(실수 ⊂ 복소수).</div></div>
+
+  <h2 class="sec">수 판별기 — 이 수는 어디에 속할까?</h2>
+  <p class="body">아래 수를 클릭하면 위 다이어그램 상자와 배지에 <strong>속하는 집합 전부</strong>가 청록색으로 켜집니다. 직접 입력(정수, 소수, 분수 <span class="mono">p/q</span>)도 가능합니다.</p>
+
+  <div class="clsbox">
+    <div class="chips" id="chipRow"></div>
+    <div class="pin">
+      <label for="clsIn">직접 입력</label>
+      <input type="text" id="clsIn" placeholder="예: -12, 3.5, 9/6, 5.0">
+      <button class="btn" id="clsBtn">판별하기</button>
+    </div>
+    <div class="badges">
+      <span class="bdg" id="bdgN">자연수 ℕ</span>
+      <span class="bdg" id="bdgZ">정수 ℤ</span>
+      <span class="bdg" id="bdgQ">유리수 ℚ</span>
+      <span class="bdg" id="bdgIR">무리수</span>
+      <span class="bdg" id="bdgR">실수 ℝ</span>
+    </div>
+    <div class="clsexpl" id="clsExpl">수를 하나 골라 보세요. 함정 문제도 숨어 있습니다 🙂</div>
+  </div>
+
+  <div class="pgnav">
+    <span></span>
+    <button class="btn" onclick="goPage(1)">다음: 유리수 연산 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1. 유리수 사칙연산 ═══════════════ -->
+<section class="page" id="pg1">
+  <h2 class="sec">유리수의 사칙연산 — 분수 계산의 4가지 공식</h2>
+  <p class="body">유리수는 항상 <span class="mono">p/q</span> 꼴로 쓸 수 있으므로, 유리수의 사칙연산은 곧 <strong>분수의 사칙연산</strong>입니다. (아래에서 b ≠ 0, d ≠ 0)</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">덧셈 — 통분해서 분자끼리</div>
+      <div class="formula">a/b + c/d = (ad + bc) / bd</div>
+      <div class="fex"><span class="lab">예제</span>2/3 + 1/6 = (2·6 + 1·3)/18 = 15/18 = 5/6</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">뺄셈 — 통분해서 분자끼리</div>
+      <div class="formula">a/b − c/d = (ad − bc) / bd</div>
+      <div class="fex"><span class="lab">예제</span>3/4 − 1/6 = (18 − 4)/24 = 14/24 = 7/12</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">곱셈 — 분자끼리, 분모끼리</div>
+      <div class="formula">a/b × c/d = ac / bd</div>
+      <div class="fex"><span class="lab">예제</span>3/4 × 8/9 = 24/36 = 2/3</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">나눗셈 — 역수를 곱한다</div>
+      <div class="formula">a/b ÷ c/d = a/b × d/c = ad / bc</div>
+      <div class="fex"><span class="lab">예제</span>5/6 ÷ 10/9 = 5/6 × 9/10 = 45/60 = 3/4</div>
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">🔗</span><div><strong>정수론과의 연결고리 — 기약분수.</strong> 계산 결과는 분자·분모를 <strong>최대공약수(GCD)</strong>로 나눠 기약분수로 만듭니다. 15/18은 GCD(15, 18) = 3으로 약분해 5/6. GCD를 빠르게 구하는 <strong>유클리드 호제법</strong>이 바로 정수론의 출발점입니다.</div></div>
+
+  <div class="point"><span class="ico">🔒</span><div><strong>유리수는 사칙연산에 닫혀 있다(closure).</strong> 유리수끼리 더하고, 빼고, 곱하고, (0이 아닌 수로) 나눠도 결과는 <strong>항상 유리수</strong>입니다. 위 공식의 결과가 전부 (정수)/(정수) 꼴인 것이 그 증거입니다.</div></div>
+
+  <h2 class="sec">분수 계산기 — 과정까지 보여줍니다</h2>
+  <p class="body">분자와 분모(정수)를 넣고 연산을 고르면, <strong>공식 적용 → GCD로 약분</strong> 과정을 그대로 보여줍니다.</p>
+
+  <div class="playbox">
+    <div class="fracrow">
+      <div class="frac"><input type="text" id="fa" value="2"><div class="bar"></div><input type="text" id="fb" value="3"></div>
+      <div style="font-size:34px;font-weight:900;color:var(--accent)" id="fopShow">+</div>
+      <div class="frac"><input type="text" id="fc" value="1"><div class="bar"></div><input type="text" id="fd" value="6"></div>
+    </div>
+    <div class="opbtns">
+      <button class="btn" id="fAdd">＋</button>
+      <button class="btn" id="fSub">－</button>
+      <button class="btn" id="fMul">×</button>
+      <button class="btn" id="fDiv">÷</button>
+    </div>
+    <div class="presult" id="fracOut">연산 버튼을 눌러 보세요</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(0)">← 이전: 수의 체계</button>
+    <button class="btn" onclick="goPage(2)">다음: 무리수 연산 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2. 무리수 사칙연산 ═══════════════ -->
+<section class="page" id="pg2">
+  <h2 class="sec">무리수의 사칙연산 — 근호(√)를 다루는 법</h2>
+  <p class="body">무리수 연산의 대표는 근호가 있는 수의 계산입니다. <strong>곱셈·나눗셈은 근호 안에서 자유롭게</strong>, <strong>덧셈·뺄셈은 동류 근호끼리만</strong> — 이 두 줄이 전부입니다. (아래에서 a &gt; 0, b &gt; 0)</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">곱셈 — 근호 안끼리 곱한다</div>
+      <div class="formula">√a × √b = √(ab)</div>
+      <div class="fex"><span class="lab">예제</span>√6 × √10 = √60 = √(4·15) = 2√15</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">나눗셈 — 근호 안끼리 나눈다</div>
+      <div class="formula">√a ÷ √b = √(a/b)</div>
+      <div class="fex"><span class="lab">예제</span>√18 ÷ √2 = √9 = 3</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">덧셈·뺄셈 — 동류 근호끼리만!</div>
+      <div class="formula">m√a ± n√a = (m ± n)√a</div>
+      <div class="fex"><span class="lab">예제</span>3√2 + 5√2 = 8√2 &nbsp;(√2 + √3 은 더 못 줄임)</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">근호 간단히 하기</div>
+      <div class="formula">√(k²·a) = k√a</div>
+      <div class="fex"><span class="lab">예제</span>√12 = √(4·3) = 2√3, &nbsp;√48 = 4√3</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">분모의 유리화 ①</div>
+      <div class="formula">1/√a = √a / a</div>
+      <div class="fex"><span class="lab">예제</span>1/√2 = √2/2 = 0.7071…</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">분모의 유리화 ② — 켤레 곱하기</div>
+      <div class="formula">1/(√a−√b) = (√a+√b)/(a−b)</div>
+      <div class="fex"><span class="lab">예제</span>1/(√3−√2) = (√3+√2)/(3−2) = √3+√2</div>
+    </div>
+  </div>
+
+  <div class="bigformula">합차공식: (√a + √b)(√a − √b) = a − b</div>
+  <p class="body">유리화 ②가 성립하는 이유가 바로 이 합차공식입니다. 켤레(부호만 바꾼 짝)를 곱하면 <strong>근호가 사라지고 유리수</strong>가 됩니다. 예: (2 + √3)(2 − √3) = 4 − 3 = 1.</p>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>무리수는 사칙연산에 닫혀 있지 않다!</strong> 유리수와 결정적으로 다른 점입니다. √2 + (−√2) = 0 (유리수), √2 × √2 = 2 (유리수). 무리수끼리 연산했는데 결과가 유리수가 될 수 있습니다. 반면 <strong>(0이 아닌) 유리수 + 무리수, 유리수 × 무리수는 항상 무리수</strong>입니다.</div></div>
+
+  <div class="point"><span class="ico">🔗</span><div><strong>정수론과의 연결고리 — √2가 무리수인 이유.</strong> √2 = p/q (기약분수)라 가정하면 p² = 2q²이 되어 p²이 짝수 → p도 짝수 → q도 짝수가 되어 "기약"이라는 가정과 모순! 이 <strong>귀류법 증명</strong>은 소인수분해의 유일성(산술의 기본정리)에 기대고 있습니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">종합 예제 — 한 문제에 규칙 4개</h3>
+    <p class="body mono" style="font-size:21px;text-align:center;font-weight:700">√12 + √27 − 6/√3 = 2√3 + 3√3 − 2√3 = <span style="color:var(--accent)">3√3</span></p>
+    <p class="body" style="text-align:center;color:var(--sub)">① √12 = 2√3 &nbsp;② √27 = 3√3 &nbsp;③ 6/√3 = 6√3/3 = 2√3 (유리화) &nbsp;④ 동류 근호끼리 (2+3−2)√3</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(1)">← 이전: 유리수 연산</button>
+    <button class="btn" onclick="goPage(3)">다음: 지수법칙 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. 지수법칙 ═══════════════ -->
+<section class="page" id="pg3">
+  <h2 class="sec">지수의 사칙연산 — 지수법칙 6가지</h2>
+  <p class="body">a<sup>n</sup>은 a를 n번 곱한 것. 여기서 모든 법칙이 나옵니다. 핵심 감각은 <strong>"곱셈이 지수의 덧셈으로, 거듭제곱이 지수의 곱셈으로 내려온다"</strong>는 것입니다. (a ≠ 0, b ≠ 0)</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">① 곱셈 → 지수의 덧셈</div>
+      <div class="formula">a^m × a^n = a^(m+n)</div>
+      <div class="fex"><span class="lab">예제</span>2³ × 2⁴ = 2⁷ = 128</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">② 나눗셈 → 지수의 뺄셈</div>
+      <div class="formula">a^m ÷ a^n = a^(m−n)</div>
+      <div class="fex"><span class="lab">예제</span>3⁵ ÷ 3² = 3³ = 27</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">③ 거듭제곱의 거듭제곱 → 지수의 곱셈</div>
+      <div class="formula">(a^m)^n = a^(mn)</div>
+      <div class="fex"><span class="lab">예제</span>(3²)³ = 3⁶ = 729</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">④ 곱·몫의 거듭제곱 → 각각에 분배</div>
+      <div class="formula">(ab)^n = a^n b^n,&nbsp; (a/b)^n = a^n/b^n</div>
+      <div class="fex"><span class="lab">예제</span>(2×5)³ = 2³×5³ = 1000</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">⑤ 지수 0과 음의 지수</div>
+      <div class="formula">a⁰ = 1,&nbsp; a^(−n) = 1/a^n</div>
+      <div class="fex"><span class="lab">예제</span>7⁰ = 1, &nbsp;2⁻³ = 1/2³ = 1/8</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">⑥ 유리수 지수 = 거듭제곱근</div>
+      <div class="formula">a^(1/n) = ⁿ√a,&nbsp; a^(m/n) = ⁿ√(a^m)</div>
+      <div class="fex"><span class="lab">예제</span>8^(2/3) = (∛8)² = 2² = 4</div>
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">💡</span><div><strong>왜 a⁰ = 1이고 a⁻ⁿ = 1/aⁿ일까?</strong> 법칙 ②가 계속 성립하도록 <strong>정의를 확장</strong>한 것입니다. a³ ÷ a³ = a⁰ 인데 값은 1이므로 a⁰ = 1. a² ÷ a⁵ = a⁻³ 인데 값은 1/a³ 이므로 a⁻³ = 1/a³. 규칙이 정의를 만드는 대표적인 예입니다.</div></div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>자주 나오는 함정 3가지.</strong> ① a^m × b^n 은 밑이 다르면 지수를 못 더합니다. ② 2³ × 2⁴ ≠ 4⁷ (밑은 그대로!). ③ (a + b)² ≠ a² + b² — 지수법칙은 곱셈·나눗셈에만 적용되고 덧셈에는 적용되지 않습니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">무리수 연산과의 연결</h3>
+    <p class="body">√a = a^(1/2) 이므로, 2번 탭의 근호 법칙은 사실 지수법칙의 특수한 경우입니다: √a × √b = a^(1/2) b^(1/2) = (ab)^(1/2) = √(ab). <strong>같은 법칙이 다른 옷을 입고 있을 뿐입니다.</strong></p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(2)">← 이전: 무리수 연산</button>
+    <button class="btn" onclick="goPage(4)">다음: 로그법칙 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. 로그법칙 ═══════════════ -->
+<section class="page" id="pg4">
+  <h2 class="sec">로그란? — 지수의 역연산</h2>
+  <p class="body">"a를 몇 번 곱하면 N이 될까?"의 답이 로그입니다. 즉 <strong>로그는 지수를 꺼내 읽는 기호</strong>입니다.</p>
+
+  <div class="bigformula">a^x = N &nbsp;⟺&nbsp; x = log_a N &nbsp;&nbsp;(a &gt; 0, a ≠ 1, N &gt; 0)</div>
+  <p class="body" style="text-align:center;color:var(--sub)">예: 2³ = 8 이므로 log₂8 = 3. &nbsp;조건 <strong>진수 N &gt; 0, 밑 a &gt; 0, a ≠ 1</strong>은 시험 단골!</p>
+
+  <h2 class="sec">로그의 사칙연산 — 지수법칙이 번역된 것</h2>
+  <p class="body">지수에서 <strong>곱셈이 덧셈으로 내려왔던 것</strong>을 기억하나요? 로그는 지수를 읽는 기호이므로, 지수법칙 ①②③이 그대로 로그법칙이 됩니다.</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">① 곱의 로그 = 로그의 합</div>
+      <div class="formula">log_a(MN) = log_a M + log_a N</div>
+      <div class="fex"><span class="lab">예제</span>log₁₀2 + log₁₀5 = log₁₀10 = 1</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">② 몫의 로그 = 로그의 차</div>
+      <div class="formula">log_a(M/N) = log_a M − log_a N</div>
+      <div class="fex"><span class="lab">예제</span>log₂48 − log₂3 = log₂16 = 4</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">③ 거듭제곱의 로그 = 지수가 앞으로</div>
+      <div class="formula">log_a M^k = k · log_a M</div>
+      <div class="fex"><span class="lab">예제</span>log₃9⁵ = 5 log₃9 = 5 × 2 = 10</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">④ 기본값 두 가지</div>
+      <div class="formula">log_a a = 1,&nbsp; log_a 1 = 0</div>
+      <div class="fex"><span class="lab">예제</span>log₇7 = 1, &nbsp;log₅1 = 0 (5⁰ = 1이므로)</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">⑤ 밑변환 공식</div>
+      <div class="formula">log_a b = log_c b / log_c a</div>
+      <div class="fex"><span class="lab">예제</span>log₄8 = log₂8 / log₂4 = 3/2</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">⑥ 밑변환의 따름 공식</div>
+      <div class="formula">log_a b = 1 / log_b a</div>
+      <div class="fex"><span class="lab">예제</span>log₂8 × log₈2 = 3 × 1/3 = 1</div>
+    </div>
+  </div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>가장 흔한 오개념:</strong> log(M + N) ≠ log M + log N 입니다! 로그의 덧셈이 되는 것은 <strong>진수의 곱셈</strong>이지, 진수의 덧셈이 아닙니다. 또 (log M)ᵏ ≠ k log M 도 조심하세요 — 지수가 진수에 붙어 있을 때만 앞으로 나옵니다.</div></div>
+
+  <div class="point"><span class="ico">🔗</span><div><strong>왜 로그가 정수론·알고리즘에서 중요할까?</strong> 큰 수의 <strong>자릿수</strong>가 log₁₀으로 바로 나오고(2¹⁰⁰의 자릿수 = ⌊100 log₁₀2⌋ + 1 = 31자리), 이분 탐색·빠른 거듭제곱 같은 알고리즘의 횟수가 O(log n)으로 표현되기 때문입니다.</div></div>
+
+  <h2 class="sec">로그법칙 검증기 — 양변을 직접 계산해 보기</h2>
+  <p class="body">밑 a와 M, N을 넣고 법칙을 고르면 <strong>좌변과 우변을 각각 계산</strong>해서 정말 같은지 보여줍니다. (거듭제곱 법칙에서는 N을 지수 k로 사용)</p>
+
+  <div class="playbox">
+    <div class="pin2" style="justify-content:center">
+      <label for="lgA">밑 a =</label><input type="text" id="lgA" value="2">
+      <label for="lgM">M =</label><input type="text" id="lgM" value="8">
+      <label for="lgN">N (또는 k) =</label><input type="text" id="lgN" value="4">
+    </div>
+    <div class="opbtns">
+      <button class="btn" id="lgMul">곱셈법칙 ①</button>
+      <button class="btn" id="lgDiv">나눗셈법칙 ②</button>
+      <button class="btn" id="lgPow">거듭제곱법칙 ③</button>
+    </div>
+    <div class="presult" id="lgOut">법칙 버튼을 눌러 보세요</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(3)">← 이전: 지수법칙</button>
+    <button class="btn" onclick="goPage(5)">다음: 퀴즈 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. 퀴즈 ═══════════════ -->
+<section class="page" id="pg5">
+  <h2 class="sec">확인 퀴즈 — 8문제</h2>
+  <p class="body">보기를 클릭하면 바로 채점됩니다. 초록색이 정답, 빨간색이 오답입니다.</p>
+  <div class="scorebox">맞힌 개수: <span class="mono" id="scoreNum">0</span> / <span class="mono">8</span></div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">1</span>√9 가 속하는 가장 작은(좁은) 수의 집합은?</div>
+    <div class="opts">
+      <button class="opt" data-ok="1">자연수</button>
+      <button class="opt">정수 (자연수 아님)</button>
+      <button class="opt">유리수 (정수 아님)</button>
+      <button class="opt">무리수</button>
+    </div>
+    <div class="expl">√9 = 3 입니다. 근호가 있어도 벗겨 보면 자연수! 물론 자연수이므로 정수·유리수·실수에도 모두 속합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">2</span>0.121212… (12가 무한히 반복) 는 어떤 수?</div>
+    <div class="opts">
+      <button class="opt">무리수</button>
+      <button class="opt" data-ok="1">유리수</button>
+      <button class="opt">정수</button>
+      <button class="opt">실수가 아니다</button>
+    </div>
+    <div class="expl">순환소수는 항상 분수로 나타낼 수 있어 유리수입니다. 실제로 0.121212… = 12/99 = 4/33.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">3</span>2/3 + 1/6 = ?</div>
+    <div class="opts">
+      <button class="opt">3/9</button>
+      <button class="opt">1/2</button>
+      <button class="opt" data-ok="1">5/6</button>
+      <button class="opt">15/18 이 기약분수다</button>
+    </div>
+    <div class="expl">통분하면 4/6 + 1/6 = 5/6. 공식으로는 15/18이 나오지만 GCD 3으로 약분해야 기약분수 5/6이 됩니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">4</span>√8 × √2 = ?</div>
+    <div class="opts">
+      <button class="opt">√10</button>
+      <button class="opt">2√2</button>
+      <button class="opt" data-ok="1">4</button>
+      <button class="opt">8</button>
+    </div>
+    <div class="expl">√8 × √2 = √16 = 4. 무리수 × 무리수가 자연수가 된 예 — 무리수는 곱셈에 닫혀 있지 않습니다!</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">5</span>1/(√5 − 2) 를 유리화하면?</div>
+    <div class="opts">
+      <button class="opt" data-ok="1">√5 + 2</button>
+      <button class="opt">√5 − 2</button>
+      <button class="opt">(√5 + 2)/3</button>
+      <button class="opt">1/3</button>
+    </div>
+    <div class="expl">켤레 (√5 + 2)를 분모·분자에 곱하면 분모는 합차공식으로 5 − 4 = 1. 따라서 답은 √5 + 2.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">6</span>2⁵ ÷ 2⁸ = ?</div>
+    <div class="opts">
+      <button class="opt">2³ = 8</button>
+      <button class="opt" data-ok="1">2⁻³ = 1/8</button>
+      <button class="opt">1³ = 1</button>
+      <button class="opt">0</button>
+    </div>
+    <div class="expl">지수의 뺄셈: 2^(5−8) = 2⁻³ = 1/2³ = 1/8. 음의 지수는 역수를 뜻합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">7</span>log₂32 = ?</div>
+    <div class="opts">
+      <button class="opt">4</button>
+      <button class="opt" data-ok="1">5</button>
+      <button class="opt">16</button>
+      <button class="opt">6</button>
+    </div>
+    <div class="expl">"2를 몇 번 곱하면 32?" 2⁵ = 32 이므로 log₂32 = 5.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">8</span>log₁₀4 + log₁₀25 = ?</div>
+    <div class="opts">
+      <button class="opt">1</button>
+      <button class="opt" data-ok="1">2</button>
+      <button class="opt">log₁₀29</button>
+      <button class="opt">10</button>
+    </div>
+    <div class="expl">곱셈법칙으로 log₁₀(4 × 25) = log₁₀100 = 2. log의 합 = 진수의 곱! (진수의 합 29가 아닙니다)</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(4)">← 이전: 로그법칙</button>
+    <button class="btn" onclick="goPage(0)">⟲ 처음으로</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ───────── 탭 이동 ───────── */
+function goPage(n){
+  for(var i=0;i<6;i++){
+    document.getElementById('pg'+i).classList.toggle('on', i===n);
+    document.getElementById('tab'+i).classList.toggle('on', i===n);
+  }
+  window.scrollTo(0,0);
+}
+
+/* ───────── 수 판별기 ───────── */
+/* sets: N(자연수) Z(정수) Q(유리수) IR(무리수) R(실수) */
+var CHIP_DATA=[
+  {label:'7',        sets:['N','Z','Q','R'],  expl:'7은 셀 수 있는 수이므로 자연수. 자연수 \u2282 정수 \u2282 유리수 \u2282 실수 이므로 전부 켜집니다.'},
+  {label:'0',        sets:['Z','Q','R'],      expl:'0은 정수이지만 자연수는 아닙니다(고등학교 과정 기준). 0 = 0/1 이므로 유리수이기도 합니다.'},
+  {label:'-3',       sets:['Z','Q','R'],      expl:'-3은 음의 정수. 정수는 모두 (자기자신)/1 꼴이므로 유리수이기도 합니다.'},
+  {label:'2/3',      sets:['Q','R'],          expl:'두 정수의 비이므로 유리수. 소수로 쓰면 0.666... 순환소수입니다.'},
+  {label:'0.75',     sets:['Q','R'],          expl:'유한소수는 항상 분수로 바꿀 수 있습니다: 0.75 = 3/4. 따라서 유리수.'},
+  {label:'0.333...', sets:['Q','R'],          expl:'순환소수는 유리수입니다: 0.333... = 1/3.'},
+  {label:'\u221A2',  sets:['IR','R'],         expl:'\u221A2 = 1.41421356... 은 순환하지 않는 무한소수 \u2192 무리수. 귀류법으로 분수로 쓸 수 없음이 증명됩니다.'},
+  {label:'\u221A9',  sets:['N','Z','Q','R'],  expl:'함정! \u221A9 = 3 이므로 자연수입니다. 근호를 벗겨서 판단하세요.'},
+  {label:'-\u221A16',sets:['Z','Q','R'],      expl:'함정! -\u221A16 = -4 이므로 정수입니다 (자연수는 아님).'},
+  {label:'\u03C0',   sets:['IR','R'],         expl:'\u03C0 = 3.14159265... 순환하지 않는 무한소수 \u2192 무리수. 3.14는 근삿값일 뿐 \u03C0 자체가 아닙니다.'},
+  {label:'0.1010010001...', sets:['IR','R'],  expl:'0 사이의 간격이 계속 늘어나 같은 마디가 반복되지 않습니다 \u2192 규칙은 있지만 순환이 아니므로 무리수!'},
+  {label:'\u221A2\u00D7\u221A8', sets:['N','Z','Q','R'], expl:'함정! \u221A2\u00D7\u221A8 = \u221A16 = 4 \u2192 자연수. 무리수끼리 곱해도 유리수가 될 수 있습니다.'}
+];
+var SETS=['N','Z','Q','IR','R'];
+
+function clsShow(sets, expl, selChip){
+  for(var i=0;i<SETS.length;i++){
+    var s=SETS[i];
+    var on = sets.indexOf(s)>=0;
+    document.getElementById('bdg'+s).classList.toggle('lit', on);
+    document.getElementById('set'+s).classList.toggle('lit', on);
+    document.getElementById('lab'+s).classList.toggle('lit-label', on);
+  }
+  document.getElementById('clsExpl').textContent=expl;
+  var chips=document.querySelectorAll('.chip');
+  for(var j=0;j<chips.length;j++) chips[j].classList.toggle('sel', chips[j]===selChip);
+}
+
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t}return a||1}
+
+function classifyValue(str){
+  var t=str.trim();
+  if(t==='') return null;
+  var m;
+  /* 정수 */
+  if(/^[+-]?\d+$/.test(t)){
+    var v=parseInt(t,10);
+    return {sets: v>0?['N','Z','Q','R']:['Z','Q','R'],
+            expl: t+' 은(는) '+(v>0?'자연수':'정수 (0 또는 음수라서 자연수는 아님)')+'입니다. 정수는 모두 유리수이기도 합니다.'};
+  }
+  /* 소수 */
+  if(/^[+-]?\d+\.\d+$/.test(t)){
+    var v2=parseFloat(t);
+    if(Math.abs(v2-Math.round(v2))<1e-12){
+      var iv=Math.round(v2);
+      return {sets: iv>0?['N','Z','Q','R']:['Z','Q','R'],
+              expl: t+' = '+iv+' 이므로 사실은 '+(iv>0?'자연수':'정수')+'입니다. 소수점이 있어도 값을 보고 판단하세요!'};
+    }
+    return {sets:['Q','R'], expl:t+' 은(는) 유한소수이므로 분수로 나타낼 수 있는 유리수입니다.'};
+  }
+  /* 분수 p/q */
+  m=t.match(/^([+-]?\d+)\s*\/\s*([+-]?\d+)$/);
+  if(m){
+    var p=parseInt(m[1],10), q=parseInt(m[2],10);
+    if(q===0) return {sets:[], expl:'분모가 0이면 수가 아닙니다! (0으로 나눌 수 없음)'};
+    var g=gcd(p,q);
+    var pp=p/g, qq=q/g;
+    if(qq<0){pp=-pp;qq=-qq}
+    if(qq===1){
+      return {sets: pp>0?['N','Z','Q','R']:['Z','Q','R'],
+              expl: t+' 을(를) 약분하면 '+pp+' \u2014 사실은 '+(pp>0?'자연수':'정수')+'입니다! 분수 모양에 속지 마세요.'};
+    }
+    return {sets:['Q','R'], expl:t+' 은(는) 두 정수의 비이므로 유리수입니다. 기약분수로 나타내면 '+pp+'/'+qq+'.'};
+  }
+  return {sets:[], expl:'이 형태는 직접 판별하기 어렵습니다. 정수, 소수, 분수(p/q) 형태로 입력하거나 위의 예시 버튼을 눌러 보세요.'};
+}
+
+function initClassifier(){
+  var row=document.getElementById('chipRow');
+  for(var i=0;i<CHIP_DATA.length;i++){
+    (function(d){
+      var b=document.createElement('button');
+      b.className='chip';
+      b.textContent=d.label;
+      b.addEventListener('click', function(){ clsShow(d.sets, d.label+' \u2192 '+d.expl, b); });
+      row.appendChild(b);
+    })(CHIP_DATA[i]);
+  }
+  document.getElementById('clsBtn').addEventListener('click', function(){
+    var r=classifyValue(document.getElementById('clsIn').value);
+    if(r===null) return;
+    clsShow(r.sets, r.expl, null);
+  });
+  document.getElementById('clsIn').addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ document.getElementById('clsBtn').click(); }
+  });
+}
+
+/* ───────── 분수 계산기 ───────── */
+function parseIntStrict(id){
+  var t=document.getElementById(id).value.trim();
+  if(!/^[+-]?\d+$/.test(t)) return null;
+  return parseInt(t,10);
+}
+function fracStr(p,q){
+  if(q===1) return String(p);
+  return p+'/'+q;
+}
+function fracCalc(op){
+  var out=document.getElementById('fracOut');
+  var a=parseIntStrict('fa'), b=parseIntStrict('fb');
+  var c=parseIntStrict('fc'), d=parseIntStrict('fd');
+  var sym={add:'+',sub:'\u2212',mul:'\u00D7',div:'\u00F7'}[op];
+  document.getElementById('fopShow').textContent=sym;
+  if(a===null||b===null||c===null||d===null){
+    out.textContent='\u26A0 네 칸 모두 정수를 입력하세요.'; return;
+  }
+  if(b===0||d===0){ out.textContent='\u26A0 분모는 0이 될 수 없습니다.'; return; }
+  var num, den, procLine;
+  if(op==='add'){ num=a*d+c*b; den=b*d; procLine='('+a+'\u00B7'+d+' + '+c+'\u00B7'+b+') / ('+b+'\u00B7'+d+') = '+num+'/'+den; }
+  else if(op==='sub'){ num=a*d-c*b; den=b*d; procLine='('+a+'\u00B7'+d+' \u2212 '+c+'\u00B7'+b+') / ('+b+'\u00B7'+d+') = '+num+'/'+den; }
+  else if(op==='mul'){ num=a*c; den=b*d; procLine='('+a+'\u00B7'+c+') / ('+b+'\u00B7'+d+') = '+num+'/'+den; }
+  else{
+    if(c===0){ out.textContent='\u26A0 0으로 나눌 수 없습니다. (c/d = 0)'; return; }
+    num=a*d; den=b*c; procLine='역수를 곱하기: '+a+'/'+b+' \u00D7 '+d+'/'+c+' = '+num+'/'+den;
+  }
+  if(den<0){num=-num;den=-den}
+  var g=gcd(num,den);
+  var rn=num/g, rd=den/g;
+  var lines=[];
+  lines.push(a+'/'+b+' '+sym+' '+c+'/'+d);
+  lines.push('= '+procLine);
+  if(g>1) lines.push('= '+fracStr(rn,rd)+'   (GCD '+g+'\uB85C \uC57D\uBD84)');
+  else lines.push('= '+fracStr(rn,rd)+'   (\uC774\uBBF8 \uAE30\uC57D\uBD84\uC218)');
+  lines.push('\u2248 '+(Math.round(rn/rd*10000)/10000));
+  out.textContent=lines.join('\n');
+}
+
+/* ───────── 로그법칙 검증기 ───────── */
+function parseNum(id){
+  var t=document.getElementById(id).value.trim();
+  if(t==='') return null;
+  var v=Number(t);
+  return isNaN(v)?null:v;
+}
+function logB(a,x){ return Math.log(x)/Math.log(a); }
+function r6(v){ return Math.round(v*1000000)/1000000; }
+function lgCalc(law){
+  var out=document.getElementById('lgOut');
+  var a=parseNum('lgA'), M=parseNum('lgM'), N=parseNum('lgN');
+  if(a===null||M===null||N===null){ out.textContent='\u26A0 \uC22B\uC790\uB97C \uC785\uB825\uD558\uC138\uC694.'; return; }
+  if(a<=0||a===1){ out.textContent='\u26A0 \uBC11 \uC870\uAC74 \uC704\uBC18: a > 0, a \u2260 1 \uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'; return; }
+  if(M<=0){ out.textContent='\u26A0 \uC9C4\uC218 \uC870\uAC74 \uC704\uBC18: M > 0 \uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'; return; }
+  var lhs, rhs, l1, l2;
+  if(law==='mul'){
+    if(N<=0){ out.textContent='\u26A0 \uC9C4\uC218 \uC870\uAC74 \uC704\uBC18: N > 0 \uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'; return; }
+    lhs=logB(a,M*N); rhs=logB(a,M)+logB(a,N);
+    l1='\uC88C\uBCC0  log_'+a+'('+M+'\u00D7'+N+') = log_'+a+'('+(M*N)+') = '+r6(lhs);
+    l2='\uC6B0\uBCC0  log_'+a+'('+M+') + log_'+a+'('+N+') = '+r6(logB(a,M))+' + '+r6(logB(a,N))+' = '+r6(rhs);
+  }else if(law==='div'){
+    if(N<=0){ out.textContent='\u26A0 \uC9C4\uC218 \uC870\uAC74 \uC704\uBC18: N > 0 \uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'; return; }
+    lhs=logB(a,M/N); rhs=logB(a,M)-logB(a,N);
+    l1='\uC88C\uBCC0  log_'+a+'('+M+'/'+N+') = '+r6(lhs);
+    l2='\uC6B0\uBCC0  log_'+a+'('+M+') \u2212 log_'+a+'('+N+') = '+r6(rhs);
+  }else{
+    lhs=logB(a,Math.pow(M,N)); rhs=N*logB(a,M);
+    l1='\uC88C\uBCC0  log_'+a+'('+M+'^'+N+') = '+r6(lhs);
+    l2='\uC6B0\uBCC0  '+N+' \u00D7 log_'+a+'('+M+') = '+r6(rhs);
+  }
+  var same=Math.abs(lhs-rhs)<1e-9;
+  out.textContent=l1+'\n'+l2+'\n'+(same?'\u2714 \uC591\uBCC0\uC774 \uC77C\uCE58\uD569\uB2C8\uB2E4!':'\u2716 \uACC4\uC0B0 \uBC94\uC704\uB97C \uBC97\uC5B4\uB0AC\uC2B5\uB2C8\uB2E4.');
+}
+
+/* ───────── 퀴즈 ───────── */
+var quizScore=0;
+function initQuiz(){
+  var qzs=document.querySelectorAll('.qz');
+  for(var i=0;i<qzs.length;i++){
+    (function(qz){
+      var opts=qz.querySelectorAll('.opt');
+      for(var j=0;j<opts.length;j++){
+        opts[j].addEventListener('click', function(){
+          if(qz.classList.contains('done')) return;
+          qz.classList.add('done');
+          var isOk=this.getAttribute('data-ok')==='1';
+          if(isOk){
+            this.classList.add('ok');
+            quizScore++;
+            document.getElementById('scoreNum').textContent=String(quizScore);
+          }else{
+            this.classList.add('no');
+            var right=qz.querySelector('.opt[data-ok="1"]');
+            if(right) right.classList.add('ok');
+          }
+          var ex=qz.querySelector('.expl');
+          if(ex) ex.classList.add('show');
+        });
+      }
+    })(qzs[i]);
+  }
+}
+
+/* ───────── 초기화 ───────── */
+document.addEventListener('DOMContentLoaded', function(){
+  initClassifier();
+  document.getElementById('fAdd').addEventListener('click', function(){ fracCalc('add'); });
+  document.getElementById('fSub').addEventListener('click', function(){ fracCalc('sub'); });
+  document.getElementById('fMul').addEventListener('click', function(){ fracCalc('mul'); });
+  document.getElementById('fDiv').addEventListener('click', function(){ fracCalc('div'); });
+  document.getElementById('lgMul').addEventListener('click', function(){ lgCalc('mul'); });
+  document.getElementById('lgDiv').addEventListener('click', function(){ lgCalc('div'); });
+  document.getElementById('lgPow').addEventListener('click', function(){ lgCalc('pow'); });
+  initQuiz();
+});
+</script>
+</body>
+</html>
