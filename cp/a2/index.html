@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세그먼트 트리 · LCA — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#B45309;
+  --accent-light:#FBEBD7;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#3A1D06);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'range query · tree lifting';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.06);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.35}
+header p{color:#E0A868;font-size:14px;margin-top:6px}
+header .langchips{margin-top:12px;display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.chip.c{background:var(--c-color);color:#fff}
+.chip.py{background:var(--py-color);color:#fff}
+.chip.js{background:#5A4A38;color:#F0E6D2}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);border-bottom:2px solid var(--bdr);padding:10px 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.navbtn{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1.5px solid var(--bdr);border-radius:22px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.navbtn .num{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--soft);color:var(--ink3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.navbtn.on .num{background:rgba(255,255,255,.25);color:#fff}
+
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 90px}
+.page{display:none}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:28px 30px;margin-bottom:28px;box-shadow:0 1px 3px rgba(30,21,9,.04)}
+.card h2{font-size:22px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2 .bar{width:6px;height:24px;background:var(--accent);border-radius:3px;flex:none}
+.card h3{font-size:18px;font-weight:800;margin:26px 0 12px;color:var(--ink)}
+.card p{margin-bottom:12px;color:var(--ink)}
+.card p b{color:var(--accent)}
+.small{font-size:14.5px;color:var(--ink2)}
+
+.tip{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.tip b{color:var(--accent)}
+.warn{background:#FBEBE8;border-left:5px solid var(--ng);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.warn b{color:var(--ng)}
+.link-prev{background:var(--soft);border:1.5px dashed var(--ink3);border-radius:10px;padding:12px 18px;margin:16px 0;font-size:15px;color:var(--ink2)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.col .lang{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.col.c .lang{background:var(--c-color)}
+.col.py .lang{background:var(--py-color)}
+.copybtn{font-family:var(--sans);font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer}
+.copybtn:hover{background:rgba(255,255,255,.32)}
+pre.code{background:var(--code-bg);color:#E8E6E3;font-family:var(--mono);font-size:14px;line-height:1.7;padding:16px 18px;border-radius:0 0 10px 10px;overflow-x:auto;white-space:pre;tab-size:4}
+.col.c pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--c-color)}
+.col.py pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--py-color)}
+pre.code .cm{color:#7A8B7A;font-style:italic}
+pre.code .kw{color:#C792EA}
+pre.code .fn{color:#82AAFF}
+pre.code .st{color:#C3E88D}
+pre.code .nb{color:#F78C6C}
+pre.code .hl{background:rgba(180,83,9,.22);border-radius:3px;padding:0 2px}
+
+.term{background:var(--term-bg);border-radius:10px;padding:13px 18px;margin:12px 0;font-family:var(--mono);font-size:14px}
+.term .tl{color:#6B7280;font-size:11.5px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+.term .to{color:#7CE38B;white-space:pre-wrap;line-height:1.65}
+.term .ti{color:#E8B84B}
+
+table.cmp{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.cmp th{background:var(--soft);color:var(--ink2);font-weight:800;padding:10px 14px;border:1px solid var(--bdr);text-align:left}
+table.cmp td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.cmp td.mono{font-family:var(--mono);font-size:13.5px}
+table.cmp tr td:first-child{font-weight:700;background:#FDFBF6}
+
+.btn{font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:9px;padding:9px 18px;cursor:pointer;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.teal{background:var(--cell);color:#fff}
+.btn.warm{background:var(--cell-hi);color:#3A2A05}
+.btn.ghost{background:var(--panel);color:var(--ink2);border:1.5px solid var(--bdr)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:12px 0}
+select.sel,input.inp{font-family:var(--mono);font-size:15px;font-weight:600;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;background:var(--panel);color:var(--ink)}
+
+.simpanel{background:var(--soft);border:1.5px solid var(--bdr);border-radius:12px;padding:20px;margin:16px 0}
+.simpanel h4{font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.simpanel h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.simflex{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.simflex{grid-template-columns:1fr}}
+.svgbox{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+
+.statecard{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.statecard .sl{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:7px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;align-items:center}
+.nchip{font-family:var(--mono);font-size:14.5px;font-weight:700;min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent);padding:0 6px}
+.nchip.q{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell)}
+.nchip.top{background:var(--cell-hi);color:#3A2A05;border-color:#C79A2E}
+.nchip.ord{background:var(--panel);color:var(--ink2);border-color:var(--bdr)}
+.nchip.ord.new{background:var(--accent);color:#fff;border-color:var(--accent)}
+.emptymsg{font-size:13.5px;color:var(--ink3);font-style:italic}
+.msgline{background:var(--panel);border:1.5px solid var(--accent);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);min-height:48px;display:flex;align-items:center;margin-top:4px}
+.msgline.done{border-color:var(--ok);background:#EAF7EE}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.lgdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink3);background:var(--panel);flex:none}
+.lgdot.cur{background:var(--cell-hi);border-color:#C79A2E}
+.lgdot.vis{background:var(--accent);border-color:var(--accent)}
+.lgdot.inq{background:#DFF5F1;border-color:var(--cell)}
+
+.grid7{display:grid;grid-template-columns:repeat(7,46px);gap:5px;margin:14px 0}
+.gcell{width:46px;height:46px;border-radius:8px;background:var(--panel);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;user-select:none;transition:transform .08s}
+.gcell:hover{transform:scale(1.06)}
+.gcell.wall{background:#4A3B28;border-color:#4A3B28;color:#4A3B28}
+@media(max-width:480px){.grid7{grid-template-columns:repeat(7,40px)}.gcell{width:40px;height:40px;font-size:12.5px}}
+
+.q{background:var(--panel);border:1.5px solid var(--bdr);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.q .qt{font-size:16.5px;font-weight:800;margin-bottom:12px}
+.q .qt .qn{font-family:var(--mono);color:#fff;background:var(--accent);border-radius:7px;padding:2px 10px;font-size:13.5px;margin-right:9px}
+.opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:15.5px;font-weight:600;background:#FDFBF6;border:1.5px solid var(--bdr);border-radius:9px;padding:10px 15px;margin-bottom:8px;cursor:pointer;color:var(--ink);transition:all .12s}
+.opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt.pick-ok{background:#EAF7EE;border-color:var(--ok);color:var(--ok);font-weight:800}
+.opt.pick-ng{background:#FBEBE8;border-color:var(--ng);color:var(--ng)}
+.opt.reveal{border-color:var(--ok);background:#EAF7EE}
+.opt:disabled{cursor:default}
+.expl{display:none;background:var(--soft);border-radius:9px;padding:11px 15px;font-size:14.5px;color:var(--ink2);margin-top:6px}
+.expl.show{display:block}
+.scorebox{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px}
+
+footer{border-top:2px solid var(--bdr);padding:26px 22px 40px;text-align:center;color:var(--ink3);font-size:13.5px}
+footer b{color:var(--ink2)}
+.pagenav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+/* ===== 세그먼트 트리·LCA 편 전용 ===== */
+.arrlabel{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--accent);margin:16px 0 8px}
+.codebox{background:var(--code-bg);border-radius:12px;padding:16px 8px;font-family:var(--mono);font-size:12.5px;line-height:1.8;overflow-x:auto}
+.cline{display:block;padding:2px 12px;border-radius:5px;color:#C8CAD8;white-space:pre;transition:background .2s}
+.cline.active{background:rgba(232,184,75,.22);color:#fff;font-weight:700;box-shadow:inset 3px 0 0 var(--cell-hi)}
+.cline .ck{color:#C792EA}.cline .cf{color:#82AAFF}.cline .cc{color:#5C6370;font-style:italic}.cline .cn{color:#F78C6C}.cline .cs{color:#C3E88D}
+.evbadge{display:inline-block;border-radius:7px;padding:4px 13px;font-family:var(--mono);font-weight:700;font-size:13.5px;color:#fff}
+.ev-build{background:#B45309}.ev-query{background:#0F766E}.ev-hit{background:#166534}.ev-update{background:#7C3AED}.ev-done{background:#B45309}.ev-lift{background:#BE185D}
+.stat{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0;font-family:var(--mono);font-weight:700}
+.stat .box{background:var(--soft);border-radius:8px;padding:6px 14px;color:var(--ink)}
+.stat .box b{color:var(--accent);font-size:18px}
+.mono-in{width:100%;height:120px;font-family:var(--mono);font-size:14px;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;background:var(--panel);color:var(--ink);resize:vertical}
+.callout-c{border-left:4px solid var(--c-color);background:#EAF3F8;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14.5px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+.legend i{width:15px;height:15px;border-radius:4px;display:inline-block;border:1px solid var(--bdr)}
+/* 원본 배열 셀 */
+.arr{display:flex;gap:0;border-radius:8px;overflow-x:auto;border:2px solid var(--bdr);width:max-content;max-width:100%}
+.acell{min-width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:15px;font-weight:700;background:var(--panel);border-right:1px solid var(--bdr);color:var(--ink2);position:relative;transition:background .25s,color .25s}
+.acell:last-child{border-right:none}
+.acell.inrange{background:#D5F0EC;color:#0F766E}
+.acell.updated{background:#EDE4FB;color:#7C3AED}
+.acell.flash{background:var(--cell-hi);color:#3A2A05;animation:cflash .5s}
+@keyframes cflash{0%{transform:scale(1.15)}100%{transform:scale(1)}}
+.acell .idx{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink3);font-weight:600}
+/* 세그먼트 트리 SVG 노드 */
+.segnode-lbl{font-family:'JetBrains Mono',monospace;font-weight:700}
+.pathflow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-family:var(--mono);font-weight:700;font-size:14px}
+.pathflow .pn{border-radius:8px;padding:5px 10px;color:#fff;background:var(--accent)}
+.pathflow .parr{color:var(--ink3);font-size:13px}
+.mtag{display:inline-flex;align-items:center;gap:5px;background:var(--soft);border:1.5px solid var(--accent);border-radius:8px;padding:4px 12px;font-family:var(--mono);font-weight:700;font-size:13.5px;color:var(--accent);margin:3px}
+/* LCA 테이블 */
+.lift-tbl{border-collapse:separate;border-spacing:0;font-family:var(--mono);font-weight:700;font-size:13px}
+.lift-tbl th,.lift-tbl td{width:42px;height:34px;text-align:center;border:1px solid var(--bdr)}
+.lift-tbl th{background:var(--soft);color:var(--accent);font-size:12px}
+.lift-tbl th.corner{background:var(--panel);border:none}
+.lift-tbl td{background:var(--panel);color:var(--ink2)}
+.lift-tbl td.hl{background:var(--cell-hi);color:#3A2A05}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="hbadge">SEYOUNG CODING LAB · C 알고리즘</span>
+  <h1>세그먼트 트리 · <span style="color:#E0A868">LCA</span></h1>
+  <p>구간을 O(log n)에 질의·갱신하는 세그먼트 트리와, 트리의 최소 공통 조상 찾기</p>
+  <div class="langchips">
+    <span class="chip c">C</span>
+    <span class="chip js">시각화: 구간 트리 · 쿼리 경로 · 이진 리프팅 · 오일러 투어</span>
+  </div>
+</header>
+
+<nav id="topnav">
+  <button class="navbtn on" onclick="goPage(0)"><span class="num">0</span>개념</button>
+  <button class="navbtn" onclick="goPage(1)"><span class="num">1</span>세그먼트 트리 구축</button>
+  <button class="navbtn" onclick="goPage(2)"><span class="num">2</span>구간 쿼리·갱신</button>
+  <button class="navbtn" onclick="goPage(3)"><span class="num">3</span>LCA 이진 리프팅</button>
+  <button class="navbtn" onclick="goPage(4)"><span class="num">4</span>LCA = RMQ</button>
+  <button class="navbtn" onclick="goPage(5)"><span class="num">5</span>내 배열/트리로</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= PAGE 0 ================= -->
+<section class="page on">
+  <div class="card">
+    <h2><span class="bar"></span>두 개의 트리 구조 — 구간과 조상</h2>
+    <p>이번엔 그래프에서 <b>트리 자료구조</b>로 넘어옵니다. 두 강력한 도구를 배워요.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin:14px 0">
+      <div style="flex:1;min-width:230px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">📊 세그먼트 트리</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">배열의 <b>구간 질의</b>(합·최소·최대)와 <b>갱신</b>을 각각 <b>O(log n)</b>에 처리. 단순 반복(O(n))보다 훨씬 빠릅니다.</p>
+      </div>
+      <div style="flex:1;min-width:230px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">🌳 LCA (최소 공통 조상)</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">트리에서 두 노드의 <b>가장 가까운 공통 조상</b>을 찾기. <b>이진 리프팅</b>으로 전처리 후 각 질의를 <b>O(log n)</b>에 답합니다.</p>
+      </div>
+    </div>
+    <div class="callout-c"><b>둘의 연결</b> — 놀랍게도 <b>LCA는 세그먼트 트리로 풀 수 있습니다.</b> 트리를 <b>오일러 투어</b>로 펼치면 LCA 질의가 <b>구간 최소 질의(RMQ)</b>가 되고, 그건 세그먼트 트리의 특기예요. 4번 탭에서 이 다리를 건넙니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>왜 세그먼트 트리인가 — 구간 질의의 딜레마</h2>
+    <p>배열에서 "구간 [l, r]의 합"을 자주 물어보고, 중간에 값도 바꾼다고 합시다.</p>
+    <table class="cmp">
+      <tr><th>방법</th><th>구간 질의</th><th>값 갱신</th></tr>
+      <tr><td>매번 더하기</td><td class="mono">O(n)</td><td class="mono">O(1)</td></tr>
+      <tr><td>누적 합 배열</td><td class="mono">O(1)</td><td class="mono">O(n)</td></tr>
+      <tr><td><b>세그먼트 트리</b></td><td class="mono"><b>O(log n)</b></td><td class="mono"><b>O(log n)</b></td></tr>
+    </table>
+    <div class="tip">💡 누적 합은 질의는 빠르지만 <b>갱신이 느립니다</b>(값 하나 바뀌면 뒤를 다 고쳐야 함). 세그먼트 트리는 <b>질의와 갱신 둘 다</b> O(log n)으로 균형을 잡아요. 질의와 갱신이 섞여 나오는 문제에서 필수입니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>이 강의의 예제</h2>
+    <p>세그먼트 트리는 <b>8칸 배열</b>, LCA는 <b>8노드 트리</b>를 씁니다.</p>
+    <div class="arrlabel" style="margin-top:0">세그먼트 트리용 배열 (구간 합)</div>
+    <div class="svgbox" id="introArr" style="padding:10px 0"></div>
+    <div class="arrlabel">LCA용 트리 (루트 = 1)</div>
+    <div class="svgbox" id="introTree"></div>
+    <div class="term">
+      <div class="tl">예상 결과</div>
+      <div class="to">세그먼트 트리: 구간합 [2,5] = 6+3+2+7 = 18
+LCA: LCA(5,6)=2, LCA(5,8)=1, LCA(6,7)=1</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1 : 세그먼트 트리 구축 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>세그먼트 트리 — 구간을 반씩 쪼개기</h2>
+    <p>세그먼트 트리의 아이디어는 단순합니다. <b>배열의 구간을 계속 반으로 쪼개</b> 트리로 만들어요. 루트는 전체 구간, 각 노드는 자기 구간의 <b>요약값</b>(합·최소 등)을 저장합니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">트리 구조</div>
+        <pre class="code"><span class="cc">// 루트 [0,7]: 전체 합</span>
+<span class="cc">//   왼쪽 [0,3]  오른쪽 [4,7]</span>
+<span class="cc">//     [0,1][2,3]  [4,5][6,7]</span>
+<span class="cc">//       ...리프까지 계속</span>
+
+<span class="cc">// 각 노드 = 자기 구간의 합</span>
+<span class="cc">// 부모 = 왼쪽자식 + 오른쪽자식</span>
+<span class="cc">// 리프 = 배열 원소 하나</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">C — 재귀 build<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">void</span> <span class="fn">build</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e){
+    <span class="kw">if</span> (s==e){         <span class="cc">/* 리프 */</span>
+        tree[node]=arr[s];
+        <span class="kw">return</span>;
+    }
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    build(<span class="cn">2</span>*node, s, mid);
+    build(<span class="cn">2</span>*node+<span class="cn">1</span>, mid+<span class="cn">1</span>, e);
+    <span class="hl">tree[node]=tree[<span class="cn">2</span>*node]</span>
+             <span class="hl">+tree[<span class="cn">2</span>*node+<span class="cn">1</span>];</span>
+}</pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>1-인덱스 트릭</b> — 노드 번호를 1부터 시작하면, 노드 <span class="mono">i</span>의 왼쪽 자식은 <span class="mono">2i</span>, 오른쪽 자식은 <span class="mono">2i+1</span>입니다. 배열 하나로 트리를 표현할 수 있어 간단해요. 크기는 넉넉히 <span class="mono">4n</span>으로 잡습니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — 트리 만들어지는 과정</h2>
+    <p>[다음 ▶]마다 재귀적으로 구간이 쪼개지고, 리프부터 위로 합이 채워집니다. 노드에 <span class="mono">[구간]=합</span>이 표시돼요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="bdReset()">처음으로</button>
+        <button class="btn ghost" onclick="bdStep(-1)" id="bdPrev">◀ 이전</button>
+        <button class="btn acc" onclick="bdStep(1)" id="bdNext">다음 ▶</button>
+        <button class="btn teal" onclick="bdAuto()" id="bdAutoBtn">자동 재생</button>
+      </div>
+      <div class="arrlabel" style="margin-top:4px">실행 중인 코드</div>
+      <div class="codebox" id="bdCode"></div>
+      <div class="svgbox" id="bdSvg" style="max-width:600px;margin-top:12px"></div>
+      <div class="arrlabel">원본 배열</div>
+      <div class="arr" id="bdArr"></div>
+      <div style="margin-top:10px"><span class="evbadge ev-build" id="bdEvent">시작</span></div>
+      <div class="msgline" id="bdMsg">[다음 ▶]을 눌러 세그먼트 트리를 만들어 보세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#B45309"></i>합 계산 완료</span>
+      <span><i style="background:#E8B84B"></i>현재 처리 중</span>
+      <span><i style="background:#F5EEE3;border-color:#B45309"></i>대기(자식 필요)</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>구축 복잡도</h2>
+    <p>노드가 <span class="mono">O(n)</span>개(리프 n개 + 내부 노드 ~n개)이고, 각 노드를 한 번씩 방문하므로 <b>구축은 O(n)</b>입니다.</p>
+    <div class="callout-c"><b>합만이 아니다</b> — 세그먼트 트리는 <b>결합 법칙이 성립하는 연산</b>이면 뭐든 담을 수 있습니다. 합, 최소, 최대, 최대공약수(GCD) 등. 부모를 만들 때 <span class="mono">tree[node] = 자식1 ⊕ 자식2</span>에서 <span class="mono">⊕</span>만 바꾸면 돼요. 최소 세그먼트 트리는 <span class="mono">min(왼쪽, 오른쪽)</span>이 됩니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : 구간 쿼리·갱신 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>구간 질의 — 세 가지 경우</h2>
+    <p>구간 [l, r]의 합을 물으면, 루트부터 내려가며 각 노드를 <b>세 경우</b>로 나눕니다.</p>
+    <table class="cmp">
+      <tr><th>경우</th><th>처리</th></tr>
+      <tr><td>완전히 벗어남</td><td>이 노드는 무시 (0 반환)</td></tr>
+      <tr><td>완전히 포함됨</td><td>이 노드 값을 그대로 사용 (더 안 내려감)</td></tr>
+      <tr><td>일부만 겹침</td><td>양쪽 자식으로 재귀</td></tr>
+    </table>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 구간 질의<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">int</span> <span class="fn">query</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e,
+          <span class="kw">int</span> l,<span class="kw">int</span> r){
+    <span class="kw">if</span> (r&lt;s || e&lt;l)           <span class="cc">/* 벗어남 */</span>
+        <span class="kw">return</span> <span class="cn">0</span>;
+    <span class="kw">if</span> (l&lt;=s &amp;&amp; e&lt;=r)         <span class="cc">/* 포함 */</span>
+        <span class="hl"><span class="kw">return</span> tree[node];</span>
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;      <span class="cc">/* 겹침 */</span>
+    <span class="kw">return</span> query(<span class="cn">2</span>*node,s,mid,l,r)
+         + query(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e,l,r);
+}</pre>
+      </div>
+      <div class="col c">
+        <div class="lang">왜 O(log n)인가</div>
+        <pre class="code"><span class="cc">// 질의 구간은 각 레벨에서</span>
+<span class="cc">// 최대 4개 노드만 방문</span>
+
+<span class="cc">// "완전 포함"을 만나면 멈춤</span>
+<span class="cc">// → 아래로 안 내려감</span>
+
+<span class="cc">// 트리 높이 = log n</span>
+<span class="cc">// → 전체 O(log n)개 노드</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 핵심은 <b>"완전히 포함"에서 멈추는 것</b>입니다. 큰 구간이 통째로 포함되면 그 노드의 요약값을 바로 쓰고 더 내려가지 않아요. 그래서 O(n)개 리프를 다 보지 않고 O(log n)개 노드만 봅니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — 쿼리 · 갱신</h2>
+    <p>[다음 ▶]으로 구간 [2,5] 합을 질의하고, arr[3]을 갱신해 봅니다. 방문하는 노드가 색으로 표시돼요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="qyReset()">처음으로</button>
+        <button class="btn ghost" onclick="qyStep(-1)" id="qyPrev">◀ 이전</button>
+        <button class="btn acc" onclick="qyStep(1)" id="qyNext">다음 ▶</button>
+        <button class="btn teal" onclick="qyAuto()" id="qyAutoBtn">자동 재생</button>
+      </div>
+      <div class="btnrow" style="margin-top:2px">
+        <button class="btn ghost" onclick="qySetMode('query')" id="qyModeQ">구간합 [2,5]</button>
+        <button class="btn ghost" onclick="qySetMode('update')" id="qyModeU">갱신 arr[3]=10</button>
+      </div>
+      <div class="arrlabel" style="margin-top:4px">실행 중인 코드</div>
+      <div class="codebox" id="qyCode"></div>
+      <div class="svgbox" id="qySvg" style="max-width:600px;margin-top:12px"></div>
+      <div class="arrlabel">원본 배열 &nbsp;<span style="color:var(--ink3);font-weight:400">(청록=질의 구간, 보라=갱신)</span></div>
+      <div class="arr" id="qyArr"></div>
+      <div class="pathflow" id="qyContrib" style="margin-top:10px"></div>
+      <div class="stat">
+        <div class="box" id="qyResultBox" style="display:none">결과 <b id="qyResult">-</b></div>
+      </div>
+      <div style="margin-top:10px"><span class="evbadge ev-query" id="qyEvent">시작</span></div>
+      <div class="msgline" id="qyMsg">[다음 ▶]으로 구간 질의를 시작하세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#166534"></i>완전 포함 (사용)</span>
+      <span><i style="background:#E8B84B"></i>일부 겹침 (재귀)</span>
+      <span><i style="background:#CBD5E1"></i>벗어남 (무시)</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>점 갱신 — 리프에서 루트로</h2>
+    <p>값 하나를 바꾸면, 그 <b>리프부터 루트까지의 경로</b>에 있는 노드들만 다시 계산합니다. 경로 길이는 트리 높이 O(log n)이에요.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — 점 갱신<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">void</span> <span class="fn">update</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e,
+            <span class="kw">int</span> idx,<span class="kw">int</span> val){
+    <span class="kw">if</span> (s==e){ tree[node]=val; <span class="kw">return</span>; }
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    <span class="kw">if</span> (idx&lt;=mid)
+        update(<span class="cn">2</span>*node,s,mid,idx,val);
+    <span class="kw">else</span>
+        update(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e,idx,val);
+    <span class="hl">tree[node]=tree[<span class="cn">2</span>*node]</span>
+             <span class="hl">+tree[<span class="cn">2</span>*node+<span class="cn">1</span>];</span>
+}</pre>
+      </div>
+      <div class="col c">
+        <div class="lang">지연 전파 (Lazy) 맛보기</div>
+        <pre class="code"><span class="cc">// 점 갱신: O(log n)</span>
+
+<span class="cc">// 구간 전체 갱신도 필요하면?</span>
+<span class="cc">//   "지연 전파(lazy propagation)"</span>
+<span class="cc">//   갱신을 미뤄뒀다 필요할 때만</span>
+<span class="cc">//   자식에게 전달</span>
+
+<span class="cc">// → 구간 갱신도 O(log n)!</span>
+<span class="cc">//   (별도 주제, 심화 과정)</span></pre>
+      </div>
+    </div>
+    <div class="callout-c"><b>왜 루트까지 올라가나</b> — 리프 값이 바뀌면 그 조상 노드들의 요약값도 바뀝니다. 리프에서 루트까지 경로의 노드들을 <b>재귀에서 돌아오며</b> 다시 계산하면, 트리가 항상 올바른 상태를 유지해요. 이 경로가 O(log n)이라 갱신도 빠릅니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : LCA 이진 리프팅 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>LCA — 최소 공통 조상</h2>
+    <p>트리에서 두 노드 u, v의 <b>최소 공통 조상(LCA)</b>은 둘 다의 조상이면서 <b>가장 깊은(가까운)</b> 노드입니다. 가계도에서 두 사람의 "가장 가까운 공통 조상"을 찾는 것과 같아요.</p>
+    <p>단순하게 하면 한 노드씩 위로 올라가며 만나는 지점을 찾지만, 최악에 <b>O(n)</b>입니다. <b>이진 리프팅(binary lifting)</b>은 <b>2의 거듭제곱만큼 점프</b>해 각 질의를 <b>O(log n)</b>에 답해요.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">이진 리프팅 테이블</div>
+        <pre class="code"><span class="cc">// par[k][v] = v의 2^k번째 조상</span>
+
+<span class="cc">// par[0][v] = 직접 부모</span>
+<span class="cc">// par[1][v] = 2칸 위 조상</span>
+<span class="cc">// par[2][v] = 4칸 위 조상</span>
+<span class="cc">// par[k][v] = 2^k칸 위</span>
+
+<span class="cc">// 점화식:</span>
+<span class="cc">// par[k][v] = par[k-1][par[k-1][v]]</span>
+<span class="cc">//   (2^(k-1) 두 번 = 2^k)</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">C — 테이블 구축<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="cc">/* par[0][v] = 부모 (BFS/DFS로) */</span>
+<span class="kw">for</span> (<span class="kw">int</span> k=<span class="cn">1</span>; k&lt;LOG; k++)
+    <span class="kw">for</span> (<span class="kw">int</span> v=<span class="cn">1</span>; v&lt;=n; v++)
+        <span class="hl">par[k][v] =</span>
+          <span class="hl">par[k-<span class="cn">1</span>][ par[k-<span class="cn">1</span>][v] ];</span>
+
+<span class="cc">/* 전처리 O(n log n) */</span>
+<span class="cc">/* 각 LCA 질의 O(log n) */</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>2의 거듭제곱 점프</b>가 핵심입니다. 어떤 수든 2의 거듭제곱의 합으로 나타낼 수 있듯(예: 13=8+4+1), 어떤 높이든 2^k 점프의 조합으로 도달할 수 있어요. 그래서 한 칸씩 O(n)이 아니라 log n번 점프로 끝납니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — LCA 찾기</h2>
+    <p>[다음 ▶]으로 두 노드의 LCA를 찾습니다. ① 깊이를 맞추고(깊은 쪽을 점프로 끌어올림), ② 함께 점프하며 갈라지는 지점을 찾아요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="lcReset()">처음으로</button>
+        <button class="btn ghost" onclick="lcStep(-1)" id="lcPrev">◀ 이전</button>
+        <button class="btn acc" onclick="lcStep(1)" id="lcNext">다음 ▶</button>
+        <button class="btn teal" onclick="lcAuto()" id="lcAutoBtn">자동 재생</button>
+      </div>
+      <div class="btnrow" style="margin-top:2px">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2);align-self:center">질의:</span>
+        <button class="btn ghost" onclick="lcSetPair(5,6)" id="lcP1">LCA(5,6)</button>
+        <button class="btn ghost" onclick="lcSetPair(5,8)" id="lcP2">LCA(5,8)</button>
+        <button class="btn ghost" onclick="lcSetPair(6,7)" id="lcP3">LCA(6,7)</button>
+      </div>
+      <div class="svgbox" id="lcSvg" style="max-width:340px"></div>
+      <div class="arrlabel">이진 리프팅 테이블 par[k][v] &nbsp;<span style="color:var(--ink3);font-weight:400">(노랑=사용 중인 점프)</span></div>
+      <div style="overflow-x:auto"><div id="lcTable"></div></div>
+      <div class="stat">
+        <div class="box">깊이 u <b id="lcDu">-</b></div>
+        <div class="box">깊이 v <b id="lcDv">-</b></div>
+        <div class="box">LCA <b id="lcAns">-</b></div>
+      </div>
+      <div style="margin-top:10px"><span class="evbadge ev-lift" id="lcEvent">시작</span></div>
+      <div class="msgline" id="lcMsg">[다음 ▶]으로 LCA 탐색을 시작하세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#B45309"></i>질의 노드 u,v</span>
+      <span><i style="background:#E8B84B"></i>현재 위치</span>
+      <span><i style="background:#166534"></i>LCA 발견</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>LCA 알고리즘 두 단계</h2>
+    <pre class="code"><span class="kw">int</span> <span class="fn">lca</span>(<span class="kw">int</span> u,<span class="kw">int</span> v){
+    <span class="kw">if</span> (depth[u]&lt;depth[v]) swap(u,v);  <span class="cc">/* u가 더 깊게 */</span>
+    <span class="cc">/* 1단계: 깊이 맞추기 */</span>
+    <span class="kw">int</span> diff=depth[u]-depth[v];
+    <span class="kw">for</span> (<span class="kw">int</span> k=<span class="cn">0</span>; k&lt;LOG; k++)
+        <span class="kw">if</span> ((diff&gt;&gt;k)&amp;<span class="cn">1</span>) <span class="hl">u=par[k][u];</span>   <span class="cc">/* 깊은 쪽 끌어올림 */</span>
+    <span class="kw">if</span> (u==v) <span class="kw">return</span> u;             <span class="cc">/* 한쪽이 조상이었음 */</span>
+    <span class="cc">/* 2단계: 함께 점프하며 갈라지는 곳 찾기 */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> k=LOG-<span class="cn">1</span>; k&gt;=<span class="cn">0</span>; k--)
+        <span class="kw">if</span> (par[k][u]!=par[k][v]){    <span class="cc">/* 아직 안 만남 → 점프 */</span>
+            <span class="hl">u=par[k][u]; v=par[k][v];</span>
+        }
+    <span class="kw">return</span> par[<span class="cn">0</span>][u];              <span class="cc">/* 부모가 LCA */</span>
+}</pre>
+    <div class="callout-c"><b>2단계의 묘미</b> — 큰 점프부터 시도하며 "<b>아직 공통 조상에 도달하지 않은</b> 만큼만" 올라갑니다. par[k][u]와 par[k][v]가 다르면 아직 안 만난 것이니 점프. 같으면 너무 올라간 것이니 건너뜀. 끝나면 u, v는 LCA <b>바로 아래</b>에 있고, 그 부모가 답입니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 4 : LCA = RMQ ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>LCA와 세그먼트 트리의 다리 — 오일러 투어</h2>
+    <p>두 주제가 어떻게 만날까요? <b>오일러 투어(Euler tour)</b>로 트리를 배열로 펼치면, <b>LCA 질의가 구간 최소 질의(RMQ)</b>가 됩니다. 그리고 RMQ는 세그먼트 트리의 특기예요.</p>
+    <div class="callout-c"><b>오일러 투어란</b> — 트리를 DFS로 순회하며 <b>방문하는 노드를 순서대로 기록</b>합니다(자식에 들어갈 때, 나올 때마다). 각 노드는 여러 번 등장하고, 그때의 <b>깊이</b>도 함께 기록해요. 이 배열이 트리를 1차원으로 "펼친" 것입니다.</div>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="etReset()">처음으로</button>
+        <button class="btn acc" onclick="etStep()" id="etNext">다음 ▶</button>
+      </div>
+      <div class="arrlabel" style="margin-top:4px">오일러 투어 진행</div>
+      <div class="msgline" id="etMsg" style="min-height:50px">[다음 ▶]으로 트리를 오일러 투어로 펼쳐 LCA가 RMQ가 되는 과정을 보세요.</div>
+      <div id="etViz" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>왜 LCA가 구간 최소가 되나</h2>
+    <p>오일러 투어 배열에서 노드 u와 v가 처음 등장하는 위치 사이를 봅시다. 그 구간에서 <b>깊이가 가장 작은(얕은) 노드</b>가 바로 <b>LCA</b>입니다!</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">직관</div>
+        <pre class="code"><span class="cc">// u에서 v로 가려면</span>
+<span class="cc">// 반드시 LCA를 거쳐 올라갔다</span>
+<span class="cc">// 내려와야 함</span>
+
+<span class="cc">// 오일러 투어에서 u..v 구간은</span>
+<span class="cc">// LCA까지 올라갔다 내려온 경로</span>
+
+<span class="cc">// 그 구간 최소 깊이 노드</span>
+<span class="cc">//   = 가장 높이 올라간 지점</span>
+<span class="cc">//   = LCA!</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">변환 요약</div>
+        <pre class="code"><span class="cc">LCA(u, v)</span>
+     ↓ 오일러 투어
+<span class="cc">깊이 배열의 구간 최소 (RMQ)</span>
+     ↓ 세그먼트 트리
+<span class="cc">O(log n) 질의!</span>
+
+<span class="cc">// 세그먼트 트리로 RMQ →</span>
+<span class="cc">// LCA도 O(log n)에 해결</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>문제 환원의 아름다움</b> — 트리 문제(LCA)를 배열 문제(RMQ)로 바꾸고, 그걸 세그먼트 트리로 풉니다. 겉보기엔 전혀 다른 두 개념(구간 질의와 조상 찾기)이 오일러 투어라는 다리로 연결돼요. 이런 "환원"이 알고리즘 설계의 핵심 사고입니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>LCA 방법 비교</h2>
+    <table class="cmp">
+      <tr><th>방법</th><th>전처리</th><th>질의</th></tr>
+      <tr><td>단순 상승</td><td class="mono">O(n)</td><td class="mono">O(n)</td></tr>
+      <tr><td>이진 리프팅</td><td class="mono">O(n log n)</td><td class="mono">O(log n)</td></tr>
+      <tr><td>오일러+세그트리</td><td class="mono">O(n)</td><td class="mono">O(log n)</td></tr>
+      <tr><td>오일러+희소테이블</td><td class="mono">O(n log n)</td><td class="mono"><b>O(1)</b></td></tr>
+    </table>
+    <div class="tip">💡 <b>이진 리프팅</b>은 구현이 간단하고 트리 갱신에도 유연해 대회에서 가장 많이 씁니다. <b>오일러+세그먼트 트리</b>는 두 주제를 잇는 아름다운 방법이고, 희소 테이블을 쓰면 질의가 <b>O(1)</b>까지 가능해요(단, 트리가 고정일 때).</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 5 : 내 배열/트리로 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>내 배열로 세그먼트 트리 (구간 합)</h2>
+    <p>숫자 배열을 입력하고 구간 [l, r]을 정하면, 세그먼트 트리로 구간 합을 계산하고 기여 노드를 보여줍니다.</p>
+    <div class="simpanel">
+      <div class="arrlabel" style="margin-top:0">배열 (공백/쉼표로 구분, 최대 16개)</div>
+      <textarea id="pgArr" class="mono-in" spellcheck="false" style="height:60px">5 8 6 3 2 7 2 6</textarea>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">구간 l</label>
+        <input class="inp" id="pgL" type="number" value="2" min="0" style="width:70px">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">구간 r</label>
+        <input class="inp" id="pgR" type="number" value="5" min="0" style="width:70px">
+        <button class="btn acc" onclick="pgRunSeg()">구간 합 계산</button>
+      </div>
+      <div id="pgSegResult"></div>
+      <div class="msgline" id="pgSegMsg">배열과 구간을 넣고 [구간 합 계산]을 눌러 보세요.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>내 트리로 LCA</h2>
+    <p>부모 관계를 <span class="mono">자식 부모</span> 형식으로 입력하면(루트는 부모 0), 두 노드의 LCA를 이진 리프팅으로 찾습니다.</p>
+    <div class="simpanel">
+      <div class="arrlabel" style="margin-top:0">간선 (한 줄에 "자식 부모", 루트는 "1 0")</div>
+      <textarea id="pgTree" class="mono-in" spellcheck="false" style="height:120px">1 0
+2 1
+3 1
+4 1
+5 2
+6 2
+7 4
+8 7</textarea>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">노드 u</label>
+        <input class="inp" id="pgU" type="number" value="5" min="1" style="width:70px">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">노드 v</label>
+        <input class="inp" id="pgV" type="number" value="8" min="1" style="width:70px">
+        <button class="btn acc" onclick="pgRunLca()">LCA 계산</button>
+      </div>
+      <div id="pgLcaResult"></div>
+      <div class="msgline" id="pgLcaMsg">트리와 두 노드를 넣고 [LCA 계산]을 눌러 보세요.</div>
+    </div>
+    <div class="tip">💡 실험: 세그먼트 트리에서 배열을 늘리거나 구간을 바꿔 기여 노드가 어떻게 달라지는지 보세요. LCA에서는 <span class="mono">7 4</span>를 <span class="mono">7 1</span>로 바꾸면 트리 구조가 변하며 LCA(5,8)의 답도 달라집니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>도전 퀴즈 — 세그먼트 트리·LCA 8문제</h2>
+    <div id="quizArea"></div>
+    <div class="btnrow">
+      <button class="btn acc" onclick="quizGrade()">점수 확인</button>
+      <button class="btn ghost" onclick="quizReset()">다시 풀기</button>
+    </div>
+    <div class="scorebox" id="quizScore" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 장 정리</h2>
+    <table class="cmp">
+      <tr><th>포인트</th><th>내용</th></tr>
+      <tr><td>세그먼트 트리</td><td>구간을 반씩 쪼갠 트리, 각 노드는 구간 요약값</td></tr>
+      <tr><td>구축</td><td>리프부터 위로, O(n)</td></tr>
+      <tr><td>구간 질의</td><td>벗어남/포함/겹침 3경우, O(log n)</td></tr>
+      <tr><td>점 갱신</td><td>리프→루트 경로만 재계산, O(log n)</td></tr>
+      <tr><td>LCA</td><td>두 노드의 가장 가까운 공통 조상</td></tr>
+      <tr><td>이진 리프팅</td><td>2^k 조상 테이블, 질의 O(log n)</td></tr>
+      <tr><td>LCA = RMQ</td><td>오일러 투어 → 구간 최소 → 세그먼트 트리</td></tr>
+    </table>
+    <div class="tip">💡 <b>트리 계열의 시작</b> — 그래프의 탐색·최단경로·플로우·매칭을 지나, 이제 트리 자료구조로 들어섰습니다. 세그먼트 트리(구간)와 LCA(조상)가 오일러 투어로 만나는 지점이 이 편의 백미예요. "한 문제를 다른 문제로 환원하는" 사고가 고급 알고리즘의 열쇠입니다.</div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <b>세영코딩연구소 · SEYOUNG CODING LAB</b> — 세그먼트 트리 · LCA<br>
+  구간 트리 · 3경우 질의 · 점 갱신 · 이진 리프팅 · 오일러 투어(LCA=RMQ)
+</footer>
+
+<script>
+'use strict';
+var TIMERS={bd:null,qy:null,lc:null};
+function stopAuto(which){if(TIMERS[which]){clearInterval(TIMERS[which]);TIMERS[which]=null;}var b=document.getElementById(which+'AutoBtn');if(b)b.textContent='자동 재생';}
+function stopAll(){stopAuto('bd');stopAuto('qy');stopAuto('lc');}
+function goPage(i){
+  var pages=document.querySelectorAll('.page'),btns=document.querySelectorAll('#topnav .navbtn');
+  for(var k=0;k<pages.length;k++)pages[k].classList.toggle('on',k===i);
+  for(var k2=0;k2<btns.length;k2++)btns[k2].classList.toggle('on',k2===i);
+  stopAll();window.scrollTo({top:0,behavior:'smooth'});
+}
+function copyCode(btn){
+  var pre=btn.closest('.col')?btn.closest('.col').querySelector('pre.code'):null;
+  if(!pre)return;var txt=pre.textContent;
+  function ok(){var o=btn.textContent;btn.textContent='복사됨!';setTimeout(function(){btn.textContent=o;},1200);}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();});
+  else{fallbackCopy(txt);ok();}
+}
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+var SVGNS='http://www.w3.org/2000/svg';
+
+/* ===== 세그먼트 트리 데이터 ===== */
+var SEG_ARR=[5,8,6,3,2,7,2,6];
+var SEG_N=SEG_ARR.length;
+var SEG_NODES={};
+function buildSegNodes(arr,node,s,e){
+  if(s===e){SEG_NODES[node]={s:s,e:e,val:arr[s]};return arr[s];}
+  var mid=(s+e)>>1;
+  var lv=buildSegNodes(arr,2*node,s,mid);
+  var rv=buildSegNodes(arr,2*node+1,mid+1,e);
+  SEG_NODES[node]={s:s,e:e,val:lv+rv};
+  return lv+rv;
+}
+buildSegNodes(SEG_ARR,1,0,SEG_N-1);
+var SEG_W=620;
+function segPos(node){
+  var level=Math.floor(Math.log(node)/Math.log(2));
+  var posInLevel=node-Math.pow(2,level);
+  var countInLevel=Math.pow(2,level);
+  var x=(posInLevel+0.5)*(SEG_W/countInLevel);
+  var y=28+level*68;
+  return [x,y];
+}
+function buildSegSVG(containerId,prefix){
+  var box=document.getElementById(containerId);if(!box)return;box.textContent='';
+  var svg=document.createElementNS(SVGNS,'svg');svg.setAttribute('viewBox','0 0 '+SEG_W+' 300');
+  // edges first
+  for(var node=1;node<=15;node++){
+    if(!SEG_NODES[node])continue;
+    var pc=segPos(node);
+    for(var ch=2*node;ch<=2*node+1;ch++){
+      if(SEG_NODES[ch]){
+        var cc=segPos(ch);
+        var ln=document.createElementNS(SVGNS,'line');
+        ln.setAttribute('x1',pc[0]);ln.setAttribute('y1',pc[1]);ln.setAttribute('x2',cc[0]);ln.setAttribute('y2',cc[1]);
+        ln.setAttribute('stroke','#E0CBB0');ln.setAttribute('stroke-width','1.5');
+        svg.appendChild(ln);
+      }
+    }
+  }
+  for(var node2=1;node2<=15;node2++){
+    if(!SEG_NODES[node2])continue;
+    var p=segPos(node2);var nd=SEG_NODES[node2];
+    var rect=document.createElementNS(SVGNS,'rect');
+    rect.setAttribute('x',p[0]-27);rect.setAttribute('y',p[1]-15);rect.setAttribute('width','54');rect.setAttribute('height','30');rect.setAttribute('rx','6');
+    rect.setAttribute('fill','#FFFFFF');rect.setAttribute('stroke','#B45309');rect.setAttribute('stroke-width','2');
+    rect.id=prefix+'R'+node2;
+    svg.appendChild(rect);
+    var rng=document.createElementNS(SVGNS,'text');
+    rng.setAttribute('x',p[0]);rng.setAttribute('y',p[1]-3);rng.setAttribute('text-anchor','middle');
+    rng.setAttribute('font-family',"'JetBrains Mono',monospace");rng.setAttribute('font-size','9');rng.setAttribute('fill','#A87840');
+    rng.textContent='['+nd.s+','+nd.e+']';rng.id=prefix+'RG'+node2;
+    svg.appendChild(rng);
+    var val=document.createElementNS(SVGNS,'text');
+    val.setAttribute('x',p[0]);val.setAttribute('y',p[1]+11);val.setAttribute('text-anchor','middle');
+    val.setAttribute('font-family',"'JetBrains Mono',monospace");val.setAttribute('font-size','13');val.setAttribute('font-weight','700');val.setAttribute('fill','#3A1D06');
+    val.textContent=nd.val;val.id=prefix+'V'+node2;
+    svg.appendChild(val);
+  }
+  box.appendChild(svg);
+}
+function segNodeState(prefix,node,state){
+  var r=document.getElementById(prefix+'R'+node);if(!r)return;
+  if(state==='done'){r.setAttribute('fill','#B45309');r.setAttribute('stroke','#8A3F06');
+    setTxt(prefix+'RG'+node,'#F0D9BE');setTxt(prefix+'V'+node,'#fff');}
+  else if(state==='cur'){r.setAttribute('fill','#E8B84B');r.setAttribute('stroke','#C79A2E');
+    setTxt(prefix+'RG'+node,'#7A5A20');setTxt(prefix+'V'+node,'#3A2A05');}
+  else if(state==='full'){r.setAttribute('fill','#166534');r.setAttribute('stroke','#0F4A25');
+    setTxt(prefix+'RG'+node,'#C8E6D0');setTxt(prefix+'V'+node,'#fff');}
+  else if(state==='partial'){r.setAttribute('fill','#E8B84B');r.setAttribute('stroke','#C79A2E');
+    setTxt(prefix+'RG'+node,'#7A5A20');setTxt(prefix+'V'+node,'#3A2A05');}
+  else if(state==='out'){r.setAttribute('fill','#E2E8F0');r.setAttribute('stroke','#CBD5E1');
+    setTxt(prefix+'RG'+node,'#94A3B8');setTxt(prefix+'V'+node,'#94A3B8');}
+  else if(state==='update'){r.setAttribute('fill','#7C3AED');r.setAttribute('stroke','#5B21B6');
+    setTxt(prefix+'RG'+node,'#E0D0F5');setTxt(prefix+'V'+node,'#fff');}
+  else{r.setAttribute('fill','#FFFFFF');r.setAttribute('stroke','#B45309');
+    setTxt(prefix+'RG'+node,'#A87840');setTxt(prefix+'V'+node,'#3A1D06');}
+}
+function setTxt(id,color){var el=document.getElementById(id);if(el)el.setAttribute('fill',color);}
+function segSetVal(prefix,node,val){var el=document.getElementById(prefix+'V'+node);if(el)el.textContent=val;}
+
+/* ===== LCA 트리 데이터 ===== */
+var LCA_PAR0={1:0,2:1,3:1,4:1,5:2,6:2,7:4,8:7};
+var LCA_N=8, LCA_LOG=4;
+var LCA_DEPTH={1:0,2:1,3:1,4:1,5:2,6:2,7:2,8:3};
+var LCA_POS={1:[170,38],2:[70,110],3:[170,110],4:[280,110],5:[40,182],6:[112,182],7:[280,182],8:[280,254]};
+var LCA_TABLE={};
+(function(){
+  for(var v=1;v<=LCA_N;v++)LCA_TABLE[0]=LCA_TABLE[0]||{},LCA_TABLE[0][v]=LCA_PAR0[v];
+  for(var k=1;k<LCA_LOG;k++){LCA_TABLE[k]={};for(var v2=1;v2<=LCA_N;v2++){LCA_TABLE[k][v2]=LCA_TABLE[k-1][LCA_TABLE[k-1][v2]]||0;}}
+})();
+function buildLcaSVG(containerId,prefix){
+  var box=document.getElementById(containerId);if(!box)return;box.textContent='';
+  var svg=document.createElementNS(SVGNS,'svg');svg.setAttribute('viewBox','0 0 340 290');
+  for(var v=1;v<=LCA_N;v++){
+    var par=LCA_PAR0[v];
+    if(par!==0){
+      var pc=LCA_POS[par],cc=LCA_POS[v];
+      var ln=document.createElementNS(SVGNS,'line');
+      ln.setAttribute('x1',pc[0]);ln.setAttribute('y1',pc[1]);ln.setAttribute('x2',cc[0]);ln.setAttribute('y2',cc[1]);
+      ln.setAttribute('stroke','#E0CBB0');ln.setAttribute('stroke-width','2');ln.id=prefix+'E'+v;
+      svg.appendChild(ln);
+    }
+  }
+  for(var v2=1;v2<=LCA_N;v2++){
+    var p=LCA_POS[v2];
+    var c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('r','17');
+    c.setAttribute('fill','#FFFFFF');c.setAttribute('stroke','#B45309');c.setAttribute('stroke-width','2.5');
+    c.id=prefix+'N'+v2;
+    var t=document.createElementNS(SVGNS,'text');
+    t.setAttribute('x',p[0]);t.setAttribute('y',p[1]+5);t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-family',"'JetBrains Mono',monospace");t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('fill','#3A1D06');
+    t.textContent=v2;t.id=prefix+'T'+v2;
+    svg.appendChild(c);svg.appendChild(t);
+  }
+  box.appendChild(svg);
+}
+function lcaNodeState(prefix,v,state){
+  var c=document.getElementById(prefix+'N'+v);if(!c)return;
+  var t=document.getElementById(prefix+'T'+v);
+  if(state==='query'){c.setAttribute('fill','#B45309');c.setAttribute('stroke','#8A3F06');if(t)t.setAttribute('fill','#fff');}
+  else if(state==='cur'){c.setAttribute('fill','#E8B84B');c.setAttribute('stroke','#C79A2E');if(t)t.setAttribute('fill','#3A2A05');}
+  else if(state==='lca'){c.setAttribute('fill','#166534');c.setAttribute('stroke','#0F4A25');if(t)t.setAttribute('fill','#fff');}
+  else{c.setAttribute('fill','#FFFFFF');c.setAttribute('stroke','#B45309');if(t)t.setAttribute('fill','#3A1D06');}
+}
+
+/* ============ 1탭: 세그먼트 트리 구축 ============ */
+var BD_CODE=[
+  {html:'<span class="ck">void</span> <span class="cf">build</span>(node, s, e){',id:'sig'},
+  {html:'  <span class="ck">if</span> (s==e){ tree[node]=arr[s]; <span class="ck">return</span>; }',id:'leaf'},
+  {html:'  mid=(s+e)/2;',id:'mid'},
+  {html:'  build(2*node, s, mid);',id:'left'},
+  {html:'  build(2*node+1, mid+1, e);',id:'right'},
+  {html:'  tree[node]=tree[2*node]+tree[2*node+1];',id:'comb'},
+  {html:'}',id:'end'}
+];
+function bdRenderCode(a){var box=document.getElementById('bdCode');if(!box)return;box.textContent='';for(var i=0;i<BD_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(BD_CODE[i].id===a?' active':'');l.innerHTML=BD_CODE[i].html;box.appendChild(l);}}
+function genBuildTrace(){
+  var steps=[],done={};
+  function snap(ev,line,extra,cur){
+    steps.push({ev:ev,line:line,extra:extra||'',done:Object.assign({},done),cur:(cur===undefined?0:cur)});
+  }
+  snap('build','sig','세그먼트 트리 구축 시작: 루트 node1 [0,7]');
+  function build(node,s,e){
+    if(s===e){
+      done[node]=true;
+      snap('build','leaf','리프 node'+node+' [' +s+ ',' +e+ '] = arr['+s+'] = '+SEG_NODES[node].val,node);
+      return;
+    }
+    var mid=(s+e)>>1;
+    build(2*node,s,mid);
+    build(2*node+1,mid+1,e);
+    done[node]=true;
+    snap('build','comb','node'+node+' [' +s+ ',' +e+ '] = 왼쪽('+SEG_NODES[2*node].val+') + 오른쪽('+SEG_NODES[2*node+1].val+') = '+SEG_NODES[node].val,node);
+  }
+  build(1,0,SEG_N-1);
+  snap('done','end','구축 완료! 루트 node1 = 전체 합 '+SEG_NODES[1].val);
+  return steps;
+}
+var BDSTEPS=[],BDIDX=0;
+function bdRenderArr(highlight){
+  var box=document.getElementById('bdArr');if(!box)return;box.textContent='';
+  for(var i=0;i<SEG_N;i++){
+    var cell=document.createElement('div');cell.className='acell';
+    var idx=document.createElement('span');idx.className='idx';idx.textContent=i;
+    cell.appendChild(idx);cell.appendChild(document.createTextNode(SEG_ARR[i]));
+    box.appendChild(cell);
+  }
+}
+function bdRender(){
+  var st=BDSTEPS[BDIDX];
+  bdRenderCode(st.line);
+  bdRenderArr();
+  for(var node=1;node<=15;node++){
+    if(!SEG_NODES[node])continue;
+    if(st.cur===node)segNodeState('bd',node,'cur');
+    else if(st.done[node])segNodeState('bd',node,'done');
+    else segNodeState('bd',node,'idle');
+  }
+  var badge=document.getElementById('bdEvent');
+  var lbl={build:'build · 구간 계산',done:'완료'};var cls={build:'ev-build',done:'ev-done'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-build');
+  var msg=document.getElementById('bdMsg');msg.textContent='['+BDIDX+'/'+(BDSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('bdPrev').disabled=(BDIDX===0);document.getElementById('bdNext').disabled=(BDIDX===BDSTEPS.length-1);
+}
+function bdReset(){stopAuto('bd');BDSTEPS=genBuildTrace();BDIDX=0;bdRender();}
+function bdStep(d){var ni=BDIDX+d;if(ni<0||ni>=BDSTEPS.length)return;BDIDX=ni;bdRender();}
+function bdAuto(){if(TIMERS.bd){stopAuto('bd');return;}if(BDIDX>=BDSTEPS.length-1)BDIDX=0;document.getElementById('bdAutoBtn').textContent='정지';TIMERS.bd=setInterval(function(){if(BDIDX>=BDSTEPS.length-1){stopAuto('bd');return;}bdStep(1);},700);}
+
+/* ============ 2탭: 구간 쿼리·갱신 ============ */
+var QY_MODE='query';
+var QY_CODE_Q=[
+  {html:'<span class="ck">int</span> <span class="cf">query</span>(node, s, e, l, r){',id:'sig'},
+  {html:'  <span class="ck">if</span> (r&lt;s || e&lt;l) <span class="ck">return</span> 0;   <span class="cc">// 벗어남</span>',id:'out'},
+  {html:'  <span class="ck">if</span> (l&lt;=s &amp;&amp; e&lt;=r) <span class="ck">return</span> tree[node]; <span class="cc">// 포함</span>',id:'full'},
+  {html:'  mid=(s+e)/2;                <span class="cc">// 겹침</span>',id:'partial'},
+  {html:'  <span class="ck">return</span> query(2n,s,mid,l,r)+query(2n+1,mid+1,e,l,r);',id:'rec'},
+  {html:'}',id:'end'}
+];
+var QY_CODE_U=[
+  {html:'<span class="ck">void</span> <span class="cf">update</span>(node, s, e, idx, val){',id:'sig'},
+  {html:'  <span class="ck">if</span> (s==e){ tree[node]=val; <span class="ck">return</span>; }',id:'leaf'},
+  {html:'  mid=(s+e)/2;',id:'mid'},
+  {html:'  <span class="ck">if</span> (idx&lt;=mid) update(2n,s,mid,idx,val);',id:'godown'},
+  {html:'  <span class="ck">else</span> update(2n+1,mid+1,e,idx,val);',id:'godown2'},
+  {html:'  tree[node]=tree[2n]+tree[2n+1];  <span class="cc">// 갱신</span>',id:'recomb'},
+  {html:'}',id:'end'}
+];
+function qyRenderCode(a){
+  var box=document.getElementById('qyCode');if(!box)return;box.textContent='';
+  var CODE=QY_MODE==='query'?QY_CODE_Q:QY_CODE_U;
+  for(var i=0;i<CODE.length;i++){var l=document.createElement('span');l.className='cline'+(CODE[i].id===a?' active':'');l.innerHTML=CODE[i].html;box.appendChild(l);}
+}
+function genQueryTrace(){
+  var steps=[],l=2,r=5;
+  var contrib=[];
+  function snap(ev,line,extra,cur,state){
+    steps.push({ev:ev,line:line,extra:extra||'',cur:(cur===undefined?0:cur),state:state||'',contrib:contrib.slice(),result:null});
+  }
+  snap('query','sig','구간 합 [2,5] 질의 시작: 루트 node1부터');
+  function query(node,s,e){
+    var nd=SEG_NODES[node];
+    if(r<s||e<l){snap('query','out','node'+node+' [' +s+ ',' +e+ ']: 구간 [2,5] 밖 → 무시 (0)',node,'out');return 0;}
+    if(l<=s&&e<=r){contrib.push(node);snap('hit','full','node'+node+' [' +s+ ',' +e+ ']: 완전 포함! 값 '+nd.val+' 사용',node,'full');return nd.val;}
+    snap('query','partial','node'+node+' [' +s+ ',' +e+ ']: 일부 겹침 → 양쪽 자식 재귀',node,'partial');
+    var mid=(s+e)>>1;
+    var lv=query(2*node,s,mid);
+    var rv=query(2*node+1,mid+1,e);
+    return lv+rv;
+  }
+  var res=query(1,0,SEG_N-1);
+  var last={ev:'done',line:'end',extra:'구간 합 [2,5] = '+res+' (기여 노드 '+contrib.length+'개)',cur:0,state:'',contrib:contrib.slice(),result:res};
+  steps.push(last);
+  return steps;
+}
+function genUpdateTrace(){
+  var steps=[],idx=3,val=10,path=[];
+  function snap(ev,line,extra,cur,state){
+    steps.push({ev:ev,line:line,extra:extra||'',cur:(cur===undefined?0:cur),state:state||'',path:path.slice(),result:null});
+  }
+  snap('update','sig','갱신 arr[3]=10 시작: 루트 node1부터 리프로');
+  function update(node,s,e){
+    path.push(node);
+    if(s===e){snap('update','leaf','리프 node'+node+' [' +s+ ',' +e+ '] = 10 갱신',node,'update');return;}
+    var mid=(s+e)>>1;
+    if(idx<=mid){snap('update','godown','node'+node+': idx 3 &lt;= mid '+mid+' → 왼쪽 자식으로',node,'update');update(2*node,s,mid);}
+    else{snap('update','godown2','node'+node+': idx 3 &gt; mid '+mid+' → 오른쪽 자식으로',node,'update');update(2*node+1,mid+1,e);}
+    snap('update','recomb','node'+node+' 재계산 → 새 합 반영',node,'update');
+  }
+  update(1,0,SEG_N-1);
+  steps.push({ev:'done',line:'end',extra:'갱신 완료! 경로의 모든 노드 합이 갱신됨 (arr[3]: 3→10)',cur:0,state:'',path:path.slice(),result:null});
+  return steps;
+}
+var QYSTEPS=[],QYIDX=0;
+function qyRenderArr(st){
+  var box=document.getElementById('qyArr');if(!box)return;box.textContent='';
+  for(var i=0;i<SEG_N;i++){
+    var cell=document.createElement('div');cell.className='acell';
+    if(QY_MODE==='query'&&i>=2&&i<=5)cell.classList.add('inrange');
+    if(QY_MODE==='update'&&i===3)cell.classList.add('updated');
+    var idx=document.createElement('span');idx.className='idx';idx.textContent=i;
+    cell.appendChild(idx);
+    var v=(QY_MODE==='update'&&i===3&&st.ev==='done')?10:SEG_ARR[i];
+    cell.appendChild(document.createTextNode(v));
+    box.appendChild(cell);
+  }
+}
+function qyRender(){
+  var st=QYSTEPS[QYIDX];
+  qyRenderCode(st.line);
+  qyRenderArr(st);
+  // reset all nodes
+  for(var node=1;node<=15;node++){if(SEG_NODES[node])segNodeState('bd'==='x'?'qy':'qy',node,'idle');}
+  if(QY_MODE==='query'){
+    // color contributed (full) green, current
+    for(var c=0;c<st.contrib.length;c++)segNodeState('qy',st.contrib[c],'full');
+    if(st.cur&&st.state)segNodeState('qy',st.cur,st.state);
+    var cbox=document.getElementById('qyContrib');cbox.textContent='';
+    if(st.contrib.length){
+      var lbl=document.createElement('span');lbl.style.fontWeight='700';lbl.style.color='#166534';lbl.style.marginRight='4px';lbl.textContent='기여 노드:';cbox.appendChild(lbl);
+      var sum=0;
+      for(var c2=0;c2<st.contrib.length;c2++){var nd=SEG_NODES[st.contrib[c2]];var tag=document.createElement('span');tag.className='pn';tag.style.background='#166534';tag.textContent='['+nd.s+','+nd.e+']='+nd.val;cbox.appendChild(tag);sum+=nd.val;if(c2<st.contrib.length-1){var pl=document.createElement('span');pl.className='parr';pl.textContent='+';cbox.appendChild(pl);}}
+    }
+    var rbox=document.getElementById('qyResultBox');
+    if(st.result!==null){rbox.style.display='';document.getElementById('qyResult').textContent=st.result;}
+    else rbox.style.display='none';
+  } else {
+    for(var p=0;p<(st.path||[]).length;p++)segNodeState('qy',st.path[p],'update');
+    if(st.cur)segNodeState('qy',st.cur,'cur');
+    document.getElementById('qyContrib').textContent='';
+    document.getElementById('qyResultBox').style.display='none';
+  }
+  var badge=document.getElementById('qyEvent');
+  var lbl2={query:'query · 구간 탐색',hit:'hit · 완전 포함',update:'update · 갱신',done:'완료'};
+  var cls={query:'ev-query',hit:'ev-hit',update:'ev-update',done:'ev-done'};
+  badge.textContent=lbl2[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-query');
+  var msg=document.getElementById('qyMsg');msg.textContent='['+QYIDX+'/'+(QYSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('qyPrev').disabled=(QYIDX===0);document.getElementById('qyNext').disabled=(QYIDX===QYSTEPS.length-1);
+  document.getElementById('qyModeQ').classList.toggle('acc',QY_MODE==='query');
+  document.getElementById('qyModeU').classList.toggle('acc',QY_MODE==='update');
+}
+function qySetMode(m){QY_MODE=m;qyReset();}
+function qyReset(){stopAuto('qy');QYSTEPS=(QY_MODE==='query')?genQueryTrace():genUpdateTrace();QYIDX=0;
+  buildSegSVG('qySvg','qy');qyRender();}
+function qyStep(d){var ni=QYIDX+d;if(ni<0||ni>=QYSTEPS.length)return;QYIDX=ni;qyRender();}
+function qyAuto(){if(TIMERS.qy){stopAuto('qy');return;}if(QYIDX>=QYSTEPS.length-1)QYIDX=0;document.getElementById('qyAutoBtn').textContent='정지';TIMERS.qy=setInterval(function(){if(QYIDX>=QYSTEPS.length-1){stopAuto('qy');return;}qyStep(1);},900);}
+
+/* ============ 3탭: LCA 이진 리프팅 ============ */
+var LC_U=5, LC_V=6;
+function genLcaTrace(u0,v0){
+  var steps=[];
+  function snap(ev,extra,cur,hlK,hlV,ans){
+    steps.push({ev:ev,extra:extra||'',u:cur?cur.u:0,v:cur?cur.v:0,hlK:(hlK===undefined?-1:hlK),hlV:(hlV||[]).slice(),ans:(ans===undefined?0:ans)});
+  }
+  var u=u0,v=v0;
+  snap('lift','LCA('+u0+','+v0+') 시작: 깊이 u='+LCA_DEPTH[u]+', v='+LCA_DEPTH[v],{u:u,v:v});
+  if(LCA_DEPTH[u]<LCA_DEPTH[v]){var tmp=u;u=v;v=tmp;snap('lift','u가 더 깊도록 교환 → u='+u+'(깊이'+LCA_DEPTH[u]+'), v='+v+'(깊이'+LCA_DEPTH[v]+')',{u:u,v:v});}
+  var diff=LCA_DEPTH[u]-LCA_DEPTH[v];
+  if(diff>0){
+    snap('lift','1단계 — 깊이 차 '+diff+'만큼 u를 끌어올립니다',{u:u,v:v});
+    for(var k=0;k<LCA_LOG;k++){
+      if((diff>>k)&1){
+        var nu=LCA_TABLE[k][u];
+        snap('lift','2^'+k+'='+(1<<k)+'칸 점프: u '+u+' → par['+k+']['+u+'] = '+nu,{u:u,v:v},k,[u]);
+        u=nu;
+      }
+    }
+    snap('lift','깊이 맞춤 완료: u='+u+', v='+v+' (같은 깊이 '+LCA_DEPTH[v]+')',{u:u,v:v});
+  } else {
+    snap('lift','두 노드 깊이가 이미 같음',{u:u,v:v});
+  }
+  if(u===v){
+    snap('found','u==v! 한쪽이 다른쪽의 조상이었습니다. LCA = '+u,{u:u,v:v},-1,[],u);
+    return steps;
+  }
+  snap('lift','2단계 — 함께 점프하며 갈라지는 지점을 찾습니다',{u:u,v:v});
+  for(var k2=LCA_LOG-1;k2>=0;k2--){
+    var pu=LCA_TABLE[k2][u],pv=LCA_TABLE[k2][v];
+    if(pu!==pv){
+      snap('lift','k='+k2+': par['+k2+']['+u+']='+pu+' ≠ par['+k2+']['+v+']='+pv+' → 둘 다 점프',{u:u,v:v},k2,[u,v]);
+      u=pu;v=pv;
+    } else {
+      snap('lift','k='+k2+': par['+k2+']['+u+']=par['+k2+']['+v+']='+pu+' (같음) → 건너뜀',{u:u,v:v},k2,[u,v]);
+    }
+  }
+  var ans=LCA_PAR0[u];
+  snap('found','u='+u+', v='+v+'는 LCA 바로 아래. 부모 par[0]['+u+'] = '+ans+' 가 LCA!',{u:u,v:v},-1,[],ans);
+  return steps;
+}
+var LCSTEPS=[],LCIDX=0;
+function lcRenderTable(st){
+  var box=document.getElementById('lcTable');if(!box)return;box.textContent='';
+  var tbl=document.createElement('table');tbl.className='lift-tbl';
+  var thead=document.createElement('tr');
+  var corner=document.createElement('th');corner.className='corner';corner.textContent='k\\v';thead.appendChild(corner);
+  for(var v=1;v<=LCA_N;v++){var th=document.createElement('th');th.textContent=v;thead.appendChild(th);}
+  tbl.appendChild(thead);
+  for(var k=0;k<LCA_LOG;k++){
+    var tr=document.createElement('tr');
+    var rk=document.createElement('th');rk.textContent='2^'+k;tr.appendChild(rk);
+    for(var v2=1;v2<=LCA_N;v2++){
+      var td=document.createElement('td');td.textContent=LCA_TABLE[k][v2];
+      if(st.hlK===k&&st.hlV.indexOf(v2)>=0)td.className='hl';
+      tr.appendChild(td);
+    }
+    tbl.appendChild(tr);
+  }
+  box.appendChild(tbl);
+}
+function lcRender(){
+  var st=LCSTEPS[LCIDX];
+  lcRenderTable(st);
+  for(var v=1;v<=LCA_N;v++)lcaNodeState('lc',v,'idle');
+  // original query nodes marked
+  lcaNodeState('lc',LC_U,'query');lcaNodeState('lc',LC_V,'query');
+  if(st.u)lcaNodeState('lc',st.u,'cur');
+  if(st.v)lcaNodeState('lc',st.v,'cur');
+  if(st.ans)lcaNodeState('lc',st.ans,'lca');
+  document.getElementById('lcDu').textContent=st.u?LCA_DEPTH[st.u]:'-';
+  document.getElementById('lcDv').textContent=st.v?LCA_DEPTH[st.v]:'-';
+  document.getElementById('lcAns').textContent=st.ans?st.ans:'-';
+  var badge=document.getElementById('lcEvent');
+  var lbl={lift:'lift · 점프',found:'LCA 발견'};var cls={lift:'ev-lift',found:'ev-hit'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-lift');
+  var msg=document.getElementById('lcMsg');msg.textContent='['+LCIDX+'/'+(LCSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='found');
+  document.getElementById('lcPrev').disabled=(LCIDX===0);document.getElementById('lcNext').disabled=(LCIDX===LCSTEPS.length-1);
+  var pairs=[[5,6,'lcP1'],[5,8,'lcP2'],[6,7,'lcP3']];
+  for(var i=0;i<pairs.length;i++)document.getElementById(pairs[i][2]).classList.toggle('acc',LC_U===pairs[i][0]&&LC_V===pairs[i][1]);
+}
+function lcSetPair(u,v){LC_U=u;LC_V=v;lcReset();}
+function lcReset(){stopAuto('lc');LCSTEPS=genLcaTrace(LC_U,LC_V);LCIDX=0;lcRender();}
+function lcStep(d){var ni=LCIDX+d;if(ni<0||ni>=LCSTEPS.length)return;LCIDX=ni;lcRender();}
+function lcAuto(){if(TIMERS.lc){stopAuto('lc');return;}if(LCIDX>=LCSTEPS.length-1)LCIDX=0;document.getElementById('lcAutoBtn').textContent='정지';TIMERS.lc=setInterval(function(){if(LCIDX>=LCSTEPS.length-1){stopAuto('lc');return;}lcStep(1);},1000);}
+
+/* ============ 4탭: 오일러 투어 ============ */
+var ET_STEPS=[
+  {msg:'트리를 DFS로 순회하며 방문 노드를 순서대로 기록합니다. 자식에 들어갈 때와 나올 때마다 기록해요.',html:'<div class="mtag">방문 시작: 1</div>'},
+  {msg:'1→2→5 내려간 뒤 5에서 돌아와 6으로. 각 노드의 깊이도 함께 기록합니다.',html:'<div class="mono" style="font-family:var(--mono);font-size:13px">오일러: [1, 2, 5, 2, 6, 2, 1, ...]<br>깊이: &nbsp;[0, 1, 2, 1, 2, 1, 0, ...]</div>'},
+  {msg:'전체 오일러 투어 완성 (노드 15칸). 각 노드가 여러 번 등장하고 깊이가 오르내립니다.',html:'<div class="mono" style="font-family:var(--mono);font-size:12.5px">오일러: [1,2,5,2,6,2,1,3,1,4,7,8,7,4,1]<br>깊이: &nbsp;[0,1,2,1,2,1,0,1,0,1,2,3,2,1,0]</div>'},
+  {msg:'LCA(5,6): 오일러 배열에서 5(index 2)와 6(index 4) 사이 구간 [2,4]를 봅니다.',html:'<div class="mono" style="font-family:var(--mono);font-size:12.5px">구간: [5, 2, 6]<br>깊이: [2, <b style="color:#166534">1</b>, 2] → 최소 깊이 노드 = <b style="color:#166534">2</b></div>'},
+  {msg:'구간 최소 깊이 노드가 바로 LCA! LCA(5,6)=2. 이렇게 LCA 질의가 구간 최소(RMQ)로 바뀝니다.',html:'<div class="mtag" style="border-color:#166534;color:#166534">LCA(5,6) = 2 = 구간 [2,4]의 최소 깊이 노드 ✓</div>'},
+  {msg:'RMQ는 세그먼트 트리로 O(log n)에 풉니다. 트리 문제(LCA) → 배열 문제(RMQ) → 세그먼트 트리. 환원 완성!',html:'<div class="mtag" style="border-color:#166534;color:#166534">LCA → RMQ → 세그먼트 트리 → O(log n) ✓</div>'}
+];
+var ETIDX=0;
+function etReset(){ETIDX=0;document.getElementById('etMsg').textContent='[다음 ▶]으로 트리를 오일러 투어로 펼쳐 LCA가 RMQ가 되는 과정을 보세요.';document.getElementById('etMsg').classList.remove('done');document.getElementById('etViz').textContent='';document.getElementById('etNext').disabled=false;}
+function etStep(){if(ETIDX>=ET_STEPS.length)return;var s=ET_STEPS[ETIDX];document.getElementById('etMsg').textContent=s.msg;document.getElementById('etViz').innerHTML=s.html;ETIDX++;if(ETIDX>=ET_STEPS.length){document.getElementById('etMsg').classList.add('done');document.getElementById('etNext').disabled=true;}}
+
+/* ============ 5탭: 플레이그라운드 ============ */
+function pgRunSeg(){
+  var out=document.getElementById('pgSegResult'),msg=document.getElementById('pgSegMsg');
+  var raw=document.getElementById('pgArr').value.trim();
+  var parts=raw.split(/[\s,]+/).filter(function(x){return x!=='';});
+  if(parts.length===0){msg.textContent='⚠️ 배열을 입력하세요.';out.textContent='';return;}
+  if(parts.length>16){msg.textContent='⚠️ 배열은 최대 16개까지!';out.textContent='';return;}
+  var arr=[];
+  for(var i=0;i<parts.length;i++){var x=parseInt(parts[i],10);if(isNaN(x)){msg.textContent='⚠️ "'+parts[i]+'"는 숫자가 아니에요.';out.textContent='';return;}arr.push(x);}
+  var n=arr.length;
+  var l=parseInt(document.getElementById('pgL').value,10),r=parseInt(document.getElementById('pgR').value,10);
+  if(isNaN(l)||isNaN(r)||l<0||r>=n||l>r){msg.textContent='⚠️ 구간은 0 ≤ l ≤ r ≤ '+(n-1)+' 범위여야 해요.';out.textContent='';return;}
+  var contrib=[];
+  function q(s,e,node){
+    if(r<s||e<l)return 0;
+    if(l<=s&&e<=r){contrib.push([s,e,sumRange(arr,s,e)]);return sumRange(arr,s,e);}
+    var mid=(s+e)>>1;return q(s,mid,2*node)+q(mid+1,e,2*node+1);
+  }
+  var res=q(0,n-1,1);
+  out.textContent='';
+  var h=document.createElement('div');h.className='arrlabel';h.style.marginTop='4px';h.textContent='구간 합 ['+l+','+r+'] = '+res;out.appendChild(h);
+  var cbox=document.createElement('div');cbox.className='pathflow';
+  var lbl=document.createElement('span');lbl.style.fontWeight='700';lbl.style.color='#166534';lbl.style.marginRight='4px';lbl.textContent='기여 노드:';cbox.appendChild(lbl);
+  for(var c=0;c<contrib.length;c++){var tag=document.createElement('span');tag.className='pn';tag.style.background='#166534';tag.textContent='['+contrib[c][0]+','+contrib[c][1]+']='+contrib[c][2];cbox.appendChild(tag);if(c<contrib.length-1){var pl=document.createElement('span');pl.className='parr';pl.textContent='+';cbox.appendChild(pl);}}
+  out.appendChild(cbox);
+  var stat=document.createElement('div');stat.className='stat';stat.style.marginTop='10px';stat.innerHTML='<div class="box">구간 합 <b>'+res+'</b></div><div class="box">기여 노드 <b>'+contrib.length+'</b>개</div><div class="box">배열 크기 <b>'+n+'</b></div>';out.appendChild(stat);
+  msg.textContent='구간 합 ['+l+','+r+'] = '+res+' (기여 노드 '+contrib.length+'개, O(log n))';msg.classList.add('done');
+}
+function sumRange(arr,s,e){var t=0;for(var i=s;i<=e;i++)t+=arr[i];return t;}
+function pgRunLca(){
+  var out=document.getElementById('pgLcaResult'),msg=document.getElementById('pgLcaMsg');
+  var raw=document.getElementById('pgTree').value;var lines=raw.split('\n');
+  var par={},nodes={},root=0;
+  for(var li=0;li<lines.length;li++){
+    var s=lines[li].trim();if(s==='')continue;
+    var ps=s.split(/\s+/);
+    if(ps.length!==2){msg.textContent='⚠️ '+(li+1)+'번째 줄: "자식 부모" 두 숫자가 필요해요.';out.textContent='';return;}
+    var c=parseInt(ps[0],10),p=parseInt(ps[1],10);
+    if(isNaN(c)||isNaN(p)){msg.textContent='⚠️ '+(li+1)+'번째 줄: 숫자가 아닌 값이 있어요.';out.textContent='';return;}
+    par[c]=p;nodes[c]=true;if(p===0)root=c;else nodes[p]=true;
+  }
+  if(root===0){msg.textContent='⚠️ 루트(부모가 0인 노드)가 필요해요.';out.textContent='';return;}
+  var nodeList=Object.keys(nodes).map(Number);
+  var maxN=Math.max.apply(null,nodeList);
+  // depth via parent walk
+  var depth={};
+  function getDepth(v){if(v===0)return -1;if(depth[v]!==undefined)return depth[v];if(par[v]===undefined){return 0;}depth[v]=getDepth(par[v])+1;return depth[v];}
+  for(var i=0;i<nodeList.length;i++)getDepth(nodeList[i]);
+  var u=parseInt(document.getElementById('pgU').value,10),v=parseInt(document.getElementById('pgV').value,10);
+  if(!nodes[u]||!nodes[v]){msg.textContent='⚠️ 노드 u, v는 트리에 있는 노드여야 해요.';out.textContent='';return;}
+  // naive LCA via depth + parent walk
+  var uu=u,vv=v;
+  var pathU={},x=u;while(x!==0&&x!==undefined){pathU[x]=true;x=par[x]||0;}
+  var ans=v;x=v;while(x!==0&&x!==undefined){if(pathU[x]){ans=x;break;}x=par[x]||0;}
+  out.textContent='';
+  var h=document.createElement('div');h.className='arrlabel';h.style.marginTop='4px';h.textContent='LCA('+u+', '+v+') = '+ans;out.appendChild(h);
+  var info=document.createElement('div');
+  info.innerHTML='<span class="mtag">깊이 '+u+': '+(depth[u]||0)+'</span><span class="mtag">깊이 '+v+': '+(depth[v]||0)+'</span><span class="mtag" style="border-color:#166534;color:#166534">LCA = '+ans+' (깊이 '+(depth[ans]||0)+')</span>';
+  out.appendChild(info);
+  msg.textContent='LCA('+u+', '+v+') = '+ans+' (두 노드의 가장 가까운 공통 조상)';msg.classList.add('done');
+}
+
+/* ===== 퀴즈 ===== */
+var QZ=[
+  {q:'세그먼트 트리에서 각 노드가 저장하는 것은?',
+   o:['원소 하나','자기 구간의 요약값(합·최소 등)','전체 배열','자식 개수'],a:1,
+   e:'각 노드는 자기가 담당하는 구간의 요약값을 저장합니다. 부모 = 왼쪽자식 ⊕ 오른쪽자식(합·최소 등).'},
+  {q:'세그먼트 트리의 구간 질의 복잡도는?',
+   o:['O(1)','O(log n)','O(n)','O(n log n)'],a:1,
+   e:'각 레벨에서 최대 몇 개 노드만 방문하고 완전 포함 시 멈춥니다. 트리 높이가 log n이라 O(log n)이에요.'},
+  {q:'구간 질의에서 "완전히 포함"된 노드는?',
+   o:['무시한다','값을 그대로 쓰고 더 안 내려간다','자식으로 재귀한다','삭제한다'],a:1,
+   e:'노드 구간이 질의 구간에 완전히 포함되면 그 요약값을 바로 사용하고 재귀를 멈춥니다. 이게 O(log n)의 비결이에요.'},
+  {q:'세그먼트 트리 점 갱신에서 다시 계산하는 노드는?',
+   o:['모든 노드','리프에서 루트까지 경로의 노드','리프만','루트만'],a:1,
+   e:'값이 바뀐 리프에서 루트까지 경로의 노드들만 재계산합니다. 경로 길이가 O(log n)이라 갱신도 빠릅니다.'},
+  {q:'LCA(최소 공통 조상)란?',
+   o:['가장 깊은 노드','두 노드의 공통 조상 중 가장 깊은 것','루트','가장 얕은 노드'],a:1,
+   e:'LCA는 두 노드 모두의 조상이면서 가장 깊은(가까운) 노드입니다.'},
+  {q:'이진 리프팅에서 par[k][v]의 의미는?',
+   o:['v의 k번째 자식','v의 2^k번째 조상','v의 깊이','v의 부모 수'],a:1,
+   e:'par[k][v]는 v의 2^k칸 위 조상입니다. par[k][v]=par[k-1][par[k-1][v]]로 채워요(2^(k-1) 두 번).'},
+  {q:'이진 리프팅으로 각 LCA 질의를 처리하는 시간은?',
+   o:['O(1)','O(log n)','O(n)','O(n log n)'],a:1,
+   e:'전처리 O(n log n) 후, 각 LCA 질의는 2^k 점프를 log n번 하므로 O(log n)입니다.'},
+  {q:'LCA를 RMQ로 바꾸는 방법은?',
+   o:['정렬','오일러 투어로 트리를 펼쳐 깊이 배열의 구간 최소','BFS','해시'],a:1,
+   e:'오일러 투어로 트리를 순회하면 두 노드 사이 구간의 최소 깊이 노드가 LCA입니다. 이 RMQ를 세그먼트 트리로 풀어요.'}
+];
+var QSTATE=[];
+function quizBuild(){
+  var area=document.getElementById('quizArea');area.textContent='';QSTATE=[];
+  for(var i=0;i<QZ.length;i++){
+    QSTATE.push(null);
+    var qd=document.createElement('div');qd.className='q';
+    var qt=document.createElement('div');qt.className='qt';
+    var qn=document.createElement('span');qn.className='qn';qn.textContent='Q'+(i+1);
+    qt.appendChild(qn);qt.appendChild(document.createTextNode(QZ[i].q));qd.appendChild(qt);
+    var expl=document.createElement('div');expl.className='expl';expl.textContent='해설: '+QZ[i].e;
+    (function(qi,qdEl,explEl){
+      for(var j=0;j<QZ[qi].o.length;j++){
+        var ob=document.createElement('button');ob.className='opt';
+        ob.textContent='① ② ③ ④'.split(' ')[j]+' '+QZ[qi].o[j];
+        (function(oj,obEl){
+          obEl.addEventListener('click',function(){
+            if(QSTATE[qi]!==null)return;QSTATE[qi]=oj;
+            var opts=qdEl.querySelectorAll('.opt');
+            for(var k=0;k<opts.length;k++){opts[k].disabled=true;if(k===QZ[qi].a)opts[k].classList.add(oj===QZ[qi].a?'pick-ok':'reveal');}
+            if(oj!==QZ[qi].a)obEl.classList.add('pick-ng');
+            explEl.classList.add('show');
+          });
+        })(j,ob);
+        qdEl.appendChild(ob);
+      }
+    })(i,qd,expl);
+    qd.appendChild(expl);area.appendChild(qd);
+  }
+  document.getElementById('quizScore').style.display='none';
+}
+function quizGrade(){
+  var answered=0,correct=0;
+  for(var i=0;i<QZ.length;i++){if(QSTATE[i]!==null){answered++;if(QSTATE[i]===QZ[i].a)correct++;}}
+  var sc=document.getElementById('quizScore');sc.style.display='block';
+  if(answered<QZ.length)sc.textContent='아직 '+(QZ.length-answered)+'문제가 남았어요! (현재 '+correct+'개 정답)';
+  else if(correct===QZ.length)sc.textContent='🏆 8문제 전부 정답! 세그먼트 트리와 LCA를 완벽히 이해했습니다.';
+  else sc.textContent='결과: '+correct+' / '+QZ.length+' — 틀린 문제의 해설을 읽고 실행기로 다시 확인해 보세요!';
+}
+function quizReset(){quizBuild();}
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded',function(){
+  buildSegSVG('introArr','ia');
+  buildLcaSVG('introTree','it');
+  buildSegSVG('bdSvg','bd');
+  buildSegSVG('qySvg','qy');
+  buildLcaSVG('lcSvg','lc');
+  bdReset();
+  qyReset();
+  lcReset();
+  etReset();
+  pgRunSeg();
+  pgRunLca();
+  quizBuild();
+});
+</script>
+</body>
+</html>

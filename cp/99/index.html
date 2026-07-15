@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>위상 정렬 · SCC (코사라주·타잔) — 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#4338CA;
+  --accent-light:#E4E3FB;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#1E1B4B);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'id == low : SCC root';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.06);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.35}
+header p{color:#A5A0EC;font-size:14px;margin-top:6px}
+header .langchips{margin-top:12px;display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.chip.c{background:var(--c-color);color:#fff}
+.chip.py{background:var(--py-color);color:#fff}
+.chip.js{background:#5A4A38;color:#F0E6D2}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);border-bottom:2px solid var(--bdr);padding:10px 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.navbtn{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1.5px solid var(--bdr);border-radius:22px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.navbtn .num{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--soft);color:var(--ink3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.navbtn.on .num{background:rgba(255,255,255,.25);color:#fff}
+
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 90px}
+.page{display:none}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:28px 30px;margin-bottom:28px;box-shadow:0 1px 3px rgba(30,21,9,.04)}
+.card h2{font-size:22px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2 .bar{width:6px;height:24px;background:var(--accent);border-radius:3px;flex:none}
+.card h3{font-size:18px;font-weight:800;margin:26px 0 12px;color:var(--ink)}
+.card p{margin-bottom:12px;color:var(--ink)}
+.card p b{color:var(--accent)}
+.small{font-size:14.5px;color:var(--ink2)}
+
+.tip{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.tip b{color:var(--accent)}
+.warn{background:#FBEBE8;border-left:5px solid var(--ng);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.warn b{color:var(--ng)}
+.link-prev{background:var(--soft);border:1.5px dashed var(--ink3);border-radius:10px;padding:12px 18px;margin:16px 0;font-size:15px;color:var(--ink2)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.col .lang{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.col.c .lang{background:var(--c-color)}
+.col.py .lang{background:var(--py-color)}
+.copybtn{font-family:var(--sans);font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer}
+.copybtn:hover{background:rgba(255,255,255,.32)}
+pre.code{background:var(--code-bg);color:#E8E6E3;font-family:var(--mono);font-size:14px;line-height:1.7;padding:16px 18px;border-radius:0 0 10px 10px;overflow-x:auto;white-space:pre;tab-size:4}
+.col.c pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--c-color)}
+.col.py pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--py-color)}
+pre.code .cm{color:#7A8B7A;font-style:italic}
+pre.code .kw{color:#C792EA}
+pre.code .fn{color:#82AAFF}
+pre.code .st{color:#C3E88D}
+pre.code .nb{color:#F78C6C}
+pre.code .hl{background:rgba(67,56,202,.22);border-radius:3px;padding:0 2px}
+
+.term{background:var(--term-bg);border-radius:10px;padding:13px 18px;margin:12px 0;font-family:var(--mono);font-size:14px}
+.term .tl{color:#6B7280;font-size:11.5px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+.term .to{color:#7CE38B;white-space:pre-wrap;line-height:1.65}
+.term .ti{color:#E8B84B}
+
+table.cmp{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.cmp th{background:var(--soft);color:var(--ink2);font-weight:800;padding:10px 14px;border:1px solid var(--bdr);text-align:left}
+table.cmp td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.cmp td.mono{font-family:var(--mono);font-size:13.5px}
+table.cmp tr td:first-child{font-weight:700;background:#FDFBF6}
+
+.btn{font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:9px;padding:9px 18px;cursor:pointer;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.teal{background:var(--cell);color:#fff}
+.btn.warm{background:var(--cell-hi);color:#3A2A05}
+.btn.ghost{background:var(--panel);color:var(--ink2);border:1.5px solid var(--bdr)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:12px 0}
+select.sel,input.inp{font-family:var(--mono);font-size:15px;font-weight:600;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;background:var(--panel);color:var(--ink)}
+
+.simpanel{background:var(--soft);border:1.5px solid var(--bdr);border-radius:12px;padding:20px;margin:16px 0}
+.simpanel h4{font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.simpanel h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.simflex{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.simflex{grid-template-columns:1fr}}
+.svgbox{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+
+.statecard{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.statecard .sl{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:7px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;align-items:center}
+.nchip{font-family:var(--mono);font-size:14.5px;font-weight:700;min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent);padding:0 6px}
+.nchip.q{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell)}
+.nchip.top{background:var(--cell-hi);color:#3A2A05;border-color:#C79A2E}
+.nchip.ord{background:var(--panel);color:var(--ink2);border-color:var(--bdr)}
+.nchip.ord.new{background:var(--accent);color:#fff;border-color:var(--accent)}
+.emptymsg{font-size:13.5px;color:var(--ink3);font-style:italic}
+.msgline{background:var(--panel);border:1.5px solid var(--accent);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);min-height:48px;display:flex;align-items:center;margin-top:4px}
+.msgline.done{border-color:var(--ok);background:#EAF7EE}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.lgdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink3);background:var(--panel);flex:none}
+.lgdot.cur{background:var(--cell-hi);border-color:#C79A2E}
+.lgdot.vis{background:var(--accent);border-color:var(--accent)}
+.lgdot.inq{background:#DFF5F1;border-color:var(--cell)}
+
+.grid7{display:grid;grid-template-columns:repeat(7,46px);gap:5px;margin:14px 0}
+.gcell{width:46px;height:46px;border-radius:8px;background:var(--panel);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;user-select:none;transition:transform .08s}
+.gcell:hover{transform:scale(1.06)}
+.gcell.wall{background:#4A3B28;border-color:#4A3B28;color:#4A3B28}
+@media(max-width:480px){.grid7{grid-template-columns:repeat(7,40px)}.gcell{width:40px;height:40px;font-size:12.5px}}
+
+.q{background:var(--panel);border:1.5px solid var(--bdr);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.q .qt{font-size:16.5px;font-weight:800;margin-bottom:12px}
+.q .qt .qn{font-family:var(--mono);color:#fff;background:var(--accent);border-radius:7px;padding:2px 10px;font-size:13.5px;margin-right:9px}
+.opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:15.5px;font-weight:600;background:#FDFBF6;border:1.5px solid var(--bdr);border-radius:9px;padding:10px 15px;margin-bottom:8px;cursor:pointer;color:var(--ink);transition:all .12s}
+.opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt.pick-ok{background:#EAF7EE;border-color:var(--ok);color:var(--ok);font-weight:800}
+.opt.pick-ng{background:#FBEBE8;border-color:var(--ng);color:var(--ng)}
+.opt.reveal{border-color:var(--ok);background:#EAF7EE}
+.opt:disabled{cursor:default}
+.expl{display:none;background:var(--soft);border-radius:9px;padding:11px 15px;font-size:14.5px;color:var(--ink2);margin-top:6px}
+.expl.show{display:block}
+.scorebox{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px}
+
+footer{border-top:2px solid var(--bdr);padding:26px 22px 40px;text-align:center;color:var(--ink3);font-size:13.5px}
+footer b{color:var(--ink2)}
+.pagenav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+/* ===== 위상정렬·SCC 편 전용 ===== */
+.arrlabel{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--accent);margin:16px 0 8px}
+.arr{display:flex;gap:0;border-radius:8px;overflow-x:auto;border:2px solid var(--bdr);width:max-content;max-width:100%}
+.acell{min-width:48px;height:46px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:15px;font-weight:700;background:var(--panel);border-right:1px solid var(--bdr);color:var(--ink2);position:relative;transition:background .25s,color .25s}
+.acell:last-child{border-right:none}
+.acell.on{background:var(--accent);color:#fff}
+.acell.zero{background:#DCFCE7;color:#166534}
+.acell.flash{background:var(--cell-hi);color:#3A2A05;animation:cflash .55s}
+@keyframes cflash{0%{transform:scale(1.18)}100%{transform:scale(1)}}
+.acell .idx{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink3);font-weight:600}
+.codebox{background:var(--code-bg);border-radius:12px;padding:16px 8px;font-family:var(--mono);font-size:12.5px;line-height:1.8;overflow-x:auto}
+.cline{display:block;padding:2px 12px;border-radius:5px;color:#C8CAD8;white-space:pre;transition:background .2s}
+.cline.active{background:rgba(232,184,75,.22);color:#fff;font-weight:700;box-shadow:inset 3px 0 0 var(--cell-hi)}
+.cline .ck{color:#C792EA}.cline .cf{color:#82AAFF}.cline .cc{color:#5C6370;font-style:italic}.cline .cn{color:#F78C6C}.cline .cs{color:#C3E88D}
+.evbadge{display:inline-block;border-radius:7px;padding:4px 13px;font-family:var(--mono);font-weight:700;font-size:13.5px;color:#fff}
+.ev-visit{background:#4338CA}.ev-finish{background:#166534}.ev-pop{background:#B45309}.ev-scc{background:#BE185D}.ev-low{background:#0D9488}.ev-done{background:#4338CA}.ev-remove{background:#B45309}
+.stat{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0;font-family:var(--mono);font-weight:700}
+.stat .box{background:var(--soft);border-radius:8px;padding:6px 14px;color:var(--ink)}
+.stat .box b{color:var(--accent);font-size:18px}
+.mono-in{width:100%;height:150px;font-family:var(--mono);font-size:14px;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;background:var(--panel);color:var(--ink);resize:vertical}
+.callout-c{border-left:4px solid var(--c-color);background:#EAF3F8;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14.5px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+.legend i{width:15px;height:15px;border-radius:4px;display:inline-block;border:1px solid var(--bdr)}
+.stack{display:flex;flex-direction:column-reverse;gap:4px;min-height:44px;padding:6px;background:var(--soft);border-radius:8px;width:70px}
+.stkitem{background:var(--accent);color:#fff;border-radius:6px;padding:5px 0;text-align:center;font-family:var(--mono);font-weight:700;font-size:14px;animation:qin .3s}
+@keyframes qin{0%{transform:translateY(-8px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.seq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:40px}
+.seqitem{background:var(--accent);color:#fff;border-radius:8px;padding:5px 12px;font-family:var(--mono);font-weight:700;font-size:15px}
+.seqitem.finish{background:#166534}
+.scctag{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 13px;font-family:var(--mono);font-weight:700;font-size:14px;color:#fff;margin:3px}
+.flabel{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="hbadge">SEYOUNG CODING LAB · C 알고리즘</span>
+  <h1>위상 정렬 · SCC <span style="color:#A5A0EC">코사라주 · 타잔</span></h1>
+  <p>DAG를 줄 세우는 위상 정렬과, 서로 오갈 수 있는 정점을 묶는 강결합요소</p>
+  <div class="langchips">
+    <span class="chip c">C</span>
+    <span class="chip js">시각화: 진입차수 · 종료순서 · low-link · 강결합요소</span>
+  </div>
+</header>
+
+<nav id="topnav">
+  <button class="navbtn on" onclick="goPage(0)"><span class="num">0</span>개념</button>
+  <button class="navbtn" onclick="goPage(1)"><span class="num">1</span>위상 정렬</button>
+  <button class="navbtn" onclick="goPage(2)"><span class="num">2</span>코사라주</button>
+  <button class="navbtn" onclick="goPage(3)"><span class="num">3</span>타잔</button>
+  <button class="navbtn" onclick="goPage(4)"><span class="num">4</span>둘 비교</button>
+  <button class="navbtn" onclick="goPage(5)"><span class="num">5</span>내 그래프로</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= PAGE 0 ================= -->
+<section class="page on">
+  <div class="card">
+    <h2><span class="bar"></span>순서와 순환 — 유향 그래프의 두 얼굴</h2>
+    <p>유향 그래프에는 두 가지 근본 질문이 있습니다. 하나는 <b>"일에 순서를 매길 수 있는가?"</b>(위상 정렬), 다른 하나는 <b>"서로 오갈 수 있는 정점 무리는?"</b>(강결합요소)입니다. 둘 다 <b>DFS</b>를 부품으로 씁니다.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin:14px 0">
+      <div style="flex:1;min-width:220px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">📋 위상 정렬</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">방향이 있고 <b>사이클이 없는</b> 그래프(DAG)의 정점을 <b>줄 세우기</b>. "A→B면 A가 B보다 먼저." 선수과목, 빌드 순서 등에 쓰여요.</p>
+      </div>
+      <div style="flex:1;min-width:220px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">🔗 강결합요소 (SCC)</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">서로 <b>오갈 수 있는</b> 정점끼리 묶기. u→v와 v→u 경로가 모두 있으면 같은 SCC. <b>코사라주</b>·<b>타잔</b>으로 찾습니다.</p>
+      </div>
+    </div>
+    <div class="callout-c"><b>둘의 연결</b> — SCC를 하나의 점으로 압축하면 유향 그래프는 항상 <b>DAG</b>가 됩니다(SCC 응축 그래프). 그 위에서 위상 정렬이 가능해요. 즉 "순환이 있는 그래프"도 SCC로 묶으면 "순서를 매길 수 있는 그래프"가 됩니다. 두 개념이 이렇게 만나요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>위상 정렬 예제 — DAG</h2>
+    <p>정점 6개, 간선 8개인 <b>사이클 없는</b> 유향 그래프입니다. 선수과목 관계라고 생각하세요(A→B = A를 먼저 들어야 B 수강 가능).</p>
+    <div class="svgbox" id="dagSvg"></div>
+    <div class="term">
+      <div class="tl">INPUT (u v = u→v 방향)</div>
+      <div class="to">6 8
+1 2   1 3   2 4   3 4
+3 5   4 6   5 6   2 5</div>
+    </div>
+    <div class="term" style="margin-top:10px">
+      <div class="tl">위상 정렬 결과 (Kahn)</div>
+      <div class="to">1 2 3 4 5 6   (모든 간선이 앞→뒤)
+사이클: 없음</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>SCC 예제 — 사이클 포함</h2>
+    <p>정점 8개, 간선 10개인 <b>사이클이 있는</b> 유향 그래프입니다. 여러 개의 강결합요소로 나뉩니다.</p>
+    <div class="svgbox" id="sccSvg"></div>
+    <div class="term">
+      <div class="tl">INPUT (u v = u→v 방향)</div>
+      <div class="to">8 10
+1 2   2 3   3 1     (묶음 A)
+3 4
+4 5   5 4           (묶음 B)
+5 6
+6 7   7 6           (묶음 C)
+7 8</div>
+    </div>
+    <div class="term" style="margin-top:10px">
+      <div class="tl">강결합요소 (코사라주·타잔 동일)</div>
+      <div class="to">SCC1: {1, 2, 3}    SCC2: {4, 5}
+SCC3: {6, 7}       SCC4: {8}
+→ 총 4개의 강결합요소</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1 : 위상 정렬 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>위상 정렬 — Kahn 알고리즘 (진입차수)</h2>
+    <p>위상 정렬의 가장 직관적인 방법은 <b>진입차수(in-degree)</b>를 쓰는 Kahn 알고리즘입니다. <b>진입차수가 0인 정점</b>(아무도 가리키지 않는 = 먼저 할 수 있는 일)부터 하나씩 빼면서 순서를 만듭니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">핵심 아이디어</div>
+        <pre class="code"><span class="cc">// 진입차수 = 나를 가리키는 간선 수</span>
+<span class="cc">// = 나보다 먼저 해야 할 일의 수</span>
+
+<span class="cc">// 1) 진입차수 0인 정점을 큐에</span>
+<span class="cc">// 2) 큐에서 꺼내 순서에 추가</span>
+<span class="cc">// 3) 그 정점이 가리키던 곳들의</span>
+<span class="cc">//    진입차수를 1씩 감소</span>
+<span class="cc">// 4) 0이 되면 큐에 추가</span>
+<span class="cc">// 5) 큐가 빌 때까지 반복</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">C — Kahn<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="cc">/* 진입차수 계산 후 */</span>
+<span class="kw">for</span> (<span class="kw">int</span> i=<span class="cn">1</span>;i&lt;=n;i++)
+    <span class="kw">if</span> (indeg[i]==<span class="cn">0</span>) q[t++]=i;
+<span class="kw">while</span> (h &lt; t) {
+    <span class="kw">int</span> u = q[h++];
+    order[oc++] = u;
+    <span class="kw">for</span> (<span class="kw">int</span> k=<span class="cn">0</span>;k&lt;deg[u];k++){
+        <span class="kw">int</span> v = adj[u][k];
+        <span class="hl"><span class="kw">if</span> (--indeg[v]==<span class="cn">0</span>)</span>
+            q[t++] = v;
+    }
+}
+<span class="cc">/* oc &lt; n 이면 사이클 존재 */</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>사이클 탐지 덤</b> — 위상 정렬을 끝냈는데 순서에 담긴 정점 수가 n보다 적으면? 진입차수가 끝까지 0이 안 된 정점이 남았다는 뜻 → <b>사이클이 존재</b>합니다. Kahn 알고리즘은 정렬과 사이클 탐지를 동시에 해요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — 진입차수가 0이 되는 순간</h2>
+    <p>[다음 ▶]마다 진입차수 배열이 갱신되고, 0이 된 정점이 큐에 들어가 순서에 추가됩니다. 초록 셀이 "이제 할 수 있는 일"이에요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="tpReset()">처음으로</button>
+        <button class="btn ghost" onclick="tpStep(-1)" id="tpPrev">◀ 이전</button>
+        <button class="btn acc" onclick="tpStep(1)" id="tpNext">다음 ▶</button>
+        <button class="btn teal" onclick="tpAuto()" id="tpAutoBtn">자동 재생</button>
+      </div>
+      <div class="simflex" style="align-items:flex-start;gap:18px">
+        <div style="flex:0 0 auto">
+          <div class="svgbox" id="tpSvg" style="max-width:300px;margin:0"></div>
+        </div>
+        <div style="flex:1;min-width:230px">
+          <div class="arrlabel" style="margin-top:0">실행 중인 코드</div>
+          <div class="codebox" id="tpCode"></div>
+        </div>
+      </div>
+      <div class="arrlabel">진입차수 indeg[] &nbsp;<span style="color:var(--ink3);font-weight:400">(초록=0, 큐 대기 중)</span></div>
+      <div class="arr" id="tpIndeg"></div>
+      <div class="arrlabel">위상 정렬 순서</div>
+      <div class="seq" id="tpOrder"><span class="emptymsg">아직 없음</span></div>
+      <div class="stat">
+        <div class="box">정렬됨 <b id="tpCount">0</b> / 6</div>
+      </div>
+      <div style="margin-top:10px"><span class="evbadge ev-visit" id="tpEvent">시작</span></div>
+      <div class="msgline" id="tpMsg">[다음 ▶]을 눌러 위상 정렬을 시작하세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#DCFCE7;border-color:#166534"></i>진입차수 0 (큐 대기)</span>
+      <span><i style="background:#4338CA"></i>정렬 완료</span>
+      <span><i style="background:#E8B84B"></i>방금 감소</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>DFS 기반 위상 정렬</h2>
+    <p>Kahn 말고 <b>DFS</b>로도 위상 정렬을 할 수 있습니다. DFS의 <b>종료 순서(finish)의 역순</b>이 곧 위상 정렬이에요. 이건 코사라주에서 다시 쓰이는 핵심 아이디어입니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — DFS 위상정렬<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">void</span> <span class="fn">dfs</span>(<span class="kw">int</span> u){
+    visited[u]=<span class="cn">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> k=<span class="cn">0</span>;k&lt;deg[u];k++){
+        <span class="kw">int</span> v=adj[u][k];
+        <span class="kw">if</span> (!visited[v]) dfs(v);
+    }
+    <span class="hl">stack[top++] = u;</span> <span class="cc">/* 종료 시 push */</span>
+}
+<span class="cc">/* stack을 역순으로 = 위상정렬 */</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">왜 종료 역순인가</div>
+        <pre class="code"><span class="cc">// u→v 간선이 있으면</span>
+<span class="cc">// v가 u보다 먼저 종료됨</span>
+<span class="cc">// (v를 다 처리해야 u가 끝나니까)</span>
+
+<span class="cc">// 종료 순서: ... v ... u ...</span>
+<span class="cc">// 역순:      ... u ... v ...</span>
+<span class="cc">//            → u가 v보다 앞!</span>
+
+<span class="cc">// 이게 바로 위상 정렬 조건</span></pre>
+      </div>
+    </div>
+    <div class="callout-c"><b>두 방법 비교</b> — Kahn은 진입차수와 큐를 쓰는 <b>BFS 스타일</b>, DFS 버전은 재귀와 스택을 쓰는 <b>DFS 스타일</b>입니다. 결과는 (여러 유효한 순서 중 하나로) 같아요. 코사라주가 이 <b>DFS 종료 순서</b>를 결정적으로 활용합니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : 코사라주 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>코사라주 — 두 번의 DFS</h2>
+    <p>코사라주는 놀랍도록 단순합니다. <b>DFS를 두 번</b> 돌려 SCC를 찾아요. 첫 번째는 <b>종료 순서</b>를 얻고, 두 번째는 <b>역방향 그래프</b>에서 그 역순으로 DFS합니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">3단계 절차</div>
+        <pre class="code"><span class="cc">// 1) 원본 그래프 DFS</span>
+<span class="cc">//    → 종료 순서(finish) 기록</span>
+
+<span class="cc">// 2) 모든 간선 방향을 뒤집음</span>
+<span class="cc">//    (역방향 그래프)</span>
+
+<span class="cc">// 3) 종료 역순으로 역그래프 DFS</span>
+<span class="cc">//    한 번의 DFS로 도달하는</span>
+<span class="cc">//    정점들 = 하나의 SCC</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">왜 이게 통하나</div>
+        <pre class="code"><span class="cc">// 종료가 가장 늦은 정점은</span>
+<span class="cc">// SCC 응축 그래프의 "원천"</span>
+
+<span class="cc">// 역그래프에서 거기서 출발하면</span>
+<span class="cc">// 그 SCC 안에만 갇힘</span>
+<span class="cc">// (밖으로 나가는 간선이</span>
+<span class="cc">//  역방향에선 들어오는 간선)</span>
+
+<span class="cc">// → 딱 그 SCC만 방문!</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 핵심 통찰 — 종료 순서가 가장 늦은 정점부터 역그래프에서 DFS하면, 각 DFS가 <b>정확히 하나의 SCC</b>만 훑습니다. 방향을 뒤집었기 때문에 SCC 밖으로 "새어 나가지" 않아요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — 2-pass DFS</h2>
+    <p>[다음 ▶]마다 1차 DFS(종료 순서 기록)와 2차 DFS(역그래프에서 SCC 묶기)가 진행됩니다. 각 SCC가 다른 색으로 칠해져요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="ksReset()">처음으로</button>
+        <button class="btn ghost" onclick="ksStep(-1)" id="ksPrev">◀ 이전</button>
+        <button class="btn acc" onclick="ksStep(1)" id="ksNext">다음 ▶</button>
+        <button class="btn teal" onclick="ksAuto()" id="ksAutoBtn">자동 재생</button>
+        <button class="btn ghost" onclick="ksSkip()" id="ksSkipBtn">다음 단계로 ⏭</button>
+      </div>
+      <div style="margin:6px 0"><span class="evbadge ev-visit" id="ksPhase" style="background:#4338CA">1차 DFS</span></div>
+      <div class="simflex" style="align-items:flex-start;gap:18px">
+        <div style="flex:0 0 auto">
+          <div class="svgbox" id="ksSvg" style="max-width:320px;margin:0"></div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <div class="arrlabel" style="margin-top:0">실행 중인 코드</div>
+          <div class="codebox" id="ksCode"></div>
+        </div>
+      </div>
+      <div class="arrlabel">1차 DFS 종료 순서 &nbsp;<span style="color:var(--ink3);font-weight:400">(먼저 끝난 것부터)</span></div>
+      <div class="seq" id="ksFinish"><span class="emptymsg">아직 없음</span></div>
+      <div class="arrlabel">발견된 SCC</div>
+      <div id="ksSccs"><span class="emptymsg">아직 없음</span></div>
+      <div style="margin-top:10px"><span class="evbadge ev-visit" id="ksEvent">시작</span></div>
+      <div class="msgline" id="ksMsg">[다음 ▶]을 눌러 코사라주를 시작하세요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : 타잔 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>타잔 — 단 한 번의 DFS로</h2>
+    <p>타잔 알고리즘은 <b>DFS 한 번</b>으로 모든 SCC를 찾습니다. 코사라주보다 우아하죠. 비결은 각 정점에 두 개의 번호를 매기는 것입니다 — <b>id</b>(방문 순서)와 <b>low</b>(도달 가능한 가장 작은 id).</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">두 개의 번호</div>
+        <pre class="code"><span class="cc">// id[u]: u를 방문한 순서 (고유)</span>
+
+<span class="cc">// low[u]: u에서 DFS로 도달 가능한</span>
+<span class="cc">//   정점 중 가장 작은 id</span>
+<span class="cc">//   (단, 스택에 있는 정점만)</span>
+
+<span class="cc">// 핵심 규칙:</span>
+<span class="cc">//   low[u] == id[u] 이면</span>
+<span class="cc">//   u는 SCC의 "루트"!</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">low 갱신 규칙</div>
+        <pre class="code"><span class="cc">// 이웃 v를 볼 때:</span>
+
+<span class="cc">// v가 미방문이면:</span>
+<span class="cc">//   dfs(v) 후</span>
+<span class="cc">//   low[u] = min(low[u], low[v])</span>
+
+<span class="cc">// v가 스택에 있으면 (역방향/교차):</span>
+<span class="cc">//   low[u] = min(low[u], id[v])</span>
+
+<span class="cc">// 스택에 없으면 무시</span>
+<span class="cc">//   (다른 SCC)</span></pre>
+      </div>
+    </div>
+    <div class="callout-c"><b>low-link의 의미</b> — <span class="mono">low[u]</span>는 "u에서 출발해 (현재 스택 위의 정점들을 통해) 되돌아갈 수 있는 가장 오래된 정점"입니다. 만약 u가 자기 자신보다 오래된 곳으로 못 돌아간다면(<span class="mono">low[u]==id[u]</span>), u가 이 SCC의 시작점이에요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — id · low · 스택</h2>
+    <p>[다음 ▶]마다 정점에 id/low가 매겨지고, 스택에 쌓입니다. <span class="mono">low==id</span>인 정점을 만나면 스택에서 SCC를 팝해요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="tjReset()">처음으로</button>
+        <button class="btn ghost" onclick="tjStep(-1)" id="tjPrev">◀ 이전</button>
+        <button class="btn acc" onclick="tjStep(1)" id="tjNext">다음 ▶</button>
+        <button class="btn teal" onclick="tjAuto()" id="tjAutoBtn">자동 재생</button>
+      </div>
+      <div class="simflex" style="align-items:flex-start;gap:16px">
+        <div style="flex:0 0 auto">
+          <div class="svgbox" id="tjSvg" style="max-width:300px;margin:0"></div>
+        </div>
+        <div style="flex:1;min-width:210px">
+          <div class="arrlabel" style="margin-top:0">실행 중인 코드</div>
+          <div class="codebox" id="tjCode"></div>
+        </div>
+        <div style="flex:0 0 auto">
+          <div class="arrlabel" style="margin-top:0">스택</div>
+          <div class="stack" id="tjStack"></div>
+        </div>
+      </div>
+      <div class="arrlabel">id[] &nbsp;<span style="color:var(--ink3);font-weight:400">(방문 순서)</span></div>
+      <div class="arr" id="tjId"></div>
+      <div class="arrlabel">low[] &nbsp;<span style="color:var(--ink3);font-weight:400">(도달 가능 최소 id, 노랑=id와 같음→SCC 루트)</span></div>
+      <div class="arr" id="tjLow"></div>
+      <div class="arrlabel">발견된 SCC</div>
+      <div id="tjSccs"><span class="emptymsg">아직 없음</span></div>
+      <div style="margin-top:10px"><span class="evbadge ev-visit" id="tjEvent">시작</span></div>
+      <div class="msgline" id="tjMsg">[다음 ▶]을 눌러 타잔을 시작하세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#4338CA"></i>스택에 있음</span>
+      <span><i style="background:#E8B84B"></i>low==id (SCC 루트)</span>
+      <span><i style="background:#BE185D"></i>SCC로 확정</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>타잔 완성 코드</h2>
+    <pre class="code"><span class="kw">int</span> id[MAXN], low[MAXN], onStk[MAXN], vis[MAXN];
+<span class="kw">int</span> stk[MAXN], top, cnt;  <span class="cc">/* cnt: 방문 순서 카운터 */</span>
+
+<span class="kw">void</span> <span class="fn">tarjan</span>(<span class="kw">int</span> u){
+    id[u] = low[u] = cnt++;
+    stk[top++] = u; onStk[u] = <span class="cn">1</span>; vis[u] = <span class="cn">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> k=<span class="cn">0</span>;k&lt;deg[u];k++){
+        <span class="kw">int</span> v = adj[u][k];
+        <span class="kw">if</span> (!vis[v]) {                        <span class="cc">/* 미방문 */</span>
+            tarjan(v);
+            <span class="hl low">low[u] = min(low[u], low[v]);</span>
+        } <span class="kw">else if</span> (onStk[v]) {                <span class="cc">/* 스택에 있음 */</span>
+            <span class="hl low">low[u] = min(low[u], id[v]);</span>
+        }
+    }
+    <span class="kw">if</span> (low[u] == id[u]) {                    <span class="cc">/* SCC 루트! */</span>
+        <span class="kw">while</span> (<span class="cn">1</span>) {
+            <span class="kw">int</span> w = stk[--top]; onStk[w] = <span class="cn">0</span>;
+            <span class="cc">/* w를 현재 SCC에 추가 */</span>
+            <span class="kw">if</span> (w == u) <span class="kw">break</span>;
+        }
+    }
+}</pre>
+    <div class="tip">💡 <b>코사라주 vs 타잔</b> — 코사라주는 DFS <b>2번</b> + 역그래프가 필요하지만 이해하기 쉽습니다. 타잔은 DFS <b>1번</b>으로 끝나 더 효율적이지만 low-link 개념이 필요해요. 둘 다 <span class="mono">O(V+E)</span>입니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 4 : 둘 비교 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>코사라주 vs 타잔 — 한눈에</h2>
+    <table class="cmp">
+      <tr><th></th><th>코사라주</th><th>타잔</th></tr>
+      <tr><td>DFS 횟수</td><td><b>2번</b></td><td><b>1번</b></td></tr>
+      <tr><td>역방향 그래프</td><td>필요</td><td>불필요</td></tr>
+      <tr><td>핵심 개념</td><td>종료 순서</td><td>id / low-link</td></tr>
+      <tr><td>이해 난이도</td><td><b>쉬움</b></td><td>중간</td></tr>
+      <tr><td>효율</td><td>DFS 2회</td><td><b>DFS 1회</b></td></tr>
+      <tr><td>복잡도</td><td class="mono">O(V+E)</td><td class="mono">O(V+E)</td></tr>
+    </table>
+    <div class="tip">💡 <b>언제 무엇을</b> — 처음 배울 땐 <b>코사라주</b>가 직관적입니다("두 번 DFS, 두 번째는 거꾸로"). 실전 대회에선 <b>타잔</b>이 한 번의 DFS로 끝나 선호돼요. 결과 SCC는 완전히 동일합니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>같은 그래프, 같은 SCC — 나란히</h2>
+    <p>예제 그래프에서 두 알고리즘이 각자의 방식으로 <b>동일한 4개 SCC</b>를 찾는 걸 확인합니다.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="cmpReset()">처음으로</button>
+        <button class="btn acc" onclick="cmpStep()" id="cmpNext">다음 SCC ▶</button>
+        <button class="btn teal" onclick="cmpAll()">전부 보기</button>
+      </div>
+      <div class="simflex" style="align-items:flex-start">
+        <div style="flex:1;min-width:230px">
+          <div class="arrlabel" style="margin-top:0">🔄 코사라주 (종료 역순 발견)</div>
+          <div id="cmpKs" style="min-height:60px"></div>
+        </div>
+        <div style="flex:1;min-width:230px">
+          <div class="arrlabel" style="margin-top:0">⚡ 타잔 (low==id에서 발견)</div>
+          <div id="cmpTj" style="min-height:60px"></div>
+        </div>
+      </div>
+      <div class="msgline" id="cmpMsg">[다음 SCC ▶]로 두 알고리즘이 같은 SCC를 찾는 걸 확인하세요.</div>
+    </div>
+    <div class="warn">⚠️ 발견 <b>순서</b>는 다를 수 있습니다 — 코사라주는 종료 역순으로, 타잔은 DFS 도중 low==id를 만나는 순서로 찾아요. 하지만 <b>최종 SCC 집합은 완전히 동일</b>합니다: {1,2,3}, {4,5}, {6,7}, {8}.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>SCC의 활용 — 응축 그래프</h2>
+    <p>SCC를 찾는 진짜 이유는 <b>복잡한 순환 그래프를 단순한 DAG로 압축</b>하기 위해서입니다. 각 SCC를 하나의 점으로 묶으면(응축), 반드시 사이클 없는 DAG가 돼요.</p>
+    <table class="cmp">
+      <tr><th>활용</th><th>내용</th></tr>
+      <tr><td>2-SAT</td><td>논리식 만족 가능성 판정 (SCC로 모순 탐지)</td></tr>
+      <tr><td>응축 그래프</td><td>SCC를 점으로 → DAG → 위상 정렬 가능</td></tr>
+      <tr><td>웹 구조 분석</td><td>서로 링크된 페이지 무리 찾기</td></tr>
+      <tr><td>데드락 탐지</td><td>자원 대기 그래프의 순환 = SCC</td></tr>
+      <tr><td>강한 연결성</td><td>전체가 하나의 SCC = 어디서든 왕복 가능</td></tr>
+    </table>
+    <div class="callout-c"><b>2-SAT의 아름다움</b> — "x이거나 y" 형태의 논리 제약들을 함의 그래프로 만든 뒤 SCC를 찾으면, <b>x와 ¬x가 같은 SCC에 있으면 모순</b>(만족 불가)입니다. 겉보기엔 논리 문제인데 SCC로 우아하게 풀려요. 이것이 SCC를 배우는 큰 이유 중 하나입니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 5 : 내 그래프로 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>내 그래프로 위상 정렬 · SCC 구하기</h2>
+    <p>유향 간선을 <span class="mono">u v</span> 형식으로 입력하면, 위상 정렬(가능하면)과 SCC를 모두 계산합니다. 사이클이 있으면 위상 정렬 대신 SCC를 보여줘요.</p>
+    <div class="simpanel">
+      <h4><span class="dot"></span>그래프 입력</h4>
+      <div class="btnrow">
+        <label style="font-size:14px;font-weight:700;color:var(--ink2)">정점 수 n</label>
+        <input class="inp" id="pgN" type="number" value="8" min="1" max="12" style="width:80px">
+      </div>
+      <div class="arrlabel">간선 목록 (한 줄에 "u v" — u→v 방향)</div>
+      <textarea id="pgInput" class="mono-in" spellcheck="false">1 2
+2 3
+3 1
+3 4
+4 5
+5 4
+5 6
+6 7
+7 6
+7 8</textarea>
+      <div class="btnrow">
+        <button class="btn acc" onclick="pgRun()">분석하기</button>
+      </div>
+      <div id="pgResult"></div>
+      <div class="msgline" id="pgMsg">입력을 넣고 [분석하기]를 눌러 보세요.</div>
+    </div>
+    <div class="tip">💡 실험: <span class="mono">3 1</span> 줄을 지워 보세요. 사이클 {1,2,3}이 깨지면서 그래프가 DAG에 가까워지고, SCC 개수가 늘어나며 위상 정렬이 가능해질 수 있습니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>도전 퀴즈 — 위상정렬·SCC 8문제</h2>
+    <div id="quizArea"></div>
+    <div class="btnrow">
+      <button class="btn acc" onclick="quizGrade()">점수 확인</button>
+      <button class="btn ghost" onclick="quizReset()">다시 풀기</button>
+    </div>
+    <div class="scorebox" id="quizScore" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 장 정리</h2>
+    <table class="cmp">
+      <tr><th>포인트</th><th>내용</th></tr>
+      <tr><td>위상 정렬</td><td>DAG의 정점을 "앞→뒤" 순서로 나열</td></tr>
+      <tr><td>Kahn</td><td>진입차수 0인 정점부터 큐로 제거</td></tr>
+      <tr><td>DFS 위상정렬</td><td>종료 순서의 역순</td></tr>
+      <tr><td>SCC</td><td>서로 오갈 수 있는 정점 무리</td></tr>
+      <tr><td>코사라주</td><td>DFS 2번 (종료순서 + 역그래프)</td></tr>
+      <tr><td>타잔</td><td>DFS 1번 (id/low, low==id가 루트)</td></tr>
+      <tr><td>응축 그래프</td><td>SCC를 점으로 → 항상 DAG</td></tr>
+      <tr><td>복잡도</td><td class="mono">모두 O(V+E)</td></tr>
+    </table>
+    <div class="tip">💡 <b>DFS의 대미</b> — 이 시리즈에서 DFS는 그래프 순회로 시작해, 이제 위상 정렬(종료 순서)과 SCC(low-link)라는 정교한 응용에 이르렀습니다. 같은 DFS가 "언제 끝나는가", "어디까지 되돌아갈 수 있는가"를 추적하는 것만으로 이렇게 강력한 도구가 됩니다.</div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <b>세영코딩연구소 · SEYOUNG CODING LAB</b> — 위상 정렬 · SCC (코사라주·타잔)<br>
+  진입차수 · 종료순서 · low-link · 강결합요소 · 응축 그래프
+</footer>
+
+<script>
+'use strict';
+var TIMERS={tp:null,ks:null,tj:null};
+function stopAuto(which){if(TIMERS[which]){clearInterval(TIMERS[which]);TIMERS[which]=null;}var b=document.getElementById(which+'AutoBtn');if(b)b.textContent='자동 재생';}
+function stopAll(){stopAuto('tp');stopAuto('ks');stopAuto('tj');}
+function goPage(i){
+  var pages=document.querySelectorAll('.page'),btns=document.querySelectorAll('#topnav .navbtn');
+  for(var k=0;k<pages.length;k++)pages[k].classList.toggle('on',k===i);
+  for(var k2=0;k2<btns.length;k2++)btns[k2].classList.toggle('on',k2===i);
+  stopAll();window.scrollTo({top:0,behavior:'smooth'});
+}
+function copyCode(btn){
+  var pre=btn.closest('.col')?btn.closest('.col').querySelector('pre.code'):null;
+  if(!pre)return;var txt=pre.textContent;
+  function ok(){var o=btn.textContent;btn.textContent='복사됨!';setTimeout(function(){btn.textContent=o;},1200);}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();});
+  else{fallbackCopy(txt);ok();}
+}
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+var SVGNS='http://www.w3.org/2000/svg';
+
+/* ===== 두 예제 그래프 ===== */
+var DAG_N=6;
+var DAG_E=[[1,2],[1,3],[2,4],[3,4],[3,5],[4,6],[5,6],[2,5]];
+var DAG_POS={1:[50,60],2:[170,50],3:[60,180],4:[200,170],5:[130,290],6:[280,250]};
+var SCC_N=8;
+var SCC_E=[[1,2],[2,3],[3,1],[3,4],[4,5],[5,4],[5,6],[6,7],[7,6],[7,8]];
+var SCC_POS={1:[60,50],2:[160,40],3:[110,140],4:[220,130],5:[300,80],6:[280,220],7:[190,240],8:[100,270]};
+var SCC_COLORS=['#4338CA','#0D9488','#BE185D','#B45309','#166534','#7C3AED'];
+
+function buildSVG(containerId,prefix,edges,pos,n,srcS,srcT){
+  var box=document.getElementById(containerId);if(!box)return;box.textContent='';
+  var svg=document.createElementNS(SVGNS,'svg');svg.setAttribute('viewBox','0 0 340 320');
+  var defs=document.createElementNS(SVGNS,'defs');
+  var mk=document.createElementNS(SVGNS,'marker');
+  mk.setAttribute('id',prefix+'ar');mk.setAttribute('viewBox','0 0 10 10');mk.setAttribute('refX','9');mk.setAttribute('refY','5');mk.setAttribute('markerWidth','6');mk.setAttribute('markerHeight','6');mk.setAttribute('orient','auto-start-reverse');
+  var pa=document.createElementNS(SVGNS,'path');pa.setAttribute('d','M0,0 L10,5 L0,10 z');pa.setAttribute('fill','#9B98D0');
+  mk.appendChild(pa);defs.appendChild(mk);svg.appendChild(defs);
+  for(var e=0;e<edges.length;e++){
+    var u=edges[e][0],v=edges[e][1];
+    var x1=pos[u][0],y1=pos[u][1],x2=pos[v][0],y2=pos[v][1];
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    var ox=0,oy=0;
+    var hasRev=edges.some(function(ee){return ee[0]===v&&ee[1]===u;});
+    if(hasRev){ox=-dy/len*7;oy=dx/len*7;}
+    var ex1=x1+dx*19/len+ox,ey1=y1+dy*19/len+oy,ex2=x2-dx*21/len+ox,ey2=y2-dy*21/len+oy;
+    var ln=document.createElementNS(SVGNS,'line');
+    ln.setAttribute('x1',ex1);ln.setAttribute('y1',ey1);ln.setAttribute('x2',ex2);ln.setAttribute('y2',ey2);
+    ln.setAttribute('stroke','#CBC9E8');ln.setAttribute('stroke-width','2');ln.setAttribute('marker-end','url(#'+prefix+'ar)');
+    ln.id=prefix+'E'+e;
+    svg.appendChild(ln);
+  }
+  for(var i=1;i<=n;i++){
+    var c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',pos[i][0]);c.setAttribute('cy',pos[i][1]);c.setAttribute('r','18');
+    c.setAttribute('fill','#FFFFFF');c.setAttribute('stroke','#4338CA');c.setAttribute('stroke-width','2.5');
+    c.id=prefix+'N'+i;
+    var t=document.createElementNS(SVGNS,'text');
+    t.setAttribute('x',pos[i][0]);t.setAttribute('y',pos[i][1]+5);t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-family',"'JetBrains Mono',monospace");t.setAttribute('font-size','14');t.setAttribute('font-weight','700');t.setAttribute('fill','#1E1B4B');
+    t.textContent=String(i);t.id=prefix+'T'+i;
+    svg.appendChild(c);svg.appendChild(t);
+  }
+  box.appendChild(svg);
+}
+function nodeFill(prefix,i,fill,stroke,textcol){
+  var c=document.getElementById(prefix+'N'+i),t=document.getElementById(prefix+'T'+i);
+  if(!c)return;
+  c.setAttribute('fill',fill);c.setAttribute('stroke',stroke||'#4338CA');c.setAttribute('stroke-width','2.5');
+  if(t)t.setAttribute('fill',textcol||'#1E1B4B');
+}
+
+/* =============== 1탭: 위상정렬 (Kahn) =============== */
+var TP_CODE=[
+  {html:'<span class="cc">/* 진입차수 0을 큐에 */</span>',id:'seed'},
+  {html:'<span class="ck">while</span> (큐가 비지 않음) {',id:'while'},
+  {html:'  u = 큐에서 꺼냄;',id:'pop'},
+  {html:'  order.push(u);',id:'order'},
+  {html:'  <span class="ck">for</span> (v : adj[u])',id:'for'},
+  {html:'    <span class="ck">if</span> (--indeg[v]==0)',id:'dec'},
+  {html:'      큐.push(v);',id:'push'},
+  {html:'}',id:'end'}
+];
+function tpRenderCode(a){var box=document.getElementById('tpCode');box.textContent='';for(var i=0;i<TP_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(TP_CODE[i].id===a?' active':'');l.innerHTML=TP_CODE[i].html;box.appendChild(l);}}
+function genTopoTrace(){
+  var steps=[];
+  var adj={},indeg={};
+  for(var i=1;i<=DAG_N;i++){adj[i]=[];indeg[i]=0;}
+  for(var e=0;e<DAG_E.length;e++){adj[DAG_E[e][0]].push(DAG_E[e][1]);indeg[DAG_E[e][1]]++;}
+  for(var i2=1;i2<=DAG_N;i2++)adj[i2].sort(function(a,b){return a-b;});
+  var order=[],queue=[];
+  function snap(ev,line,extra,flash,cur){
+    var ind={},inq={};for(var i=1;i<=DAG_N;i++){ind[i]=indeg[i];}
+    steps.push({ev:ev,line:line,extra:extra||'',indeg:ind,order:order.slice(),queue:queue.slice(),flash:(flash===undefined?0:flash),cur:(cur===undefined?0:cur)});
+  }
+  for(var i3=1;i3<=DAG_N;i3++)if(indeg[i3]===0)queue.push(i3);
+  snap('visit','seed','진입차수 0인 정점을 큐에: ['+queue.join(', ')+']');
+  while(queue.length){
+    var u=queue.shift();
+    order.push(u);
+    snap('finish','order','정점 '+u+' 꺼내 순서에 추가',0,u);
+    for(var k=0;k<adj[u].length;k++){
+      var v=adj[u][k];indeg[v]--;
+      if(indeg[v]===0){queue.push(v);snap('visit','push','정점 '+u+'→'+v+': indeg['+v+']=0 → 큐에 추가',v,u);}
+      else snap('visit','dec','정점 '+u+'→'+v+': indeg['+v+'] 감소 → '+indeg[v],v,u);
+    }
+  }
+  snap('done','end','위상 정렬 완료: '+order.join(' → '));
+  return steps;
+}
+var TPSTEPS=[],TPIDX=0;
+function tpRender(){
+  var st=TPSTEPS[TPIDX];
+  tpRenderCode(st.line);
+  var box=document.getElementById('tpIndeg');box.textContent='';
+  for(var i=1;i<=DAG_N;i++){
+    var cell=document.createElement('div');cell.className='acell';
+    var done=st.order.indexOf(i)>=0;
+    if(done)cell.classList.add('on');
+    else if(st.indeg[i]===0)cell.classList.add('zero');
+    if(st.flash===i)cell.classList.add('flash');
+    var idx=document.createElement('span');idx.className='idx';idx.textContent='['+i+']';
+    cell.appendChild(idx);cell.appendChild(document.createTextNode(done?'✓':st.indeg[i]));
+    box.appendChild(cell);
+  }
+  var ob=document.getElementById('tpOrder');ob.textContent='';
+  if(st.order.length===0){var em=document.createElement('span');em.className='emptymsg';em.textContent='아직 없음';ob.appendChild(em);}
+  else for(var o=0;o<st.order.length;o++){var s=document.createElement('span');s.className='seqitem';s.textContent=st.order[o];ob.appendChild(s);}
+  for(var nd=1;nd<=DAG_N;nd++){
+    if(st.order.indexOf(nd)>=0)nodeFill('tp',nd,'#4338CA','#312A9E','#fff');
+    else if(st.indeg[nd]===0)nodeFill('tp',nd,'#DCFCE7','#166534','#166534');
+    else nodeFill('tp',nd,'#FFFFFF','#4338CA','#1E1B4B');
+  }
+  if(st.cur)nodeFill('tp',st.cur,'#E8B84B','#C79A2E','#3A2A05');
+  document.getElementById('tpCount').textContent=st.order.length;
+  var badge=document.getElementById('tpEvent');
+  var lbl={visit:'visit · 진입차수',finish:'order · 순서 추가',done:'완료'};
+  var cls={visit:'ev-visit',finish:'ev-finish',done:'ev-done'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-visit');
+  var msg=document.getElementById('tpMsg');msg.textContent='['+TPIDX+'/'+(TPSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('tpPrev').disabled=(TPIDX===0);document.getElementById('tpNext').disabled=(TPIDX===TPSTEPS.length-1);
+}
+function tpReset(){stopAuto('tp');TPSTEPS=genTopoTrace();TPIDX=0;tpRender();}
+function tpStep(d){var ni=TPIDX+d;if(ni<0||ni>=TPSTEPS.length)return;TPIDX=ni;tpRender();}
+function tpAuto(){if(TIMERS.tp){stopAuto('tp');return;}if(TPIDX>=TPSTEPS.length-1)TPIDX=0;document.getElementById('tpAutoBtn').textContent='정지';TIMERS.tp=setInterval(function(){if(TPIDX>=TPSTEPS.length-1){stopAuto('tp');return;}tpStep(1);},800);}
+
+/* =============== 2탭: 코사라주 =============== */
+var KS_CODE=[
+  {html:'<span class="cc">/* 1차: 원본 DFS */</span>',id:'p1'},
+  {html:'dfs1(u): 종료 시 finish에 push',id:'dfs1'},
+  {html:'<span class="cc">/* 2차: 역그래프 DFS */</span>',id:'p2'},
+  {html:'<span class="ck">for</span> (u : finish 역순)',id:'rev'},
+  {html:'  <span class="ck">if</span> (미방문) dfs2(u, 새SCC);',id:'dfs2'},
+  {html:'<span class="cc">/* dfs2 도달 = 한 SCC */</span>',id:'done'}
+];
+function ksRenderCode(a){var box=document.getElementById('ksCode');box.textContent='';for(var i=0;i<KS_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(KS_CODE[i].id===a?' active':'');l.innerHTML=KS_CODE[i].html;box.appendChild(l);}}
+function genKosarajuTrace(){
+  var steps=[];
+  var adj={},radj={};
+  for(var i=1;i<=SCC_N;i++){adj[i]=[];radj[i]=[];}
+  for(var e=0;e<SCC_E.length;e++){adj[SCC_E[e][0]].push(SCC_E[e][1]);radj[SCC_E[e][1]].push(SCC_E[e][0]);}
+  for(var i2=1;i2<=SCC_N;i2++){adj[i2].sort(function(a,b){return a-b;});radj[i2].sort(function(a,b){return a-b;});}
+  var vis={},finish=[],comp={};
+  function snap(ev,phase,line,extra,sccList,cur){
+    steps.push({ev:ev,phase:phase,line:line,extra:extra||'',finish:finish.slice(),comp:Object.assign({},comp),sccList:(sccList||[]).slice(),cur:(cur===undefined?0:cur)});
+  }
+  // pass 1
+  snap('visit',1,'p1','1차 DFS 시작: 종료 순서를 기록합니다');
+  function dfs1(u){
+    vis[u]=true;
+    for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(!vis[v])dfs1(v);}
+    finish.push(u);
+    snap('finish',1,'dfs1','정점 '+u+' 종료 → finish에 추가',[],u);
+  }
+  for(var i3=1;i3<=SCC_N;i3++)if(!vis[i3])dfs1(i3);
+  snap('visit',2,'p2','2차 DFS: 역그래프에서 finish 역순으로');
+  // pass 2
+  var cid=0;
+  function dfs2(u,c,members){comp[u]=c;members.push(u);for(var k=0;k<radj[u].length;k++){var v=radj[u][k];if(!(v in comp))dfs2(v,c,members);}}
+  var sccList=[];
+  for(var f=finish.length-1;f>=0;f--){
+    var u=finish[f];
+    if(!(u in comp)){cid++;var members=[];dfs2(u,cid,members);members.sort(function(a,b){return a-b;});sccList.push(members);
+      snap('scc',2,'dfs2','정점 '+u+'에서 역그래프 DFS → SCC'+cid+' = {'+members.join(', ')+'}',sccList,u);}
+  }
+  snap('done',2,'done','완료! '+cid+'개의 SCC 발견',sccList);
+  return steps;
+}
+var KSSTEPS=[],KSIDX=0;
+function ksRender(){
+  var st=KSSTEPS[KSIDX];
+  ksRenderCode(st.line);
+  var ph=document.getElementById('ksPhase');ph.textContent=st.phase===1?'1차 DFS (원본)':'2차 DFS (역그래프)';ph.style.background=st.phase===1?'#4338CA':'#BE185D';
+  var fb=document.getElementById('ksFinish');fb.textContent='';
+  if(st.finish.length===0){var em=document.createElement('span');em.className='emptymsg';em.textContent='아직 없음';fb.appendChild(em);}
+  else for(var i=0;i<st.finish.length;i++){var s=document.createElement('span');s.className='seqitem finish';s.textContent=st.finish[i];fb.appendChild(s);}
+  var sb=document.getElementById('ksSccs');sb.textContent='';
+  if(!st.sccList||st.sccList.length===0){var em2=document.createElement('span');em2.className='emptymsg';em2.textContent='아직 없음';sb.appendChild(em2);}
+  else for(var c=0;c<st.sccList.length;c++){var tag=document.createElement('span');tag.className='scctag';tag.style.background=SCC_COLORS[c%SCC_COLORS.length];tag.textContent='SCC'+(c+1)+': {'+st.sccList[c].join(', ')+'}';sb.appendChild(tag);}
+  // graph coloring
+  for(var nd=1;nd<=SCC_N;nd++){
+    if(nd in st.comp){var ci=st.comp[nd]-1;nodeFill('ks',nd,SCC_COLORS[ci%SCC_COLORS.length],'#000','#fff');}
+    else nodeFill('ks',nd,'#FFFFFF','#4338CA','#1E1B4B');
+  }
+  if(st.cur)nodeFill('ks',st.cur,'#E8B84B','#C79A2E','#3A2A05');
+  var badge=document.getElementById('ksEvent');
+  var lbl={visit:'phase · 단계',finish:'finish · 종료',scc:'SCC 발견',done:'완료'};
+  var cls={visit:'ev-visit',finish:'ev-finish',scc:'ev-scc',done:'ev-done'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-visit');
+  var msg=document.getElementById('ksMsg');msg.textContent='['+KSIDX+'/'+(KSSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('ksPrev').disabled=(KSIDX===0);document.getElementById('ksNext').disabled=(KSIDX===KSSTEPS.length-1);
+}
+function ksReset(){stopAuto('ks');KSSTEPS=genKosarajuTrace();KSIDX=0;ksRender();}
+function ksStep(d){var ni=KSIDX+d;if(ni<0||ni>=KSSTEPS.length)return;KSIDX=ni;ksRender();}
+function ksSkip(){var cur=KSSTEPS[KSIDX].phase;for(var i=KSIDX+1;i<KSSTEPS.length;i++){if(KSSTEPS[i].ev==='scc'||KSSTEPS[i].phase!==cur||KSSTEPS[i].ev==='done'){KSIDX=i;ksRender();return;}}KSIDX=KSSTEPS.length-1;ksRender();}
+function ksAuto(){if(TIMERS.ks){stopAuto('ks');return;}if(KSIDX>=KSSTEPS.length-1)KSIDX=0;document.getElementById('ksAutoBtn').textContent='정지';TIMERS.ks=setInterval(function(){if(KSIDX>=KSSTEPS.length-1){stopAuto('ks');return;}ksStep(1);},650);}
+
+/* =============== 3탭: 타잔 =============== */
+var TJ_CODE=[
+  {html:'id[u]=low[u]=cnt++;',id:'assign'},
+  {html:'stack.push(u); onStk[u]=1;',id:'push'},
+  {html:'<span class="ck">for</span> (v : adj[u]) {',id:'for'},
+  {html:'  <span class="ck">if</span> (!vis[v]) {',id:'unvis'},
+  {html:'    tarjan(v);',id:'rec'},
+  {html:'    low[u]=min(low[u],low[v]);',id:'low1'},
+  {html:'  } <span class="ck">else if</span> (onStk[v])',id:'onstk'},
+  {html:'    low[u]=min(low[u],id[v]);',id:'low2'},
+  {html:'}',id:'endfor'},
+  {html:'<span class="ck">if</span> (low[u]==id[u]) pop SCC;',id:'root'}
+];
+function tjRenderCode(a){var box=document.getElementById('tjCode');box.textContent='';for(var i=0;i<TJ_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(TJ_CODE[i].id===a?' active':'');l.innerHTML=TJ_CODE[i].html;box.appendChild(l);}}
+function genTarjanTrace(){
+  var steps=[];
+  var adj={};for(var i=1;i<=SCC_N;i++)adj[i]=[];
+  for(var e=0;e<SCC_E.length;e++)adj[SCC_E[e][0]].push(SCC_E[e][1]);
+  for(var i2=1;i2<=SCC_N;i2++)adj[i2].sort(function(a,b){return a-b;});
+  var ids={},low={},onStk={},vis={},stk=[],cnt=0,sccList=[],comp={};
+  function snap(ev,line,extra,cur,flash){
+    var idc={},lowc={};for(var i=1;i<=SCC_N;i++){idc[i]=(i in ids)?ids[i]:-1;lowc[i]=(i in low)?low[i]:-1;}
+    steps.push({ev:ev,line:line,extra:extra||'',id:idc,low:lowc,stack:stk.slice(),sccList:sccList.map(function(s){return s.slice();}),comp:Object.assign({},comp),cur:(cur===undefined?0:cur),flash:(flash===undefined?0:flash)});
+  }
+  function tarjan(u){
+    ids[u]=low[u]=cnt++;vis[u]=true;stk.push(u);onStk[u]=true;
+    snap('visit','assign','정점 '+u+' 방문: id=low='+ids[u]+', 스택에 push',u);
+    for(var k=0;k<adj[u].length;k++){
+      var v=adj[u][k];
+      if(!vis[v]){
+        snap('visit','rec','정점 '+u+'→'+v+' (미방문) 재귀 진입',u,v);
+        tarjan(v);
+        low[u]=Math.min(low[u],low[v]);
+        snap('low','low1',u+'→'+v+' 후: low['+u+']=min(low['+u+'],low['+v+'])='+low[u],u,u);
+      } else if(onStk[v]){
+        low[u]=Math.min(low[u],ids[v]);
+        snap('low','low2',u+'→'+v+' (스택에 있음): low['+u+']=min(low['+u+'],id['+v+'])='+low[u],u,u);
+      }
+    }
+    if(low[u]===ids[u]){
+      var comp2=[];
+      while(true){var w=stk.pop();onStk[w]=false;comp2.push(w);comp[w]=sccList.length+1;if(w===u)break;}
+      comp2.sort(function(a,b){return a-b;});sccList.push(comp2);
+      snap('scc','root','low['+u+']==id['+u+']='+ids[u]+' → SCC 루트! 팝: {'+comp2.join(', ')+'}',u,u);
+    }
+  }
+  snap('visit','assign','타잔 시작: DFS 한 번으로 SCC를 찾습니다');
+  for(var i3=1;i3<=SCC_N;i3++)if(!vis[i3])tarjan(i3);
+  snap('done','root','완료! '+sccList.length+'개의 SCC 발견');
+  return steps;
+}
+var TJSTEPS=[],TJIDX=0;
+function tjRenderArr(id,arr,hlEqual,st){
+  var box=document.getElementById(id);box.textContent='';
+  for(var i=1;i<=SCC_N;i++){
+    var cell=document.createElement('div');cell.className='acell';
+    var val=arr[i];
+    if(val<0){cell.classList.add('acell');}
+    else{
+      if(hlEqual&&st.id[i]>=0&&st.low[i]===st.id[i]&&(i in st.comp)===false)cell.classList.add('flash');
+      else if(i in st.comp)cell.classList.add('on');
+    }
+    var idx=document.createElement('span');idx.className='idx';idx.textContent='['+i+']';
+    cell.appendChild(idx);cell.appendChild(document.createTextNode(val<0?'-':val));
+    box.appendChild(cell);
+  }
+}
+function tjRender(){
+  var st=TJSTEPS[TJIDX];
+  tjRenderCode(st.line);
+  tjRenderArr('tjId',st.id,false,st);
+  tjRenderArr('tjLow',st.low,true,st);
+  var sk=document.getElementById('tjStack');sk.textContent='';
+  for(var i=0;i<st.stack.length;i++){var it=document.createElement('div');it.className='stkitem';it.textContent=st.stack[i];sk.appendChild(it);}
+  var sb=document.getElementById('tjSccs');sb.textContent='';
+  if(!st.sccList||st.sccList.length===0){var em=document.createElement('span');em.className='emptymsg';em.textContent='아직 없음';sb.appendChild(em);}
+  else for(var c=0;c<st.sccList.length;c++){var tag=document.createElement('span');tag.className='scctag';tag.style.background=SCC_COLORS[c%SCC_COLORS.length];tag.textContent='{'+st.sccList[c].join(', ')+'}';sb.appendChild(tag);}
+  for(var nd=1;nd<=SCC_N;nd++){
+    if(nd in st.comp){var ci=st.comp[nd]-1;nodeFill('tj',nd,SCC_COLORS[ci%SCC_COLORS.length],'#000','#fff');}
+    else if(st.stack.indexOf(nd)>=0)nodeFill('tj',nd,'#C7D2FE','#4338CA','#1E1B4B');
+    else nodeFill('tj',nd,'#FFFFFF','#4338CA','#1E1B4B');
+  }
+  if(st.cur)nodeFill('tj',st.cur,'#E8B84B','#C79A2E','#3A2A05');
+  var badge=document.getElementById('tjEvent');
+  var lbl={visit:'visit · 방문',low:'low · 갱신',scc:'SCC 발견',done:'완료'};
+  var cls={visit:'ev-visit',low:'ev-low',scc:'ev-scc',done:'ev-done'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-visit');
+  var msg=document.getElementById('tjMsg');msg.textContent='['+TJIDX+'/'+(TJSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('tjPrev').disabled=(TJIDX===0);document.getElementById('tjNext').disabled=(TJIDX===TJSTEPS.length-1);
+}
+function tjReset(){stopAuto('tj');TJSTEPS=genTarjanTrace();TJIDX=0;tjRender();}
+function tjStep(d){var ni=TJIDX+d;if(ni<0||ni>=TJSTEPS.length)return;TJIDX=ni;tjRender();}
+function tjAuto(){if(TIMERS.tj){stopAuto('tj');return;}if(TJIDX>=TJSTEPS.length-1)TJIDX=0;document.getElementById('tjAutoBtn').textContent='정지';TIMERS.tj=setInterval(function(){if(TJIDX>=TJSTEPS.length-1){stopAuto('tj');return;}tjStep(1);},650);}
+
+/* =============== 4탭: 둘 비교 =============== */
+var CMP_SCCS=[[1,2,3],[4,5],[6,7],[8]];
+var CMP_KS_ORDER=[[1,2,3],[4,5],[6,7],[8]];  // 코사라주 발견순 (finish 역순)
+var CMP_TJ_ORDER=[[8],[6,7],[4,5],[1,2,3]];  // 타잔 발견순 (검산됨)
+var CMPIDX=0;
+function cmpReset(){CMPIDX=0;cmpRender();document.getElementById('cmpMsg').textContent='[다음 SCC ▶]로 두 알고리즘이 같은 SCC를 찾는 걸 확인하세요.';document.getElementById('cmpMsg').classList.remove('done');document.getElementById('cmpNext').disabled=false;}
+function cmpRender(){
+  var ksBox=document.getElementById('cmpKs');ksBox.textContent='';
+  for(var i=0;i<CMPIDX&&i<CMP_KS_ORDER.length;i++){var tag=document.createElement('span');tag.className='scctag';tag.style.background=SCC_COLORS[i%SCC_COLORS.length];tag.textContent='{'+CMP_KS_ORDER[i].join(', ')+'}';ksBox.appendChild(tag);}
+  var tjBox=document.getElementById('cmpTj');tjBox.textContent='';
+  for(var j=0;j<CMPIDX&&j<CMP_TJ_ORDER.length;j++){var tag2=document.createElement('span');tag2.className='scctag';var scc=CMP_TJ_ORDER[j];var colorIdx=CMP_SCCS.findIndex(function(s){return s.join(',')===scc.join(',');});tag2.style.background=SCC_COLORS[colorIdx%SCC_COLORS.length];tag2.textContent='{'+scc.join(', ')+'}';tjBox.appendChild(tag2);}
+}
+function cmpStep(){if(CMPIDX<4)CMPIDX++;cmpRender();if(CMPIDX>=4){document.getElementById('cmpMsg').textContent='완료! 발견 순서는 다르지만(코사라주는 {1,2,3}부터, 타잔은 {8}부터) 최종 SCC 집합은 완전히 동일합니다.';document.getElementById('cmpMsg').classList.add('done');document.getElementById('cmpNext').disabled=true;}else document.getElementById('cmpMsg').textContent='진행 중... 두 알고리즘 모두 4개의 SCC를 찾습니다.';}
+function cmpAll(){CMPIDX=4;cmpRender();document.getElementById('cmpMsg').textContent='완료! 발견 순서는 다르지만 최종 SCC 집합은 완전히 동일합니다: {1,2,3},{4,5},{6,7},{8}.';document.getElementById('cmpMsg').classList.add('done');document.getElementById('cmpNext').disabled=true;}
+
+/* =============== 5탭: 플레이그라운드 =============== */
+function pgRun(){
+  var out=document.getElementById('pgResult'),msg=document.getElementById('pgMsg');
+  var n=parseInt(document.getElementById('pgN').value,10);
+  var raw=document.getElementById('pgInput').value;
+  if(isNaN(n)||n<1||n>12){msg.textContent='⚠️ 정점 수는 1~12 사이로!';out.textContent='';return;}
+  var lines=raw.split('\n'),edges=[];
+  for(var li=0;li<lines.length;li++){
+    var s=lines[li].trim();if(s==='')continue;
+    var ps=s.split(/\s+/);
+    if(ps.length!==2){msg.textContent='⚠️ '+(li+1)+'번째 줄: "u v" 두 숫자가 필요해요.';out.textContent='';return;}
+    var u=parseInt(ps[0],10),v=parseInt(ps[1],10);
+    if(isNaN(u)||isNaN(v)){msg.textContent='⚠️ '+(li+1)+'번째 줄: 숫자가 아닌 값이 있어요.';out.textContent='';return;}
+    if(u<1||u>n||v<1||v>n){msg.textContent='⚠️ '+(li+1)+'번째 줄: 정점 번호는 1~'+n+' 범위여야 해요.';out.textContent='';return;}
+    edges.push([u,v]);
+  }
+  if(edges.length===0){msg.textContent='⚠️ 간선을 하나 이상 입력하세요.';out.textContent='';return;}
+  var adj={},radj={},indeg={};
+  for(var i=1;i<=n;i++){adj[i]=[];radj[i]=[];indeg[i]=0;}
+  for(var e=0;e<edges.length;e++){adj[edges[e][0]].push(edges[e][1]);radj[edges[e][1]].push(edges[e][0]);indeg[edges[e][1]]++;}
+  // Kahn topo
+  var indeg2={};for(var i2=1;i2<=n;i2++)indeg2[i2]=indeg[i2];
+  var q=[],order=[];
+  for(var i3=1;i3<=n;i3++)if(indeg2[i3]===0)q.push(i3);
+  q.sort(function(a,b){return a-b;});
+  while(q.length){var u=q.shift();order.push(u);var added=[];for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(--indeg2[v]===0)added.push(v);}added.sort(function(a,b){return a-b;});for(var x=0;x<added.length;x++)q.push(added[x]);}
+  var hasCycle=order.length<n;
+  // Kosaraju SCC
+  var vis={},finish=[];
+  function dfs1(u){vis[u]=true;for(var k=0;k<adj[u].length;k++){var v=adj[u][k];if(!vis[v])dfs1(v);}finish.push(u);}
+  for(var i4=1;i4<=n;i4++)if(!vis[i4])dfs1(i4);
+  var comp={},cid=0,sccs=[];
+  function dfs2(u,c,mem){comp[u]=c;mem.push(u);for(var k=0;k<radj[u].length;k++){var v=radj[u][k];if(!(v in comp))dfs2(v,c,mem);}}
+  for(var f=finish.length-1;f>=0;f--){var u2=finish[f];if(!(u2 in comp)){cid++;var mem=[];dfs2(u2,cid,mem);mem.sort(function(a,b){return a-b;});sccs.push(mem);}}
+  out.textContent='';
+  // topo result
+  var h1=document.createElement('div');h1.className='arrlabel';h1.style.marginTop='4px';h1.textContent='위상 정렬';out.appendChild(h1);
+  if(hasCycle){
+    var warn=document.createElement('div');warn.className='warn';warn.style.margin='0';
+    warn.innerHTML='⚠️ <b>사이클이 존재</b>하여 위상 정렬이 불가능합니다. (정렬된 정점 '+order.length+'/'+n+') SCC를 확인하세요.';
+    out.appendChild(warn);
+  } else {
+    var ob=document.createElement('div');ob.className='seq';
+    for(var o=0;o<order.length;o++){var s2=document.createElement('span');s2.className='seqitem';s2.textContent=order[o];ob.appendChild(s2);if(o<order.length-1){var ar=document.createElement('span');ar.style.color='var(--ink3)';ar.textContent='→';ob.appendChild(ar);}}
+    out.appendChild(ob);
+  }
+  // SCC result
+  var h2=document.createElement('div');h2.className='arrlabel';h2.textContent='강결합요소 (SCC) — '+cid+'개';out.appendChild(h2);
+  var sb=document.createElement('div');
+  for(var c=0;c<sccs.length;c++){var tag=document.createElement('span');tag.className='scctag';tag.style.background=SCC_COLORS[c%SCC_COLORS.length];tag.textContent='SCC'+(c+1)+': {'+sccs[c].join(', ')+'}';sb.appendChild(tag);}
+  out.appendChild(sb);
+  var stat=document.createElement('div');stat.className='stat';stat.style.marginTop='10px';
+  stat.innerHTML='<div class="box">정점 <b>'+n+'</b></div><div class="box">SCC <b>'+cid+'</b></div><div class="box">위상정렬 <b>'+(hasCycle?'불가':'가능')+'</b></div>';
+  out.appendChild(stat);
+  msg.textContent=hasCycle?('사이클 존재 → 위상정렬 불가, SCC '+cid+'개'):('DAG → 위상정렬 가능, SCC '+cid+'개(모두 크기 1)');
+  msg.classList.add('done');
+}
+
+/* ===== 퀴즈 ===== */
+var QZ=[
+  {q:'위상 정렬이 가능한 그래프는?',
+   o:['모든 유향 그래프','사이클 없는 유향 그래프(DAG)','무향 그래프','완전 그래프'],a:1,
+   e:'위상 정렬은 방향이 있고 사이클이 없는 DAG에서만 가능합니다. 사이클이 있으면 순서를 매길 수 없어요.'},
+  {q:'Kahn 알고리즘이 큐에 넣는 정점은?',
+   o:['진입차수가 최대인 정점','진입차수가 0인 정점','아무 정점','마지막 정점'],a:1,
+   e:'진입차수 0(아무도 안 가리키는 = 먼저 할 수 있는) 정점부터 큐에 넣고 제거하며 순서를 만듭니다.'},
+  {q:'강결합요소(SCC)의 정의는?',
+   o:['간선이 가장 많은 부분','서로 오갈 수 있는(u↔v 경로) 정점 집합','진입차수 0인 정점','가장 큰 사이클'],a:1,
+   e:'SCC는 임의의 두 정점 u,v에 대해 u→v와 v→u 경로가 모두 존재하는 최대 정점 집합입니다.'},
+  {q:'코사라주 알고리즘의 특징은?',
+   o:['DFS 1번','DFS 2번 + 역방향 그래프','BFS만 사용','정렬 필요'],a:1,
+   e:'코사라주는 원본에서 DFS(종료순서), 역그래프에서 종료 역순 DFS, 총 2번의 DFS로 SCC를 찾습니다.'},
+  {q:'타잔에서 정점 u가 SCC의 루트인 조건은?',
+   o:['id[u] > low[u]','low[u] == id[u]','스택이 비었을 때','indeg[u]==0'],a:1,
+   e:'low[u]==id[u]이면 u에서 자기보다 오래된 정점으로 못 돌아간다는 뜻 → u가 이 SCC의 시작점(루트)입니다.'},
+  {q:'타잔의 low[u]가 의미하는 것은?',
+   o:['u의 자식 수','u에서 도달 가능한(스택 위) 가장 작은 id','u의 진입차수','u의 색깔'],a:1,
+   e:'low[u]는 u에서 DFS로 되돌아갈 수 있는 가장 오래된(작은 id) 정점입니다. SCC 경계를 판별하는 핵심이에요.'},
+  {q:'SCC를 하나의 점으로 압축(응축)하면?',
+   o:['다시 사이클 생김','항상 DAG가 됨','무향 그래프','완전 그래프'],a:1,
+   e:'SCC 응축 그래프는 반드시 사이클이 없는 DAG입니다. 그래서 그 위에서 위상 정렬이 가능해져요.'},
+  {q:'코사라주와 타잔의 결과 SCC는?',
+   o:['타잔이 더 많다','코사라주가 더 많다','완전히 동일','입력마다 다르다'],a:2,
+   e:'두 알고리즘 모두 정확히 같은 SCC 집합을 찾습니다. 발견 순서만 다를 뿐이에요. 복잡도도 O(V+E)로 같습니다.'}
+];
+var QSTATE=[];
+function quizBuild(){
+  var area=document.getElementById('quizArea');area.textContent='';QSTATE=[];
+  for(var i=0;i<QZ.length;i++){
+    QSTATE.push(null);
+    var qd=document.createElement('div');qd.className='q';
+    var qt=document.createElement('div');qt.className='qt';
+    var qn=document.createElement('span');qn.className='qn';qn.textContent='Q'+(i+1);
+    qt.appendChild(qn);qt.appendChild(document.createTextNode(QZ[i].q));qd.appendChild(qt);
+    var expl=document.createElement('div');expl.className='expl';expl.textContent='해설: '+QZ[i].e;
+    (function(qi,qdEl,explEl){
+      for(var j=0;j<QZ[qi].o.length;j++){
+        var ob=document.createElement('button');ob.className='opt';
+        ob.textContent='① ② ③ ④'.split(' ')[j]+' '+QZ[qi].o[j];
+        (function(oj,obEl){
+          obEl.addEventListener('click',function(){
+            if(QSTATE[qi]!==null)return;QSTATE[qi]=oj;
+            var opts=qdEl.querySelectorAll('.opt');
+            for(var k=0;k<opts.length;k++){opts[k].disabled=true;if(k===QZ[qi].a)opts[k].classList.add(oj===QZ[qi].a?'pick-ok':'reveal');}
+            if(oj!==QZ[qi].a)obEl.classList.add('pick-ng');
+            explEl.classList.add('show');
+          });
+        })(j,ob);
+        qdEl.appendChild(ob);
+      }
+    })(i,qd,expl);
+    qd.appendChild(expl);area.appendChild(qd);
+  }
+  document.getElementById('quizScore').style.display='none';
+}
+function quizGrade(){
+  var answered=0,correct=0;
+  for(var i=0;i<QZ.length;i++){if(QSTATE[i]!==null){answered++;if(QSTATE[i]===QZ[i].a)correct++;}}
+  var sc=document.getElementById('quizScore');sc.style.display='block';
+  if(answered<QZ.length)sc.textContent='아직 '+(QZ.length-answered)+'문제가 남았어요! (현재 '+correct+'개 정답)';
+  else if(correct===QZ.length)sc.textContent='🏆 8문제 전부 정답! 위상 정렬과 SCC(코사라주·타잔)를 완벽히 이해했습니다.';
+  else sc.textContent='결과: '+correct+' / '+QZ.length+' — 틀린 문제의 해설을 읽고 실행기로 다시 확인해 보세요!';
+}
+function quizReset(){quizBuild();}
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded',function(){
+  buildSVG('dagSvg','dag',DAG_E,DAG_POS,DAG_N);
+  buildSVG('sccSvg','scc',SCC_E,SCC_POS,SCC_N);
+  buildSVG('tpSvg','tp',DAG_E,DAG_POS,DAG_N);
+  buildSVG('ksSvg','ks',SCC_E,SCC_POS,SCC_N);
+  buildSVG('tjSvg','tj',SCC_E,SCC_POS,SCC_N);
+  tpReset();ksReset();tjReset();cmpReset();pgRun();quizBuild();
+});
+</script>
+</body>
+</html>

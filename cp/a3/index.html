@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세그먼트 트리 심화 — 지연 전파 · 세영코딩연구소</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#FAF6EF;--panel:#FFFFFF;--soft:#F2EBDD;--bdr:#E3D9C8;
+  --ink:#1E1509;--ink2:#55442F;--ink3:#9A876B;
+  --c-color:#0B6E99;--c-light:#E5F2F8;
+  --py-color:#2A8C4A;--py-light:#E5F5EA;
+  --accent:#9333EA;
+  --accent-light:#F3E4FB;
+  --out:#B8860B;
+  --code-bg:#191922;--term-bg:#0F1117;
+  --ok:#1E8449;--ng:#C0392B;
+  --cell:#14B8A6;--cell-hi:#E8B84B;--cell-path:#F0776C;
+  --mono:'JetBrains Mono',monospace;--sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.75;min-height:100vh}
+
+header{background:linear-gradient(120deg,#1E1509,#2E1065);padding:26px 44px 22px;position:relative;overflow:hidden}
+header::after{content:'lazy · push down';position:absolute;right:24px;bottom:8px;font-family:var(--mono);font-size:30px;font-weight:700;color:rgba(255,255,255,.06);pointer-events:none;letter-spacing:.04em}
+.hbadge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;background:var(--accent);color:#fff;padding:4px 11px;border-radius:5px;display:inline-block;margin-bottom:10px}
+header h1{font-size:25px;font-weight:900;color:#FFF9F0;letter-spacing:-.02em;line-height:1.35}
+header p{color:#C99BEC;font-size:14px;margin-top:6px}
+header .langchips{margin-top:12px;display:flex;gap:8px}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.chip.c{background:var(--c-color);color:#fff}
+.chip.py{background:var(--py-color);color:#fff}
+.chip.js{background:#5A4A38;color:#F0E6D2}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.95);backdrop-filter:blur(6px);border-bottom:2px solid var(--bdr);padding:10px 22px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.navbtn{font-family:var(--sans);font-size:14.5px;font-weight:700;color:var(--ink2);background:var(--panel);border:1.5px solid var(--bdr);border-radius:22px;padding:7px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.navbtn .num{font-family:var(--mono);font-size:11px;font-weight:700;background:var(--soft);color:var(--ink3);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.navbtn:hover{border-color:var(--accent);color:var(--accent)}
+.navbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.navbtn.on .num{background:rgba(255,255,255,.25);color:#fff}
+
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 90px}
+.page{display:none}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--bdr);border-radius:14px;padding:28px 30px;margin-bottom:28px;box-shadow:0 1px 3px rgba(30,21,9,.04)}
+.card h2{font-size:22px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2 .bar{width:6px;height:24px;background:var(--accent);border-radius:3px;flex:none}
+.card h3{font-size:18px;font-weight:800;margin:26px 0 12px;color:var(--ink)}
+.card p{margin-bottom:12px;color:var(--ink)}
+.card p b{color:var(--accent)}
+.small{font-size:14.5px;color:var(--ink2)}
+
+.tip{background:var(--accent-light);border-left:5px solid var(--accent);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.tip b{color:var(--accent)}
+.warn{background:#FBEBE8;border-left:5px solid var(--ng);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:15.5px}
+.warn b{color:var(--ng)}
+.link-prev{background:var(--soft);border:1.5px dashed var(--ink3);border-radius:10px;padding:12px 18px;margin:16px 0;font-size:15px;color:var(--ink2)}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}
+@media(max-width:860px){.duo{grid-template-columns:1fr}}
+.col .lang{font-family:var(--mono);font-size:13px;font-weight:700;color:#fff;padding:7px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.col.c .lang{background:var(--c-color)}
+.col.py .lang{background:var(--py-color)}
+.copybtn{font-family:var(--sans);font-size:11.5px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer}
+.copybtn:hover{background:rgba(255,255,255,.32)}
+pre.code{background:var(--code-bg);color:#E8E6E3;font-family:var(--mono);font-size:14px;line-height:1.7;padding:16px 18px;border-radius:0 0 10px 10px;overflow-x:auto;white-space:pre;tab-size:4}
+.col.c pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--c-color)}
+.col.py pre.code{border-top:none;box-shadow:inset 0 3px 0 var(--py-color)}
+pre.code .cm{color:#7A8B7A;font-style:italic}
+pre.code .kw{color:#C792EA}
+pre.code .fn{color:#82AAFF}
+pre.code .st{color:#C3E88D}
+pre.code .nb{color:#F78C6C}
+pre.code .hl{background:rgba(147,51,234,.22);border-radius:3px;padding:0 2px}
+
+.term{background:var(--term-bg);border-radius:10px;padding:13px 18px;margin:12px 0;font-family:var(--mono);font-size:14px}
+.term .tl{color:#6B7280;font-size:11.5px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+.term .to{color:#7CE38B;white-space:pre-wrap;line-height:1.65}
+.term .ti{color:#E8B84B}
+
+table.cmp{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.cmp th{background:var(--soft);color:var(--ink2);font-weight:800;padding:10px 14px;border:1px solid var(--bdr);text-align:left}
+table.cmp td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.cmp td.mono{font-family:var(--mono);font-size:13.5px}
+table.cmp tr td:first-child{font-weight:700;background:#FDFBF6}
+
+.btn{font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:9px;padding:9px 18px;cursor:pointer;transition:filter .12s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.teal{background:var(--cell);color:#fff}
+.btn.warm{background:var(--cell-hi);color:#3A2A05}
+.btn.ghost{background:var(--panel);color:var(--ink2);border:1.5px solid var(--bdr)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:12px 0}
+select.sel,input.inp{font-family:var(--mono);font-size:15px;font-weight:600;border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;background:var(--panel);color:var(--ink)}
+
+.simpanel{background:var(--soft);border:1.5px solid var(--bdr);border-radius:12px;padding:20px;margin:16px 0}
+.simpanel h4{font-size:15px;font-weight:800;color:var(--ink2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.simpanel h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.simflex{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.simflex{grid-template-columns:1fr}}
+.svgbox{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+
+.statecard{background:var(--panel);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.statecard .sl{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--ink3);margin-bottom:7px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;align-items:center}
+.nchip{font-family:var(--mono);font-size:14.5px;font-weight:700;min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent);padding:0 6px}
+.nchip.q{background:#DFF5F1;color:#0E7A6E;border-color:var(--cell)}
+.nchip.top{background:var(--cell-hi);color:#3A2A05;border-color:#C79A2E}
+.nchip.ord{background:var(--panel);color:var(--ink2);border-color:var(--bdr)}
+.nchip.ord.new{background:var(--accent);color:#fff;border-color:var(--accent)}
+.emptymsg{font-size:13.5px;color:var(--ink3);font-style:italic}
+.msgline{background:var(--panel);border:1.5px solid var(--accent);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--ink);min-height:48px;display:flex;align-items:center;margin-top:4px}
+.msgline.done{border-color:var(--ok);background:#EAF7EE}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.lgdot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink3);background:var(--panel);flex:none}
+.lgdot.cur{background:var(--cell-hi);border-color:#C79A2E}
+.lgdot.vis{background:var(--accent);border-color:var(--accent)}
+.lgdot.inq{background:#DFF5F1;border-color:var(--cell)}
+
+.grid7{display:grid;grid-template-columns:repeat(7,46px);gap:5px;margin:14px 0}
+.gcell{width:46px;height:46px;border-radius:8px;background:var(--panel);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;user-select:none;transition:transform .08s}
+.gcell:hover{transform:scale(1.06)}
+.gcell.wall{background:#4A3B28;border-color:#4A3B28;color:#4A3B28}
+@media(max-width:480px){.grid7{grid-template-columns:repeat(7,40px)}.gcell{width:40px;height:40px;font-size:12.5px}}
+
+.q{background:var(--panel);border:1.5px solid var(--bdr);border-radius:12px;padding:20px 22px;margin-bottom:18px}
+.q .qt{font-size:16.5px;font-weight:800;margin-bottom:12px}
+.q .qt .qn{font-family:var(--mono);color:#fff;background:var(--accent);border-radius:7px;padding:2px 10px;font-size:13.5px;margin-right:9px}
+.opt{display:block;width:100%;text-align:left;font-family:var(--sans);font-size:15.5px;font-weight:600;background:#FDFBF6;border:1.5px solid var(--bdr);border-radius:9px;padding:10px 15px;margin-bottom:8px;cursor:pointer;color:var(--ink);transition:all .12s}
+.opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt.pick-ok{background:#EAF7EE;border-color:var(--ok);color:var(--ok);font-weight:800}
+.opt.pick-ng{background:#FBEBE8;border-color:var(--ng);color:var(--ng)}
+.opt.reveal{border-color:var(--ok);background:#EAF7EE}
+.opt:disabled{cursor:default}
+.expl{display:none;background:var(--soft);border-radius:9px;padding:11px 15px;font-size:14.5px;color:var(--ink2);margin-top:6px}
+.expl.show{display:block}
+.scorebox{background:var(--accent-light);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px}
+
+footer{border-top:2px solid var(--bdr);padding:26px 22px 40px;text-align:center;color:var(--ink3);font-size:13.5px}
+footer b{color:var(--ink2)}
+.pagenav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+/* ===== 지연 전파 편 전용 ===== */
+.arrlabel{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--accent);margin:16px 0 8px}
+.codebox{background:var(--code-bg);border-radius:12px;padding:16px 8px;font-family:var(--mono);font-size:12.5px;line-height:1.8;overflow-x:auto}
+.cline{display:block;padding:2px 12px;border-radius:5px;color:#C8CAD8;white-space:pre;transition:background .2s}
+.cline.active{background:rgba(232,184,75,.22);color:#fff;font-weight:700;box-shadow:inset 3px 0 0 var(--cell-hi)}
+.cline .ck{color:#C792EA}.cline .cf{color:#82AAFF}.cline .cc{color:#5C6370;font-style:italic}.cline .cn{color:#F78C6C}.cline .cs{color:#C3E88D}
+.evbadge{display:inline-block;border-radius:7px;padding:4px 13px;font-family:var(--mono);font-weight:700;font-size:13.5px;color:#fff}
+.ev-update{background:#9333EA}.ev-lazy{background:#DB2777}.ev-push{background:#EA580C}.ev-hit{background:#166534}.ev-query{background:#0F766E}.ev-done{background:#9333EA}
+.stat{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0;font-family:var(--mono);font-weight:700}
+.stat .box{background:var(--soft);border-radius:8px;padding:6px 14px;color:var(--ink)}
+.stat .box b{color:var(--accent);font-size:18px}
+.mono-in{width:100%;height:120px;font-family:var(--mono);font-size:14px;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;background:var(--panel);color:var(--ink);resize:vertical}
+.callout-c{border-left:4px solid var(--c-color);background:#EAF3F8;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:14.5px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--ink2)}
+.legend i{width:15px;height:15px;border-radius:4px;display:inline-block;border:1px solid var(--bdr)}
+/* 원본 배열 셀 */
+.arr{display:flex;gap:0;border-radius:8px;overflow-x:auto;border:2px solid var(--bdr);width:max-content;max-width:100%}
+.acell{min-width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:15px;font-weight:700;background:var(--panel);border-right:1px solid var(--bdr);color:var(--ink2);position:relative;transition:background .25s,color .25s}
+.acell:last-child{border-right:none}
+.acell.inrange{background:#F3E0FB;color:#9333EA}
+.acell.flash{background:var(--cell-hi);color:#3A2A05;animation:cflash .5s}
+@keyframes cflash{0%{transform:scale(1.15)}100%{transform:scale(1)}}
+.acell .idx{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink3);font-weight:600}
+/* 세그먼트 트리 노드에 lazy 배지 */
+.lazybadge{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px}
+.pathflow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-family:var(--mono);font-weight:700;font-size:14px}
+.pathflow .pn{border-radius:8px;padding:5px 10px;color:#fff;background:var(--accent)}
+.pathflow .parr{color:var(--ink3);font-size:13px}
+.mtag{display:inline-flex;align-items:center;gap:5px;background:var(--soft);border:1.5px solid var(--accent);border-radius:8px;padding:4px 12px;font-family:var(--mono);font-weight:700;font-size:13.5px;color:var(--accent);margin:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="hbadge">SEYOUNG CODING LAB · C 알고리즘</span>
+  <h1>세그먼트 트리 심화 <span style="color:#C99BEC">지연 전파</span></h1>
+  <p>구간 전체를 O(log n)에 갱신하는 게으른 표시(lazy)와 밀어내리기(push down)</p>
+  <div class="langchips">
+    <span class="chip c">C</span>
+    <span class="chip js">시각화: 구간 갱신 · lazy 배열 · push down · 지연 질의</span>
+  </div>
+</header>
+
+<nav id="topnav">
+  <button class="navbtn on" onclick="goPage(0)"><span class="num">0</span>왜 지연 전파</button>
+  <button class="navbtn" onclick="goPage(1)"><span class="num">1</span>lazy의 원리</button>
+  <button class="navbtn" onclick="goPage(2)"><span class="num">2</span>구간 갱신 실행</button>
+  <button class="navbtn" onclick="goPage(3)"><span class="num">3</span>push down 질의</button>
+  <button class="navbtn" onclick="goPage(4)"><span class="num">4</span>전체 코드</button>
+  <button class="navbtn" onclick="goPage(5)"><span class="num">5</span>내 배열로</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= PAGE 0 ================= -->
+<section class="page on">
+  <div class="card">
+    <h2><span class="bar"></span>구간 갱신의 벽 — 왜 지연 전파인가</h2>
+    <p>앞서 배운 세그먼트 트리는 <b>점 갱신</b>(값 하나 바꾸기)은 O(log n)이었습니다. 그런데 <b>"구간 [l,r]의 모든 값에 v를 더하라"</b>는 요청이 오면?</p>
+    <p>순진하게 구간의 리프를 하나씩 갱신하면 <b>최악 O(n)</b>입니다. 구간이 크면 느려요. <b>지연 전파(lazy propagation)</b>는 이 구간 갱신을 <b>O(log n)</b>으로 끌어내립니다.</p>
+    <table class="cmp">
+      <tr><th>연산</th><th>점 갱신 세그트리</th><th>지연 전파</th></tr>
+      <tr><td>점 갱신</td><td class="mono">O(log n)</td><td class="mono">O(log n)</td></tr>
+      <tr><td>구간 질의</td><td class="mono">O(log n)</td><td class="mono">O(log n)</td></tr>
+      <tr><td><b>구간 갱신</b></td><td class="mono">O(n)</td><td class="mono"><b>O(log n)</b></td></tr>
+    </table>
+    <div class="tip">💡 핵심 아이디어 한 줄 — <b>"지금 당장 다 갱신하지 말고, 나중에 필요할 때 미뤄서 하자."</b> 구간을 덮는 노드에 <b>"빚(lazy)"</b>을 표시만 해두고, 실제로 그 아래로 내려갈 일이 생겼을 때 비로소 자식에게 전달합니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>게으름의 두 가지 장치</h2>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin:14px 0">
+      <div style="flex:1;min-width:230px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">🏷️ lazy 배열</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">각 노드에 <b>"아직 자식에게 안 내려보낸 갱신값"</b>을 저장. 구간 갱신 시 완전히 덮이는 노드에 <b>표시만</b> 하고 멈춥니다.</p>
+      </div>
+      <div style="flex:1;min-width:230px;background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px">
+        <h4 style="margin:0 0 8px;color:var(--accent)">⬇️ push down</h4>
+        <p style="margin:0;font-size:14px;color:var(--ink2);line-height:1.6">그 노드 <b>아래로 내려가야 할 때</b>(질의·갱신), 쌓인 lazy를 자식에게 전달하고 자기 lazy는 비웁니다.</p>
+      </div>
+    </div>
+    <div class="callout-c"><b>빚과 상환의 비유</b> — lazy는 "갚아야 할 빚"입니다. 구간 갱신은 큰 노드에 빚을 <b>기록만</b> 하고(합은 바로 정확히 반영, 자식 전달은 미룸), 나중에 그 노드 아래를 방문할 일이 생기면 그때 <b>자식에게 빚을 넘깁니다</b>(push down). 덕분에 필요한 곳만 갱신해요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>이 강의의 예제</h2>
+    <p><b>8칸 배열</b> [5,8,6,3,2,7,2,6]에 구간 합 세그먼트 트리를 만들고, <b>구간 갱신</b>을 적용합니다.</p>
+    <div class="svgbox" id="introSvg" style="padding:10px 0"></div>
+    <div class="term">
+      <div class="tl">시나리오</div>
+      <div class="to">초기 전체합 [0,7] = 39
+구간 갱신 [2,5]에 +3 → 전체합 51, 구간합 [2,5]=30
+구간 갱신 [4,7]에 +2 → 전체합 59, 구간합 [3,6]=29</div>
+    </div>
+    <div class="tip">💡 [2,5]에 +3을 하면 <b>node5[2,3]과 node6[4,5]에만 lazy=3</b>이 걸립니다. 리프(개별 원소)는 갱신하지 않는데도 모든 질의가 정확해요. 어떻게 그런지 다음 탭부터 한 단계씩 봅니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1 : lazy의 원리 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>lazy 배열 — 미뤄둔 갱신의 기록</h2>
+    <p>지연 전파의 심장은 <b>lazy 배열</b>입니다. 세그먼트 트리와 <b>같은 크기</b>로 하나 더 두고, 각 노드마다 <b>"아직 자식에게 전달하지 않은 갱신값"</b>을 저장해요.</p>
+    <div class="callout-c"><b>두 가지가 동시에 유지되는 불변식</b> — ① <span class="mono">tree[node]</span>는 <b>항상 그 노드 구간의 정확한 합</b>입니다(lazy 반영 포함). ② <span class="mono">lazy[node]</span>는 <b>자식들에게 아직 안 내려간</b> 갱신입니다. 즉 노드 자신의 합은 맞지만, 자식은 아직 모를 수 있어요.</div>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">구간 갱신 시 (완전 포함 노드)</div>
+        <pre class="code"><span class="cc">// 구간 [l,r]에 val 더하기</span>
+<span class="cc">// 이 노드[s,e]가 완전히 덮이면:</span>
+
+tree[node] += val * (e-s+1);
+<span class="cc">//   구간 크기만큼 합 즉시 반영</span>
+
+lazy[node] += val;
+<span class="cc">//   자식 전달은 "빚"으로 표시만</span>
+
+<span class="cc">// 여기서 멈춤! 자식으로 안 내려감</span></pre>
+      </div>
+      <div class="col c">
+        <div class="lang">왜 합은 바로 맞나</div>
+        <pre class="code"><span class="cc">// 구간 [s,e] 전체에 val을 더하면</span>
+<span class="cc">// 합은 val * (구간 크기)만큼 증가</span>
+
+<span class="cc">// 예: [2,3]에 +3</span>
+<span class="cc">//   원소 2개니까 합 += 3*2 = 6</span>
+<span class="cc">//   tree: 9 → 15 (정확!)</span>
+
+<span class="cc">// 개별 원소(리프)는 안 바꿔도</span>
+<span class="cc">// 구간 합은 이미 정확함</span></pre>
+      </div>
+    </div>
+    <div class="tip">💡 <b>구간 크기 곱셈</b>이 열쇠입니다. 구간 합에서는 "구간의 모든 원소에 val을 더하면 합이 val×(구간 크기)만큼 는다"가 성립해요. 그래서 자식을 일일이 안 건드려도 노드의 합을 정확히 갱신할 수 있습니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>push down — 빚을 자식에게 넘기기</h2>
+    <p>그런데 나중에 그 노드 <b>아래로 내려가야</b> 할 때가 옵니다(더 작은 구간을 질의하거나 갱신). 그때 쌓인 lazy를 자식에게 전달해야 해요. 이게 <b>push down</b>입니다.</p>
+    <pre class="code"><span class="kw">void</span> <span class="fn">push_down</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e){
+    <span class="kw">if</span> (lazy[node] != <span class="cn">0</span>){
+        <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>, lc=<span class="cn">2</span>*node, rc=<span class="cn">2</span>*node+<span class="cn">1</span>;
+        <span class="cc">/* 자식의 합에 반영 (각 자식 구간 크기만큼) */</span>
+        <span class="hl">tree[lc] += lazy[node]*(mid-s+<span class="cn">1</span>);</span>
+        <span class="hl">tree[rc] += lazy[node]*(e-mid);</span>
+        <span class="cc">/* 자식에게 lazy 전달 (빚 넘기기) */</span>
+        lazy[lc] += lazy[node];
+        lazy[rc] += lazy[node];
+        <span class="hl">lazy[node] = <span class="cn">0</span>;</span>  <span class="cc">/* 내 빚은 청산 */</span>
+    }
+}</pre>
+    <div class="callout-c"><b>왜 "내려갈 때만" 하나</b> — push down은 <b>꼭 필요할 때만</b> 합니다. 노드 아래로 재귀해 들어가기 직전에 호출해요. 그러면 방문하지 않는 가지에는 lazy가 그대로 남아 불필요한 작업을 안 합니다. "게으르게, 필요할 때만 갚는다"가 O(log n)의 비결이에요.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 : 구간 갱신 실행 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>한 줄씩 실행 — 구간 갱신 [2,5]에 +3</h2>
+    <p>이 강의의 심장입니다. [다음 ▶]마다 구간 갱신이 트리를 타고 내려가다, <b>완전히 덮이는 노드에서 lazy를 표시하고 멈추는</b> 과정을 봅니다. lazy가 걸린 노드는 분홍 배지로 표시돼요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="upReset()">처음으로</button>
+        <button class="btn ghost" onclick="upStep(-1)" id="upPrev">◀ 이전</button>
+        <button class="btn acc" onclick="upStep(1)" id="upNext">다음 ▶</button>
+        <button class="btn teal" onclick="upAuto()" id="upAutoBtn">자동 재생</button>
+      </div>
+      <div class="btnrow" style="margin-top:2px">
+        <span style="font-size:13px;font-weight:700;color:var(--ink2);align-self:center">갱신:</span>
+        <button class="btn ghost" onclick="upSetOp(2,5,3)" id="upOp1">[2,5]에 +3</button>
+        <button class="btn ghost" onclick="upSetOp(4,7,2)" id="upOp2">[4,7]에 +2</button>
+        <button class="btn ghost" onclick="upSetOp(0,7,1)" id="upOp3">[0,7]에 +1</button>
+      </div>
+      <div class="arrlabel" style="margin-top:4px">실행 중인 코드</div>
+      <div class="codebox" id="upCode"></div>
+      <div class="svgbox" id="upSvg" style="max-width:640px;margin-top:12px"></div>
+      <div class="arrlabel">원본 배열 &nbsp;<span style="color:var(--ink3);font-weight:400">(보라=갱신 구간)</span></div>
+      <div class="arr" id="upArr"></div>
+      <div class="stat">
+        <div class="box">방문 노드 <b id="upVisit">0</b></div>
+        <div class="box">lazy 표시 <b id="upLazy">0</b></div>
+        <div class="box">루트 합 <b id="upRoot">39</b></div>
+      </div>
+      <div style="margin-top:10px"><span class="evbadge ev-update" id="upEvent">시작</span></div>
+      <div class="msgline" id="upMsg">[다음 ▶]으로 구간 갱신을 시작하세요.</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#166534"></i>완전 포함 (lazy 표시 후 멈춤)</span>
+      <span><i style="background:#E8B84B"></i>일부 겹침 (재귀)</span>
+      <span><i style="background:#EA580C"></i>push down 발생</span>
+      <span><i style="background:#CBD5E1"></i>벗어남</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>지금 무슨 일이 일어났나</h2>
+    <table class="cmp">
+      <tr><th>단계</th><th>무엇을 볼까</th></tr>
+      <tr><td>루트에서 시작</td><td>[0,7]이 갱신 구간 [2,5]와 일부만 겹침 → 자식으로 재귀</td></tr>
+      <tr><td>완전 포함 만남</td><td>node5[2,3]과 node6[4,5]가 [2,5]에 완전히 덮임</td></tr>
+      <tr><td>lazy 표시</td><td>그 노드 합을 즉시 갱신하고 lazy에 +3 기록, <b>멈춤</b></td></tr>
+      <tr><td>조상 합 갱신</td><td>재귀에서 돌아오며 부모들 합도 정확히 갱신</td></tr>
+    </table>
+    <div class="tip">💡 <b>핵심 관찰</b> — 갱신이 리프(개별 원소)까지 내려가지 <b>않습니다</b>. node5, node6에서 lazy를 표시하고 멈춰요. 그런데도 루트를 포함한 모든 조상의 합은 정확히 51이 됩니다. 방문한 노드는 O(log n)개뿐이라 구간 갱신이 빨라요. "[0,7]에 +1"을 눌러 루트 하나에만 lazy가 걸리는 극단적 경우도 확인하세요.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : push down 질의 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>push down이 필요한 순간</h2>
+    <p>lazy로 갱신을 미뤄뒀으니, 이제 <b>질의나 더 작은 구간 갱신</b>이 그 아래로 내려가려 하면 문제가 생깁니다. 자식은 아직 갱신을 모르거든요. 그래서 <b>내려가기 직전에 push down</b>합니다.</p>
+    <p>먼저 <b>[2,5]에 +3</b>을 적용한 상태(node5·node6에 lazy=3)에서, <b>[3,6] 질의</b>를 해봅시다. 이 질의는 node5·node6을 <b>쪼개서</b> 들어가야 하므로 push down이 일어나요.</p>
+    <div class="simpanel">
+      <div class="btnrow">
+        <button class="btn ghost" onclick="qyReset()">처음으로</button>
+        <button class="btn ghost" onclick="qyStep(-1)" id="qyPrev">◀ 이전</button>
+        <button class="btn acc" onclick="qyStep(1)" id="qyNext">다음 ▶</button>
+        <button class="btn teal" onclick="qyAuto()" id="qyAutoBtn">자동 재생</button>
+      </div>
+      <div class="arrlabel" style="margin-top:4px">실행 중인 코드</div>
+      <div class="codebox" id="qyCode"></div>
+      <div class="svgbox" id="qySvg" style="max-width:640px;margin-top:12px"></div>
+      <div class="pathflow" id="qyContrib" style="margin-top:10px"></div>
+      <div class="stat">
+        <div class="box">push down <b id="qyPush">0</b>회</div>
+        <div class="box" id="qyResultBox" style="display:none">구간합 <b id="qyResult">-</b></div>
+      </div>
+      <div style="margin-top:10px"><span class="evbadge ev-query" id="qyEvent">시작</span></div>
+      <div class="msgline" id="qyMsg">[다음 ▶]으로 질의 [3,6]을 시작하세요 (사전에 [2,5]+3 적용됨).</div>
+    </div>
+    <div class="legend" style="margin-top:12px">
+      <span><i style="background:#EA580C"></i>push down (자식에 전달)</span>
+      <span><i style="background:#166534"></i>완전 포함 (사용)</span>
+      <span><i style="background:#E8B84B"></i>일부 겹침 (재귀)</span>
+      <span><i style="background:#DB2777"></i>lazy 보유 노드</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>질의에서도 push down</h2>
+    <p>질의 함수도 갱신과 똑같이, <b>완전 포함이 아니어서 자식으로 내려가야 하면</b> push down을 먼저 합니다.</p>
+    <div class="duo">
+      <div class="col c">
+        <div class="lang">C — lazy 질의<button class="copybtn" onclick="copyCode(this)">복사</button></div>
+        <pre class="code"><span class="kw">ll</span> <span class="fn">query</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e,
+         <span class="kw">int</span> l,<span class="kw">int</span> r){
+    <span class="kw">if</span> (r&lt;s || e&lt;l) <span class="kw">return</span> <span class="cn">0</span>;
+    <span class="kw">if</span> (l&lt;=s &amp;&amp; e&lt;=r)
+        <span class="kw">return</span> tree[node];   <span class="cc">/* lazy 반영됨 */</span>
+    <span class="hl">push_down(node,s,e);</span>     <span class="cc">/* 내려가기 전! */</span>
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    <span class="kw">return</span> query(<span class="cn">2</span>*node,s,mid,l,r)
+         + query(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e,l,r);
+}</pre>
+      </div>
+      <div class="col c">
+        <div class="lang">왜 완전 포함은 push 안 하나</div>
+        <pre class="code"><span class="cc">// 완전 포함이면 tree[node]를</span>
+<span class="cc">// 바로 반환하고 끝</span>
+
+<span class="cc">// tree[node]는 이미 정확한 합</span>
+<span class="cc">// (lazy 반영 포함)</span>
+
+<span class="cc">// 자식으로 안 내려가니</span>
+<span class="cc">// push down 불필요!</span>
+
+<span class="cc">// → 게으름 유지</span></pre>
+      </div>
+    </div>
+    <div class="callout-c"><b>불변식이 지켜주는 정확성</b> — "tree[node]는 항상 정확, lazy는 자식이 모르는 빚"이라는 불변식 덕분에, 완전 포함 노드는 그냥 읽으면 되고(정확하니까), 쪼개 들어갈 때만 push down하면 됩니다. 이 규칙만 지키면 어떤 질의·갱신 순서에도 답이 정확해요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>복잡도 정리</h2>
+    <table class="cmp">
+      <tr><th>연산</th><th>방문 노드</th><th>복잡도</th></tr>
+      <tr><td>구간 갱신</td><td>각 레벨 최대 4개</td><td class="mono">O(log n)</td></tr>
+      <tr><td>구간 질의</td><td>각 레벨 최대 4개</td><td class="mono">O(log n)</td></tr>
+      <tr><td>push down</td><td>내려갈 때마다 O(1)</td><td class="mono">O(1)</td></tr>
+    </table>
+    <div class="tip">💡 lazy 덕분에 구간 갱신도 구간 질의처럼 <b>각 레벨에서 상수 개 노드만</b> 방문합니다. 그래서 O(log n)이에요. 지연 전파는 "구간에 무언가를 반복 적용하는" 거의 모든 문제(구간 더하기, 구간 대입, 구간 뒤집기 등)에 확장됩니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 4 : 전체 코드 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>지연 전파 세그먼트 트리 — 전체 코드</h2>
+    <p>구축·구간 갱신·구간 질의·push down을 모두 담은 완성 코드입니다. <span class="mono">long long</span>을 쓰는 이유는 구간 갱신이 누적되면 합이 커질 수 있어서예요.</p>
+    <pre class="code"><span class="kw">typedef</span> <span class="kw">long long</span> ll;
+ll tree[<span class="cn">4</span>*N], lazy[<span class="cn">4</span>*N];
+
+<span class="kw">void</span> <span class="fn">build</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e){
+    <span class="kw">if</span> (s==e){ tree[node]=arr[s]; <span class="kw">return</span>; }
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    build(<span class="cn">2</span>*node,s,mid); build(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e);
+    tree[node]=tree[<span class="cn">2</span>*node]+tree[<span class="cn">2</span>*node+<span class="cn">1</span>];
+}
+
+<span class="kw">void</span> <span class="fn">push_down</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e){
+    <span class="kw">if</span> (lazy[node]==<span class="cn">0</span>) <span class="kw">return</span>;
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>, lc=<span class="cn">2</span>*node, rc=<span class="cn">2</span>*node+<span class="cn">1</span>;
+    tree[lc]+=lazy[node]*(mid-s+<span class="cn">1</span>); lazy[lc]+=lazy[node];
+    tree[rc]+=lazy[node]*(e-mid);   lazy[rc]+=lazy[node];
+    lazy[node]=<span class="cn">0</span>;
+}
+
+<span class="kw">void</span> <span class="fn">update</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e,<span class="kw">int</span> l,<span class="kw">int</span> r,ll val){
+    <span class="kw">if</span> (r&lt;s || e&lt;l) <span class="kw">return</span>;              <span class="cc">/* 벗어남 */</span>
+    <span class="kw">if</span> (l&lt;=s &amp;&amp; e&lt;=r){                     <span class="cc">/* 완전 포함 */</span>
+        tree[node]+=val*(e-s+<span class="cn">1</span>);
+        lazy[node]+=val; <span class="kw">return</span>;           <span class="cc">/* 표시만, 멈춤 */</span>
+    }
+    push_down(node,s,e);                     <span class="cc">/* 내려가기 전 */</span>
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    update(<span class="cn">2</span>*node,s,mid,l,r,val);
+    update(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e,l,r,val);
+    tree[node]=tree[<span class="cn">2</span>*node]+tree[<span class="cn">2</span>*node+<span class="cn">1</span>];  <span class="cc">/* 올라오며 갱신 */</span>
+}
+
+<span class="kw">ll</span> <span class="fn">query</span>(<span class="kw">int</span> node,<span class="kw">int</span> s,<span class="kw">int</span> e,<span class="kw">int</span> l,<span class="kw">int</span> r){
+    <span class="kw">if</span> (r&lt;s || e&lt;l) <span class="kw">return</span> <span class="cn">0</span>;
+    <span class="kw">if</span> (l&lt;=s &amp;&amp; e&lt;=r) <span class="kw">return</span> tree[node];
+    push_down(node,s,e);
+    <span class="kw">int</span> mid=(s+e)/<span class="cn">2</span>;
+    <span class="kw">return</span> query(<span class="cn">2</span>*node,s,mid,l,r)+query(<span class="cn">2</span>*node+<span class="cn">1</span>,mid+<span class="cn">1</span>,e,l,r);
+}</pre>
+    <div class="tip">💡 <b>update와 query의 쌍둥이 구조</b> — 둘 다 "벗어남 → 완전 포함 → (push down 후) 재귀"의 3경우 패턴입니다. 갱신은 완전 포함에서 lazy를 표시하고, 질의는 완전 포함에서 값을 읽어요. push down은 양쪽 모두 "쪼개 들어가기 직전"에 호출합니다.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>확장 — 다른 종류의 lazy</h2>
+    <table class="cmp">
+      <tr><th>연산 종류</th><th>lazy가 저장하는 것</th></tr>
+      <tr><td>구간 더하기 + 구간 합</td><td>더할 값 (이번 강의)</td></tr>
+      <tr><td>구간 대입 + 구간 합</td><td>덮어쓸 값 + "대입됨" 플래그</td></tr>
+      <tr><td>구간 더하기 + 구간 최소/최대</td><td>더할 값 (min/max에 그대로 더함)</td></tr>
+      <tr><td>구간 뒤집기 (0↔1)</td><td>뒤집기 횟수의 홀짝</td></tr>
+    </table>
+    <div class="callout-c"><b>일반 원리</b> — lazy 전파의 뼈대는 항상 같습니다. ① 완전 포함 노드에 연산을 <b>요약해 표시</b>하고, ② 내려갈 때 자식에게 <b>합성해서 전달</b>. 연산이 "구간 전체에 균일하게 적용되고 요약값에 규칙적으로 반영"되기만 하면 지연 전파를 쓸 수 있어요. 대입은 순서가 중요해 플래그가 추가로 필요합니다.</div>
+  </div>
+</section>
+
+<!-- ================= PAGE 5 : 내 배열로 ================= -->
+<section class="page">
+  <div class="card">
+    <h2><span class="bar"></span>내 배열로 지연 전파 실험</h2>
+    <p>배열을 입력하고 구간 갱신·질의를 여러 번 적용해 보세요. 지연 전파 세그먼트 트리가 각 연산을 처리합니다.</p>
+    <div class="simpanel">
+      <div class="arrlabel" style="margin-top:0">배열 (공백/쉼표로 구분, 최대 16개)</div>
+      <textarea id="pgArr" class="mono-in" spellcheck="false" style="height:56px">5 8 6 3 2 7 2 6</textarea>
+      <div class="arrlabel">연산 목록 (한 줄에 하나)</div>
+      <div style="font-size:12.5px;color:var(--ink3);margin-bottom:6px;font-family:var(--mono)">U l r v = 구간 [l,r]에 v 더하기 &nbsp;·&nbsp; Q l r = 구간 [l,r] 합 질의</div>
+      <textarea id="pgOps" class="mono-in" spellcheck="false" style="height:110px">Q 0 7
+U 2 5 3
+Q 0 7
+Q 2 5
+U 4 7 2
+Q 3 6</textarea>
+      <div class="btnrow">
+        <button class="btn acc" onclick="pgRun()">연산 실행</button>
+      </div>
+      <div id="pgResult"></div>
+      <div class="msgline" id="pgMsg">배열과 연산을 넣고 [연산 실행]을 눌러 보세요.</div>
+    </div>
+    <div class="tip">💡 실험: 같은 구간에 갱신을 여러 번 누적해 보세요(예: <span class="mono">U 0 7 1</span>을 세 번). lazy가 누적되며 합이 정확히 반영됩니다. 질의 사이에 갱신을 섞어 순서가 바뀌어도 답이 항상 맞는지 확인하세요.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>도전 퀴즈 — 지연 전파 8문제</h2>
+    <div id="quizArea"></div>
+    <div class="btnrow">
+      <button class="btn acc" onclick="quizGrade()">점수 확인</button>
+      <button class="btn ghost" onclick="quizReset()">다시 풀기</button>
+    </div>
+    <div class="scorebox" id="quizScore" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="bar"></span>한 장 정리</h2>
+    <table class="cmp">
+      <tr><th>포인트</th><th>내용</th></tr>
+      <tr><td>목적</td><td>구간 갱신을 O(log n)에 (순진한 방법은 O(n))</td></tr>
+      <tr><td>lazy 배열</td><td>자식에게 아직 안 내려간 갱신값 저장</td></tr>
+      <tr><td>완전 포함 갱신</td><td>합 즉시 반영 + lazy 표시 후 멈춤</td></tr>
+      <tr><td>push down</td><td>내려가기 직전, lazy를 자식에 전달</td></tr>
+      <tr><td>불변식</td><td>tree[node]는 항상 정확, lazy는 자식이 모르는 빚</td></tr>
+      <tr><td>구간 크기 곱</td><td>합 갱신 = val × (구간 크기)</td></tr>
+      <tr><td>복잡도</td><td class="mono">구간 갱신·질의 모두 O(log n)</td></tr>
+    </table>
+    <div class="tip">💡 <b>세그먼트 트리의 완성</b> — 기본 세그먼트 트리(점 갱신)에서 지연 전파(구간 갱신)로 나아갔습니다. "게으르게, 필요할 때만 갚는다"는 지연 전파의 사고는 구간 대입·구간 뒤집기 등 수많은 문제로 확장돼요. 트리 자료구조를 자유자재로 다루는 핵심 무기입니다.</div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <b>세영코딩연구소 · SEYOUNG CODING LAB</b> — 세그먼트 트리 심화 · 지연 전파<br>
+  구간 갱신 · lazy 배열 · push down · 불변식 · O(log n) 구간 연산
+</footer>
+
+<script>
+'use strict';
+var TIMERS={up:null,qy:null};
+function stopAuto(which){if(TIMERS[which]){clearInterval(TIMERS[which]);TIMERS[which]=null;}var b=document.getElementById(which+'AutoBtn');if(b)b.textContent='자동 재생';}
+function stopAll(){stopAuto('up');stopAuto('qy');}
+function goPage(i){
+  var pages=document.querySelectorAll('.page'),btns=document.querySelectorAll('#topnav .navbtn');
+  for(var k=0;k<pages.length;k++)pages[k].classList.toggle('on',k===i);
+  for(var k2=0;k2<btns.length;k2++)btns[k2].classList.toggle('on',k2===i);
+  stopAll();window.scrollTo({top:0,behavior:'smooth'});
+}
+function copyCode(btn){
+  var pre=btn.closest('.col')?btn.closest('.col').querySelector('pre.code'):null;
+  if(!pre)return;var txt=pre.textContent;
+  function ok(){var o=btn.textContent;btn.textContent='복사됨!';setTimeout(function(){btn.textContent=o;},1200);}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();});
+  else{fallbackCopy(txt);ok();}
+}
+function fallbackCopy(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+var SVGNS='http://www.w3.org/2000/svg';
+
+/* ===== 세그먼트 트리 데이터 ===== */
+var SEG_ARR=[5,8,6,3,2,7,2,6];
+var SEG_N=SEG_ARR.length;
+var SEG_NODES={};
+function buildSegNodes(arr,node,s,e){
+  if(s===e){SEG_NODES[node]={s:s,e:e,val:arr[s]};return arr[s];}
+  var mid=(s+e)>>1;
+  var lv=buildSegNodes(arr,2*node,s,mid);
+  var rv=buildSegNodes(arr,2*node+1,mid+1,e);
+  SEG_NODES[node]={s:s,e:e,val:lv+rv};
+  return lv+rv;
+}
+buildSegNodes(SEG_ARR,1,0,SEG_N-1);
+var SEG_W=640;
+function segPos(node){
+  var level=Math.floor(Math.log(node)/Math.log(2));
+  var posInLevel=node-Math.pow(2,level);
+  var countInLevel=Math.pow(2,level);
+  var x=(posInLevel+0.5)*(SEG_W/countInLevel);
+  var y=30+level*70;
+  return [x,y];
+}
+function buildSegSVG(containerId,prefix){
+  var box=document.getElementById(containerId);if(!box)return;box.textContent='';
+  var svg=document.createElementNS(SVGNS,'svg');svg.setAttribute('viewBox','0 0 '+SEG_W+' 310');
+  for(var node=1;node<=15;node++){
+    if(!SEG_NODES[node])continue;
+    var pc=segPos(node);
+    for(var ch=2*node;ch<=2*node+1;ch++){
+      if(SEG_NODES[ch]){
+        var cc=segPos(ch);
+        var ln=document.createElementNS(SVGNS,'line');
+        ln.setAttribute('x1',pc[0]);ln.setAttribute('y1',pc[1]);ln.setAttribute('x2',cc[0]);ln.setAttribute('y2',cc[1]);
+        ln.setAttribute('stroke','#DDD0EC');ln.setAttribute('stroke-width','1.5');
+        svg.appendChild(ln);
+      }
+    }
+  }
+  for(var node2=1;node2<=15;node2++){
+    if(!SEG_NODES[node2])continue;
+    var p=segPos(node2);var nd=SEG_NODES[node2];
+    var rect=document.createElementNS(SVGNS,'rect');
+    rect.setAttribute('x',p[0]-28);rect.setAttribute('y',p[1]-15);rect.setAttribute('width','56');rect.setAttribute('height','30');rect.setAttribute('rx','6');
+    rect.setAttribute('fill','#FFFFFF');rect.setAttribute('stroke','#9333EA');rect.setAttribute('stroke-width','2');
+    rect.id=prefix+'R'+node2;
+    svg.appendChild(rect);
+    var rng=document.createElementNS(SVGNS,'text');
+    rng.setAttribute('x',p[0]);rng.setAttribute('y',p[1]-3);rng.setAttribute('text-anchor','middle');
+    rng.setAttribute('font-family',"'JetBrains Mono',monospace");rng.setAttribute('font-size','9');rng.setAttribute('fill','#9B6BC4');
+    rng.textContent='['+nd.s+','+nd.e+']';rng.id=prefix+'RG'+node2;
+    svg.appendChild(rng);
+    var val=document.createElementNS(SVGNS,'text');
+    val.setAttribute('x',p[0]);val.setAttribute('y',p[1]+11);val.setAttribute('text-anchor','middle');
+    val.setAttribute('font-family',"'JetBrains Mono',monospace");val.setAttribute('font-size','13');val.setAttribute('font-weight','700');val.setAttribute('fill','#2E1065');
+    val.textContent=nd.val;val.id=prefix+'V'+node2;
+    svg.appendChild(val);
+    // lazy 배지 (오른쪽 위)
+    var lzc=document.createElementNS(SVGNS,'circle');
+    lzc.setAttribute('cx',p[0]+26);lzc.setAttribute('cy',p[1]-14);lzc.setAttribute('r','11');
+    lzc.setAttribute('fill','#DB2777');lzc.setAttribute('stroke','#fff');lzc.setAttribute('stroke-width','1.5');
+    lzc.id=prefix+'LZC'+node2;lzc.style.display='none';
+    svg.appendChild(lzc);
+    var lzt=document.createElementNS(SVGNS,'text');
+    lzt.setAttribute('x',p[0]+26);lzt.setAttribute('y',p[1]-10);lzt.setAttribute('text-anchor','middle');
+    lzt.setAttribute('font-family',"'JetBrains Mono',monospace");lzt.setAttribute('font-size','10');lzt.setAttribute('font-weight','700');lzt.setAttribute('fill','#fff');
+    lzt.id=prefix+'LZT'+node2;lzt.style.display='none';
+    svg.appendChild(lzt);
+  }
+  box.appendChild(svg);
+}
+function setTxt(id,color){var el=document.getElementById(id);if(el)el.setAttribute('fill',color);}
+function segNodeState(prefix,node,state){
+  var r=document.getElementById(prefix+'R'+node);if(!r)return;
+  if(state==='cur'){r.setAttribute('fill','#E8B84B');r.setAttribute('stroke','#C79A2E');setTxt(prefix+'RG'+node,'#7A5A20');setTxt(prefix+'V'+node,'#3A2A05');}
+  else if(state==='full'){r.setAttribute('fill','#166534');r.setAttribute('stroke','#0F4A25');setTxt(prefix+'RG'+node,'#C8E6D0');setTxt(prefix+'V'+node,'#fff');}
+  else if(state==='partial'){r.setAttribute('fill','#E8B84B');r.setAttribute('stroke','#C79A2E');setTxt(prefix+'RG'+node,'#7A5A20');setTxt(prefix+'V'+node,'#3A2A05');}
+  else if(state==='out'){r.setAttribute('fill','#E2E8F0');r.setAttribute('stroke','#CBD5E1');setTxt(prefix+'RG'+node,'#94A3B8');setTxt(prefix+'V'+node,'#94A3B8');}
+  else if(state==='push'){r.setAttribute('fill','#EA580C');r.setAttribute('stroke','#C2410C');setTxt(prefix+'RG'+node,'#FCD9BE');setTxt(prefix+'V'+node,'#fff');}
+  else{r.setAttribute('fill','#FFFFFF');r.setAttribute('stroke','#9333EA');setTxt(prefix+'RG'+node,'#9B6BC4');setTxt(prefix+'V'+node,'#2E1065');}
+}
+function segSetVal(prefix,node,val){var el=document.getElementById(prefix+'V'+node);if(el)el.textContent=val;}
+function segSetLazy(prefix,node,lz){
+  var c=document.getElementById(prefix+'LZC'+node),t=document.getElementById(prefix+'LZT'+node);
+  if(!c||!t)return;
+  if(lz&&lz!==0){c.style.display='';t.style.display='';t.textContent='+'+lz;}
+  else{c.style.display='none';t.style.display='none';}
+}
+function renderTree(prefix,st){
+  for(var node=1;node<=15;node++){
+    if(!SEG_NODES[node])continue;
+    segSetVal(prefix,node,st.tree[node]);
+    segSetLazy(prefix,node,st.lazy[node]);
+    var state='idle';
+    if(st.cur===node&&st.state)state=st.state;
+    segNodeState(prefix,node,state);
+  }
+}
+
+/* ============ 공용 시뮬레이션 유틸 ============ */
+function cloneObj(o){var c={};for(var k in o)c[k]=o[k];return c;}
+function freshTreeLazy(){
+  var tree={},lazy={};
+  for(var node=1;node<=15;node++){if(SEG_NODES[node]){tree[node]=SEG_NODES[node].val;lazy[node]=0;}}
+  return {tree:tree,lazy:lazy};
+}
+
+/* ============ 2탭: 구간 갱신 실행 ============ */
+var UP_L=2, UP_R=5, UP_VAL=3;
+var UP_CODE=[
+  {html:'<span class="ck">void</span> <span class="cf">update</span>(node, s, e, l, r, val){',id:'sig'},
+  {html:'  <span class="ck">if</span> (r&lt;s || e&lt;l) <span class="ck">return</span>;         <span class="cc">// 벗어남</span>',id:'out'},
+  {html:'  <span class="ck">if</span> (l&lt;=s &amp;&amp; e&lt;=r){              <span class="cc">// 완전 포함</span>',id:'full'},
+  {html:'    tree[node] += val*(e-s+1);',id:'fullsum'},
+  {html:'    lazy[node] += val; <span class="ck">return</span>;   <span class="cc">// 표시만, 멈춤</span>',id:'fulllazy'},
+  {html:'  }',id:'fullend'},
+  {html:'  push_down(node, s, e);           <span class="cc">// 내려가기 전</span>',id:'push'},
+  {html:'  update(2n,s,mid,...); update(2n+1,mid+1,e,...);',id:'rec'},
+  {html:'  tree[node]=tree[2n]+tree[2n+1];  <span class="cc">// 올라오며 갱신</span>',id:'recomb'},
+  {html:'}',id:'end'}
+];
+function upRenderCode(a){var box=document.getElementById('upCode');if(!box)return;box.textContent='';for(var i=0;i<UP_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(UP_CODE[i].id===a?' active':'');l.innerHTML=UP_CODE[i].html;box.appendChild(l);}}
+function genUpdateTrace(L,R,VAL){
+  var steps=[];
+  var fl=freshTreeLazy();var tree=fl.tree,lazy=fl.lazy;
+  var visited=0;
+  function countLazy(){var c=0;for(var k in lazy)if(lazy[k]!==0)c++;return c;}
+  function snap(ev,line,extra,cur,state){
+    steps.push({ev:ev,line:line,extra:extra||'',cur:(cur===undefined?0:cur),state:state||'',tree:cloneObj(tree),lazy:cloneObj(lazy),visited:visited,lazyCount:countLazy()});
+  }
+  function pushDown(node,s,e){
+    if(lazy[node]!==0){
+      var mid=(s+e)>>1,lc=2*node,rc=2*node+1;
+      tree[lc]+=lazy[node]*(mid-s+1);lazy[lc]+=lazy[node];
+      tree[rc]+=lazy[node]*(e-mid);lazy[rc]+=lazy[node];
+      snap('push','push','push_down node'+node+': lazy '+lazy[node]+' → 자식 node'+lc+',node'+rc+'에 전달',node,'push');
+      lazy[node]=0;
+    }
+  }
+  function update(node,s,e){
+    visited++;
+    var nd=SEG_NODES[node];
+    if(R<s||e<L){snap('update','out','node'+node+' [' +s+ ',' +e+ ']: 갱신 구간 밖 → 무시',node,'out');return;}
+    if(L<=s&&e<=R){
+      tree[node]+=VAL*(e-s+1);lazy[node]+=VAL;
+      snap('lazy','fulllazy','node'+node+' [' +s+ ',' +e+ ']: 완전 포함! 합 += '+VAL+'*'+(e-s+1)+', lazy += '+VAL+' (자식은 미룸!)',node,'full');
+      return;
+    }
+    snap('update','push','node'+node+' [' +s+ ',' +e+ ']: 일부 겹침 → push down 후 재귀',node,'partial');
+    pushDown(node,s,e);
+    var mid=(s+e)>>1;
+    update(2*node,s,mid);
+    update(2*node+1,mid+1,e);
+    tree[node]=tree[2*node]+tree[2*node+1];
+    snap('update','recomb','node'+node+' [' +s+ ',' +e+ '] 합 재계산 = '+tree[node],node,'partial');
+  }
+  snap('update','sig','구간 갱신 [' +L+ ',' +R+ ']에 +'+VAL+' 시작: 루트 node1부터');
+  update(1,0,SEG_N-1);
+  snap('done','end','갱신 완료! 방문 '+visited+'개 노드, lazy '+countLazy()+'개 표시, 루트 합 = '+tree[1]);
+  return steps;
+}
+var UPSTEPS=[],UPIDX=0;
+function upRenderArr(){
+  var box=document.getElementById('upArr');if(!box)return;box.textContent='';
+  for(var i=0;i<SEG_N;i++){
+    var cell=document.createElement('div');cell.className='acell';
+    if(i>=UP_L&&i<=UP_R)cell.classList.add('inrange');
+    var idx=document.createElement('span');idx.className='idx';idx.textContent=i;
+    cell.appendChild(idx);cell.appendChild(document.createTextNode(SEG_ARR[i]));
+    box.appendChild(cell);
+  }
+}
+function upRender(){
+  var st=UPSTEPS[UPIDX];
+  upRenderCode(st.line);
+  upRenderArr();
+  renderTree('up',st);
+  document.getElementById('upVisit').textContent=st.visited;
+  document.getElementById('upLazy').textContent=st.lazyCount;
+  document.getElementById('upRoot').textContent=st.tree[1];
+  var badge=document.getElementById('upEvent');
+  var lbl={update:'update · 구간 탐색',lazy:'lazy · 표시!',push:'push down',done:'완료'};
+  var cls={update:'ev-update',lazy:'ev-lazy',push:'ev-push',done:'ev-done'};
+  badge.textContent=lbl[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-update');
+  var msg=document.getElementById('upMsg');msg.textContent='['+UPIDX+'/'+(UPSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('upPrev').disabled=(UPIDX===0);document.getElementById('upNext').disabled=(UPIDX===UPSTEPS.length-1);
+  var ops=[[2,5,3,'upOp1'],[4,7,2,'upOp2'],[0,7,1,'upOp3']];
+  for(var i=0;i<ops.length;i++)document.getElementById(ops[i][3]).classList.toggle('acc',UP_L===ops[i][0]&&UP_R===ops[i][1]&&UP_VAL===ops[i][2]);
+}
+function upSetOp(l,r,v){UP_L=l;UP_R=r;UP_VAL=v;upReset();}
+function upReset(){stopAuto('up');UPSTEPS=genUpdateTrace(UP_L,UP_R,UP_VAL);UPIDX=0;buildSegSVG('upSvg','up');upRender();}
+function upStep(d){var ni=UPIDX+d;if(ni<0||ni>=UPSTEPS.length)return;UPIDX=ni;upRender();}
+function upAuto(){if(TIMERS.up){stopAuto('up');return;}if(UPIDX>=UPSTEPS.length-1)UPIDX=0;document.getElementById('upAutoBtn').textContent='정지';TIMERS.up=setInterval(function(){if(UPIDX>=UPSTEPS.length-1){stopAuto('up');return;}upStep(1);},850);}
+
+/* ============ 3탭: push down 질의 ============ */
+var QY_CODE=[
+  {html:'<span class="ck">ll</span> <span class="cf">query</span>(node, s, e, l, r){',id:'sig'},
+  {html:'  <span class="ck">if</span> (r&lt;s || e&lt;l) <span class="ck">return</span> 0;      <span class="cc">// 벗어남</span>',id:'out'},
+  {html:'  <span class="ck">if</span> (l&lt;=s &amp;&amp; e&lt;=r) <span class="ck">return</span> tree[node]; <span class="cc">// 포함</span>',id:'full'},
+  {html:'  push_down(node, s, e);           <span class="cc">// 내려가기 전!</span>',id:'push'},
+  {html:'  mid=(s+e)/2;',id:'mid'},
+  {html:'  <span class="ck">return</span> query(2n,s,mid,l,r)+query(2n+1,mid+1,e,l,r);',id:'rec'},
+  {html:'}',id:'end'}
+];
+function qyRenderCode(a){var box=document.getElementById('qyCode');if(!box)return;box.textContent='';for(var i=0;i<QY_CODE.length;i++){var l=document.createElement('span');l.className='cline'+(QY_CODE[i].id===a?' active':'');l.innerHTML=QY_CODE[i].html;box.appendChild(l);}}
+function genQueryTrace(){
+  var steps=[];
+  var fl=freshTreeLazy();var tree=fl.tree,lazy=fl.lazy;
+  // 사전 적용: [2,5]에 +3 (lazy 버전)
+  (function applyUpdate(node,s,e,L,R,VAL){
+    if(R<s||e<L)return;
+    if(L<=s&&e<=R){tree[node]+=VAL*(e-s+1);lazy[node]+=VAL;return;}
+    // push down
+    if(lazy[node]!==0){var mid0=(s+e)>>1;tree[2*node]+=lazy[node]*(mid0-s+1);lazy[2*node]+=lazy[node];tree[2*node+1]+=lazy[node]*(e-mid0);lazy[2*node+1]+=lazy[node];lazy[node]=0;}
+    var mid=(s+e)>>1;
+    applyUpdate(2*node,s,mid,L,R,VAL);applyUpdate(2*node+1,mid+1,e,L,R,VAL);
+    tree[node]=tree[2*node]+tree[2*node+1];
+  })(1,0,SEG_N-1,2,5,3);
+  var L=3,R=6,pushCount=0,contrib=[];
+  function countLazy(){var c=0;for(var k in lazy)if(lazy[k]!==0)c++;return c;}
+  function snap(ev,line,extra,cur,state,result){
+    steps.push({ev:ev,line:line,extra:extra||'',cur:(cur===undefined?0:cur),state:state||'',tree:cloneObj(tree),lazy:cloneObj(lazy),pushCount:pushCount,contrib:contrib.slice(),result:(result===undefined?null:result)});
+  }
+  function pushDown(node,s,e){
+    if(lazy[node]!==0){
+      var mid=(s+e)>>1,lc=2*node,rc=2*node+1;
+      tree[lc]+=lazy[node]*(mid-s+1);lazy[lc]+=lazy[node];
+      tree[rc]+=lazy[node]*(e-mid);lazy[rc]+=lazy[node];
+      pushCount++;
+      snap('push','push','push_down node'+node+': lazy '+lazy[node]+' → node'+lc+',node'+rc+'에 전달 (질의가 쪼개 들어가야 하므로!)',node,'push');
+      lazy[node]=0;
+    }
+  }
+  function query(node,s,e){
+    var nd=SEG_NODES[node];
+    if(R<s||e<L){snap('query','out','node'+node+' [' +s+ ',' +e+ ']: 질의 밖 → 0',node,'out');return 0;}
+    if(L<=s&&e<=R){contrib.push(node);snap('hit','full','node'+node+' [' +s+ ',' +e+ ']: 완전 포함! 값 '+tree[node]+' 사용',node,'full');return tree[node];}
+    snap('query','push','node'+node+' [' +s+ ',' +e+ ']: 일부 겹침 → push down 필요',node,'partial');
+    pushDown(node,s,e);
+    var mid=(s+e)>>1;
+    var lv=query(2*node,s,mid);
+    var rv=query(2*node+1,mid+1,e);
+    return lv+rv;
+  }
+  snap('query','sig','질의 [3,6] 시작 (사전에 [2,5]+3 적용: node5·node6에 lazy=3)');
+  var res=query(1,0,SEG_N-1);
+  steps.push({ev:'done',line:'end',extra:'구간 합 [3,6] = '+res+' (push down '+pushCount+'회, 기여 노드 '+contrib.length+'개)',cur:0,state:'',tree:cloneObj(tree),lazy:cloneObj(lazy),pushCount:pushCount,contrib:contrib.slice(),result:res});
+  return steps;
+}
+var QYSTEPS=[],QYIDX=0;
+function qyRender(){
+  var st=QYSTEPS[QYIDX];
+  qyRenderCode(st.line);
+  renderTree('qy',st);
+  // contrib 강조
+  for(var c=0;c<st.contrib.length;c++)segNodeState('qy',st.contrib[c],'full');
+  if(st.cur&&st.state)segNodeState('qy',st.cur,st.state);
+  var cbox=document.getElementById('qyContrib');cbox.textContent='';
+  if(st.contrib.length){
+    var lbl=document.createElement('span');lbl.style.fontWeight='700';lbl.style.color='#166534';lbl.style.marginRight='4px';lbl.textContent='기여 노드:';cbox.appendChild(lbl);
+    for(var c2=0;c2<st.contrib.length;c2++){var nd=SEG_NODES[st.contrib[c2]];var tag=document.createElement('span');tag.className='pn';tag.style.background='#166534';tag.textContent='['+nd.s+','+nd.e+']='+st.tree[st.contrib[c2]];cbox.appendChild(tag);if(c2<st.contrib.length-1){var pl=document.createElement('span');pl.className='parr';pl.textContent='+';cbox.appendChild(pl);}}
+  }
+  document.getElementById('qyPush').textContent=st.pushCount;
+  var rbox=document.getElementById('qyResultBox');
+  if(st.result!==null){rbox.style.display='';document.getElementById('qyResult').textContent=st.result;}
+  else rbox.style.display='none';
+  var badge=document.getElementById('qyEvent');
+  var lbl2={query:'query · 구간 탐색',push:'push down',hit:'hit · 완전 포함',done:'완료'};
+  var cls={query:'ev-query',push:'ev-push',hit:'ev-hit',done:'ev-done'};
+  badge.textContent=lbl2[st.ev]||st.ev;badge.className='evbadge '+(cls[st.ev]||'ev-query');
+  var msg=document.getElementById('qyMsg');msg.textContent='['+QYIDX+'/'+(QYSTEPS.length-1)+'] '+st.extra;msg.classList.toggle('done',st.ev==='done');
+  document.getElementById('qyPrev').disabled=(QYIDX===0);document.getElementById('qyNext').disabled=(QYIDX===QYSTEPS.length-1);
+}
+function qyReset(){stopAuto('qy');QYSTEPS=genQueryTrace();QYIDX=0;buildSegSVG('qySvg','qy');qyRender();}
+function qyStep(d){var ni=QYIDX+d;if(ni<0||ni>=QYSTEPS.length)return;QYIDX=ni;qyRender();}
+function qyAuto(){if(TIMERS.qy){stopAuto('qy');return;}if(QYIDX>=QYSTEPS.length-1)QYIDX=0;document.getElementById('qyAutoBtn').textContent='정지';TIMERS.qy=setInterval(function(){if(QYIDX>=QYSTEPS.length-1){stopAuto('qy');return;}qyStep(1);},900);}
+
+/* ============ 5탭: 플레이그라운드 ============ */
+function pgRun(){
+  var out=document.getElementById('pgResult'),msg=document.getElementById('pgMsg');
+  var raw=document.getElementById('pgArr').value.trim();
+  var parts=raw.split(/[\s,]+/).filter(function(x){return x!=='';});
+  if(parts.length===0){msg.textContent='⚠️ 배열을 입력하세요.';out.textContent='';return;}
+  if(parts.length>16){msg.textContent='⚠️ 배열은 최대 16개까지!';out.textContent='';return;}
+  var arr=[];
+  for(var i=0;i<parts.length;i++){var x=parseInt(parts[i],10);if(isNaN(x)){msg.textContent='⚠️ 배열 "'+parts[i]+'"는 숫자가 아니에요.';out.textContent='';return;}arr.push(x);}
+  var n=arr.length;
+  var tree={},lazy={};
+  (function build(node,s,e){if(s===e){tree[node]=arr[s];lazy[node]=0;return arr[s];}var mid=(s+e)>>1;var v=build(2*node,s,mid)+build(2*node+1,mid+1,e);tree[node]=v;lazy[node]=0;return v;})(1,0,n-1);
+  function pushDown(node,s,e){if(lazy[node]){var mid=(s+e)>>1;tree[2*node]+=lazy[node]*(mid-s+1);lazy[2*node]=(lazy[2*node]||0)+lazy[node];tree[2*node+1]+=lazy[node]*(e-mid);lazy[2*node+1]=(lazy[2*node+1]||0)+lazy[node];lazy[node]=0;}}
+  function update(node,s,e,l,r,val){if(r<s||e<l)return;if(l<=s&&e<=r){tree[node]+=val*(e-s+1);lazy[node]=(lazy[node]||0)+val;return;}pushDown(node,s,e);var mid=(s+e)>>1;update(2*node,s,mid,l,r,val);update(2*node+1,mid+1,e,l,r,val);tree[node]=tree[2*node]+tree[2*node+1];}
+  function query(node,s,e,l,r){if(r<s||e<l)return 0;if(l<=s&&e<=r)return tree[node];pushDown(node,s,e);var mid=(s+e)>>1;return query(2*node,s,mid,l,r)+query(2*node+1,mid+1,e,l,r);}
+  var lines=document.getElementById('pgOps').value.split('\n');
+  var results=[];
+  for(var li=0;li<lines.length;li++){
+    var s=lines[li].trim();if(s==='')continue;
+    var ps=s.split(/\s+/);
+    var op=ps[0].toUpperCase();
+    if(op==='U'){
+      if(ps.length!==4){msg.textContent='⚠️ '+(li+1)+'번째 줄: U는 "U l r v" 형식이에요.';out.textContent='';return;}
+      var l=parseInt(ps[1],10),r=parseInt(ps[2],10),v=parseInt(ps[3],10);
+      if(isNaN(l)||isNaN(r)||isNaN(v)){msg.textContent='⚠️ '+(li+1)+'번째 줄: 숫자가 아닌 값이 있어요.';out.textContent='';return;}
+      if(l<0||r>=n||l>r){msg.textContent='⚠️ '+(li+1)+'번째 줄: 구간은 0 ≤ l ≤ r ≤ '+(n-1)+' 범위여야 해요.';out.textContent='';return;}
+      update(1,0,n-1,l,r,v);
+      results.push({type:'U',text:'U ['+l+','+r+'] +'+v,detail:'구간 갱신 적용'});
+    } else if(op==='Q'){
+      if(ps.length!==3){msg.textContent='⚠️ '+(li+1)+'번째 줄: Q는 "Q l r" 형식이에요.';out.textContent='';return;}
+      var ql=parseInt(ps[1],10),qr=parseInt(ps[2],10);
+      if(isNaN(ql)||isNaN(qr)){msg.textContent='⚠️ '+(li+1)+'번째 줄: 숫자가 아닌 값이 있어요.';out.textContent='';return;}
+      if(ql<0||qr>=n||ql>qr){msg.textContent='⚠️ '+(li+1)+'번째 줄: 구간은 0 ≤ l ≤ r ≤ '+(n-1)+' 범위여야 해요.';out.textContent='';return;}
+      var res=query(1,0,n-1,ql,qr);
+      results.push({type:'Q',text:'Q ['+ql+','+qr+']',detail:'= '+res});
+    } else {
+      msg.textContent='⚠️ '+(li+1)+'번째 줄: U 또는 Q로 시작해야 해요.';out.textContent='';return;
+    }
+  }
+  if(results.length===0){msg.textContent='⚠️ 연산을 하나 이상 입력하세요.';out.textContent='';return;}
+  out.textContent='';
+  var h=document.createElement('div');h.className='arrlabel';h.style.marginTop='4px';h.textContent='연산 결과';out.appendChild(h);
+  var box=document.createElement('div');
+  for(var ri=0;ri<results.length;ri++){
+    var row=document.createElement('div');row.className='mtag';
+    if(results[ri].type==='Q'){row.style.borderColor='#0F766E';row.style.color='#0F766E';}
+    else{row.style.borderColor='#9333EA';row.style.color='#9333EA';}
+    row.textContent=results[ri].text+' '+results[ri].detail;
+    box.appendChild(row);
+  }
+  out.appendChild(box);
+  msg.textContent='연산 '+results.length+'개 실행 완료. 갱신·질의가 순서대로 처리되었습니다.';msg.classList.add('done');
+}
+
+/* ===== 퀴즈 ===== */
+var QZ=[
+  {q:'지연 전파(lazy propagation)가 해결하는 문제는?',
+   o:['점 갱신을 빠르게','구간 갱신을 O(log n)에','정렬','최단 경로'],a:1,
+   e:'기본 세그먼트 트리는 구간 갱신이 O(n)입니다. 지연 전파는 이를 O(log n)으로 만듭니다.'},
+  {q:'lazy 배열이 저장하는 것은?',
+   o:['정렬 순서','자식에게 아직 안 내려간 갱신값','노드 깊이','자식 개수'],a:1,
+   e:'lazy[node]는 그 노드가 자식들에게 아직 전달하지 않은(미뤄둔) 갱신값입니다.'},
+  {q:'구간 갱신에서 노드가 갱신 구간에 완전히 포함되면?',
+   o:['자식까지 모두 갱신','합을 반영하고 lazy에 표시한 뒤 멈춤','무시','삭제'],a:1,
+   e:'합을 val×(구간 크기)만큼 즉시 반영하고, 자식 전달은 lazy에 표시만 한 뒤 멈춥니다. 자식으로 안 내려가요.'},
+  {q:'push down이 하는 일은?',
+   o:['노드 삭제','쌓인 lazy를 자식에게 전달하고 자기 lazy를 비움','정렬','합 계산'],a:1,
+   e:'push down은 노드의 lazy를 두 자식에게 전달(자식 합 반영 + 자식 lazy 누적)하고, 자기 lazy를 0으로 만듭니다.'},
+  {q:'push down은 언제 호출하나?',
+   o:['항상','노드 아래로 내려가야(재귀) 할 때 직전에','질의가 끝날 때','트리 구축 시'],a:1,
+   e:'완전 포함이 아니어서 자식으로 쪼개 들어가야 할 때, 그 직전에 push down합니다. 필요할 때만 하는 게 게으름의 핵심이에요.'},
+  {q:'구간 합에서 완전 포함 노드의 합을 갱신하는 식은?',
+   o:['tree[node] += val','tree[node] += val*(구간 크기)','tree[node] = val','tree[node] *= val'],a:1,
+   e:'구간 전체에 val을 더하면 합은 val × (구간 원소 수)만큼 증가합니다. 그래서 tree[node] += val*(e-s+1)이에요.'},
+  {q:'완전 포함 노드를 질의할 때 push down을 안 하는 이유는?',
+   o:['버그다','tree[node]가 이미 정확하고 자식으로 안 내려가므로','느려서','lazy가 없어서'],a:1,
+   e:'완전 포함이면 tree[node]를 바로 반환합니다. 이미 정확하고 자식으로 내려가지 않으니 push down이 불필요해요.'},
+  {q:'지연 전파의 불변식으로 옳은 것은?',
+   o:['모든 노드 lazy가 0','tree[node]는 항상 정확, lazy는 자식이 모르는 갱신','리프만 정확','루트만 정확'],a:1,
+   e:'tree[node]는 항상 그 구간의 정확한 합이고, lazy[node]는 자식들에게 아직 안 내려간 갱신입니다. 이 불변식이 정확성을 보장해요.'}
+];
+var QSTATE=[];
+function quizBuild(){
+  var area=document.getElementById('quizArea');area.textContent='';QSTATE=[];
+  for(var i=0;i<QZ.length;i++){
+    QSTATE.push(null);
+    var qd=document.createElement('div');qd.className='q';
+    var qt=document.createElement('div');qt.className='qt';
+    var qn=document.createElement('span');qn.className='qn';qn.textContent='Q'+(i+1);
+    qt.appendChild(qn);qt.appendChild(document.createTextNode(QZ[i].q));qd.appendChild(qt);
+    var expl=document.createElement('div');expl.className='expl';expl.textContent='해설: '+QZ[i].e;
+    (function(qi,qdEl,explEl){
+      for(var j=0;j<QZ[qi].o.length;j++){
+        var ob=document.createElement('button');ob.className='opt';
+        ob.textContent='① ② ③ ④'.split(' ')[j]+' '+QZ[qi].o[j];
+        (function(oj,obEl){
+          obEl.addEventListener('click',function(){
+            if(QSTATE[qi]!==null)return;QSTATE[qi]=oj;
+            var opts=qdEl.querySelectorAll('.opt');
+            for(var k=0;k<opts.length;k++){opts[k].disabled=true;if(k===QZ[qi].a)opts[k].classList.add(oj===QZ[qi].a?'pick-ok':'reveal');}
+            if(oj!==QZ[qi].a)obEl.classList.add('pick-ng');
+            explEl.classList.add('show');
+          });
+        })(j,ob);
+        qdEl.appendChild(ob);
+      }
+    })(i,qd,expl);
+    qd.appendChild(expl);area.appendChild(qd);
+  }
+  document.getElementById('quizScore').style.display='none';
+}
+function quizGrade(){
+  var answered=0,correct=0;
+  for(var i=0;i<QZ.length;i++){if(QSTATE[i]!==null){answered++;if(QSTATE[i]===QZ[i].a)correct++;}}
+  var sc=document.getElementById('quizScore');sc.style.display='block';
+  if(answered<QZ.length)sc.textContent='아직 '+(QZ.length-answered)+'문제가 남았어요! (현재 '+correct+'개 정답)';
+  else if(correct===QZ.length)sc.textContent='🏆 8문제 전부 정답! 지연 전파를 완벽히 이해했습니다.';
+  else sc.textContent='결과: '+correct+' / '+QZ.length+' — 틀린 문제의 해설을 읽고 실행기로 다시 확인해 보세요!';
+}
+function quizReset(){quizBuild();}
+
+/* ===== 초기화 ===== */
+document.addEventListener('DOMContentLoaded',function(){
+  buildSegSVG('introSvg','ia');
+  buildSegSVG('upSvg','up');
+  buildSegSVG('qySvg','qy');
+  upReset();
+  qyReset();
+  pgRun();
+  quizBuild();
+});
+</script>
+</body>
+</html>
