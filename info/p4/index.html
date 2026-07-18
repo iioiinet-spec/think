@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PART 4. 정보(SW·로봇) 영재를 위한 심층 면접 — 인터랙티브 강의</title>
+<style>
+:root{
+  --bg:#0a1628; --bg2:#0f1f38; --card:#132542; --card2:#18304f;
+  --teal:#2dd4bf; --teal-d:#14b8a6; --teal-glow:rgba(45,212,191,.18);
+  --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa; --sky:#38bdf8;
+  --txt:#e2e8f0; --sub:#94a3b8; --line:#1e3a5f;
+  --ok:#34d399; --no:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'Malgun Gothic','맑은 고딕',sans-serif;line-height:1.7}
+code,.mono{font-family:Consolas,'Courier New',monospace}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 80px}
+
+header{background:linear-gradient(135deg,#0a1628 0%,#0e2a4a 55%,#0d3b4f 100%);border-bottom:2px solid var(--teal-d);padding:44px 18px 34px;text-align:center}
+.badge{display:inline-block;background:var(--teal-glow);border:1px solid var(--teal-d);color:var(--teal);border-radius:20px;padding:4px 16px;font-size:.85rem;font-weight:bold;letter-spacing:.06em;margin-bottom:14px}
+header h1{font-size:1.7rem;color:#fff;margin-bottom:10px}
+header h1 .hl{color:var(--teal)}
+header p{color:var(--sub);font-size:.95rem;max-width:660px;margin:0 auto}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 8px;display:flex;gap:6px;overflow-x:auto}
+nav button{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--sub);border-radius:8px;padding:8px 13px;font-size:.83rem;cursor:pointer;font-family:inherit;transition:.15s}
+nav button:hover{border-color:var(--teal-d);color:var(--txt)}
+nav button.on{background:var(--teal-d);border-color:var(--teal-d);color:#04211c;font-weight:bold}
+
+section{display:none;padding-top:30px}
+section.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-size:1.4rem;color:#fff;border-left:5px solid var(--teal);padding-left:14px;margin:26px 0 6px}
+h2 .sec-no{color:var(--teal);font-size:.85rem;display:block;letter-spacing:.08em}
+h3{font-size:1.08rem;color:var(--teal);margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+h3::before{content:"";width:9px;height:9px;background:var(--teal);border-radius:2px;transform:rotate(45deg);flex:0 0 auto}
+.lead{color:var(--sub);margin:8px 0 18px;padding-left:19px;font-size:.94rem}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.card.tip{border-left:4px solid var(--amber)}
+.card.tip b:first-child{color:var(--amber)}
+.card.def{border-left:4px solid var(--sky)}
+.card.def b:first-child{color:var(--sky)}
+.grid{display:grid;gap:12px;margin:14px 0}
+.g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.mini{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mini b{color:var(--teal);display:block;margin-bottom:5px;font-size:.95rem}
+.mini p{font-size:.87rem;color:var(--sub)}
+.pill{display:inline-block;background:#0b2b3a;color:var(--sky);border:1px solid #155e75;border-radius:14px;padding:2px 11px;font-size:.78rem;margin:2px 3px 2px 0}
+.pill.exam{background:#3b1225;color:#fda4af;border-color:#9f1239}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:center}
+th{background:var(--card2);color:var(--teal)}
+td{background:rgba(19,37,66,.5)}
+
+.quiz{background:linear-gradient(180deg,var(--card) 0%,#10233f 100%);border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:14px;padding:20px 22px;margin:18px 0}
+.quiz .qtag{color:var(--violet);font-weight:bold;font-size:.82rem;letter-spacing:.05em}
+.quiz .qtag.exam{color:var(--rose)}
+.quiz .q{margin:8px 0 14px;font-size:.98rem}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:10px 14px;font-size:.92rem;cursor:pointer;font-family:inherit;transition:.15s}
+.opts button:hover{border-color:var(--violet)}
+.opts button.ok{background:rgba(52,211,153,.15);border-color:var(--ok);color:var(--ok);font-weight:bold}
+.opts button.no{background:rgba(248,113,113,.12);border-color:var(--no);color:var(--no)}
+.opts button:disabled{cursor:default;opacity:.85}
+.expl{display:none;margin-top:14px;background:#0b1e35;border:1px dashed var(--teal-d);border-radius:10px;padding:13px 16px;font-size:.9rem}
+.expl.show{display:block;animation:fade .3s}
+.expl b{color:var(--teal)}
+
+/* 면접 답변 연습 카드 */
+.iv{background:linear-gradient(180deg,var(--card) 0%,#10233f 100%);border:1px solid var(--line);border-left:4px solid var(--sky);border-radius:14px;padding:20px 22px;margin:18px 0}
+.iv .ivtag{color:var(--sky);font-weight:bold;font-size:.82rem;letter-spacing:.05em}
+.iv .ivtag.exam{color:var(--rose)}
+.iv .ivq{margin:8px 0 12px;font-size:1rem;font-weight:bold;color:#fff}
+.iv textarea{width:100%;min-height:92px;background:#0b1e35;border:1px solid var(--line);border-radius:9px;color:var(--txt);font-family:inherit;font-size:.9rem;padding:10px 12px;resize:vertical;margin:6px 0}
+.iv .frame{background:rgba(56,189,248,.06);border:1px solid #155e75;border-radius:9px;padding:10px 14px;font-size:.86rem;color:var(--sub);margin:6px 0 10px}
+.iv .frame b{color:var(--sky)}
+.rvbtn{background:transparent;border:1px solid var(--teal-d);color:var(--teal);border-radius:8px;padding:7px 16px;font-size:.86rem;cursor:pointer;font-family:inherit}
+.rvbtn:hover{background:var(--teal-glow)}
+.model{display:none;margin-top:12px;background:#0b1e35;border:1px dashed var(--teal-d);border-radius:10px;padding:13px 16px;font-size:.9rem}
+.model.show{display:block;animation:fade .3s}
+.model b{color:var(--teal)}
+
+.abtn{background:var(--teal-d);border:none;color:#04211c;font-weight:bold;border-radius:8px;padding:8px 18px;font-size:.88rem;cursor:pointer;font-family:inherit}
+.abtn:hover{background:var(--teal)}
+.abtn.ghost{background:transparent;border:1px solid var(--line);color:var(--sub);font-weight:normal}
+.ctr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.widget{background:#0b1e35;border:1px solid #17456b;border-radius:14px;padding:20px;margin:16px 0}
+.widget .wtitle{color:var(--sky);font-weight:bold;margin-bottom:10px;font-size:.95rem}
+.hint{font-size:.82rem;color:var(--sub);text-align:center;margin-top:8px}
+.msgbox{display:none;margin-top:12px;border-radius:9px;padding:10px 14px;font-size:.9rem;text-align:center}
+.msgbox.ok{display:block;background:rgba(52,211,153,.12);border:1px solid var(--ok);color:var(--ok)}
+.msgbox.no{display:block;background:rgba(248,113,113,.1);border:1px solid var(--no);color:var(--no)}
+
+/* 찬반 토론 카드 */
+.debate{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:620px){.debate{grid-template-columns:1fr}}
+.side{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.side.pro{border-top:3px solid var(--ok)}
+.side.con{border-top:3px solid var(--rose)}
+.side h4{font-size:.95rem;margin-bottom:8px}
+.side.pro h4{color:var(--ok)}
+.side.con h4{color:var(--rose)}
+.side ul{list-style:none;font-size:.87rem;color:var(--sub)}
+.side li{padding:5px 0 5px 16px;position:relative}
+.side li::before{content:"\2022";position:absolute;left:2px;color:var(--teal)}
+.side li.hidden-reason{filter:blur(5px);cursor:pointer;transition:.2s}
+.side li.hidden-reason:hover{filter:blur(2px)}
+.side li.revealed{filter:none}
+
+/* 면접 자세 체크리스트 */
+.check-list{margin:12px 0}
+.check-item{display:flex;align-items:flex-start;gap:12px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;cursor:pointer;transition:.15s}
+.check-item:hover{border-color:var(--teal-d)}
+.check-item .box{width:24px;height:24px;border:2px solid var(--line);border-radius:6px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:.15s;color:transparent}
+.check-item.done{border-color:var(--teal-d);background:rgba(45,212,191,.06)}
+.check-item.done .box{background:var(--teal-d);border-color:var(--teal-d);color:#04211c}
+.check-item .ctxt b{color:var(--teal);font-size:.92rem}
+.check-item .ctxt p{font-size:.84rem;color:var(--sub);margin-top:2px}
+.progress-bar{height:10px;background:var(--card2);border-radius:6px;overflow:hidden;margin:14px 0 4px}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--teal-d),var(--teal));width:0;transition:width .3s}
+
+/* 로봇 판별기 */
+.robot-check{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+.rc-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;width:150px;cursor:pointer;text-align:center;transition:.15s}
+.rc-card:hover{border-color:var(--teal)}
+.rc-card .emoji{font-size:2rem}
+.rc-card .name{font-size:.86rem;margin:6px 0}
+.rc-card .verdict{font-size:.8rem;font-weight:bold;min-height:1.4em}
+.rc-card.robot{border-color:var(--ok)}
+.rc-card.notrobot{border-color:var(--rose)}
+.rc-card .verdict.y{color:var(--ok)}
+.rc-card .verdict.n{color:var(--rose)}
+
+/* 3원칙 우선순위 */
+.laws{display:grid;gap:10px;margin:12px 0}
+.law{background:var(--card2);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:12px 16px}
+.law b{color:var(--amber)}
+.law .rank{display:inline-block;background:var(--amber);color:#04211c;font-weight:bold;border-radius:50%;width:24px;height:24px;text-align:center;line-height:24px;margin-right:8px;font-size:.85rem}
+
+footer{border-top:1px solid var(--line);margin-top:60px;padding:26px 18px;text-align:center;color:#475569;font-size:.82rem}
+.score-float{position:fixed;right:16px;bottom:16px;background:var(--card2);border:1px solid var(--teal-d);border-radius:12px;padding:9px 16px;font-size:.85rem;color:var(--teal);z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">정보 SW 영재원 완전정복 · PART 4</div>
+  <h1>정보(SW·로봇) 영재를 위한 <span class="hl">심층 면접</span></h1>
+  <p>서류·검사를 통과한 뒤 만나는 마지막 관문, 구술 면접. 인성·자기소개서·로봇·정보기술 4개 영역의 예상 질문에<br>답변 틀을 세우고, 직접 작성한 뒤 예시 답안과 비교하며 실전 감각을 길러 보세요.</p>
+</header>
+
+<nav id="nav">
+  <button data-t="s0" class="on">면접 개요</button>
+  <button data-t="s14">14. 인성</button>
+  <button data-t="s15">15. 자기소개서</button>
+  <button data-t="s16">16. 로봇</button>
+  <button data-t="s17">17. 정보기술</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ══════════ S0 개요 ══════════ -->
+<section id="s0" class="on">
+  <h2><span class="sec-no">OVERVIEW</span>심층 면접이란?</h2>
+  <p class="lead">대학·교육청이 정보(SW)·로봇 영재를 선발할 때 구술로 평가하는 마지막 단계입니다.</p>
+
+  <div class="card">
+    개별 면접 또는 3~5명이 함께 입실해, 여러 감독관 앞에서 질문지를 활용한 <b style="color:var(--teal)">구술 시험</b>을 치릅니다.
+    <b style="color:var(--teal)">자기소개서를 바탕으로 한 질문</b>과 <b style="color:var(--teal)">지원 분야의 학문 적성 질문</b>이 주로 나옵니다.
+    최근에는 온라인 1:1 화상 면접도 늘고 있습니다.
+  </div>
+
+  <h3>면접 3단계 과정</h3>
+  <div class="grid g3">
+    <div class="mini"><b>① 면접 대기실</b><p>감독 위원의 지시가 있을 때까지 차분히 기다립니다</p></div>
+    <div class="mini"><b>② 면접 준비실</b><p>주어진 시간 동안 문항지를 보고 답안을 미리 구상합니다</p></div>
+    <div class="mini"><b>③ 면접</b><p>구상한 답안을 설명하고, 지원동기·검증·창의성 질문에 논리적으로 답합니다</p></div>
+  </div>
+
+  <h3>면접 자세 체크리스트 — 직접 눌러 확인하세요</h3>
+  <div class="widget">
+    <div class="wtitle">✅ 면접 D-day 자세 점검 (8개 항목)</div>
+    <div class="check-list" id="checkList"></div>
+    <div class="progress-bar"><div class="fill" id="checkFill"></div></div>
+    <div class="hint" id="checkHint">항목을 눌러 하나씩 점검해 보세요.</div>
+  </div>
+
+  <div class="card tip">
+    <b>말투가 합격을 가른다</b><br>
+    "~했습니다.", "~라고 생각합니다."처럼 <b>끝맺음이 명확</b>해야 합니다. "~같은데요", "~같습니다"처럼 얼버무리지 마세요.
+    모르는 내용은 억지로 지어내지 말고 <b>"그 내용은 잘 모르겠습니다."</b>라고 솔직히 답하는 것이 좋습니다.
+  </div>
+
+  <div class="card def">
+    <b>학습 방법</b><br>
+    이 자료의 면접 문항은 <span style="color:var(--sky)">답변 틀(파란 상자)</span>을 먼저 읽고 → 답변을 <u>직접 작성</u>한 뒤 → <b>예시 답안</b> 버튼으로 비교하세요.
+    면접은 정답을 맞히는 시험이 아니라 <b>나의 생각을 논리적으로 전달</b>하는 자리입니다. 소리 내어 말하는 연습을 함께 하면 효과가 배가됩니다.
+  </div>
+</section>
+
+<!-- ══════════ S14 인성 ══════════ -->
+<section id="s14">
+  <h2><span class="sec-no">SECTION 14</span>인성 영역</h2>
+  <p class="lead">적극적 학습 태도, 협동심, 과제 집착력, 올바른 가치 판단과 배려심을 봅니다. IT 상식을 인성과 접목하는 것이 핵심입니다.</p>
+
+  <h3>가치 판단 — 해킹은 정당화될 수 있는가 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 가치 판단</span>
+    <p class="ivq">가난한 사람들을 돕기 위해 해킹으로 다른 사람의 은행 예금을 인출하는 것은 옳은 일일까요?</p>
+    <div class="frame"><b>답변 틀</b> — ① 입장 밝히기 → ② 핵심 근거(목적 vs 수단) → ③ 대안 제시. 가치 판단 문제는 '한쪽을 정하되 반대편도 이해함'을 보여주면 성숙해 보입니다.</div>
+    <textarea placeholder="나의 입장과 이유를 논리적으로 적어 보세요"></textarea>
+    <button class="rvbtn" data-rv="m14a">예시 답안 보기</button>
+    <div class="model" id="m14a">
+      <b>예시 답안 (옳지 않다는 입장)</b><br>
+      "옳지 않다고 생각합니다. 돕겠다는 <u>목적은 선하지만, 해킹이라는 수단은 명백한 범죄</u>이기 때문입니다. 남의 재산을 훔치는 것은 또 다른 피해자를 만들며, 좋은 목적이 나쁜 수단을 정당화할 수 없습니다. 만약 어려운 사람을 돕고 싶다면, 저의 프로그래밍 실력으로 <u>기부 플랫폼이나 봉사 매칭 앱</u>을 만드는 것처럼 정당한 방법을 찾겠습니다."<br><br>
+      <b>채점 포인트</b> — '목적과 수단의 분리', '또 다른 피해자', '정당한 대안'을 언급하면 논리적 완결성이 높아집니다. IT 영재답게 <b>기술로 선하게 돕는 대안</b>을 제시하는 것이 가점 요소입니다.
+    </div>
+  </div>
+
+  <div class="iv">
+    <span class="ivtag exam">기출 · 연습</span>
+    <p class="ivq">컴퓨터 기술을 이용해 노인·장애인 등 사회적 약자를 도울 방법을 이야기해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — 유창성(많이) × 융통성(다양한 대상) × 정교성(구체적으로). 시각·청각·이동 등 <u>서로 다른 어려움</u>별로 나누면 좋습니다.</div>
+    <textarea placeholder="가능한 한 많이, 다양하게 적어 보세요"></textarea>
+    <button class="rvbtn" data-rv="m14b">예시 답안 보기</button>
+    <div class="model" id="m14b">
+      <b>예시 답안</b><br>
+      👁️ 시각 — 사물을 음성으로 읽어주는 AI 카메라 앱, 점자 자동 변환기<br>
+      👂 청각 — 소리를 자막·진동으로 알려주는 스마트워치<br>
+      ♿ 이동 — 음성으로 부르면 오는 자율주행 휠체어, 계단 정보를 알려주는 길 안내 앱<br>
+      👵 노인 — 약 복용 시간 알림 로봇, 넘어짐을 감지해 가족에게 알리는 센서<br><br>
+      <b>포인트</b> — 대상별로 나눠 '어떤 어려움 → 어떤 기술'을 짝지으면 정교성 점수가 올라갑니다.
+    </div>
+  </div>
+
+  <h3>협동심 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 협동심</span>
+    <p class="ivq">영재원에서 다른 아이들과 어울리지 못하는 친구가 있고, 그 친구와 내가 한 조입니다. 어떻게 하겠습니까?</p>
+    <div class="frame"><b>답변 틀</b> — ① 그 친구의 입장 공감 → ② 내가 먼저 하는 구체적 행동 → ③ 팀 전체의 이익으로 마무리. '배려 + 리더십'을 함께 보여주세요.</div>
+    <textarea placeholder="내가 실제로 할 행동을 구체적으로"></textarea>
+    <button class="rvbtn" data-rv="m14c">예시 답안 보기</button>
+    <div class="model" id="m14c">
+      <b>예시 답안</b><br>
+      "먼저 그 친구에게 다가가 <u>좋아하는 것이나 잘하는 것을 물어보겠습니다.</u> 낯을 가리는 것일 수도 있으니까요. 그리고 조 활동에서 그 친구가 잘하는 역할을 맡겨 <u>자연스럽게 기여하고 인정받을 기회</u>를 만들겠습니다. 한 명이라도 소외되면 팀 전체의 결과도 좋을 수 없기 때문에, 모두가 참여하는 것이 팀에게도 이익이라고 생각합니다."<br><br>
+      <b>채점 포인트</b> — 무시하거나 선생님께 미루지 않고 <b>내가 먼저 행동</b>하며, 그 친구의 <b>강점을 살리는</b> 방향이면 협동심·리더십 모두 좋은 평가를 받습니다.
+    </div>
+  </div>
+
+  <h3>과제 집착력 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 과제 집착력</span>
+    <p class="ivq">내일까지 컴퓨터로 중요한 과제를 마쳐야 하는데, 내 PC가 바이러스에 걸려 문서 편집을 할 수 없습니다. 부모님은 여행 중이고 집에 나밖에 없습니다. 어떻게 해결하겠습니까?</p>
+    <div class="frame"><b>답변 틀</b> — 침착하게 <u>여러 대안을 단계적으로</u> 제시. '문제 분해 → 대안 나열 → 우선순위'는 컴퓨팅 사고력의 표현이기도 합니다.</div>
+    <textarea placeholder="가능한 해결책을 단계별로 나열해 보세요"></textarea>
+    <button class="rvbtn" data-rv="m14d">예시 답안 보기</button>
+    <div class="model" id="m14d">
+      <b>예시 답안</b><br>
+      "당황하지 않고 <u>여러 방법을 차례로 시도</u>하겠습니다. ① 먼저 백신 프로그램으로 검사·치료를 해봅니다. ② 안 되면 클라우드(구글 문서 등)나 스마트폰으로 과제를 이어서 작성합니다. ③ 그래도 어려우면 학교 컴퓨터실이나 도서관, 친척·친구의 도움을 구합니다. ④ 정말 불가능하면 선생님께 <u>상황을 솔직히 말씀드리고</u> 조율을 요청합니다. 그리고 앞으로는 <b>중요한 파일은 미리 클라우드에 백업</b>하는 습관을 들이겠습니다."<br><br>
+      <b>포인트</b> — 한 가지 답이 아니라 <b>'플랜 B, C'를 준비하는 태도</b>와, 재발 방지책(백업)까지 언급하면 문제해결력이 돋보입니다.
+    </div>
+  </div>
+
+  <h3>찬반 토론 — 노 키즈 존(No Kids Zone) <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    <b>노 키즈 존</b>이란 나이 제한을 두어 어린아이의 출입을 금하는 구역입니다. 시행에 <b>찬성/반대</b> 중 하나를 골라 <b>근거 3가지</b>를 제시하는 문제입니다.
+    아래 카드의 흐릿한 근거를 눌러 양쪽 논리를 모두 확인해 보세요 — 실전에서는 <u>한쪽을 정해</u> 답변하되, 반대편도 이해함을 보이면 좋습니다.
+  </div>
+  <div class="debate">
+    <div class="side pro">
+      <h4>찬성 측 근거</h4>
+      <ul>
+        <li class="hidden-reason">안전사고 위험 감소 — 뜨거운 음료·좁은 통로에서 아이가 다칠 위험을 줄인다</li>
+        <li class="hidden-reason">다른 손님의 조용한 이용 권리 보장 — 업주의 영업 자유</li>
+        <li class="hidden-reason">사고 발생 시 업주가 지는 과도한 책임 부담을 줄일 수 있다</li>
+      </ul>
+    </div>
+    <div class="side con">
+      <h4>반대 측 근거</h4>
+      <ul>
+        <li class="hidden-reason">나이만으로 출입을 막는 것은 아동·가족에 대한 차별</li>
+        <li class="hidden-reason">모든 아이가 시끄러운 것은 아닌데 일괄 배제하는 것은 부당</li>
+        <li class="hidden-reason">양육 가정의 외출·소비 활동을 위축시켜 사회적 배려에 어긋난다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="hint">💡 흐릿한 근거를 클릭하면 선명해집니다. 가치 판단 문제는 정답이 없으니, <b>일관된 근거</b>가 중요합니다.</div>
+
+  <div class="quiz" data-quiz>
+    <span class="qtag">태도 점검 · 객관식</span>
+    <p class="q">인성 면접에서 '가치 판단' 문제에 답할 때 <b>가장 바람직한 태도</b>는?</p>
+    <div class="opts">
+      <button data-c="0">무조건 예의 바른 쪽(찬성)만 답한다</button>
+      <button data-c="1">한쪽 입장을 정하되 일관된 근거를 대고, 반대편도 이해함을 보인다</button>
+      <button data-c="0">양쪽을 모두 지지해 중립을 지킨다</button>
+      <button data-c="0">면접관이 원할 것 같은 답을 추측해서 맞춘다</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 가치 판단 문제는 정답이 없습니다. <b>분명한 입장 + 일관된 근거</b>가 핵심이며, 반대 입장도 이해하는 균형 잡힌 태도가 성숙함을 보여줍니다. 눈치로 답을 맞추려 하면 오히려 논리가 흔들립니다.</div>
+  </div>
+</section>
+
+<!-- ══════════ S15 자기소개서 ══════════ -->
+<section id="s15">
+  <h2><span class="sec-no">SECTION 15</span>자기소개서 영역</h2>
+  <p class="lead">제출한 자기소개서 내용을 완전히 숙지하고, 핵심에서 예상 질문을 뽑아 답하는 훈련이 필요합니다.</p>
+
+  <div class="card tip">
+    <b>자기소개서 면접의 철칙</b><br>
+    면접관은 자기소개서를 보며 질문합니다. 따라서 <b>내가 쓴 내용은 100% 설명할 수 있어야</b> 합니다.
+    부풀리거나 남이 써준 내용은 후속 질문에서 금방 드러납니다. 아래 4대 단골 질문을 미리 준비하세요.
+  </div>
+
+  <h3>① 지원 동기 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 지원 동기</span>
+    <p class="ivq">본 영재교육원에 지원한 동기를 <b>자신의 꿈과 관련지어</b> 설명해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — ① 계기(구체적 경험) → ② 나의 꿈 → ③ 영재원이 그 꿈에 주는 도움. '경험 → 꿈 → 영재원'의 다리를 놓으세요.</div>
+    <textarea placeholder="나만의 계기와 꿈을 적어 보세요"></textarea>
+    <button class="rvbtn" data-rv="m15a">예시 답안 보기</button>
+    <div class="model" id="m15a">
+      <b>예시 답안 (구조 예시)</b><br>
+      "3학년 때 스크래치로 <u>동생을 위한 구구단 게임</u>을 만들었는데, 동생이 즐거워하는 모습을 보며 '코딩으로 사람을 돕는 일'에 매력을 느꼈습니다(계기). 저의 꿈은 <u>장애인을 돕는 소프트웨어를 만드는 개발자</u>입니다(꿈). 영재원에서는 혼자서는 배우기 어려운 알고리즘과 인공지능을 체계적으로 배우고, 같은 관심을 가진 친구들과 협업하며 그 꿈에 한 걸음 다가갈 수 있다고 생각해 지원했습니다(도움)."<br><br>
+      <b>포인트</b> — 추상적인 "코딩이 좋아서"보다 <b>구체적 경험</b>에서 출발하면 진정성이 느껴집니다. 꿈과 SW를 반드시 연결하세요.
+    </div>
+  </div>
+
+  <h3>② 활동 경험 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 활동 경험</span>
+    <p class="ivq">소프트웨어(또는 로봇) 분야에서 경험한 것을 하나 들고, 그 활동에서 <b>배운 점</b>을 설명해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — ① 무엇을(활동) → ② 겪은 어려움 → ③ 해결 과정 → ④ 배운 점. 결과보다 <u>과정과 배움</u>을 강조하세요. 컴퓨팅 사고·알고리즘적 사고가 드러나면 좋습니다.</div>
+    <textarea placeholder="구체적인 활동 하나를 골라 과정 중심으로"></textarea>
+    <button class="rvbtn" data-rv="m15b">예시 답안 보기</button>
+    <div class="model" id="m15b">
+      <b>예시 답안 (구조 예시)</b><br>
+      "라인트레이서 로봇을 만들 때, 로봇이 자꾸 선을 벗어났습니다(어려움). 원인을 찾기 위해 <u>센서 위치, 속도, 코드를 하나씩 바꿔가며 실험</u>했고(문제 분해·변인 통제), 센서를 바퀴축에 더 가깝게 옮기고 속도를 줄이니 안정적으로 주행했습니다(해결). 이 경험으로 <b>'한 번에 안 되면 원인을 나눠 하나씩 검증한다'</b>는 문제해결 방법을 배웠습니다(배운 점)."<br><br>
+      <b>포인트</b> — 성공 자랑이 아니라 <b>'실패 → 원인 분석 → 개선'</b> 구조가 정보 영재의 사고력을 잘 보여줍니다.
+    </div>
+  </div>
+
+  <h3>③ 강점과 약점 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 강점/약점</span>
+    <p class="ivq">자신의 단점을 말하고, 이를 극복하기 위해 어떤 <b>노력</b>을 했는지 설명해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — ① 솔직한 약점 → ② 극복을 위한 <u>구체적 행동</u> → ③ 변화. 약점을 '노력하는 사람'의 증거로 바꾸는 것이 핵심입니다.</div>
+    <textarea placeholder="약점 → 극복 노력 → 달라진 점"></textarea>
+    <button class="rvbtn" data-rv="m15c">예시 답안 보기</button>
+    <div class="model" id="m15c">
+      <b>예시 답안 (구조 예시)</b><br>
+      "저는 하나에 몰두하면 마무리를 서두르는 편이었습니다(약점). 코딩할 때도 빨리 결과만 보려다 오류를 자주 냈습니다. 그래서 <u>작업을 작은 단계로 나눠 매 단계마다 실행해 확인하는 습관</u>을 들였고(노력), 지금은 오류가 크게 줄고 끝까지 꼼꼼하게 완성하게 되었습니다(변화)."<br><br>
+      <b>포인트</b> — 치명적인 약점이나 "약점이 없다"는 답은 피하세요. <b>극복 노력</b>이 답변의 무게중심입니다.
+    </div>
+  </div>
+
+  <h3>④ 학업 계획 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 학업 계획</span>
+    <p class="ivq">영재원에 들어와서 탐구하고 싶은 <b>계획이나 프로젝트</b>를 설명해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — ① 관심 주제 → ② 구체적 프로젝트 → ③ 필요한 배움 → ④ 기대 효과. 막연한 포부보다 <u>손에 잡히는 프로젝트</u> 하나가 강합니다.</div>
+    <textarea placeholder="만들고 싶은 것 하나를 구체적으로"></textarea>
+    <button class="rvbtn" data-rv="m15d">예시 답안 보기</button>
+    <div class="model" id="m15d">
+      <b>예시 답안 (구조 예시)</b><br>
+      "저는 <u>학교 급식 잔반을 줄이는 앱</u>을 만들어 보고 싶습니다(프로젝트). 학생들이 메뉴 선호도를 입력하면, 데이터를 분석해 인기 없는 메뉴를 예측하는 것입니다. 이를 위해 영재원에서 <u>데이터 분석과 간단한 머신러닝</u>을 배우고 싶습니다(필요한 배움). 실제로 잔반이 줄면 환경에도 도움이 될 것이라 기대합니다(효과)."<br><br>
+      <b>포인트</b> — <b>실생활 문제 + 데이터/AI 활용 + 사회적 가치</b>를 엮으면 정보 영재원이 원하는 인재상에 부합합니다.
+    </div>
+  </div>
+
+  <div class="card def">
+    <b>활동 경험을 말할 때의 두 축</b><br>
+    · <b>창의성 4요소</b> — 많은 경험(유창성) × 다양한 경험(융통성) × 구체적 설명(정교성) × 개성적 내용(독창성)<br>
+    · <b>사고력 연결</b> — 컴퓨팅 사고·알고리즘적 사고를 정보기술과 엮어 창의적으로 답하기
+  </div>
+</section>
+
+<!-- ══════════ S16 로봇 ══════════ -->
+<section id="s16">
+  <h2><span class="sec-no">SECTION 16</span>로봇 영역</h2>
+  <p class="lead">로봇 관련 상식이 주로 출제됩니다. 로봇의 정의·어원, 로봇 3원칙, 구성요소를 정확히 알아야 합니다.</p>
+
+  <h3>로봇이란? 어원과 정의</h3>
+  <div class="card def">
+    <b>로봇(Robot)</b> — 스스로 <u>환경을 감지하고(센서)</u>, <u>판단·제어하여(컨트롤러)</u>, <u>행동하는(모터 등)</u> 기계.<br>
+    <b>어원</b> — 체코어 <span class="mono">robota</span>('노동, 강제 노동')에서 유래. 1920년 카렐 차페크의 희곡 <b>『R.U.R.』</b>에서 처음 사용되었습니다.
+  </div>
+
+  <h3>로봇 판별기 — 이것은 로봇일까?</h3>
+  <div class="card def">
+    로봇의 핵심은 <b>센서 · 컨트롤러(제어) · 구동부(모터)</b> 세 가지를 <u>모두</u> 갖추고 <b>스스로 판단</b>하는가입니다.
+    '컨트롤러(스스로 판단하는 두뇌)'가 없으면 단순 기계일 뿐입니다. 아래 카드를 눌러 판별해 보세요.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🤖 로봇 판별 퀴즈 — 카드를 눌러 로봇인지 확인하세요</div>
+    <div class="robot-check" id="robotCheck"></div>
+    <div class="hint">핵심 기준: 센서로 감지하고 <b>컨트롤러(두뇌)로 스스로 판단</b>해 행동하면 로봇! 리모컨이나 단순 스위치로만 움직이면 로봇이 아닙니다.</div>
+  </div>
+
+  <h3>로봇 구성요소</h3>
+  <table>
+    <tr><th>분류</th><th>구성요소</th></tr>
+    <tr><td>3요소</td><td>감지 · 제어 · 행동</td></tr>
+    <tr><td>4요소</td><td>몸체 · 센서부 · 제어부 · 구동부</td></tr>
+    <tr><td>5요소</td><td>몸체 · 센서부 · 제어부 · 구동부 · <b style="color:var(--teal)">전원부</b></td></tr>
+  </table>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 · 객관식</span>
+    <p class="q">로봇의 <b>5가지 구성요소</b>에 해당하지 <u>않는</u> 것은?</p>
+    <div class="opts">
+      <button data-c="0">센서부 (환경을 감지)</button>
+      <button data-c="0">제어부 (판단·명령)</button>
+      <button data-c="0">구동부 (실제 움직임)</button>
+      <button data-c="1">통신부 (인터넷 연결)</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 로봇 5요소는 <b>몸체·센서부·제어부·구동부·전원부</b>입니다. '통신부'는 5요소에 포함되지 않습니다. (전원부는 온몸에 전력을 공급하는 배터리·배전기를 뜻합니다.)</div>
+  </div>
+
+  <h3>로봇 3원칙 — 우선순위가 핵심 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    SF 작가 <b>아이작 아시모프</b>가 제시한 원칙으로, <b>순서(우선순위)</b>가 매우 중요합니다. 위 원칙이 아래 원칙보다 항상 우선합니다.
+  </div>
+  <div class="laws">
+    <div class="law"><span class="rank">1</span><b>인간 보호</b> — 로봇은 인간에게 해를 끼치거나, 위험을 방관해 해를 입게 해서는 안 된다.</div>
+    <div class="law"><span class="rank">2</span><b>명령 복종</b> — 1원칙에 어긋나지 않는 한, 로봇은 인간의 명령에 복종해야 한다.</div>
+    <div class="law"><span class="rank">3</span><b>자기 보호</b> — 1·2원칙에 어긋나지 않는 한, 로봇은 자신의 존재를 보호해야 한다.</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 응용 · 객관식</span>
+    <p class="q">주인이 로봇에게 "저 사람을 밀쳐라"라고 명령했습니다. 로봇 3원칙에 따르면 로봇은 어떻게 해야 할까요?</p>
+    <div class="opts">
+      <button data-c="0">2원칙(명령 복종)에 따라 무조건 밀친다</button>
+      <button data-c="1">1원칙(인간 보호)이 우선이므로 명령을 거부한다</button>
+      <button data-c="0">3원칙(자기 보호)에 따라 도망간다</button>
+      <button data-c="0">주인에게 이유를 물은 뒤 밀친다</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 사람을 미는 것은 해를 끼치는 행동이므로 <b>1원칙 위반</b>입니다. 명령 복종(2원칙)은 1원칙에 어긋나지 않을 때만 유효하므로, 로봇은 <b>명령을 거부</b>해야 합니다. 3원칙의 필요성을 묻는 연습문제도 함께 대비하세요.</div>
+  </div>
+  <div class="iv">
+    <span class="ivtag">연습 · 확장</span>
+    <p class="ivq">로봇 못지않게 인공지능도 우리 삶에 깊이 들어왔습니다. <b>인공지능 3원칙</b>을 로봇 3원칙과 비슷하게 직접 만들어 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — 로봇 3원칙의 '인간 보호 → 복종 → 자기 보호' 구조를 AI 상황(정보·판단)에 맞게 변형해 보세요.</div>
+    <textarea placeholder="AI 1원칙: … / AI 2원칙: … / AI 3원칙: …"></textarea>
+    <button class="rvbtn" data-rv="m16a">예시 답안 보기</button>
+    <div class="model" id="m16a">
+      <b>예시 답안</b><br>
+      · <b>1원칙</b> — 인공지능은 인간을 속이거나 편견으로 차별해 <u>해를 끼치지 않는다</u>.<br>
+      · <b>2원칙</b> — 1원칙에 어긋나지 않는 한, 인간의 정당한 요구에 <u>투명하게(판단 근거를 설명하며)</u> 응답한다.<br>
+      · <b>3원칙</b> — 1·2원칙에 어긋나지 않는 한, 자신의 판단 정확도와 데이터를 <u>스스로 개선·보호</u>한다.<br><br>
+      <b>포인트</b> — AI 특유의 쟁점(편견·거짓 정보·설명 가능성)을 반영하면 창의성 점수가 높습니다.
+    </div>
+  </div>
+
+  <h3>로봇 문제해결 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 문제해결</span>
+    <p class="ivq">라인트레이서 로봇이 주행 테스트 중 자꾸 선을 벗어납니다. 원인은 무엇이고, 어떻게 해결하겠습니까?</p>
+    <div class="frame"><b>답변 틀</b> — 원인을 <u>여러 갈래(센서·속도·코드·기구)</u>로 나눠 나열하고, 각각의 해결책을 제시. '가능한 모든 원인'을 빠짐없이 세는 것이 정보 영재다운 답변입니다.</div>
+    <textarea placeholder="원인 여러 개 → 각각의 해결책"></textarea>
+    <button class="rvbtn" data-rv="m16b">예시 답안 보기</button>
+    <div class="model" id="m16b">
+      <b>예시 답안</b><br>
+      <b>가능한 원인과 해결책</b><br>
+      ① <b>센서 위치</b> — 센서가 바퀴축에서 너무 멀면 반응이 늦음 → 센서를 축에 가깝게 이동<br>
+      ② <b>속도</b> — 너무 빠르면 곡선에서 이탈 → 속도를 낮추거나 곡선에서 감속하도록 코딩<br>
+      ③ <b>센서 감도</b> — 검은 선/흰 바닥 구분 기준값이 부적절 → 조명 환경에 맞게 임계값 보정<br>
+      ④ <b>코드 로직</b> — 좌우 회전 조건이 잘못됨 → 조건문 점검<br><br>
+      <b>포인트</b> — 한 가지 원인만 대지 말고 <b>센서·속도·코드·기구를 모두 검토</b>하는 체계적 태도가 핵심입니다.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S17 정보기술 ══════════ -->
+<section id="s17">
+  <h2><span class="sec-no">SECTION 17</span>정보기술 영역</h2>
+  <p class="lead">최신 정보기술 상식이 출제됩니다. 4차 산업혁명의 인공지능·드론·자율주행차·AR/VR·IoT를 정확히 설명할 수 있어야 합니다.</p>
+
+  <h3>인공지능과 알파고 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 인공지능</span>
+    <p class="ivq">알파고는 경우의 수가 무수히 많은 바둑에서 어떻게 인간을 이겼을까요? 어떤 인공지능 알고리즘을 사용했을까요?</p>
+    <div class="frame"><b>답변 틀</b> — 핵심 개념 세 가지를 쉬운 말로: <u>딥러닝(스스로 학습) · 강화학습(대국으로 실력 향상) · 트리 탐색(유망한 수만 골라 계산)</u>.</div>
+    <textarea placeholder="어려운 용어를 나만의 말로 풀어 설명해 보세요"></textarea>
+    <button class="rvbtn" data-rv="m17a">예시 답안 보기</button>
+    <div class="model" id="m17a">
+      <b>예시 답안</b><br>
+      "알파고는 세 가지 방법을 씁니다. ① <b>딥러닝</b> — 수많은 바둑 기보를 학습해 좋은 수의 '감'을 익힙니다. ② <b>강화학습</b> — 자기 자신과 수없이 대국하며 이기는 수를 스스로 강화합니다. ③ <b>몬테카를로 트리 탐색</b> — 모든 경우를 다 계산하는 대신 <u>유망한 수만 골라</u> 깊이 내다봅니다. 그래서 경우의 수가 우주의 원자 수보다 많은 바둑에서도 사람을 이길 수 있었습니다."<br><br>
+      <b>포인트</b> — 전문 용어를 던지기보다 <b>'무엇을 어떻게'를 쉬운 말로 풀어</b> 설명하면 이해도가 높다는 인상을 줍니다.
+    </div>
+  </div>
+
+  <h3>증강현실(AR)과 가상현실(VR) <span class="pill">표준문제</span></h3>
+  <div class="card def">
+    <b>증강현실(AR)</b> — 눈으로 보는 <u>실제 세계에 가상 물체를 겹쳐</u> 보여주는 기술 (예: 포켓몬 GO)<br>
+    <b>가상현실(VR)</b> — 현실에 존재하지 않는 <u>완전히 새로운 가상 환경</u>을 보여주는 기술 (예: VR 헤드셋 게임)<br>
+    <b>한 줄 요약</b> — AR은 현실 <b>＋</b> 가상(덧붙이기), VR은 현실 <b>→</b> 가상(대체하기)
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 구분 · 객관식</span>
+    <p class="q">스마트폰으로 거리를 비추면 실제 화면 위에 가게 정보와 캐릭터가 겹쳐 나타나는 기술은?</p>
+    <div class="opts">
+      <button data-c="1">증강현실(AR) — 현실에 가상을 덧붙임</button>
+      <button data-c="0">가상현실(VR) — 완전히 가상 세계로 대체</button>
+      <button data-c="0">사물인터넷(IoT)</button>
+      <button data-c="0">블록체인</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 실제 거리 화면 <u>위에 겹쳐서</u> 보여주므로 <b>증강현실(AR)</b>입니다. VR은 눈앞을 완전히 가상 세계로 채워 현실이 보이지 않습니다.</div>
+  </div>
+
+  <h3>사물인터넷(IoT)과 홈오토메이션 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    <b>사물인터넷(IoT, Internet of Things)</b> — 여러 사물이 <u>센서로 주변 환경을 인식</u>하고 <u>인터넷으로 서로 연결</u>되어 정보를 주고받는 환경.<br>
+    <b>홈오토메이션</b> — IoT 기능으로 가전·냉난방 등을 자동화하는 것 (예: 외출 시 스마트폰으로 보일러·조명 제어).
+  </div>
+  <div class="iv">
+    <span class="ivtag exam">기출 · IoT</span>
+    <p class="ivq">사물인터넷이 실생활에 적용된 예를 설명하고, 우리 집을 홈오토메이션 주택으로 바꾼다면 어떤 모습일지 구체적으로 말해 보세요.</p>
+    <div class="frame"><b>답변 틀</b> — ① IoT 정의 한 줄 → ② 실생활 예 2~3개 → ③ 우리 집 시나리오(아침~저녁 흐름으로). '하루 동선'으로 그리면 생생합니다.</div>
+    <textarea placeholder="IoT가 적용된 우리 집의 하루를 그려 보세요"></textarea>
+    <button class="rvbtn" data-rv="m17b">예시 답안 보기</button>
+    <div class="model" id="m17b">
+      <b>예시 답안</b><br>
+      "사물인터넷은 사물들이 센서로 상황을 인식하고 인터넷으로 연결되어 정보를 주고받는 기술입니다. 예를 들어 <u>스마트 냉장고</u>가 부족한 식재료를 자동 주문하고, <u>웨어러블 밴드</u>가 건강 정보를 병원과 공유합니다.<br>
+      우리 집이 홈오토메이션 주택이 된다면 — 아침에 알람이 울리면 <u>커튼이 자동으로 열리고</u> 보일러가 화장실을 데웁니다. 등교 후 집이 비면 <u>불과 가전이 자동으로 꺼져</u> 에너지를 아끼고, 하교 시간에 맞춰 스마트폰 위치를 감지해 미리 냉방을 켭니다. 저녁에는 대기질 센서가 나빠지면 <u>공기청정기가 스스로 작동</u>합니다."<br><br>
+      <b>포인트</b> — 나열보다 <b>'하루의 흐름'이라는 이야기 구조</b>로 답하면 구체성과 전달력이 크게 올라갑니다.
+    </div>
+  </div>
+
+  <h3>자율주행차와 자율비행 드론 <span class="pill exam">기출</span></h3>
+  <div class="iv">
+    <span class="ivtag exam">기출 · 자율주행</span>
+    <p class="ivq">자율주행차가 사람처럼 도시를 스스로 운전하려면 어떤 기술이 필요할까요?</p>
+    <div class="frame"><b>답변 틀</b> — 운전의 3단계로 나누기: <u>인지(주변 파악) → 판단(무엇을 할지 결정) → 제어(실제 조작)</u>. 각 단계별 기술을 짝지으세요.</div>
+    <textarea placeholder="인지 → 판단 → 제어 단계별로"></textarea>
+    <button class="rvbtn" data-rv="m17c">예시 답안 보기</button>
+    <div class="model" id="m17c">
+      <b>예시 답안</b><br>
+      "사람이 운전하는 과정을 세 단계로 나눠 생각했습니다.<br>
+      ① <b>인지</b> — 카메라·라이다·레이더 센서로 차선·보행자·신호를 파악하고, GPS로 위치를 압니다.<br>
+      ② <b>판단</b> — 인공지능이 '지금 멈출까, 갈까, 피할까'를 결정합니다. 여기에 딥러닝이 쓰입니다.<br>
+      ③ <b>제어</b> — 결정에 따라 핸들·브레이크·가속을 정밀하게 조작합니다.<br>
+      또한 <u>차량 간 통신(V2X)</u>으로 다른 차·신호등과 정보를 주고받으면 더 안전해집니다."<br><br>
+      <b>포인트</b> — '인지-판단-제어'라는 <b>단계 구조</b>로 답하면 복잡한 기술을 논리적으로 정리한 인상을 줍니다. 이는 로봇의 '감지-제어-행동'과도 연결됩니다.
+    </div>
+  </div>
+
+  <div class="card tip">
+    <b>FUN GAME — 플레이봇(PlayBot)</b><br>
+    PART 4 마지막에는 <b>플레이봇</b>이 소개됩니다. 귀여운 로봇을 움직이며 미션을 푸는데, 블록 코딩과 <b>텍스트 코딩(Python·JavaScript)의 다리</b> 역할을 하는 학습 도구입니다.
+    <span class="mono">if~else</span>, <span class="mono">for</span>, <span class="mono">while</span> 같은 실제 프로그래밍 문법을 게임으로 익히고, 온라인 채점으로 실력도 측정할 수 있어 면접에서 말할 '활동 경험'을 쌓기에도 좋습니다.
+  </div>
+</section>
+
+</div>
+
+<div class="score-float" id="scoreFloat">퀴즈 0 / 0</div>
+
+<footer>
+  정보 SW 영재원 완전정복 · PART 4 심층 면접 인터랙티브 강의자료<br>
+  세영코딩연구소 · 원문 교재의 문항 구조를 학습용으로 재구성했습니다
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ── nav ── */
+var nav = document.getElementById("nav");
+nav.addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var t = b.getAttribute("data-t"), i;
+  var btns = nav.querySelectorAll("button");
+  for(i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  var secs = document.querySelectorAll("section");
+  for(i=0;i<secs.length;i++) secs[i].classList.toggle("on", secs[i].id===t);
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+/* ── quiz engine ── */
+var totalQ = 0, doneQ = 0, okQ = 0;
+var quizzes = document.querySelectorAll(".quiz[data-quiz]");
+totalQ = quizzes.length;
+function updScore(){
+  document.getElementById("scoreFloat").textContent =
+    "\uD034\uC988 " + okQ + " / " + totalQ + (doneQ===totalQ ? " \uC644\uB8CC!" : "");
+}
+Array.prototype.forEach.call(quizzes, function(qz){
+  var opts = qz.querySelectorAll(".opts button");
+  var expl = qz.querySelector(".expl");
+  Array.prototype.forEach.call(opts, function(btn){
+    btn.addEventListener("click", function(){
+      if(qz.getAttribute("data-done")) return;
+      qz.setAttribute("data-done","1"); doneQ++;
+      if(btn.getAttribute("data-c")==="1") okQ++;
+      Array.prototype.forEach.call(opts, function(o){
+        o.disabled = true;
+        if(o.getAttribute("data-c")==="1") o.classList.add("ok");
+        else if(o===btn) o.classList.add("no");
+      });
+      if(expl) expl.classList.add("show");
+      updScore();
+    });
+  });
+});
+updScore();
+
+/* ── reveal buttons (예시 답안) ── */
+Array.prototype.forEach.call(document.querySelectorAll(".rvbtn"), function(b){
+  b.addEventListener("click", function(){
+    var box = document.getElementById(b.getAttribute("data-rv"));
+    if(box) box.classList.toggle("show");
+  });
+});
+
+/* ── 면접 자세 체크리스트 ── */
+var checkData = [
+  {t:"\uB9C8\uC74C\uAC00\uC9D0", d:"\uC801\uADF9\uC801\uC774\uACE0 \uD3B8\uC548\uD55C \uB9C8\uC74C\uC73C\uB85C. \uBA74\uC811\uAD00\uC740 \uB098\uB97C \uD569\uACA9\uC2DC\uD0A4\uB824 \uC55E\uC5D0 \uC788\uB2E4\uACE0 \uC0DD\uAC01\uD558\uAE30"},
+  {t:"\uC5BC\uAD74 \uD45C\uC815", d:"\uC0B4\uC9DD \uBBF8\uC18C\uB97C \uC9C0\uC73C\uBA70 \uBA85\uB791\uD55C \uD45C\uC815\uC73C\uB85C"},
+  {t:"\uC2DC\uC120 \uCC98\uB9AC", d:"\uBA74\uC811\uAD00\uC758 \uB208\uC744 \uC751\uC2DC. \uBD80\uB2F4\uC2A4\uB7EC\uC6B0\uBA74 \uCF54\uB97C \uBC14\uB77C\uBCF4\uAE30"},
+  {t:"\uC5B4\uAE68 \uC790\uC138", d:"\uC5B4\uAE68\uB97C \uD3B4 \uC790\uC138\uB85C, \uD754\uB4E4\uC9C0 \uC54A\uB3C4\uB85D \uC8FC\uC758"},
+  {t:"\uC190 \uCC98\uB9AC", d:"\uB450 \uC190\uC744 \uBAA8\uC73C\uAC70\uB098 \uD5C8\uBC85\uC9C0 \uC704\uC5D0 \uB2E8\uC815\uD788. \uC81C\uC2A4\uCC98\uB294 \uC801\uC808\uD788"},
+  {t:"\uBCF5\uC7A5", d:"\uAE54\uB054\uD55C \uCE90\uC8FC\uC5BC \uC815\uC7A5 \uD615\uD0DC\uB85C"},
+  {t:"\uC778\uC0AC", d:"\uB4E4\uC5B4\uA008 \uB54C '\uC548\uB155\uD558\uC138\uC694', \uB098\uC62C \uB54C '\uAC10\uC0AC\uD569\uB2C8\uB2E4' \uBA38\uB9AC \uC219\uC5EC"},
+  {t:"\uB9D0\uD22C", d:"'~\uD588\uC2B5\uB2C8\uB2E4', '~\uB77C\uACE0 \uC0DD\uAC01\uD569\uB2C8\uB2E4'\uCC98\uB7FC \uBA85\uD655\uD558\uAC8C. \uC5BC\uBC84\uBB34\uB9AC\uC9C0 \uC54A\uAE30"}
+];
+var checkList = document.getElementById("checkList");
+var checkDone = 0;
+checkData.forEach(function(item, i){
+  var div = document.createElement("div");
+  div.className = "check-item";
+  var box = document.createElement("div");
+  box.className = "box";
+  box.textContent = "\u2713";
+  var txt = document.createElement("div");
+  txt.className = "ctxt";
+  var b = document.createElement("b"); b.textContent = (i+1) + ". " + item.t;
+  var p = document.createElement("p"); p.textContent = item.d;
+  txt.appendChild(b); txt.appendChild(p);
+  div.appendChild(box); div.appendChild(txt);
+  div.addEventListener("click", function(){
+    var was = div.classList.contains("done");
+    div.classList.toggle("done");
+    checkDone += was ? -1 : 1;
+    var pct = Math.round(checkDone / checkData.length * 100);
+    document.getElementById("checkFill").style.width = pct + "%";
+    var hint = document.getElementById("checkHint");
+    if(checkDone === checkData.length){
+      hint.innerHTML = "\uD83C\uDF89 8\uAC00\uC9C0 \uC790\uC138\uB97C \uBAA8\uB450 \uC810\uAC80\uD588\uC5B4\uC694! \uC790\uC2E0\uAC10 \uC788\uAC8C \uBA74\uC811\uC5D0 \uC784\uD558\uC138\uC694.";
+    } else {
+      hint.textContent = checkDone + " / " + checkData.length + " \uC810\uAC80 \uC644\uB8CC";
+    }
+  });
+  checkList.appendChild(div);
+});
+
+/* ── 노키즈존 흐릿한 근거 클릭 ── */
+Array.prototype.forEach.call(document.querySelectorAll(".hidden-reason"), function(li){
+  li.addEventListener("click", function(){
+    li.classList.toggle("revealed");
+  });
+});
+
+/* ── 로봇 판별기 ── */
+var robotData = [
+  {e:"\uD83E\uDDF9", n:"\uB85C\uBD07 \uCCAD\uC18C\uAE30", robot:true, why:"\uC13C\uC11C\uB85C \uC7A5\uC560\uBB3C\u00B7\uBA3C\uC9C0\uB97C \uAC10\uC9C0\uD558\uACE0 \uC2A4\uC2A4\uB85C \uACBD\uB85C\uB97C \uD310\uB2E8\u00B7\uC774\uB3D9 \u2192 \uB85C\uBD07!"},
+  {e:"\uD83D\uDCFA", n:"\uD154\uB808\uBE44\uC804", robot:false, why:"\uB9AC\uBAA8\uCEE8\uC73C\uB85C\uB9CC \uC791\uB3D9, \uC2A4\uC2A4\uB85C \uD310\uB2E8\uD558\uB294 \uCEE8\uD2B8\uB864\uB7EC \uC5C6\uC74C \u2192 \uB85C\uBD07 \uC544\uB2D8"},
+  {e:"\uD83D\uDEAA", n:"\uC790\uB3D9\uBB38(\uB9C8\uD2B8)", robot:false, why:"\uC6C0\uC9C1\uC784 \uC13C\uC11C+\uBAA8\uD130\uB294 \uC788\uC9C0\uB9CC \uD310\uB2E8\uD558\uB294 \uCEE8\uD2B8\uB864\uB7EC\uAC00 \uC5C6\uC74C \u2192 \uB85C\uBD07 \uC544\uB2D8"},
+  {e:"\uD83E\uDDB7", n:"\uC804\uB3D9 \uCE7C\uC194", robot:false, why:"\uC804\uC6D0 \uC2A4\uC704\uCE58\u00B7\uBAA8\uD130\uB9CC \uC788\uACE0 \uCEE8\uD2B8\uB864\uB7EC\u00B7\uC13C\uC11C \uD310\uB2E8 \uC5C6\uC74C \u2192 \uB85C\uBD07 \uC544\uB2D8"},
+  {e:"\uD83E\uDD16", n:"\uC790\uC728\uC8FC\uD589\uC28C \uB85C\uBd07", robot:true, why:"\uC13C\uC11C\uB85C \uD658\uACBD\uC744 \uC77D\uACE0 AI\uAC00 \uC2A4\uC2A4\uB85C \uD310\uB2E8\uD574 \uD53C\uD574 \uC774\uB3D9 \u2192 \uB85C\uBD07!"},
+  {e:"\uD83D\uDD25", n:"\uC5F0\uAE30 \uAC10\uC9C0\uAE30", robot:false, why:"\uC5F0\uAE30 \uC13C\uC11C+\uACBD\uBCF4\uAE30\uB9CC \uC788\uACE0 \uCEE8\uD2B8\uB864\uB7EC \uC5C6\uC74C \u2192 \uB85C\uBD07 \uC544\uB2D8"}
+];
+var robotCheck = document.getElementById("robotCheck");
+robotData.forEach(function(item){
+  var card = document.createElement("div");
+  card.className = "rc-card";
+  var em = document.createElement("div"); em.className = "emoji"; em.textContent = item.e;
+  var nm = document.createElement("div"); nm.className = "name"; nm.textContent = item.n;
+  var vd = document.createElement("div"); vd.className = "verdict"; vd.textContent = "?";
+  card.appendChild(em); card.appendChild(nm); card.appendChild(vd);
+  card.addEventListener("click", function(){
+    if(card.getAttribute("data-done")) return;
+    card.setAttribute("data-done","1");
+    card.classList.add(item.robot ? "robot" : "notrobot");
+    vd.classList.add(item.robot ? "y" : "n");
+    vd.textContent = item.robot ? "\u2B55 \uB85C\uBD07" : "\u274C \uB85C\uBD07 \uC544\uB2D8";
+    var tip = document.createElement("div");
+    tip.style.cssText = "font-size:.76rem;color:var(--sub);margin-top:6px;line-height:1.4";
+    tip.textContent = item.why;
+    card.appendChild(tip);
+  });
+  robotCheck.appendChild(card);
+});
+
+})();
+</script>
+</body>
+</html>

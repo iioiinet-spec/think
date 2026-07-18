@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PART 3. 정보(SW·로봇) 영재를 위한 창의적 문제해결 검사 — 인터랙티브 강의</title>
+<style>
+:root{
+  --bg:#0a1628; --bg2:#0f1f38; --card:#132542; --card2:#18304f;
+  --teal:#2dd4bf; --teal-d:#14b8a6; --teal-glow:rgba(45,212,191,.18);
+  --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa; --sky:#38bdf8;
+  --txt:#e2e8f0; --sub:#94a3b8; --line:#1e3a5f;
+  --ok:#34d399; --no:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'Malgun Gothic','맑은 고딕',sans-serif;line-height:1.7}
+code,.mono{font-family:Consolas,'Courier New',monospace}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 80px}
+
+header{background:linear-gradient(135deg,#0a1628 0%,#0e2a4a 55%,#0d3b4f 100%);border-bottom:2px solid var(--teal-d);padding:44px 18px 34px;text-align:center}
+.badge{display:inline-block;background:var(--teal-glow);border:1px solid var(--teal-d);color:var(--teal);border-radius:20px;padding:4px 16px;font-size:.85rem;font-weight:bold;letter-spacing:.06em;margin-bottom:14px}
+header h1{font-size:1.7rem;color:#fff;margin-bottom:10px}
+header h1 .hl{color:var(--teal)}
+header p{color:var(--sub);font-size:.95rem;max-width:660px;margin:0 auto}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 8px;display:flex;gap:6px;overflow-x:auto}
+nav button{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--sub);border-radius:8px;padding:8px 13px;font-size:.83rem;cursor:pointer;font-family:inherit;transition:.15s}
+nav button:hover{border-color:var(--teal-d);color:var(--txt)}
+nav button.on{background:var(--teal-d);border-color:var(--teal-d);color:#04211c;font-weight:bold}
+
+section{display:none;padding-top:30px}
+section.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-size:1.4rem;color:#fff;border-left:5px solid var(--teal);padding-left:14px;margin:26px 0 6px}
+h2 .sec-no{color:var(--teal);font-size:.85rem;display:block;letter-spacing:.08em}
+h3{font-size:1.08rem;color:var(--teal);margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+h3::before{content:"";width:9px;height:9px;background:var(--teal);border-radius:2px;transform:rotate(45deg);flex:0 0 auto}
+.lead{color:var(--sub);margin:8px 0 18px;padding-left:19px;font-size:.94rem}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.card.tip{border-left:4px solid var(--amber)}
+.card.tip b:first-child{color:var(--amber)}
+.card.def{border-left:4px solid var(--sky)}
+.card.def b:first-child{color:var(--sky)}
+.grid{display:grid;gap:12px;margin:14px 0}
+.g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.mini{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mini b{color:var(--teal);display:block;margin-bottom:5px;font-size:.95rem}
+.mini p{font-size:.87rem;color:var(--sub)}
+.pill{display:inline-block;background:#0b2b3a;color:var(--sky);border:1px solid #155e75;border-radius:14px;padding:2px 11px;font-size:.78rem;margin:2px 3px 2px 0}
+.pill.exam{background:#3b1225;color:#fda4af;border-color:#9f1239}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:center}
+th{background:var(--card2);color:var(--teal)}
+td{background:rgba(19,37,66,.5)}
+
+.quiz{background:linear-gradient(180deg,var(--card) 0%,#10233f 100%);border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:14px;padding:20px 22px;margin:18px 0}
+.quiz .qtag{color:var(--violet);font-weight:bold;font-size:.82rem;letter-spacing:.05em}
+.quiz .qtag.exam{color:var(--rose)}
+.quiz .q{margin:8px 0 14px;font-size:.98rem}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:10px 14px;font-size:.92rem;cursor:pointer;font-family:inherit;transition:.15s}
+.opts button:hover{border-color:var(--violet)}
+.opts button.ok{background:rgba(52,211,153,.15);border-color:var(--ok);color:var(--ok);font-weight:bold}
+.opts button.no{background:rgba(248,113,113,.12);border-color:var(--no);color:var(--no)}
+.opts button:disabled{cursor:default;opacity:.85}
+.expl{display:none;margin-top:14px;background:#0b1e35;border:1px dashed var(--teal-d);border-radius:10px;padding:13px 16px;font-size:.9rem}
+.expl.show{display:block;animation:fade .3s}
+.expl b{color:var(--teal)}
+
+.open{border-left:4px solid var(--sky)}
+.open textarea{width:100%;min-height:84px;background:#0b1e35;border:1px solid var(--line);border-radius:9px;color:var(--txt);font-family:inherit;font-size:.9rem;padding:10px 12px;resize:vertical;margin:8px 0}
+.rvbtn{background:transparent;border:1px solid var(--teal-d);color:var(--teal);border-radius:8px;padding:7px 16px;font-size:.86rem;cursor:pointer;font-family:inherit}
+.rvbtn:hover{background:var(--teal-glow)}
+.abtn{background:var(--teal-d);border:none;color:#04211c;font-weight:bold;border-radius:8px;padding:8px 18px;font-size:.88rem;cursor:pointer;font-family:inherit}
+.abtn:hover{background:var(--teal)}
+.abtn.ghost{background:transparent;border:1px solid var(--line);color:var(--sub);font-weight:normal}
+
+.widget{background:#0b1e35;border:1px solid #17456b;border-radius:14px;padding:20px;margin:16px 0}
+.widget .wtitle{color:var(--sky);font-weight:bold;margin-bottom:10px;font-size:.95rem}
+.hint{font-size:.82rem;color:var(--sub);text-align:center;margin-top:8px}
+.ctr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.msgbox{display:none;margin-top:12px;border-radius:9px;padding:10px 14px;font-size:.9rem;text-align:center}
+.msgbox.ok{display:block;background:rgba(52,211,153,.12);border:1px solid var(--ok);color:var(--ok)}
+.msgbox.no{display:block;background:rgba(248,113,113,.1);border:1px solid var(--no);color:var(--no)}
+
+/* stack/queue viz */
+.dsflex{display:flex;gap:30px;flex-wrap:wrap;justify-content:center;align-items:flex-end}
+.tube{width:78px;background:rgba(45,212,191,.05);border:2px solid var(--line);border-top:none;border-radius:0 0 12px 12px;display:flex;flex-direction:column-reverse;padding:6px;gap:6px;min-height:230px;position:relative}
+.tube .cap{position:absolute;top:-26px;left:0;right:0;text-align:center;color:var(--sub);font-size:.8rem}
+.ball{height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-family:Consolas,monospace;color:#04211c;animation:pop .3s}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.log{font-family:Consolas,monospace;font-size:.84rem;color:var(--sub);text-align:center;margin-top:10px;min-height:1.4em}
+.seqbtns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* tree */
+.treewrap{overflow-x:auto;padding:8px 0}
+.leveltag{color:var(--sub);font-size:.8rem}
+
+/* pigeon */
+.pigeon-ctrl{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;margin-bottom:10px}
+.pigeon-ctrl label{font-size:.86rem;color:var(--sub)}
+.pigeon-ctrl input[type=range]{accent-color:var(--teal)}
+.holes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.hole{border:2px dashed var(--line);border-radius:12px;padding:8px;min-width:64px;min-height:70px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;justify-content:center}
+.hole .p{width:22px;height:22px;border-radius:50%;background:var(--amber)}
+.big{font-size:1.6rem;color:var(--teal);font-weight:bold;text-align:center}
+
+/* flowchart builder */
+.fc-bank,.fc-drop{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;min-height:44px;padding:8px;border-radius:10px}
+.fc-drop{border:1px dashed var(--teal-d);background:rgba(45,212,191,.04);flex-direction:column;align-items:center}
+.fc-item{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.86rem;user-select:none}
+.fc-item:hover{border-color:var(--teal)}
+.fc-slot{width:100%;max-width:340px;min-height:40px;border:1px solid var(--line);border-radius:8px;margin:4px 0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.85rem;background:#0b1e35}
+.fc-slot.filled{border-color:var(--teal);color:var(--txt)}
+
+/* dijkstra */
+.dj-stage{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:flex-start}
+.dj-table{font-size:.85rem}
+.dj-table td{font-family:Consolas,monospace}
+.nodecircle{fill:var(--card2);stroke:var(--teal-d);stroke-width:2}
+.nodecircle.done{fill:var(--teal-d)}
+.nodecircle.cur{fill:var(--amber);stroke:var(--amber)}
+.edgelbl{fill:var(--sub);font-size:12px;font-family:Consolas,monospace}
+.nodelbl{fill:#fff;font-size:14px;font-weight:bold;text-anchor:middle}
+
+footer{border-top:1px solid var(--line);margin-top:60px;padding:26px 18px;text-align:center;color:#475569;font-size:.82rem}
+.score-float{position:fixed;right:16px;bottom:16px;background:var(--card2);border:1px solid var(--teal-d);border-radius:12px;padding:9px 16px;font-size:.85rem;color:var(--teal);z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">정보 SW 영재원 완전정복 · PART 3</div>
+  <h1>정보(SW·로봇) 영재를 위한 <span class="hl">창의적 문제해결 검사</span></h1>
+  <p>이산수학·자료구조·알고리즘·컴퓨팅 사고력 등, 정보영재 판별의 핵심 6개 영역을 인터랙티브하게 학습합니다.<br>스택·큐·트리·다익스트라를 직접 조작하며 컴퓨터처럼 사고하는 힘을 길러 보세요.</p>
+</header>
+
+<nav id="nav">
+  <button data-t="s0" class="on">개요</button>
+  <button data-t="s8">8. 자료구조</button>
+  <button data-t="s9">9. 이산수학</button>
+  <button data-t="s10">10. 컴퓨팅 사고력</button>
+  <button data-t="s11">11. 알고리즘</button>
+  <button data-t="s12">12. 로봇</button>
+  <button data-t="s13">13. 융합 문제해결</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ══════════ S0 개요 ══════════ -->
+<section id="s0" class="on">
+  <h2><span class="sec-no">OVERVIEW</span>창의적 문제해결 검사란?</h2>
+  <p class="lead">영재교육원 선발 2단계에서 치르는 검사로, 정보 분야는 주로 이산수학·알고리즘 능력·컴퓨팅 사고력을 측정합니다.</p>
+
+  <div class="card">
+    창의적 문제해결 검사는 다양한 상황에서 <b style="color:var(--teal)">이산수학·자료구조·알고리즘</b>을 활용해 문제를 해결하는 능력을 봅니다.
+    PART 2(영재성 검사)가 창의성·언어·논리의 <u>일반 영재성</u>을 봤다면, PART 3은 정보 영재 특유의 <b style="color:var(--teal)">'컴퓨터처럼 사고하기'</b>를 집중적으로 평가합니다.
+  </div>
+
+  <div class="grid g3">
+    <div class="mini"><b>8 · 자료구조</b><p>스택·큐·트리·그래프·정렬 — 데이터를 담고 꺼내는 구조</p></div>
+    <div class="mini"><b>9 · 이산수학</b><p>한붓그리기·비둘기집·색칠·이진법 등 정보 영재의 핵심 도구</p></div>
+    <div class="mini"><b>10 · 컴퓨팅 사고력</b><p>분해·추상화·자동화 — 9가지 CT 구성요소</p></div>
+    <div class="mini"><b>11 · 알고리즘</b><p>순서도·최단경로·다익스트라 — 문제해결의 절차</p></div>
+    <div class="mini"><b>12 · 로봇</b><p>생체 모방·창작 로봇·로봇 과학 원리</p></div>
+    <div class="mini"><b>13 · 융합 문제해결</b><p>STEAM으로 자연·사회 현상 통합 탐구</p></div>
+  </div>
+
+  <div class="card tip">
+    <b>이산수학이 왜 중요할까?</b><br>
+    정보 영재란 <b>이산수학적 사고가 뛰어난 학생</b>입니다. 이산(discrete)이란 '서로 떨어져 있거나 연결되지 않은 원소들'을 뜻하며,
+    프로그래밍 언어·자료구조·알고리즘·암호이론이 모두 이산수학 위에 서 있습니다. 그래서 영재원은 이산수학 관련 문제로 정보 영재를 판별합니다.
+  </div>
+
+  <div class="card def">
+    <b>학습 방법</b><br>
+    각 탭에서 개념 길잡이 → 인터랙티브 위젯(스택 시뮬레이터, 다익스트라 애니메이션 등) → 기출·표준문제 퀴즈 순으로 진행하세요.
+    모든 객관식 정답은 사전에 검증되었고, 오른쪽 아래 점수판이 진행 상황을 알려줍니다.
+  </div>
+</section>
+
+<!-- ══════════ S8 자료구조 ══════════ -->
+<section id="s8">
+  <h2><span class="sec-no">SECTION 8</span>자료구조 영역</h2>
+  <p class="lead">대부분의 프로그램은 '알고리즘 + 자료구조'로 이루어집니다. 알맞은 자료구조를 고르는 것이 핵심입니다.</p>
+
+  <h3>스택(Stack) — 후입선출 LIFO</h3>
+  <div class="card def">
+    <b>스택</b>이란 '쌓아 올린 더미'. 자료의 삽입·삭제가 <b>한쪽 끝(top)</b>에서만 일어납니다. 넣기 = <b>push</b>, 꺼내기 = <b>pop</b>.
+    나중에 들어간 것이 먼저 나오므로 <b>후입선출(LIFO, Last In First Out)</b>. 밑이 막힌 통에 동전을 쌓는 것과 같습니다.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🪙 스택 시뮬레이터 — push/pop 순서대로 눌러 공의 움직임을 관찰하세요</div>
+    <div class="dsflex">
+      <div class="tube" id="stackTube"><div class="cap">top ↕ (입구)</div></div>
+    </div>
+    <div class="ctr">
+      <button class="abtn" id="stackPush">push (A→B→C…)</button>
+      <button class="abtn" id="stackPop">pop</button>
+      <button class="abtn ghost" id="stackReset">비우기</button>
+    </div>
+    <div class="log" id="stackLog">빈 스택입니다.</div>
+    <div class="hint">기출 순서: push push pop push pop pop push pop — pop되는 공은 B, C, A, D!</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">구운 순서대로 접시에 호떡 5개를 쌓았습니다(스택). <b>가장 먼저 먹게 되는</b> 호떡은 할아버지가 몇 번째 만든 것이고, <b>맨 처음 만든</b> 호떡은 몇 번째로 먹게 될까요?</p>
+    <div class="opts">
+      <button data-c="1">먼저 먹는 것은 5번째, 처음 만든 것은 5번째로 먹음</button>
+      <button data-c="0">먼저 먹는 것은 1번째, 처음 만든 것은 1번째로 먹음</button>
+      <button data-c="0">먼저 먹는 것은 3번째, 처음 만든 것은 3번째로 먹음</button>
+      <button data-c="0">먼저 먹는 것은 5번째, 처음 만든 것은 1번째로 먹음</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 스택은 후입선출. 맨 위(가장 마지막 = 5번째)를 먼저 먹고, 맨 처음 만든 1번째는 맨 아래에 깔려 <b>가장 마지막(5번째)</b>으로 먹게 됩니다.</div>
+  </div>
+
+  <h3>큐(Queue) — 선입선출 FIFO</h3>
+  <div class="card def">
+    <b>큐</b>는 '차례를 기다리는 줄(대기열)'. 한쪽에서 <b>입력만</b>, 반대쪽에서 <b>출력만</b> 일어납니다.
+    먼저 들어간 것이 먼저 나오므로 <b>선입선출(FIFO, First In First Out)</b>. 매표소 줄, 프린터 인쇄 대기열이 대표적인 예입니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">빈 통에 탁구공 A, B, C, D를 <b>같은 쪽에서</b> 차례로 밀어 넣고, <b>반대쪽에서</b> 하나씩 빼냅니다(큐). 밖으로 나오는 순서는?</p>
+    <div class="opts">
+      <button data-c="1">A, B, C, D</button>
+      <button data-c="0">D, C, B, A</button>
+      <button data-c="0">A, C, B, D</button>
+      <button data-c="0">D, A, B, C</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 큐는 선입선출이므로 먼저 넣은 <b>A부터</b> 순서대로 나옵니다: A → B → C → D. (스택이었다면 D, C, B, A였겠죠!)</div>
+  </div>
+
+  <h3>트리(Tree) — 계층적 비선형 구조 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    <b>트리</b>는 뿌리(root)에서 가지로, 가지에서 잎으로 뻗는 <b>계층 구조</b>. 회사 조직도나 족보와 같습니다.
+    <b>레벨</b>은 루트를 레벨 1로 시작해 한 단계 내려갈 때마다 1씩 증가합니다. 모든 노드가 꽉 찬 이진 트리를 <b>포화 이진 트리</b>라고 합니다.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🌳 이진 트리 순회 계산기 — 레벨을 조절하며 노드 수와 순회 단계를 확인하세요</div>
+    <div style="text-align:center;margin-bottom:8px">
+      <label style="color:var(--sub);font-size:.9rem">레벨(높이): <b id="treeLevelVal" style="color:var(--teal)">3</b></label><br>
+      <input type="range" id="treeLevel" min="1" max="10" value="3" style="width:70%;accent-color:var(--teal)">
+    </div>
+    <div class="treewrap" id="treeSvg" style="text-align:center"></div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+      <div class="mini" style="text-align:center"><b id="treeNodes">7</b><p>전체 노드 수 (2ᴸ − 1)</p></div>
+      <div class="mini" style="text-align:center"><b id="treeSteps">12</b><p>모든 노드 순회 후 복귀 단계 (2×(노드−1))</p></div>
+    </div>
+    <div class="hint">A에서 출발해 모든 노드를 방문하고 A로 돌아오려면, 각 간선을 왕복 2번씩 지납니다 → 2×(노드 수 − 1)</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 · 객관식</span>
+    <p class="q"><b>레벨 10의 포화 이진 트리</b>에서 루트를 출발해 모든 노드를 검색한 후 루트로 돌아올 때 총 단계는? (한 노드에서 다른 노드로 이동 = 1단계)</p>
+    <div class="opts">
+      <button data-c="0">1022단계</button>
+      <button data-c="1">2044단계</button>
+      <button data-c="0">1023단계</button>
+      <button data-c="0">2046단계</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 레벨 10의 노드 수 = 2¹⁰ − 1 = 1023개. 트리의 간선은 (노드−1) = 1022개이고, 왕복 순회는 각 간선을 2번 지나므로 2 × 1022 = <b>2044단계</b>. 공식: <span class="mono">2×(2ᴸ − 2)</span></div>
+  </div>
+
+  <h3>그래프(Graph) — 정점과 간선</h3>
+  <div class="card def">
+    <b>그래프</b>는 <b>정점(vertex)</b>과 이를 잇는 <b>간선(edge)</b>으로 이루어진 자료구조. 한 정점에 연결된 간선 수를 <b>차수(degree)</b>라 합니다.
+    방향이 있으면 단방향, 없으면 양방향 그래프. 두 정점 사이 간선이 하나뿐이면 단순 그래프, 모든 정점이 서로 연결되면 완전 그래프입니다.
+  </div>
+
+  <h3>정렬(Sorting)과 해밀턴 경로</h3>
+  <div class="card def">
+    <b>정렬</b>은 무질서한 데이터를 크기순으로 줄 세우기. 작은 것부터가 <b>오름차순</b>, 큰 것부터가 <b>내림차순</b>.<br>
+    <b>해밀턴 경로</b>는 모든 정점을 <u>한 번씩</u> 지나는 경로, 출발점으로 되돌아오면 <b>해밀턴 순환(회로)</b>입니다. 택배 배달 최소 비용 문제가 여기에 해당합니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">'모든 정점을 한 번씩만 지나 출발점으로 되돌아오는 경로'를 무엇이라 하나요?</p>
+    <div class="opts">
+      <button data-c="0">최단 경로</button>
+      <button data-c="1">해밀턴 순환(회로)</button>
+      <button data-c="0">오일러 경로</button>
+      <button data-c="0">이진 탐색</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 모든 <u>정점</u>을 한 번씩 지나면 <b>해밀턴 경로</b>, 되돌아오면 <b>해밀턴 순환</b>입니다. (모든 <u>간선</u>을 한 번씩 지나는 것은 '오일러 경로 = 한붓그리기'로, 다음 이산수학 섹션에서 다룹니다!)</div>
+  </div>
+</section>
+
+<!-- ══════════ S9 이산수학 ══════════ -->
+<section id="s9">
+  <h2><span class="sec-no">SECTION 9</span>이산수학 영역</h2>
+  <p class="lead">정보 영재란 이산수학적 사고가 뛰어난 학생입니다. 프로그래밍·알고리즘·암호이론의 토대가 됩니다.</p>
+
+  <h3>한붓그리기(오일러 경로)</h3>
+  <div class="card def">
+    <b>한붓그리기</b>는 붓을 떼지 않고 <u>모든 선(간선)을 한 번씩</u> 지나는 것. 성립 조건은 <b>홀수점(차수가 홀수인 정점)의 개수</b>로 판단합니다.<br>
+    · 홀수점 0개 → 어디서 출발해도 가능(출발=도착)<br>
+    · 홀수점 2개 → 한 홀수점에서 출발해 다른 홀수점에서 끝나면 가능<br>
+    · 홀수점 4개 이상 → 불가능
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">어떤 그림에 홀수점(차수가 홀수인 점)이 <b>정확히 2개</b> 있습니다. 한붓그리기가 가능할까요?</p>
+    <div class="opts">
+      <button data-c="1">가능하다 — 한 홀수점에서 출발해 다른 홀수점에서 끝난다</button>
+      <button data-c="0">불가능하다 — 홀수점이 2개면 안 된다</button>
+      <button data-c="0">가능하다 — 짝수점에서 출발해야 한다</button>
+      <button data-c="0">홀수점 개수와 무관하다</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 홀수점이 <b>0개 또는 2개</b>일 때만 한붓그리기가 가능합니다. 2개일 때는 반드시 한 홀수점에서 출발해 <u>다른 홀수점에서 끝나야</u> 합니다.</div>
+  </div>
+
+  <h3>비둘기집의 원리</h3>
+  <div class="card def">
+    <b>비둘기집의 원리</b> — N＋1마리의 비둘기가 N개의 집에 들어가면, 어떤 집에는 <b>적어도 2마리</b>가 들어갑니다.
+    "확실히 보장되는 최악의 경우"를 세는 도구입니다.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🕊️ 비둘기집 시뮬레이터 — 색 종류를 바꾸며 '반드시 같은 것이 나오는' 최소 횟수를 확인하세요</div>
+    <div class="pigeon-ctrl">
+      <label>구슬 색 종류: <b id="pigTypesVal" style="color:var(--teal)">4</b>종류
+        <input type="range" id="pigTypes" min="2" max="7" value="4"></label>
+      <label>목표: 같은 색 <b id="pigTargetVal" style="color:var(--teal)">2</b>개
+        <input type="range" id="pigTarget" min="2" max="4" value="2"></label>
+    </div>
+    <div class="holes" id="pigHoles"></div>
+    <div class="big" id="pigAnswer"></div>
+    <div class="hint">최악의 경우 = 각 색을 (목표−1)개씩 먼저 뽑고, 그 다음 한 개 더! → 종류×(목표−1)＋1</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">7가지 색 구슬이 20개씩 든 상자에서 눈을 감고 꺼낼 때, <b>같은 색 4개</b>가 반드시 나오려면 최소 몇 개를 꺼내야 할까요?</p>
+    <div class="opts">
+      <button data-c="0">8개</button>
+      <button data-c="0">15개</button>
+      <button data-c="1">22개</button>
+      <button data-c="0">28개</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 최악의 경우: 7색을 각각 3개씩 뽑아 7×3 = 21개까지는 같은 색이 3개뿐일 수 있습니다. 여기서 <b>한 개만 더</b> 뽑으면 어떤 색이든 4개가 됩니다 → 21＋1 = <b>22개</b>. 공식: 종류×(목표−1)＋1</div>
+  </div>
+
+  <h3>함수 규칙과 이진법 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    <b>사탕 기계</b> — 동전 1개 → 사탕 1개, 2개 → 3개, 3개 → 7개. 규칙: 사탕 = <b>2ⁿ − 1</b> (n = 동전 수).
+    이는 이진수의 각 자리를 켜는 것과 같은 <b>이진법 체계</b>입니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 연계 · 객관식</span>
+    <p class="q">100,000명 도시에 12월 1일 확진자 1명 발생. 하루 지나면 1명이 반드시 2명을 감염시키고(이후 자가격리), 이미 감염된 사람은 재감염 안 됩니다. 모두 감염되는 날짜는?</p>
+    <div class="opts">
+      <button data-c="0">12월 12일</button>
+      <button data-c="0">12월 15일</button>
+      <button data-c="1">12월 17일</button>
+      <button data-c="0">12월 20일</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 누적 감염자 = 1, 3, 7, 15… = 2ᵈ⁺¹ − 1 (d = 지난 일수). 100,000을 넘으려면 2ᵈ⁺¹ − 1 ≥ 100,000 → d = 16 (2¹⁷ − 1 = 131,071). 12월 1일 ＋ 16일 = <b>12월 17일</b>. 이진법의 폭발적 증가!</div>
+  </div>
+
+  <h3>규칙적 배열 — 파스칼의 삼각형 <span class="pill exam">기출</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 · 객관식</span>
+    <p class="q">다음 표의 규칙을 찾으세요. 각 칸은 <b>바로 위 칸 ＋ 바로 왼쪽 칸</b>입니다.<br>
+    <span class="mono" style="color:var(--amber)">행: 2 2 2 2 2 / 2 4 6 8 10 / 2 6 12 20 30 / 2 8 20 40 70</span><br>
+    빈칸 규칙으로 볼 때 4행 5열(마지막 행 끝)의 값은?</p>
+    <div class="opts">
+      <button data-c="0">60</button>
+      <button data-c="1">70</button>
+      <button data-c="0">80</button>
+      <button data-c="0">90</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 각 칸 = 위 칸 ＋ 왼쪽 칸. 4행 5열 = 위(3행 5열 = 30) ＋ 왼쪽(4행 4열 = 40) = <b>70</b>. 이것이 파스칼 삼각형의 원리이며, 조합·경로 개수와 직결됩니다.</div>
+  </div>
+
+  <h3>리그와 토너먼트 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    <b>토너먼트</b> — 2팀씩 겨뤄 이긴 팀이 올라가는 방식. N팀의 우승 결정에는 항상 <b>N − 1경기</b>(진 팀이 N−1팀이므로).<br>
+    <b>리그</b> — 모든 팀이 서로 한 번씩. N팀이면 <b>N×(N−1)÷2경기</b>(모든 짝의 수).
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q"><b>10개 반</b>이 <b>리그 방식</b>으로 축구를 한다면 총 몇 경기를 해야 할까요?</p>
+    <div class="opts">
+      <button data-c="0">9경기</button>
+      <button data-c="0">20경기</button>
+      <button data-c="1">45경기</button>
+      <button data-c="0">90경기</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 리그는 서로 다른 두 팀을 뽑는 경우의 수 = 10×9÷2 = <b>45경기</b>. (같은 10팀이 토너먼트로 우승만 가린다면 10−1 = 9경기면 됩니다!)</div>
+  </div>
+</section>
+
+<!-- ══════════ S10 컴퓨팅 사고력 ══════════ -->
+<section id="s10">
+  <h2><span class="sec-no">SECTION 10</span>컴퓨팅 사고력 영역</h2>
+  <p class="lead">컴퓨터가 문제를 해결하는 방식처럼 복잡한 문제를 단순화하고, 논리적·효율적으로 해결하는 능력입니다.</p>
+
+  <h3>컴퓨팅 사고의 9가지 구성요소</h3>
+  <div class="grid g3">
+    <div class="mini"><b>1. 자료 수집</b><p>알맞은 자료를 모으는 과정</p></div>
+    <div class="mini"><b>2. 자료 분석</b><p>자료 이해, 패턴 찾기, 결론 도출</p></div>
+    <div class="mini"><b>3. 자료 표현</b><p>그래프·차트·그림으로 정리·표현</p></div>
+    <div class="mini"><b>4. 문제 분해</b><p>큰 문제를 작은 문제로 나누기</p></div>
+    <div class="mini"><b>5. 추상화</b><p>핵심만 남기고 복잡도 줄이기</p></div>
+    <div class="mini"><b>6. 알고리즘·절차화</b><p>목표 달성을 위한 일련의 단계</p></div>
+    <div class="mini"><b>7. 자동화</b><p>반복 작업을 기계로 수행</p></div>
+    <div class="mini"><b>8. 시뮬레이션</b><p>모델로 실험 수행</p></div>
+    <div class="mini"><b>9. 병렬화</b><p>작업을 동시에 수행하도록 자원 구성</p></div>
+  </div>
+  <div class="card tip">
+    <b>지필 vs 실기</b> — 지필고사로 컴퓨팅 사고력을 측정하면 주로 <b>추상화</b> 능력을, 실기 시험이라면 <b>자동화</b> 능력을 봅니다.
+  </div>
+
+  <h3>스택 응용 — 원숭이와 구덩이 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    원숭이들이 한 줄로 이동하다 구덩이를 만나면: ① 최대한 많은 원숭이가 구덩이로 뛰어들고 → ② 나머지가 지나간 뒤 → ③ 뛰어든 원숭이들이 기어 올라옵니다.
+    이것은 <b>스택의 push/pop</b>과 정확히 같습니다! (뛰어든 순서의 역순으로 올라오므로 순서가 뒤집힘)
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 · 객관식</span>
+    <p class="q">6마리 원숭이(1,2,3,4,5,6 순서)가 구덩이 3개를 지납니다. 각 구덩이 수용 인원은 <b>4마리 → 2마리 → 3마리</b>. 통과 후 원숭이들의 순서는?</p>
+    <div class="opts">
+      <button data-c="1">1 6 5 2 3 4</button>
+      <button data-c="0">6 5 2 3 4 1</button>
+      <button data-c="0">2 4 6 1 3 5</button>
+      <button data-c="0">1 3 4 2 5 6</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 각 구덩이가 스택처럼 순서를 뒤집습니다. ①구덩이4: [1,2,3,4]가 뛰어들고 [5,6] 통과 → 5,6,4,3,2,1. ②구덩이2: 앞 2마리 뒤집기. ③구덩이3: 다시 뒤집기. 최종 <b>1 6 5 2 3 4</b>. 위 스택 시뮬레이터로 원리를 확인하세요!</div>
+  </div>
+
+  <h3>동전 탑 옮기기 <span class="pill exam">정보올림피아드 기출</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">정보올림피아드 기출</span>
+    <p class="q">동전 1~6이 위→아래로 쌓인 A탑을, 세 연산(A→B, A→C, B→C 맨 위 이동)으로 C로 옮깁니다. C에서 <b>나타날 수 없는</b> 순서는? (A, B, C 모두 스택)</p>
+    <div class="opts">
+      <button data-c="0">1, 2, 3, 4, 5, 6</button>
+      <button data-c="0">1, 2, 4, 6, 5, 3</button>
+      <button data-c="0">3, 6, 5, 4, 2, 1</button>
+      <button data-c="1">2, 1, 6, 5, 4, 3</button>
+    </div>
+    <div class="expl"><b>풀이</b> — A와 B가 스택이므로 C에 쌓이는 순서는 '스택 순열'만 가능합니다. ⑤ 2,1,6,5,4,3을 만들려면 2를 C에 먼저 놓은 뒤 1을 놓아야 하는데, 1이 2보다 위에서 이미 나와야 하므로 스택 규칙상 불가능 → <b>정답 ⑤</b>. (①~④는 실제로 연산 순서를 짜면 만들 수 있습니다.)</div>
+  </div>
+
+  <h3>패턴과 경우의 수 — 호텔 열쇠</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">9×9 격자 카드에 구멍을 뚫어 열쇠를 만드는데, <b>앞뒤 대칭</b>이어야 합니다(180° 회전 시 같아야 함). 만들 수 있는 서로 다른 열쇠는 최대 몇 개? (문제 조건상 자유롭게 정할 수 있는 칸은 <b>절반 정도</b>인 40칸이 아니라, 대칭 규칙으로 독립적인 칸을 세는 것이 핵심)</p>
+    <div class="opts">
+      <button data-c="0">64</button>
+      <button data-c="0">128</button>
+      <button data-c="0">4096</button>
+      <button data-c="1">32768</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 대칭 조건 때문에 독립적으로 정할 수 있는 칸이 15칸이면, 각 칸은 뚫림/안 뚫림 2가지 → 2¹⁵ = <b>32768</b>. '2의 거듭제곱으로 경우의 수 세기'는 정보 영재 검사의 단골 패턴입니다.</div>
+  </div>
+</section>
+
+<!-- ══════════ S11 알고리즘 ══════════ -->
+<section id="s11">
+  <h2><span class="sec-no">SECTION 11</span>알고리즘 영역</h2>
+  <p class="lead">알고리즘은 문제를 논리적으로 해결하는 방법·절차·명령어의 모음. 순서도로 표현하는 것도 알고리즘입니다.</p>
+
+  <h3>순서도(Flowchart) 기호</h3>
+  <table>
+    <tr><th>기호</th><th>이름</th><th>의미</th></tr>
+    <tr><td>타원</td><td>단말</td><td>순서도의 시작과 끝</td></tr>
+    <tr><td>평행사변형</td><td>입출력</td><td>자료의 입력·출력</td></tr>
+    <tr><td>마름모</td><td>비교·판단</td><td>조건을 판단하여 흐름을 분기</td></tr>
+    <tr><td>직사각형</td><td>처리</td><td>연산·이동 등 처리 내용</td></tr>
+    <tr><td>화살표</td><td>흐름선</td><td>처리의 흐름 방향</td></tr>
+  </table>
+  <div class="card def">
+    <b>3가지 제어 구조</b> — <b>순차문</b>(위→아래 차례로), <b>조건문</b>(여러 경로 중 하나 선택), <b>반복문</b>(조건이 유지되는 동안 반복). 모든 알고리즘은 이 셋의 조합입니다.
+  </div>
+
+  <h3>순서도 만들기 — 코로나 방역 검사</h3>
+  <div class="widget">
+    <div class="wtitle">📋 순서도 조립하기 — 아래 조각을 순서대로 눌러 방역 통과 알고리즘을 완성하세요</div>
+    <div style="color:var(--sub);font-size:.88rem;text-align:center;margin-bottom:10px">
+      조건: <b>①마스크 착용</b>했고 <b>②체온 37도 이하</b>일 때만 교실 출입 가능
+    </div>
+    <div class="fc-drop" id="fcDrop">
+      <div class="fc-slot" data-i="0">1단계</div>
+      <div class="fc-slot" data-i="1">2단계</div>
+      <div class="fc-slot" data-i="2">3단계</div>
+      <div class="fc-slot" data-i="3">4단계</div>
+      <div class="fc-slot" data-i="4">5단계</div>
+    </div>
+    <div class="fc-bank" id="fcBank"></div>
+    <div class="ctr">
+      <button class="abtn ghost" id="fcReset">다시</button>
+    </div>
+    <div class="msgbox" id="fcMsg"></div>
+  </div>
+
+  <h3>알고리즘 응용 — 번식하는 동물 <span class="pill">표준문제</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">어떤 동물은 태어나 정확히 1년 만에 2마리 이하의 새끼를 낳고, 그 후로는 낳지 않습니다. 새끼 1마리로 시작해 총 <b>270마리</b>가 되는 데 걸린 <b>최소 년 수</b>는? (최대로 번식할 때)</p>
+    <div class="opts">
+      <button data-c="0">7년</button>
+      <button data-c="1">8년</button>
+      <button data-c="0">9년</button>
+      <button data-c="0">10년</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 매년 최대로 번식하면 개체 수가 2배씩 늘어 누적 = 2ⁿ⁺¹ − 1. 8년이면 2⁹ − 1 = 511 ≥ 270이고, 7년이면 2⁸ − 1 = 255 &lt; 270. 따라서 <b>최소 8년</b>. 이진 트리의 성장과 같은 원리입니다.</div>
+  </div>
+
+  <h3>최단 경로 — 다익스트라 알고리즘</h3>
+  <div class="card def">
+    <b>다익스트라(Dijkstra) 알고리즘</b> — 하나의 시작 정점에서 다른 모든 정점까지의 <b>최단 거리</b>를 찾는 알고리즘.
+    "아직 방문 안 한 정점 중 <u>가장 가까운 것</u>을 골라, 그 정점을 거쳐 가면 더 짧아지는 경로가 있으면 갱신"을 반복합니다.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🗺️ 다익스트라 애니메이션 — '다음 단계'를 누르며 최단 거리가 갱신되는 과정을 보세요</div>
+    <div class="dj-stage">
+      <svg id="djSvg" width="340" height="260" viewBox="0 0 340 260"></svg>
+      <div>
+        <table class="dj-table">
+          <tr><th>노드</th><th>최단거리</th></tr>
+          <tbody id="djTable"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="log" id="djLog">시작 정점 0에서 출발합니다.</div>
+    <div class="ctr">
+      <button class="abtn" id="djStep">다음 단계 ▶</button>
+      <button class="abtn ghost" id="djReset">처음부터</button>
+    </div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">위 그래프에서 시작 정점 0으로부터 <b>정점 3까지의 최단 거리</b>는? (애니메이션을 끝까지 실행해 확인!)</p>
+    <div class="opts">
+      <button data-c="0">15</button>
+      <button data-c="0">22</button>
+      <button data-c="1">20</button>
+      <button data-c="0">11</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 0→2(9)→3(11) 경로로 9＋11 = <b>20</b>. 0→1→3(7＋15 = 22)보다 짧습니다. 다익스트라는 이렇게 '거쳐 가는 것이 더 짧으면 갱신'을 반복해 최단 거리를 찾습니다.</div>
+  </div>
+
+  <div class="card def">
+    <b>최단 경로/최소 신장 트리 알고리즘 4형제</b><br>
+    · <b>플로이드-워셜</b> — 모든 정점 쌍 간 최단 경로를 한 번에<br>
+    · <b>크루스칼</b> — 가중치 작은 간선부터 연결(탐욕법, 최적해 보장)<br>
+    · <b>프림</b> — 한 정점에서 시작해 가장 가까운 정점을 차례로 추가<br>
+    · <b>다익스트라</b> — 한 시작점에서 모든 정점까지의 최단 거리
+  </div>
+</section>
+
+<!-- ══════════ S12 로봇 ══════════ -->
+<section id="s12">
+  <h2><span class="sec-no">SECTION 12</span>로봇 영역</h2>
+  <p class="lead">로봇 영재원 대비 학생은 물론, 정보(SW) 영재원 대비 학생도 로봇 문제가 자주 출제되므로 대비가 필요합니다.</p>
+
+  <h3>생체 모방 기술(Biomimicry)</h3>
+  <div class="card def">
+    <b>생체 모방 기술</b> — 식물·동물에서 아이디어를 얻어 새 제품을 만드는 것. 대표 사례:<br>
+    ① 연잎의 물방울 → <b>방수복</b> &nbsp; ② 도꼬마리 가시 → <b>벨크로(찍찍이)</b> &nbsp; ③ 민들레 씨 → <b>낙하산</b><br>
+    최근에는 곤충(파리·애벌레)을 모방한 초소형 로봇이 정찰·폭발물 탐지용으로 개발됩니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">옷이나 신발에 널리 쓰이는 '벨크로(찍찍이)'는 어떤 생물에서 아이디어를 얻었을까요?</p>
+    <div class="opts">
+      <button data-c="0">연잎의 물방울</button>
+      <button data-c="1">도꼬마리 가시(갈고리)</button>
+      <button data-c="0">민들레 씨앗</button>
+      <button data-c="0">거미줄</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 벨크로는 옷에 잘 달라붙는 <b>도꼬마리 가시의 갈고리 구조</b>를 모방한 것입니다. 이렇게 자연을 관찰해 기술로 옮기는 것이 생체 모방 기술의 핵심입니다.</div>
+  </div>
+
+  <h3>로봇 과학 — 속력 비교 <span class="pill exam">기출</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 · 객관식</span>
+    <p class="q">로봇 A는 <b>5초에 30m</b>, 로봇 B는 <b>1분에 120m</b>를 움직였습니다. 어떤 로봇이 더 빠를까요? (속력 = 거리 ÷ 시간)</p>
+    <div class="opts">
+      <button data-c="1">A가 빠르다 (A: 6m/s, B: 2m/s)</button>
+      <button data-c="0">B가 빠르다 (A: 2m/s, B: 6m/s)</button>
+      <button data-c="0">둘이 같다</button>
+      <button data-c="0">비교할 수 없다</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 단위를 통일해야 합니다. A = 30 ÷ 5 = <b>6m/s</b>, B = 120 ÷ 60 = <b>2m/s</b>. 따라서 <b>A가 3배 빠릅니다</b>. 서로 다른 단위를 같은 기준으로 맞추는 것이 비교의 첫걸음입니다.</div>
+  </div>
+
+  <h3>창작 로봇 설계 <span class="pill exam">기출</span></h3>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 서술형</span>
+    <p class="q">사람이 갈 수 없는 지역(재난 현장, 심해, 우주 등)에 투입해 사람 대신 작업하는 <b>나만의 로봇</b>을 설계하세요. 이름·재료·모양·쓰임새를 구체적으로 적어 보세요.</p>
+    <textarea placeholder="로봇 이름: … / 재료: … / 모양: … / 쓰임새: …"></textarea>
+    <button class="rvbtn" data-rv="rv12a">예시 답안 보기</button>
+    <div class="expl" id="rv12a">
+      <b>예시 답안</b><br>
+      · <b>이름</b>: 두더지-R (지진 잔해 수색 로봇)<br>
+      · <b>재료</b>: 충격에 강한 탄소섬유 외피, 무한궤도 바퀴, 열화상 카메라, 이산화탄소 센서<br>
+      · <b>모양</b>: 납작한 몸체에 관절형 팔 2개, 잔해 틈으로 파고드는 드릴 머리<br>
+      · <b>쓰임새</b>: 무너진 건물 틈으로 들어가 생존자의 체온·호흡을 감지하고 위치를 구조대에 전송<br><br>
+      <b>채점 포인트</b> — '왜 사람이 못 가는가 → 그 환경의 위험 요소 → 그것을 견디는 재료·센서'로 논리를 연결하면 정교성 점수가 높습니다.
+    </div>
+  </div>
+
+  <h3>로봇과 인공지능</h3>
+  <div class="quiz open">
+    <span class="qtag">연습문제 · 서술형</span>
+    <p class="q">사람의 감정을 읽는 로봇 '에바'에게 감정 인식 능력을 주려면 어떤 <b>머신러닝(기계학습)</b> 과정을 적용해야 할까요? 그 과정을 설명해 보세요.</p>
+    <textarea placeholder="데이터 수집 → 학습 → 예측 순서로"></textarea>
+    <button class="rvbtn" data-rv="rv12b">예시 답안 보기</button>
+    <div class="expl" id="rv12b">
+      <b>예시 답안 (머신러닝 3단계)</b><br>
+      ① <b>데이터 수집</b> — 다양한 사람의 표정 사진에 '기쁨/슬픔/화남' 같은 정답(라벨)을 붙여 대량으로 모은다.<br>
+      ② <b>학습</b> — 로봇이 표정의 특징(입꼬리 각도, 눈썹 위치 등)과 감정 라벨의 관계를 스스로 찾도록 훈련한다.<br>
+      ③ <b>예측</b> — 새로운 얼굴을 보면 학습한 패턴으로 감정을 추론한다. 틀리면 피드백을 주어 계속 정확도를 높인다.<br><br>
+      <b>활용 분야</b> — 노인 돌봄, 심리 상담 보조, 무인 매장 고객 응대, 자폐 아동 교육 등.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S13 융합 문제해결 ══════════ -->
+<section id="s13">
+  <h2><span class="sec-no">SECTION 13</span>융합 문제해결 영역</h2>
+  <p class="lead">융합 사고력은 STEAM 원리로 탐구합니다. 하나의 현상을 수학·과학·기술·공학·예술과 연관 지어 봅니다.</p>
+
+  <h3>과학·기술·공학의 차이</h3>
+  <div class="grid g3">
+    <div class="mini"><b>과학(Science)</b><p>자연의 성질을 <u>연구</u>하는 학문 (왜 그런가?)</p></div>
+    <div class="mini"><b>공학(Engineering)</b><p>과학 지식의 <u>응용법</u>을 연구 (어떻게 만들까?)</p></div>
+    <div class="mini"><b>기술(Technology)</b><p>공학 결과로 실제 물건을 <u>만드는</u> 것</p></div>
+  </div>
+
+  <h3>자연현상의 융합 탐구 <span class="pill exam">기출</span></h3>
+  <div class="card def">
+    토네이도라는 하나의 자연현상도 <b>S·M·T·E</b> 네 관점으로 나누어 탐구할 수 있습니다. 아래 매칭 퀴즈로 각 관점을 구분해 보세요.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🔗 STEAM 매칭 — 각 탐구 내용이 어느 영역인지 골라 연결하세요 (지진 사례)</div>
+    <div id="steamMatch"></div>
+    <div class="msgbox" id="steamMsg"></div>
+  </div>
+
+  <h3>증강현실(AR)의 원리</h3>
+  <div class="card def">
+    <b>증강현실(Augmented Reality)</b> — 실제 세계에 3차원 가상 정보를 겹쳐 보여주는 기술. 만화 '드래곤볼'의 스카우터, 포켓몬 GO가 대표 예입니다.<br>
+    원리: ①카메라로 현실 촬영 → ②GPS·센서로 위치·방향 파악 → ③해당 장소의 정보를 데이터베이스에서 불러와 → ④화면에 겹쳐 표시.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">'실제 세계에 3차원 가상 물체를 겹쳐 보여주는 기술'을 무엇이라 하나요?</p>
+    <div class="opts">
+      <button data-c="1">증강현실(AR)</button>
+      <button data-c="0">가상현실(VR) — 완전히 가상 세계로 대체</button>
+      <button data-c="0">블록체인</button>
+      <button data-c="0">사물인터넷(IoT)</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 현실 위에 정보를 <u>덧붙이면</u> <b>증강현실(AR)</b>, 현실 대신 완전히 새로운 세계로 <u>대체하면</u> 가상현실(VR)입니다. 포켓몬 GO는 실제 거리에 포켓몬을 겹치므로 AR입니다.</div>
+  </div>
+
+  <h3>기술 중심의 융합 — 인공지능</h3>
+  <div class="quiz open">
+    <span class="qtag">표준문제 · 서술형</span>
+    <p class="q">인공지능 스피커(AI 스피커)에 적용된 <b>과학·수학·기술·공학·예술</b> 5개 영역을 각각 설명해 보세요.</p>
+    <textarea placeholder="과학: … / 수학: … / 기술: … / 공학: … / 예술: …"></textarea>
+    <button class="rvbtn" data-rv="rv13">예시 답안 보기</button>
+    <div class="expl" id="rv13">
+      <b>예시 답안</b><br>
+      · <b>과학(S)</b> — 소리가 공기를 통해 전달되는 음파의 성질, 마이크가 소리를 전기 신호로 바꾸는 원리<br>
+      · <b>수학(M)</b> — 음성을 숫자로 바꿔 처리하는 신호 분석, 확률로 다음 단어를 예측하는 언어 모델<br>
+      · <b>기술(T)</b> — 음성 인식·자연어 처리, 무선(Wi-Fi·블루투스)으로 가전 제어<br>
+      · <b>공학(E)</b> — 스피커·마이크 회로 설계, 서버와 통신하는 시스템 구조<br>
+      · <b>예술(A)</b> — 자연스러운 목소리 디자인, 사용자 친화적인 외형과 조명 디자인<br><br>
+      <b>포인트</b> — 하나의 제품을 5개 렌즈로 쪼개 보는 것이 융합 사고의 핵심입니다.
+    </div>
+  </div>
+
+  <div class="card tip">
+    <b>FUN GAME — 두들리Go!</b><br>
+    PART 3 마지막에는 EBS SW의 <b>'두들리Go!'</b>가 소개됩니다. 사이버 공간에서 골드버그 장치(투석기·자동문·물레방아 등)를 코딩으로 작동시켜 목적지까지 도착시키는 게임입니다.
+    스토리 모드 40개 미션과 나만의 문제를 만드는 에디터 모드로, 알고리즘·시뮬레이션 감각을 재미있게 기를 수 있습니다.
+  </div>
+</section>
+
+</div>
+
+<div class="score-float" id="scoreFloat">퀴즈 0 / 0</div>
+
+<footer>
+  정보 SW 영재원 완전정복 · PART 3 창의적 문제해결 검사 인터랙티브 강의자료<br>
+  세영코딩연구소 · 원문 교재의 문항 구조를 학습용으로 재구성했습니다
+</footer>
+
+<script>
+(function(){
+"use strict";
+var SVGNS = "http://www.w3.org/2000/svg";
+
+/* ── nav ── */
+var nav = document.getElementById("nav");
+nav.addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var t = b.getAttribute("data-t"), i;
+  var btns = nav.querySelectorAll("button");
+  for(i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  var secs = document.querySelectorAll("section");
+  for(i=0;i<secs.length;i++) secs[i].classList.toggle("on", secs[i].id===t);
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+/* ── quiz engine ── */
+var totalQ = 0, doneQ = 0, okQ = 0;
+var quizzes = document.querySelectorAll(".quiz[data-quiz]");
+totalQ = quizzes.length;
+function updScore(){
+  document.getElementById("scoreFloat").textContent =
+    "\uD034\uC988 " + okQ + " / " + totalQ + (doneQ===totalQ ? " \uC644\uB8CC!" : "");
+}
+Array.prototype.forEach.call(quizzes, function(qz){
+  var opts = qz.querySelectorAll(".opts button");
+  var expl = qz.querySelector(".expl");
+  Array.prototype.forEach.call(opts, function(btn){
+    btn.addEventListener("click", function(){
+      if(qz.getAttribute("data-done")) return;
+      qz.setAttribute("data-done","1"); doneQ++;
+      if(btn.getAttribute("data-c")==="1") okQ++;
+      Array.prototype.forEach.call(opts, function(o){
+        o.disabled = true;
+        if(o.getAttribute("data-c")==="1") o.classList.add("ok");
+        else if(o===btn) o.classList.add("no");
+      });
+      if(expl) expl.classList.add("show");
+      updScore();
+    });
+  });
+});
+updScore();
+
+/* ── reveal buttons ── */
+Array.prototype.forEach.call(document.querySelectorAll(".rvbtn"), function(b){
+  b.addEventListener("click", function(){
+    var box = document.getElementById(b.getAttribute("data-rv"));
+    if(box) box.classList.toggle("show");
+  });
+});
+
+/* ── Stack simulator ── */
+var stackTube = document.getElementById("stackTube");
+var stackLog = document.getElementById("stackLog");
+var stackArr = [];
+var nextChar = 0;
+var palette = ["#2dd4bf","#fbbf24","#fb7185","#a78bfa","#38bdf8","#34d399","#f472b6","#facc15"];
+function renderStack(){
+  var caps = stackTube.querySelector(".cap");
+  stackTube.innerHTML = "";
+  stackTube.appendChild(caps);
+  stackArr.forEach(function(item, i){
+    var d = document.createElement("div");
+    d.className = "ball";
+    d.style.background = palette[item.idx % palette.length];
+    d.textContent = item.ch;
+    stackTube.appendChild(d);
+  });
+}
+document.getElementById("stackPush").addEventListener("click", function(){
+  if(stackArr.length >= 5){ stackLog.textContent = "\uD1B5\uC774 \uAC00\uB4DD \uCC3C\uC5B4\uC694 (\uCD5C\uB300 5\uAC1C)"; return; }
+  var ch = String.fromCharCode(65 + nextChar);
+  stackArr.push({ch:ch, idx:nextChar});
+  nextChar++;
+  renderStack();
+  stackLog.textContent = "push " + ch + " \u2192 \uB9E8 \uC704\uC5D0 \uC313\uC784";
+});
+document.getElementById("stackPop").addEventListener("click", function(){
+  if(stackArr.length === 0){ stackLog.textContent = "\uBE44\uC5B4\uC788\uC5B4 pop\uD560 \uC218 \uC5C6\uC5B4\uC694"; return; }
+  var item = stackArr.pop();
+  renderStack();
+  stackLog.textContent = "pop " + item.ch + " \u2192 \uB9E8 \uC704(\uAC00\uC7A5 \uB098\uC911\uC5D0 \uB123\uC740 \uAC83)\uC774 \uBA3C\uC800 \uB098\uC634 (LIFO)";
+});
+document.getElementById("stackReset").addEventListener("click", function(){
+  stackArr = []; nextChar = 0; renderStack(); stackLog.textContent = "\uBE48 \uC2A4\uD0DD\uC785\uB2C8\uB2E4.";
+});
+renderStack();
+
+/* ── Tree calculator ── */
+var treeLevel = document.getElementById("treeLevel");
+var treeSvg = document.getElementById("treeSvg");
+function drawTree(L){
+  var showL = Math.min(L, 4);
+  var w = 460, h = 60 + showL*52;
+  var svg = document.createElementNS(SVGNS,"svg");
+  svg.setAttribute("width", w); svg.setAttribute("height", h);
+  svg.setAttribute("viewBox","0 0 "+w+" "+h);
+  var positions = {};
+  function place(level, index, x, y, dx){
+    positions[level+"_"+index] = {x:x,y:y};
+    if(level < showL){
+      var ny = y + 52;
+      var ndx = dx/2;
+      // left
+      var lx = x - dx;
+      var line1 = document.createElementNS(SVGNS,"line");
+      line1.setAttribute("x1",x);line1.setAttribute("y1",y);
+      line1.setAttribute("x2",lx);line1.setAttribute("y2",ny);
+      line1.setAttribute("stroke","#1e3a5f");line1.setAttribute("stroke-width","1.5");
+      svg.appendChild(line1);
+      place(level+1, index*2, lx, ny, ndx);
+      // right
+      var rx = x + dx;
+      var line2 = document.createElementNS(SVGNS,"line");
+      line2.setAttribute("x1",x);line2.setAttribute("y1",y);
+      line2.setAttribute("x2",rx);line2.setAttribute("y2",ny);
+      line2.setAttribute("stroke","#1e3a5f");line2.setAttribute("stroke-width","1.5");
+      svg.appendChild(line2);
+      place(level+1, index*2+1, rx, ny, ndx);
+    }
+  }
+  place(1, 0, w/2, 30, w/4);
+  Object.keys(positions).forEach(function(k){
+    var p = positions[k];
+    var c = document.createElementNS(SVGNS,"circle");
+    c.setAttribute("cx",p.x);c.setAttribute("cy",p.y);c.setAttribute("r","13");
+    c.setAttribute("fill","#132542");c.setAttribute("stroke","#2dd4bf");c.setAttribute("stroke-width","2");
+    svg.appendChild(c);
+  });
+  // root label
+  var rt = document.createElementNS(SVGNS,"text");
+  rt.setAttribute("x", w/2); rt.setAttribute("y", 35);
+  rt.setAttribute("text-anchor","middle"); rt.setAttribute("fill","#2dd4bf");
+  rt.setAttribute("font-size","13"); rt.setAttribute("font-family","Consolas");
+  rt.textContent = "A"; svg.appendChild(rt);
+  treeSvg.innerHTML = "";
+  treeSvg.appendChild(svg);
+  if(L > 4){
+    var note = document.createElement("div");
+    note.className = "leveltag";
+    note.textContent = "(\uB808\uBCA8 4\uAE4C\uC9C0\uB9CC \uD45C\uC2DC \u2014 \uC2E4\uC81C\uB294 \uB808\uBCA8 " + L + ")";
+    treeSvg.appendChild(note);
+  }
+}
+function updTree(){
+  var L = parseInt(treeLevel.value,10);
+  document.getElementById("treeLevelVal").textContent = L;
+  var nodes = Math.pow(2,L) - 1;
+  document.getElementById("treeNodes").textContent = nodes;
+  document.getElementById("treeSteps").textContent = 2*(nodes-1);
+  drawTree(L);
+}
+treeLevel.addEventListener("input", updTree);
+updTree();
+
+/* ── Pigeonhole ── */
+var pigTypes = document.getElementById("pigTypes");
+var pigTarget = document.getElementById("pigTarget");
+var pigHoles = document.getElementById("pigHoles");
+var pigColors = ["#ef4444","#3b82f6","#22c55e","#f59e0b","#a855f7","#ec4899","#14b8a6"];
+function updPigeon(){
+  var types = parseInt(pigTypes.value,10);
+  var target = parseInt(pigTarget.value,10);
+  document.getElementById("pigTypesVal").textContent = types;
+  document.getElementById("pigTargetVal").textContent = target;
+  pigHoles.innerHTML = "";
+  for(var t=0;t<types;t++){
+    var hole = document.createElement("div");
+    hole.className = "hole";
+    for(var k=0;k<target-1;k++){
+      var p = document.createElement("div");
+      p.className = "p";
+      p.style.background = pigColors[t % pigColors.length];
+      hole.appendChild(p);
+    }
+    pigHoles.appendChild(hole);
+  }
+  var worst = types*(target-1);
+  var ans = worst + 1;
+  document.getElementById("pigAnswer").innerHTML =
+    "\uCD5C\uC545: " + worst + "\uAC1C\uAE4C\uC9C0\uB294 \uAC01 \uC0C9 " + (target-1) + "\uAC1C\uC529 \uAC00\uB2A5 \u2192 \uD55C \uAC1C \uB354! = <span style='color:#fbbf24'>" + ans + "\uAC1C</span>";
+}
+pigTypes.addEventListener("input", updPigeon);
+pigTarget.addEventListener("input", updPigeon);
+updPigeon();
+
+/* ── Flowchart builder ── */
+var fcPieces = [
+  {id:"start", t:"\u25CB \uC2DC\uC791", order:0},
+  {id:"mask", t:"\u25C7 \uB9C8\uC2A4\uD06C\uB97C \uCC29\uC6A9\uD588\uB294\uAC00? (\uC870\uAC74)", order:1},
+  {id:"temp", t:"\u25C7 \uCCB4\uC628\uC774 37\uB3C4 \uC774\uD558\uC778\uAC00? (\uC870\uAC74)", order:2},
+  {id:"enter", t:"\u25A1 \uAD50\uC2E4 \uCD9C\uC785 \uD5C8\uC6A9 (\uCC98\uB9AC)", order:3},
+  {id:"end", t:"\u25CB \uB05D", order:4}
+];
+var fcBank = document.getElementById("fcBank");
+var fcDrop = document.getElementById("fcDrop");
+var fcFilled = [null,null,null,null,null];
+function renderFcBank(){
+  fcBank.innerHTML = "";
+  // shuffle-ish stable order for placement pool: only unplaced
+  fcPieces.forEach(function(pc){
+    if(fcFilled.indexOf(pc.id) >= 0) return;
+    var d = document.createElement("div");
+    d.className = "fc-item";
+    d.textContent = pc.t;
+    d.addEventListener("click", function(){
+      // place into first empty slot
+      var slotIdx = fcFilled.indexOf(null);
+      if(slotIdx < 0) return;
+      fcFilled[slotIdx] = pc.id;
+      renderAll();
+    });
+    fcBank.appendChild(d);
+  });
+}
+function renderFcSlots(){
+  var slots = fcDrop.querySelectorAll(".fc-slot");
+  Array.prototype.forEach.call(slots, function(slot, i){
+    if(fcFilled[i]){
+      var pc = fcPieces.filter(function(p){return p.id===fcFilled[i];})[0];
+      slot.textContent = pc.t;
+      slot.classList.add("filled");
+      slot.onclick = function(){ fcFilled[i] = null; renderAll(); };
+    } else {
+      slot.textContent = (i+1) + "\uB2E8\uACC4 (\uC870\uAC01\uC744 \uB204\uB974\uC138\uC694)";
+      slot.classList.remove("filled");
+      slot.onclick = null;
+    }
+  });
+}
+function checkFc(){
+  if(fcFilled.indexOf(null) >= 0) return;
+  var correct = fcFilled.every(function(id, i){
+    return fcPieces.filter(function(p){return p.id===id;})[0].order === i;
+  });
+  var box = document.getElementById("fcMsg");
+  if(correct){
+    box.className = "msgbox ok";
+    box.textContent = "\uD83C\uDF89 \uC815\uB2F5! \uC2DC\uC791 \u2192 \uC870\uAC741(\uB9C8\uC2A4\uD06C) \u2192 \uC870\uAC742(\uCCB4\uC628) \u2192 \uCD9C\uC785 \uD5C8\uC6A9 \u2192 \uB05D. \uC21C\uCC28\u00B7\uC870\uAC74\uBB38\uC758 \uC62C\uBC14\uB978 \uD750\uB984\uC785\uB2C8\uB2E4.";
+  } else {
+    box.className = "msgbox no";
+    box.textContent = "\uC21C\uC11C\uAC00 \uB9DE\uC9C0 \uC54A\uC544\uC694. \uC2DC\uC791\uC740 \uB9E8 \uC704, \uB05D\uC740 \uB9E8 \uC544\uB798! \uC2AC\uB86F\uC744 \uB2E4\uC2DC \uB204\uB974\uBA74 \uBE7C\uB0BC \uC218 \uC788\uC5B4\uC694.";
+  }
+}
+function renderAll(){ renderFcBank(); renderFcSlots(); checkFc(); }
+document.getElementById("fcReset").addEventListener("click", function(){
+  fcFilled = [null,null,null,null,null];
+  document.getElementById("fcMsg").className = "msgbox";
+  renderAll();
+});
+renderAll();
+
+/* ── Dijkstra animation ── */
+var djNodes = [
+  {id:0, x:50,  y:130},
+  {id:1, x:150, y:50},
+  {id:2, x:150, y:210},
+  {id:3, x:250, y:110},
+  {id:4, x:300, y:200},
+  {id:5, x:200, y:130}
+];
+var djEdges = [
+  {a:0,b:1,w:7}, {a:0,b:2,w:9}, {a:0,b:5,w:14},
+  {a:1,b:2,w:10}, {a:1,b:3,w:15},
+  {a:2,b:3,w:11}, {a:2,b:5,w:2},
+  {a:3,b:4,w:6}, {a:4,b:5,w:9}
+];
+var djAdj = {};
+djNodes.forEach(function(n){ djAdj[n.id] = []; });
+djEdges.forEach(function(e){ djAdj[e.a].push({to:e.b,w:e.w}); djAdj[e.b].push({to:e.a,w:e.w}); });
+var djDist, djVisited, djDone, djCurrent;
+function djInit(){
+  djDist = [0, Infinity, Infinity, Infinity, Infinity, Infinity];
+  djVisited = [false,false,false,false,false,false];
+  djDone = false; djCurrent = null;
+  document.getElementById("djLog").textContent = "\uC2DC\uC791 \uC815\uC810 0\uC5D0\uC11C \uCD9C\uBC1C\uD569\uB2C8\uB2E4. '\uB2E4\uC74C \uB2E8\uACC4'\uB97C \uB20C\uB7EC \uBCF4\uC138\uC694.";
+  drawDj();
+}
+function djStep(){
+  if(djDone) return;
+  // pick unvisited min
+  var u = -1, best = Infinity;
+  for(var i=0;i<6;i++){
+    if(!djVisited[i] && djDist[i] < best){ best = djDist[i]; u = i; }
+  }
+  if(u === -1 || best === Infinity){
+    djDone = true; djCurrent = null;
+    document.getElementById("djLog").textContent = "\uC644\uB8CC! \uAC01 \uB178\uB4DC\uC758 \uAC12\uC774 0\uBC88\uC5D0\uC11C\uC758 \uCD5C\uB2E8 \uAC70\uB9AC\uC785\uB2C8\uB2E4: [" + djDist.map(function(d){return d===Infinity?"\u221E":d;}).join(", ") + "]";
+    drawDj(); return;
+  }
+  djVisited[u] = true; djCurrent = u;
+  var updated = [];
+  djAdj[u].forEach(function(e){
+    if(!djVisited[e.to] && djDist[u] + e.w < djDist[e.to]){
+      djDist[e.to] = djDist[u] + e.w;
+      updated.push(e.to + "\uBC88=" + djDist[e.to]);
+    }
+  });
+  var msg = "\uB178\uB4DC " + u + " \uD655\uC815(\uAC70\uB9AC " + djDist[u] + "). ";
+  msg += updated.length ? "\uAC31\uC2E0: " + updated.join(", ") : "\uAC31\uC2E0\uD560 \uC774\uC6C3 \uC5C6\uC74C.";
+  document.getElementById("djLog").textContent = msg;
+  drawDj();
+}
+function drawDj(){
+  var svg = document.getElementById("djSvg");
+  svg.innerHTML = "";
+  djEdges.forEach(function(e){
+    var na = djNodes[e.a], nb = djNodes[e.b];
+    var line = document.createElementNS(SVGNS,"line");
+    line.setAttribute("x1",na.x);line.setAttribute("y1",na.y);
+    line.setAttribute("x2",nb.x);line.setAttribute("y2",nb.y);
+    line.setAttribute("stroke","#1e3a5f");line.setAttribute("stroke-width","2");
+    svg.appendChild(line);
+    var lbl = document.createElementNS(SVGNS,"text");
+    lbl.setAttribute("x",(na.x+nb.x)/2 + 4);
+    lbl.setAttribute("y",(na.y+nb.y)/2 - 2);
+    lbl.setAttribute("class","edgelbl");
+    lbl.textContent = e.w;
+    svg.appendChild(lbl);
+  });
+  djNodes.forEach(function(n){
+    var c = document.createElementNS(SVGNS,"circle");
+    c.setAttribute("cx",n.x);c.setAttribute("cy",n.y);c.setAttribute("r","17");
+    var cls = "nodecircle";
+    if(n.id === djCurrent) cls += " cur";
+    else if(djVisited[n.id]) cls += " done";
+    c.setAttribute("class",cls);
+    svg.appendChild(c);
+    var t = document.createElementNS(SVGNS,"text");
+    t.setAttribute("x",n.x);t.setAttribute("y",n.y+5);
+    t.setAttribute("class","nodelbl");
+    t.textContent = n.id;
+    svg.appendChild(t);
+  });
+  var tb = document.getElementById("djTable");
+  tb.innerHTML = "";
+  for(var i=0;i<6;i++){
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td"); td1.textContent = i;
+    var td2 = document.createElement("td");
+    td2.textContent = djDist[i] === Infinity ? "\u221E" : djDist[i];
+    if(djVisited[i]) td2.style.color = "#34d399";
+    tr.appendChild(td1); tr.appendChild(td2); tb.appendChild(tr);
+  }
+}
+document.getElementById("djStep").addEventListener("click", djStep);
+document.getElementById("djReset").addEventListener("click", djInit);
+djInit();
+
+/* ── STEAM matching (지진) ── */
+var steamItems = [
+  {t:"\uC9C0\uC9C4\uC774 \uC77C\uC5B4\uB098\uB294 \uC790\uC5F0\uC801\uC778 \uC6D0\uC778\uC744 \uBD84\uC11D\uD55C\uB2E4", ans:"S"},
+  {t:"\uAD00\uCE21\uB41C \uC9C0\uAC01\uC6B4\uB3D9\uC744 \uCEF4\uD4E8\uD130 \uC2DC\uBBAC\uB808\uC774\uC158\uC73C\uB85C \uB098\uD0C0\uB0B8\uB2E4", ans:"M"},
+  {t:"\uC9C0\uC9C4\uC744 \uAC10\uC9C0\uD558\uAE30 \uC704\uD574 \uC9C0\uC9C4\uACC4\uB97C \uC2E4\uC81C \uB9CC\uB4E0\uB2E4", ans:"T"},
+  {t:"\uC9C0\uAC01\uBCC0\uB3D9 \uC885\uB958\uB9C8\uB2E4 \uB3C4\uD615\uC73C\uB85C \uD45C\uD604\uD55C\uB2E4", ans:"E"}
+];
+// 주의: 원문에서 E(공학)=지진계 제작, T(기술)? 실제 매칭은 과학=원인분석, 수학=시뮬레이션/도형, 기술=지진계, 공학=... 
+// 교재 사례에 맞춰: S=원인분석, M=시뮬레이션, T=지진계제작, E=도형표현 로 구성(학습용 단순화)
+var steamLabels = {S:"S \uACFC\uD559", M:"M \uC218\uD559", T:"T \uAE30\uC220", E:"E \uACF5\uD559"};
+var steamMatchEl = document.getElementById("steamMatch");
+var steamAnswered = 0;
+steamItems.forEach(function(item, idx){
+  var row = document.createElement("div");
+  row.style.cssText = "margin:10px 0;padding:10px 12px;background:#132542;border:1px solid #1e3a5f;border-radius:10px";
+  var q = document.createElement("div");
+  q.style.cssText = "font-size:.9rem;margin-bottom:8px";
+  q.textContent = item.t;
+  row.appendChild(q);
+  var btns = document.createElement("div");
+  btns.style.cssText = "display:flex;gap:6px;flex-wrap:wrap";
+  ["S","M","T","E"].forEach(function(key){
+    var b = document.createElement("button");
+    b.className = "fc-item";
+    b.textContent = steamLabels[key];
+    b.addEventListener("click", function(){
+      if(row.getAttribute("data-done")) return;
+      row.setAttribute("data-done","1");
+      steamAnswered++;
+      var all = btns.querySelectorAll("button");
+      all.forEach(function(x){ x.disabled = true; x.style.opacity = ".6"; });
+      if(key === item.ans){
+        b.style.cssText += "background:rgba(52,211,153,.2);border-color:#34d399;color:#34d399;opacity:1";
+      } else {
+        b.style.cssText += "background:rgba(248,113,113,.15);border-color:#f87171;color:#f87171;opacity:1";
+        // highlight correct
+        all.forEach(function(x){
+          if(x.textContent === steamLabels[item.ans]){
+            x.style.cssText += "background:rgba(52,211,153,.2);border-color:#34d399;color:#34d399;opacity:1";
+          }
+        });
+      }
+      if(steamAnswered === steamItems.length){
+        var box = document.getElementById("steamMsg");
+        box.className = "msgbox ok";
+        box.textContent = "\uD83C\uDF89 4\uAC1C \uBAA8\uB450 \uC644\uB8CC! \uD558\uB098\uC758 \uD604\uC0C1\uB3C4 \uACFC\uD559\u00B7\uC218\uD559\u00B7\uAE30\uC220\u00B7\uACF5\uD559 \uB124 \uAD00\uC810\uC73C\uB85C \uB098\uB204\uC5B4 \uBCFC \uC218 \uC788\uC2B5\uB2C8\uB2E4.";
+      }
+    });
+    btns.appendChild(b);
+  });
+  row.appendChild(btns);
+  steamMatchEl.appendChild(row);
+});
+
+})();
+</script>
+</body>
+</html>

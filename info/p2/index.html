@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PART 2. 정보(SW·로봇) 영재를 위한 영재성 검사 — 인터랙티브 강의</title>
+<style>
+:root{
+  --bg:#0a1628; --bg2:#0f1f38; --card:#132542; --card2:#18304f;
+  --teal:#2dd4bf; --teal-d:#14b8a6; --teal-glow:rgba(45,212,191,.18);
+  --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa; --sky:#38bdf8;
+  --txt:#e2e8f0; --sub:#94a3b8; --line:#1e3a5f;
+  --ok:#34d399; --no:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'Malgun Gothic','맑은 고딕',sans-serif;line-height:1.7}
+code,.mono{font-family:Consolas,'Courier New',monospace}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px 80px}
+
+/* ── header ── */
+header{background:linear-gradient(135deg,#0a1628 0%,#0e2a4a 55%,#0d3b4f 100%);border-bottom:2px solid var(--teal-d);padding:44px 18px 34px;text-align:center}
+.badge{display:inline-block;background:var(--teal-glow);border:1px solid var(--teal-d);color:var(--teal);border-radius:20px;padding:4px 16px;font-size:.85rem;font-weight:bold;letter-spacing:.06em;margin-bottom:14px}
+header h1{font-size:1.75rem;color:#fff;margin-bottom:10px}
+header h1 .hl{color:var(--teal)}
+header p{color:var(--sub);font-size:.95rem;max-width:640px;margin:0 auto}
+
+/* ── nav ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,22,40,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 8px;display:flex;gap:6px;overflow-x:auto;justify-content:flex-start}
+nav button{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--sub);border-radius:8px;padding:8px 14px;font-size:.85rem;cursor:pointer;font-family:inherit;transition:.15s}
+nav button:hover{border-color:var(--teal-d);color:var(--txt)}
+nav button.on{background:var(--teal-d);border-color:var(--teal-d);color:#04211c;font-weight:bold}
+
+/* ── sections ── */
+section{display:none;padding-top:30px}
+section.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-size:1.4rem;color:#fff;border-left:5px solid var(--teal);padding-left:14px;margin:26px 0 6px}
+h2 .sec-no{color:var(--teal);font-size:.85rem;display:block;letter-spacing:.08em}
+h3{font-size:1.08rem;color:var(--teal);margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+h3::before{content:"";width:9px;height:9px;background:var(--teal);border-radius:2px;transform:rotate(45deg);flex:0 0 auto}
+.lead{color:var(--sub);margin:8px 0 18px;padding-left:19px;font-size:.94rem}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.card.tip{border-left:4px solid var(--amber)}
+.card.tip b:first-child{color:var(--amber)}
+.grid{display:grid;gap:12px;margin:14px 0}
+.g2{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.mini{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mini b{color:var(--teal);display:block;margin-bottom:5px;font-size:.95rem}
+.mini p{font-size:.87rem;color:var(--sub)}
+.pill{display:inline-block;background:#0b2b3a;color:var(--sky);border:1px solid #155e75;border-radius:14px;padding:2px 11px;font-size:.78rem;margin:2px 3px 2px 0}
+.src{font-size:.78rem;color:#64748b;margin-top:8px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:center}
+th{background:var(--card2);color:var(--teal)}
+td{background:rgba(19,37,66,.5)}
+
+/* ── quiz ── */
+.quiz{background:linear-gradient(180deg,var(--card) 0%,#10233f 100%);border:1px solid var(--line);border-left:4px solid var(--violet);border-radius:14px;padding:20px 22px;margin:18px 0}
+.quiz .qtag{color:var(--violet);font-weight:bold;font-size:.82rem;letter-spacing:.05em}
+.quiz .qtag.exam{color:var(--rose)}
+.quiz .q{margin:8px 0 14px;font-size:.98rem}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:10px 14px;font-size:.92rem;cursor:pointer;font-family:inherit;transition:.15s}
+.opts button:hover{border-color:var(--violet)}
+.opts button.ok{background:rgba(52,211,153,.15);border-color:var(--ok);color:var(--ok);font-weight:bold}
+.opts button.no{background:rgba(248,113,113,.12);border-color:var(--no);color:var(--no)}
+.opts button:disabled{cursor:default;opacity:.85}
+.expl{display:none;margin-top:14px;background:#0b1e35;border:1px dashed var(--teal-d);border-radius:10px;padding:13px 16px;font-size:.9rem}
+.expl.show{display:block;animation:fade .3s}
+.expl b{color:var(--teal)}
+
+/* ── open-ended ── */
+.open{border-left:4px solid var(--sky)}
+.open textarea{width:100%;min-height:88px;background:#0b1e35;border:1px solid var(--line);border-radius:9px;color:var(--txt);font-family:inherit;font-size:.9rem;padding:10px 12px;resize:vertical;margin:8px 0}
+.rvbtn{background:transparent;border:1px solid var(--teal-d);color:var(--teal);border-radius:8px;padding:7px 16px;font-size:.86rem;cursor:pointer;font-family:inherit}
+.rvbtn:hover{background:var(--teal-glow)}
+.abtn{background:var(--teal-d);border:none;color:#04211c;font-weight:bold;border-radius:8px;padding:8px 18px;font-size:.88rem;cursor:pointer;font-family:inherit}
+.abtn:hover{background:var(--teal)}
+.abtn.ghost{background:transparent;border:1px solid var(--line);color:var(--sub);font-weight:normal}
+
+/* ── widgets ── */
+.widget{background:#0b1e35;border:1px solid #17456b;border-radius:14px;padding:20px;margin:16px 0}
+.widget .wtitle{color:var(--sky);font-weight:bold;margin-bottom:10px;font-size:.95rem}
+.seg-area{display:flex;gap:34px;flex-wrap:wrap;align-items:center;justify-content:center;padding:8px 0}
+.seg-presets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+.seg-presets button{width:38px;height:38px;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:8px;font-size:1rem;cursor:pointer;font-family:Consolas,monospace}
+.seg-presets button:hover{border-color:var(--teal)}
+.seg{cursor:pointer;transition:.12s}
+.hint{font-size:.82rem;color:var(--sub);text-align:center;margin-top:8px}
+.msgbox{display:none;margin-top:12px;border-radius:9px;padding:10px 14px;font-size:.9rem}
+.msgbox.ok{display:block;background:rgba(52,211,153,.12);border:1px solid var(--ok);color:var(--ok)}
+.msgbox.no{display:block;background:rgba(248,113,113,.1);border:1px solid var(--no);color:var(--no)}
+.ctr{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+
+/* magic square */
+.msq{display:grid;grid-template-columns:repeat(3,64px);gap:6px;justify-content:center;margin:10px auto}
+.msq input{width:64px;height:64px;text-align:center;font-size:1.4rem;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--txt);font-family:Consolas,monospace}
+.msq input:focus{outline:none;border-color:var(--teal)}
+.msq input.fix{background:#123a3a;border-color:var(--teal-d);color:var(--teal);font-weight:bold}
+
+/* shelf */
+.shelf{display:grid;gap:8px;max-width:360px;margin:10px auto}
+.shelf .row{display:flex;align-items:center;gap:10px}
+.shelf .lab{width:96px;color:var(--sub);font-size:.86rem;text-align:right}
+.shelf select{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:9px 10px;font-family:inherit;font-size:.9rem}
+
+/* polybius */
+.poly-grid{display:grid;grid-template-columns:repeat(6,44px);gap:4px;justify-content:center;margin:12px auto;font-family:Consolas,monospace}
+.poly-grid div{width:44px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--card2);border:1px solid var(--line);border-radius:6px;font-size:.95rem}
+.poly-grid .hd{background:#0d3b4f;color:var(--teal);font-weight:bold}
+.poly-io{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.poly-io input{flex:1;min-width:220px;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:9px 12px;font-family:Consolas,monospace;font-size:.95rem}
+.poly-out{margin-top:10px;font-family:Consolas,monospace;font-size:1.15rem;color:var(--amber);letter-spacing:.15em;min-height:1.6em;text-align:center}
+
+/* flip sim */
+.flip-stage{display:flex;justify-content:center;padding:6px 0}
+#flipShape{transition:transform .45s ease}
+.hist{font-family:Consolas,monospace;font-size:.82rem;color:var(--sub);text-align:center;margin-top:8px;min-height:1.4em}
+
+footer{border-top:1px solid var(--line);margin-top:60px;padding:26px 18px;text-align:center;color:#475569;font-size:.82rem}
+.score-float{position:fixed;right:16px;bottom:16px;background:var(--card2);border:1px solid var(--teal-d);border-radius:12px;padding:9px 16px;font-size:.85rem;color:var(--teal);z-index:60;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">정보 SW 영재원 완전정복 · PART 2</div>
+  <h1>정보(SW·로봇) 영재를 위한 <span class="hl">영재성 검사</span></h1>
+  <p>KEDI 선발 도구에 근거한 영재 판별 문항 7개 영역을 인터랙티브하게 학습합니다.<br>퀴즈를 풀고, 위젯을 조작하며 나의 영재성 척도를 직접 확인해 보세요.</p>
+</header>
+
+<nav id="nav">
+  <button data-t="s0" class="on">개요</button>
+  <button data-t="s1">1. 창의성</button>
+  <button data-t="s2">2. IT</button>
+  <button data-t="s3">3. 수리</button>
+  <button data-t="s4">4. 공간지각</button>
+  <button data-t="s5">5. 발명</button>
+  <button data-t="s6">6. 언어사고력</button>
+  <button data-t="s7">7. 논리사고력</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ════════════════ S0 개요 ════════════════ -->
+<section id="s0" class="on">
+  <h2><span class="sec-no">OVERVIEW</span>영재성 검사란?</h2>
+  <p class="lead">영재교육원 선발 1단계에서 매년 12월 초 시행되는 검사로, 수학·과학·정보 분야가 거의 공통된 문제로 출제됩니다.</p>
+
+  <div class="card">
+    영재성 검사는 <b style="color:var(--teal)">수리·공간지각 능력, 창의성, 논리 사고력, 언어 능력</b>을 기본으로 측정합니다.
+    정보(SW·로봇) 분야는 여기에 <b style="color:var(--teal)">컴퓨팅 사고력·이산수학적 사고</b>가 연계되어 출제될 수 있으므로,
+    아래 7개 영역을 균형 있게 대비해야 합니다.
+  </div>
+
+  <div class="grid g4">
+    <div class="mini"><b>① 창의성</b><p>유창성·융통성·정교성·독창성 — 아이디어의 양과 질</p></div>
+    <div class="mini"><b>② IT</b><p>4차 산업혁명 핵심 기술 상식과 SW 활용 감각</p></div>
+    <div class="mini"><b>③ 수리</b><p>사고력 수학 — 규칙, 암호, 마방진, 소수</p></div>
+    <div class="mini"><b>④ 공간지각</b><p>회전·뒤집기·종이접기·쌓기나무 등 3차원 사고</p></div>
+    <div class="mini"><b>⑤ 발명</b><p>TRIZ 발명 기법과 모순의 극복</p></div>
+    <div class="mini"><b>⑥ 언어사고력</b><p>스토리텔링, 광고 문구, 언어 논리 추론</p></div>
+    <div class="mini"><b>⑦ 논리사고력</b><p>계열화·비례·확률·조합·명제 논리</p></div>
+    <div class="mini"><b>＋ FUN GAME</b><p>code.org로 컴퓨팅 사고력을 놀이처럼 훈련</p></div>
+  </div>
+
+  <div class="card tip">
+    <b>학습 방법</b><br>
+    각 영역 탭에서 ①개념 길잡이를 읽고 → ②인터랙티브 위젯을 직접 조작하고 → ③기출·표준문제 퀴즈를 풀어보세요.
+    서술형 문제는 답안을 직접 작성한 뒤 <b>예시 답안</b> 버튼으로 비교하면 효과적입니다.
+    오른쪽 아래 점수판에서 나의 진행 상황을 확인할 수 있습니다.
+  </div>
+</section>
+
+<!-- ════════════════ S1 창의성 ════════════════ -->
+<section id="s1">
+  <h2><span class="sec-no">SECTION 1</span>창의성 영역</h2>
+  <p class="lead">창의성 문항은 '창의적 사고 방법'으로 훈련하고, 창의성 구성요소에 근거해 서술하면 좋습니다.</p>
+
+  <h3>창의성의 4가지 구성요소</h3>
+  <div class="grid g4">
+    <div class="mini"><b>유창성</b><p>가능한 한 <u>많은</u> 아이디어를 제시하는 능력</p></div>
+    <div class="mini"><b>융통성</b><p>가능한 한 <u>다양한</u> 아이디어를 제시하는 능력</p></div>
+    <div class="mini"><b>정교성</b><p>아이디어를 <u>구체적으로</u> 표현하는 능력</p></div>
+    <div class="mini"><b>독창성</b><p>아이디어를 <u>개성적으로</u> 표현하는 능력</p></div>
+  </div>
+
+  <h3>창의적 사고 기법</h3>
+  <div class="grid g2">
+    <div class="mini"><b>강제 결합법</b><p>서로 관련 없는 사물을 강제로 연결해 새로운 아이디어를 얻는 방법</p></div>
+    <div class="mini"><b>마인드맵</b><p>이미지·핵심 단어·부호·색을 이용해 지도를 그리듯 생각을 확장</p></div>
+    <div class="mini"><b>PMI 기법</b><p>긍정적인 면(P)·부정적인 면(M)·재미있는 면(I) 세 가지로 나누어 의도적으로 사고</p></div>
+    <div class="mini"><b>육색 사고 모자</b><p>여섯 색깔 모자를 바꿔 쓰며 그 색의 관점으로 사고 (아래 위젯!)</p></div>
+  </div>
+
+  <div class="widget">
+    <div class="wtitle">🎩 육색 사고 모자 — 모자를 클릭해 관점을 확인하세요</div>
+    <div class="ctr" id="hatBtns"></div>
+    <div id="hatDesc" style="text-align:center;margin-top:14px;font-size:.93rem;color:var(--sub)">모자를 선택하면 해당 사고 관점이 표시됩니다.</div>
+  </div>
+
+  <h3>유형 1 · 서로 다른 용도 찾기 <span class="pill">기출</span></h3>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 서술형</span>
+    <p class="q">'나무젓가락'으로 할 수 있는 일을 5가지 이상 써보시오.</p>
+    <textarea placeholder="① … ② … ③ … ④ … ⑤ …"></textarea>
+    <button class="rvbtn" data-rv="rv1">예시 답안 보기</button>
+    <div class="expl" id="rv1">
+      <b>예시 답안 (유창성＋융통성을 보여주는 답)</b><br>
+      ① 음식 집어 먹기 ② 머리 묶을 때 비녀로 쓰기 ③ 화분 지지대 ④ 미술 작품(젓가락 탑) 재료
+      ⑤ 물감 저을 때 막대 ⑥ 간이 부목(응급처치) ⑦ 캠핑 불쏘시개<br><br>
+      <b>채점 포인트</b> — 개수(유창성)만이 아니라 '먹는 용도 → 도구 → 예술 → 의료' 처럼 <u>서로 다른 범주</u>(융통성)로 넓히고, 각 용도를 구체적으로(정교성) 쓰면 점수가 높아집니다.
+    </div>
+  </div>
+
+  <h3>유형 2 · 어림짐작하기(페르미 추정) <span class="pill">기출</span></h3>
+  <div class="card">
+    <b style="color:var(--sky)">페르미 추정법</b> — 어떤 문제를 기초 지식과 논리적 추론만으로 짧은 시간 안에 대략적인 근사치를 추정하는 방법.<br>
+    <span style="color:var(--sub);font-size:.9rem">예) "에베레스트산의 흙을 모두 트럭에 실으면 몇 트럭일까?" → 산을 원뿔로 가정 → 부피 계산 → 트럭 1대 용량으로 나누기</span>
+  </div>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 서술형</span>
+    <p class="q">쌀 한 가마니는 10말, 한 말은 10되, 한 되는 10홉입니다. 한 홉에 든 쌀알 개수를 세어 한 가마니의 쌀알 개수를 어림할 때, <b>사용한 가정</b>을 모두 쓰고, 이런 방식으로 전체 개수를 알아내는 <b>일상생활의 예 4가지</b>를 쓰시오.</p>
+    <textarea placeholder="가정: … / 일상생활의 예: …"></textarea>
+    <button class="rvbtn" data-rv="rv2">예시 답안 보기</button>
+    <div class="expl" id="rv2">
+      <b>사용한 가정</b> — ① 쌀알의 크기와 무게가 모두 균일하다 ② 홉·되·말·가마니에 쌀이 같은 밀도로 채워진다 ③ 한 홉의 쌀알 수 × 10 × 10 × 10 = 한 가마니의 쌀알 수라는 비례가 성립한다.<br><br>
+      <b>일상생활의 예</b> — ① 저금통 동전 개수(일부 무게로 전체 추정) ② 콩 한 봉지의 콩알 수(한 컵 기준) ③ 책 전체 글자 수(한 쪽 기준) ④ 운동장 관중 수(한 구역 기준 곱하기)
+    </div>
+  </div>
+
+  <h3>유형 3 · 그림 기호 — 7-세그먼트 디스플레이 <span class="pill">기출</span></h3>
+  <div class="card">숫자를 표시하는 장치인 <b>7-Segment Display</b>는 7개의 막대(세그먼트)를 켜고 꺼서 0~9를 표현합니다. 기출문제: "이 장치로 0~9까지 숫자를 표시해 보시오. 두 개를 붙여 사람의 감정도 표현해 보시오."</div>
+  <div class="widget">
+    <div class="wtitle">💡 7-세그먼트 시뮬레이터 — 막대를 클릭해 켜고 끄거나, 숫자 버튼을 눌러보세요</div>
+    <div class="seg-area" id="segArea"></div>
+    <div class="seg-presets" id="segPresets"></div>
+    <div class="hint">도전! 두 자리 세그먼트로 웃는 표정, 화난 표정을 만들어 보세요.</div>
+  </div>
+
+  <h3>유형 4 · 아이디어 제시 <span class="pill">기출</span></h3>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 서술형</span>
+    <p class="q">전기 제품(에어컨 등)에 의존하지 않고 여름철 불볕더위를 피하는 방법을 제시해 보시오.</p>
+    <textarea placeholder="자유롭게 아이디어를 펼쳐 보세요"></textarea>
+    <button class="rvbtn" data-rv="rv3">예시 답안 보기</button>
+    <div class="expl" id="rv3">
+      <b>예시 답안</b> — ① 옥상·벽면 녹화(식물 커튼)로 복사열 차단 ② 젖은 수건＋선풍기 없이도 기화열을 이용하는 물주머니 목도리 ③ 골목에 그늘막·미스트 분수 설치 ④ 한옥의 대청마루처럼 맞바람 구조로 창 배치 ⑤ 낮에는 지하 공간·도서관 등 서늘한 공용 공간 활용<br><br>
+      <b>채점 포인트</b> — 과학적 원리(기화열, 복사열 차단, 대류)를 근거로 들면 정교성 점수가 올라갑니다.
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ S2 IT ════════════════ -->
+<section id="s2">
+  <h2><span class="sec-no">SECTION 2</span>IT 영역</h2>
+  <p class="lead">최신 IT 상식으로 SW 활용 능력·IT 기기 접근 능력을 확인합니다. 4차 산업혁명 핵심 기술 상식이 중요합니다.</p>
+
+  <h3>4차 산업혁명의 핵심 기술</h3>
+  <div class="grid g4">
+    <div class="mini"><b>인공지능</b><p>스스로 학습·판단하는 지능 시스템</p></div>
+    <div class="mini"><b>사물인터넷</b><p>모든 사물이 인터넷으로 연결</p></div>
+    <div class="mini"><b>3D 프린팅</b><p>디지털 도면을 실물로 출력</p></div>
+    <div class="mini"><b>유전학·생명공학</b><p>생명 정보의 해석과 활용</p></div>
+    <div class="mini"><b>나노 기술</b><p>원자·분자 수준의 초미세 기술</p></div>
+    <div class="mini"><b>자율주행차</b><p>스스로 인지·판단·제어하는 이동체</p></div>
+    <div class="mini"><b>빅데이터</b><p>대규모 데이터에서 패턴과 예측 도출</p></div>
+    <div class="mini"><b>가상·증강현실</b><p>디지털로 확장된 체험 공간</p></div>
+  </div>
+
+  <h3>유형 1 · 인공지능</h3>
+  <div class="quiz open">
+    <span class="qtag">표준문제 · 서술형</span>
+    <p class="q">인공지능이 우리 생활에 적용되는 예를 가능한 한 많이 제시하시오.</p>
+    <textarea placeholder="유창성을 보여줄 기회! 최대한 많이, 다양하게"></textarea>
+    <button class="rvbtn" data-rv="rv4">예시 답안 보기</button>
+    <div class="expl" id="rv4">
+      <b>예시 답안(범주별로 다양하게!)</b><br>
+      🏠 생활 — AI 스피커, 로봇청소기 경로 학습, 스마트폰 얼굴 인식<br>
+      🚗 이동 — 자율주행, 내비게이션 최적 경로, 교통신호 최적화<br>
+      🏥 의료 — 의료영상 판독 보조, 신약 후보 물질 탐색<br>
+      🎬 콘텐츠 — 영상·음악 추천 알고리즘, 자동 번역, 생성형 AI 그림<br>
+      🏭 산업 — 공장 불량 검출, 수요 예측, 챗봇 고객 상담
+    </div>
+  </div>
+
+  <h3>유형 2 · 자율주행차와 스마트 시티 <span class="pill">SW 사고력 올림피아드 기출</span></h3>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 논술형</span>
+    <p class="q">자율주행 기능이 운전자의 운전습관을 반영하면서 동시에 안전하게 운행하려 합니다. <b>어떤 데이터를 기록해야 하며</b>, 운전습관과 안전 상황이 <b>충돌할 때 어떤 결정</b>을 내려야 하는지 논리적으로 주장하시오.</p>
+    <textarea placeholder="데이터 항목 → 충돌 상황 → 판단 원칙 순서로 논리를 세워 보세요"></textarea>
+    <button class="rvbtn" data-rv="rv5">예시 답안 보기</button>
+    <div class="expl" id="rv5">
+      <b>기록할 데이터</b> — 평균·최고 속도, 차간 거리 유지 패턴, 가감속(급브레이크) 빈도, 차선 변경 습관, 신호 대응 시간, 도로 종류별 주행 이력, 날씨·시간대별 운전 특성<br><br>
+      <b>충돌 시 판단 원칙</b> — 운전습관 반영은 '편의'이고 안전은 '생명'과 직결되므로 <u>안전 규칙이 항상 우선</u>해야 한다. 예를 들어 운전자가 평소 차간 거리를 짧게 유지하는 습관이 있어도, 빗길에서는 과거 데이터가 아니라 제동거리 계산에 근거해 안전거리를 강제로 확보해야 한다. 즉 "습관 데이터는 안전 기준을 만족하는 범위 안에서만 반영한다"는 우선순위 규칙을 시스템에 두어야 한다.
+    </div>
+  </div>
+
+  <h3>유형 3 · 드론</h3>
+  <div class="quiz open">
+    <span class="qtag">표준문제 · 서술형</span>
+    <p class="q">드론을 활용해 일상생활에 도움이 되도록 하는 방법을 5가지 이상 서술하시오.</p>
+    <textarea placeholder="① … ② … ③ … ④ … ⑤ …"></textarea>
+    <button class="rvbtn" data-rv="rv6">예시 답안 보기</button>
+    <div class="expl" id="rv6">
+      <b>예시 답안</b> — ① 산간·도서 지역 택배와 의약품 긴급 배송 ② 실종자 수색과 산불 감시 ③ 농약 살포·작물 생육 관측(스마트팜) ④ 교량·송전탑 등 위험 시설 점검 ⑤ 공연·스포츠 항공 촬영 ⑥ 통신 중계(재난 시 임시 기지국) ⑦ 인명 구조용 구명튜브 투하
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ S3 수리 ════════════════ -->
+<section id="s3">
+  <h2><span class="sec-no">SECTION 3</span>수리 영역</h2>
+  <p class="lead">정보·로봇 분야 탐구의 기초에는 수리적 사고가 필요합니다. 사고력 수학 형태로 출제됩니다.</p>
+
+  <h3>유형 1 · 숫자 만들기 — 회문수 <span class="pill">기출 연계</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">'회문수'란 거꾸로 읽어도 같은 수입니다(예: 12321). <b>5자리 회문수 중 45로 나누어떨어지는</b> 가장 큰 수와 가장 작은 수의 <b>차이</b>는?</p>
+    <div class="opts">
+      <button data-c="0">8910</button>
+      <button data-c="1">9090</button>
+      <button data-c="0">9180</button>
+      <button data-c="0">9990</button>
+    </div>
+    <div class="expl">
+      <b>풀이</b> — 45로 나누어떨어지려면 <b>5와 9의 배수</b>여야 한다. 5의 배수는 끝자리가 0 또는 5인데, 회문수는 첫 자리=끝 자리이고 첫 자리는 0이 될 수 없으므로 <b>5◻◻◻5</b> 꼴.
+      9의 배수 조건(자릿수 합이 9의 배수)을 적용하면 — 가장 큰 수: <b>59895</b>, 가장 작은 수: <b>50805</b>.
+      차이 = 59895 − 50805 = <b>9090</b>.
+    </div>
+  </div>
+
+  <h3>유형 2 · 암호 — 폴리비오스 암호 <span class="pill">기출 연계</span></h3>
+  <div class="card">
+    고대 그리스인 폴리비오스가 만든, <b>문자를 (행, 열) 숫자 쌍으로 바꾸는</b> 암호. 치환형 암호의 '빈도 분석에 약하다'는 문제를 보완하려는 기법입니다.
+  </div>
+  <div class="widget">
+    <div class="wtitle">🔐 폴리비오스 암호 해독기 — 숫자 쌍을 입력하면 즉시 해독됩니다</div>
+    <div class="poly-grid" id="polyGrid"></div>
+    <div class="poly-io">
+      <input type="text" id="polyIn" value="24 33 21 34 42 32 11 44 24 34 33" spellcheck="false">
+      <button class="abtn" id="polyBtn">해독하기</button>
+    </div>
+    <div class="poly-out" id="polyOut"></div>
+    <div class="hint">문제의 암호문 "24 33 21 34 42 32 11 44 24 34 33"을 해독해 보세요! (i와 j는 한 칸을 함께 씁니다)</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">확인 퀴즈</span>
+    <p class="q">위 해독기의 원리대로 <b>"43 52"</b>를 해독하면?</p>
+    <div class="opts">
+      <button data-c="0">so</button>
+      <button data-c="1">sw</button>
+      <button data-c="0">tw</button>
+      <button data-c="0">rv</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 4행 3열 = <b>s</b>, 5행 2열 = <b>w</b> → "sw" (소프트웨어!). 행 먼저, 열 나중임을 기억하세요.</div>
+  </div>
+
+  <h3>유형 3 · 마방진</h3>
+  <div class="card">1부터 9까지의 수를 한 번씩 사용해 가로·세로·대각선의 합이 각각 같도록(합 15) 빈칸을 채우는 문제가 출제됩니다.</div>
+  <div class="widget">
+    <div class="wtitle">🧩 3×3 마방진 도전 — 남은 칸에 1~9를 채우고 검사해 보세요</div>
+    <div class="msq" id="msq"></div>
+    <div class="ctr">
+      <button class="abtn" id="msqCheck">검사하기</button>
+      <button class="abtn ghost" id="msqReset">다시 풀기</button>
+      <button class="abtn ghost" id="msqHint">힌트</button>
+    </div>
+    <div class="msgbox" id="msqMsg"></div>
+    <div class="expl" id="msqHintBox" style="margin-top:12px"><b>힌트</b> — 1~9의 합은 45이고 세 줄로 나뉘므로 한 줄의 합은 45÷3=<b>15</b>. 가운데 칸은 4개의 줄(가로·세로·대각선 2개)에 모두 포함되므로 반드시 <b>5</b>가 와야 합니다. 짝수(2,4,6,8)는 네 모서리에!</div>
+  </div>
+
+  <h3>유형 4 · 숫자 규칙 <span class="pill">기출 연계</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">N = 123456789101112…201920202021 은 1부터 2021까지 연이어 적은 수입니다. N은 <b>몇 자릿수</b>일까요?</p>
+    <div class="opts">
+      <button data-c="0">6889</button>
+      <button data-c="0">6923</button>
+      <button data-c="1">6977</button>
+      <button data-c="0">7025</button>
+    </div>
+    <div class="expl">
+      <b>풀이 (구간별로 나누기)</b><br>
+      1~9 → 9개 × 1자리 = 9<br>
+      10~99 → 90개 × 2자리 = 180<br>
+      100~999 → 900개 × 3자리 = 2700<br>
+      1000~2021 → 1022개 × 4자리 = 4088<br>
+      합계: 9＋180＋2700＋4088 = <b>6977자리</b>. "자릿수별 구간으로 쪼개기"가 핵심 전략입니다.
+    </div>
+  </div>
+
+  <h3>유형 5 · 소수</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">다음 계산 결과 중 1과 자기 자신 외의 수로 나누어떨어지지 않는 수(소수)는 모두 몇 개?<br>
+    <span class="mono" style="color:var(--amber)">1×1+2×2, &nbsp;2×2+3×3, &nbsp;3×3+4×4, &nbsp;4×4+5×5, &nbsp;5×5+6×6</span></p>
+    <div class="opts">
+      <button data-c="0">2개</button>
+      <button data-c="0">3개</button>
+      <button data-c="1">4개</button>
+      <button data-c="0">5개</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 계산하면 5, 13, 25, 41, 61. 이 중 25 = 5×5만 소수가 아니므로 소수는 <b>4개</b>.</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">오늘은 수요일. 중기는 오늘부터 <b>5일마다</b>, 혜교는 <b>매주 수요일마다</b> 빵을 만듭니다. 다음번에 두 사람이 <b>같은 날</b> 빵을 만드는 것은 며칠 후?</p>
+    <div class="opts">
+      <button data-c="0">28일 후</button>
+      <button data-c="1">35일 후</button>
+      <button data-c="0">40일 후</button>
+      <button data-c="0">70일 후</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 5와 7의 최소공배수 = <b>35</b>. 35일 후는 7의 배수이므로 요일도 다시 수요일이 됩니다.</div>
+  </div>
+
+  <h3>유형 6 · 대칭 문자</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 · 객관식</span>
+    <p class="q">하나의 선(대칭축)을 중심으로 접으면 완벽히 포개어지는 것이 <b>선대칭</b>입니다. 다음 중 <b>세로 대칭축과 가로 대칭축을 모두</b> 가진 알파벳은?</p>
+    <div class="opts">
+      <button data-c="0">A</button>
+      <button data-c="0">E</button>
+      <button data-c="1">H</button>
+      <button data-c="0">T</button>
+    </div>
+    <div class="expl"><b>풀이</b> — A·T는 세로축만, E는 가로축만 있지만 <b>H</b>는 세로·가로 모두 대칭입니다(H, I, O, X 등). 한글에서도 '응', '표' 처럼 뒤집어도 같은 글자를 찾는 문제가 출제됩니다.</div>
+  </div>
+</section>
+
+<!-- ════════════════ S4 공간지각 ════════════════ -->
+<section id="s4">
+  <h2><span class="sec-no">SECTION 4</span>공간지각 영역</h2>
+  <p class="lead">3차원 공간을 입체적으로 파악하는 능력. 로봇은 3차원 실세계에서 동작하므로 공간지각 능력이 필수적으로 요구됩니다.</p>
+
+  <h3>유형 1 · 도형 뒤집기와 회전 <span class="pill">기출</span></h3>
+  <div class="card">"도형을 오른쪽으로 뒤집고, 시계방향으로 90° 회전한 후, 위로 뒤집은 도형을 고르시오" 같은 <b>변환 조합</b> 문제가 대표 유형입니다. 아래 시뮬레이터로 변환 감각을 익혀 보세요.</div>
+  <div class="widget">
+    <div class="wtitle">🔄 도형 변환 시뮬레이터 — 버튼을 눌러 도형이 어떻게 변하는지 관찰하세요</div>
+    <div class="flip-stage">
+      <svg width="220" height="220" viewBox="-110 -110 220 220">
+        <line x1="-105" y1="0" x2="105" y2="0" stroke="#1e3a5f" stroke-dasharray="4 4"/>
+        <line x1="0" y1="-105" x2="0" y2="105" stroke="#1e3a5f" stroke-dasharray="4 4"/>
+        <g id="flipShape">
+          <path d="M -50 -50 L 10 -50 L 10 -10 L 50 -10 L 50 50 L -10 50 L -10 10 L -50 10 Z"
+                fill="rgba(45,212,191,.25)" stroke="#2dd4bf" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="-35" cy="-35" r="7" fill="#fbbf24"/>
+        </g>
+      </svg>
+    </div>
+    <div class="ctr">
+      <button class="abtn" data-fl="h">좌우 뒤집기</button>
+      <button class="abtn" data-fl="v">상하 뒤집기</button>
+      <button class="abtn" data-fl="r">시계방향 90°</button>
+      <button class="abtn ghost" data-fl="reset">처음으로</button>
+    </div>
+    <div class="hist" id="flipHist">변환 기록: (없음)</div>
+    <div class="hint">💡 노란 점의 위치를 기준점으로 삼아 추적하면 변환 조합 문제가 쉬워집니다!</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">확인 퀴즈</span>
+    <p class="q">위 시뮬레이터에서 노란 점이 <b>왼쪽 위</b>에 있을 때, <b>좌우 뒤집기 → 시계방향 90° 회전</b>을 하면 노란 점은 어디로 갈까요? (직접 눌러보기 전에 예측!)</p>
+    <div class="opts">
+      <button data-c="0">왼쪽 위</button>
+      <button data-c="1">오른쪽 아래</button>
+      <button data-c="0">왼쪽 아래</button>
+      <button data-c="0">오른쪽 위</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 좌우 뒤집기: 왼쪽 위 → 오른쪽 위. 시계방향 90°: 오른쪽 위 → <b>오른쪽 아래</b>. 시뮬레이터로 확인해 보세요!</div>
+  </div>
+
+  <h3>유형 2 · 종이접기</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">한 변의 길이가 8cm인 직각이등변삼각형(넓이 32cm²)의 가운데를 계속 반으로 접습니다. <b>3단계</b>를 진행하면 삼각형은 총 몇 개가 되고, 작은 삼각형 하나의 넓이는?</p>
+    <div class="opts">
+      <button data-c="0">6개, 넓이 6cm²</button>
+      <button data-c="1">8개, 넓이 4cm²</button>
+      <button data-c="0">8개, 넓이 8cm²</button>
+      <button data-c="0">16개, 넓이 2cm²</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 한 번 접을 때마다 삼각형 수는 2배, 넓이는 절반. 3단계 후 개수 = 2³ = <b>8개</b>, 넓이 = 32 ÷ 8 = <b>4cm²</b>. '접기 = 2의 거듭제곱'으로 생각하면 컴퓨터의 이진 분할과도 연결됩니다.</div>
+  </div>
+
+  <h3>유형 3 · 쌓기나무와 거울 <span class="pill">기출</span></h3>
+  <div class="card">
+    웅덩이에 비친 건물은 <b>위아래가 바뀐 모습</b>입니다. 쌓기나무 블록의 앞과 오른쪽 옆에 거울을 두면 —
+    <b>거울에 비친 앞모양은 좌우가 반전</b>되고, <b>바닥 거울(웅덩이)은 상하가 반전</b>됩니다.
+    "위 모양 + 거울에 비친 앞모양 + 거울에 비친 옆모양"으로 원래 블록을 복원하는 유형이 출제됩니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인</span>
+    <p class="q">쌓기나무의 <b>앞모양이 거울에 비쳤을 때</b> 일어나는 변화로 옳은 것은?</p>
+    <div class="opts">
+      <button data-c="0">상하가 반전된다</button>
+      <button data-c="1">좌우가 반전된다</button>
+      <button data-c="0">아무 변화가 없다</button>
+      <button data-c="0">90° 회전한다</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 수직으로 세운 거울은 <b>좌우 반전</b>, 바닥의 물웅덩이·거울은 <b>상하 반전</b>. 거울의 방향에 따라 반전축이 달라진다는 점이 핵심입니다.</div>
+  </div>
+
+  <h3>유형 4 · 기하 패턴 — 타일 배열 <span class="pill">기출 연계</span></h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">응용 퀴즈</span>
+    <p class="q">모퉁이마다 사분원(¼원)이 그려진 정사각형 타일 30개를 <b>2×15</b>로 배열합니다. 타일 4장의 모퉁이가 만나는 <b>안쪽 교차점</b>에서는 사분원 4개가 모여 원 1개가 됩니다. 안쪽 교차점에서 만들어지는 원은 몇 개?</p>
+    <div class="opts">
+      <button data-c="0">13개</button>
+      <button data-c="1">14개</button>
+      <button data-c="0">15개</button>
+      <button data-c="0">28개</button>
+    </div>
+    <div class="expl"><b>풀이</b> — m×n 배열의 안쪽 교차점 개수는 (m−1)×(n−1). 2×15이면 (2−1)×(15−1) = <b>14개</b>. 타일 중앙의 원 30개와 합치면 총 44개의 원이 됩니다. 격자에서 '교차점 세기' 공식은 이산수학의 기본!</div>
+  </div>
+</section>
+
+<!-- ════════════════ S5 발명 ════════════════ -->
+<section id="s5">
+  <h2><span class="sec-no">SECTION 5</span>발명 영역</h2>
+  <p class="lead">발명 능력도 정보 영재에게 필요합니다. 영재성 검사·창의적 문제해결 검사에서 발명 관련 문제가 출제될 수 있습니다.</p>
+
+  <h3>TRIZ(트리즈)란?</h3>
+  <div class="card">
+    러시아의 <b>겐리히 알트슐러</b>가 수많은 특허를 분석해 만든 창의적 문제해결 방법론.
+    <b>40가지 발명원리</b>와 표준해결책을 제시합니다. 알트슐러의 기본 전제:<br><br>
+    ① 대다수 문제는 이미 다른 분야에서 해결되었을 가능성이 크다<br>
+    ② 특허의 98%는 이미 알려진 아이디어와 개념을 이용한 것이다<br>
+    ③ 발명은 하나 이상의 <b style="color:var(--rose)">모순(contradiction)</b>을 해결함으로써 완성된다
+  </div>
+
+  <h3>두 가지 모순</h3>
+  <div class="grid g2">
+    <div class="mini"><b>기술적 모순</b><p>속성 A를 개선하면 다른 속성 B가 악화되는 <u>trade-off</u>.<br>예) 비행기 엔진 — 속도를 높이려면 큰 엔진이 필요하지만, 엔진이 무거워지면 속도가 떨어진다.</p></div>
+    <div class="mini"><b>물리적 모순</b><p>한 속성 A가 <u>커야 하면서 동시에 작아야</u> 하는 상태.<br>예) 자전거 체인 — 동력 전달을 위해 단단해야 하지만, 바퀴를 연결하려면 유연해야 한다.</p></div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">개념 확인 퀴즈</span>
+    <p class="q">"스마트폰 화면은 잘 보이려면 <b>커야 하고</b>, 주머니에 넣으려면 <b>작아야 한다</b>." 이것은 어떤 모순이며, 이를 해결한 발명은?</p>
+    <div class="opts">
+      <button data-c="1">물리적 모순 — 폴더블(접는) 스마트폰</button>
+      <button data-c="0">기술적 모순 — 배터리 대용량화</button>
+      <button data-c="0">물리적 모순 — 무선 충전</button>
+      <button data-c="0">기술적 모순 — 카메라 화소 증가</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 같은 속성(화면 크기)이 동시에 커야 하고 작아야 하므로 <b>물리적 모순</b>. 폴더블 폰은 '펼치면 크고 접으면 작게'라는 <u>시간·상태 분리</u>로 모순을 해결했습니다. TRIZ의 대표 해결 전략!</div>
+  </div>
+
+  <h3>대표 발명 기법 4가지</h3>
+  <div class="grid g2">
+    <div class="mini"><b>입체로 만들기 (차원 변경)</b><p>2차원을 3차원으로. 예) 팝업 북, 홀로그램 스마트폰, 복층 도로</p></div>
+    <div class="mini"><b>둥글게 바꾸기 (구형화)</b><p>직선을 곡선·타원으로. 예) 곡면 TV, 아치형 다리(하중 분산), 회전교차로</p></div>
+    <div class="mini"><b>비대칭 만들기</b><p>대칭을 비대칭으로. 예) 비대칭 베개(목은 높게 머리는 낮게), 냉장고 좌우 다른 크기 도어</p></div>
+    <div class="mini"><b>움직이게 하기 (역동성)</b><p>고정된 것에 움직이는 부분을. 예) 굴절버스, 병원침대, 주름빨대</p></div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">기법 매칭 퀴즈</span>
+    <p class="q"><b>주름빨대</b>는 곧은 빨대에 주름 관절을 넣어 원하는 각도로 꺾이게 만든 발명품입니다. 어떤 TRIZ 기법일까요?</p>
+    <div class="opts">
+      <button data-c="0">입체로 만들기</button>
+      <button data-c="0">비대칭 만들기</button>
+      <button data-c="1">움직이게 하기</button>
+      <button data-c="0">둥글게 바꾸기</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 움직이지 않는 부분(관 몸통)과 움직이는 부분(주름 관절)으로 나눈 <b>움직이게 하기(역동성)</b> 기법입니다. 시험에서는 "이 기법을 활용해 나만의 발명품을 고안해 보시오"로 이어지니, 각 기법마다 나만의 예시를 하나씩 준비해 두세요!</div>
+  </div>
+
+  <div class="quiz open">
+    <span class="qtag">연습문제 · 서술형</span>
+    <p class="q">'둥글게 바꾸기' 기법을 활용해 나만의 발명품을 고안해 보시오.</p>
+    <textarea placeholder="무엇을(대상) → 어떻게 둥글게 → 어떤 문제가 해결되는가"></textarea>
+    <button class="rvbtn" data-rv="rv7">예시 답안 보기</button>
+    <div class="expl" id="rv7">
+      <b>예시 답안</b> — "모서리가 둥근 유아용 책상": 직각 모서리를 곡면으로 바꿔 아이가 부딪혀도 다치지 않게 한다. / "원형 콘센트 멀티탭": 일렬 멀티탭을 원형으로 바꿔 큰 어댑터끼리 겹치지 않게 한다.<br><br>
+      <b>서술 틀</b> — ①대상 선정 → ②직선/각진 부분을 곡선으로 바꾸는 방법 → ③해결되는 문제(안전·공간·하중 분산 등)를 구체적으로 쓰면 정교성 점수가 올라갑니다.
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ S6 언어사고력 ════════════════ -->
+<section id="s6">
+  <h2><span class="sec-no">SECTION 6</span>언어사고력 영역</h2>
+  <p class="lead">영재는 언어적 상상력과 어휘력이 풍부합니다. 평소 다방면의 독서로 스토리텔링 능력을 길러 주세요.</p>
+
+  <h3>유형 1 · 공통점 찾기(새로운 문장 만들기)</h3>
+  <div class="quiz open">
+    <span class="qtag">표준문제 · 서술형</span>
+    <p class="q">'키오스크 기계'와 '미끄럼틀'의 유사한 특징을 4가지 이상 적고, 이유를 설명해 보시오.<br>
+    <span style="color:var(--sub);font-size:.85rem">보기) 방앗간·블루투스 스피커 — 사람이 동작시키지 않으면 기계는 돌아가지 않는다.</span></p>
+    <textarea placeholder="겉모습·기능·사용자 경험·사회적 역할 등 다양한 관점에서!"></textarea>
+    <button class="rvbtn" data-rv="rv8">예시 답안 보기</button>
+    <div class="expl" id="rv8">
+      <b>예시 답안</b> — ① 둘 다 사람이 '순서대로' 이용한다(줄 서기) ② 위에서 아래로 진행된다(화면 메뉴를 위→아래로 내려가며 선택 / 미끄럼틀도 위→아래) ③ 혼자서도 이용할 수 있게 설계되었다 ④ 잘못 이용하면 사고가 난다(주문 실수/안전사고) ⑤ 공공장소에 설치되어 여러 사람이 공유한다<br><br>
+      <b>포인트</b> — 눈에 보이는 공통점(모양)보다 <u>기능·경험·구조의 공통점</u>을 찾을수록 독창성 점수가 높습니다.
+    </div>
+  </div>
+
+  <h3>유형 2 · 광고 문구 만들기</h3>
+  <div class="card">
+    공익광고 <b>"접속이 많아지면 접촉은 줄어듭니다"</b>는 발음이 비슷한 두 단어(접속/접촉)를 대비시킨 <b>언어유희(대구법)</b>입니다.
+    "이제 저는 신선한 과일만 <b>먹기로 마음먹었습니다</b>"처럼 한 단어의 두 가지 의미를 함께 쓰는 <b>중의적 표현</b>도 자주 나옵니다.
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag exam">기출 연계 · 객관식</span>
+    <p class="q">"이제 저는 신선한 과일만 먹기로 마음<b>먹었</b>습니다"와 <b>가장 비슷한 표현 방법</b>이 사용된 광고문은?</p>
+    <div class="opts">
+      <button data-c="0">하나보다 강한 두 개의 바람, 듀얼 에어컨.</button>
+      <button data-c="1">운동에 빠졌다. 자연스레 지방이 같이 빠졌다.</button>
+      <button data-c="0">먹는 데 10분, 소화하는 데 100년!</button>
+      <button data-c="0">너 지금 멋지게 헤엄치려고 숨 참는 것부터 하고 있다고 생각해.</button>
+    </div>
+    <div class="expl"><b>풀이</b> — '먹다'가 「음식을 먹다」와 「마음먹다」 두 의미로 쓰인 것처럼, '빠지다'가 「운동에 빠지다(몰두)」와 「지방이 빠지다(감소)」 두 의미로 쓰인 <b>②가 같은 중의적 표현(동음이의 활용)</b>입니다. ③은 과장·대조법입니다.</div>
+  </div>
+
+  <h3>유형 3 · 역설적인 표현 <span class="pill">기출</span></h3>
+  <div class="quiz open">
+    <span class="qtag exam">기출 · 서술형</span>
+    <p class="q">아래 표현에 해당한다고 생각하는 것을 설명과 함께 쓰시오.<br>① 작고도 큰 것 &nbsp;② 느리고도 빠른 것</p>
+    <textarea placeholder="① 작고도 큰 것: … 왜냐하면 … / ② 느리고도 빠른 것: …"></textarea>
+    <button class="rvbtn" data-rv="rv9">예시 답안 보기</button>
+    <div class="expl" id="rv9">
+      <b>예시 답안</b><br>
+      ① 작고도 큰 것 — <b>반도체 칩</b>: 손톱보다 작지만 그 안에 수십억 개의 트랜지스터가 들어 있고 세상을 움직이는 힘은 크다. / <b>씨앗</b>: 크기는 작지만 거대한 나무가 될 가능성을 품고 있다.<br>
+      ② 느리고도 빠른 것 — <b>거북이의 진화</b>: 하루하루는 느리지만 수억 년을 살아남은 생존 속도는 빠르다. / <b>독서</b>: 읽는 속도는 느리지만 지식이 쌓이는 속도는 그 무엇보다 빠르다.<br><br>
+      <b>포인트</b> — 두 반대 성질이 '어떤 기준에서는 A, 다른 기준에서는 B'가 되도록 <u>기준을 나누어</u> 설명하는 것이 핵심입니다.
+    </div>
+  </div>
+
+  <h3>유형 4 · 언어 논리 — 장식장 인형 퍼즐 <span class="pill">기출</span></h3>
+  <div class="card">
+    5단 장식장에 다음 규칙대로 인형을 넣습니다. (1단이 맨 아래)<br><br>
+    <b>a.</b> 토끼 인형은 병아리 인형 <b>위</b>에 넣는다<br>
+    <b>b.</b> 낙타 인형은 <b>아래에서 두 번째 단</b>에 넣는다<br>
+    <b>c.</b> 호랑이 인형은 토끼 인형과 병아리 인형 <b>사이</b>에 넣는다<br>
+    <b>d.</b> 낙타 인형은 코알라 인형 <b>아래</b>에 넣는다
+  </div>
+  <div class="widget">
+    <div class="wtitle">🧸 직접 배치해 보세요 — 규칙을 모두 만족하는 배치는 총 3가지!</div>
+    <div class="shelf" id="shelf"></div>
+    <div class="ctr">
+      <button class="abtn" id="shelfCheck">규칙 검사하기</button>
+      <button class="abtn ghost" id="shelfReset">초기화</button>
+    </div>
+    <div class="msgbox" id="shelfMsg"></div>
+    <div style="margin-top:10px;text-align:center"><button class="rvbtn" data-rv="rvShelf">모든 정답 보기</button></div>
+    <div class="expl" id="rvShelf">
+      <b>3가지 정답</b> (1단→5단 순서)<br>
+      ① 병아리 - 낙타 - 호랑이 - 토끼 - 코알라<br>
+      ② 병아리 - 낙타 - 호랑이 - 코알라 - 토끼<br>
+      ③ 병아리 - 낙타 - 코알라 - 호랑이 - 토끼<br><br>
+      <b>풀이 전략</b> — 확정 조건(b: 낙타=2단)부터 고정 → 병아리&lt;호랑이&lt;토끼 순서 사슬을 만들고 → 코알라는 3단 이상이라는 조건으로 경우를 나눕니다. "경우를 빠짐없이, 중복 없이" 세는 조합 논리의 기본기!
+    </div>
+  </div>
+
+  <h3>유형 5 · 언어 논리 — 나이 추론</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">암컷 고양이 4마리, 수컷 고양이 2마리의 나이는 모두 다릅니다.<br>
+    · 가장 나이 많은 고양이는 열 살 &nbsp;· 가장 어린 고양이는 네 살<br>
+    · 가장 나이 많은 <b>수컷</b>은 가장 어린 <b>암컷</b>보다 네 살 많다<br>
+    · 가장 나이 많은 <b>암컷</b>은 가장 어린 <b>수컷</b>보다 네 살 많다<br>
+    가장 나이 많은 수컷 고양이는 몇 살?</p>
+    <div class="opts">
+      <button data-c="0">6살</button>
+      <button data-c="1">8살</button>
+      <button data-c="0">9살</button>
+      <button data-c="0">10살</button>
+    </div>
+    <div class="expl">
+      <b>풀이</b> — 열 살(최고령)이 수컷이라면 가장 어린 암컷은 6살이 되어 4살(최연소)이 암컷일 수 없고 수컷이어야 하는데, 그러면 "가장 나이 많은 암컷 = 4＋4 = 8살"이 되어 최고령(10살, 수컷)과 모순 없이 성립하는지 따져봐야 합니다. 그러나 이 경우 암컷 4마리가 6~8살 사이의 서로 다른 나이(6,7,8과 하나 더)를 가져야 해 모순이 생깁니다.<br>
+      → 최고령 10살 = <b>암컷</b>, 최연소 4살 = <b>암컷</b>으로 두면: 가장 나이 많은 수컷 = 4＋4 = <b>8살</b>, 가장 어린 수컷 = 10−4 = 6살. 수컷 {6, 8}, 암컷 {4, 10, 그 외 2마리} — 모든 조건 성립! 정답 <b>8살</b>.
+    </div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">다섯 아이가 한 줄로 서서, 각자 자기보다 <b>키가 큰 아이 수</b>를 앞/뒤로 세어 적었습니다.<br>
+    에이미(앞1, 뒤2) · 비비(앞3, 뒤1) · 커트리(앞1, 뒤0) · 디기(앞0, 뒤0) · 에리(앞2, 뒤0)<br>
+    아이들이 서 있는 순서(앞→뒤)는?</p>
+    <div class="opts">
+      <button data-c="0">에이미, 커트리, 디기, 에리, 비비</button>
+      <button data-c="0">디기, 커트리, 에이미, 비비, 에리</button>
+      <button data-c="1">디기, 에이미, 커트리, 비비, 에리</button>
+      <button data-c="0">디기, 에이미, 에리, 비비, 커트리</button>
+    </div>
+    <div class="expl">
+      <b>풀이</b> — 디기는 앞뒤 모두 0명 → <b>가장 키가 크다</b>. 순서를 [디기, 에이미, 커트리, 비비, 에리]로 놓고 키를 '디기 &gt; 커트리 &gt; 에리 &gt; 에이미 &gt; 비비'로 두면:<br>
+      · 에이미: 앞의 디기 1명 ✓ / 뒤의 커트리·에리 2명 ✓<br>
+      · 비비: 앞의 3명 모두 큼 ✓ / 뒤의 에리 1명 ✓<br>
+      · 커트리: 앞의 디기 1명 ✓ / 뒤 0명 ✓ · 에리: 앞의 디기·커트리 2명 ✓ / 뒤 0명 ✓ — 전부 성립!
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ S7 논리사고력 ════════════════ -->
+<section id="s7">
+  <h2><span class="sec-no">SECTION 7</span>논리사고력 영역</h2>
+  <p class="lead">논리적 사고는 정보과학 문제해결의 필수 요소. 논리 사고력 측정 문항이 갈수록 늘고 있습니다.</p>
+
+  <h3>논리적 사고의 6가지 하위 요소</h3>
+  <table>
+    <tr><th>하위 요소</th><th>내용</th></tr>
+    <tr><td><b>계열화 논리</b></td><td>일련의 요소들을 규칙에 따라 배열하는 능력</td></tr>
+    <tr><td><b>비례 논리</b></td><td>비례 관계의 규칙과 관계를 이해하는 능력</td></tr>
+    <tr><td><b>확률 논리</b></td><td>우연한 사건 중 특정 사건이 일어날 확률을 계산하는 능력</td></tr>
+    <tr><td><b>변인통제 논리</b></td><td>한 변인의 효과를 입증하기 위해 다른 변인을 통제하여 관계를 도출하는 능력</td></tr>
+    <tr><td><b>조합 논리</b></td><td>모든 경우를 중복 없이 빠짐없이 추리하는 능력</td></tr>
+    <tr><td><b>명제 논리</b></td><td>참·거짓을 판별하고 둘 이상 명제의 관계를 분석하는 능력</td></tr>
+  </table>
+
+  <h3>비례 논리 — 기어</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">톱니 수 100인 큰 기어가 1분당 40번 회전합니다. 맞물린 톱니 수 25인 작은 기어는 <b>10분에 몇 바퀴</b> 회전할까요?</p>
+    <div class="opts">
+      <button data-c="0">1200</button>
+      <button data-c="0">1400</button>
+      <button data-c="1">1600</button>
+      <button data-c="0">1800</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 맞물린 기어는 지나가는 <b>톱니 수가 같다</b>. 큰 기어가 1분에 지나보내는 톱니 = 100×40 = 4000개 → 작은 기어 회전수 = 4000÷25 = 160회/분 → 10분이면 <b>1600바퀴</b>. 톱니 수와 회전수는 <b>반비례</b>!</div>
+  </div>
+
+  <h3>확률 논리</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">부품 상자에 모양·크기가 같은 녹색·노란색·검은색·흰색 나사가 <b>각각 2개씩 모두 8개</b> 들어 있습니다. 안을 보지 않고 한 개를 꺼낼 때 <b>녹색 나사</b>가 나올 확률은?</p>
+    <div class="opts">
+      <button data-c="0">1/8</button>
+      <button data-c="0">1/6</button>
+      <button data-c="1">1/4</button>
+      <button data-c="0">1/2</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 전체 8개 중 녹색 2개 → 2/8 = <b>1/4</b>. 확률 = (원하는 경우의 수) ÷ (전체 경우의 수).</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">부품 A·B·C의 합격 확률이 각각 <span class="mono" style="color:var(--amber)">8/10, 9/10, 7/10</span>일 때, <b>A는 불합격</b>하고 <b>B와 C는 합격</b>할 확률은?</p>
+    <div class="opts">
+      <button data-c="0">504/1000</button>
+      <button data-c="1">126/1000</button>
+      <button data-c="0">63/1000</button>
+      <button data-c="0">14/1000</button>
+    </div>
+    <div class="expl"><b>풀이</b> — A 불합격 확률 = 1 − 8/10 = 2/10. 독립 사건이므로 곱한다: 2/10 × 9/10 × 7/10 = <b>126/1000 (= 63/500)</b>. '~하지 않을 확률 = 1 − 확률'과 '독립 사건은 곱셈'이 핵심.</div>
+  </div>
+
+  <h3>조합 논리</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">표준문제 · 객관식</span>
+    <p class="q">3개의 큰 공구함 안에 <b>각각</b> 작은 공구함 3개와 공구 2개가 있고, 작은 공구함 안에는 <b>각각</b> 공구 2개가 있습니다. 공구는 모두 몇 개?</p>
+    <div class="opts">
+      <button data-c="0">18</button>
+      <button data-c="1">24</button>
+      <button data-c="0">27</button>
+      <button data-c="0">30</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 큰 공구함 속 공구: 3 × 2 = 6개. 작은 공구함: 3 × 3 = 9개, 그 속의 공구: 9 × 2 = 18개. 합계 6 ＋ 18 = <b>24개</b>. 구조를 트리(나무)로 그리면 실수가 없습니다.</div>
+  </div>
+  <div class="quiz" data-quiz>
+    <span class="qtag">연습문제 · 객관식</span>
+    <p class="q">① 서로 다른 볼트 3종류 중 하나, 너트 4종류 중 하나를 골라 짝짓는 경우의 수와<br>② 서로 다른 편지 2통을 서로 다른 우체통 3개에 <b>서로 다른 우체통</b>에 넣는 경우의 수를 차례로 고르면?</p>
+    <div class="opts">
+      <button data-c="0">7가지, 8가지</button>
+      <button data-c="0">12가지, 9가지</button>
+      <button data-c="1">12가지, 6가지</button>
+      <button data-c="0">15가지, 6가지</button>
+    </div>
+    <div class="expl"><b>풀이</b> — ① 곱의 법칙: 3 × 4 = <b>12가지</b>. ② 첫 편지는 3개 우체통 중 하나, 둘째 편지는 남은 2개 중 하나 → 3 × 2 = <b>6가지</b>. "동시에 일어나는 선택은 곱한다"가 조합 논리의 제1원칙!</div>
+  </div>
+
+  <h3>계열화 논리 — 규칙 찾기</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">유형 연습 · 객관식</span>
+    <p class="q">다음 수열의 규칙을 찾아 마지막 칸에 올 수를 고르시오.<br>
+    <span class="mono" style="color:var(--amber);font-size:1.05rem">1 → 2 → 4 → 7 → 11 → ?</span></p>
+    <div class="opts">
+      <button data-c="0">14</button>
+      <button data-c="0">15</button>
+      <button data-c="1">16</button>
+      <button data-c="0">18</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 이웃한 수의 차가 ＋1, ＋2, ＋3, ＋4로 1씩 증가 → 다음은 ＋5, 즉 11＋5 = <b>16</b>. '차이의 수열'을 만들어 보는 것이 계열화 문제의 기본 전략입니다.</div>
+  </div>
+
+  <h3>명제 논리</h3>
+  <div class="quiz" data-quiz>
+    <span class="qtag">유형 연습 · 객관식</span>
+    <p class="q">순서도에서 "X가 Y보다 작으면 아래로, 크면 오른쪽으로" 분기합니다. 어떤 수가 <b>X&lt;Y → Y&lt;Z</b> 경로를 지나 저장되었다면, X·Y·Z의 대소 관계로 항상 옳은 것은? (셋은 서로 다름)</p>
+    <div class="opts">
+      <button data-c="1">X &lt; Y &lt; Z</button>
+      <button data-c="0">Z &lt; X &lt; Y</button>
+      <button data-c="0">X &lt; Z &lt; Y</button>
+      <button data-c="0">Y &lt; X &lt; Z</button>
+    </div>
+    <div class="expl"><b>풀이</b> — 두 조건 X&lt;Y와 Y&lt;Z를 이어 붙이면(삼단논법) <b>X&lt;Y&lt;Z</b>. 조건 분기를 따라가는 이 유형은 프로그래밍의 if문 사고와 똑같습니다 — 정보 영재 검사의 단골!</div>
+  </div>
+
+  <div class="card tip">
+    <b>FUN GAME — code.org</b><br>
+    PART 2 마지막에는 <b>code.org</b>가 소개됩니다. 블록 코딩 퍼즐로 순차·반복·조건 — 즉 알고리즘적 사고를 놀이처럼 훈련할 수 있는 무료 사이트입니다. 영재성 검사의 논리·계열화 문항과 감각이 직결되니 꾸준히 활용해 보세요!
+  </div>
+</section>
+
+</div>
+
+<div class="score-float" id="scoreFloat">퀴즈 0 / 0</div>
+
+<footer>
+  정보 SW 영재원 완전정복 · PART 2 영재성 검사 인터랙티브 강의자료<br>
+  세영코딩연구소 · 원문 교재의 문항 구조를 학습용으로 재구성했습니다
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ───── nav ───── */
+var nav = document.getElementById("nav");
+nav.addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var t = b.getAttribute("data-t");
+  var i, btns = nav.querySelectorAll("button");
+  for(i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  var secs = document.querySelectorAll("section");
+  for(i=0;i<secs.length;i++) secs[i].classList.toggle("on", secs[i].id===t);
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+/* ───── quiz engine ───── */
+var totalQ = 0, doneQ = 0, okQ = 0;
+var quizzes = document.querySelectorAll(".quiz[data-quiz]");
+totalQ = quizzes.length;
+function updScore(){
+  document.getElementById("scoreFloat").textContent =
+    "\uD034\uC988 " + okQ + " / " + totalQ + (doneQ===totalQ ? " \uC644\uB8CC!" : "");
+}
+Array.prototype.forEach.call(quizzes, function(qz){
+  var opts = qz.querySelectorAll(".opts button");
+  var expl = qz.querySelector(".expl");
+  Array.prototype.forEach.call(opts, function(btn){
+    btn.addEventListener("click", function(){
+      if(qz.getAttribute("data-done")) return;
+      qz.setAttribute("data-done","1");
+      doneQ++;
+      var correct = btn.getAttribute("data-c")==="1";
+      if(correct) okQ++;
+      Array.prototype.forEach.call(opts, function(o){
+        o.disabled = true;
+        if(o.getAttribute("data-c")==="1") o.classList.add("ok");
+        else if(o===btn) o.classList.add("no");
+      });
+      if(expl) expl.classList.add("show");
+      updScore();
+    });
+  });
+});
+updScore();
+
+/* ───── reveal buttons (예시 답안) ───── */
+Array.prototype.forEach.call(document.querySelectorAll(".rvbtn"), function(b){
+  b.addEventListener("click", function(){
+    var box = document.getElementById(b.getAttribute("data-rv"));
+    if(box) box.classList.toggle("show");
+  });
+});
+
+/* ───── 육색 사고 모자 ───── */
+var hats = [
+  {c:"#ef4444", n:"\uBE68\uAC04 \uBAA8\uC790", d:"\uBD84\uB178\uC640 \uACA9\uC815 \uB4F1\uACFC \uAC19\uC740 \uAC10\uC815\uC744 \uD45C\uD604\uD558\uB294 \uC0AC\uACE0"},
+  {c:"#facc15", n:"\uB178\uB780 \uBAA8\uC790", d:"\uAE0D\uC815\uC801\uC774\uACE0 \uB099\uAD00\uC801\uC778 \uC0AC\uACE0"},
+  {c:"#334155", n:"\uAC80\uC740 \uBAA8\uC790", d:"\uB17C\uB9AC\uC801\uC774\uBA70 \uBD80\uC815\uC801\uC778(\uBE44\uD310\uC801) \uC0AC\uACE0"},
+  {c:"#e2e8f0", n:"\uD770 \uBAA8\uC790", d:"\uC911\uB9BD\uC744 \uC9C0\uD0A4\uAC70\uB098 \uAC1D\uAD00\uC801\uC778 \uC0AC\uC2E4\uC744 \uD45C\uD604\uD558\uB294 \uC0AC\uACE0"},
+  {c:"#22c55e", n:"\uB179\uC0C9 \uBAA8\uC790", d:"\uCC3D\uC758\uC801\uC778 \uC544\uC774\uB514\uC5B4\uB97C \uC0DD\uC131\uD558\uAC70\uB098 \uB300\uC548\uC744 \uD0D0\uC0C9\uD558\uB294 \uC0AC\uACE0"},
+  {c:"#3b82f6", n:"\uD30C\uB780 \uBAA8\uC790", d:"\uC804\uCCB4\uC801\uC778 \uD1B5\uC81C\uB098 \uACB0\uB860\uC744 \uB0B4\uB9AC\uB294 \uC0AC\uACE0"}
+];
+var hatBtns = document.getElementById("hatBtns");
+var hatDesc = document.getElementById("hatDesc");
+hats.forEach(function(h){
+  var b = document.createElement("button");
+  b.className = "abtn";
+  b.style.background = h.c;
+  b.style.color = (h.c==="#e2e8f0"||h.c==="#facc15") ? "#0a1628" : "#fff";
+  b.textContent = h.n;
+  b.addEventListener("click", function(){
+    hatDesc.innerHTML = "";
+    var strong = document.createElement("b");
+    strong.style.color = h.c==="#334155" ? "#94a3b8" : h.c;
+    strong.textContent = h.n + " \u2192 ";
+    hatDesc.appendChild(strong);
+    hatDesc.appendChild(document.createTextNode(h.d));
+  });
+  hatBtns.appendChild(b);
+});
+
+/* ───── 7-segment ───── */
+var SVGNS = "http://www.w3.org/2000/svg";
+var segDefs = [
+  {id:"a", x:14, y:4,   w:52, h:12},
+  {id:"b", x:66, y:14,  w:12, h:52},
+  {id:"c", x:66, y:74,  w:12, h:52},
+  {id:"d", x:14, y:124, w:52, h:12},
+  {id:"e", x:2,  y:74,  w:12, h:52},
+  {id:"f", x:2,  y:14,  w:12, h:52},
+  {id:"g", x:14, y:64,  w:52, h:12}
+];
+var digitMap = {
+  "0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc",
+  "5":"afgcd","6":"afgedc","7":"abc","8":"abcdefg","9":"abcfgd"
+};
+var segArea = document.getElementById("segArea");
+var digitStates = [];
+function makeDigit(){
+  var state = {};
+  var svg = document.createElementNS(SVGNS, "svg");
+  svg.setAttribute("width","80");
+  svg.setAttribute("height","140");
+  svg.setAttribute("viewBox","0 0 80 140");
+  segDefs.forEach(function(s){
+    var r = document.createElementNS(SVGNS, "rect");
+    r.setAttribute("x", s.x); r.setAttribute("y", s.y);
+    r.setAttribute("width", s.w); r.setAttribute("height", s.h);
+    r.setAttribute("rx", 5);
+    r.setAttribute("class","seg");
+    state[s.id] = {el:r, on:false};
+    function paint(){
+      var o = state[s.id].on;
+      r.setAttribute("fill", o ? "#2dd4bf" : "#132542");
+      r.setAttribute("stroke", o ? "#2dd4bf" : "#1e3a5f");
+      r.setAttribute("stroke-width","1.5");
+      r.style.filter = o ? "drop-shadow(0 0 6px rgba(45,212,191,.7))" : "none";
+    }
+    r.addEventListener("click", function(){
+      state[s.id].on = !state[s.id].on; paint();
+    });
+    state[s.id].paint = paint;
+    paint();
+    svg.appendChild(r);
+  });
+  segArea.appendChild(svg);
+  digitStates.push(state);
+}
+makeDigit(); makeDigit();
+function setDigit(state, pattern){
+  segDefs.forEach(function(s){
+    state[s.id].on = pattern.indexOf(s.id) >= 0;
+    state[s.id].paint();
+  });
+}
+var presets = document.getElementById("segPresets");
+"0123456789".split("").forEach(function(d){
+  var b = document.createElement("button");
+  b.textContent = d;
+  b.addEventListener("click", function(){
+    setDigit(digitStates[0], digitMap[d]);
+    setDigit(digitStates[1], digitMap[d]);
+  });
+  presets.appendChild(b);
+});
+var clr = document.createElement("button");
+clr.textContent = "\u2715";
+clr.title = "\uBAA8\uB450 \uB044\uAE30";
+clr.addEventListener("click", function(){
+  digitStates.forEach(function(st){ setDigit(st, ""); });
+});
+presets.appendChild(clr);
+setDigit(digitStates[0], digitMap["8"]);
+setDigit(digitStates[1], digitMap["0"]);
+
+/* ───── Polybius ───── */
+var polyAlpha = "abcdefghiklmnopqrstuvwxyz"; // i/j 공유
+var polyGrid = document.getElementById("polyGrid");
+(function(){
+  function cell(txt, hd){
+    var d = document.createElement("div");
+    if(hd) d.className = "hd";
+    d.textContent = txt;
+    polyGrid.appendChild(d);
+  }
+  cell("", true);
+  for(var c=1;c<=5;c++) cell(String(c), true);
+  var k = 0;
+  for(var r=1;r<=5;r++){
+    cell(String(r), true);
+    for(var c2=1;c2<=5;c2++){
+      var ch = polyAlpha.charAt(k++);
+      cell(ch === "i" ? "i/j" : ch, false);
+    }
+  }
+})();
+function polyDecode(){
+  var raw = document.getElementById("polyIn").value;
+  var pairs = raw.replace(/[^0-9]/g, " ").trim().split(/\s+/).filter(Boolean);
+  var out = "", bad = false;
+  pairs.forEach(function(p){
+    if(p.length !== 2){ bad = true; return; }
+    var r = parseInt(p.charAt(0),10), c = parseInt(p.charAt(1),10);
+    if(r<1||r>5||c<1||c>5){ bad = true; return; }
+    out += polyAlpha.charAt((r-1)*5 + (c-1));
+  });
+  var box = document.getElementById("polyOut");
+  if(bad || !out){
+    box.style.color = "#f87171";
+    box.textContent = "1~5 \uC0AC\uC774\uC758 \uB450 \uC790\uB9AC \uC22B\uC790 \uC30D\uC744 \uACF5\uBC31\uC73C\uB85C \uAD6C\uBD84\uD574 \uC785\uB825\uD558\uC138\uC694";
+  } else {
+    box.style.color = "#fbbf24";
+    box.textContent = "\u2192  " + out.toUpperCase();
+  }
+}
+document.getElementById("polyBtn").addEventListener("click", polyDecode);
+document.getElementById("polyIn").addEventListener("keydown", function(e){
+  if(e.key === "Enter") polyDecode();
+});
+
+/* ───── Magic square ───── */
+var msqEl = document.getElementById("msq");
+var fixed = {4:5};            // index 4(중앙) = 5 고정
+var startVals = {0:"",1:"",2:"",3:"",4:"5",5:"",6:"8",7:"",8:""};
+fixed[6] = 8;                 // 힌트로 8도 고정
+var msqInputs = [];
+for(var mi=0; mi<9; mi++){
+  var inp = document.createElement("input");
+  inp.type = "text"; inp.maxLength = 1;
+  inp.value = startVals[mi];
+  inp.setAttribute("inputmode","numeric");
+  if(fixed[mi] !== undefined){ inp.readOnly = true; inp.className = "fix"; }
+  msqInputs.push(inp);
+  msqEl.appendChild(inp);
+}
+function msqMessage(ok, ko){
+  var box = document.getElementById("msqMsg");
+  box.className = "msgbox " + (ok ? "ok" : "no");
+  box.textContent = ko;
+}
+document.getElementById("msqCheck").addEventListener("click", function(){
+  var v = msqInputs.map(function(i){ return parseInt(i.value,10); });
+  if(v.some(function(x){ return isNaN(x) || x<1 || x>9; })){
+    msqMessage(false, "\uBAA8\uB4E0 \uCE78\uC5D0 1~9\uC758 \uC218\uB97C \uCC44\uC6CC\uC8FC\uC138\uC694!");
+    return;
+  }
+  var seen = {}, dup = false;
+  v.forEach(function(x){ if(seen[x]) dup = true; seen[x] = true; });
+  if(dup){
+    msqMessage(false, "\uAC19\uC740 \uC218\uAC00 \uB450 \uBC88 \uC0AC\uC6A9\uB418\uC5C8\uC5B4\uC694. 1~9\uB97C \uD55C \uBC88\uC529\uB9CC!");
+    return;
+  }
+  var lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  var allOK = lines.every(function(L){ return v[L[0]]+v[L[1]]+v[L[2]] === 15; });
+  if(allOK) msqMessage(true, "\uD83C\uDF89 \uC815\uB2F5! \uBAA8\uB4E0 \uC904\uC758 \uD569\uC774 15\uC785\uB2C8\uB2E4. \uB9C8\uBC29\uC9C4 \uC644\uC131!");
+  else msqMessage(false, "\uD569\uC774 15\uAC00 \uC544\uB2CC \uC904\uC774 \uC788\uC5B4\uC694. \uD78C\uD2B8: \uC9DD\uC218\uB294 \uBAA8\uC11C\uB9AC\uC5D0!");
+});
+document.getElementById("msqReset").addEventListener("click", function(){
+  msqInputs.forEach(function(i, idx){
+    if(fixed[idx] === undefined) i.value = "";
+  });
+  document.getElementById("msqMsg").className = "msgbox";
+});
+document.getElementById("msqHint").addEventListener("click", function(){
+  document.getElementById("msqHintBox").classList.toggle("show");
+});
+
+/* ───── Shelf puzzle ───── */
+var animals = ["\uD1A0\uB07C","\uBCD1\uC544\uB9AC","\uD638\uB791\uC774","\uB099\uD0C0","\uCF54\uC54C\uB77C"];
+// 토끼, 병아리, 호랑이, 낙타, 코알라
+var shelfEl = document.getElementById("shelf");
+var shelfSelects = [];
+for(var tier=5; tier>=1; tier--){
+  (function(t){
+    var row = document.createElement("div");
+    row.className = "row";
+    var lab = document.createElement("div");
+    lab.className = "lab";
+    lab.textContent = t + "\uB2E8" + (t===1 ? " (\uB9E8 \uC544\uB798)" : (t===5 ? " (\uB9E8 \uC704)" : ""));
+    var sel = document.createElement("select");
+    var opt0 = document.createElement("option");
+    opt0.value = ""; opt0.textContent = "\u2014 \uC778\uD615 \uC120\uD0DD \u2014";
+    sel.appendChild(opt0);
+    animals.forEach(function(a){
+      var o = document.createElement("option");
+      o.value = a; o.textContent = a;
+      sel.appendChild(o);
+    });
+    row.appendChild(lab); row.appendChild(sel);
+    shelfEl.appendChild(row);
+    shelfSelects[t] = sel;
+  })(tier);
+}
+function shelfMessage(ok, txt){
+  var box = document.getElementById("shelfMsg");
+  box.className = "msgbox " + (ok ? "ok" : "no");
+  box.textContent = txt;
+}
+document.getElementById("shelfCheck").addEventListener("click", function(){
+  var pos = {}, chosen = [];
+  for(var t=1;t<=5;t++){
+    var v = shelfSelects[t].value;
+    if(!v){ shelfMessage(false, "\uBAA8\uB4E0 \uB2E8\uC5D0 \uC778\uD615\uC744 \uBC30\uCE58\uD574\uC8FC\uC138\uC694!"); return; }
+    if(pos[v] !== undefined){ shelfMessage(false, "\uAC19\uC740 \uC778\uD615\uC774 \uB450 \uBC88 \uBC30\uCE58\uB418\uC5C8\uC5B4\uC694!"); return; }
+    pos[v] = t; chosen.push(v);
+  }
+  var 토끼=pos[animals[0]], 병아리=pos[animals[1]], 호랑이=pos[animals[2]], 낙타=pos[animals[3]], 코알라=pos[animals[4]];
+  var fails = [];
+  if(!(토끼 > 병아리)) fails.push("a");
+  if(낙타 !== 2) fails.push("b");
+  if(!(병아리 < 호랑이 && 호랑이 < 토끼)) fails.push("c");
+  if(!(낙타 < 코알라)) fails.push("d");
+  if(fails.length === 0){
+    shelfMessage(true, "\uD83C\uDF89 \uBAA8\uB4E0 \uADDC\uCE59\uC744 \uB9CC\uC871\uD569\uB2C8\uB2E4! (\uC815\uB2F5\uC740 \uCD1D 3\uAC00\uC9C0 \u2014 \uB098\uBA38\uC9C0\uB3C4 \uCC3E\uC544\uBCF4\uC138\uC694)");
+  } else {
+    shelfMessage(false, "\uADDC\uCE59 " + fails.join(", ") + " \uC744(\uB97C) \uC704\uBC18\uD588\uC5B4\uC694. \uB2E4\uC2DC \uC0DD\uAC01\uD574\uBCF4\uC138\uC694!");
+  }
+});
+document.getElementById("shelfReset").addEventListener("click", function(){
+  for(var t=1;t<=5;t++) shelfSelects[t].value = "";
+  document.getElementById("shelfMsg").className = "msgbox";
+});
+
+/* ───── Flip simulator ───── */
+var flipShape = document.getElementById("flipShape");
+var M = [1,0,0,1]; // 2x2 matrix [a,b,c,d]
+var histArr = [];
+function applyM(){
+  flipShape.setAttribute("transform", "matrix(" + M[0] + " " + M[2] + " " + M[1] + " " + M[3] + " 0 0)");
+  var histEl = document.getElementById("flipHist");
+  histEl.textContent = "\uBCC0\uD658 \uAE30\uB85D: " + (histArr.length ? histArr.join(" \u2192 ") : "(\uC5C6\uC74C)");
+}
+function mul(m2){
+  // M ← m2 · M
+  var a = m2[0]*M[0] + m2[1]*M[2];
+  var b = m2[0]*M[1] + m2[1]*M[3];
+  var c = m2[2]*M[0] + m2[3]*M[2];
+  var d = m2[2]*M[1] + m2[3]*M[3];
+  M = [a,b,c,d];
+}
+Array.prototype.forEach.call(document.querySelectorAll("[data-fl]"), function(b){
+  b.addEventListener("click", function(){
+    var k = b.getAttribute("data-fl");
+    if(k === "h"){ mul([-1,0,0,1]); histArr.push("\uC88C\uC6B0"); }
+    else if(k === "v"){ mul([1,0,0,-1]); histArr.push("\uC0C1\uD558"); }
+    else if(k === "r"){ mul([0,-1,1,0]); histArr.push("90\u00B0"); }
+    else { M = [1,0,0,1]; histArr = []; }
+    applyM();
+  });
+});
+applyM();
+
+})();
+</script>
+</body>
+</html>
