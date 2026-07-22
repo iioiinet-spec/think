@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>삽입 정렬 시각화 (Insertion Sort Visualization)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            background-color: #1f1f1f;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+        }
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+        .control-panel {
+            flex: 1;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #333;
+            max-width: 450px;
+        }
+        .stats {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-play { background-color: #007acc; color: white; }
+        .btn-play:hover { background-color: #005999; }
+        .btn-pause { background-color: #444; color: white; }
+        .btn-pause:hover { background-color: #555; }
+        .btn-reset { background-color: #333; color: #ccc; }
+        .btn-reset:hover { background-color: #444; }
+
+        code-viewer {
+            flex: 1;
+            background-color: #111;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #d4d4d4;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.4;
+            border: 1px solid #222;
+        }
+        .visualization-panel {
+            flex: 2;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #333;
+            position: relative;
+        }
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+            flex: 1;
+        }
+        .bar {
+            width: 100%;
+            background-color: #3498db;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: height 0.2s ease, background-color 0.2s ease;
+        }
+        .bar.key { background-color: #f39c12; color: #fff; }
+        .bar.compared { background-color: #e74c3c; }
+        .bar.sorted { background-color: #2ecc71; }
+        
+        .label {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<header>삽입 정렬 시각화 (Insertion Sort Visualization)</header>
+
+<div class="main-container">
+    <!-- 조작 패널 및 코드 영역 -->
+    <div class="control-panel">
+        <div class="stats" id="stats">
+            현재 단계: 대기 중<br>
+            비교 횟수: 0<br>
+            이동 횟수: 0
+        </div>
+        <div class="buttons">
+            <button class="btn-play" onclick="startSorting()">재생</button>
+            <button class="btn-pause" onclick="pauseSorting()">일시정지</button>
+            <button class="btn-reset" onclick="resetArray()">초기화</button>
+        </div>
+        <div id="codeViewer" style="background:#111; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#9cdcfe; line-height:1.4;">
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key &lt; arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key</div>
+    </div>
+
+    <!-- 막대그래프 시각화 영역 -->
+    <div class="visualization-panel" id="chart"></div>
+</div>
+
+<script>
+    let originalArray = [39, 12, 71, 8, 5, 45, 92, 3, 63, 21, 57, 16];
+    let array = [...originalArray];
+    let steps = [];
+    let currentStep = 0;
+    let timer = null;
+    let comparisons = 0;
+    let shifts = 0;
+
+    function init() {
+        array = [...originalArray];
+        currentStep = 0;
+        comparisons = 0;
+        shifts = 0;
+        generateSteps();
+        render(array, -1, -1, -1);
+        updateStats("대기 중", 0, 0);
+    }
+
+    // 삽입 정렬의 전체 과정을 단계별(Step)로 기록
+    function generateSteps() {
+        steps = [];
+        let arr = [...originalArray];
+        let compCount = 0;
+        let shiftCount = 0;
+
+        steps.push({ arr: [...arr], keyIdx: -1, compIdx: -1, desc: "초기 상태" });
+
+        for (let i = 1; i < arr.length; i++) {
+            let key = arr[i];
+            let j = i - 1;
+            steps.push({ arr: [...arr], keyIdx: i, compIdx: -1, desc: `i=${i}, key=${key} 선택` });
+
+            while (j >= 0) {
+                compCount++;
+                steps.push({ arr: [...arr], keyIdx: i, compIdx: j, desc: `비교: arr[${j}] (${arr[j]}) > key (${key})` });
+                
+                if (arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    shiftCount++;
+                    j--;
+                    steps.push({ arr: [...arr], keyIdx: j + 1, compIdx: -1, desc: `요소 우측으로 이동` });
+                } else {
+                    break;
+                }
+            }
+            arr[j + 1] = key;
+            steps.push({ arr: [...arr], keyIdx: j + 1, compIdx: -1, desc: `key를 올바른 위치에 삽입` });
+        }
+        steps.push({ arr: [...arr], keyIdx: -1, compIdx: -1, desc: "정렬 완료!" });
+    }
+
+    function render(arr, keyIdx, compIdx) {
+        const chart = document.getElementById('chart');
+        chart.innerHTML = '';
+        const maxVal = Math.max(...originalArray);
+
+        arr.forEach((val, idx) => {
+            const container = document.createElement('div');
+            container.className = 'bar-container';
+
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = `${(val / maxVal) * 85}%`;
+            bar.innerText = val;
+
+            if (idx === keyIdx) bar.classList.add('key');
+            else if (idx === compIdx) bar.classList.add('compared');
+            else if (currentStep >= steps.length - 1) bar.classList.add('sorted');
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.innerText = `[${idx}]`;
+
+            container.appendChild(bar);
+            container.appendChild(label);
+            chart.appendChild(container);
+        });
+    }
+
+    function updateStats(status, comp, shift) {
+        document.getElementById('stats').innerHTML = `
+            현재 단계: ${status}<br>
+            비교 횟수: ${comp}<br>
+            이동 횟수: ${shift}
+        `;
+    }
+
+    function stepForward() {
+        if (currentStep < steps.length) {
+            let s = steps[currentStep];
+            render(s.arr, s.keyIdx, s.compIdx);
+            
+            if (s.compIdx !== -1) comparisons++;
+            if (s.desc.includes("이동")) shifts++;
+
+            updateStats(s.desc, comparisons, shifts);
+            currentStep++;
+        } else {
+            pauseSorting();
+        }
+    }
+
+    function startSorting() {
+        if (timer) return;
+        if (currentStep >= steps.length) init();
+        timer = setInterval(() => {
+            if (currentStep < steps.length) {
+                stepForward();
+            } else {
+                pauseSorting();
+            }
+        }, 400); // 속도 조절 (ms)
+    }
+
+    function pauseSorting() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    function resetArray() {
+        pauseSorting();
+        init();
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>

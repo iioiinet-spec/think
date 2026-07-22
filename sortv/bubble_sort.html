@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>버블 정렬 시각화 (Bubble Sort Visualization)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            background-color: #1f1f1f;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #333;
+        }
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+        .control-panel {
+            flex: 1;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #333;
+            max-width: 450px;
+        }
+        .stats {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-play { background-color: #007acc; color: white; }
+        .btn-play:hover { background-color: #005999; }
+        .btn-pause { background-color: #444; color: white; }
+        .btn-pause:hover { background-color: #555; }
+        .btn-reset { background-color: #333; color: #ccc; }
+        .btn-reset:hover { background-color: #444; }
+
+        .visualization-panel {
+            flex: 2;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #333;
+            position: relative;
+        }
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+            flex: 1;
+        }
+        .bar {
+            width: 100%;
+            background-color: #3498db;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: height 0.2s ease, background-color 0.2s ease;
+        }
+        .bar.comparing { background-color: #e74c3c; }
+        .bar.swapping { background-color: #f39c12; }
+        .bar.sorted { background-color: #2ecc71; }
+        
+        .label {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<header>버블 정렬 시각화 (Bubble Sort Visualization)</header>
+
+<div class="main-container">
+    <div class="control-panel">
+        <div class="stats" id="stats">
+            현재 단계: 대기 중<br>
+            비교 횟수: 0<br>
+            교환 횟수: 0
+        </div>
+        <div class="buttons">
+            <button class="btn-play" onclick="startSorting()">재생</button>
+            <button class="btn-pause" onclick="pauseSorting()">일시정지</button>
+            <button class="btn-reset" onclick="resetArray()">초기화</button>
+        </div>
+        <div style="background:#111; padding:12px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#9cdcfe; line-height:1.4;">
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]</div>
+    </div>
+
+    <div class="visualization-panel" id="chart"></div>
+</div>
+
+<script>
+    let originalArray = [39, 12, 71, 8, 5, 45, 92, 3, 63, 21, 57, 16];
+    let array = [...originalArray];
+    let steps = [];
+    let currentStep = 0;
+    let timer = null;
+    let comparisons = 0;
+    let swaps = 0;
+
+    function init() {
+        pauseSorting();
+        array = [...originalArray];
+        currentStep = 0;
+        comparisons = 0;
+        swaps = 0;
+        generateSteps();
+        
+        // 초기화 시 첫 번째 단계(초기 상태)의 데이터를 바로 렌더링하도록 수정
+        let s = steps[0];
+        render(s.arr, s.compIdxs, s.swapIdxs, s.sorted);
+        updateStats("대기 중", 0, 0);
+    }
+
+    function generateSteps() {
+        steps = [];
+        let arr = [...originalArray];
+        let n = arr.length;
+        let sortedIndices = [];
+
+        steps.push({ arr: [...arr], compIdxs: [], swapIdxs: [], sorted: [...sortedIndices], desc: "초기 상태" });
+
+        for (let i = 0; i < n; i++) {
+            let swappedInPass = false;
+            for (let j = 0; j < n - i - 1; j++) {
+                steps.push({ 
+                    arr: [...arr], 
+                    compIdxs: [j, j + 1], 
+                    swapIdxs: [], 
+                    sorted: [...sortedIndices], 
+                    desc: `비교: arr[${j}] (${arr[j]}) 와 arr[${j+1}] (${arr[j+1]})` 
+                });
+
+                if (arr[j] > arr[j + 1]) {
+                    let temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                    swappedInPass = true;
+
+                    steps.push({ 
+                        arr: [...arr], 
+                        compIdxs: [], 
+                        swapIdxs: [j, j + 1], 
+                        sorted: [...sortedIndices], 
+                        desc: `교환: arr[${j}] ↔ arr[${j+1}] 위치 변경` 
+                    });
+                }
+            }
+            sortedIndices.push(n - 1 - i);
+
+            if (!swappedInPass) break;
+        }
+
+        for (let i = 0; i < n; i++) {
+            if (!sortedIndices.includes(i)) sortedIndices.push(i);
+        }
+        steps.push({ arr: [...arr], compIdxs: [], swapIdxs: [], sorted: [...sortedIndices], desc: "정렬 완료!" });
+    }
+
+    function render(arr, compIdxs, swapIdxs, sortedIndices) {
+        const chart = document.getElementById('chart');
+        chart.innerHTML = '';
+        const maxVal = Math.max(...originalArray);
+
+        arr.forEach((val, idx) => {
+            const container = document.createElement('div');
+            container.className = 'bar-container';
+
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = `${(val / maxVal) * 85}%`;
+            bar.innerText = val;
+
+            if (swapIdxs.includes(idx)) {
+                bar.classList.add('swapping');
+            } else if (compIdxs.includes(idx)) {
+                bar.classList.add('comparing');
+            } else if (sortedIndices.includes(idx)) {
+                bar.classList.add('sorted');
+            }
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.innerText = `[${idx}]`;
+
+            container.appendChild(bar);
+            container.appendChild(label);
+            chart.appendChild(container);
+        });
+    }
+
+    function updateStats(status, comp, swap) {
+        document.getElementById('stats').innerHTML = `
+            현재 단계: ${status}<br>
+            비교 횟수: ${comp}<br>
+            교환 횟수: ${swap}
+        `;
+    }
+
+    function stepForward() {
+        if (currentStep < steps.length) {
+            let s = steps[currentStep];
+            render(s.arr, s.compIdxs, s.swapIdxs, s.sorted);
+            
+            if (s.compIdxs.length > 0) comparisons++;
+            if (s.swapIdxs.length > 0) swaps++;
+
+            updateStats(s.desc, comparisons, swaps);
+            currentStep++;
+        } else {
+            pauseSorting();
+        }
+    }
+
+    function startSorting() {
+        if (timer) return;
+        if (currentStep >= steps.length) init();
+        timer = setInterval(() => {
+            if (currentStep < steps.length) {
+                stepForward();
+            } else {
+                pauseSorting();
+            }
+        }, 300);
+    }
+
+    function pauseSorting() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    function resetArray() {
+        init();
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
