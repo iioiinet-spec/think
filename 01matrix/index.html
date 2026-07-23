@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선형 점화식과 행렬 거듭제곱 — O(log N)으로 피보나치 정복</title>
+<style>
+:root{
+  --bg:#0a1930; --bg2:#0d2140; --panel:#112a4e; --panel2:#0f2447;
+  --line:#1e3a5f; --teal:#2dd4bf; --teal-dim:#14b8a6; --cyan:#67e8f9;
+  --orange:#ffb454; --red:#f87171; --green:#4ade80; --purple:#c4b5fd;
+  --text:#e6f1ff; --sub:#93b4d8; --code-bg:#0b1626;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;}
+header{background:linear-gradient(135deg,#0d2140 0%,#0a3d3a 100%);border-bottom:2px solid var(--teal);padding:28px 20px 22px;text-align:center;}
+header h1{font-size:1.6em;letter-spacing:-0.5px;}
+header h1 .sig{color:var(--teal);font-family:Consolas,monospace;}
+header p{color:var(--sub);margin-top:6px;font-size:0.95em;}
+.badge{display:inline-block;background:rgba(45,212,191,0.15);border:1px solid var(--teal-dim);color:var(--teal);border-radius:20px;padding:2px 12px;font-size:0.78em;margin-top:10px;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;background:var(--bg2);padding:10px 8px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);}
+nav button{background:transparent;border:1px solid var(--line);color:var(--sub);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:0.88em;font-family:inherit;transition:all .15s;}
+nav button:hover{border-color:var(--teal-dim);color:var(--text);}
+nav button.active{background:var(--teal);color:#04222c;font-weight:700;border-color:var(--teal);}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 80px;}
+.tab{display:none;}
+.tab.show{display:block;animation:fadein .25s;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+h2{color:var(--teal);font-size:1.35em;margin:26px 0 12px;padding-left:12px;border-left:4px solid var(--teal);}
+h3{color:var(--cyan);font-size:1.06em;margin:18px 0 8px;}
+p.desc{color:var(--text);margin:8px 0;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;}
+.card.tip{border-left:4px solid var(--orange);}
+.card.warn{border-left:4px solid var(--red);}
+.card.ok{border-left:4px solid var(--green);}
+.hl{color:var(--orange);font-weight:700;}
+.tl{color:var(--teal);font-weight:700;}
+.pl{color:var(--purple);font-weight:700;}
+.formula{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:10px 0;font-family:Georgia,'Times New Roman',serif;font-size:1.12em;text-align:center;overflow-x:auto;}
+table.tbl{border-collapse:collapse;width:100%;margin:10px 0;font-size:0.93em;}
+table.tbl th,table.tbl td{border:1px solid var(--line);padding:7px 10px;text-align:center;}
+table.tbl th{background:var(--bg2);color:var(--teal);}
+table.tbl td{background:var(--panel2);}
+pre.code{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:Consolas,'D2Coding',monospace;font-size:0.9em;line-height:1.55;margin:10px 0;color:#dbeafe;}
+pre.code .k{color:#7dd3fc;} pre.code .c{color:#6b8bb5;} pre.code .s{color:#fbbf24;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0;}
+.controls label{color:var(--sub);font-size:0.92em;}
+.controls select,.controls input[type=range]{accent-color:var(--teal);}
+.controls select,.controls input[type=text]{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-family:Consolas,monospace;}
+.btn{background:var(--teal);color:#04222c;border:none;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.93em;transition:transform .1s;}
+.btn:hover{transform:translateY(-1px);}
+.btn.sec{background:var(--bg2);color:var(--teal);border:1px solid var(--teal-dim);}
+.btn.warn{background:var(--orange);color:#3a2200;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.big-num{font-size:1.5em;color:var(--orange);font-weight:800;font-family:Consolas,monospace;word-break:break-all;}
+.step-note{color:var(--sub);font-size:0.9em;margin-top:6px;min-height:24px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:780px){.grid2{grid-template-columns:1fr;}}
+.var-box{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;}
+.var-cell{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:10px 16px;text-align:center;min-width:90px;}
+.var-cell .vname{color:var(--sub);font-size:0.8em;font-family:Consolas,monospace;}
+.var-cell .vval{font-size:1.3em;font-weight:800;font-family:Consolas,monospace;color:var(--cyan);word-break:break-all;}
+.codeline{display:block;padding:2px 10px;border-radius:6px;white-space:pre;}
+.codeline.cur{background:rgba(255,180,84,0.22);outline:1px solid var(--orange);}
+.mat{display:inline-grid;grid-template-columns:auto auto;gap:6px 18px;padding:10px 16px;border-left:3px solid var(--cyan);border-right:3px solid var(--cyan);border-radius:8px;font-family:Consolas,monospace;font-size:1.05em;vertical-align:middle;margin:4px;background:rgba(11,22,38,0.6);}
+.mat span{min-width:34px;text-align:center;}
+.mat span.hla{background:rgba(45,212,191,0.25);border-radius:4px;color:var(--teal);font-weight:700;}
+.mat span.hlb{background:rgba(196,181,253,0.22);border-radius:4px;color:var(--purple);font-weight:700;}
+.mat span.hlc{background:rgba(255,180,84,0.28);border-radius:4px;color:var(--orange);font-weight:800;}
+.mat-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:center;margin:8px 0;font-size:1.2em;}
+.bit-strip{font-family:Consolas,monospace;font-size:1.25em;letter-spacing:3px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0;overflow-x:auto;white-space:nowrap;}
+.bit-strip .bd{color:#4d6c94;}
+.bit-strip .bcur{background:var(--orange);color:#3a2200;border-radius:4px;padding:1px 3px;font-weight:800;}
+.bit-strip .bdone{color:var(--teal);}
+.quiz-q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0;}
+.quiz-q .qtitle{font-weight:700;margin-bottom:10px;}
+.quiz-opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 14px;margin:6px 0;cursor:pointer;font-family:inherit;font-size:0.95em;transition:border-color .15s;}
+.quiz-opt:hover{border-color:var(--teal-dim);}
+.quiz-opt.correct{background:rgba(74,222,128,0.15);border-color:var(--green);}
+.quiz-opt.wrong{background:rgba(248,113,113,0.15);border-color:var(--red);}
+.quiz-fb{margin-top:8px;font-size:0.92em;display:none;}
+.score-bar{background:var(--panel);border:1px solid var(--teal-dim);border-radius:12px;padding:14px 18px;margin:14px 0;text-align:center;font-size:1.1em;}
+.race{display:grid;grid-template-columns:110px 1fr 170px;gap:8px;align-items:center;margin:6px 0;font-size:0.93em;}
+.race .bar{height:22px;border-radius:6px;transition:width .3s;}
+footer{text-align:center;color:#3f5e86;font-size:0.85em;padding:20px;border-top:1px solid var(--line);}
+sub,sup{font-size:0.72em;}
+</style>
+</head>
+<body>
+<header>
+  <h1>선형 점화식과 <span class="sig">행렬 거듭제곱</span></h1>
+  <p>N ≤ 10<sup>18</sup> 인 피보나치도 눈 깜짝할 사이에 — O(N)에서 O(log N)으로</p>
+  <span class="badge">중등 정보올림피아드(KOI) 고난도 대비 | 점화식 심화 강의</span>
+</header>
+<nav id="tabNav">
+  <button data-tab="t1" class="active">1. 왜 필요한가</button>
+  <button data-tab="t2">2. 점화식을 행렬로</button>
+  <button data-tab="t3">3. 분할 정복 거듭제곱</button>
+  <button data-tab="t4">4. 행렬 거듭제곱 시뮬레이터</button>
+  <button data-tab="t5">5. 특성방정식·일반항</button>
+  <button data-tab="t6">6. C 코드 구현</button>
+  <button data-tab="t7">7. 실수·도전 퀴즈</button>
+</nav>
+<main>
+
+<!-- ============ TAB 1 ============ -->
+<section class="tab show" id="t1">
+  <h2>문제 상황: N이 10<sup>18</sup>이라면?</h2>
+  <p class="desc">
+    피보나치 수열은 대표적인 <span class="tl">선형 점화식</span>입니다.
+  </p>
+  <div class="formula">
+    F(1) = 1, &nbsp; F(2) = 1, &nbsp; F(n) = F(n-1) + F(n-2) &nbsp;(n ≥ 3)
+  </div>
+  <p class="desc">
+    "선형(linear)"이란 <span class="hl">앞의 항들에 상수를 곱해 더한 꼴</span>이라는 뜻입니다.
+    (제곱, 곱셈 F(n-1)&times;F(n-2) 같은 것이 없음)<br>
+    지난 시그마 강의에서 배운 대로, 점화식은 반복문으로 바로 번역됩니다. 그런데&#8230;
+  </p>
+
+  <div class="card">
+    <h3>반복문 vs 행렬 거듭제곱 — 연산 횟수 대결</h3>
+    <p class="desc">N의 크기를 조절해 보세요. 1초에 약 1억(10<sup>8</sup>)번 연산한다고 가정합니다.</p>
+    <div class="controls">
+      <label>N = 10<sup><span id="powKVal" class="tl">18</span></sup> &nbsp;
+        <input type="range" id="powK" min="4" max="18" value="18">
+      </label>
+    </div>
+    <div class="race">
+      <div style="color:var(--red);font-weight:700;">O(N) 반복문</div>
+      <div><div class="bar" id="raceBar1" style="background:linear-gradient(90deg,#f87171,#b91c1c);width:100%;"></div></div>
+      <div id="raceT1" style="color:var(--red);font-family:Consolas,monospace;"></div>
+    </div>
+    <div class="race">
+      <div style="color:var(--teal);font-weight:700;">O(log N) 행렬</div>
+      <div><div class="bar" id="raceBar2" style="background:linear-gradient(90deg,#2dd4bf,#0d9488);width:2%;"></div></div>
+      <div id="raceT2" style="color:var(--teal);font-family:Consolas,monospace;"></div>
+    </div>
+    <p class="step-note" id="raceNote"></p>
+  </div>
+
+  <div class="card tip">
+    <h3>핵심 아이디어 미리보기</h3>
+    <p class="desc">
+      &#9312; 점화식 한 번 진행 = <span class="tl">행렬 하나를 곱하는 것</span>과 같다.<br>
+      &#9313; 그러면 N번 진행 = <span class="tl">행렬의 N제곱</span>이다.<br>
+      &#9314; 거듭제곱은 <span class="hl">"제곱을 반복"하는 분할 정복</span>으로 log&#8322;N 번 만에 구할 수 있다.<br>
+      결론: <span class="pl">점화식 문제 &#8594; 행렬 거듭제곱 문제</span>로 바꾸면 N이 아무리 커도 60번 남짓 계산으로 끝!
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>왜 답에 mod(나머지)를 취할까?</h3>
+    <p class="desc">
+      F(90)만 되어도 <span class="hl">2,880,067,194,370,816,120</span> — long long 최대치(약 9.2&times;10<sup>18</sup>)에 육박합니다.
+      F(10<sup>18</sup>)은 우주에 다 적을 수도 없는 크기라서, 대회에서는
+      <span class="tl">"1,000,000,007로 나눈 나머지를 출력하라"</span>는 형태로 출제됩니다.
+      나머지 연산은 <span class="hl">곱셈·덧셈 할 때마다</span> 취해도 결과가 같다는 성질을 이용합니다.
+    </p>
+    <div class="formula" style="font-size:0.98em;">(a &times; b) mod p = ((a mod p) &times; (b mod p)) mod p</div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="t2">
+  <h2>점화식을 행렬 곱으로 바꾸기</h2>
+  <p class="desc">
+    행렬을 처음 본다면 <span class="tl">"숫자를 직사각형으로 배열하고, 곱하는 규칙을 약속한 것"</span> 정도로 충분합니다.
+    곱셈 규칙은 단 하나: <span class="hl">(앞 행렬의 행) &times; (뒤 행렬의 열)을 짝지어 곱해 더한다.</span>
+  </p>
+
+  <div class="card">
+    <h3>1단계 — 피보나치 상태를 세로 벡터로 묶기</h3>
+    <p class="desc">
+      F(n)을 계산하려면 직전 두 항이 필요합니다. 그래서 <span class="tl">연속한 두 항을 한 묶음(상태)</span>으로 봅니다.
+    </p>
+    <div class="mat-row">
+      <span class="mat"><span style="grid-column:span 2;">F(n+1)</span><span style="grid-column:span 2;">F(n)</span></span>
+      <span>=</span>
+      <span class="mat"><span>1</span><span>1</span><span>1</span><span>0</span></span>
+      <span>&times;</span>
+      <span class="mat"><span style="grid-column:span 2;">F(n)</span><span style="grid-column:span 2;">F(n-1)</span></span>
+    </div>
+    <p class="desc">
+      1행: 1&times;F(n) + 1&times;F(n-1) = <span class="tl">F(n+1)</span> &nbsp;(점화식 그 자체!)<br>
+      2행: 1&times;F(n) + 0&times;F(n-1) = <span class="tl">F(n)</span> &nbsp;(그냥 한 칸 내려 보관)<br>
+      즉 행렬 <span class="hl">M = [[1,1],[1,0]]</span> 을 한 번 곱하면 수열이 <span class="hl">한 걸음 전진</span>합니다.
+      N걸음 전진 = M을 N번 곱하기 = <span class="pl">M<sup>N</sup></span>.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>2단계 — 행렬 곱셈 계산기 (성분별 단계 실행)</h3>
+    <p class="desc">
+      M을 거듭 곱하며 M<sup>k</sup>를 만들어 봅니다. [한 성분 계산]을 누르면
+      <span class="tl">행</span>&times;<span class="pl">열</span> 짝짓기가 어떻게 이루어지는지 보여 줍니다.
+    </p>
+    <div class="controls">
+      <button class="btn sec" id="mmReset">&#8634; M&#185;부터 다시</button>
+      <button class="btn" id="mmStep">한 성분 계산 &#9654;</button>
+      <button class="btn warn" id="mmFull">이 곱셈 끝내기 &#9654;&#9654;</button>
+    </div>
+    <div class="mat-row" id="mmRow"></div>
+    <div class="formula" id="mmDetail" style="font-size:1em;min-height:52px;"></div>
+    <p class="step-note" id="mmNote"></p>
+    <h3>피보나치 대조표 — 행렬 성분이 곧 피보나치!</h3>
+    <div class="formula" style="font-size:1em;">
+      M<sup>k</sup> = <span class="mat" style="font-size:0.95em;"><span>F(k+1)</span><span>F(k)</span><span>F(k)</span><span>F(k-1)</span></span>
+      &nbsp;&#8594;&nbsp; 오른쪽 위 성분만 읽으면 <span class="hl">F(k)</span>
+    </div>
+    <table class="tbl"><tbody id="mmFibTable"></tbody></table>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="t3">
+  <h2>분할 정복 거듭제곱 — 제곱을 반복하라</h2>
+  <p class="desc">
+    행렬을 N번 <span class="hl">일일이</span> 곱하면 도로 O(N)입니다. 진짜 마법은 <span class="tl">거듭제곱을 빠르게</span> 하는 데 있습니다.
+    먼저 숫자로 원리를 익힙시다.
+  </p>
+
+  <div class="card">
+    <h3>핵심 관찰: 지수를 반으로 접기</h3>
+    <div class="formula">
+      a<sup>13</sup> = a<sup>8</sup> &times; a<sup>4</sup> &times; a<sup>1</sup>
+      &nbsp;&nbsp;(13 = 1101<sub>(2)</sub> = 8 + 4 + 1)
+    </div>
+    <p class="desc">
+      a &#8594; a&#178; &#8594; a&#8308; &#8594; a&#8312; &#8594; &#8230; 처럼 <span class="tl">제곱만 반복</span>하면
+      a의 2<sup>k</sup> 제곱들이 공짜로 얻어집니다.
+      그중 <span class="hl">지수의 이진법 표현에서 1인 자리</span>에 해당하는 것들만 골라 곱하면 끝!
+      13번 곱할 것을 <span class="tl">단 5번의 곱셈</span>으로 해결합니다. N = 10<sup>18</sup>이어도 곱셈 약 120번이면 충분합니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>숫자 거듭제곱 단계 실행기</h3>
+    <div class="controls">
+      <label>밑 a:
+        <select id="fpA"><option value="2">2</option><option value="3">3</option><option value="5">5</option></select>
+      </label>
+      <label>지수 n: <input type="range" id="fpN" min="1" max="30" value="13"> <span id="fpNVal" class="tl">13</span></label>
+      <button class="btn sec" id="fpReset">&#8634; 처음부터</button>
+      <button class="btn" id="fpStep">한 단계 &#9654;</button>
+    </div>
+    <div class="bit-strip" id="fpBits"></div>
+    <p class="desc" style="font-size:0.88em;color:var(--sub);">
+      이진법을 <span class="tl">오른쪽(1의 자리)부터</span> 읽습니다. 코드의 <code>n % 2</code>, <code>n /= 2</code> 와 같은 방향입니다.
+    </p>
+    <table class="tbl">
+      <thead><tr><th>단계</th><th>현재 비트</th><th>행동</th><th>base (a<sup>2&#7511;</sup>)</th><th>result</th></tr></thead>
+      <tbody id="fpBody"></tbody>
+    </table>
+    <p class="desc">최종 결과: <span class="big-num" id="fpFinal">-</span></p>
+    <p class="step-note" id="fpNote"></p>
+  </div>
+
+  <div class="card ok">
+    <h3>알고리즘 요약 (이대로 코드가 됩니다)</h3>
+    <pre class="code">result = 1                <span class="c">// 항등원에서 출발 (행렬이면 단위행렬 I)</span>
+while (n &gt; 0) {
+    if (n이 홀수)  result = result * base
+    base = base * base    <span class="c">// 제곱을 반복: a¹→a²→a⁴→a⁸…</span>
+    n = n / 2             <span class="c">// 지수를 반으로 접기</span>
+}</pre>
+    <p class="desc">
+      반복 횟수 = 이진법 자릿수 = <span class="hl">&#8968;log&#8322;N&#8969;</span>. 이 뼈대에서
+      <span class="tl">곱셈만 행렬 곱셈으로 바꾸면</span> 그대로 행렬 거듭제곱이 됩니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="t4">
+  <h2>행렬 거듭제곱 시뮬레이터 — F(N) mod 1,000,000,007</h2>
+  <p class="desc">
+    이제 모든 재료를 합칩니다. N을 직접 입력하세요. <span class="hl">10<sup>18</sup> 같은 초대형 N도 환영</span>합니다.
+    (모든 성분은 1,000,000,007로 나눈 나머지로 관리)
+  </p>
+  <div class="card">
+    <div class="controls">
+      <label>N = <input type="text" id="mxN" value="1000000000000000000" size="22"></label>
+      <button class="btn warn" id="mxPrep">계산 준비</button>
+      <button class="btn" id="mxStep">한 단계 &#9654;</button>
+      <button class="btn sec" id="mxRun">끝까지 &#9654;&#9654;</button>
+    </div>
+    <div class="bit-strip" id="mxBits"></div>
+    <div class="grid2">
+      <div>
+        <h3>result 행렬 (누적 답)</h3>
+        <div class="mat-row" id="mxResMat"></div>
+      </div>
+      <div>
+        <h3>base 행렬 (M<sup>2&#7511;</sup>)</h3>
+        <div class="mat-row" id="mxBaseMat"></div>
+      </div>
+    </div>
+    <div class="var-box">
+      <div class="var-cell"><div class="vname">처리한 비트 수</div><div class="vval" id="mxK">0</div></div>
+      <div class="var-cell"><div class="vname">행렬 곱셈 횟수</div><div class="vval" id="mxMul">0</div></div>
+      <div class="var-cell" style="flex:1;"><div class="vname">F(N) mod 1e9+7</div><div class="vval" id="mxAns" style="color:var(--orange);">-</div></div>
+    </div>
+    <p class="step-note" id="mxNote">N을 입력하고 [계산 준비]를 누르세요.</p>
+  </div>
+  <div class="card tip">
+    <h3>지금 무슨 일이 일어났나</h3>
+    <p class="desc">
+      매 단계에서 &#9312; 현재 비트가 <span class="hl">1이면 result에 base를 곱하고</span>
+      &#9313; base는 <span class="tl">스스로를 제곱</span>하고 &#9314; 지수를 오른쪽으로 한 칸 접습니다.
+      N = 10<sup>18</sup>이어도 비트는 60개뿐 &#8594; 행렬 곱셈 최대 약 120번, 곱셈 한 번은 숫자 곱 8번이므로
+      <span class="pl">전부 합쳐 1,000번이 안 되는 연산</span>으로 답이 나옵니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 5 ============ -->
+<section class="tab" id="t5">
+  <h2>특성방정식과 일반항 — 수학으로 한 방에</h2>
+  <p class="desc">
+    행렬이 "계산"으로 점화식을 정복한다면, <span class="tl">특성방정식</span>은 "수식"으로 점화식을 정복합니다.
+    닫힌 형태(일반항)를 알면 수렴 속도, 크기 어림, 증명 문제에 강해집니다.
+  </p>
+
+  <div class="card">
+    <h3>1단계 — 특성방정식 세우기</h3>
+    <p class="desc">
+      점화식 F(n) = F(n-1) + F(n-2)의 해가 <span class="hl">F(n) = x&#8319;</span> 꼴일 것이라 <span class="tl">추측하고 대입</span>합니다.
+    </p>
+    <div class="formula">
+      x&#8319; = x&#8319;&#8315;&#185; + x&#8319;&#8315;&#178;
+      &nbsp;&#8594;&nbsp; (양변을 x&#8319;&#8315;&#178;로 나누면) &nbsp;
+      <span class="hl">x&#178; = x + 1</span>
+    </div>
+    <p class="desc">
+      이 이차방정식이 <span class="tl">특성방정식(characteristic equation)</span>입니다.
+      점화식의 계수를 그대로 옮겨 적으면 됩니다: F(n) = <span class="pl">a</span>&middot;F(n-1) + <span class="pl">b</span>&middot;F(n-2)
+      &nbsp;&#8594;&nbsp; x&#178; = <span class="pl">a</span>x + <span class="pl">b</span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>2단계 — 근을 구하고 일반항 만들기</h3>
+    <div class="formula" style="font-size:1em;">
+      x&#178; - x - 1 = 0 &nbsp;&#8594;&nbsp; x = (1 &plusmn; &radic;5) / 2
+      &nbsp;&nbsp;&#8658;&nbsp;&nbsp; &#966; &asymp; 1.618&#8230; (황금비), &nbsp; &#968; &asymp; -0.618&#8230;
+    </div>
+    <p class="desc">
+      서로 다른 두 근이 나오면 일반항은 두 근의 거듭제곱을 <span class="tl">섞은 꼴</span>이고,
+      계수는 초기 조건 F(1)=F(2)=1로 결정합니다. 그 결과가 유명한 <span class="hl">비네(Binet) 공식</span>:
+    </p>
+    <div class="formula">F(n) = ( &#966;&#8319; - &#968;&#8319; ) / &radic;5</div>
+    <p class="desc">
+      |&#968;| &lt; 1 이므로 &#968;&#8319;은 금방 0에 가까워집니다. 그래서
+      <span class="tl">F(n) &asymp; &#966;&#8319;/&radic;5 를 반올림한 값</span>이라는 놀라운 사실이 나옵니다.
+    </p>
+    <h3>비네 공식 검증기</h3>
+    <div class="controls">
+      <label>n: <input type="range" id="biN" min="1" max="40" value="10"> <span id="biNVal" class="tl">10</span></label>
+    </div>
+    <table class="tbl">
+      <tr><th>&#966;&#8319;/&radic;5 (실수 계산)</th><th>반올림</th><th>실제 F(n)</th><th>일치?</th></tr>
+      <tr><td id="biRaw">-</td><td id="biRound" style="color:var(--orange);font-weight:700;">-</td><td id="biTrue" style="color:var(--teal);font-weight:700;">-</td><td id="biOk">-</td></tr>
+    </table>
+    <p class="desc" style="font-size:0.88em;color:var(--sub);">
+      &#9888; 코딩에서 비네 공식을 그대로 쓰면 안 됩니다. n이 70을 넘으면 double의 정밀도(약 15~16자리)가 부족해
+      반올림이 어긋나기 시작합니다. <span class="hl">이론·어림용은 비네, 정확한 계산은 행렬</span> — 역할이 다릅니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>3단계 — 누적 합도 점화식 안에 넣기</h3>
+    <p class="desc">
+      "F(1)+F(2)+&#8230;+F(N)을 구하라"(N ≤ 10<sup>18</sup>)는 변형도 단골입니다. 두 가지 무기가 있습니다.
+    </p>
+    <p class="desc"><span class="tl">무기 1 — 항등식:</span> 시그마 강의의 누적 개념으로 증명되는 유명한 식</p>
+    <div class="formula">S(n) = F(1) + F(2) + &#8230; + F(n) = F(n+2) - 1</div>
+    <table class="tbl">
+      <tr><th>n</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+      <tr><th>F(n)</th><td>1</td><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td></tr>
+      <tr><th>S(n)</th><td>1</td><td>2</td><td>4</td><td>7</td><td>12</td><td>20</td><td>33</td></tr>
+      <tr><th>F(n+2)-1</th><td>1</td><td>2</td><td>4</td><td>7</td><td>12</td><td>20</td><td>33</td></tr>
+    </table>
+    <p class="desc">&#8594; 합 문제가 <span class="hl">F(n+2) 하나 구하기</span>로 바뀌므로 행렬 거듭제곱을 그대로 재사용!</p>
+    <p class="desc"><span class="tl">무기 2 — 상태 확장(3&times;3 행렬):</span> 항등식이 없는 일반 점화식이라면, 합 S를 상태에 직접 포함시킵니다.</p>
+    <div class="mat-row" style="font-size:1em;">
+      <span class="mat"><span style="grid-column:span 2;">F(n+1)</span><span style="grid-column:span 2;">F(n)</span><span style="grid-column:span 2;">S(n)</span></span>
+      <span>=</span>
+      <span class="mat" style="grid-template-columns:auto auto auto;"><span>1</span><span>1</span><span>0</span><span>1</span><span>0</span><span>0</span><span>0</span><span>1</span><span>1</span></span>
+      <span>&times;</span>
+      <span class="mat"><span style="grid-column:span 2;">F(n)</span><span style="grid-column:span 2;">F(n-1)</span><span style="grid-column:span 2;">S(n-1)</span></span>
+    </div>
+    <p class="desc">
+      셋째 행이 <span class="tl">S(n) = F(n) + S(n-1)</span> — 바로 시그마의 점화식입니다.
+      상태에 넣고 싶은 값(합, 짝수 항 합, 개수 등)을 <span class="hl">행 하나로 추가</span>하는 이 기법이
+      행렬 거듭제곱 문제의 진짜 일반화입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 6 ============ -->
+<section class="tab" id="t6">
+  <h2>C 코드 구현 — 뼈대부터 완성까지</h2>
+
+  <div class="card">
+    <h3>1단계 — 숫자 fastpow 한 줄씩 실행 (a=3, n=13)</h3>
+    <p class="desc">행렬로 가기 전, 뼈대인 <span class="tl">숫자 버전</span>을 한 줄씩 실행해 봅니다. 3탭의 표와 똑같이 움직이는지 확인하세요.</p>
+    <div class="grid2">
+      <div>
+        <pre class="code" id="cCodeBox"></pre>
+        <div class="controls">
+          <button class="btn sec" id="cReset">&#8634; 처음</button>
+          <button class="btn sec" id="cPrev">&#9664; 이전</button>
+          <button class="btn" id="cNext">다음 &#9654;</button>
+          <button class="btn warn" id="cAuto">자동 실행</button>
+        </div>
+      </div>
+      <div>
+        <h3>변수 상태</h3>
+        <div class="var-box">
+          <div class="var-cell"><div class="vname">n</div><div class="vval" id="cVarN">-</div></div>
+          <div class="var-cell"><div class="vname">a (base)</div><div class="vval" id="cVarA">-</div></div>
+          <div class="var-cell"><div class="vname">result</div><div class="vval" id="cVarR">-</div></div>
+        </div>
+        <h3>해설</h3>
+        <p class="step-note" id="cNote">함수가 호출되기 전입니다.</p>
+        <h3>반환값</h3>
+        <pre class="code" id="cConsole" style="min-height:44px;color:#4ade80;"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2단계 — 곱셈만 행렬로 교체한 최종 코드</h3>
+    <p class="desc">구조는 1단계와 <span class="hl">완전히 동일</span>합니다. 곱셈이 <span class="tl">mul() 함수 호출</span>로 바뀌고, 1이 <span class="tl">단위행렬 I</span>로 바뀌었을 뿐입니다.</p>
+    <pre class="code"><span class="k">#include</span> &lt;stdio.h&gt;
+<span class="k">typedef long long</span> ll;
+<span class="k">const</span> ll MOD = 1000000007;
+
+<span class="c">/* 2x2 행렬 곱: C = A x B (성분마다 mod) */</span>
+<span class="k">void</span> mul(ll A[2][2], ll B[2][2], ll C[2][2]) {
+    ll T[2][2] = {{0,0},{0,0}};
+    <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; 2; i++)
+        <span class="k">for</span> (<span class="k">int</span> j = 0; j &lt; 2; j++)
+            <span class="k">for</span> (<span class="k">int</span> k = 0; k &lt; 2; k++)
+                T[i][j] = (T[i][j] + A[i][k] * B[k][j]) % MOD;
+    <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; 2; i++)
+        <span class="k">for</span> (<span class="k">int</span> j = 0; j &lt; 2; j++) C[i][j] = T[i][j];
+}
+
+ll fibo(ll n) {                       <span class="c">/* F(n) mod 1e9+7 */</span>
+    ll R[2][2] = {{1,0},{0,1}};       <span class="c">/* result = 단위행렬 I */</span>
+    ll M[2][2] = {{1,1},{1,0}};       <span class="c">/* base = 점화식 행렬 */</span>
+    <span class="k">while</span> (n &gt; 0) {
+        <span class="k">if</span> (n % 2 == 1) mul(R, M, R);   <span class="c">/* 비트가 1이면 답에 곱하기 */</span>
+        mul(M, M, M);                   <span class="c">/* base 제곱 */</span>
+        n /= 2;
+    }
+    <span class="k">return</span> R[0][1];                   <span class="c">/* M^n 의 오른쪽 위 = F(n) */</span>
+}
+
+<span class="k">int</span> main(<span class="k">void</span>) {
+    ll n;
+    scanf(<span class="s">"%lld"</span>, &amp;n);
+    printf(<span class="s">"%lld\n"</span>, fibo(n));
+    <span class="k">return</span> 0;
+}</pre>
+    <table class="tbl">
+      <tr><th>숫자 버전</th><th>행렬 버전</th><th>의미</th></tr>
+      <tr><td>result = 1</td><td>R = I (단위행렬)</td><td>곱셈의 항등원에서 출발</td></tr>
+      <tr><td>result *= a</td><td>mul(R, M, R)</td><td>비트가 1인 자리만 답에 반영</td></tr>
+      <tr><td>a *= a</td><td>mul(M, M, M)</td><td>제곱을 반복해 M<sup>2&#7511;</sup> 생성</td></tr>
+      <tr><td>n /= 2</td><td>n /= 2</td><td>지수의 이진법을 오른쪽부터 소비</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ TAB 7 ============ -->
+<section class="tab" id="t7">
+  <h2>자주 하는 실수 포인트</h2>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 1 — result를 0 또는 M으로 초기화</h3>
+    <pre class="code">ll R[2][2] = {{0,0},{0,0}};   <span class="c">/* 무엇을 곱해도 0! */</span></pre>
+    <p class="desc">거듭제곱의 출발점은 <span class="hl">곱셈의 항등원</span>이어야 합니다. 숫자는 1, 행렬은 <span class="tl">단위행렬 I = [[1,0],[0,1]]</span>. (숫자 버전에서 result=1로 시작하는 것과 같은 이유)</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 2 — mod를 마지막에 한 번만</h3>
+    <pre class="code">T[i][j] += A[i][k] * B[k][j];        <span class="c">/* mod 없이 누적 → 오버플로 */</span></pre>
+    <p class="desc">성분 하나가 최대 약 10<sup>9</sup>이므로 곱 하나가 10<sup>18</sup> — 두 개만 더해도 long long을 넘습니다. <span class="hl">곱셈마다 % MOD</span>가 철칙입니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 3 — mul(A, A, A) 자기 덮어쓰기</h3>
+    <p class="desc">결과를 임시 배열 없이 바로 A에 쓰면, 아직 <span class="hl">읽어야 할 원소가 먼저 파괴</span>됩니다. 반드시 임시 행렬 T에 계산 후 복사하세요. (6탭 코드의 T가 그 역할)</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 4 — N의 자료형을 int로</h3>
+    <pre class="code">int n;  scanf("%d", &amp;n);   <span class="c">/* N ≤ 10^18 인데! */</span></pre>
+    <p class="desc">int는 약 2.1&times;10<sup>9</sup>까지. N 자체가 10<sup>18</sup>이면 <span class="hl">long long n; scanf("%lld", &amp;n);</span> 이어야 합니다. 지수를 담는 변수부터 확인!</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 5 — N=0, 아주 작은 N 처리 누락</h3>
+    <p class="desc">F(0)=0 정의를 쓰는 문제라면 M<sup>0</sup> = I 이고 R[0][1] = 0 이라 자연스럽게 맞지만, <span class="tl">인덱스 시작(0-기준/1-기준)이 문제마다 다릅니다</span>. 예제 입력으로 반드시 검산하세요.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 6 — 비네 공식으로 정확한 값 출력</h3>
+    <p class="desc">double 정밀도는 15~16자리. n이 70을 넘으면 반올림이 어긋납니다. <span class="hl">정확한 답이 필요하면 무조건 행렬 + mod</span>. 비네는 크기 어림·증명용입니다.</p>
+  </div>
+
+  <h2>도전 퀴즈</h2>
+  <div class="score-bar">점수: <span class="big-num" id="quizScore">0</span> / <span id="quizTotal">6</span></div>
+  <div id="quizArea"></div>
+</section>
+
+</main>
+<footer>세영코딩연구소 · 선형 점화식과 행렬 거듭제곱 — KOI 고난도 대비 인터랙티브 강의</footer>
+<script>
+(function(){
+"use strict";
+
+/* ---------- 탭 ---------- */
+var nav=document.getElementById("tabNav");
+var tabBtns=nav.querySelectorAll("button");
+function showTab(id){
+  var tabs=document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++){tabs[i].classList.remove("show");}
+  for(var j=0;j<tabBtns.length;j++){tabBtns[j].classList.toggle("active",tabBtns[j].getAttribute("data-tab")===id);}
+  document.getElementById(id).classList.add("show");
+  window.scrollTo(0,0);
+}
+for(var b=0;b<tabBtns.length;b++){
+  (function(btn){btn.addEventListener("click",function(){showTab(btn.getAttribute("data-tab"));});})(tabBtns[b]);
+}
+
+/* ---------- 탭1: 연산 횟수 대결 ---------- */
+var powK=document.getElementById("powK");
+function fmtTime(sec){
+  if(sec<1){return (sec*1000).toFixed(1)+" ms";}
+  if(sec<60){return sec.toFixed(2)+" \uCD08";}
+  if(sec<3600){return (sec/60).toFixed(1)+" \uBD84";}
+  if(sec<86400){return (sec/3600).toFixed(1)+" \uC2DC\uAC04";}
+  if(sec<31536000){return (sec/86400).toFixed(1)+" \uC77C";}
+  return (sec/31536000).toExponential(1).replace("e+","\u00D710^")+" \uB144";
+}
+function raceRender(){
+  var k=parseInt(powK.value,10);
+  document.getElementById("powKVal").textContent=String(k);
+  var N=Math.pow(10,k);
+  var loopOps=N;
+  var logSteps=Math.ceil(k*Math.log2(10));
+  var matOps=logSteps*2*8;
+  document.getElementById("raceT1").textContent="10^"+k+" \uD68C = "+fmtTime(loopOps/1e8);
+  document.getElementById("raceT2").textContent="\uC57D "+matOps+" \uD68C = \uC989\uC2DC";
+  var w2=Math.max(1.5,Math.log10(matOps)/k*100*0.35);
+  document.getElementById("raceBar2").style.width=w2+"%";
+  var note=document.getElementById("raceNote");
+  if(k>=15){note.textContent="N = 10^"+k+" : \uBC18\uBCF5\uBB38\uC740 \uC6B0\uC8FC\uC801 \uC2DC\uAC04\uC774 \uD544\uC694\uD558\uC9C0\uB9CC, \uD589\uB82C \uAC70\uB4ED\uC81C\uACF1\uC740 "+logSteps+"\uB2E8\uACC4\uBA74 \uB05D\uB0A9\uB2C8\uB2E4.";}
+  else if(k>=9){note.textContent="N = 10^"+k+" : \uBC18\uBCF5\uBB38\uB3C4 \uC774\uBBF8 \uC2DC\uAC04 \uCD08\uACFC \uC601\uC5ED(\uBCF4\uD1B5 \uC81C\uD55C 1~2\uCD08)\uC785\uB2C8\uB2E4.";}
+  else{note.textContent="N = 10^"+k+" : \uC774 \uC815\uB3C4\uB294 \uBC18\uBCF5\uBB38\uB3C4 \uAC00\uB2A5\uD558\uC9C0\uB9CC, N\uC774 \uCEE4\uC9C0\uBA74 \uACE7 \uD55C\uACC4\uAC00 \uC635\uB2C8\uB2E4.";}
+}
+powK.addEventListener("input",raceRender);
+raceRender();
+
+/* ---------- 공통: 행렬 렌더 ---------- */
+function matEl(vals,hl,label){
+  /* vals: length4 배열(문자열/숫자), hl: {idx:클래스} */
+  var wrap=document.createElement("span");
+  wrap.style.display="inline-flex";wrap.style.flexDirection="column";wrap.style.alignItems="center";
+  var m=document.createElement("span");m.className="mat";
+  for(var i=0;i<4;i++){
+    var s=document.createElement("span");
+    s.textContent=String(vals[i]);
+    if(hl&&hl[i]){s.className=hl[i];}
+    m.appendChild(s);
+  }
+  wrap.appendChild(m);
+  if(label){
+    var lb=document.createElement("span");
+    lb.textContent=label;lb.style.fontSize="0.6em";lb.style.color="#93b4d8";
+    wrap.appendChild(lb);
+  }
+  return wrap;
+}
+function txtEl(t){var s=document.createElement("span");s.textContent=t;return s;}
+
+/* ---------- 탭2: 행렬 곱 단계 실행기 ---------- */
+var M2=[1,1,1,0];
+var mmState={k:1,P:[1,1,1,0],next:[null,null,null,null],e:0};
+function fibN(n){var a=1,b=0;for(var i=0;i<n;i++){var t=a+b;b=a;a=t;}return b;} /* F(n) */
+function mmRender(hlOn){
+  var st=mmState;
+  var row=document.getElementById("mmRow");
+  while(row.firstChild){row.removeChild(row.firstChild);}
+  var hlP={},hlM={},hlN={};
+  if(hlOn&&st.e>0){
+    var e=st.e-1,r=Math.floor(e/2),c=e%2;
+    hlP[r*2]="hla";hlP[r*2+1]="hla";
+    hlM[c]="hlb";hlM[2+c]="hlb";
+    hlN[e]="hlc";
+  }
+  var nx=[];
+  for(var i=0;i<4;i++){nx.push(st.next[i]===null?"?":st.next[i]);}
+  row.appendChild(matEl(st.P,hlP,"M^"+st.k));
+  row.appendChild(txtEl("\u00D7"));
+  row.appendChild(matEl(M2,hlM,"M"));
+  row.appendChild(txtEl("="));
+  row.appendChild(matEl(nx,hlN,"M^"+(st.k+1)));
+  /* 피보나치 표 */
+  var tb=document.getElementById("mmFibTable");
+  while(tb.firstChild){tb.removeChild(tb.firstChild);}
+  var tr1=document.createElement("tr"),tr2=document.createElement("tr");
+  var h1=document.createElement("th");h1.textContent="k";tr1.appendChild(h1);
+  var h2=document.createElement("th");h2.textContent="M^k \uC624\uB978\uCABD \uC704 = F(k)";tr2.appendChild(h2);
+  for(var kk=1;kk<=st.k;kk++){
+    var d1=document.createElement("td");d1.textContent=String(kk);tr1.appendChild(d1);
+    var d2=document.createElement("td");d2.textContent=String(fibN(kk));
+    d2.style.color="#2dd4bf";d2.style.fontWeight="700";tr2.appendChild(d2);
+  }
+  tb.appendChild(tr1);tb.appendChild(tr2);
+}
+function mmStepFn(){
+  var st=mmState;
+  if(st.k>=10){document.getElementById("mmNote").textContent="M^10 \uAE4C\uC9C0 \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4. \uC131\uBD84\uC774 \uD56D\uC0C1 \uD53C\uBCF4\uB098\uCE58\uC784\uC744 \uBBFF\uC5B4\uB3C4 \uC88B\uC2B5\uB2C8\uB2E4!";return;}
+  if(st.e<4){
+    var e=st.e,r=Math.floor(e/2),c=e%2;
+    var v=st.P[r*2]*M2[c]+st.P[r*2+1]*M2[2+c];
+    st.next[e]=v;st.e++;
+    mmRender(true);
+    document.getElementById("mmDetail").textContent=
+      "\uC131\uBD84("+(r+1)+"\uD589,"+(c+1)+"\uC5F4) = "+st.P[r*2]+"\u00D7"+M2[c]+" + "+st.P[r*2+1]+"\u00D7"+M2[2+c]+" = "+v;
+    document.getElementById("mmNote").textContent="\uC55E \uD589\uB82C\uC758 "+(r+1)+"\uD589(\uCD08\uB85D)\uACFC \uB4A4 \uD589\uB82C\uC758 "+(c+1)+"\uC5F4(\uBCF4\uB77C)\uC744 \uC9DD\uC9C0\uC5B4 \uACF1\uD574 \uB354\uD588\uC2B5\uB2C8\uB2E4.";
+  }else{
+    st.P=st.next.slice();st.next=[null,null,null,null];st.e=0;st.k++;
+    mmRender(false);
+    document.getElementById("mmDetail").textContent="M^"+st.k+" \uC644\uC131! \uC624\uB978\uCABD \uC704 \uC131\uBD84 = "+st.P[1]+" = F("+st.k+")";
+    document.getElementById("mmNote").textContent="\uB2E4\uC74C \uACF1\uC148\uC744 \uC2DC\uC791\uD558\uB824\uBA74 \uACC4\uC18D \uB204\uB974\uC138\uC694.";
+  }
+}
+document.getElementById("mmStep").addEventListener("click",mmStepFn);
+document.getElementById("mmFull").addEventListener("click",function(){
+  var st=mmState;
+  if(st.k>=10){return;}
+  var guard=0;
+  while(!(st.e===0&&guard>0)&&guard<9){mmStepFn();guard++;if(st.e===0){break;}}
+});
+document.getElementById("mmReset").addEventListener("click",function(){
+  mmState={k:1,P:[1,1,1,0],next:[null,null,null,null],e:0};
+  mmRender(false);
+  document.getElementById("mmDetail").textContent="";
+  document.getElementById("mmNote").textContent="[\uD55C \uC131\uBD84 \uACC4\uC0B0]\uC744 \uB20C\uB7EC \uBCF4\uC138\uC694.";
+});
+mmRender(false);
+document.getElementById("mmNote").textContent="[\uD55C \uC131\uBD84 \uACC4\uC0B0]\uC744 \uB20C\uB7EC \uBCF4\uC138\uC694.";
+
+/* ---------- 탭3: 숫자 fastpow ---------- */
+var fpA=document.getElementById("fpA"),fpN=document.getElementById("fpN");
+var fpState={steps:[],k:0,bits:""};
+function fpBuild(){
+  var a=BigInt(fpA.value),n=parseInt(fpN.value,10);
+  document.getElementById("fpNVal").textContent=String(n);
+  fpState.bits=n.toString(2);
+  fpState.k=0;fpState.steps=[];
+  var result=1n,base=a,nn=n,idx=0;
+  while(nn>0){
+    var bit=nn%2;
+    var act,resAfter;
+    if(bit===1){resAfter=result*base;act="result \u00D7 base \u2192 "+resAfter.toString();}
+    else{resAfter=result;act="\uAC74\uB108\uB700 (\uBE44\uD2B8 0)";}
+    fpState.steps.push({idx:idx,bit:bit,act:act,base:base.toString(),res:resAfter.toString()});
+    result=resAfter;base=base*base;nn=Math.floor(nn/2);idx++;
+  }
+  fpState.final=result.toString();
+  fpRender();
+}
+function fpRenderBits(){
+  var s=fpState.bits,k=fpState.k;
+  var box=document.getElementById("fpBits");
+  while(box.firstChild){box.removeChild(box.firstChild);}
+  var pre=document.createElement("span");pre.className="bd";
+  pre.textContent="n = "+parseInt(fpN.value,10)+" = ";box.appendChild(pre);
+  for(var i=0;i<s.length;i++){
+    var pos=s.length-1-i; /* \uC624\uB978\uCABD\uBD80\uD130 pos */
+    var sp=document.createElement("span");
+    sp.textContent=s[i];
+    if(pos<k){sp.className="bdone";}
+    else if(pos===k&&k<s.length){sp.className="bcur";}
+    else{sp.className="bd";}
+    box.appendChild(sp);
+  }
+  var suf=document.createElement("span");suf.className="bd";suf.textContent=" (2)";box.appendChild(suf);
+}
+function fpRender(){
+  fpRenderBits();
+  var body=document.getElementById("fpBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  for(var i=0;i<fpState.k;i++){
+    var st=fpState.steps[i];
+    var tr=document.createElement("tr");
+    var tds=[String(i+1),String(st.bit),st.act,st.base,st.res];
+    for(var j=0;j<tds.length;j++){
+      var td=document.createElement("td");td.textContent=tds[j];
+      if(j===1){td.style.color=st.bit===1?"#ffb454":"#4d6c94";td.style.fontWeight="700";}
+      if(j===4){td.style.color="#2dd4bf";td.style.fontWeight="700";}
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+  var done=fpState.k>=fpState.steps.length;
+  document.getElementById("fpFinal").textContent=done?fpState.final:"-";
+  var note=document.getElementById("fpNote");
+  if(fpState.k===0){note.textContent="result = 1, base = a \uC5D0\uC11C \uC2DC\uC791\uD569\uB2C8\uB2E4. [\uD55C \uB2E8\uACC4]\uB97C \uB20C\uB7EC \uBE44\uD2B8\uB97C \uD558\uB098\uC529 \uCC98\uB9AC\uD558\uC138\uC694.";}
+  else if(!done){var s=fpState.steps[fpState.k-1];note.textContent=(s.bit===1?"\uBE44\uD2B8\uAC00 1 \u2192 result\uC5D0 base\uB97C \uACF1\uD588\uC2B5\uB2C8\uB2E4. ":"\uBE44\uD2B8\uAC00 0 \u2192 \uACF1\uD558\uC9C0 \uC54A\uACE0 \uC9C0\uB098\uAC11\uB2C8\uB2E4. ")+"\uC774\uC5B4\uC11C base\uB294 \uC81C\uACF1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.";}
+  else{note.textContent="\uC644\uB8CC! \uACF1\uC148 \uD69F\uC218\uB97C \uC138\uC5B4 \uBCF4\uC138\uC694. \uB2E8\uC21C \uBC18\uBCF5\uBCF4\uB2E4 \uD6E8\uC52C \uC801\uC2B5\uB2C8\uB2E4.";}
+}
+document.getElementById("fpStep").addEventListener("click",function(){
+  if(fpState.k<fpState.steps.length){fpState.k++;fpRender();}
+});
+document.getElementById("fpReset").addEventListener("click",fpBuild);
+fpA.addEventListener("change",fpBuild);
+fpN.addEventListener("input",fpBuild);
+fpBuild();
+
+/* ---------- 탭4: 행렬 거듭제곱 시뮬레이터 (BigInt) ---------- */
+var MOD=1000000007n;
+function matMulMod(A,B){
+  return [
+    (A[0]*B[0]+A[1]*B[2])%MOD,(A[0]*B[1]+A[1]*B[3])%MOD,
+    (A[2]*B[0]+A[3]*B[2])%MOD,(A[2]*B[1]+A[3]*B[3])%MOD
+  ];
+}
+var mxState=null;
+function mxRender(){
+  var s=mxState;
+  var bitBox=document.getElementById("mxBits");
+  while(bitBox.firstChild){bitBox.removeChild(bitBox.firstChild);}
+  var resRow=document.getElementById("mxResMat");
+  while(resRow.firstChild){resRow.removeChild(resRow.firstChild);}
+  var baseRow=document.getElementById("mxBaseMat");
+  while(baseRow.firstChild){baseRow.removeChild(baseRow.firstChild);}
+  if(!s){document.getElementById("mxK").textContent="0";document.getElementById("mxMul").textContent="0";document.getElementById("mxAns").textContent="-";return;}
+  var lab=document.createElement("span");lab.className="bd";lab.textContent="N(2\uC9C4\uBC95) = ";bitBox.appendChild(lab);
+  for(var i=0;i<s.bits.length;i++){
+    var pos=s.bits.length-1-i;
+    var sp=document.createElement("span");sp.textContent=s.bits[i];
+    if(pos<s.k){sp.className="bdone";}
+    else if(pos===s.k&&!s.done){sp.className="bcur";}
+    else{sp.className="bd";}
+    bitBox.appendChild(sp);
+  }
+  resRow.appendChild(matEl([s.R[0].toString(),s.R[1].toString(),s.R[2].toString(),s.R[3].toString()],null,"result"));
+  baseRow.appendChild(matEl([s.B[0].toString(),s.B[1].toString(),s.B[2].toString(),s.B[3].toString()],null,"base"));
+  document.getElementById("mxK").textContent=s.k+" / "+s.bits.length;
+  document.getElementById("mxMul").textContent=String(s.mul);
+  document.getElementById("mxAns").textContent=s.done?s.R[1].toString():"\uACC4\uC0B0 \uC911\u2026";
+}
+function mxPrep(){
+  var raw=document.getElementById("mxN").value.trim();
+  if(!/^[0-9]{1,19}$/.test(raw)){document.getElementById("mxNote").textContent="1 \uC774\uC0C1 19\uC790\uB9AC \uC774\uD558\uC758 \uC790\uC5F0\uC218\uB97C \uC785\uB825\uD558\uC138\uC694.";mxState=null;mxRender();return;}
+  var N=BigInt(raw);
+  if(N===0n){
+    mxState={bits:"0",k:1,R:[1n,0n,0n,1n],B:[1n,1n,1n,0n],mul:0,done:true};
+    mxState.R=[1n,0n,0n,1n];
+    mxRender();
+    document.getElementById("mxNote").textContent="N = 0 : M^0 = \uB2E8\uC704\uD589\uB82C\uC774\uBBC0\uB85C F(0) = 0 \uC785\uB2C8\uB2E4.";
+    return;
+  }
+  mxState={bits:N.toString(2),k:0,R:[1n,0n,0n,1n],B:[1n,1n,1n,0n],mul:0,done:false};
+  mxRender();
+  document.getElementById("mxNote").textContent="\uC900\uBE44 \uC644\uB8CC. \uBE44\uD2B8 "+mxState.bits.length+"\uAC1C\uB97C \uC624\uB978\uCABD\uBD80\uD130 \uCC98\uB9AC\uD569\uB2C8\uB2E4. result = I, base = M \uC5D0\uC11C \uCD9C\uBC1C!";
+}
+function mxStepFn(){
+  var s=mxState;
+  if(!s||s.done){return;}
+  var bit=s.bits[s.bits.length-1-s.k];
+  var msg;
+  if(bit==="1"){s.R=matMulMod(s.R,s.B);s.mul++;msg="\uBE44\uD2B8 1 \u2192 result\uC5D0 base\uB97C \uACF1\uD588\uC2B5\uB2C8\uB2E4. ";}
+  else{msg="\uBE44\uD2B8 0 \u2192 result\uB294 \uADF8\uB300\uB85C. ";}
+  s.B=matMulMod(s.B,s.B);s.mul++;
+  s.k++;
+  if(s.k>=s.bits.length){s.done=true;msg+="\uBAA8\uB4E0 \uBE44\uD2B8 \uCC98\uB9AC \uC644\uB8CC! \uB2F5\uC740 result\uC758 \uC624\uB978\uCABD \uC704 \uC131\uBD84\uC785\uB2C8\uB2E4.";}
+  else{msg+="base\uB294 \uC81C\uACF1\uD588\uC2B5\uB2C8\uB2E4. (\uD604\uC7AC base = M^"+"2^"+s.k+")";}
+  mxRender();
+  document.getElementById("mxNote").textContent=msg;
+}
+document.getElementById("mxPrep").addEventListener("click",mxPrep);
+document.getElementById("mxStep").addEventListener("click",mxStepFn);
+document.getElementById("mxRun").addEventListener("click",function(){
+  if(!mxState){mxPrep();}
+  if(!mxState){return;}
+  var guard=0;
+  while(mxState&&!mxState.done&&guard<70){mxStepFn();guard++;}
+});
+mxRender();
+
+/* ---------- 탭5: 비네 검증기 ---------- */
+var biN=document.getElementById("biN");
+function biRender(){
+  var n=parseInt(biN.value,10);
+  document.getElementById("biNVal").textContent=String(n);
+  var phi=(1+Math.sqrt(5))/2;
+  var raw=Math.pow(phi,n)/Math.sqrt(5);
+  var rounded=Math.round(raw);
+  var f=fibN(n);
+  document.getElementById("biRaw").textContent=raw.toFixed(4);
+  document.getElementById("biRound").textContent=String(rounded);
+  document.getElementById("biTrue").textContent=String(f);
+  var okCell=document.getElementById("biOk");
+  okCell.textContent=(rounded===f)?"\u2705 \uC77C\uCE58":"\u274C \uBD88\uC77C\uCE58";
+  okCell.style.color=(rounded===f)?"#4ade80":"#f87171";
+}
+biN.addEventListener("input",biRender);
+biRender();
+
+/* ---------- 탭6: C fastpow 실행기 ---------- */
+var C_LINES=[
+  "const ll MOD = 1000000007;",
+  "",
+  "ll fastpow(ll a, ll n) {",
+  "    ll result = 1;",
+  "    while (n \u003E 0) {",
+  "        if (n % 2 == 1)",
+  "            result = result * a % MOD;",
+  "        a = a * a % MOD;",
+  "        n /= 2;",
+  "    }",
+  "    return result;",
+  "}"
+];
+function buildTrace(){
+  var tr=[],MODB=1000000007n;
+  var a=3n,n=13n,result=null;
+  tr.push({ln:2,a:"3",n:"13",r:"-",out:"",note:"fastpow(3, 13) \uD638\uCD9C. a=3, n=13 \uC73C\uB85C \uC2DC\uC791\uD569\uB2C8\uB2E4."});
+  result=1n;
+  tr.push({ln:3,a:a.toString(),n:n.toString(),r:"1",out:"",note:"result\uB97C \uACF1\uC148\uC758 \uD56D\uB4F1\uC6D0 1\uB85C \uCD08\uAE30\uD654. (\uD589\uB82C\uC774\uBA74 \uB2E8\uC704\uD589\uB82C I)"});
+  while(n>0n){
+    tr.push({ln:4,a:a.toString(),n:n.toString(),r:result.toString(),out:"",note:"\uC870\uAC74 \uD655\uC778: n = "+n.toString()+" \u003E 0 \uCC38 \u2192 \uBC18\uBCF5 \uACC4\uC18D."});
+    var odd=(n%2n)===1n;
+    tr.push({ln:5,a:a.toString(),n:n.toString(),r:result.toString(),out:"",note:"n % 2 = "+(odd?"1 (\uD604\uC7AC \uBE44\uD2B8 1)":"0 (\uD604\uC7AC \uBE44\uD2B8 0)")+" \u2192 "+(odd?"result \uAC31\uC2E0 \uC2E4\uD589":"\uAC74\uB108\uB700")});
+    if(odd){
+      var prev=result;result=result*a%MODB;
+      tr.push({ln:6,a:a.toString(),n:n.toString(),r:result.toString(),out:"",note:"result = "+prev.toString()+" \u00D7 "+a.toString()+" mod MOD = "+result.toString()});
+    }
+    var pa=a;a=a*a%MODB;
+    tr.push({ln:7,a:a.toString(),n:n.toString(),r:result.toString(),out:"",note:"base \uC81C\uACF1: "+pa.toString()+"\u00B2 mod MOD = "+a.toString()+" (a\u2078 \uAE4C\uC9C0 \uC790\uB3D9 \uC0DD\uC131)"});
+    var pn=n;n=n/2n;
+    tr.push({ln:8,a:a.toString(),n:n.toString(),r:result.toString(),out:"",note:"\uC9C0\uC218 \uBC18\uC73C\uB85C \uC811\uAE30: "+pn.toString()+" / 2 = "+n.toString()});
+  }
+  tr.push({ln:4,a:a.toString(),n:"0",r:result.toString(),out:"",note:"\uC870\uAC74 \uD655\uC778: 0 \u003E 0 \uAC70\uC9D3 \u2192 \uBC18\uBCF5\uBB38 \uD0C8\uCD9C."});
+  tr.push({ln:10,a:a.toString(),n:"0",r:result.toString(),out:result.toString(),note:"3\u00B9\u00B3 = "+result.toString()+" \uBC18\uD658. (13\uBC88 \uACF1\uD560 \uAC83\uC744 5\uBC88\uC758 \uACF1\uC148\uC73C\uB85C!)"});
+  return tr;
+}
+var C_TRACE=buildTrace();
+var cState={step:-1,timer:null};
+function cStopAuto(){if(cState.timer){clearInterval(cState.timer);cState.timer=null;document.getElementById("cAuto").textContent="\uC790\uB3D9 \uC2E4\uD589";}}
+function cRender(){
+  var box=document.getElementById("cCodeBox");
+  while(box.firstChild){box.removeChild(box.firstChild);}
+  var curLn=cState.step>=0?C_TRACE[cState.step].ln:-1;
+  for(var i=0;i<C_LINES.length;i++){
+    var sp=document.createElement("span");
+    sp.className="codeline"+(i===curLn?" cur":"");
+    sp.textContent=C_LINES[i]===""?" ":C_LINES[i];
+    box.appendChild(sp);
+  }
+  var st=cState.step>=0?C_TRACE[cState.step]:null;
+  document.getElementById("cVarN").textContent=st?st.n:"-";
+  document.getElementById("cVarA").textContent=st?st.a:"-";
+  document.getElementById("cVarR").textContent=st?st.r:"-";
+  document.getElementById("cConsole").textContent=st?st.out:"";
+  document.getElementById("cNote").textContent=st?st.note:"\uD568\uC218\uAC00 \uD638\uCD9C\uB418\uAE30 \uC804\uC785\uB2C8\uB2E4.";
+  document.getElementById("cPrev").disabled=cState.step<=0;
+  document.getElementById("cNext").disabled=cState.step>=C_TRACE.length-1;
+}
+document.getElementById("cNext").addEventListener("click",function(){cStopAuto();if(cState.step<C_TRACE.length-1){cState.step++;cRender();}});
+document.getElementById("cPrev").addEventListener("click",function(){cStopAuto();if(cState.step>0){cState.step--;cRender();}});
+document.getElementById("cReset").addEventListener("click",function(){cStopAuto();cState.step=-1;cRender();});
+document.getElementById("cAuto").addEventListener("click",function(){
+  if(cState.timer){cStopAuto();return;}
+  if(cState.step>=C_TRACE.length-1){cState.step=-1;}
+  this.textContent="\u23F8 \uC815\uC9C0";
+  cState.timer=setInterval(function(){
+    if(cState.step>=C_TRACE.length-1){cStopAuto();return;}
+    cState.step++;cRender();
+  },900);
+});
+cRender();
+
+/* ---------- 탭7: 퀴즈 ---------- */
+var QUIZ=[
+  {q:"N = 10^18 \uC77C \uB54C O(N) \uBC18\uBCF5\uBB38\uC774 \uC548 \uB418\uB294 \uC774\uC720\uB294?",
+   opts:["\uBA54\uBAA8\uB9AC \uCD08\uACFC","\uC2DC\uAC04 \uCD08\uACFC(\uC218\uBC31 \uB144 \uC774\uC0C1 \uC18C\uC694)","\uCEF4\uD30C\uC77C \uC5D0\uB7EC","\uB2F5\uC774 \uD2C0\uB824\uC11C"],ans:1,
+   fb:"1\uCD08\uC5D0 10^8\uBC88 \uC5F0\uC0B0\uD574\uB3C4 10^18\uBC88\uC740 \uC57D 317\uB144. \uADF8\uB798\uC11C O(log N) \uD589\uB82C \uAC70\uB4ED\uC81C\uACF1\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."},
+  {q:"\uD589\uB82C \uAC70\uB4ED\uC81C\uACF1\uC73C\uB85C F(N)\uC744 \uAD6C\uD558\uB294 \uC2DC\uAC04\uBCF5\uC7A1\uB3C4\uB294?",
+   opts:["O(N)","O(N log N)","O(log N)","O(1)"],ans:2,
+   fb:"\uC9C0\uC218\uC758 \uBE44\uD2B8 \uC218\uB9CC\uD07C\uB9CC \uBC18\uBCF5\uD558\uBBC0\uB85C O(log N). N=10^18\uC774\uBA74 \uC57D 60\uB2E8\uACC4\uC785\uB2C8\uB2E4."},
+  {q:"M = [[1,1],[1,0]] \uC77C \uB54C, M^n \uC758 \uC624\uB978\uCABD \uC704 \uC131\uBD84\uC740?",
+   opts:["F(n+1)","F(n)","F(n-1)","n"],ans:1,
+   fb:"M^n = [[F(n+1),F(n)],[F(n),F(n-1)]]. 2\uD0ED\uC758 \uACC4\uC0B0\uAE30\uB85C \uC9C1\uC811 \uD655\uC778\uD588\uB358 \uC131\uC9C8\uC785\uB2C8\uB2E4."},
+  {q:"\uBD84\uD560 \uC815\uBCF5 \uAC70\uB4ED\uC81C\uACF1\uC5D0\uC11C a^13 \uC740 \uC5B4\uB5BB\uAC8C \uBD84\uD574\uB418\uB098? (13 = 1101\u208D\u2082\u208E)",
+   opts:["a^13 = a^6 \u00D7 a^7","a^13 = a^8 \u00D7 a^4 \u00D7 a^1","a^13 = a^10 \u00D7 a^3","a^13 = (a^13)^1 \uADF8\uB300\uB85C"],ans:1,
+   fb:"\uC774\uC9C4\uBC95\uC5D0\uC11C 1\uC778 \uC790\uB9AC(8,4,1)\uC758 \uAC70\uB4ED\uC81C\uACF1\uB9CC \uACE8\uB77C \uACF1\uD569\uB2C8\uB2E4. base\uB294 \uC81C\uACF1\uB9CC \uBC18\uBCF5\uD558\uBA70 a^2, a^4, a^8\uC744 \uB9CC\uB4E4\uC5B4 \uC90D\uB2C8\uB2E4."},
+  {q:"F(n) = F(n-1) + F(n-2) \uC758 \uD2B9\uC131\uBC29\uC815\uC2DD\uC740?",
+   opts:["x\u00B2 = x - 1","x\u00B2 = 2x","x\u00B2 = x + 1","x = x + 1"],ans:2,
+   fb:"F(n)=x\u207F\uC744 \uB300\uC785\uD558\uACE0 x\u207F\u207B\u00B2\uB85C \uB098\uB204\uBA74 x\u00B2 = x + 1. \uACC4\uC218\uB97C \uADF8\uB300\uB85C \uC62E\uAE30\uBA74 \uB429\uB2C8\uB2E4."},
+  {q:"\uD589\uB82C \uAC70\uB4ED\uC81C\uACF1 \uCF54\uB4DC\uC5D0\uC11C \uACF1\uC148\uB9C8\uB2E4 % MOD \uB97C \uCDE8\uD558\uB294 \uAC00\uC7A5 \uD070 \uC774\uC720\uB294?",
+   opts:["\uC18D\uB3C4\uAC00 \uBE68\uB77C\uC838\uC11C","long long \uC624\uBC84\uD50C\uB85C \uBC29\uC9C0","\uCF54\uB4DC\uAC00 \uC9E7\uC544\uC838\uC11C","\uD544\uC218 \uC544\uB2D8"],ans:1,
+   fb:"\uC131\uBD84\uC774 \uCD5C\uB300 \uC57D 10^9 \u2192 \uACF1 \uD558\uB098\uAC00 \uC57D 10^18. mod \uC5C6\uC774 \uB354 \uD558\uBA74 long long \uBC94\uC704(9.2\u00D710^18)\uB97C \uB118\uC5B4 \uB2F5\uC774 \uAE68\uC9D1\uB2C8\uB2E4."}
+];
+var quizArea=document.getElementById("quizArea");
+var solved=[];
+document.getElementById("quizTotal").textContent=String(QUIZ.length);
+function updScore(){
+  var s=0;for(var i=0;i<solved.length;i++){if(solved[i]){s++;}}
+  document.getElementById("quizScore").textContent=String(s);
+}
+for(var qi=0;qi<QUIZ.length;qi++){
+  (function(q,idx){
+    solved.push(false);
+    var box=document.createElement("div");box.className="quiz-q";
+    var title=document.createElement("div");title.className="qtitle";
+    title.textContent="Q"+(idx+1)+". "+q.q;box.appendChild(title);
+    var fb=document.createElement("div");fb.className="quiz-fb";
+    var btns=[];
+    for(var oi=0;oi<q.opts.length;oi++){
+      (function(o,oidx){
+        var btn=document.createElement("button");btn.className="quiz-opt";
+        btn.textContent=String.fromCharCode(9312+oidx)+" "+o;
+        btn.addEventListener("click",function(){
+          if(solved[idx]){return;}
+          if(oidx===q.ans){
+            btn.classList.add("correct");
+            fb.style.display="block";fb.style.color="#4ade80";
+            fb.textContent="\u2705 \uC815\uB2F5! "+q.fb;
+            solved[idx]=true;updScore();
+            for(var bi=0;bi<btns.length;bi++){btns[bi].disabled=true;}
+          }else{
+            btn.classList.add("wrong");btn.disabled=true;
+            fb.style.display="block";fb.style.color="#f87171";
+            fb.textContent="\u274C \uC624\uB2F5\uC785\uB2C8\uB2E4. \uD78C\uD2B8: "+q.fb;
+          }
+        });
+        btns.push(btn);box.appendChild(btn);
+      })(q.opts[oi],oi);
+    }
+    box.appendChild(fb);
+    quizArea.appendChild(box);
+  })(QUIZ[qi],qi);
+}
+updScore();
+})();
+</script>
+</body>
+</html>

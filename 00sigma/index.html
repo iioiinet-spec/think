@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시그마(Σ) 완전 정복 — 정의부터 점화식, C 코딩까지</title>
+<style>
+:root{
+  --bg:#0a1930; --bg2:#0d2140; --panel:#112a4e; --panel2:#0f2447;
+  --line:#1e3a5f; --teal:#2dd4bf; --teal-dim:#14b8a6; --cyan:#67e8f9;
+  --orange:#ffb454; --red:#f87171; --green:#4ade80; --purple:#c4b5fd;
+  --text:#e6f1ff; --sub:#93b4d8; --code-bg:#0b1626;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;}
+header{background:linear-gradient(135deg,#0d2140 0%,#0a3d3a 100%);border-bottom:2px solid var(--teal);padding:28px 20px 22px;text-align:center;}
+header h1{font-size:1.7em;letter-spacing:-0.5px;}
+header h1 .sig{color:var(--teal);font-family:Georgia,serif;font-size:1.25em;}
+header p{color:var(--sub);margin-top:6px;font-size:0.95em;}
+.badge{display:inline-block;background:rgba(45,212,191,0.15);border:1px solid var(--teal-dim);color:var(--teal);border-radius:20px;padding:2px 12px;font-size:0.78em;margin-top:10px;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;background:var(--bg2);padding:10px 8px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);}
+nav button{background:transparent;border:1px solid var(--line);color:var(--sub);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.92em;font-family:inherit;transition:all .15s;}
+nav button:hover{border-color:var(--teal-dim);color:var(--text);}
+nav button.active{background:var(--teal);color:#04222c;font-weight:700;border-color:var(--teal);}
+main{max-width:980px;margin:0 auto;padding:24px 16px 80px;}
+.tab{display:none;}
+.tab.show{display:block;animation:fadein .25s;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+h2{color:var(--teal);font-size:1.35em;margin:26px 0 12px;padding-left:12px;border-left:4px solid var(--teal);}
+h3{color:var(--cyan);font-size:1.08em;margin:20px 0 8px;}
+p.desc{color:var(--text);margin:8px 0;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;}
+.card.tip{border-left:4px solid var(--orange);}
+.card.warn{border-left:4px solid var(--red);}
+.card.ok{border-left:4px solid var(--green);}
+.hl{color:var(--orange);font-weight:700;}
+.tl{color:var(--teal);font-weight:700;}
+.formula{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:10px 0;font-family:Georgia,'Times New Roman',serif;font-size:1.15em;text-align:center;overflow-x:auto;}
+.sigma-box{display:inline-flex;align-items:center;gap:8px;vertical-align:middle;}
+.sigma-stack{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1;}
+.sigma-stack .top{font-size:0.62em;color:var(--orange);}
+.sigma-stack .mid{font-size:2.1em;color:var(--teal);font-family:Georgia,serif;}
+.sigma-stack .bot{font-size:0.62em;color:var(--cyan);}
+.expr{font-style:italic;font-size:1.1em;}
+table.tbl{border-collapse:collapse;width:100%;margin:10px 0;font-size:0.95em;}
+table.tbl th,table.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:center;}
+table.tbl th{background:var(--bg2);color:var(--teal);}
+table.tbl td{background:var(--panel2);}
+pre.code{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:Consolas,'D2Coding',monospace;font-size:0.92em;line-height:1.55;margin:10px 0;color:#dbeafe;}
+pre.code .k{color:#7dd3fc;} pre.code .c{color:#6b8bb5;} pre.code .s{color:#fbbf24;} pre.code .n{color:#f0abfc;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0;}
+.controls label{color:var(--sub);font-size:0.92em;}
+.controls select,.controls input[type=range]{accent-color:var(--teal);}
+.controls select{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-family:inherit;}
+.btn{background:var(--teal);color:#04222c;border:none;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.95em;transition:transform .1s;}
+.btn:hover{transform:translateY(-1px);}
+.btn.sec{background:var(--bg2);color:var(--teal);border:1px solid var(--teal-dim);}
+.btn.warn{background:var(--orange);color:#3a2200;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.big-num{font-size:1.6em;color:var(--orange);font-weight:800;font-family:Consolas,monospace;}
+.expand-line{font-family:Consolas,monospace;font-size:1.05em;background:var(--code-bg);border-radius:8px;padding:12px 14px;margin:8px 0;overflow-x:auto;border:1px solid var(--line);min-height:48px;}
+.term-chip{display:inline-block;padding:1px 6px;border-radius:5px;margin:0 1px;}
+.term-chip.done{background:rgba(45,212,191,0.18);color:var(--teal);}
+.term-chip.now{background:var(--orange);color:#3a2200;font-weight:800;}
+.term-chip.wait{color:#4d6c94;}
+svg text{font-family:'Segoe UI','Malgun Gothic',sans-serif;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:760px){.grid2{grid-template-columns:1fr;}}
+.var-box{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;}
+.var-cell{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:10px 16px;text-align:center;min-width:90px;}
+.var-cell .vname{color:var(--sub);font-size:0.8em;font-family:Consolas,monospace;}
+.var-cell .vval{font-size:1.5em;font-weight:800;font-family:Consolas,monospace;color:var(--cyan);}
+.var-cell.flash .vval{color:var(--orange);}
+.codeline{display:block;padding:2px 10px;border-radius:6px;white-space:pre;}
+.codeline.cur{background:rgba(255,180,84,0.22);outline:1px solid var(--orange);}
+.quiz-q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0;}
+.quiz-q .qtitle{font-weight:700;margin-bottom:10px;}
+.quiz-opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 14px;margin:6px 0;cursor:pointer;font-family:inherit;font-size:0.95em;transition:border-color .15s;}
+.quiz-opt:hover{border-color:var(--teal-dim);}
+.quiz-opt.correct{background:rgba(74,222,128,0.15);border-color:var(--green);}
+.quiz-opt.wrong{background:rgba(248,113,113,0.15);border-color:var(--red);}
+.quiz-fb{margin-top:8px;font-size:0.92em;display:none;}
+.score-bar{background:var(--panel);border:1px solid var(--teal-dim);border-radius:12px;padding:14px 18px;margin:14px 0;text-align:center;font-size:1.1em;}
+.step-note{color:var(--sub);font-size:0.9em;margin-top:6px;min-height:24px;}
+.arrow-map{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:8px 0;}
+.arrow-map .m{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:Georgia,serif;text-align:center;}
+.arrow-map .m.codey{font-family:Consolas,monospace;}
+.arrow-map .a{color:var(--orange);font-size:1.3em;font-weight:800;}
+footer{text-align:center;color:#3f5e86;font-size:0.85em;padding:20px;border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="sig">Σ</span> 시그마 완전 정복</h1>
+  <p>정의 → 시각화 → 점화식 → C 언어 코딩으로 이어지는 한 번에 끝내는 강의</p>
+  <span class="badge">KOI · 정보올림피아드 대비 | 수학 ↔ 코딩 연결 강의</span>
+</header>
+<nav id="tabNav">
+  <button data-tab="t1" class="active">1. 시그마의 정의</button>
+  <button data-tab="t2">2. 시각화 시뮬레이터</button>
+  <button data-tab="t3">3. 점화식으로 보기</button>
+  <button data-tab="t4">4. C 코드 실행기</button>
+  <button data-tab="t5">5. 실수 포인트</button>
+  <button data-tab="t6">6. 도전 퀴즈</button>
+</nav>
+<main>
+
+<!-- ============ TAB 1 : 정의 ============ -->
+<section class="tab show" id="t1">
+  <h2>시그마(Σ)란 무엇인가?</h2>
+  <p class="desc">
+    수학에서 <span class="tl">Σ(시그마)</span>는 그리스 문자 S에 해당하며, <span class="hl">Sum(합)</span>의 머리글자입니다.
+    "규칙이 있는 수들을 <span class="hl">일일이 쓰지 않고 한 기호로 더하겠다</span>"는 약속이 바로 시그마 표기법입니다.
+  </p>
+
+  <div class="card">
+    <h3>시그마 기호의 해부도</h3>
+    <p class="desc">기호 하나에 <span class="tl">4가지 정보</span>가 들어 있습니다. 각 부분에 마우스를 올려 보세요.</p>
+    <div style="text-align:center;margin:10px 0;">
+      <svg id="anatomySvg" viewBox="0 0 640 300" width="100%" style="max-width:640px;">
+        <text x="238" y="178" font-size="110" fill="#2dd4bf" font-family="Georgia,serif" id="anSigma" style="cursor:pointer;">&#931;</text>
+        <text x="252" y="52" font-size="26" fill="#ffb454" id="anTop" style="cursor:pointer;font-style:italic;">n</text>
+        <text x="228" y="225" font-size="24" fill="#67e8f9" id="anBot" style="cursor:pointer;font-style:italic;">i = 1</text>
+        <text x="330" y="150" font-size="40" fill="#e6f1ff" id="anExpr" style="cursor:pointer;font-style:italic;">a<tspan baseline-shift="sub" font-size="26">i</tspan></text>
+        <line x1="220" y1="40" x2="120" y2="40" stroke="#ffb454" stroke-width="1.5"/>
+        <text x="10" y="36" font-size="14" fill="#ffb454">끝값(위끝): 여기까지 더한다</text>
+        <line x1="215" y1="218" x2="120" y2="248" stroke="#67e8f9" stroke-width="1.5"/>
+        <text x="10" y="268" font-size="14" fill="#67e8f9">시작값(아래끝): i가 1부터 출발</text>
+        <line x1="420" y1="138" x2="500" y2="110" stroke="#e6f1ff" stroke-width="1.5"/>
+        <text x="440" y="98" font-size="14" fill="#e6f1ff">더할 식(일반항)</text>
+        <line x1="255" y1="185" x2="500" y2="215" stroke="#2dd4bf" stroke-width="1.5"/>
+        <text x="440" y="238" font-size="14" fill="#2dd4bf">"모두 더하라"는 명령</text>
+        <text x="320" y="290" font-size="15" fill="#93b4d8" text-anchor="middle" id="anMsg">각 부분을 클릭하면 설명이 나옵니다</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>읽는 방법</h3>
+    <div class="formula">
+      <span class="sigma-box">
+        <span class="sigma-stack"><span class="top">5</span><span class="mid">&#931;</span><span class="bot">i=1</span></span>
+        <span class="expr">i</span>
+      </span>
+      &nbsp;=&nbsp; 1 + 2 + 3 + 4 + 5 &nbsp;=&nbsp; <span style="color:var(--orange);">15</span>
+    </div>
+    <p class="desc">
+      읽기: <span class="tl">"i가 1부터 5까지 변할 때, i를 모두 더하라"</span><br>
+      즉 i에 1, 2, 3, 4, 5를 <span class="hl">차례로 대입</span>하여 나온 값들을 전부 더하는 것입니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>직접 전개해 보기 (인터랙티브)</h3>
+    <p class="desc">일반항과 끝값 n을 바꾸면 시그마가 어떻게 <span class="hl">펼쳐지는지(전개)</span> 즉시 확인할 수 있습니다.</p>
+    <div class="controls">
+      <label>일반항:
+        <select id="exp1Expr">
+          <option value="i">i</option>
+          <option value="2i-1">2i - 1 (홀수)</option>
+          <option value="2i">2i (짝수)</option>
+          <option value="i*i">i&#178; (제곱수)</option>
+          <option value="c">3 (상수)</option>
+        </select>
+      </label>
+      <label>끝값 n: <input type="range" id="exp1N" min="1" max="10" value="5"> <span id="exp1NVal" class="tl">5</span></label>
+    </div>
+    <div class="formula" id="exp1Sigma"></div>
+    <div class="expand-line" id="exp1Line"></div>
+    <p class="desc">결과: <span class="big-num" id="exp1Sum">15</span></p>
+  </div>
+
+  <div class="card tip">
+    <h3>꼭 기억할 유명 공식 3가지</h3>
+    <table class="tbl">
+      <tr><th>시그마</th><th>공식</th><th>n=10일 때</th></tr>
+      <tr><td>1 + 2 + &#8230; + n</td><td class="tl">n(n+1)/2</td><td>55</td></tr>
+      <tr><td>1&#178; + 2&#178; + &#8230; + n&#178;</td><td class="tl">n(n+1)(2n+1)/6</td><td>385</td></tr>
+      <tr><td>1&#179; + 2&#179; + &#8230; + n&#179;</td><td class="tl">{n(n+1)/2}&#178;</td><td>3025</td></tr>
+    </table>
+    <p class="desc">공식을 쓰면 반복문 없이 <span class="hl">O(1)</span>로 답을 구할 수 있어, 정올에서 시간 초과를 피하는 핵심 무기가 됩니다.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 2 : 시각화 시뮬레이터 ============ -->
+<section class="tab" id="t2">
+  <h2>시그마 시각화 시뮬레이터</h2>
+  <p class="desc">
+    시그마는 결국 <span class="hl">"막대를 하나씩 쌓아 올리는 것"</span>과 같습니다.
+    한 단계씩 진행하며 각 항이 <span class="tl">누적 합</span>에 더해지는 과정을 눈으로 확인하세요.
+  </p>
+  <div class="card">
+    <div class="controls">
+      <label>일반항:
+        <select id="simExpr">
+          <option value="i">i</option>
+          <option value="2i-1">2i - 1</option>
+          <option value="2i">2i</option>
+          <option value="i*i">i&#178;</option>
+          <option value="c">3 (상수)</option>
+        </select>
+      </label>
+      <label>n: <input type="range" id="simN" min="2" max="12" value="6"> <span id="simNVal" class="tl">6</span></label>
+      <button class="btn sec" id="simReset">&#8634; 처음부터</button>
+      <button class="btn" id="simStep">한 단계 &#9654;</button>
+      <button class="btn warn" id="simAuto">자동 재생</button>
+    </div>
+    <div class="formula" id="simSigma"></div>
+    <div class="expand-line" id="simLine"></div>
+    <svg id="simSvg" viewBox="0 0 900 340" width="100%" style="background:#0b1626;border-radius:10px;border:1px solid var(--line);"></svg>
+    <div class="var-box">
+      <div class="var-cell"><div class="vname">현재 i</div><div class="vval" id="simVarI">-</div></div>
+      <div class="var-cell"><div class="vname">이번 항 a_i</div><div class="vval" id="simVarT">-</div></div>
+      <div class="var-cell"><div class="vname">누적 합 S</div><div class="vval" id="simVarS">0</div></div>
+    </div>
+    <p class="step-note" id="simNote">아직 아무것도 더하지 않았습니다. S = 0에서 출발합니다.</p>
+  </div>
+  <div class="card ok">
+    <h3>이 그림이 말해 주는 것</h3>
+    <p class="desc">
+      &#9312; 시그마는 <span class="tl">순서대로 하나씩</span> 더하는 절차이다. &#9313; 매 순간 필요한 것은
+      <span class="hl">지금까지의 합(누적 변수)</span>과 <span class="hl">이번에 더할 항</span> 딱 두 가지다.
+      &#9314; 이 구조가 그대로 <span class="tl">점화식</span>이 되고, C 언어의 <span class="tl">반복문 + 누적 변수</span>가 됩니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 3 : 점화식 ============ -->
+<section class="tab" id="t3">
+  <h2>점화식으로 다시 보는 시그마</h2>
+  <p class="desc">
+    <span class="tl">점화식(recurrence relation)</span>이란 <span class="hl">"앞 단계의 결과를 이용해 다음 단계를 정의하는 식"</span>입니다.
+    시그마를 점화식으로 바꾸는 순간, 코딩으로 가는 문이 열립니다.
+  </p>
+
+  <div class="card">
+    <h3>합 S(k)를 점화식으로 정의하기</h3>
+    <p class="desc">"1부터 k까지의 합"을 S(k)라고 하면, 새 항 하나를 더하는 규칙은 다음과 같습니다.</p>
+    <div class="formula">
+      S(0) = 0 &nbsp;&nbsp;(아직 아무것도 안 더함)<br>
+      S(k) = S(k-1) + a<sub>k</sub> &nbsp;&nbsp;(이전 합에 k번째 항을 더한다)
+    </div>
+    <p class="desc">이 두 줄이 시그마의 <span class="hl">전부</span>입니다. 초기값 1줄 + 반복 규칙 1줄.</p>
+  </div>
+
+  <div class="card">
+    <h3>점화식 단계별 실행기</h3>
+    <div class="controls">
+      <label>일반항:
+        <select id="recExpr">
+          <option value="i">a_k = k</option>
+          <option value="2i-1">a_k = 2k-1</option>
+          <option value="i*i">a_k = k&#178;</option>
+        </select>
+      </label>
+      <label>n: <input type="range" id="recN" min="3" max="10" value="5"> <span id="recNVal" class="tl">5</span></label>
+      <button class="btn sec" id="recReset">&#8634; 처음부터</button>
+      <button class="btn" id="recStep">다음 단계 &#9654;</button>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>k</th><th>점화식 계산</th><th>S(k)</th></tr></thead>
+      <tbody id="recBody"></tbody>
+    </table>
+    <p class="step-note" id="recNote">S(0) = 0 부터 시작합니다. [다음 단계]를 눌러 보세요.</p>
+  </div>
+
+  <div class="card tip">
+    <h3>점화식 &#8596; C 코드 1:1 번역표</h3>
+    <div class="arrow-map">
+      <div class="m">S(0) = 0</div><div class="a">&#8594;</div><div class="m codey">int sum = 0;</div>
+      <div class="m">k = 1, 2, &#8230;, n</div><div class="a">&#8594;</div><div class="m codey">for (i = 1; i &lt;= n; i++)</div>
+      <div class="m">S(k) = S(k-1) + a<sub>k</sub></div><div class="a">&#8594;</div><div class="m codey">sum = sum + a(i);</div>
+    </div>
+    <p class="desc">
+      코드의 <span class="tl">sum</span>은 "직전까지의 합 S(k-1)"을 담고 있다가, 대입문이 실행되는 순간 "S(k)"로 갱신됩니다.
+      변수 하나가 점화식의 <span class="hl">S(k-1)과 S(k) 역할을 번갈아</span> 맡는 것이 핵심입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 4 : C 코드 실행기 ============ -->
+<section class="tab" id="t4">
+  <h2>C 코드 한 줄씩 실행하기</h2>
+  <p class="desc">
+    점화식을 그대로 옮긴 C 프로그램입니다. <span class="hl">한 줄씩 실행</span>하며 변수 sum과 i가
+    점화식 S(k) = S(k-1) + k 를 어떻게 수행하는지 관찰하세요. (n = 5)
+  </p>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <pre class="code" id="cCodeBox"></pre>
+        <div class="controls">
+          <button class="btn sec" id="cReset">&#8634; 처음</button>
+          <button class="btn sec" id="cPrev">&#9664; 이전</button>
+          <button class="btn" id="cNext">다음 &#9654;</button>
+          <button class="btn warn" id="cAuto">자동 실행</button>
+        </div>
+      </div>
+      <div>
+        <h3>변수 상태</h3>
+        <div class="var-box">
+          <div class="var-cell"><div class="vname">n</div><div class="vval" id="cVarN">-</div></div>
+          <div class="var-cell"><div class="vname">i</div><div class="vval" id="cVarI">-</div></div>
+          <div class="var-cell"><div class="vname">sum</div><div class="vval" id="cVarS">-</div></div>
+        </div>
+        <h3>점화식 대응</h3>
+        <div class="formula" id="cRecView" style="font-size:1em;">-</div>
+        <h3>출력 콘솔</h3>
+        <pre class="code" id="cConsole" style="min-height:52px;color:#4ade80;"></pre>
+        <p class="step-note" id="cNote">프로그램이 시작되기 전입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>같은 답, 두 가지 길: 반복문 vs 공식</h3>
+    <div class="grid2">
+      <div>
+        <h3 style="color:var(--orange);">방법 1 — 점화식(반복문): O(n)</h3>
+        <pre class="code">int sum = 0;
+for (int i = 1; i &lt;= n; i++) {
+    sum += i;      <span class="c">/* S(i)=S(i-1)+i */</span>
+}</pre>
+      </div>
+      <div>
+        <h3 style="color:var(--green);">방법 2 — 합 공식: O(1)</h3>
+        <pre class="code">int sum = n * (n + 1) / 2;
+<span class="c">/* n이 커도 계산 1번! */</span></pre>
+      </div>
+    </div>
+    <p class="desc">
+      n이 10억이라면? 방법 1은 10억 번 반복하지만 방법 2는 <span class="hl">곱셈 한 번</span>입니다.
+      단, n이 크면 <span class="tl">int 범위(약 21억)를 넘으므로 long long</span>을 써야 합니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 5 : 실수 포인트 ============ -->
+<section class="tab" id="t5">
+  <h2>자주 하는 실수 포인트</h2>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 1 — sum을 초기화하지 않음</h3>
+    <pre class="code">int sum;              <span class="c">/* 쓰레기값! */</span>
+for (int i = 1; i &lt;= n; i++) sum += i;</pre>
+    <p class="desc">점화식의 <span class="tl">S(0) = 0</span>이 빠진 것과 같습니다. 초기값 없는 점화식은 정의되지 않습니다. 반드시 <span class="hl">int sum = 0;</span></p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 2 — 경계(시작·끝) 착각: i &lt; n vs i &lt;= n</h3>
+    <pre class="code">for (int i = 1; i &lt; n; i++)   <span class="c">/* n-1까지만 더해짐! */</span></pre>
+    <p class="desc">시그마의 위끝이 n이면 <span class="hl">i &lt;= n</span>이어야 합니다. 아래끝이 0인지 1인지도 문제마다 반드시 확인하세요. 항의 개수는 <span class="tl">(위끝 - 아래끝 + 1)</span>개입니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 3 — 오버플로</h3>
+    <pre class="code">int n = 100000;
+int sum = n * (n + 1) / 2;    <span class="c">/* int * int 에서 이미 터짐 */</span></pre>
+    <p class="desc">n = 100000이면 합이 약 50억으로 int 범위를 초과합니다. <span class="hl">long long sum = (long long)n * (n + 1) / 2;</span> 처럼 계산 전에 형을 올려야 합니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 4 — 상수의 시그마를 상수로 착각</h3>
+    <div class="formula">
+      <span class="sigma-box"><span class="sigma-stack"><span class="top">n</span><span class="mid">&#931;</span><span class="bot">i=1</span></span><span class="expr">3</span></span>
+      &nbsp;=&nbsp; 3n &nbsp;&nbsp;(3이 아니다!)
+    </div>
+    <p class="desc">상수 c를 n번 더하므로 결과는 <span class="hl">c &times; n</span>입니다. 반복문으로 생각하면 자명합니다: 매 회전마다 3이 더해집니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 5 — 곱까지 분배된다고 착각</h3>
+    <div class="formula" style="font-size:1em;">
+      &#931;(a<sub>i</sub> + b<sub>i</sub>) = &#931;a<sub>i</sub> + &#931;b<sub>i</sub> &nbsp;(&#10004; 덧셈은 분배됨)<br>
+      &#931;(a<sub>i</sub> &times; b<sub>i</sub>) &ne; (&#931;a<sub>i</sub>) &times; (&#931;b<sub>i</sub>) &nbsp;(&#10008; 곱은 안 됨)
+    </div>
+    <p class="desc">예: (1&times;1 + 2&times;2) = 5 이지만 (1+2)&times;(1+2) = 9. 시그마는 <span class="tl">덧셈·상수배</span>에만 선형입니다.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 6 : 퀴즈 ============ -->
+<section class="tab" id="t6">
+  <h2>도전 퀴즈</h2>
+  <p class="desc">모든 문제를 풀면 점수가 표시됩니다. 오답이어도 해설을 읽고 다시 도전해 보세요.</p>
+  <div class="score-bar">점수: <span class="big-num" id="quizScore">0</span> / <span id="quizTotal">6</span></div>
+  <div id="quizArea"></div>
+</section>
+
+</main>
+<footer>세영코딩연구소 · 시그마 인터랙티브 강의 — 수학 기호에서 C 코드까지</footer>
+<script>
+(function(){
+"use strict";
+
+/* ---------- 공통: 탭 ---------- */
+var nav=document.getElementById("tabNav");
+var tabBtns=nav.querySelectorAll("button");
+function showTab(id){
+  var tabs=document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++){tabs[i].classList.remove("show");}
+  for(var j=0;j<tabBtns.length;j++){tabBtns[j].classList.toggle("active",tabBtns[j].getAttribute("data-tab")===id);}
+  document.getElementById(id).classList.add("show");
+  window.scrollTo(0,0);
+}
+for(var b=0;b<tabBtns.length;b++){
+  (function(btn){btn.addEventListener("click",function(){showTab(btn.getAttribute("data-tab"));});})(tabBtns[b]);
+}
+
+/* ---------- 일반항 정의 ---------- */
+var EXPRS={
+  "i":   {label:"i",      tex:"i",        fn:function(i){return i;}},
+  "2i-1":{label:"2i-1",   tex:"2i\u22121",fn:function(i){return 2*i-1;}},
+  "2i":  {label:"2i",     tex:"2i",       fn:function(i){return 2*i;}},
+  "i*i": {label:"i\u00B2",tex:"i\u00B2",  fn:function(i){return i*i;}},
+  "c":   {label:"3",      tex:"3",        fn:function(){return 3;}}
+};
+function sigmaHTML(exprKey,n){
+  var e=EXPRS[exprKey];
+  var box=document.createElement("span");box.className="sigma-box";
+  var st=document.createElement("span");st.className="sigma-stack";
+  var t=document.createElement("span");t.className="top";t.textContent=String(n);
+  var m=document.createElement("span");m.className="mid";m.textContent="\u03A3";
+  var bt=document.createElement("span");bt.className="bot";bt.textContent="i=1";
+  st.appendChild(t);st.appendChild(m);st.appendChild(bt);
+  var ex=document.createElement("span");ex.className="expr";ex.textContent=e.tex;
+  box.appendChild(st);box.appendChild(ex);
+  return box;
+}
+function terms(exprKey,n){var a=[];for(var i=1;i<=n;i++){a.push(EXPRS[exprKey].fn(i));}return a;}
+function sumArr(a,k){var s=0;for(var i=0;i<k;i++){s+=a[i];}return s;}
+
+/* ---------- 탭1: 해부도 클릭 ---------- */
+var anMsg=document.getElementById("anMsg");
+var anParts=[
+  ["anSigma","\u03A3 : \uADF8\uB9AC\uC2A4 \uBB38\uC790 \uC2DC\uADF8\uB9C8. \u0022\uC544\uB798 \uADDC\uCE59\uB300\uB85C \uBAA8\uB450 \uB354\uD558\uB77C\u0022\uB294 \uBA85\uB839\uC785\uB2C8\uB2E4."],
+  ["anTop","\uC704\uB05D n : i\uAC00 \uC5B4\uB514\uAE4C\uC9C0 \uCEE4\uC9C0\uBA70 \uB354\uD560\uC9C0 \uC54C\uB824\uC90D\uB2C8\uB2E4. \uBC18\uBCF5\uBB38\uC758 i \u003C= n \uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4."],
+  ["anBot","\uC544\uB798\uB05D i=1 : \uC5B4\uB514\uC11C \uCD9C\uBC1C\uD560\uC9C0 \uC54C\uB824\uC90D\uB2C8\uB2E4. \uBC18\uBCF5\uBB38\uC758 int i = 1 \uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4."],
+  ["anExpr","\uC77C\uBC18\uD56D a_i : \uB9E4\uBC88 \uC2E4\uC81C\uB85C \uB354\uD574\uC9C0\uB294 \uC2DD. \uBC18\uBCF5\uBB38 \uBAB8\uD1B5\uC758 sum += a(i) \uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4."]
+];
+for(var p=0;p<anParts.length;p++){
+  (function(id,msg){
+    var el=document.getElementById(id);
+    el.addEventListener("click",function(){anMsg.textContent=msg;anMsg.setAttribute("fill","#ffb454");});
+    el.addEventListener("mouseenter",function(){el.setAttribute("opacity","0.75");});
+    el.addEventListener("mouseleave",function(){el.setAttribute("opacity","1");});
+  })(anParts[p][0],anParts[p][1]);
+}
+
+/* ---------- 탭1: 전개 탐구 ---------- */
+var exp1Expr=document.getElementById("exp1Expr"),exp1N=document.getElementById("exp1N");
+function renderExp1(){
+  var key=exp1Expr.value,n=parseInt(exp1N.value,10);
+  document.getElementById("exp1NVal").textContent=String(n);
+  var sig=document.getElementById("exp1Sigma");
+  while(sig.firstChild){sig.removeChild(sig.firstChild);}
+  sig.appendChild(sigmaHTML(key,n));
+  var ts=terms(key,n);
+  document.getElementById("exp1Line").textContent=ts.join(" + ")+" = "+sumArr(ts,ts.length);
+  document.getElementById("exp1Sum").textContent=String(sumArr(ts,ts.length));
+}
+exp1Expr.addEventListener("change",renderExp1);
+exp1N.addEventListener("input",renderExp1);
+renderExp1();
+
+/* ---------- 탭2: 시뮬레이터 ---------- */
+var SVGNS="http://www.w3.org/2000/svg";
+var simExpr=document.getElementById("simExpr"),simN=document.getElementById("simN");
+var simSvg=document.getElementById("simSvg");
+var simState={k:0,timer:null};
+function simTerms(){return terms(simExpr.value,parseInt(simN.value,10));}
+function stopAuto(){if(simState.timer){clearInterval(simState.timer);simState.timer=null;document.getElementById("simAuto").textContent="\uC790\uB3D9 \uC7AC\uC0DD";}}
+function simDrawSigma(){
+  var sig=document.getElementById("simSigma");
+  while(sig.firstChild){sig.removeChild(sig.firstChild);}
+  sig.appendChild(sigmaHTML(simExpr.value,parseInt(simN.value,10)));
+}
+function simDrawLine(){
+  var ts=simTerms(),k=simState.k;
+  var line=document.getElementById("simLine");
+  while(line.firstChild){line.removeChild(line.firstChild);}
+  for(var i=0;i<ts.length;i++){
+    if(i>0){var plus=document.createElement("span");plus.textContent=" + ";plus.style.color="#4d6c94";line.appendChild(plus);}
+    var chip=document.createElement("span");chip.className="term-chip "+(i<k-1?"done":(i===k-1?"now":"wait"));
+    chip.textContent=String(ts[i]);line.appendChild(chip);
+  }
+  var eq=document.createElement("span");eq.textContent="  \u2192  S = "+sumArr(ts,k);
+  eq.style.color="#ffb454";eq.style.fontWeight="700";line.appendChild(eq);
+}
+function simDrawBars(){
+  var ts=simTerms(),k=simState.k,n=ts.length;
+  while(simSvg.firstChild){simSvg.removeChild(simSvg.firstChild);}
+  var W=900,H=340,padL=50,padB=42,padT=24;
+  var maxV=Math.max.apply(null,ts);
+  var chartW=W-padL-260,chartH=H-padT-padB;
+  var bw=Math.min(56,chartW/n*0.7),gap=(chartW-bw*n)/(n+1);
+  for(var i=0;i<n;i++){
+    var v=ts[i],bh=v/maxV*chartH;
+    var x=padL+gap+i*(bw+gap),y=H-padB-bh;
+    var r=document.createElementNS(SVGNS,"rect");
+    r.setAttribute("x",x);r.setAttribute("y",y);r.setAttribute("width",bw);r.setAttribute("height",Math.max(bh,2));
+    r.setAttribute("rx",4);
+    r.setAttribute("fill",i<k-1?"#14b8a6":(i===k-1?"#ffb454":"#1e3a5f"));
+    simSvg.appendChild(r);
+    var tv=document.createElementNS(SVGNS,"text");
+    tv.setAttribute("x",x+bw/2);tv.setAttribute("y",y-6);tv.setAttribute("text-anchor","middle");
+    tv.setAttribute("font-size","14");tv.setAttribute("fill",i<k?"#e6f1ff":"#4d6c94");
+    tv.textContent=String(v);simSvg.appendChild(tv);
+    var ti=document.createElementNS(SVGNS,"text");
+    ti.setAttribute("x",x+bw/2);ti.setAttribute("y",H-padB+20);ti.setAttribute("text-anchor","middle");
+    ti.setAttribute("font-size","13");ti.setAttribute("fill","#67e8f9");
+    ti.textContent="i="+(i+1);simSvg.appendChild(ti);
+  }
+  /* 누적 게이지 */
+  var total=sumArr(ts,n),cur=sumArr(ts,k);
+  var gx=W-190,gw=64,gy=padT,gh=H-padT-padB;
+  var frame=document.createElementNS(SVGNS,"rect");
+  frame.setAttribute("x",gx);frame.setAttribute("y",gy);frame.setAttribute("width",gw);frame.setAttribute("height",gh);
+  frame.setAttribute("fill","#0d2140");frame.setAttribute("stroke","#1e3a5f");frame.setAttribute("rx",6);
+  simSvg.appendChild(frame);
+  var fh=total>0?cur/total*gh:0;
+  var fill=document.createElementNS(SVGNS,"rect");
+  fill.setAttribute("x",gx);fill.setAttribute("y",gy+gh-fh);fill.setAttribute("width",gw);fill.setAttribute("height",fh);
+  fill.setAttribute("fill","#2dd4bf");fill.setAttribute("rx",6);
+  simSvg.appendChild(fill);
+  var lab=document.createElementNS(SVGNS,"text");
+  lab.setAttribute("x",gx+gw/2);lab.setAttribute("y",gy+gh+22);lab.setAttribute("text-anchor","middle");
+  lab.setAttribute("font-size","13");lab.setAttribute("fill","#93b4d8");
+  lab.textContent="\uB204\uC801 \uD569";simSvg.appendChild(lab);
+  var num=document.createElementNS(SVGNS,"text");
+  num.setAttribute("x",gx+gw/2);num.setAttribute("y",gy-6);num.setAttribute("text-anchor","middle");
+  num.setAttribute("font-size","17");num.setAttribute("fill","#ffb454");num.setAttribute("font-weight","700");
+  num.textContent=cur+" / "+total;simSvg.appendChild(num);
+}
+function simRender(){
+  var ts=simTerms(),k=simState.k;
+  document.getElementById("simNVal").textContent=simN.value;
+  simDrawSigma();simDrawLine();simDrawBars();
+  document.getElementById("simVarI").textContent=k>0?String(k):"-";
+  document.getElementById("simVarT").textContent=k>0?String(ts[k-1]):"-";
+  document.getElementById("simVarS").textContent=String(sumArr(ts,k));
+  var note=document.getElementById("simNote");
+  if(k===0){note.textContent="\uC544\uC9C1 \uC544\uBB34\uAC83\uB3C4 \uB354\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. S = 0\uC5D0\uC11C \uCD9C\uBC1C\uD569\uB2C8\uB2E4.";}
+  else if(k<ts.length){note.textContent="i = "+k+" : \uC774\uC804 \uD569 "+sumArr(ts,k-1)+" \uC5D0 "+ts[k-1]+" \uC744(\uB97C) \uB354\uD574 S = "+sumArr(ts,k)+" \uAC00 \uB418\uC5C8\uC2B5\uB2C8\uB2E4.";}
+  else{note.textContent="\uC644\uB8CC! \uCD5C\uC885 \uD569 S = "+sumArr(ts,ts.length)+" \uC785\uB2C8\uB2E4. \uC774 \uACFC\uC815\uC774 \uBC14\uB85C \uC2DC\uADF8\uB9C8\uC785\uB2C8\uB2E4.";}
+}
+function simStepFn(){
+  var n=simTerms().length;
+  if(simState.k<n){simState.k++;simRender();}
+  else{stopAuto();}
+}
+document.getElementById("simStep").addEventListener("click",function(){stopAuto();simStepFn();});
+document.getElementById("simReset").addEventListener("click",function(){stopAuto();simState.k=0;simRender();});
+document.getElementById("simAuto").addEventListener("click",function(){
+  if(simState.timer){stopAuto();return;}
+  if(simState.k>=simTerms().length){simState.k=0;}
+  this.textContent="\u23F8 \uC815\uC9C0";
+  simState.timer=setInterval(function(){
+    if(simState.k>=simTerms().length){stopAuto();return;}
+    simStepFn();
+  },700);
+});
+simExpr.addEventListener("change",function(){stopAuto();simState.k=0;simRender();});
+simN.addEventListener("input",function(){stopAuto();simState.k=0;simRender();});
+simRender();
+
+/* ---------- 탭3: 점화식 실행기 ---------- */
+var recExpr=document.getElementById("recExpr"),recN=document.getElementById("recN");
+var recState={k:0};
+function recTerms(){return terms(recExpr.value,parseInt(recN.value,10));}
+function recRender(){
+  document.getElementById("recNVal").textContent=recN.value;
+  var body=document.getElementById("recBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  var ts=recTerms();
+  var tr0=document.createElement("tr");
+  var c1=document.createElement("td");c1.textContent="0";
+  var c2=document.createElement("td");c2.textContent="\uCD08\uAE30\uAC12 (\uC544\uBB34\uAC83\uB3C4 \uC548 \uB354\uD568)";
+  var c3=document.createElement("td");c3.textContent="0";c3.style.color="#2dd4bf";c3.style.fontWeight="700";
+  tr0.appendChild(c1);tr0.appendChild(c2);tr0.appendChild(c3);
+  body.appendChild(tr0);
+  for(var k=1;k<=recState.k;k++){
+    var prev=sumArr(ts,k-1),cur=sumArr(ts,k);
+    var tr=document.createElement("tr");
+    var a=document.createElement("td");a.textContent=String(k);
+    var btd=document.createElement("td");
+    btd.textContent="S("+k+") = S("+(k-1)+") + "+ts[k-1]+" = "+prev+" + "+ts[k-1];
+    var ctd=document.createElement("td");ctd.textContent=String(cur);
+    ctd.style.color=(k===recState.k)?"#ffb454":"#2dd4bf";ctd.style.fontWeight="700";
+    tr.appendChild(a);tr.appendChild(btd);tr.appendChild(ctd);
+    body.appendChild(tr);
+  }
+  var note=document.getElementById("recNote");
+  var n=ts.length;
+  if(recState.k===0){note.textContent="S(0) = 0 \uBD80\uD130 \uC2DC\uC791\uD569\uB2C8\uB2E4. [\uB2E4\uC74C \uB2E8\uACC4]\uB97C \uB20C\uB7EC \uBCF4\uC138\uC694.";}
+  else if(recState.k<n){note.textContent="S("+recState.k+") \uAE4C\uC9C0 \uACC4\uC0B0\uD588\uC2B5\uB2C8\uB2E4. \uC55E \uACB0\uACFC\uB97C \uC7AC\uC0AC\uC6A9\uD558\uBBC0\uB85C \uACC4\uC0B0\uC740 \uB9E4\uBC88 \uB367\uC148 1\uBC88\uBFD0\uC785\uB2C8\uB2E4.";}
+  else{note.textContent="\uC644\uB8CC! S("+n+") = "+sumArr(ts,n)+" . \uC810\uD654\uC2DD\uC744 n\uBC88 \uC801\uC6A9\uD558\uBA74 \uC2DC\uADF8\uB9C8\uC640 \uAC19\uC740 \uB2F5\uC744 \uC5BB\uC2B5\uB2C8\uB2E4.";}
+}
+document.getElementById("recStep").addEventListener("click",function(){
+  if(recState.k<recTerms().length){recState.k++;recRender();}
+});
+document.getElementById("recReset").addEventListener("click",function(){recState.k=0;recRender();});
+recExpr.addEventListener("change",function(){recState.k=0;recRender();});
+recN.addEventListener("input",function(){recState.k=0;recRender();});
+recRender();
+
+/* ---------- 탭4: C 코드 실행기 ---------- */
+var C_LINES=[
+  "#include \u003Cstdio.h\u003E",
+  "",
+  "int main() {",
+  "    int n = 5;",
+  "    int sum = 0;            /* S(0) = 0 */",
+  "    for (int i = 1; i \u003C= n; i++) {",
+  "        sum = sum + i;      /* S(i) = S(i-1) + i */",
+  "    }",
+  "    printf(\u0022%d\\n\u0022, sum);",
+  "    return 0;",
+  "}"
+];
+function buildTrace(){
+  var tr=[],n=5,sum=null,i=null;
+  tr.push({ln:3,n:5,i:null,s:null,rec:"-",out:"",note:"n\uC5D0 5\uB97C \uC800\uC7A5\uD569\uB2C8\uB2E4."});
+  tr.push({ln:4,n:5,i:null,s:0,rec:"S(0) = 0",out:"",note:"\uB204\uC801 \uBCC0\uC218 sum\uC744 0\uC73C\uB85C \uCD08\uAE30\uD654 \u2014 \uC810\uD654\uC2DD\uC758 \uCD08\uAE30\uAC12\uC785\uB2C8\uB2E4."});
+  sum=0;
+  for(i=1;i<=n;i++){
+    tr.push({ln:5,n:5,i:i,s:sum,rec:"k = "+i+" \uD68C\uC804 \uC2DC\uC791",out:"",note:"\uC870\uAC74 i \u003C= n \uD655\uC778: "+i+" \u003C= 5 \uC774\uBBC0\uB85C \uBC18\uBCF5\uBB38 \uBAB8\uD1B5 \uC2E4\uD589."});
+    var prev=sum;sum+=i;
+    tr.push({ln:6,n:5,i:i,s:sum,rec:"S("+i+") = S("+(i-1)+") + "+i+" = "+prev+" + "+i+" = "+sum,out:"",note:"sum\uC774 "+prev+" \uC5D0\uC11C "+sum+" \uC73C\uB85C \uAC31\uC2E0\uB418\uC5C8\uC2B5\uB2C8\uB2E4."});
+  }
+  tr.push({ln:5,n:5,i:6,s:sum,rec:"\uBC18\uBCF5 \uC885\uB8CC",out:"",note:"\uC870\uAC74 \uD655\uC778: 6 \u003C= 5 \uAC70\uC9D3 \u2192 \uBC18\uBCF5\uBB38 \uD0C8\uCD9C."});
+  tr.push({ln:8,n:5,i:null,s:sum,rec:"\uCD5C\uC885 S(5) = "+sum,out:String(sum),note:"\uACB0\uACFC "+sum+" \uCD9C\uB825. \uC2DC\uADF8\uB9C8 1+2+3+4+5\uC640 \uC77C\uCE58\uD569\uB2C8\uB2E4."});
+  tr.push({ln:9,n:5,i:null,s:sum,rec:"\uD504\uB85C\uADF8\uB7A8 \uC885\uB8CC",out:String(sum),note:"main \uD568\uC218\uAC00 0\uC744 \uBC18\uD658\uD558\uBA70 \uC885\uB8CC\uD569\uB2C8\uB2E4."});
+  return tr;
+}
+var C_TRACE=buildTrace();
+var cState={step:-1,timer:null};
+function cStopAuto(){if(cState.timer){clearInterval(cState.timer);cState.timer=null;document.getElementById("cAuto").textContent="\uC790\uB3D9 \uC2E4\uD589";}}
+function cRenderCode(){
+  var box=document.getElementById("cCodeBox");
+  while(box.firstChild){box.removeChild(box.firstChild);}
+  var curLn=cState.step>=0?C_TRACE[cState.step].ln:-1;
+  for(var i=0;i<C_LINES.length;i++){
+    var sp=document.createElement("span");
+    sp.className="codeline"+(i===curLn?" cur":"");
+    sp.textContent=C_LINES[i]===""?" ":C_LINES[i];
+    box.appendChild(sp);
+  }
+}
+function cRender(){
+  cRenderCode();
+  var st=cState.step>=0?C_TRACE[cState.step]:null;
+  document.getElementById("cVarN").textContent=st&&st.n!==null?String(st.n):"-";
+  document.getElementById("cVarI").textContent=st&&st.i!==null?String(st.i):"-";
+  document.getElementById("cVarS").textContent=st&&st.s!==null?String(st.s):"-";
+  document.getElementById("cRecView").textContent=st?st.rec:"-";
+  document.getElementById("cConsole").textContent=st?st.out:"";
+  document.getElementById("cNote").textContent=st?st.note:"\uD504\uB85C\uADF8\uB7A8\uC774 \uC2DC\uC791\uB418\uAE30 \uC804\uC785\uB2C8\uB2E4.";
+  document.getElementById("cPrev").disabled=cState.step<=0;
+  document.getElementById("cNext").disabled=cState.step>=C_TRACE.length-1;
+}
+document.getElementById("cNext").addEventListener("click",function(){cStopAuto();if(cState.step<C_TRACE.length-1){cState.step++;cRender();}});
+document.getElementById("cPrev").addEventListener("click",function(){cStopAuto();if(cState.step>0){cState.step--;cRender();}});
+document.getElementById("cReset").addEventListener("click",function(){cStopAuto();cState.step=-1;cRender();});
+document.getElementById("cAuto").addEventListener("click",function(){
+  if(cState.timer){cStopAuto();return;}
+  if(cState.step>=C_TRACE.length-1){cState.step=-1;}
+  this.textContent="\u23F8 \uC815\uC9C0";
+  cState.timer=setInterval(function(){
+    if(cState.step>=C_TRACE.length-1){cStopAuto();return;}
+    cState.step++;cRender();
+  },800);
+});
+cRender();
+
+/* ---------- 탭6: 퀴즈 ---------- */
+var QUIZ=[
+  {q:"\u03A3 (i=1\uBD80\uD130 4\uAE4C\uC9C0) i \uC758 \uAC12\uC740?",
+   opts:["4","10","24","16"],ans:1,
+   fb:"1+2+3+4 = 10 \uC785\uB2C8\uB2E4. \uACF5\uC2DD\uC73C\uB85C\uB294 4\u00D75/2 = 10."},
+  {q:"\u03A3 (i=1\uBD80\uD130 n\uAE4C\uC9C0) 5 \uC758 \uAC12\uC740?",
+   opts:["5","n","5n","5+n"],ans:2,
+   fb:"\uC0C1\uC218 5\uB97C n\uBC88 \uB354\uD558\uBBC0\uB85C 5n. \uBC18\uBCF5\uBB38\uC73C\uB85C \uC0DD\uAC01\uD558\uBA74 \uB9E4 \uD68C\uC804 5\uAC00 \uB354\uD574\uC9D1\uB2C8\uB2E4."},
+  {q:"\uC810\uD654\uC2DD S(k) = S(k-1) + a_k \uC5D0\uC11C S(0) = 0 \uC774 \uD558\uB294 \uC5ED\uD560\uC740?",
+   opts:["\uB9C8\uC9C0\uB9C9 \uD56D\uC744 \uC815\uD55C\uB2E4","\uCD08\uAE30\uAC12(\uCD9C\uBC1C\uC810)\uC744 \uC815\uD55C\uB2E4","\uD56D\uC758 \uAC1C\uC218\uB97C \uC815\uD55C\uB2E4","\uC544\uBB34 \uC5ED\uD560\uB3C4 \uC5C6\uB2E4"],ans:1,
+   fb:"\uCD08\uAE30\uAC12\uC774 \uC5C6\uC73C\uBA74 \uC810\uD654\uC2DD\uC740 \uC815\uC758\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. C \uCF54\uB4DC\uC758 int sum = 0; \uC5D0 \uD574\uB2F9\uD569\uB2C8\uB2E4."},
+  {q:"n = 5 \uC77C \uB54C, for (int i = 1; i \u003C n; i++) sum += i; \uC758 \uACB0\uACFC sum\uC740? (sum\uC740 0\uC5D0\uC11C \uC2DC\uC791)",
+   opts:["15","10","5","20"],ans:1,
+   fb:"i \u003C n \uC774\uBBC0\uB85C i\uB294 4\uAE4C\uC9C0\uB9CC! 1+2+3+4 = 10. \uC704\uB05D\uC774 n\uC774\uBA74 i \u003C= n \uC744 \uC368\uC57C \uD569\uB2C8\uB2E4."},
+  {q:"\u03A3 (i=3\uBD80\uD130 7\uAE4C\uC9C0) a_i \uC5D0\uC11C \uB354\uD574\uC9C0\uB294 \uD56D\uC758 \uAC1C\uC218\uB294?",
+   opts:["4\uAC1C","5\uAC1C","7\uAC1C","3\uAC1C"],ans:1,
+   fb:"\uD56D\uC758 \uAC1C\uC218 = \uC704\uB05D - \uC544\uB798\uB05D + 1 = 7 - 3 + 1 = 5\uAC1C\uC785\uB2C8\uB2E4."},
+  {q:"1\uBD80\uD130 n\uAE4C\uC9C0\uC758 \uD569\uC744 \uBC18\uBCF5\uBB38 \uC5C6\uC774 O(1)\uB85C \uAD6C\uD558\uB294 \uC2DD\uC740?",
+   opts:["n\u00D7n/2","n(n+1)/2","n(n-1)","(n+1)/2"],ans:1,
+   fb:"\uAC00\uC6B0\uC2A4 \uACF5\uC2DD n(n+1)/2. \uB2E8, n\uC774 \uD06C\uBA74 long long\uC73C\uB85C \uC624\uBC84\uD50C\uB85C\uB97C \uB9C9\uC544\uC57C \uD569\uB2C8\uB2E4."}
+];
+var quizArea=document.getElementById("quizArea");
+var solved=[];
+document.getElementById("quizTotal").textContent=String(QUIZ.length);
+function updScore(){
+  var s=0;for(var i=0;i<solved.length;i++){if(solved[i]){s++;}}
+  document.getElementById("quizScore").textContent=String(s);
+}
+for(var qi=0;qi<QUIZ.length;qi++){
+  (function(q,idx){
+    solved.push(false);
+    var box=document.createElement("div");box.className="quiz-q";
+    var title=document.createElement("div");title.className="qtitle";
+    title.textContent="Q"+(idx+1)+". "+q.q;box.appendChild(title);
+    var fb=document.createElement("div");fb.className="quiz-fb";
+    var btns=[];
+    for(var oi=0;oi<q.opts.length;oi++){
+      (function(o,oidx){
+        var btn=document.createElement("button");btn.className="quiz-opt";
+        btn.textContent=String.fromCharCode(9312+oidx)+" "+o;
+        btn.addEventListener("click",function(){
+          if(solved[idx]){return;}
+          if(oidx===q.ans){
+            btn.classList.add("correct");
+            fb.style.display="block";fb.style.color="#4ade80";
+            fb.textContent="\u2705 \uC815\uB2F5! "+q.fb;
+            solved[idx]=true;updScore();
+            for(var bi=0;bi<btns.length;bi++){btns[bi].disabled=true;}
+          }else{
+            btn.classList.add("wrong");btn.disabled=true;
+            fb.style.display="block";fb.style.color="#f87171";
+            fb.textContent="\u274C \uC624\uB2F5\uC785\uB2C8\uB2E4. \uB2E4\uC2DC \uC0DD\uAC01\uD574 \uBCF4\uC138\uC694. \uD78C\uD2B8: "+q.fb;
+          }
+        });
+        btns.push(btn);box.appendChild(btn);
+      })(q.opts[oi],oi);
+    }
+    box.appendChild(fb);
+    quizArea.appendChild(box);
+  })(QUIZ[qi],qi);
+}
+updScore();
+})();
+</script>
+</body>
+</html>

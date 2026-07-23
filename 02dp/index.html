@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조합적 점화식과 DP — 카탈란 수, 격자 경로, 배낭, LIS/LCS</title>
+<style>
+:root{
+  --bg:#0a1930; --bg2:#0d2140; --panel:#112a4e; --panel2:#0f2447;
+  --line:#1e3a5f; --teal:#2dd4bf; --teal-dim:#14b8a6; --cyan:#67e8f9;
+  --orange:#ffb454; --red:#f87171; --green:#4ade80; --purple:#c4b5fd;
+  --text:#e6f1ff; --sub:#93b4d8; --code-bg:#0b1626;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;}
+header{background:linear-gradient(135deg,#0d2140 0%,#0a3d3a 100%);border-bottom:2px solid var(--teal);padding:28px 20px 22px;text-align:center;}
+header h1{font-size:1.6em;letter-spacing:-0.5px;}
+header h1 .sig{color:var(--teal);}
+header p{color:var(--sub);margin-top:6px;font-size:0.95em;}
+.badge{display:inline-block;background:rgba(45,212,191,0.15);border:1px solid var(--teal-dim);color:var(--teal);border-radius:20px;padding:2px 12px;font-size:0.78em;margin-top:10px;}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;background:var(--bg2);padding:10px 8px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);}
+nav button{background:transparent;border:1px solid var(--line);color:var(--sub);padding:8px 13px;border-radius:8px;cursor:pointer;font-size:0.87em;font-family:inherit;transition:all .15s;}
+nav button:hover{border-color:var(--teal-dim);color:var(--text);}
+nav button.active{background:var(--teal);color:#04222c;font-weight:700;border-color:var(--teal);}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 80px;}
+.tab{display:none;}
+.tab.show{display:block;animation:fadein .25s;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+h2{color:var(--teal);font-size:1.32em;margin:26px 0 12px;padding-left:12px;border-left:4px solid var(--teal);}
+h3{color:var(--cyan);font-size:1.05em;margin:18px 0 8px;}
+p.desc{color:var(--text);margin:8px 0;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;}
+.card.tip{border-left:4px solid var(--orange);}
+.card.warn{border-left:4px solid var(--red);}
+.card.ok{border-left:4px solid var(--green);}
+.hl{color:var(--orange);font-weight:700;}
+.tl{color:var(--teal);font-weight:700;}
+.pl{color:var(--purple);font-weight:700;}
+.formula{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:10px 0;font-family:Georgia,'Times New Roman',serif;font-size:1.1em;text-align:center;overflow-x:auto;}
+table.tbl{border-collapse:collapse;width:100%;margin:10px 0;font-size:0.92em;}
+table.tbl th,table.tbl td{border:1px solid var(--line);padding:7px 9px;text-align:center;}
+table.tbl th{background:var(--bg2);color:var(--teal);}
+table.tbl td{background:var(--panel2);}
+pre.code{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:Consolas,'D2Coding',monospace;font-size:0.9em;line-height:1.55;margin:10px 0;color:#dbeafe;}
+pre.code .k{color:#7dd3fc;} pre.code .c{color:#6b8bb5;} pre.code .s{color:#fbbf24;}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0;}
+.controls label{color:var(--sub);font-size:0.92em;}
+.controls select,.controls input[type=range]{accent-color:var(--teal);}
+.controls select{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-family:inherit;}
+.btn{background:var(--teal);color:#04222c;border:none;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.93em;transition:transform .1s;}
+.btn:hover{transform:translateY(-1px);}
+.btn.sec{background:var(--bg2);color:var(--teal);border:1px solid var(--teal-dim);}
+.btn.warn{background:var(--orange);color:#3a2200;}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.big-num{font-size:1.5em;color:var(--orange);font-weight:800;font-family:Consolas,monospace;}
+.step-note{color:var(--sub);font-size:0.9em;margin-top:6px;min-height:24px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:780px){.grid2{grid-template-columns:1fr;}}
+.var-box{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;}
+.var-cell{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:10px 16px;text-align:center;min-width:88px;}
+.var-cell .vname{color:var(--sub);font-size:0.8em;font-family:Consolas,monospace;}
+.var-cell .vval{font-size:1.3em;font-weight:800;font-family:Consolas,monospace;color:var(--cyan);}
+.codeline{display:block;padding:2px 10px;border-radius:6px;white-space:pre;}
+.codeline.cur{background:rgba(255,180,84,0.22);outline:1px solid var(--orange);}
+.dpgrid{display:grid;gap:4px;justify-content:center;margin:12px 0;}
+.dpcell{width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;font-family:Consolas,monospace;font-size:1.05em;color:#4d6c94;position:relative;}
+.dpcell.filled{color:var(--text);border-color:#2a4a75;}
+.dpcell.cur{background:rgba(255,180,84,0.28);border-color:var(--orange);color:var(--orange);font-weight:800;}
+.dpcell.src1{background:rgba(45,212,191,0.22);border-color:var(--teal);color:var(--teal);font-weight:700;}
+.dpcell.src2{background:rgba(196,181,253,0.2);border-color:var(--purple);color:var(--purple);font-weight:700;}
+.dpcell.goal{box-shadow:0 0 0 2px var(--green);}
+.dptable{border-collapse:collapse;margin:10px auto;font-family:Consolas,monospace;font-size:0.95em;}
+.dptable th{background:var(--bg2);color:var(--sub);border:1px solid var(--line);padding:6px 9px;font-weight:400;}
+.dptable td{border:1px solid var(--line);padding:6px 9px;text-align:center;background:var(--panel2);color:#4d6c94;min-width:38px;}
+.dptable td.filled{color:var(--text);}
+.dptable td.cur{background:rgba(255,180,84,0.28);color:var(--orange);font-weight:800;outline:1px solid var(--orange);}
+.dptable td.src1{background:rgba(45,212,191,0.22);color:var(--teal);font-weight:700;}
+.dptable td.src2{background:rgba(196,181,253,0.2);color:var(--purple);font-weight:700;}
+.dptable td.match{background:rgba(74,222,128,0.18);}
+.seq-chip{display:inline-block;min-width:44px;text-align:center;padding:6px 8px;margin:3px;border-radius:8px;background:var(--code-bg);border:1px solid var(--line);font-family:Consolas,monospace;}
+.seq-chip.cur{border-color:var(--orange);color:var(--orange);font-weight:800;background:rgba(255,180,84,0.15);}
+.seq-chip.pick{border-color:var(--teal);color:var(--teal);font-weight:700;background:rgba(45,212,191,0.15);}
+.brack{display:inline-block;padding:6px 12px;margin:4px;border-radius:8px;background:var(--code-bg);border:1px solid var(--line);font-family:Consolas,monospace;font-size:1.15em;letter-spacing:2px;}
+.brack .p1{color:var(--teal);} .brack .p2{color:var(--orange);} .brack .p3{color:var(--purple);}
+.quiz-q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0;}
+.quiz-q .qtitle{font-weight:700;margin-bottom:10px;}
+.quiz-opt{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 14px;margin:6px 0;cursor:pointer;font-family:inherit;font-size:0.95em;transition:border-color .15s;}
+.quiz-opt:hover{border-color:var(--teal-dim);}
+.quiz-opt.correct{background:rgba(74,222,128,0.15);border-color:var(--green);}
+.quiz-opt.wrong{background:rgba(248,113,113,0.15);border-color:var(--red);}
+.quiz-fb{margin-top:8px;font-size:0.92em;display:none;}
+.score-bar{background:var(--panel);border:1px solid var(--teal-dim);border-radius:12px;padding:14px 18px;margin:14px 0;text-align:center;font-size:1.1em;}
+footer{text-align:center;color:#3f5e86;font-size:0.85em;padding:20px;border-top:1px solid var(--line);}
+sub,sup{font-size:0.72em;}
+</style>
+</head>
+<body>
+<header>
+  <h1>조합적 점화식과 <span class="sig">DP</span></h1>
+  <p>카탈란 수 · 격자 경로 · 배낭 문제 · LIS/LCS — 점화식 설계의 모든 것</p>
+  <span class="badge">중등 정보올림피아드(KOI) 대비 | 점화식 시리즈 3편</span>
+</header>
+<nav id="tabNav">
+  <button data-tab="t1" class="active">1. DP란</button>
+  <button data-tab="t2">2. 계단·격자 경로</button>
+  <button data-tab="t3">3. 카탈란 수</button>
+  <button data-tab="t4">4. 배낭 문제</button>
+  <button data-tab="t5">5. LIS · LCS</button>
+  <button data-tab="t6">6. C 코드 구현</button>
+  <button data-tab="t7">7. 실수·도전 퀴즈</button>
+</nav>
+<main>
+
+<!-- ============ TAB 1 ============ -->
+<section class="tab show" id="t1">
+  <h2>DP(다이나믹 프로그래밍)란?</h2>
+  <p class="desc">
+    DP는 거창한 것이 아닙니다. <span class="tl">"큰 문제를 작은 문제로 쪼개고, 작은 문제의 답을 표에 저장해 재사용한다"</span> —
+    이 한 문장이 전부입니다. 우리가 1·2편에서 다룬 점화식이 바로 그 "쪼개는 규칙"입니다.
+  </p>
+
+  <div class="card">
+    <h3>왜 저장(메모)이 필요한가 — 재귀 호출 횟수 폭발</h3>
+    <p class="desc">
+      피보나치를 <span class="hl">저장 없이 재귀</span>로 짜면 같은 계산이 수없이 반복됩니다.
+      F(5)를 부르면 F(3)이 2번, F(2)가 3번&#8230; n을 키워 보세요.
+    </p>
+    <div class="controls">
+      <label>n: <input type="range" id="expN" min="5" max="40" value="20"> <span id="expNVal" class="tl">20</span></label>
+    </div>
+    <table class="tbl">
+      <tr><th></th><th>저장 없는 재귀</th><th>DP (표에 저장)</th></tr>
+      <tr><th>함수 호출/계산 횟수</th><td id="expCalls" style="color:var(--red);font-weight:700;">-</td><td id="expDp" style="color:var(--teal);font-weight:700;">-</td></tr>
+    </table>
+    <p class="step-note" id="expNote"></p>
+  </div>
+
+  <div class="card tip">
+    <h3>DP 설계 3단계 — 모든 문제에 통하는 공식</h3>
+    <table class="tbl">
+      <tr><th>단계</th><th>질문</th><th>계단 오르기 예시</th></tr>
+      <tr><td><span class="hl">① 상태 정의</span></td><td>dp[?]는 무엇을 뜻하는가?</td><td>dp[i] = i번째 계단에 도달하는 방법의 수</td></tr>
+      <tr><td><span class="hl">② 점화식</span></td><td>작은 답들로 어떻게 만드나?</td><td>dp[i] = dp[i-1] + dp[i-2]</td></tr>
+      <tr><td><span class="hl">③ 초기값·순서</span></td><td>출발점은? 채우는 순서는?</td><td>dp[1]=1, dp[2]=2, 앞에서부터</td></tr>
+    </table>
+    <p class="desc">
+      이 강의의 모든 문제(카탈란, 격자, 배낭, LIS, LCS)를 <span class="tl">이 3단계 틀</span>로 분석합니다.
+      문제가 바뀌어도 틀은 같습니다 — 바뀌는 것은 <span class="hl">상태의 정의</span>뿐입니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>"조합적 점화식"이란?</h3>
+    <p class="desc">
+      1·2편의 피보나치는 <span class="pl">값 하나</span>가 커지는 점화식이었습니다.
+      이번 편은 <span class="tl">경우의 수·최댓값</span>을 세는 점화식입니다.
+      "마지막 한 수(마지막 계단, 마지막 괄호, 마지막 물건)를 <span class="hl">어떻게 두었는지로 경우를 나누면</span>,
+      더 작은 같은 문제가 나타난다" — 이것이 조합적 점화식을 세우는 공통 요령입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="t2">
+  <h2>워밍업 ① 계단 오르기 — 1차원 DP</h2>
+  <p class="desc">
+    한 번에 <span class="tl">1칸 또는 2칸</span>씩 오를 때, n번째 계단까지 가는 방법의 수.
+    <span class="hl">마지막 걸음으로 경우 나누기</span>: 마지막이 1칸이면 (i-1)에서 왔고, 2칸이면 (i-2)에서 왔다.
+  </p>
+  <div class="formula">dp[i] = dp[i-1] + dp[i-2] , &nbsp; dp[1] = 1, dp[2] = 2</div>
+  <div class="card">
+    <div class="controls">
+      <label>n: <input type="range" id="stN" min="3" max="15" value="8"> <span id="stNVal" class="tl">8</span></label>
+      <button class="btn sec" id="stReset">&#8634; 처음부터</button>
+      <button class="btn" id="stStep">한 칸 채우기 &#9654;</button>
+      <button class="btn warn" id="stRun">끝까지 &#9654;&#9654;</button>
+    </div>
+    <table class="dptable"><tbody id="stBody"></tbody></table>
+    <p class="step-note" id="stNote"></p>
+  </div>
+
+  <h2>워밍업 ② 격자 경로 — 2차원 DP</h2>
+  <p class="desc">
+    왼쪽 위에서 출발해 <span class="tl">오른쪽 또는 아래로만</span> 이동할 때 오른쪽 아래까지 가는 경로 수.
+    각 칸에 오는 마지막 한 걸음은 <span class="hl">위에서 or 왼쪽에서</span> — 두 경우뿐입니다.
+  </p>
+  <div class="formula">dp[r][c] = dp[r-1][c] + dp[r][c-1] , &nbsp; dp[0][0] = 1 (출발점)</div>
+  <div class="card">
+    <div class="controls">
+      <label>격자 크기:
+        <select id="gdSize"><option value="4">4 &times; 4</option><option value="5">5 &times; 5</option><option value="6">6 &times; 6</option></select>
+      </label>
+      <button class="btn sec" id="gdReset">&#8634; 처음부터</button>
+      <button class="btn" id="gdStep">한 칸 채우기 &#9654;</button>
+      <button class="btn warn" id="gdRun">끝까지 &#9654;&#9654;</button>
+    </div>
+    <div class="dpgrid" id="gdGrid"></div>
+    <p class="step-note" id="gdNote"></p>
+    <p class="desc">도착 칸의 값: <span class="big-num" id="gdAns">-</span></p>
+  </div>
+  <div class="card ok">
+    <h3>채우는 순서가 중요한 이유</h3>
+    <p class="desc">
+      dp[r][c]를 계산하려면 <span class="tl">위 칸과 왼쪽 칸이 먼저</span> 완성되어 있어야 합니다.
+      그래서 왼쪽 위 &#8594; 오른쪽 아래로(행 우선) 채웁니다.
+      <span class="hl">"내가 참조하는 칸은 나보다 먼저 채워져야 한다"</span> — 모든 DP의 순서 규칙입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="t3">
+  <h2>카탈란 수 — 올바른 괄호가 낳은 마법의 수열</h2>
+  <p class="desc">
+    <span class="tl">카탈란 수 C<sub>n</sub></span>은 "여는 괄호 n개, 닫는 괄호 n개로 만드는 <span class="hl">올바른 괄호열</span>의 개수"입니다.
+    1, 1, 2, 5, 14, 42, 132, &#8230; — 전혀 달라 보이는 문제들이 전부 이 수열로 수렴합니다.
+  </p>
+
+  <div class="card">
+    <h3>n = 3 의 다섯 가지 (C&#8323; = 5)</h3>
+    <div style="text-align:center;">
+      <span class="brack"><span class="p1">((()))</span></span>
+      <span class="brack"><span class="p1">(()())</span></span>
+      <span class="brack"><span class="p1">(())()</span></span>
+      <span class="brack"><span class="p1">()(())</span></span>
+      <span class="brack"><span class="p1">()()()</span></span>
+    </div>
+    <p class="desc" style="font-size:0.85em;color:var(--sub);text-align:center;">빠짐없이, 겹침 없이 정확히 5개 — 직접 나열하며 확인해 보세요.</p>
+  </div>
+
+  <div class="card">
+    <h3>점화식 유도 — "첫 괄호 짝"으로 경우 나누기</h3>
+    <p class="desc">
+      모든 올바른 괄호열은 <span class="hl">맨 앞의 여는 괄호와 그 짝</span>을 기준으로 딱 한 가지로 분해됩니다:
+    </p>
+    <div class="formula">
+      <span style="color:var(--teal);">(</span> <span style="color:var(--orange);">A</span> <span style="color:var(--teal);">)</span> <span style="color:var(--purple);">B</span>
+      &nbsp;&nbsp;— A: 짝 안쪽 (쌍 i개), &nbsp;B: 짝 바깥 나머지 (쌍 n-1-i개)
+    </div>
+    <p class="desc">
+      안쪽 A가 i쌍이면 바깥 B는 n-1-i쌍. i가 0부터 n-1까지 모든 경우를 더하면:
+    </p>
+    <div class="formula">C<sub>n</sub> = <span style="font-size:1.3em;">&#931;</span><sub>i=0</sub><sup>n-1</sup> C<sub>i</sub> &middot; C<sub>n-1-i</sub> , &nbsp;&nbsp; C<sub>0</sub> = 1</div>
+    <p class="desc">
+      1편의 시그마, 그리고 <span class="tl">곱의 법칙</span>(안쪽 경우 &times; 바깥 경우)이 결합된 <span class="hl">조합적 점화식</span>입니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>카탈란 계산기 — 점화식 전개 단계 실행</h3>
+    <div class="controls">
+      <label>n: <input type="range" id="ctN" min="1" max="10" value="4"> <span id="ctNVal" class="tl">4</span></label>
+      <button class="btn sec" id="ctReset">&#8634; 처음부터</button>
+      <button class="btn" id="ctStep">항 하나 더하기 &#9654;</button>
+    </div>
+    <table class="dptable"><tbody id="ctKnown"></tbody></table>
+    <div class="formula" id="ctExpand" style="font-size:1em;min-height:56px;"></div>
+    <p class="step-note" id="ctNote"></p>
+  </div>
+
+  <div class="card tip">
+    <h3>카탈란 수로 치환되는 대표 문제들 (패턴 인식이 실력!)</h3>
+    <table class="tbl">
+      <tr><th>문제</th><th>대응 관계</th></tr>
+      <tr><td>올바른 괄호열 n쌍</td><td>정의 그 자체</td></tr>
+      <tr><td>노드 n개 이진 탐색 트리(BST)의 개수</td><td>루트 왼쪽 서브트리 i개 &times; 오른쪽 n-1-i개 &#8594; 같은 점화식</td></tr>
+      <tr><td>볼록 (n+2)각형의 삼각형 분할</td><td>한 변이 속한 삼각형으로 양쪽 분할 &#8594; 같은 점화식</td></tr>
+      <tr><td>대각선을 넘지 않는 격자 경로</td><td>y = x 위로 안 올라가는 경로 = C<sub>n</sub></td></tr>
+      <tr><td>스택으로 만들 수 있는 출력 순열</td><td>push=( , pop=) 로 번역하면 괄호열</td></tr>
+    </table>
+    <p class="desc">
+      대회 요령: 작은 경우를 손으로 세어 <span class="hl">1, 2, 5, 14, 42</span>가 나오면 "아, 카탈란!" —
+      점화식을 새로 증명할 필요 없이 치환합니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>닫힌 공식도 있다</h3>
+    <div class="formula">C<sub>n</sub> = <sub>2n</sub>C<sub>n</sub> / (n+1) &nbsp;&nbsp;&nbsp; 예) C&#8324; = &#8328;C&#8324;/5 = 70/5 = 14</div>
+    <p class="desc">이항계수로 O(n)에 계산 가능하지만, mod가 소수가 아닐 때 나눗셈이 곤란하므로 <span class="tl">대회에서는 점화식 DP가 더 안전</span>한 경우가 많습니다.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="t4">
+  <h2>배낭 문제(0/1 Knapsack) — 최적화 점화식</h2>
+  <p class="desc">
+    무게 한도 K인 배낭에 물건들을 넣어 <span class="tl">가치의 최댓값</span>을 구합니다. 각 물건은 <span class="hl">넣거나(1) 안 넣거나(0)</span> 둘 중 하나.
+    "경우의 수 덧셈"이 "<span class="pl">최댓값 max</span>"로 바뀐 것 말고는 지금까지와 똑같은 점화식 설계입니다.
+  </p>
+  <div class="card">
+    <h3>3단계 설계</h3>
+    <table class="tbl">
+      <tr><td><span class="hl">① 상태</span></td><td style="text-align:left;">dp[i][w] = <span class="tl">앞에서 i번째 물건까지 고려</span>했고, 무게 한도가 w일 때의 최대 가치</td></tr>
+      <tr><td><span class="hl">② 점화식</span></td><td style="text-align:left;">dp[i][w] = max( <span class="tl">dp[i-1][w]</span> (안 넣음), <span class="pl">dp[i-1][w-w<sub>i</sub>] + v<sub>i</sub></span> (넣음, w &ge; w<sub>i</sub>일 때만) )</td></tr>
+      <tr><td><span class="hl">③ 초기값</span></td><td style="text-align:left;">dp[0][w] = 0 (물건이 없으면 가치 0), i 오름차순으로 채움</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>DP 표 채우기 시뮬레이터 (K = 7)</h3>
+    <table class="tbl" style="max-width:420px;margin:10px auto;">
+      <tr><th>물건</th><th>&#9312;</th><th>&#9313;</th><th>&#9314;</th><th>&#9315;</th></tr>
+      <tr><th>무게 w</th><td>6</td><td>4</td><td>3</td><td>5</td></tr>
+      <tr><th>가치 v</th><td>13</td><td>8</td><td>6</td><td>12</td></tr>
+    </table>
+    <div class="controls">
+      <button class="btn sec" id="kpReset">&#8634; 처음부터</button>
+      <button class="btn" id="kpStep">한 칸 채우기 &#9654;</button>
+      <button class="btn warn" id="kpRun">끝까지 &#9654;&#9654;</button>
+    </div>
+    <table class="dptable"><tbody id="kpBody"></tbody></table>
+    <div class="formula" id="kpDetail" style="font-size:0.95em;min-height:50px;"></div>
+    <p class="step-note" id="kpNote"></p>
+    <p class="desc">최종 답 dp[4][7]: <span class="big-num" id="kpAns">-</span></p>
+  </div>
+  <div class="card tip">
+    <h3>공간 절약 — 1차원 배열 최적화 (고득점 포인트)</h3>
+    <pre class="code"><span class="k">for</span> (<span class="k">int</span> i = 1; i &lt;= N; i++)
+    <span class="k">for</span> (<span class="k">int</span> w = K; w &gt;= wt[i]; w--)   <span class="c">/* 반드시 큰 쪽 → 작은 쪽! */</span>
+        dp[w] = max(dp[w], dp[w - wt[i]] + val[i]);</pre>
+    <p class="desc">
+      dp[i-1][&#8901;]와 dp[i][&#8901;]를 한 배열에 겹쳐 쓰는 기법. w를 <span class="hl">역방향</span>으로 돌아야
+      dp[w-wt[i]]가 아직 "이전 물건까지"의 값이라는 보장이 유지됩니다.
+      정방향으로 돌면 같은 물건을 여러 번 넣는 배낭(완전 배낭)이 되어 버립니다 — 두 문제의 차이가 <span class="tl">순회 방향 하나</span>!
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 5 ============ -->
+<section class="tab" id="t5">
+  <h2>부분수열 점화식 ① LIS — 최장 증가 부분수열</h2>
+  <p class="desc">
+    수열에서 <span class="tl">순서를 유지하며</span> 골라낸, 값이 <span class="tl">증가하는</span> 가장 긴 부분수열의 길이.
+    핵심 질문: <span class="hl">"i번째 원소로 끝나는 LIS는 얼마나 긴가?"</span>
+  </p>
+  <div class="formula">dp[i] = max( dp[j] + 1 ) &nbsp; (단, j &lt; i 이고 a[j] &lt; a[i]) , &nbsp; 기본값 dp[i] = 1</div>
+  <div class="card">
+    <h3>LIS 단계 실행기 — 수열 [10, 20, 10, 30, 20, 50]</h3>
+    <div class="controls">
+      <button class="btn sec" id="liReset">&#8634; 처음부터</button>
+      <button class="btn" id="liStep">다음 원소 처리 &#9654;</button>
+    </div>
+    <div style="text-align:center;" id="liSeq"></div>
+    <table class="dptable"><tbody id="liBody"></tbody></table>
+    <div class="formula" id="liDetail" style="font-size:0.95em;min-height:50px;"></div>
+    <p class="step-note" id="liNote"></p>
+    <p class="desc">답 = dp의 최댓값: <span class="big-num" id="liAns">-</span></p>
+  </div>
+
+  <h2>부분수열 점화식 ② LCS — 최장 공통 부분수열</h2>
+  <p class="desc">
+    두 문자열이 <span class="tl">공통으로 가지는</span> 가장 긴 부분수열. 2차원 상태가 필요합니다:
+    <span class="hl">dp[i][j] = A의 앞 i글자와 B의 앞 j글자의 LCS 길이</span>. 마지막 글자로 경우를 나눕니다.
+  </p>
+  <div class="formula" style="font-size:0.98em;">
+    A[i] = B[j] 이면 &nbsp; dp[i][j] = dp[i-1][j-1] + 1 &nbsp;(대각선 + 1)<br>
+    A[i] &ne; B[j] 이면 &nbsp; dp[i][j] = max( dp[i-1][j], dp[i][j-1] ) &nbsp;(위, 왼쪽 중 최대)
+  </div>
+  <div class="card">
+    <h3>LCS 표 채우기 — A = "ACAYKP", B = "CAPCAK"</h3>
+    <div class="controls">
+      <button class="btn sec" id="lcReset">&#8634; 처음부터</button>
+      <button class="btn" id="lcStep">한 칸 채우기 &#9654;</button>
+      <button class="btn warn" id="lcRun">끝까지 &#9654;&#9654;</button>
+    </div>
+    <table class="dptable"><tbody id="lcBody"></tbody></table>
+    <p class="step-note" id="lcNote"></p>
+    <p class="desc">답 dp[6][6]: <span class="big-num" id="lcAns">-</span></p>
+  </div>
+  <div class="card ok">
+    <h3>LIS vs LCS 설계 비교 — 상태 정의가 모든 것을 결정한다</h3>
+    <table class="tbl">
+      <tr><th></th><th>LIS</th><th>LCS</th></tr>
+      <tr><th>상태</th><td>dp[i] = i로 <span class="hl">끝나는</span> 최장 길이</td><td>dp[i][j] = 앞부분 (i, j)까지의 최장 길이</td></tr>
+      <tr><th>경우 나누기</th><td>바로 앞 원소 j가 무엇인가</td><td>마지막 글자가 같은가 다른가</td></tr>
+      <tr><th>답의 위치</th><td>배열 전체의 max</td><td>오른쪽 아래 한 칸</td></tr>
+      <tr><th>복잡도</th><td>O(n&#178;)</td><td>O(nm)</td></tr>
+    </table>
+    <p class="desc">"i로 <span class="hl">끝나는</span>"이라는 조건을 상태에 넣는 순간 점화식이 보인다 — LIS류 문제의 최대 힌트입니다.</p>
+  </div>
+</section>
+
+<!-- ============ TAB 6 ============ -->
+<section class="tab" id="t6">
+  <h2>C 코드 구현</h2>
+
+  <div class="card">
+    <h3>1단계 — 계단 오르기 한 줄씩 실행 (n = 6)</h3>
+    <div class="grid2">
+      <div>
+        <pre class="code" id="cCodeBox"></pre>
+        <div class="controls">
+          <button class="btn sec" id="cReset">&#8634; 처음</button>
+          <button class="btn sec" id="cPrev">&#9664; 이전</button>
+          <button class="btn" id="cNext">다음 &#9654;</button>
+          <button class="btn warn" id="cAuto">자동 실행</button>
+        </div>
+      </div>
+      <div>
+        <h3>dp 배열</h3>
+        <table class="dptable"><tbody id="cDpView"></tbody></table>
+        <div class="var-box">
+          <div class="var-cell"><div class="vname">i</div><div class="vval" id="cVarI">-</div></div>
+          <div class="var-cell"><div class="vname">n</div><div class="vval" id="cVarN">6</div></div>
+        </div>
+        <h3>해설</h3>
+        <p class="step-note" id="cNote">프로그램 시작 전입니다.</p>
+        <h3>출력</h3>
+        <pre class="code" id="cConsole" style="min-height:44px;color:#4ade80;"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2단계 — 오늘 배운 점화식들의 C 코드 사전</h3>
+    <div class="grid2">
+      <div>
+        <h3 style="color:var(--orange);">카탈란 수 (DP)</h3>
+        <pre class="code">long long C[35];
+C[0] = 1;
+<span class="k">for</span> (<span class="k">int</span> n = 1; n &lt;= 30; n++)
+    <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; n; i++)
+        C[n] += C[i] * C[n-1-i];</pre>
+      </div>
+      <div>
+        <h3 style="color:var(--orange);">격자 경로</h3>
+        <pre class="code">dp[0][0] = 1;
+<span class="k">for</span> (<span class="k">int</span> r = 0; r &lt; H; r++)
+  <span class="k">for</span> (<span class="k">int</span> c = 0; c &lt; W; c++) {
+    <span class="k">if</span> (r) dp[r][c] += dp[r-1][c];
+    <span class="k">if</span> (c) dp[r][c] += dp[r][c-1];
+  }</pre>
+      </div>
+      <div>
+        <h3 style="color:var(--orange);">0/1 배낭 (2차원)</h3>
+        <pre class="code"><span class="k">for</span> (<span class="k">int</span> i = 1; i &lt;= N; i++)
+  <span class="k">for</span> (<span class="k">int</span> w = 0; w &lt;= K; w++) {
+    dp[i][w] = dp[i-1][w];
+    <span class="k">if</span> (w &gt;= wt[i] &amp;&amp;
+        dp[i-1][w-wt[i]] + val[i] &gt; dp[i][w])
+      dp[i][w] = dp[i-1][w-wt[i]] + val[i];
+  }</pre>
+      </div>
+      <div>
+        <h3 style="color:var(--orange);">LIS O(n&#178;)</h3>
+        <pre class="code"><span class="k">int</span> best = 0;
+<span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; n; i++) {
+    dp[i] = 1;
+    <span class="k">for</span> (<span class="k">int</span> j = 0; j &lt; i; j++)
+        <span class="k">if</span> (a[j] &lt; a[i] &amp;&amp; dp[j]+1 &gt; dp[i])
+            dp[i] = dp[j] + 1;
+    <span class="k">if</span> (dp[i] &gt; best) best = dp[i];
+}</pre>
+      </div>
+    </div>
+    <h3 style="color:var(--orange);">LCS</h3>
+    <pre class="code"><span class="k">for</span> (<span class="k">int</span> i = 1; i &lt;= n; i++)
+    <span class="k">for</span> (<span class="k">int</span> j = 1; j &lt;= m; j++) {
+        <span class="k">if</span> (A[i-1] == B[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+        <span class="k">else</span> dp[i][j] = dp[i-1][j] &gt; dp[i][j-1] ? dp[i-1][j] : dp[i][j-1];
+    }</pre>
+    <p class="desc">
+      다섯 코드 모두 구조가 같습니다: <span class="tl">초기값 &#8594; 의존성을 지키는 순서의 반복문 &#8594; 점화식 한 줄</span>.
+      DP 코딩 실력은 곧 <span class="hl">점화식을 정확히 옮겨 적는 실력</span>입니다.
+    </p>
+  </div>
+</section>
+
+<!-- ============ TAB 7 ============ -->
+<section class="tab" id="t7">
+  <h2>자주 하는 실수 포인트</h2>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 1 — 초기값(base case) 누락·오류</h3>
+    <p class="desc">계단에서 dp[2] = 2인데 1로 두거나, 카탈란에서 <span class="hl">C&#8320; = 1</span>을 0으로 두면 전체가 무너집니다. 점화식은 맞는데 답이 틀리면 <span class="tl">가장 먼저 초기값을 의심</span>하세요.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 2 — 채우는 순서(의존성) 위반</h3>
+    <p class="desc">dp[i]를 계산할 때 아직 안 채워진 칸을 참조하면 쓰레기값을 읽습니다. 2차원이면 특히 주의: 격자·LCS는 <span class="hl">행 우선(왼쪽 위 &#8594; 오른쪽 아래)</span>이 안전합니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 3 — 1차원 배낭에서 정방향 순회</h3>
+    <pre class="code"><span class="k">for</span> (<span class="k">int</span> w = wt[i]; w &lt;= K; w++)   <span class="c">/* 0/1 배낭인데 정방향! */</span>
+    dp[w] = max(dp[w], dp[w-wt[i]] + val[i]);</pre>
+    <p class="desc">같은 물건이 여러 번 들어가는 <span class="hl">완전 배낭</span>이 되어 버립니다. 0/1 배낭은 반드시 <span class="tl">w를 K부터 역방향</span>으로.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 4 — LIS에서 dp[i] = 1 초기화 생략</h3>
+    <p class="desc">앞에 자기보다 작은 원소가 하나도 없으면 <span class="tl">자기 혼자로 길이 1</span>이 기본값입니다. 0으로 두면 그 원소로 시작하는 수열이 전부 1씩 짧게 계산됩니다.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 5 — 자료형: 경우의 수는 순식간에 폭발</h3>
+    <p class="desc">카탈란 C&#8322;&#8320; = 6,564,120,420 — 이미 int 초과. 격자 경로도 20&times;20이면 <span class="hl">천억 단위</span>입니다. <span class="tl">long long + (문제가 요구하면) mod</span>는 기본 장착.</p>
+  </div>
+
+  <div class="card warn">
+    <h3>&#10060; 실수 6 — 저장 없는 재귀로 제출</h3>
+    <p class="desc">1탭에서 본 것처럼 호출 횟수가 지수적으로 폭발합니다. 재귀로 짜고 싶다면 <span class="hl">메모이제이션 배열</span>(계산했으면 즉시 반환)을 반드시 붙이세요. 반복문 DP와 성능이 같아집니다.</p>
+  </div>
+
+  <h2>도전 퀴즈</h2>
+  <div class="score-bar">점수: <span class="big-num" id="quizScore">0</span> / <span id="quizTotal">6</span></div>
+  <div id="quizArea"></div>
+</section>
+
+</main>
+<footer>세영코딩연구소 · 조합적 점화식과 DP — KOI 대비 인터랙티브 강의 (점화식 시리즈 3편)</footer>
+<script>
+(function(){
+"use strict";
+
+/* ---------- 탭 ---------- */
+var nav=document.getElementById("tabNav");
+var tabBtns=nav.querySelectorAll("button");
+function showTab(id){
+  var tabs=document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++){tabs[i].classList.remove("show");}
+  for(var j=0;j<tabBtns.length;j++){tabBtns[j].classList.toggle("active",tabBtns[j].getAttribute("data-tab")===id);}
+  document.getElementById(id).classList.add("show");
+  window.scrollTo(0,0);
+}
+for(var b=0;b<tabBtns.length;b++){
+  (function(btn){btn.addEventListener("click",function(){showTab(btn.getAttribute("data-tab"));});})(tabBtns[b]);
+}
+
+/* ---------- 탭1: 호출 횟수 폭발 ---------- */
+var expN=document.getElementById("expN");
+function expRender(){
+  var n=parseInt(expN.value,10);
+  document.getElementById("expNVal").textContent=String(n);
+  /* calls(n)=calls(n-1)+calls(n-2)+1, calls(0)=calls(1)=1 */
+  var c0=1,c1=1;
+  for(var i=2;i<=n;i++){var t=c0+c1+1;c0=c1;c1=t;}
+  var naive=n<=1?1:c1;
+  document.getElementById("expCalls").textContent=naive.toLocaleString("en-US")+" \uD68C";
+  document.getElementById("expDp").textContent=n+" \uD68C";
+  var note=document.getElementById("expNote");
+  if(n>=35){note.textContent="n\uC774 40\uB9CC \uB418\uC5B4\uB3C4 \uC800\uC7A5 \uC5C6\uB294 \uC7AC\uADC0\uB294 \uC218\uC5B5 \uBC88 \uD638\uCD9C \u2014 \uC774\uBBF8 \uC2DC\uAC04 \uCD08\uACFC\uC785\uB2C8\uB2E4. \uD45C\uC5D0 \uC800\uC7A5\uD558\uBA74 \uB2E8 "+n+"\uBC88\uC73C\uB85C \uB05D\uB0A9\uB2C8\uB2E4.";}
+  else{note.textContent="\uAC19\uC740 F(k)\uAC00 \uC5EC\uB7EC \uBC88 \uB2E4\uC2DC \uACC4\uC0B0\uB418\uAE30 \uB54C\uBB38\uC785\uB2C8\uB2E4. \uD55C \uBC88 \uACC4\uC0B0\uD55C \uB2F5\uC744 \uD45C\uC5D0 \uC800\uC7A5\uD558\uBA74 \uD3ED\uBC1C\uC774 \uC0AC\uB77C\uC9D1\uB2C8\uB2E4.";}
+}
+expN.addEventListener("input",expRender);
+expRender();
+
+/* ---------- 탭2: 계단 오르기 ---------- */
+var stN=document.getElementById("stN");
+var stState={k:0};
+function stVals(){
+  var n=parseInt(stN.value,10),dp=[0,1,2];
+  for(var i=3;i<=n;i++){dp.push(dp[i-1]+dp[i-2]);}
+  return dp;
+}
+function stRender(){
+  var n=parseInt(stN.value,10);
+  document.getElementById("stNVal").textContent=String(n);
+  var dp=stVals(),k=stState.k; /* k = \uCC44\uC6CC\uC9C4 \uB9C8\uC9C0\uB9C9 \uC778\uB371\uC2A4(2+k) */
+  var body=document.getElementById("stBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  var tr1=document.createElement("tr"),tr2=document.createElement("tr");
+  var h=document.createElement("th");h.textContent="i";tr1.appendChild(h);
+  var h2=document.createElement("th");h2.textContent="dp[i]";tr2.appendChild(h2);
+  for(var i=1;i<=n;i++){
+    var th=document.createElement("th");th.textContent=String(i);tr1.appendChild(th);
+    var td=document.createElement("td");
+    var filled=(i<=2)||(i<=2+k);
+    td.textContent=filled?String(dp[i]):"";
+    if(filled){td.className="filled";}
+    if(k>0&&i===2+k){td.className="cur";}
+    if(k>0&&(i===2+k-1||i===2+k-2)){td.className=(i===2+k-1)?"src1":"src2";}
+    tr2.appendChild(td);
+  }
+  body.appendChild(tr1);body.appendChild(tr2);
+  var note=document.getElementById("stNote");
+  if(k===0){note.textContent="\uCD08\uAE30\uAC12 dp[1]=1, dp[2]=2 \uAC00 \uC900\uBE44\uB418\uC5C8\uC2B5\uB2C8\uB2E4. (1\uCE78 / 1+1 \uB610\uB294 2\uCE78)";}
+  else{
+    var i2=2+k;
+    if(i2<=n){note.textContent="dp["+i2+"] = dp["+(i2-1)+"] + dp["+(i2-2)+"] = "+dp[i2-1]+" + "+dp[i2-2]+" = "+dp[i2]+" \u2014 \uB9C8\uC9C0\uB9C9 \uAC78\uC74C(1\uCE78/2\uCE78)\uC73C\uB85C \uACBD\uC6B0\uB97C \uB098\uB208 \uACB0\uACFC\uC785\uB2C8\uB2E4.";}
+    if(i2>=n){note.textContent="\uC644\uB8CC! dp["+n+"] = "+dp[n]+" \uAC00\uC9C0 \uBC29\uBC95\uC774 \uC788\uC2B5\uB2C8\uB2E4.";}
+  }
+}
+document.getElementById("stStep").addEventListener("click",function(){
+  var n=parseInt(stN.value,10);
+  if(2+stState.k<n){stState.k++;stRender();}
+});
+document.getElementById("stRun").addEventListener("click",function(){
+  var n=parseInt(stN.value,10);
+  stState.k=n-2;stRender();
+});
+document.getElementById("stReset").addEventListener("click",function(){stState.k=0;stRender();});
+stN.addEventListener("input",function(){stState.k=0;stRender();});
+stRender();
+
+/* ---------- 탭2: 격자 경로 ---------- */
+var gdSize=document.getElementById("gdSize");
+var gdState={k:0};
+function gdRender(){
+  var n=parseInt(gdSize.value,10);
+  var grid=document.getElementById("gdGrid");
+  grid.style.gridTemplateColumns="repeat("+n+",56px)";
+  while(grid.firstChild){grid.removeChild(grid.firstChild);}
+  /* dp \uACC4\uC0B0 */
+  var dp=[];
+  for(var r=0;r<n;r++){dp.push([]);for(var c=0;c<n;c++){
+    if(r===0&&c===0){dp[r].push(1);}
+    else{dp[r].push((r>0?dp[r-1][c]:0)+(c>0?dp[r][c-1]:0));}
+  }}
+  var k=gdState.k; /* \uCC44\uC6CC\uC9C4 \uCE78 \uC218 (\uCD9C\uBC1C\uCE78 \uD3EC\uD568) */
+  var curIdx=k; /* \uB2E4\uC74C\uC5D0 \uCC44\uC6B8 \uCE78\uC774 \uC544\uB2C8\uB77C \uBC29\uAE08 \uCC44\uC6B4 \uCE78 = k-1 */
+  for(var r2=0;r2<n;r2++){
+    for(var c2=0;c2<n;c2++){
+      var idx=r2*n+c2;
+      var cell=document.createElement("div");
+      cell.className="dpcell";
+      if(idx<k){cell.classList.add("filled");cell.textContent=String(dp[r2][c2]);}
+      if(k>0&&idx===k-1&&idx>0){
+        cell.classList.add("cur");
+      }
+      if(k>0&&idx===k-1&&idx>0){
+        /* \uCC38\uC870\uC6D0 \uD558\uC774\uB77C\uC774\uD2B8\uB294 \uC544\uB798 \uBCC4\uB3C4 \uCC98\uB9AC */
+      }
+      if(r2===n-1&&c2===n-1){cell.classList.add("goal");}
+      grid.appendChild(cell);
+    }
+  }
+  /* \uCC38\uC870\uC6D0 \uD45C\uC2DC */
+  if(k>1){
+    var li=k-1,lr=Math.floor(li/n),lc=li%n;
+    var cells=grid.children;
+    if(lr>0){cells[(lr-1)*n+lc].classList.add("src1");}
+    if(lc>0){cells[lr*n+lc-1].classList.add("src2");}
+  }
+  var note=document.getElementById("gdNote");
+  if(k===0){note.textContent="[\uD55C \uCE78 \uCC44\uC6B0\uAE30]\uB97C \uB204\uB974\uBA74 \uCD9C\uBC1C\uCE78\uBD80\uD130 \uD589 \uC21C\uC11C\uB85C \uCC44\uC6C1\uB2C8\uB2E4.";}
+  else if(k===1){note.textContent="\uCD9C\uBC1C\uCE78 dp[0][0] = 1 (\uAC00\uB9CC\uD788 \uC788\uB294 \uAC83\uB3C4 \uD558\uB098\uC758 \uACBD\uB85C).";}
+  else{
+    var li2=k-1,r3=Math.floor(li2/n),c3=li2%n;
+    var up=r3>0?dp[r3-1][c3]:0,left=c3>0?dp[r3][c3-1]:0;
+    note.textContent="dp["+r3+"]["+c3+"] = \uC704("+up+") + \uC67C\uCABD("+left+") = "+dp[r3][c3];
+  }
+  document.getElementById("gdAns").textContent=(k>=n*n)?String(dp[n-1][n-1]):"-";
+}
+document.getElementById("gdStep").addEventListener("click",function(){
+  var n=parseInt(gdSize.value,10);
+  if(gdState.k<n*n){gdState.k++;gdRender();}
+});
+document.getElementById("gdRun").addEventListener("click",function(){
+  var n=parseInt(gdSize.value,10);
+  gdState.k=n*n;gdRender();
+});
+document.getElementById("gdReset").addEventListener("click",function(){gdState.k=0;gdRender();});
+gdSize.addEventListener("change",function(){gdState.k=0;gdRender();});
+gdRender();
+
+/* ---------- 탭3: 카탈란 계산기 ---------- */
+var ctN=document.getElementById("ctN");
+var ctState={i:0};
+function catalanArr(n){
+  var C=[1];
+  for(var k=1;k<=n;k++){
+    var s=0;
+    for(var i=0;i<k;i++){s+=C[i]*C[k-1-i];}
+    C.push(s);
+  }
+  return C;
+}
+function ctRender(){
+  var n=parseInt(ctN.value,10);
+  document.getElementById("ctNVal").textContent=String(n);
+  var C=catalanArr(n);
+  /* \uC54C\uACE0 \uC788\uB294 \uAC12 \uD45C: C0..C(n-1) */
+  var kn=document.getElementById("ctKnown");
+  while(kn.firstChild){kn.removeChild(kn.firstChild);}
+  var tr1=document.createElement("tr"),tr2=document.createElement("tr");
+  var h1=document.createElement("th");h1.textContent="k";tr1.appendChild(h1);
+  var h2=document.createElement("th");h2.textContent="C_k";tr2.appendChild(h2);
+  for(var k=0;k<n;k++){
+    var th=document.createElement("th");th.textContent=String(k);tr1.appendChild(th);
+    var td=document.createElement("td");td.textContent=String(C[k]);td.className="filled";
+    if(ctState.i>0&&(k===ctState.i-1||k===n-1-(ctState.i-1))){td.className="filled "+(k===ctState.i-1?"src1":"src2");}
+    tr2.appendChild(td);
+  }
+  kn.appendChild(tr1);kn.appendChild(tr2);
+  /* \uC804\uAC1C\uC2DD */
+  var ex=document.getElementById("ctExpand");
+  var parts=[],partial=0;
+  for(var i=0;i<n;i++){
+    var term=C[i]*C[n-1-i];
+    if(i<ctState.i){parts.push(C[i]+"\u00D7"+C[n-1-i]);partial+=term;}
+  }
+  var txt="C_"+n+" = ";
+  if(parts.length===0){txt+="( \uD56D\uC744 \uD558\uB098\uC529 \uB354\uD574 \uBCF4\uC138\uC694: i = 0 .. "+(n-1)+" )";}
+  else{
+    txt+=parts.join(" + ");
+    if(ctState.i<n){txt+=" + \u22EF";}
+    txt+=" = "+partial;
+    if(ctState.i>=n){txt+=" \u2705";}
+  }
+  ex.textContent=txt;
+  var note=document.getElementById("ctNote");
+  if(ctState.i===0){note.textContent="\uAC01 \uD56D\uC740 C_i \u00D7 C_{"+(n-1)+"-i} : \uCCAB \uAD04\uD638 \uC9DD \uC548\uCABD i\uC30D \u00D7 \uBC14\uAE65 "+(n-1)+"-i\uC30D.";}
+  else if(ctState.i<n){
+    var ii=ctState.i-1;
+    note.textContent="i = "+ii+" : \uC548\uCABD "+ii+"\uC30D("+C[ii]+"\uAC00\uC9C0) \u00D7 \uBC14\uAE65 "+(n-1-ii)+"\uC30D("+C[n-1-ii]+"\uAC00\uC9C0) = "+(C[ii]*C[n-1-ii])+"\uAC00\uC9C0";
+  }
+  else{note.textContent="\uC644\uB8CC! C_"+n+" = "+C[n]+" . \uC218\uC5F4 1, 1, 2, 5, 14, 42, \u2026 \uC744 \uAE30\uC5B5\uD574 \uB450\uBA74 \uD328\uD134 \uC778\uC2DD\uC5D0 \uD070 \uB3C4\uC6C0\uC774 \uB429\uB2C8\uB2E4.";}
+}
+document.getElementById("ctStep").addEventListener("click",function(){
+  var n=parseInt(ctN.value,10);
+  if(ctState.i<n){ctState.i++;ctRender();}
+});
+document.getElementById("ctReset").addEventListener("click",function(){ctState.i=0;ctRender();});
+ctN.addEventListener("input",function(){ctState.i=0;ctRender();});
+ctRender();
+
+/* ---------- 탭4: 배낭 시뮬레이터 ---------- */
+var KP_W=[0,6,4,3,5],KP_V=[0,13,8,6,12],KP_K=7,KP_N=4;
+var kpState={k:0}; /* \uCC44\uC6B4 \uC140 \uC218 (1..N\uD589, 0..K\uC5F4) */
+function kpCalc(){
+  var dp=[];
+  for(var i=0;i<=KP_N;i++){dp.push([]);for(var w=0;w<=KP_K;w++){dp[i].push(0);}}
+  for(var i2=1;i2<=KP_N;i2++){
+    for(var w2=0;w2<=KP_K;w2++){
+      dp[i2][w2]=dp[i2-1][w2];
+      if(w2>=KP_W[i2]&&dp[i2-1][w2-KP_W[i2]]+KP_V[i2]>dp[i2][w2]){
+        dp[i2][w2]=dp[i2-1][w2-KP_W[i2]]+KP_V[i2];
+      }
+    }
+  }
+  return dp;
+}
+function kpRender(){
+  var dp=kpCalc(),k=kpState.k;
+  var body=document.getElementById("kpBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  var hd=document.createElement("tr");
+  var c0=document.createElement("th");c0.textContent="i \\ w";hd.appendChild(c0);
+  for(var w=0;w<=KP_K;w++){var th=document.createElement("th");th.textContent=String(w);hd.appendChild(th);}
+  body.appendChild(hd);
+  var curIdx=k-1,curI=curIdx>=0?Math.floor(curIdx/(KP_K+1))+1:-1,curW=curIdx>=0?curIdx%(KP_K+1):-1;
+  for(var i=0;i<=KP_N;i++){
+    var tr=document.createElement("tr");
+    var rh=document.createElement("th");
+    rh.textContent=i===0?"0 (\uC5C6\uC74C)":i+" (w"+KP_W[i]+"/v"+KP_V[i]+")";
+    tr.appendChild(rh);
+    for(var w3=0;w3<=KP_K;w3++){
+      var td=document.createElement("td");
+      var filled=(i===0)||((i-1)*(KP_K+1)+w3<k);
+      td.textContent=filled?String(dp[i][w3]):"";
+      if(filled){td.className="filled";}
+      if(i===curI&&w3===curW){td.className="cur";}
+      if(curI>0&&i===curI-1&&w3===curW){td.className="filled src1";}
+      if(curI>0&&i===curI-1&&curW>=KP_W[curI]&&w3===curW-KP_W[curI]){td.className="filled src2";}
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+  var det=document.getElementById("kpDetail"),note=document.getElementById("kpNote");
+  if(k===0){det.textContent="";note.textContent="0\uD589(\uBB3C\uAC74 \uC5C6\uC74C)\uC740 \uBAA8\uB450 0\uC73C\uB85C \uCD08\uAE30\uD654\uB418\uC5B4 \uC788\uC2B5\uB2C8\uB2E4. [\uD55C \uCE78 \uCC44\uC6B0\uAE30]\uB97C \uB204\uB974\uC138\uC694.";}
+  else{
+    var i4=curI,w4=curW;
+    var skip=dp[i4-1][w4];
+    if(w4>=KP_W[i4]){
+      var take=dp[i4-1][w4-KP_W[i4]]+KP_V[i4];
+      det.textContent="dp["+i4+"]["+w4+"] = max( \uC548 \uB123\uC74C "+skip+" , \uB123\uC74C "+dp[i4-1][w4-KP_W[i4]]+"+"+KP_V[i4]+"="+take+" ) = "+dp[i4][w4];
+      note.textContent=(take>skip?"\uBB3C\uAC74 "+i4+"\uBC88\uC744 \uB123\uB294 \uCABD\uC774 \uC774\uB4DD! \uBCF4\uB77C\uC0C9 \uCE78(\uB0A8\uC740 \uBB34\uAC8C "+(w4-KP_W[i4])+")\uC5D0\uC11C \uAC00\uCE58\uB97C \uC774\uC5B4\uBC1B\uC558\uC2B5\uB2C8\uB2E4.":"\uB123\uC5B4\uB3C4 \uC774\uB4DD\uC774 \uC5C6\uAC70\uB098 \uAC19\uC544\uC11C \uC548 \uB123\uC74C(\uCD08\uB85D \uCE78 \uADF8\uB300\uB85C).");
+    }else{
+      det.textContent="dp["+i4+"]["+w4+"] = dp["+(i4-1)+"]["+w4+"] = "+skip+" (\uBB34\uAC8C "+KP_W[i4]+" \uCD08\uACFC\uB85C \uB123\uC744 \uC218 \uC5C6\uC74C)";
+      note.textContent="\uD55C\uB3C4 w = "+w4+" \uBCF4\uB2E4 \uBB3C\uAC74\uC774 \uBB34\uAC70\uC6CC \uC120\uD0DD\uC9C0\uAC00 '\uC548 \uB123\uC74C' \uD558\uB098\uBFD0\uC785\uB2C8\uB2E4.";
+    }
+  }
+  document.getElementById("kpAns").textContent=(k>=KP_N*(KP_K+1))?String(dp[KP_N][KP_K]):"-";
+}
+document.getElementById("kpStep").addEventListener("click",function(){
+  if(kpState.k<KP_N*(KP_K+1)){kpState.k++;kpRender();}
+});
+document.getElementById("kpRun").addEventListener("click",function(){kpState.k=KP_N*(KP_K+1);kpRender();});
+document.getElementById("kpReset").addEventListener("click",function(){kpState.k=0;kpRender();});
+kpRender();
+
+/* ---------- 탭5: LIS ---------- */
+var LI_A=[10,20,10,30,20,50];
+var liState={i:0};
+function liCalc(){
+  var dp=[];
+  for(var i=0;i<LI_A.length;i++){
+    dp.push(1);
+    for(var j=0;j<i;j++){if(LI_A[j]<LI_A[i]&&dp[j]+1>dp[i]){dp[i]=dp[j]+1;}}
+  }
+  return dp;
+}
+function liRender(){
+  var dp=liCalc(),k=liState.i;
+  var seq=document.getElementById("liSeq");
+  while(seq.firstChild){seq.removeChild(seq.firstChild);}
+  for(var i=0;i<LI_A.length;i++){
+    var ch=document.createElement("span");ch.className="seq-chip";
+    ch.textContent=String(LI_A[i]);
+    if(k>0&&i===k-1){ch.classList.add("cur");}
+    else if(k>0&&i<k-1&&LI_A[i]<LI_A[k-1]&&dp[i]+1===dp[k-1]){ch.classList.add("pick");}
+    seq.appendChild(ch);
+  }
+  var body=document.getElementById("liBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  var tr1=document.createElement("tr"),tr2=document.createElement("tr");
+  var h1=document.createElement("th");h1.textContent="i";tr1.appendChild(h1);
+  var h2=document.createElement("th");h2.textContent="dp[i]";tr2.appendChild(h2);
+  for(var i2=0;i2<LI_A.length;i2++){
+    var th=document.createElement("th");th.textContent=String(i2);tr1.appendChild(th);
+    var td=document.createElement("td");
+    td.textContent=i2<k?String(dp[i2]):"";
+    if(i2<k){td.className="filled";}
+    if(k>0&&i2===k-1){td.className="cur";}
+    tr2.appendChild(td);
+  }
+  body.appendChild(tr1);body.appendChild(tr2);
+  var det=document.getElementById("liDetail"),note=document.getElementById("liNote");
+  if(k===0){det.textContent="";note.textContent="[\uB2E4\uC74C \uC6D0\uC18C \uCC98\uB9AC]\uB97C \uB204\uB974\uBA74 i = 0 \uBD80\uD130 dp\uB97C \uCC44\uC6C1\uB2C8\uB2E4.";}
+  else{
+    var ii=k-1,cands=[];
+    for(var j2=0;j2<ii;j2++){if(LI_A[j2]<LI_A[ii]){cands.push("dp["+j2+"]+1="+(dp[j2]+1));}}
+    if(cands.length===0){det.textContent="dp["+ii+"] = 1 (\uC55E\uC5D0 "+LI_A[ii]+" \uBCF4\uB2E4 \uC791\uC740 \uC6D0\uC18C \uC5C6\uC74C \u2192 \uD63C\uC790 \uC2DC\uC791)";}
+    else{det.textContent="dp["+ii+"] = max( 1, "+cands.join(", ")+" ) = "+dp[ii];}
+    note.textContent="\uCD08\uB85D \uCE69: "+LI_A[ii]+" \uBC14\uB85C \uC55E\uC5D0 \uC62C \uC218 \uC788\uACE0 \uCD5C\uC801\uC744 \uB9CC\uB4DC\uB294 \uD6C4\uBCF4\uB4E4\uC785\uB2C8\uB2E4.";
+    if(k>=LI_A.length){note.textContent="\uC644\uB8CC! \uB2F5\uC740 dp \uC804\uCCB4\uC758 \uCD5C\uB313\uAC12\uC785\uB2C8\uB2E4. (LCS\uC640 \uB2EC\uB9AC \uB9C8\uC9C0\uB9C9 \uCE78\uC774 \uC544\uB2D8\uC5D0 \uC8FC\uC758!)";}
+  }
+  var mx=0;for(var m=0;m<Math.min(k,dp.length);m++){if(dp[m]>mx){mx=dp[m];}}
+  document.getElementById("liAns").textContent=(k>=LI_A.length)?String(mx):"-";
+}
+document.getElementById("liStep").addEventListener("click",function(){
+  if(liState.i<LI_A.length){liState.i++;liRender();}
+});
+document.getElementById("liReset").addEventListener("click",function(){liState.i=0;liRender();});
+liRender();
+
+/* ---------- 탭5: LCS ---------- */
+var LC_A="ACAYKP",LC_B="CAPCAK";
+var lcState={k:0};
+function lcCalc(){
+  var n=LC_A.length,m=LC_B.length,dp=[];
+  for(var i=0;i<=n;i++){dp.push([]);for(var j=0;j<=m;j++){dp[i].push(0);}}
+  for(var i2=1;i2<=n;i2++){
+    for(var j2=1;j2<=m;j2++){
+      if(LC_A[i2-1]===LC_B[j2-1]){dp[i2][j2]=dp[i2-1][j2-1]+1;}
+      else{dp[i2][j2]=Math.max(dp[i2-1][j2],dp[i2][j2-1]);}
+    }
+  }
+  return dp;
+}
+function lcRender(){
+  var dp=lcCalc(),k=lcState.k;
+  var n=LC_A.length,m=LC_B.length;
+  var body=document.getElementById("lcBody");
+  while(body.firstChild){body.removeChild(body.firstChild);}
+  var hd=document.createElement("tr");
+  var e1=document.createElement("th");e1.textContent="";hd.appendChild(e1);
+  var e2=document.createElement("th");e2.textContent="\u2205";hd.appendChild(e2);
+  for(var j=0;j<m;j++){var th=document.createElement("th");th.textContent=LC_B[j];hd.appendChild(th);}
+  body.appendChild(hd);
+  var curIdx=k-1,curI=curIdx>=0?Math.floor(curIdx/m)+1:-1,curJ=curIdx>=0?curIdx%m+1:-1;
+  for(var i=0;i<=n;i++){
+    var tr=document.createElement("tr");
+    var rh=document.createElement("th");rh.textContent=i===0?"\u2205":LC_A[i-1];tr.appendChild(rh);
+    for(var j2=0;j2<=m;j2++){
+      var td=document.createElement("td");
+      var filled=(i===0)||(j2===0)||((i-1)*m+(j2-1)<k);
+      td.textContent=filled?String(dp[i][j2]):"";
+      if(filled){td.className="filled";}
+      var isMatch=i>0&&j2>0&&LC_A[i-1]===LC_B[j2-1];
+      if(filled&&isMatch&&((i-1)*m+(j2-1)<k)){td.classList.add("match");}
+      if(i===curI&&j2===curJ){td.className="cur";}
+      if(curI>0){
+        if(LC_A[curI-1]===LC_B[curJ-1]){
+          if(i===curI-1&&j2===curJ-1){td.classList.add("src1");}
+        }else{
+          if(i===curI-1&&j2===curJ){td.classList.add("src1");}
+          if(i===curI&&j2===curJ-1){td.classList.add("src2");}
+        }
+      }
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+  var note=document.getElementById("lcNote");
+  if(k===0){note.textContent="0\uD589\u00B70\uC5F4(\uBE48 \uBB38\uC790\uC5F4)\uC740 \uBAA8\uB450 0. \uD589 \uC6B0\uC120\uC73C\uB85C \uCC44\uC6C1\uB2C8\uB2E4.";}
+  else{
+    var a=LC_A[curI-1],b2=LC_B[curJ-1];
+    if(a===b2){note.textContent="'"+a+"' = '"+b2+"' \uAC19\uC74C! \u2192 \uB300\uAC01\uC120 + 1 = "+dp[curI][curJ]+" (\uCD08\uB85D \uCE78\uC774 \uB300\uAC01\uC120)";}
+    else{note.textContent="'"+a+"' \u2260 '"+b2+"' \u2192 max(\uC704 "+dp[curI-1][curJ]+", \uC67C\uCABD "+dp[curI][curJ-1]+") = "+dp[curI][curJ];}
+    if(k>=n*m){note.textContent="\uC644\uB8CC! LCS \uAE38\uC774 = "+dp[n][m]+" (\uACF5\uD1B5 \uBD80\uBD84\uC218\uC5F4\uC758 \uC608: ACAK)";}
+  }
+  document.getElementById("lcAns").textContent=(k>=n*m)?String(dp[n][m]):"-";
+}
+document.getElementById("lcStep").addEventListener("click",function(){
+  if(lcState.k<LC_A.length*LC_B.length){lcState.k++;lcRender();}
+});
+document.getElementById("lcRun").addEventListener("click",function(){lcState.k=LC_A.length*LC_B.length;lcRender();});
+document.getElementById("lcReset").addEventListener("click",function(){lcState.k=0;lcRender();});
+lcRender();
+
+/* ---------- 탭6: C 실행기 (계단, n=6) ---------- */
+var C_LINES=[
+  "int dp[16];",
+  "int main(void) {",
+  "    int n = 6;",
+  "    dp[1] = 1;",
+  "    dp[2] = 2;",
+  "    for (int i = 3; i \u003C= n; i++)",
+  "        dp[i] = dp[i-1] + dp[i-2];",
+  "    printf(\u0022%d\\n\u0022, dp[n]);",
+  "    return 0;",
+  "}"
+];
+function buildTrace(){
+  var tr=[],dp=[0,0,0,0,0,0,0],n=6;
+  tr.push({ln:2,i:null,dp:dp.slice(),out:"",note:"n = 6 \uC124\uC815."});
+  dp[1]=1;tr.push({ln:3,i:null,dp:dp.slice(),out:"",note:"\uCD08\uAE30\uAC12 \u2460 dp[1] = 1 (1\uCE78 \uD55C \uBC88)."});
+  dp[2]=2;tr.push({ln:4,i:null,dp:dp.slice(),out:"",note:"\uCD08\uAE30\uAC12 \u2461 dp[2] = 2 (1+1 \uB610\uB294 2)."});
+  for(var i=3;i<=n;i++){
+    tr.push({ln:5,i:i,dp:dp.slice(),out:"",note:"i = "+i+" : \uC55E \uB450 \uCE78\uC774 \uC900\uBE44\uB418\uC5B4 \uC788\uC73C\uBBC0\uB85C \uACC4\uC0B0 \uAC00\uB2A5."});
+    dp[i]=dp[i-1]+dp[i-2];
+    tr.push({ln:6,i:i,dp:dp.slice(),out:"",note:"dp["+i+"] = dp["+(i-1)+"] + dp["+(i-2)+"] = "+dp[i-1]+" + "+dp[i-2]+" = "+dp[i]});
+  }
+  tr.push({ln:7,i:null,dp:dp.slice(),out:String(dp[n]),note:"\uB2F5 dp[6] = "+dp[n]+" \uCD9C\uB825. (\uD53C\uBCF4\uB098\uCE58\uC640 \uAC19\uC740 \uAD6C\uC870\uC784\uC744 \uB208\uCE58\uCC44\uC168\uB098\uC694?)"});
+  tr.push({ln:8,i:null,dp:dp.slice(),out:String(dp[n]),note:"\uD504\uB85C\uADF8\uB7A8 \uC885\uB8CC."});
+  return tr;
+}
+var C_TRACE=buildTrace();
+var cState={step:-1,timer:null};
+function cStopAuto(){if(cState.timer){clearInterval(cState.timer);cState.timer=null;document.getElementById("cAuto").textContent="\uC790\uB3D9 \uC2E4\uD589";}}
+function cRender(){
+  var box=document.getElementById("cCodeBox");
+  while(box.firstChild){box.removeChild(box.firstChild);}
+  var curLn=cState.step>=0?C_TRACE[cState.step].ln:-1;
+  for(var i=0;i<C_LINES.length;i++){
+    var sp=document.createElement("span");
+    sp.className="codeline"+(i===curLn?" cur":"");
+    sp.textContent=C_LINES[i];
+    box.appendChild(sp);
+  }
+  var st=cState.step>=0?C_TRACE[cState.step]:null;
+  /* dp \uBC30\uC5F4 \uBDF0 */
+  var dv=document.getElementById("cDpView");
+  while(dv.firstChild){dv.removeChild(dv.firstChild);}
+  var tr1=document.createElement("tr"),tr2=document.createElement("tr");
+  var h1=document.createElement("th");h1.textContent="i";tr1.appendChild(h1);
+  var h2=document.createElement("th");h2.textContent="dp[i]";tr2.appendChild(h2);
+  for(var k=1;k<=6;k++){
+    var th=document.createElement("th");th.textContent=String(k);tr1.appendChild(th);
+    var td=document.createElement("td");
+    var v=st?st.dp[k]:0;
+    td.textContent=v>0?String(v):"";
+    if(v>0){td.className="filled";}
+    if(st&&st.i===k&&st.ln===6){td.className="cur";}
+    tr2.appendChild(td);
+  }
+  dv.appendChild(tr1);dv.appendChild(tr2);
+  document.getElementById("cVarI").textContent=st&&st.i!==null?String(st.i):"-";
+  document.getElementById("cConsole").textContent=st?st.out:"";
+  document.getElementById("cNote").textContent=st?st.note:"\uD504\uB85C\uADF8\uB7A8 \uC2DC\uC791 \uC804\uC785\uB2C8\uB2E4.";
+  document.getElementById("cPrev").disabled=cState.step<=0;
+  document.getElementById("cNext").disabled=cState.step>=C_TRACE.length-1;
+}
+document.getElementById("cNext").addEventListener("click",function(){cStopAuto();if(cState.step<C_TRACE.length-1){cState.step++;cRender();}});
+document.getElementById("cPrev").addEventListener("click",function(){cStopAuto();if(cState.step>0){cState.step--;cRender();}});
+document.getElementById("cReset").addEventListener("click",function(){cStopAuto();cState.step=-1;cRender();});
+document.getElementById("cAuto").addEventListener("click",function(){
+  if(cState.timer){cStopAuto();return;}
+  if(cState.step>=C_TRACE.length-1){cState.step=-1;}
+  this.textContent="\u23F8 \uC815\uC9C0";
+  cState.timer=setInterval(function(){
+    if(cState.step>=C_TRACE.length-1){cStopAuto();return;}
+    cState.step++;cRender();
+  },850);
+});
+cRender();
+
+/* ---------- 탭7: 퀴즈 ---------- */
+var QUIZ=[
+  {q:"DP\uC758 \uD575\uC2EC \uC544\uC774\uB514\uC5B4\uB85C \uAC00\uC7A5 \uC54C\uB9DE\uC740 \uAC83\uC740?",
+   opts:["\uBAA8\uB4E0 \uACBD\uC6B0\uB97C \uC804\uBD80 \uB098\uC5F4\uD55C\uB2E4","\uC791\uC740 \uBB38\uC81C\uC758 \uB2F5\uC744 \uC800\uC7A5\uD574 \uC7AC\uC0AC\uC6A9\uD55C\uB2E4","\uD56D\uC0C1 \uC7AC\uADC0\uB85C\uB9CC \uD480\uC5B4\uC57C \uD55C\uB2E4","\uC815\uB82C\uC744 \uBA3C\uC800 \uD574\uC57C \uD55C\uB2E4"],ans:1,
+   fb:"\uC800\uC7A5(\uBA54\uBAA8)\uD558\uC5EC \uAC19\uC740 \uBD80\uBD84\uBB38\uC81C\uB97C \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC9C0 \uC54A\uB294 \uAC83\uC774 DP\uC758 \uBCF8\uC9C8\uC785\uB2C8\uB2E4."},
+  {q:"\uACC4\uB2E8 \uC624\uB974\uAE30(1\uCE78/2\uCE78, dp[1]=1, dp[2]=2)\uC5D0\uC11C dp[5]\uB294?",
+   opts:["5","8","13","10"],ans:1,
+   fb:"1,2,3,5,8 \u2014 dp[5] = dp[4]+dp[3] = 5+3 = 8."},
+  {q:"\uCE74\uD0C8\uB780 \uC218 C\u2083 (\uAD04\uD638 3\uC30D\uC758 \uC62C\uBC14\uB978 \uBC30\uCE58 \uC218)\uB294?",
+   opts:["3","4","5","6"],ans:2,
+   fb:"1, 1, 2, 5, 14, \u2026 \uC5D0\uC11C C\u2083 = 5. \uC791\uC740 \uACBD\uC6B0\uB97C \uC138\uC5B4 \uC774 \uC218\uC5F4\uC774 \uB098\uC624\uBA74 \uCE74\uD0C8\uB780\uC785\uB2C8\uB2E4."},
+  {q:"\uACA9\uC790 \uACBD\uB85C\uC5D0\uC11C dp[r][c]\uB97C \uB9CC\uB4DC\uB294 \uB450 \uCE78\uC740?",
+   opts:["\uC624\uB978\uCABD\uACFC \uC544\uB798","\uC704\uC640 \uC67C\uCABD","\uB300\uAC01\uC120 \uB450 \uCE78","\uAC19\uC740 \uD589 \uC804\uCCB4"],ans:1,
+   fb:"\uB9C8\uC9C0\uB9C9 \uD55C \uAC78\uC74C\uC774 \uC544\uB798\uCABD\uC774\uAC70\uB098 \uC624\uB978\uCABD\uC774\uBBC0\uB85C, \uADF8 \uC9C1\uC804 \uC704\uCE58\uC778 \uC704 \uCE78\uACFC \uC67C\uCABD \uCE78\uC758 \uD569\uC785\uB2C8\uB2E4."},
+  {q:"0/1 \uBC30\uB0AD\uC758 \uC62C\uBC14\uB978 \uC810\uD654\uC2DD\uC740?",
+   opts:["dp[i][w] = dp[i-1][w] + dp[i-1][w-w\u1D62]+v\u1D62","dp[i][w] = max(dp[i-1][w], dp[i-1][w-w\u1D62]+v\u1D62)","dp[i][w] = dp[i][w-1] + v\u1D62","dp[i][w] = min(dp[i-1][w], v\u1D62)"],ans:1,
+   fb:"\uACBD\uC6B0\uC758 \uC218\uAC00 \uC544\uB2C8\uB77C \uCD5C\uC801\uD654 \uBB38\uC81C\uC774\uBBC0\uB85C \uB367\uC148\uC774 \uC544\uB2CC max\uC785\uB2C8\uB2E4. '\uC548 \uB123\uC74C vs \uB123\uC74C' \uB450 \uACBD\uC6B0 \uC911 \uCD5C\uB300."},
+  {q:"LCS\uC5D0\uC11C \uB9C8\uC9C0\uB9C9 \uB450 \uAE00\uC790\uAC00 \uAC19\uC744 \uB54C dp[i][j]\uB294?",
+   opts:["max(\uC704, \uC67C\uCABD)","\uB300\uAC01\uC120 \uAC12 + 1","\uC704 \uAC12 + 1","0\uC73C\uB85C \uCD08\uAE30\uD654"],ans:1,
+   fb:"\uAC19\uC740 \uAE00\uC790\uB97C \uACF5\uD1B5 \uBD80\uBD84\uC218\uC5F4\uC5D0 \uD3EC\uD568\uC2DC\uD0A4\uACE0, \uB0A8\uC740 \uC55E\uBD80\uBD84\uB07C\uB9AC\uC758 \uB2F5(\uB300\uAC01\uC120)\uC5D0 1\uC744 \uB354\uD569\uB2C8\uB2E4."}
+];
+var quizArea=document.getElementById("quizArea");
+var solved=[];
+document.getElementById("quizTotal").textContent=String(QUIZ.length);
+function updScore(){
+  var s=0;for(var i=0;i<solved.length;i++){if(solved[i]){s++;}}
+  document.getElementById("quizScore").textContent=String(s);
+}
+for(var qi=0;qi<QUIZ.length;qi++){
+  (function(q,idx){
+    solved.push(false);
+    var box=document.createElement("div");box.className="quiz-q";
+    var title=document.createElement("div");title.className="qtitle";
+    title.textContent="Q"+(idx+1)+". "+q.q;box.appendChild(title);
+    var fb=document.createElement("div");fb.className="quiz-fb";
+    var btns=[];
+    for(var oi=0;oi<q.opts.length;oi++){
+      (function(o,oidx){
+        var btn=document.createElement("button");btn.className="quiz-opt";
+        btn.textContent=String.fromCharCode(9312+oidx)+" "+o;
+        btn.addEventListener("click",function(){
+          if(solved[idx]){return;}
+          if(oidx===q.ans){
+            btn.classList.add("correct");
+            fb.style.display="block";fb.style.color="#4ade80";
+            fb.textContent="\u2705 \uC815\uB2F5! "+q.fb;
+            solved[idx]=true;updScore();
+            for(var bi=0;bi<btns.length;bi++){btns[bi].disabled=true;}
+          }else{
+            btn.classList.add("wrong");btn.disabled=true;
+            fb.style.display="block";fb.style.color="#f87171";
+            fb.textContent="\u274C \uC624\uB2F5\uC785\uB2C8\uB2E4. \uD78C\uD2B8: "+q.fb;
+          }
+        });
+        btns.push(btn);box.appendChild(btn);
+      })(q.opts[oi],oi);
+    }
+    box.appendChild(fb);
+    quizArea.appendChild(box);
+  })(QUIZ[qi],qi);
+}
+updScore();
+})();
+</script>
+</body>
+</html>
