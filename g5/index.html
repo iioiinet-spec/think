@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>볼록 껍질 완전정복 — 점들을 감싸는 고무줄, KOI 계산기하 심화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1120; --panel:#111a2e; --panel2:#16213c; --line:#233250;
+  --teal:#2dd4bf; --teal-dim:#14b8a6; --cyan:#38bdf8; --amber:#fbbf24;
+  --rose:#fb7185; --violet:#a78bfa; --green:#4ade80;
+  --tx:#e2e8f0; --tx-dim:#94a3b8;
+  --mono:'JetBrains Mono',monospace; --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);line-height:1.7;font-size:17px}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 20px 80px}
+header{padding:36px 0 20px;border-bottom:2px solid var(--line);margin-bottom:20px}
+.badge{display:inline-block;background:rgba(45,212,191,.12);color:var(--teal);border:1px solid var(--teal-dim);border-radius:999px;padding:3px 14px;font-size:14px;font-weight:700;margin-bottom:12px}
+h1{font-size:32px;font-weight:900;letter-spacing:-.5px}
+h1 .sig{color:var(--teal);font-family:var(--mono)}
+.sub{color:var(--tx-dim);margin-top:8px;font-size:16px}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0;position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:50;border-bottom:1px solid var(--line)}
+nav.tabs button{background:var(--panel);color:var(--tx-dim);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
+nav.tabs button:hover{border-color:var(--teal-dim);color:var(--tx)}
+nav.tabs button.on{background:var(--teal);color:#04211c;border-color:var(--teal)}
+section.tab{display:none}
+section.tab.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:22px}
+.card h2{font-size:23px;font-weight:900;margin-bottom:14px;color:#fff}
+.card h2 .num{color:var(--teal);font-family:var(--mono);margin-right:8px}
+.card h3{font-size:18px;font-weight:700;color:var(--cyan);margin:18px 0 8px}
+p.desc{color:var(--tx);margin-bottom:10px}
+.hl{color:var(--amber);font-weight:700}
+.hl-t{color:var(--teal);font-weight:700}
+.hl-r{color:var(--rose);font-weight:700}
+.hl-v{color:var(--violet);font-weight:700}
+.formula{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:17px;margin:12px 0;overflow-x:auto}
+.formula.amber{border-left-color:var(--amber)}
+.formula.rose{border-left-color:var(--rose)}
+.formula.big{font-size:20px;text-align:center}
+sup,sub{font-size:.62em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.codebox{background:#0a0f1d;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.codebox .cap{background:var(--panel2);padding:7px 14px;font-size:13.5px;font-weight:700;color:var(--tx-dim);display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}
+.codebox .cap .lang-c{color:var(--cyan)}
+.codebox pre{padding:14px 16px;font-family:var(--mono);font-size:14.5px;line-height:1.65;overflow-x:auto;color:#dbe4f0}
+.kw{color:#c792ea}.fn{color:#82aaff}.strv{color:#c3e88d}.numv{color:#f78c6c}.cm{color:#546e8a;font-style:italic}
+.mark{background:rgba(251,191,36,.15);border-radius:3px;padding:0 3px}
+.bad{background:rgba(251,113,133,.13);border-radius:3px;padding:0 3px}
+.ctrl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.ctrl label{font-size:14.5px;font-weight:700;color:var(--tx-dim)}
+.ctrl input[type=range]{accent-color:var(--teal);width:140px}
+.ctrl select,.ctrl input[type=number]{background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:var(--mono);font-size:15px}
+.btn{background:var(--teal);color:#04211c;border:none;border-radius:9px;padding:9px 19px;font-family:var(--sans);font-size:15px;font-weight:900;cursor:pointer;transition:.15s}
+.btn:hover{background:#5eead4}
+.btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal-dim)}
+.btn.ghost:hover{background:rgba(45,212,191,.1)}
+.svgbox{background:#0a0f1d;border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+.svgbox svg{touch-action:none;display:block}
+.drag-hint{color:var(--amber);font-size:14.5px;font-weight:700;margin-bottom:6px}
+.readout{font-family:var(--mono);font-size:16px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0;line-height:1.9}
+.readout .rv{color:var(--teal);font-weight:700;font-size:20px}
+.step-pill{display:inline-block;background:rgba(56,189,248,.12);border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:2px 12px;font-size:13.5px;font-weight:700;margin-bottom:8px}
+table.map{width:100%;border-collapse:collapse;margin:12px 0;font-size:15.5px}
+table.map th{background:var(--panel2);color:var(--teal);padding:10px 12px;border:1px solid var(--line);text-align:left;font-size:14.5px}
+table.map td{padding:10px 12px;border:1px solid var(--line)}
+table.map td.mono{font-family:var(--mono);font-size:14.5px}
+.quiz{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+.quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.quiz .qtag{background:var(--violet);color:#1b1035;border-radius:7px;padding:2px 11px;font-size:13px;font-weight:900}
+.quiz .qtag.hard{background:var(--rose);color:#3d0a14}
+.quiz .qtitle{font-weight:900;font-size:17px}
+.quiz .qbody{margin-bottom:12px;white-space:pre-wrap}
+.quiz .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:10px}
+.quiz .opts button{background:var(--bg);border:1.5px solid var(--line);color:var(--tx);border-radius:9px;padding:10px;font-family:var(--mono);font-size:16px;font-weight:700;cursor:pointer;transition:.12s}
+.quiz .opts button:hover{border-color:var(--teal-dim)}
+.quiz .opts button.correct{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green)}
+.quiz .opts button.wrong{background:rgba(251,113,133,.13);border-color:var(--rose);color:var(--rose)}
+.quiz .expl{display:none;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px;font-size:15.5px}
+.quiz .expl.show{display:block}
+.quiz .expl .ok{color:var(--green);font-weight:900}
+.quiz .expl .no{color:var(--rose);font-weight:900}
+.tip{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:13px 16px;margin:12px 0;font-size:15.5px}
+.tip b{color:var(--amber)}
+.tip.rose{background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.4)}
+.tip.rose b{color:var(--rose)}
+.tip.green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.4)}
+.tip.green b{color:var(--green)}
+.score{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--teal);background:var(--panel2);border:1px solid var(--teal-dim);border-radius:10px;padding:12px 18px;text-align:center;margin-top:8px}
+.buildstep{border-left:3px solid var(--teal);padding-left:18px;margin:16px 0}
+.buildstep .bh{font-weight:900;font-size:17px;color:var(--cyan);margin-bottom:6px}
+.signcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.signcard .big{font-size:30px;font-weight:900;font-family:var(--mono)}
+.signcard .lbl{font-size:15px;font-weight:700;margin-top:4px}
+.signcard .dsc{font-size:14px;color:var(--tx-dim);margin-top:6px}
+footer{text-align:center;color:var(--tx-dim);font-size:13.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="badge">중등 정보올림피아드 · KOI 알고리즘 시리즈 · 심화편</div>
+  <h1><span class="sig">⬡</span> 볼록 껍질 완전정복 — 점들을 감싸는 고무줄</h1>
+  <div class="sub">고무줄 직관에서 출발해 모노톤 체인의 한 줄 규칙, 공선 처리, C 구현, 그리고 회전 캘리퍼스까지.</div>
+</header>
+<nav class="tabs" id="tabnav">
+  <button data-t="t1" class="on">1. 고무줄 직관</button>
+  <button data-t="t2">2. 모노톤 체인</button>
+  <button data-t="t3">3. C 코드 구현</button>
+  <button data-t="t4">4. 알고리즘 비교</button>
+  <button data-t="t5">5. 기출 응용</button>
+  <button data-t="t6">6. 기출 도전</button>
+</nav>
+<!-- ============ TAB 1 ============ -->
+<section class="tab show" id="t1">
+<div class="card">
+  <h2><span class="num">1-1</span>정의 — 점들을 감싸는 가장 작은 볼록 도형</h2>
+  <p class="desc">판에 못을 여러 개 박고 <span class="hl">고무줄을 크게 벌려 놓았다가 놓으면</span>, 고무줄은 바깥쪽 못들에 걸려 멈춥니다. 이때 고무줄이 이루는 다각형이 <b>볼록 껍질(convex hull)</b>입니다.</p>
+  <div class="formula amber">
+    볼록 껍질 = 주어진 점들을 모두 포함하는 <b>볼록 다각형</b> 중 넓이가 가장 작은 것
+  </div>
+  <p class="desc">"볼록"이란 <span class="hl-t">다각형 안의 두 점을 이은 선분이 항상 다각형 안에 있는</span> 성질입니다. 즉 안으로 파인 곳(오목한 곳)이 하나도 없습니다.</p>
+  <h3>세 종류의 점</h3>
+  <div class="grid3">
+    <div class="signcard" style="border-color:var(--teal)">
+      <div class="big" style="color:var(--teal)">꼭짓점</div>
+      <div class="lbl" style="color:var(--teal)">고무줄이 걸리는 못</div>
+      <div class="dsc">껍질에 포함<br>방향이 꺾이는 점</div>
+    </div>
+    <div class="signcard" style="border-color:var(--amber)">
+      <div class="big" style="color:var(--amber)">변 위의 점</div>
+      <div class="lbl" style="color:var(--amber)">공선 점</div>
+      <div class="dsc">문제 조건에 따라<br>포함/제외가 갈림</div>
+    </div>
+    <div class="signcard" style="border-color:var(--tx-dim)">
+      <div class="big" style="color:var(--tx-dim)">내부 점</div>
+      <div class="lbl" style="color:var(--tx-dim)">고무줄에 안 닿음</div>
+      <div class="dsc">껍질과 무관<br>계산에서 버려짐</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2><span class="num">1-2</span>인터랙티브: 고무줄 실험실</h2>
+  <p class="desc">격자를 <b>클릭하면 점이 추가</b>되고 껍질이 즉시 다시 계산됩니다. 안쪽에 점을 아무리 많이 찍어도 <span class="hl-t">껍질은 변하지 않는다</span>는 것을 확인하세요.</p>
+  <div class="ctrl">
+    <button class="btn ghost" id="rb-sample">예제 점 배치</button>
+    <button class="btn ghost" id="rb-inner">내부에 점 5개 추가</button>
+    <button class="btn ghost" id="rb-clear">전체 지우기</button>
+    <label><input type="checkbox" id="rb-label" checked> 점 분류 표시</label>
+  </div>
+  <div class="svgbox"><svg id="rb-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="rb-read">격자를 클릭해 점을 찍거나 [예제 점 배치]를 눌러 보세요.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">1-3</span>왜 올림피아드에서 중요한가</h2>
+  <table class="map">
+    <tr><th>문제 유형</th><th>실제 문제 설명</th><th>볼록 껍질로 푸는 이유</th></tr>
+    <tr><td>최소 울타리</td><td>모든 나무를 감싸는 울타리의 최소 길이</td><td>껍질의 둘레가 정답</td></tr>
+    <tr><td>가장 먼 두 점</td><td>n개 점 중 거리가 최대인 쌍</td><td>정답 쌍은 <b>반드시 껍질 위</b>에 있음</td></tr>
+    <tr><td>최소 포함 영역</td><td>모든 점을 덮는 최소 볼록 영역의 넓이</td><td>껍질에 신발끈 공식</td></tr>
+    <tr><td>점 포함 판정 반복</td><td>쿼리마다 "이 점이 영역 안인가?"</td><td>껍질로 만들면 O(log n) 판정 가능</td></tr>
+  </table>
+  <div class="tip green"><b>가장 중요한 성질</b> — "가장 먼 두 점"의 정답은 <b>항상 볼록 껍질의 꼭짓점 중에 있습니다.</b> 내부 점을 아무리 골라도 바깥쪽 점보다 멀 수 없기 때문입니다. 그래서 n개 점 전부를 O(n²)로 비교하는 대신, 껍질 h개만 보면 됩니다. 5번 탭에서 이걸 O(h)까지 줄입니다.</div>
+</div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="t2">
+<div class="card">
+  <h2><span class="num">2-1</span>모노톤 체인 — 위아래로 나눠서 훑기</h2>
+  <p class="desc">Andrew's Monotone Chain은 껍질을 <span class="hl">아래쪽 절반과 위쪽 절반</span>으로 나눠 각각 한 번씩 훑어 만듭니다.</p>
+  <div class="formula amber">
+    ① x좌표(같으면 y좌표) 기준으로 <b>정렬</b><br>
+    ② 왼쪽 → 오른쪽으로 훑으며 <b>아래 껍질</b> 만들기<br>
+    ③ 오른쪽 → 왼쪽으로 훑으며 <b>위 껍질</b> 만들기<br>
+    ④ 두 껍질을 이어 붙이면 완성
+  </div>
+  <h3>단 하나의 규칙</h3>
+  <div class="formula big">
+    while (스택 ≥ 2개 &amp;&amp; cross(st[k−2], st[k−1], 새점) ≤ 0) &nbsp;→&nbsp; <b style="color:var(--rose)">pop</b>
+  </div>
+  <p class="desc">스택의 마지막 두 점과 새 점이 <span class="hl-r">오른쪽으로 꺾이면(시계 방향)</span>, 가운데 점은 껍질 안쪽으로 들어간 것이므로 버립니다. 왼쪽으로 꺾일 때까지 계속 버린 뒤 새 점을 넣습니다.</p>
+  <div class="tip"><b>왜 정렬이 먼저인가</b> — x 순서로 훑으면 "되돌아가는" 일이 없어 각 점이 스택에 <b>최대 한 번 들어가고 한 번 나옵니다.</b> 그래서 훑는 과정 자체는 O(n)이고, 전체 시간은 <b>정렬이 지배해 O(n log n)</b>이 됩니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">2-2</span>인터랙티브: 단계별 스택 시뮬레이터</h2>
+  <p class="desc">격자를 클릭해 점을 추가할 수 있습니다. <b>[단계 실행]</b>으로 push/pop이 일어나는 순간을 하나씩 확인하세요. <span class="hl-t">초록 = 스택에 있음</span>, <span class="hl">노랑 = 지금 넣으려는 후보</span>, <span class="hl-r">빨강 = 방금 버려진 점</span>입니다.</p>
+  <div class="ctrl">
+    <button class="btn" id="mc-step">단계 실행 ▶</button>
+    <button class="btn ghost" id="mc-auto">자동 재생</button>
+    <button class="btn ghost" id="mc-fast">즉시 완성</button>
+    <button class="btn ghost" id="mc-sample">예제 점 배치</button>
+    <button class="btn ghost" id="mc-clear">점 지우기</button>
+  </div>
+  <div class="svgbox"><svg id="mc-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="mc-read">[예제 점 배치] 후 [단계 실행]을 눌러 스택 변화를 관찰하세요.</div>
+  <div class="tip green"><b>관찰 포인트</b> — ① 아래 껍질을 만드는 동안 위쪽 점들은 스택에 잠깐 들어갔다가 전부 pop됩니다. ② 아래 껍질이 끝나면 그 크기를 <b>하한선(lower)</b>으로 고정해, 위 껍질을 만들 때 아래 껍질을 침범하지 않게 합니다. ③ 마지막에 시작점이 한 번 더 들어오므로 결과에서 하나를 뺍니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">2-3</span>왜 pop 한 번이면 충분한가 — 정당성</h2>
+  <p class="desc">"오른쪽으로 꺾이는 점을 버린다"가 왜 정확히 껍질을 만들까요?</p>
+  <div class="formula">
+    스택에 남은 점들은 <b>항상 왼쪽으로만 꺾인다</b> → 볼록하다<br>
+    버려진 점은 <b>이전 점과 새 점을 잇는 선분의 오른쪽(안쪽)</b>에 있다 → 껍질일 수 없다
+  </div>
+  <p class="desc">즉 스택은 <span class="hl-t">"지금까지 본 점들의 아래 껍질"</span>이라는 성질(불변식)을 매 단계 유지합니다. 마지막 점까지 처리하면 그것이 곧 전체의 아래 껍질입니다.</p>
+  <div class="tip"><b>시간복잡도 다시 보기</b> — while문이 안에 있어 O(n²)처럼 보이지만, <b>각 점은 평생 한 번만 pop</b>될 수 있습니다. 전체 pop 횟수 ≤ n이므로 훑기는 O(n). 이런 분석을 <span class="hl-v">분할상환 분석(amortized analysis)</span>이라 합니다.</div>
+</div>
+</section>
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="t3">
+<div class="card">
+  <h2><span class="num">3-1</span>구현 4단계</h2>
+
+  <div class="buildstep">
+    <div class="bh">STEP 1. 정렬 비교 함수</div>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>step1.c</span></div>
+<pre><span class="kw">typedef struct</span> { <span class="kw">long long</span> x, y; } P;
+
+<span class="kw">int</span> <span class="fn">cmp</span>(<span class="kw">const void</span> *A, <span class="kw">const void</span> *B) {
+    <span class="kw">const</span> P *p = A, *q = B;
+    <span class="kw">if</span> (p-&gt;x != q-&gt;x) <span class="kw">return</span> p-&gt;x &lt; q-&gt;x ? -<span class="numv">1</span> : <span class="numv">1</span>;
+    <span class="kw">return</span> p-&gt;y &lt; q-&gt;y ? -<span class="numv">1</span> : (p-&gt;y &gt; q-&gt;y);
+}</pre></div>
+    <div class="tip rose"><b>흔한 실수</b> — <span class="bad">return p-&gt;x - q-&gt;x;</span> 처럼 뺄셈으로 쓰면 long long 차이가 int 반환값으로 잘려 <span class="hl-r">정렬이 깨집니다.</span> 반드시 비교 후 −1/0/1을 직접 반환하세요.</div>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 2. 아래 껍질</div>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>step2.c</span></div>
+<pre><span class="kw">int</span> k = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {
+    <span class="kw">while</span> (k &gt;= <span class="numv">2</span> &amp;&amp; <span class="mark"><span class="fn">cross</span>(st[k-<span class="numv">2</span>], st[k-<span class="numv">1</span>], p[i]) &lt;= <span class="numv">0</span></span>) k--;
+    st[k++] = p[i];
+}</pre></div>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 3. 위 껍질 — lower 하한선이 핵심</div>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>step3.c</span></div>
+<pre><span class="kw">int</span> lower = k + <span class="numv">1</span>;          <span class="cm">// 아래 껍질을 침범하지 못하게 고정</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = n-<span class="numv">2</span>; i &gt;= <span class="numv">0</span>; i--) {   <span class="cm">// 오른쪽 → 왼쪽</span>
+    <span class="kw">while</span> (k &gt;= <span class="mark">lower</span> &amp;&amp; <span class="fn">cross</span>(st[k-<span class="numv">2</span>], st[k-<span class="numv">1</span>], p[i]) &lt;= <span class="numv">0</span>) k--;
+    st[k++] = p[i];
+}
+<span class="kw">return</span> k - <span class="numv">1</span>;              <span class="cm">// 시작점이 끝에 중복되므로 하나 빼기</span></pre></div>
+    <p class="desc"><span class="hl-r">lower를 k가 아니라 k+1로</span> 두는 이유: 위 껍질이 아래 껍질의 마지막 점(가장 오른쪽 점)까지 지워버리면 안 되기 때문입니다. 여기를 <span style="font-family:var(--mono)">k</span>로 쓰면 특정 입력에서 껍질이 무너집니다.</p>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 4. 완성 코드</div>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>convex_hull.c — 시험장 복사용 O(n log n)</span></div>
+<pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">#include</span> &lt;stdlib.h&gt;
+
+<span class="kw">typedef struct</span> { <span class="kw">long long</span> x, y; } P;
+P p[<span class="numv">100005</span>], st[<span class="numv">200005</span>];
+
+<span class="kw">long long</span> <span class="fn">cross</span>(P a, P b, P c) {
+    <span class="kw">return</span> (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
+}
+<span class="kw">int</span> <span class="fn">cmp</span>(<span class="kw">const void</span> *A, <span class="kw">const void</span> *B) {
+    <span class="kw">const</span> P *a = A, *b = B;
+    <span class="kw">if</span> (a-&gt;x != b-&gt;x) <span class="kw">return</span> a-&gt;x &lt; b-&gt;x ? -<span class="numv">1</span> : <span class="numv">1</span>;
+    <span class="kw">return</span> a-&gt;y &lt; b-&gt;y ? -<span class="numv">1</span> : (a-&gt;y &gt; b-&gt;y);
+}
+<span class="kw">int</span> <span class="fn">convexHull</span>(<span class="kw">int</span> n) {
+    <span class="fn">qsort</span>(p, n, <span class="kw">sizeof</span>(P), cmp);
+    <span class="kw">if</span> (n &lt; <span class="numv">3</span>) {                     <span class="cm">// 예외: 점이 2개 이하</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) st[i] = p[i];
+        <span class="kw">return</span> n;
+    }
+    <span class="kw">int</span> k = <span class="numv">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {                  <span class="cm">// 아래 껍질</span>
+        <span class="kw">while</span> (k &gt;= <span class="numv">2</span> &amp;&amp; <span class="fn">cross</span>(st[k-<span class="numv">2</span>], st[k-<span class="numv">1</span>], p[i]) &lt;= <span class="numv">0</span>) k--;
+        st[k++] = p[i];
+    }
+    <span class="kw">int</span> lower = k + <span class="numv">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = n-<span class="numv">2</span>; i &gt;= <span class="numv">0</span>; i--) {              <span class="cm">// 위 껍질</span>
+        <span class="kw">while</span> (k &gt;= lower &amp;&amp; <span class="fn">cross</span>(st[k-<span class="numv">2</span>], st[k-<span class="numv">1</span>], p[i]) &lt;= <span class="numv">0</span>) k--;
+        st[k++] = p[i];
+    }
+    <span class="kw">return</span> k - <span class="numv">1</span>;
+}
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="strv">"%d"</span>, &amp;n);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++)
+        <span class="fn">scanf</span>(<span class="strv">"%lld %lld"</span>, &amp;p[i].x, &amp;p[i].y);
+    <span class="fn">printf</span>(<span class="strv">"%d\n"</span>, <span class="fn">convexHull</span>(n));
+    <span class="kw">return</span> <span class="numv">0</span>;
+}</pre></div>
+    <p class="desc">배열 <span style="font-family:var(--mono)">st</span>는 <span class="hl">2n 크기</span>로 잡습니다. 아래 껍질과 위 껍질이 이어 붙으면서 최대 n+1개까지 쌓일 수 있기 때문입니다.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2><span class="num">3-2</span>≤ 인가 &lt; 인가 — 공선 점 처리</h2>
+  <p class="desc">부등호 하나로 결과가 완전히 달라집니다. 아래는 <span class="hl">한 변에 점이 여러 개 놓인</span> 상황입니다.</p>
+  <div class="ctrl">
+    <button class="btn ghost" id="col-le">&lt;= 0 (공선 점 제외)</button>
+    <button class="btn ghost" id="col-lt">&lt; 0 (공선 점 포함)</button>
+  </div>
+  <div class="svgbox"><svg id="col-svg" viewBox="0 0 1000 400" width="100%"></svg></div>
+  <div class="readout" id="col-read"></div>
+  <table class="map">
+    <tr><th>부등호</th><th>결과</th><th>이럴 때 쓴다</th></tr>
+    <tr><td class="mono">cross &lt;= 0 → pop</td><td>꼭짓점만 남김 (공선 점 제거)</td><td>"껍질의 <b>꼭짓점 개수</b>는?" / 넓이 계산</td></tr>
+    <tr><td class="mono">cross &lt; 0 → pop</td><td>변 위의 점도 모두 포함</td><td>"껍질 <b>위에 있는 점의 개수</b>는?"</td></tr>
+  </table>
+  <div class="tip rose"><b>&lt; 0 의 함정</b> — 모든 점이 <b>한 직선 위에 있는</b> 입력에서 <span style="font-family:var(--mono)">&lt; 0</span> 버전은 같은 점을 두 번 담아 결과가 깨집니다. 예를 들어 (0,0)(1,1)(2,2)(3,3)을 넣으면 6개가 나옵니다(정답은 2개 또는 4개). 이런 입력이 가능한 문제라면 <b>공선 여부를 먼저 검사</b>하거나 <span style="font-family:var(--mono)">&lt;= 0</span>을 쓰세요.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">3-3</span>반드시 챙겨야 할 예외 5가지</h2>
+  <table class="map">
+    <tr><th>#</th><th>입력</th><th>대응</th></tr>
+    <tr><td>1</td><td>점이 1개</td><td class="mono">껍질 = 그 점 1개 (넓이 0)</td></tr>
+    <tr><td>2</td><td>점이 2개</td><td class="mono">껍질 = 선분 (넓이 0, 둘레는 2×길이)</td></tr>
+    <tr><td>3</td><td>모든 점이 한 직선 위</td><td class="mono">&lt;= 0 사용 → 양 끝 2개</td></tr>
+    <tr><td>4</td><td>중복 점 존재</td><td class="mono">정렬 후 중복 제거 권장</td></tr>
+    <tr><td>5</td><td>좌표가 10<sup>9</sup>까지</td><td class="mono">cross가 4×10<sup>18</sup> → long long 필수</td></tr>
+  </table>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>중복 제거 (정렬 직후)</span></div>
+<pre><span class="fn">qsort</span>(p, n, <span class="kw">sizeof</span>(P), cmp);
+<span class="kw">int</span> m = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++)
+    <span class="kw">if</span> (m == <span class="numv">0</span> || p[i].x != p[m-<span class="numv">1</span>].x || p[i].y != p[m-<span class="numv">1</span>].y)
+        p[m++] = p[i];
+n = m;   <span class="cm">// 이후 n 대신 m 사용</span></pre></div>
+</div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="t4">
+<div class="card">
+  <h2><span class="num">4-1</span>세 가지 알고리즘 비교</h2>
+  <table class="map">
+    <tr><th>알고리즘</th><th>시간복잡도</th><th>아이디어</th><th>특징</th></tr>
+    <tr><td>선물 포장<br>(Gift Wrapping / Jarvis)</td><td class="mono">O(n·h)</td><td>가장 왼쪽 점에서 시작해<br>"가장 바깥쪽" 점을 계속 고름</td><td>직관적, h가 작으면 빠름<br>h가 크면 O(n²)</td></tr>
+    <tr><td>그라함 스캔<br>(Graham Scan)</td><td class="mono">O(n log n)</td><td>기준점에서 <b>각도 순 정렬</b> 후<br>한 바퀴 훑기</td><td>고전적, 각도 정렬이<br>구현하기 까다로움</td></tr>
+    <tr><td><b>모노톤 체인</b><br>(Andrew)</td><td class="mono">O(n log n)</td><td><b>x좌표 정렬</b> 후<br>위아래로 두 번 훑기</td><td>구현이 가장 짧고 안전<br><b>추천</b></td></tr>
+  </table>
+  <div class="tip green"><b>왜 모노톤 체인을 추천하나</b> — 그라함 스캔은 각도 정렬에서 <b>atan2(실수 오차)</b>나 극각 비교 함수의 반평면 처리가 필요해 실수하기 쉽습니다. 모노톤 체인은 x좌표 정렬만 하면 되므로 <span class="hl-t">정수 연산만으로 완결</span>됩니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">4-2</span>인터랙티브: 선물 포장 애니메이션</h2>
+  <p class="desc">가장 왼쪽 아래 점에서 출발해, 나머지 모든 점 중 <span class="hl">"가장 시계 반대쪽"에 있는 점</span>을 하나씩 고릅니다. 종이를 포장지로 감싸는 모습과 비슷해 이런 이름이 붙었습니다.</p>
+  <div class="ctrl">
+    <button class="btn" id="gw-run">포장 시작 ▶</button>
+    <button class="btn ghost" id="gw-step">한 점씩</button>
+    <button class="btn ghost" id="gw-reset">초기화</button>
+  </div>
+  <div class="svgbox"><svg id="gw-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="gw-read">[포장 시작]을 눌러 보세요. 한 꼭짓점을 찾을 때마다 n개 점을 전부 확인합니다.</div>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>gift_wrapping.c — O(n·h)</span></div>
+<pre><span class="kw">int</span> start = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">1</span>; i &lt; n; i++)          <span class="cm">// 가장 왼쪽(같으면 아래) 점</span>
+    <span class="kw">if</span> (p[i].x &lt; p[start].x ||
+       (p[i].x == p[start].x &amp;&amp; p[i].y &lt; p[start].y)) start = i;
+
+<span class="kw">int</span> cur = start, h = <span class="numv">0</span>;
+<span class="kw">do</span> {
+    st[h++] = p[cur];
+    <span class="kw">int</span> nxt = (cur + <span class="numv">1</span>) % n;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {
+        <span class="kw">long long</span> c = <span class="fn">cross</span>(p[cur], p[nxt], p[i]);
+        <span class="cm">// i가 더 바깥(왼쪽)이거나, 일직선이면 더 먼 점 선택</span>
+        <span class="kw">if</span> (c &gt; <span class="numv">0</span> || (c == <span class="numv">0</span> &amp;&amp; <span class="fn">dist2</span>(p[cur],p[i]) &gt; <span class="fn">dist2</span>(p[cur],p[nxt])))
+            nxt = i;
+    }
+    cur = nxt;
+} <span class="kw">while</span> (cur != start);</pre></div>
+  <div class="tip"><b>언제 쓸까</b> — 껍질 꼭짓점 h가 매우 작다고 보장될 때(예: h ≤ 10)는 선물 포장이 더 빠를 수 있습니다. 하지만 모든 점이 원 위에 있으면 h = n이 되어 <span class="hl-r">O(n²)</span>로 터집니다. 일반적인 문제에서는 모노톤 체인을 쓰세요.</div>
+</div>
+</section>
+<!-- ============ TAB 5 ============ -->
+<section class="tab" id="t5">
+<div class="card">
+  <h2><span class="num">5-1</span>응용 ①: 껍질의 넓이와 둘레 — 최소 울타리</h2>
+  <p class="desc">껍질을 구했으면 그 다음은 지난 시간의 <span class="hl-t">신발끈 공식</span>입니다. 다만 <b>넓이는 정수, 둘레는 실수</b>라는 점을 구분해야 합니다.</p>
+  <div class="grid2">
+    <div class="formula amber" style="margin:0">
+      <b>넓이</b> — 정수 그대로<br>
+      2A = |Σ (x<sub>i</sub>y<sub>i+1</sub> − x<sub>i+1</sub>y<sub>i</sub>)|<br>
+      출력만 <span style="font-family:var(--mono)">a/2 . (a%2)*5</span>
+    </div>
+    <div class="formula rose" style="margin:0">
+      <b>둘레</b> — 여기서만 sqrt<br>
+      L = Σ √((Δx)² + (Δy)²)<br>
+      <span style="color:var(--rose)">실수 누적 오차 주의</span>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button class="btn ghost" id="ap-sample">예제 점 배치</button>
+    <button class="btn" id="ap-calc">껍질 + 넓이/둘레 계산</button>
+    <button class="btn ghost" id="ap-clear">지우기</button>
+  </div>
+  <div class="svgbox"><svg id="ap-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="ap-read">격자를 클릭해 점을 추가하거나 예제를 불러온 뒤 계산해 보세요.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-2</span>응용 ②: 가장 먼 두 점 — 회전하는 캘리퍼스</h2>
+  <span class="step-pill">껍질을 구한 뒤의 대표 기법</span>
+  <p class="desc">n개 점 중 가장 먼 쌍(<b>지름</b>)을 찾습니다. 전부 비교하면 O(n²)이지만, 정답은 <span class="hl">반드시 껍질 위</span>에 있고, 껍질을 한 바퀴 돌며 <b>마주 보는 점</b>만 따라가면 O(h)에 끝납니다.</p>
+  <div class="formula">
+    캘리퍼스(자)를 껍질 양쪽에 대고 돌리면, 마주 보는 점 쌍만 <b>단조롭게</b> 움직인다<br>
+    → i를 한 칸 옮길 때 j는 되돌아가지 않는다 → 전체 O(h)
+  </div>
+  <div class="ctrl">
+    <button class="btn" id="cal-run">캘리퍼스 회전 ▶</button>
+    <button class="btn ghost" id="cal-step">한 단계씩</button>
+    <button class="btn ghost" id="cal-reset">초기화</button>
+  </div>
+  <div class="svgbox"><svg id="cal-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="cal-read">[캘리퍼스 회전]을 눌러 마주 보는 점이 따라 도는 모습을 확인하세요.</div>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>rotating_calipers.c — O(h)</span></div>
+<pre><span class="kw">long long</span> <span class="fn">dist2</span>(P a, P b) {
+    <span class="kw">long long</span> dx = a.x-b.x, dy = a.y-b.y;
+    <span class="kw">return</span> dx*dx + dy*dy;          <span class="cm">// 제곱 그대로! sqrt 금지</span>
+}
+
+<span class="kw">int</span> h = <span class="fn">convexHull</span>(n);
+<span class="kw">long long</span> best = <span class="numv">0</span>;
+<span class="kw">int</span> j = <span class="numv">1</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; h; i++) {
+    <span class="kw">while</span> (<span class="fn">dist2</span>(st[i], st[(j+<span class="numv">1</span>)%h]) &gt; <span class="fn">dist2</span>(st[i], st[j]))
+        j = (j+<span class="numv">1</span>) % h;            <span class="cm">// j는 되돌아가지 않는다</span>
+    <span class="kw">long long</span> d = <span class="fn">dist2</span>(st[i], st[j]);
+    <span class="kw">if</span> (d &gt; best) best = d;
+}
+<span class="cm">// best는 거리의 제곱. 거리가 필요하면 마지막에 sqrt 한 번</span></pre></div>
+  <div class="tip green"><b>제곱 거리로 비교하는 이유</b> — 거리 비교는 제곱 비교와 결과가 같습니다(둘 다 0 이상). sqrt를 n번 호출하면 느리고 오차도 생깁니다. <b>"거리의 제곱을 정수로 비교하고, 필요하면 마지막에 한 번만 sqrt"</b>가 원칙입니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-3</span>응용 ③: 점 포함 판정을 O(log n)으로</h2>
+  <p class="desc">껍질을 한 번 구해 두면, "이 점이 영역 안인가?" 쿼리를 <span class="hl-t">이진 탐색으로 O(log n)</span>에 답할 수 있습니다. 쿼리가 수십만 번 들어오는 문제에서 필수입니다.</p>
+  <div class="formula amber">
+    ① 껍질을 반시계 순으로 정렬하고 P<sub>0</sub>를 기준점으로 삼는다<br>
+    ② q가 부채꼴 P<sub>0</sub>P<sub>i</sub>P<sub>i+1</sub> 중 어디에 속하는지 <b>이진 탐색</b>으로 찾는다<br>
+    ③ 그 삼각형 안에 있는지 ccw로 확인한다
+  </div>
+  <table class="map">
+    <tr><th>방법</th><th>전처리</th><th>쿼리 1회</th><th>적용 대상</th></tr>
+    <tr><td>모든 변에 ccw</td><td class="mono">없음</td><td class="mono">O(n)</td><td>볼록 다각형</td></tr>
+    <tr><td>광선 쏘기</td><td class="mono">없음</td><td class="mono">O(n)</td><td>오목 포함 모든 단순다각형</td></tr>
+    <tr><td><b>부채꼴 이진 탐색</b></td><td class="mono">O(n log n)</td><td class="mono" style="color:var(--green)">O(log n)</td><td>볼록 다각형, 쿼리 다수</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-4</span>응용 ④: 두 껍질을 합치기 (민코프스키 감각)</h2>
+  <p class="desc">"두 무리의 점을 모두 감싸는 최소 볼록 영역"은 <span class="hl">두 점 집합을 합쳐 껍질을 한 번 더</span> 구하면 됩니다. 두 껍질의 꼭짓점만 모아도 결과는 같습니다.</p>
+  <div class="formula">
+    hull(A ∪ B) = hull( hull(A) ∪ hull(B) )
+  </div>
+  <p class="desc">이 성질 덕분에 <span class="hl-t">내부 점을 미리 버려도 안전</span>합니다. 데이터가 클 때 부분마다 껍질을 구해 합치는 분할정복이 가능해집니다.</p>
+  <div class="tip"><b>실전 요령</b> — 점이 매우 많은데 껍질만 필요하다면, 먼저 <b>x, y가 최대·최소인 4점</b>이 만드는 사각형 내부의 점들을 통째로 버리는 전처리를 넣으면 정렬량이 크게 줄어듭니다.</div>
+</div>
+</section>
+
+<!-- ============ TAB 6 ============ -->
+<section class="tab" id="t6">
+<div class="card">
+  <h2><span class="num">6</span>기출 수준 도전 문제</h2>
+  <p class="desc">모든 정답은 실제 C/Python 코드 실행으로 검증되었습니다.</p>
+  <div id="quiz-area"></div>
+  <div class="score" id="quiz-score">점수: 0 / 8</div>
+</div>
+</section>
+
+<footer>세영코딩연구소 · KOI 알고리즘 강의 시리즈 — 볼록 껍질(Convex Hull) 심화편</footer>
+</div>
+
+<script type="application/json" id="quiz-data">
+{
+  "problems": [
+    {
+      "tag": "기본", "hard": false,
+      "title": "Q1. \uaecd\uc9c8\uc758 \uc815\uc758",
+      "body": "\ubcfc\ub85d \uaecd\uc9c8\uc5d0 \ub300\ud55c \uc124\uba85\uc73c\ub85c \uc62c\ubc14\ub978 \uac83\uc740?",
+      "opts": [
+        "\ubaa8\ub4e0 \uc810\uc744 \uc9c0\ub098\ub294 \ub2e4\uac01\ud615",
+        "\ubaa8\ub4e0 \uc810\uc744 \ud3ec\ud568\ud558\ub294 \ubcfc\ub85d \ub2e4\uac01\ud615 \uc911 \ub113\uc774\uac00 \ucd5c\uc18c\uc778 \uac83",
+        "\uc810\ub4e4\uc758 \ubb34\uac8c\uc911\uc2ec\uc744 \uc9c0\ub098\ub294 \ub2e4\uac01\ud615",
+        "\uc810\ub4e4 \uc911 \uac00\uc7a5 \uba3c \ub450 \uc810\uc744 \uc774\uc740 \uc120\ubd84"
+      ],
+      "ans": 1,
+      "expl": "\ubcfc\ub85d \uaecd\uc9c8\uc740 \ubaa8\ub4e0 \uc810\uc744 \ud3ec\ud568\ud558\ub294 \ucd5c\uc18c \ubcfc\ub85d \uc9d1\ud569\uc785\ub2c8\ub2e4. \ub0b4\ubd80 \uc810\uc740 \uaecd\uc9c8\uc744 \uc9c0\ub098\uc9c0 \uc54a\uace0 \ubc84\ub824\uc9d1\ub2c8\ub2e4."
+    },
+    {
+      "tag": "복잡도", "hard": false,
+      "title": "Q2. \ubaa8\ub178\ud1a4 \uccb4\uc778\uc758 \uc2dc\uac04\ubcf5\uc7a1\ub3c4",
+      "body": "\ubaa8\ub178\ud1a4 \uccb4\uc778 \uc804\uccb4\uc758 \uc2dc\uac04\ubcf5\uc7a1\ub3c4\uc640, \uadf8\uac83\uc744 \uacb0\uc815\ud558\ub294 \ub2e8\uacc4\ub294?",
+      "opts": [
+        "O(n), \ud6d1\ub294 \ub2e8\uacc4",
+        "O(n log n), \uc815\ub82c \ub2e8\uacc4",
+        "O(n\u00b2), \uc774\uc911 \ub8e8\ud504",
+        "O(n\u00b7h), \uaecd\uc9c8 \ud06c\uae30\uc5d0 \ube44\ub840"
+      ],
+      "ans": 1,
+      "expl": "\ud6d1\ub294 \uacfc\uc815\uc740 \uac01 \uc810\uc774 \ucd5c\ub300 \ud55c \ubc88\uc529\ub9cc push/pop \ub418\ubbc0\ub85c O(n)\uc785\ub2c8\ub2e4. \uc804\uccb4\ub294 \uc815\ub82c O(n log n)\uc774 \uc9c0\ubc30\ud569\ub2c8\ub2e4."
+    },
+    {
+      "tag": "공선", "hard": true,
+      "title": "Q3. \ubd80\ub4f1\ud638 \uc120\ud0dd",
+      "body": "4\u00d74 \uc815\uc0ac\uac01\ud615\uc758 \ub124 \uaf2d\uc9d3\uc810 + \ub124 \ubcc0\uc758 \uc911\uc810 + \uc911\uc2ec\uc810, \ucd1d 9\uac1c\uac00 \uc8fc\uc5b4\uc84c\ub2e4.\ncross <= 0 \uc774\uba74 pop \ud558\ub294 \ubc84\uc804\uc73c\ub85c \uad6c\ud55c \uaecd\uc9c8\uc758 \uc810 \uac1c\uc218\ub294?",
+      "opts": ["4\uac1c", "5\uac1c", "8\uac1c", "9\uac1c"],
+      "ans": 0,
+      "expl": "<= 0 \uc740 \uacf5\uc120 \uc810\uc744 \uc81c\uac70\ud558\ubbc0\ub85c \uc815\uc0ac\uac01\ud615\uc758 \ub124 \uaf2d\uc9d3\uc810\ub9cc \ub0a8\uc544 4\uac1c\uc785\ub2c8\ub2e4. < 0 \uc73c\ub85c \ubc14\uafb8\uba74 \ubcc0 \uc704 \uc911\uc810\uae4c\uc9c0 \ud3ec\ud568\ub418\uc5b4 8\uac1c\uac00 \ub429\ub2c8\ub2e4."
+    },
+    {
+      "tag": "구현", "hard": true,
+      "title": "Q4. lower \ud558\ud55c\uc120",
+      "body": "\uc704 \uaecd\uc9c8\uc744 \ub9cc\ub4e4 \ub54c while \uc870\uac74\uc744 k >= lower \ub85c \uc4f0\uace0 lower = k + 1 \ub85c \ub454\ub2e4.\n\uc774 +1 \uc774 \ud558\ub294 \uc77c\uc740?",
+      "opts": [
+        "\uc2dc\uc791\uc810\uc744 \ub450 \ubc88 \ub123\uae30 \uc704\ud574",
+        "\uc704 \uaecd\uc9c8\uc774 \uc544\ub798 \uaecd\uc9c8\uc758 \ub9c8\uc9c0\ub9c9 \uc810\uae4c\uc9c0 \uc9c0\uc6b0\ub294 \uac83\uc744 \ub9c9\uae30 \uc704\ud574",
+        "\uc2a4\ud0dd \ubc30\uc5f4 \ud06c\uae30\ub97c \ub9de\ucd94\uae30 \uc704\ud574",
+        "\uc815\ub82c \uc21c\uc11c\ub97c \ub4a4\uc9d1\uae30 \uc704\ud574"
+      ],
+      "ans": 1,
+      "expl": "\uc544\ub798 \uaecd\uc9c8\uc758 \ub9c8\uc9c0\ub9c9 \uc810(\uac00\uc7a5 \uc624\ub978\ucabd \uc810)\uc740 \uc704 \uaecd\uc9c8\uc758 \uc2dc\uc791\uc810\uc774\ubbc0\ub85c \uc9c0\uc6cc\uc9c0\uba74 \uc548 \ub429\ub2c8\ub2e4. lower = k \ub85c \uc4f0\uba74 \ud2b9\uc815 \uc785\ub825\uc5d0\uc11c \uaecd\uc9c8\uc774 \ubb34\ub108\uc9d1\ub2c8\ub2e4."
+    },
+    {
+      "tag": "예제", "hard": true,
+      "title": "Q5. \uaecd\uc9c8 \ud06c\uae30",
+      "body": "\uc810 12\uac1c: (1,1) (6,0) (9,3) (11,7) (8,10) (4,9) (0,6) (3,4) (6,5) (5,7) (7,6) (2,3)\ncross <= 0 \ubc84\uc804\uc758 \uaecd\uc9c8 \uaf2d\uc9d3\uc810 \uac1c\uc218\ub294?",
+      "opts": ["5\uac1c", "6\uac1c", "7\uac1c", "9\uac1c"],
+      "ans": 2,
+      "expl": "\uaecd\uc9c8 = (0,6) (1,1) (6,0) (9,3) (11,7) (8,10) (4,9) \uc758 7\uac1c. (3,4) (6,5) (5,7) (7,6) (2,3) \uc740 \ub0b4\ubd80\uc5d0 \uc788\uc5b4 \uc81c\uc678\ub429\ub2c8\ub2e4."
+    },
+    {
+      "tag": "응용", "hard": true,
+      "title": "Q6. \uaecd\uc9c8 \ub113\uc774",
+      "body": "\uc704 \uaecd\uc9c8\uc5d0 \uc2e0\ubc1c\ub048 \uacf5\uc2dd\uc744 \uc801\uc6a9\ud588\ub354\ub2c8 |\u03a3| = 146 \uc774 \ub098\uc654\ub2e4. \ub113\uc774\ub294?",
+      "opts": ["36.5", "73.0", "146.0", "292.0"],
+      "ans": 1,
+      "expl": "\uc2e0\ubc1c\ub048 \ud569\uc740 \ub113\uc774\uc758 2\ubc30\uc774\ubbc0\ub85c 146 / 2 = 73.0 \uc785\ub2c8\ub2e4."
+    },
+    {
+      "tag": "캘리퍼스", "hard": true,
+      "title": "Q7. \uac00\uc7a5 \uba3c \ub450 \uc810",
+      "body": "n\uac1c \uc810 \uc911 \uac00\uc7a5 \uba3c \ub450 \uc810\uc744 \ucc3e\uc744 \ub54c, \uaecd\uc9c8\ub9cc \ubcf4\uba74 \ucda9\ubd84\ud55c \uc774\uc720\ub294?",
+      "opts": [
+        "\uaecd\uc9c8 \uc810\uc774 \uac00\uc7a5 \ub9ce\uae30 \ub54c\ubb38\uc5d0",
+        "\ub0b4\ubd80 \uc810\uc740 \uc5b4\ub290 \ubc29\ud5a5\uc73c\ub85c\ub4e0 \uaecd\uc9c8 \uc810\ubcf4\ub2e4 \uba40 \uc218 \uc5c6\uae30 \ub54c\ubb38\uc5d0",
+        "\uaecd\uc9c8\uc774 \ubc18\uc2dc\uacc4 \ubc29\ud5a5\uc774\uae30 \ub54c\ubb38\uc5d0",
+        "\uc815\ub82c\ub41c \uc21c\uc11c\uc774\uae30 \ub54c\ubb38\uc5d0"
+      ],
+      "ans": 1,
+      "expl": "\ucd5c\ub300 \uac70\ub9ac \uc30d\uc740 \ud56d\uc0c1 \uaecd\uc9c8 \uaf2d\uc9d3\uc810 \uc0ac\uc774\uc5d0\uc11c \ub098\uc635\ub2c8\ub2e4. \ub0b4\ubd80 \uc810\uc744 \ubc16\uc73c\ub85c \ubc00\uba74 \uac70\ub9ac\uac00 \ub298\uc5b4\ub098\ubbc0\ub85c \ub0b4\ubd80 \uc810\uc740 \ucd5c\uc801\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+    },
+    {
+      "tag": "구현", "hard": true,
+      "title": "Q8. \uac70\ub9ac \ube44\uad50",
+      "body": "\ud68c\uc804\ud558\ub294 \uce98\ub9ac\ud37c\uc2a4\uc5d0\uc11c \uac70\ub9ac\ub97c \ube44\uad50\ud560 \ub54c \uac00\uc7a5 \uc88b\uc740 \ubc29\ubc95\uc740?",
+      "opts": [
+        "\ub9e4\ubc88 sqrt\ub85c \uc2e4\uc81c \uac70\ub9ac\ub97c \uad6c\ud574 \ube44\uad50",
+        "\uac70\ub9ac\uc758 \uc81c\uacf1\uc744 \uc815\uc218\ub85c \ube44\uad50\ud558\uace0 \ud544\uc694\ud558\uba74 \ub9c8\uc9c0\ub9c9\uc5d0\ub9cc sqrt",
+        "atan2\ub85c \uac01\ub3c4\ub97c \ube44\uad50",
+        "x\uc88c\ud45c \ucc28\uc774\ub9cc \ube44\uad50"
+      ],
+      "ans": 1,
+      "expl": "\uac70\ub9ac \ube44\uad50\uc640 \uac70\ub9ac \uc81c\uacf1 \ube44\uad50\ub294 \uacb0\uacfc\uac00 \uac19\uc2b5\ub2c8\ub2e4(\ub458 \ub2e4 0 \uc774\uc0c1). \uc815\uc218\ub85c \ube44\uad50\ud558\uba74 \ube60\ub974\uace0 \uc624\ucc28\uac00 \uc5c6\uc2b5\ub2c8\ub2e4."
+    }
+  ]
+}
+</script>
+<script>
+"use strict";
+var NS = "http://www.w3.org/2000/svg";
+function el(t, a, p) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function $(id) { return document.getElementById(id); }
+function clearSvg(s) { while (s.firstChild) s.removeChild(s.firstChild); }
+function txt(par, x, y, s, a) {
+  var o = { x: x, y: y, "text-anchor": "middle", fill: "#e2e8f0", "font-size": 14, "font-family": "JetBrains Mono, monospace" };
+  for (var k in a) o[k] = a[k];
+  var t = el("text", o, par); t.textContent = s; return t;
+}
+function cross(a, b, c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+function d2(a, b) { var dx = a.x - b.x, dy = a.y - b.y; return dx * dx + dy * dy; }
+function sortPts(P) {
+  return P.slice().sort(function (a, b) { return a.x - b.x || a.y - b.y; });
+}
+function uniq(P) {
+  var s = sortPts(P), o = [];
+  s.forEach(function (p) { if (!o.length || o[o.length - 1].x !== p.x || o[o.length - 1].y !== p.y) o.push(p); });
+  return o;
+}
+function hull(P, strict) {
+  var U = uniq(P);
+  if (U.length < 3) return U;
+  var st = [], k = 0, i;
+  for (i = 0; i < U.length; i++) {
+    while (k >= 2 && (strict ? cross(st[k - 2], st[k - 1], U[i]) <= 0 : cross(st[k - 2], st[k - 1], U[i]) < 0)) k--;
+    st[k++] = U[i];
+  }
+  var lower = k + 1;
+  for (i = U.length - 2; i >= 0; i--) {
+    while (k >= lower && (strict ? cross(st[k - 2], st[k - 1], U[i]) <= 0 : cross(st[k - 2], st[k - 1], U[i]) < 0)) k--;
+    st[k++] = U[i];
+  }
+  return st.slice(0, k - 1);
+}
+function shoe2(P) {
+  var s = 0;
+  for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length]; s += a.x * b.y - b.x * a.y; }
+  return Math.abs(s);
+}
+function areaStr(a) { return Math.floor(a / 2) + "." + ((a % 2) * 5); }
+function perimeter(P) {
+  var s = 0;
+  for (var i = 0; i < P.length; i++) { var a = P[i], b = P[(i + 1) % P.length]; s += Math.sqrt(d2(a, b)); }
+  return s;
+}
+var SAMPLE = [[1, 1], [6, 0], [9, 3], [11, 7], [8, 10], [4, 9], [0, 6], [3, 4], [6, 5], [5, 7], [7, 6], [2, 3]];
+function samplePts() { return SAMPLE.map(function (p) { return { x: p[0], y: p[1] }; }); }
+
+/* tabs */
+(function () {
+  var nav = $("tabnav");
+  nav.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button"); if (!b) return;
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    document.querySelectorAll("section.tab").forEach(function (s) { s.classList.remove("show"); });
+    $(b.dataset.t).classList.add("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+function Grid(svg, cfg) {
+  this.svg = svg; this.ox = cfg.ox; this.oy = cfg.oy; this.cell = cfg.cell;
+  this.nx = cfg.nx; this.ny = cfg.ny; this.vbW = cfg.vbW; this.vbH = cfg.vbH;
+}
+Grid.prototype.px = function (x) { return this.ox + x * this.cell; };
+Grid.prototype.py = function (y) { return this.oy - y * this.cell; };
+Grid.prototype.toGrid = function (cx, cy) {
+  var r = this.svg.getBoundingClientRect();
+  var sx = this.vbW / r.width, sy = this.vbH / r.height;
+  return { x: Math.round(((cx - r.left) * sx - this.ox) / this.cell), y: Math.round((this.oy - (cy - r.top) * sy) / this.cell) };
+};
+Grid.prototype.draw = function () {
+  var g = el("g", { "pointer-events": "none" }, this.svg);
+  for (var i = 0; i <= this.nx; i++)
+    el("line", { x1: this.px(i), y1: this.py(0), x2: this.px(i), y2: this.py(this.ny), stroke: i === 0 ? "#3d5375" : "#1b2740", "stroke-width": i === 0 ? 2 : 1 }, g);
+  for (var j = 0; j <= this.ny; j++)
+    el("line", { x1: this.px(0), y1: this.py(j), x2: this.px(this.nx), y2: this.py(j), stroke: j === 0 ? "#3d5375" : "#1b2740", "stroke-width": j === 0 ? 2 : 1 }, g);
+  for (var a = 0; a <= this.nx; a += 2) txt(g, this.px(a), this.py(0) + 17, a, { fill: "#4b6285", "font-size": 11 });
+  for (var b = 2; b <= this.ny; b += 2) txt(g, this.px(0) - 14, this.py(b) + 4, b, { fill: "#4b6285", "font-size": 11 });
+  return g;
+};
+Grid.prototype.clickAdd = function (pts, after) {
+  var self = this;
+  this.svg.addEventListener("pointerdown", function (ev) {
+    var p = self.toGrid(ev.clientX, ev.clientY);
+    if (p.x < 0 || p.x > self.nx || p.y < 0 || p.y > self.ny) return;
+    if (pts().some(function (q) { return q.x === p.x && q.y === p.y; })) return;
+    after(p);
+  });
+};
+function polyPath(P, close) {
+  return "M " + P.map(function (p) { return p.X + " " + p.Y; }).join(" L ") + (close ? " Z" : "");
+}
+
+/* ============ T1 : rubber band ============ */
+(function () {
+  var svg = $("rb-svg"), read = $("rb-read");
+  var G = new Grid(svg, { ox: 55, oy: 390, cell: 31, nx: 13, ny: 11, vbW: 1000, vbH: 430 });
+  var pts = samplePts();
+  function onEdge(p, H) {
+    for (var i = 0; i < H.length; i++) {
+      var a = H[i], b = H[(i + 1) % H.length];
+      if (cross(a, b, p) === 0 &&
+        Math.min(a.x, b.x) <= p.x && p.x <= Math.max(a.x, b.x) &&
+        Math.min(a.y, b.y) <= p.y && p.y <= Math.max(a.y, b.y)) return true;
+    }
+    return false;
+  }
+  function draw() {
+    clearSvg(svg); G.draw();
+    var H = hull(pts, true);
+    if (H.length >= 3) {
+      el("polygon", { points: H.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "#2dd4bf", "fill-opacity": 0.12, stroke: "#2dd4bf", "stroke-width": 3.5 }, svg);
+    } else if (H.length === 2) {
+      el("line", { x1: G.px(H[0].x), y1: G.py(H[0].y), x2: G.px(H[1].x), y2: G.py(H[1].y), stroke: "#2dd4bf", "stroke-width": 3.5 }, svg);
+    }
+    var nv = 0, ne = 0, ni = 0;
+    pts.forEach(function (p) {
+      var isV = H.some(function (q) { return q.x === p.x && q.y === p.y; });
+      var isE = !isV && H.length >= 2 && onEdge(p, H);
+      var c = isV ? "#2dd4bf" : (isE ? "#fbbf24" : "#64748b");
+      if (isV) nv++; else if (isE) ne++; else ni++;
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: isV ? 9 : 6.5, fill: c, stroke: "#0b1120", "stroke-width": 2 }, svg);
+      if ($("rb-label").checked && isV) txt(svg, G.px(p.x), G.py(p.y) - 16, "(" + p.x + "," + p.y + ")", { fill: "#5eead4", "font-size": 11.5 });
+    });
+    var rows = [
+      ["\uc804\uccb4 \uc810 = " + pts.length, "#94a3b8"],
+      ["\uaf2d\uc9d3\uc810 = " + nv, "#2dd4bf"],
+      ["\ubcc0 \uc704 \uc810 = " + ne, "#fbbf24"],
+      ["\ub0b4\ubd80 \uc810 = " + ni, "#64748b"]
+    ];
+    rows.forEach(function (r, i) { txt(svg, 520, 60 + i * 34, r[0], { fill: r[1], "font-size": 16, "text-anchor": "start", "font-weight": "700" }); });
+    if (H.length >= 3) {
+      txt(svg, 520, 230, "\uaecd\uc9c8 \ub113\uc774 = " + areaStr(shoe2(H)), { fill: "#e2e8f0", "font-size": 16, "text-anchor": "start" });
+      txt(svg, 520, 262, "\uaecd\uc9c8 \ub458\ub808 \u2248 " + perimeter(H).toFixed(4), { fill: "#e2e8f0", "font-size": 16, "text-anchor": "start" });
+    }
+    read.innerHTML = "\uc810 " + pts.length + "\uac1c \u2192 \uaecd\uc9c8 \uaf2d\uc9d3\uc810 <span class='rv'>" + nv + "</span>\uac1c" +
+      (ne ? ", \ubcc0 \uc704 \uc810 " + ne + "\uac1c" : "") + ", \ub0b4\ubd80 \uc810 " + ni + "\uac1c" +
+      (H.length >= 3 ? " &nbsp;|&nbsp; \ub113\uc774 " + areaStr(shoe2(H)) + ", \ub458\ub808 " + perimeter(H).toFixed(3) : "");
+  }
+  G.clickAdd(function () { return pts; }, function (p) { pts.push(p); draw(); });
+  $("rb-sample").addEventListener("click", function () { pts = samplePts(); draw(); });
+  $("rb-inner").addEventListener("click", function () {
+    var H = hull(pts, true);
+    if (H.length < 3) return;
+    var added = 0, tries = 0;
+    while (added < 5 && tries < 400) {
+      tries++;
+      var x = Math.floor(Math.random() * (G.nx + 1)), y = Math.floor(Math.random() * (G.ny + 1));
+      var q = { x: x, y: y };
+      if (pts.some(function (r) { return r.x === x && r.y === y; })) continue;
+      var ok = true;
+      for (var i = 0; i < H.length; i++) if (cross(H[i], H[(i + 1) % H.length], q) <= 0) { ok = false; break; }
+      if (ok) { pts.push(q); added++; }
+    }
+    draw();
+    read.innerHTML = "\ub0b4\ubd80\uc5d0 \uc810 " + added + "\uac1c\ub97c \ucd94\uac00\ud588\uc9c0\ub9cc <b style='color:#2dd4bf'>\uaecd\uc9c8\uc740 \uc804\ud600 \ubcc0\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.</b> \uae30\uc874 \uaf2d\uc9d3\uc810 " + hull(pts, true).length + "\uac1c \uc720\uc9c0.";
+  });
+  $("rb-clear").addEventListener("click", function () { pts = []; draw(); read.innerHTML = "\ubaa8\ub450 \uc9c0\uc6e0\uc2b5\ub2c8\ub2e4. \uaca9\uc790\ub97c \ud074\ub9ad\ud574 \uc810\uc744 \ucc0d\uc5b4 \ubcf4\uc138\uc694."; });
+  $("rb-label").addEventListener("change", draw);
+  draw();
+})();
+
+/* ============ T2 : monotone chain simulator ============ */
+(function () {
+  var svg = $("mc-svg"), read = $("mc-read");
+  var G = new Grid(svg, { ox: 55, oy: 390, cell: 31, nx: 13, ny: 11, vbW: 1000, vbH: 430 });
+  var pts = samplePts(), ev = [], step = 0, timer = null;
+  function build() {
+    var U = uniq(pts);
+    ev = []; step = 0;
+    if (U.length < 3) return;
+    var st = [], k = 0, i;
+    function snap(type, info) { ev.push({ type: type, stack: st.slice(0, k), info: info }); }
+    for (i = 0; i < U.length; i++) {
+      while (k >= 2 && cross(st[k - 2], st[k - 1], U[i]) <= 0) {
+        var rm = st[k - 1], cr = cross(st[k - 2], st[k - 1], U[i]);
+        k--;
+        snap("pop", { removed: rm, cand: U[i], cross: cr, phase: "\uc544\ub798" });
+      }
+      st[k++] = U[i];
+      snap("push", { p: U[i], phase: "\uc544\ub798" });
+    }
+    var lower = k + 1;
+    for (i = U.length - 2; i >= 0; i--) {
+      while (k >= lower && cross(st[k - 2], st[k - 1], U[i]) <= 0) {
+        var rm2 = st[k - 1], cr2 = cross(st[k - 2], st[k - 1], U[i]);
+        k--;
+        snap("pop", { removed: rm2, cand: U[i], cross: cr2, phase: "\uc704" });
+      }
+      st[k++] = U[i];
+      snap("push", { p: U[i], phase: "\uc704" });
+    }
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; $("mc-auto").textContent = "\uc790\ub3d9 \uc7ac\uc0dd"; } }
+  function draw() {
+    clearSvg(svg); G.draw();
+    var cur = step > 0 ? ev[step - 1] : null;
+    var stack = cur ? cur.stack : [];
+    if (stack.length >= 2) {
+      var done = step >= ev.length;
+      el("path", {
+        d: "M " + stack.map(function (p) { return G.px(p.x) + " " + G.py(p.y); }).join(" L ") + (done ? " Z" : ""),
+        fill: done ? "#2dd4bf" : "none", "fill-opacity": done ? 0.12 : 0, stroke: "#2dd4bf", "stroke-width": 3, "stroke-linejoin": "round"
+      }, svg);
+    }
+    pts.forEach(function (p) {
+      var inS = stack.some(function (q) { return q.x === p.x && q.y === p.y; });
+      var rm = cur && cur.type === "pop" && cur.info.removed.x === p.x && cur.info.removed.y === p.y;
+      var cand = cur && ((cur.type === "push" && cur.info.p.x === p.x && cur.info.p.y === p.y) ||
+        (cur.type === "pop" && cur.info.cand.x === p.x && cur.info.cand.y === p.y));
+      var c = rm ? "#fb7185" : (cand ? "#fbbf24" : (inS ? "#2dd4bf" : "#475569"));
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: (rm || cand) ? 10 : 7, fill: c, stroke: "#0b1120", "stroke-width": 2 }, svg);
+    });
+    txt(svg, 520, 42, "\uc2a4\ud0dd (\uc544\ub798\u2192\uc704)", { fill: "#94a3b8", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif", "font-weight": "700" });
+    stack.slice(-10).forEach(function (p, i) {
+      txt(svg, 520, 72 + i * 25, "(" + p.x + ", " + p.y + ")", { fill: "#5eead4", "font-size": 15, "text-anchor": "start" });
+    });
+    txt(svg, 520, 348, "\uc9c4\ud589 " + step + " / " + ev.length, { fill: "#fbbf24", "font-size": 16, "text-anchor": "start", "font-weight": "700" });
+    txt(svg, 520, 376, "\uc810 " + pts.length + "\uac1c" + (cur ? "  \u00b7  " + cur.info.phase + " \uaecd\uc9c8" : ""), { fill: "#94a3b8", "font-size": 14, "text-anchor": "start" });
+  }
+  function finish() {
+    var H = hull(pts, true);
+    read.innerHTML = "\u2705 \uc644\uc131! \uaf2d\uc9d3\uc810 <span class='rv'>" + H.length + "</span>\uac1c &nbsp;|&nbsp; \ub113\uc774 " + areaStr(shoe2(H)) + ", \ub458\ub808 " + perimeter(H).toFixed(4) +
+      "<br>" + H.map(function (p) { return "(" + p.x + "," + p.y + ")"; }).join(" ");
+  }
+  function doStep() {
+    if (step >= ev.length) { stop(); draw(); finish(); return; }
+    step++; draw();
+    var e = ev[step - 1];
+    if (e.type === "push")
+      read.innerHTML = "[" + e.info.phase + " \uaecd\uc9c8] <b style='color:#fbbf24'>push (" + e.info.p.x + ", " + e.info.p.y + ")</b> \u2014 \uc2a4\ud0dd\uc5d0 \ucd94\uac00 (" + step + "/" + ev.length + ")";
+    else
+      read.innerHTML = "[" + e.info.phase + " \uaecd\uc9c8] \ud6c4\ubcf4 (" + e.info.cand.x + "," + e.info.cand.y + ")\uc5d0 \ub300\ud574 cross = " + e.info.cross +
+        " \u2264 0 \u2192 <b style='color:#fb7185'>pop (" + e.info.removed.x + "," + e.info.removed.y + ")</b> \uc624\ub978\ucabd\uc73c\ub85c \uaebe\uc784 (" + step + "/" + ev.length + ")";
+    if (step >= ev.length) { stop(); finish(); }
+  }
+  G.clickAdd(function () { return pts; }, function (p) {
+    stop(); pts.push(p); build(); draw();
+    read.innerHTML = "\uc810 (" + p.x + ", " + p.y + ") \ucd94\uac00 \u2014 \ucd1d " + pts.length + "\uac1c. [\ub2e8\uacc4 \uc2e4\ud589]\uc744 \ub204\ub974\uc138\uc694.";
+  });
+  $("mc-step").addEventListener("click", function () { stop(); doStep(); });
+  $("mc-auto").addEventListener("click", function () {
+    if (timer) { stop(); return; }
+    if (step >= ev.length) { build(); }
+    $("mc-auto").textContent = "\uc77c\uc2dc\uc815\uc9c0";
+    timer = setInterval(doStep, 380);
+  });
+  $("mc-fast").addEventListener("click", function () { stop(); build(); step = ev.length; draw(); finish(); });
+  $("mc-sample").addEventListener("click", function () { stop(); pts = samplePts(); build(); draw(); read.innerHTML = "\uc608\uc81c \uc810 " + pts.length + "\uac1c \ubc30\uce58 \uc644\ub8cc \u2014 [\ub2e8\uacc4 \uc2e4\ud589]\uc744 \ub204\ub974\uc138\uc694."; });
+  $("mc-clear").addEventListener("click", function () { stop(); pts = []; build(); draw(); read.innerHTML = "\uc810\uc744 \ubaa8\ub450 \uc9c0\uc6e0\uc2b5\ub2c8\ub2e4."; });
+  build(); draw();
+})();
+
+/* ============ T3 : collinear <= vs < ============ */
+(function () {
+  var svg = $("col-svg"), read = $("col-read");
+  var G = new Grid(svg, { ox: 55, oy: 350, cell: 34, nx: 12, ny: 8, vbW: 1000, vbH: 400 });
+  var DEMO = [[0, 0], [2, 0], [4, 0], [4, 2], [4, 4], [2, 4], [0, 4], [0, 2], [2, 2]].map(function (p) { return { x: p[0], y: p[1] }; });
+  var strict = true;
+  function draw() {
+    clearSvg(svg); G.draw();
+    var H = hull(DEMO, strict);
+    el("polygon", { points: H.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "#2dd4bf", "fill-opacity": 0.12, stroke: "#2dd4bf", "stroke-width": 3 }, svg);
+    DEMO.forEach(function (p) {
+      var inH = H.some(function (q) { return q.x === p.x && q.y === p.y; });
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: inH ? 10 : 6.5, fill: inH ? "#2dd4bf" : "#475569", stroke: "#0b1120", "stroke-width": 2 }, svg);
+      if (inH) txt(svg, G.px(p.x), G.py(p.y) - 17, "(" + p.x + "," + p.y + ")", { fill: "#5eead4", "font-size": 12 });
+    });
+    txt(svg, 520, 60, strict ? "cross <= 0 \u2192 pop" : "cross < 0 \u2192 pop", { fill: "#fbbf24", "font-size": 19, "text-anchor": "start", "font-weight": "900" });
+    txt(svg, 520, 100, strict ? "\uacf5\uc120 \uc810 \uc81c\uac70" : "\uacf5\uc120 \uc810 \ud3ec\ud568", { fill: "#94a3b8", "font-size": 16, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif" });
+    txt(svg, 520, 150, "\uaecd\uc9c8 \uc810 \uac1c\uc218 = " + H.length, { fill: "#2dd4bf", "font-size": 24, "text-anchor": "start", "font-weight": "900" });
+    H.forEach(function (p, i) {
+      txt(svg, 520, 190 + i * 24, (i + 1) + ". (" + p.x + ", " + p.y + ")", { fill: "#5eead4", "font-size": 14, "text-anchor": "start" });
+    });
+    read.innerHTML = "\uc785\ub825 9\uac1c (\uc815\uc0ac\uac01\ud615 \uaf2d\uc9d3\uc810 4 + \ubcc0 \uc911\uc810 4 + \uc911\uc2ec 1) &nbsp;\u2192&nbsp; " +
+      "<b>" + (strict ? "cross &lt;= 0" : "cross &lt; 0") + "</b> \uc0ac\uc6a9 \uc2dc \uaecd\uc9c8 <span class='rv'>" + H.length + "</span>\uac1c: " +
+      H.map(function (p) { return "(" + p.x + "," + p.y + ")"; }).join(" ");
+  }
+  $("col-le").addEventListener("click", function () { strict = true; draw(); });
+  $("col-lt").addEventListener("click", function () { strict = false; draw(); });
+  draw();
+})();
+
+/* ============ T4 : gift wrapping ============ */
+(function () {
+  var svg = $("gw-svg"), read = $("gw-read");
+  var G = new Grid(svg, { ox: 55, oy: 390, cell: 31, nx: 13, ny: 11, vbW: 1000, vbH: 430 });
+  var pts = samplePts();
+  var chain = [], done = false, timer = null, checks = 0;
+  function reset() {
+    if (timer) { clearInterval(timer); timer = null; }
+    chain = []; done = false; checks = 0;
+    var s = 0;
+    for (var i = 1; i < pts.length; i++)
+      if (pts[i].x < pts[s].x || (pts[i].x === pts[s].x && pts[i].y < pts[s].y)) s = i;
+    chain.push(pts[s]);
+    draw();
+    read.innerHTML = "\uc2dc\uc791\uc810 = \uac00\uc7a5 \uc67c\ucabd \uc544\ub798 \uc810 (" + pts[s].x + ", " + pts[s].y + "). [\ud55c \uc810\uc529] \ub610\ub294 [\ud3ec\uc7a5 \uc2dc\uc791]\uc744 \ub204\ub974\uc138\uc694.";
+  }
+  function draw() {
+    clearSvg(svg); G.draw();
+    if (chain.length >= 2) {
+      el("path", {
+        d: "M " + chain.map(function (p) { return G.px(p.x) + " " + G.py(p.y); }).join(" L ") + (done ? " Z" : ""),
+        fill: done ? "#2dd4bf" : "none", "fill-opacity": done ? 0.12 : 0, stroke: "#2dd4bf", "stroke-width": 3.5, "stroke-linejoin": "round"
+      }, svg);
+    }
+    pts.forEach(function (p) {
+      var inC = chain.some(function (q) { return q.x === p.x && q.y === p.y; });
+      var isCur = chain.length && chain[chain.length - 1].x === p.x && chain[chain.length - 1].y === p.y;
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: isCur ? 10 : (inC ? 8 : 6.5), fill: isCur ? "#fbbf24" : (inC ? "#2dd4bf" : "#475569"), stroke: "#0b1120", "stroke-width": 2 }, svg);
+    });
+    txt(svg, 520, 55, "\ud3ec\uc7a5\ub41c \uaf2d\uc9d3\uc810 = " + chain.length, { fill: "#2dd4bf", "font-size": 18, "text-anchor": "start", "font-weight": "700" });
+    txt(svg, 520, 88, "\ube44\uad50 \ud69f\uc218 = " + checks, { fill: "#fbbf24", "font-size": 16, "text-anchor": "start" });
+    txt(svg, 520, 118, "n \u00d7 h = " + pts.length + " \u00d7 " + (done ? chain.length : "?"), { fill: "#94a3b8", "font-size": 15, "text-anchor": "start" });
+    chain.slice(-9).forEach(function (p, i) {
+      txt(svg, 520, 160 + i * 24, (i + 1) + ". (" + p.x + ", " + p.y + ")", { fill: "#5eead4", "font-size": 14, "text-anchor": "start" });
+    });
+  }
+  function stepOne() {
+    if (done || !chain.length) return;
+    var cur = chain[chain.length - 1];
+    var nxt = null;
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      if (p.x === cur.x && p.y === cur.y) continue;
+      checks++;
+      if (!nxt) { nxt = p; continue; }
+      var c = cross(cur, nxt, p);
+      if (c > 0 || (c === 0 && d2(cur, p) > d2(cur, nxt))) nxt = p;
+    }
+    if (!nxt) { done = true; return; }
+    if (nxt.x === chain[0].x && nxt.y === chain[0].y) {
+      done = true; draw();
+      var H = hull(pts, true);
+      read.innerHTML = "\u2705 \ud3ec\uc7a5 \uc644\ub8cc \u2014 \uaf2d\uc9d3\uc810 <span class='rv'>" + chain.length + "</span>\uac1c, \ucd1d \ube44\uad50 " + checks + "\ud68c" +
+        " &nbsp;(n\u00b7h = " + pts.length + "\u00d7" + chain.length + " = " + (pts.length * chain.length) + " \uaddc\ubaa8)<br>" +
+        "\ubaa8\ub178\ud1a4 \uccb4\uc778 \uacb0\uacfc\uc640 " + (H.length === chain.length ? "<b style='color:#4ade80'>\uc77c\uce58 \u2705</b>" : "<b style='color:#fb7185'>\ubd88\uc77c\uce58</b>");
+      if (timer) { clearInterval(timer); timer = null; }
+      return;
+    }
+    chain.push(nxt); draw();
+    read.innerHTML = "\uaf2d\uc9d3\uc810 " + chain.length + "\uac1c \ud655\uc815 \u2014 \ubc29\uae08 (" + nxt.x + ", " + nxt.y + ") \uc120\ud0dd. \ub204\uc801 \ube44\uad50 " + checks + "\ud68c";
+  }
+  $("gw-run").addEventListener("click", function () { reset(); timer = setInterval(stepOne, 520); });
+  $("gw-step").addEventListener("click", function () { if (!chain.length) reset(); else stepOne(); });
+  $("gw-reset").addEventListener("click", reset);
+  reset();
+})();
+
+/* ============ T5-1 : hull area / perimeter ============ */
+(function () {
+  var svg = $("ap-svg"), read = $("ap-read");
+  var G = new Grid(svg, { ox: 55, oy: 390, cell: 31, nx: 13, ny: 11, vbW: 1000, vbH: 430 });
+  var pts = samplePts(), shown = false;
+  function draw() {
+    clearSvg(svg); G.draw();
+    var H = hull(pts, true);
+    if (shown && H.length >= 3) {
+      el("polygon", { points: H.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "#2dd4bf", "fill-opacity": 0.13, stroke: "#2dd4bf", "stroke-width": 3.5 }, svg);
+      for (var i = 0; i < H.length; i++) {
+        var a = H[i], b = H[(i + 1) % H.length];
+        var mx = (G.px(a.x) + G.px(b.x)) / 2, my = (G.py(a.y) + G.py(b.y)) / 2;
+        txt(svg, mx, my - 6, Math.sqrt(d2(a, b)).toFixed(2), { fill: "#fbbf24", "font-size": 12 });
+      }
+    }
+    pts.forEach(function (p) {
+      var inH = shown && H.some(function (q) { return q.x === p.x && q.y === p.y; });
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: inH ? 9 : 6.5, fill: inH ? "#2dd4bf" : "#64748b", stroke: "#0b1120", "stroke-width": 2 }, svg);
+    });
+    if (shown && H.length >= 3) {
+      var A2 = shoe2(H), L = perimeter(H);
+      var rows = [
+        ["\uaf2d\uc9d3\uc810 h = " + H.length, "#94a3b8"],
+        ["2A = " + A2 + "  (\uc815\uc218)", "#e2e8f0"],
+        ["\ub113\uc774 = " + areaStr(A2), "#2dd4bf"],
+        ["", ""],
+        ["\ub458\ub808 = \u03a3\u221a(\u0394x\u00b2+\u0394y\u00b2)", "#94a3b8"],
+        ["      \u2248 " + L.toFixed(6), "#fbbf24"]
+      ];
+      rows.forEach(function (r, i) { if (r[0]) txt(svg, 520, 60 + i * 34, r[0], { fill: r[1], "font-size": i === 2 || i === 5 ? 19 : 15, "text-anchor": "start", "font-weight": (i === 2 || i === 5) ? "900" : "400" }); });
+    }
+  }
+  G.clickAdd(function () { return pts; }, function (p) { pts.push(p); shown = false; draw(); read.innerHTML = "\uc810 \ucd94\uac00 \u2014 \ucd1d " + pts.length + "\uac1c. [\uaecd\uc9c8 + \ub113\uc774/\ub458\ub808 \uacc4\uc0b0]\uc744 \ub204\ub974\uc138\uc694."; });
+  $("ap-sample").addEventListener("click", function () { pts = samplePts(); shown = false; draw(); read.innerHTML = "\uc608\uc81c \uc810 " + pts.length + "\uac1c \ubc30\uce58 \uc644\ub8cc."; });
+  $("ap-calc").addEventListener("click", function () {
+    shown = true; draw();
+    var H = hull(pts, true);
+    if (H.length < 3) { read.innerHTML = "\uc810\uc774 3\uac1c \uc774\uc0c1 \ud544\uc694\ud569\ub2c8\ub2e4."; return; }
+    var A2 = shoe2(H), L = perimeter(H);
+    read.innerHTML = "\uaf2d\uc9d3\uc810 " + H.length + "\uac1c &nbsp;|&nbsp; 2A = " + A2 + " \u2192 \ub113\uc774 <span class='rv'>" + areaStr(A2) + "</span> (\uc815\uc218 \uacc4\uc0b0)" +
+      " &nbsp;|&nbsp; \ub458\ub808 \u2248 <span class='rv'>" + L.toFixed(6) + "</span> (\uc5ec\uae30\uc11c\ub9cc sqrt)";
+  });
+  $("ap-clear").addEventListener("click", function () { pts = []; shown = false; draw(); read.innerHTML = "\ubaa8\ub450 \uc9c0\uc6e0\uc2b5\ub2c8\ub2e4."; });
+  draw();
+})();
+
+/* ============ T5-2 : rotating calipers ============ */
+(function () {
+  var svg = $("cal-svg"), read = $("cal-read");
+  var G = new Grid(svg, { ox: 55, oy: 390, cell: 31, nx: 13, ny: 11, vbW: 1000, vbH: 430 });
+  var pts = samplePts(), H = hull(pts, true);
+  var i = 0, j = 1, best = 0, bi = 0, bj = 1, fin = false, timer = null;
+  function reset() {
+    if (timer) { clearInterval(timer); timer = null; }
+    H = hull(pts, true);
+    i = 0; j = 1; best = 0; bi = 0; bj = 1; fin = false;
+    draw();
+    read.innerHTML = "\uaecd\uc9c8 \uaf2d\uc9d3\uc810 " + H.length + "\uac1c. i\ub97c \ud55c \uce78\uc529 \uc62e\uae30\uba74\uc11c j\ub97c \ub530\ub77c\ubd99\uc785\ub2c8\ub2e4.";
+  }
+  function draw() {
+    clearSvg(svg); G.draw();
+    el("polygon", { points: H.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "#2dd4bf", "fill-opacity": 0.1, stroke: "#2dd4bf", "stroke-width": 3 }, svg);
+    if (!fin && H.length >= 2) {
+      el("line", { x1: G.px(H[i].x), y1: G.py(H[i].y), x2: G.px(H[j].x), y2: G.py(H[j].y), stroke: "#fbbf24", "stroke-width": 3, "stroke-dasharray": "6 4" }, svg);
+    }
+    if (best > 0) {
+      el("line", { x1: G.px(H[bi].x), y1: G.py(H[bi].y), x2: G.px(H[bj].x), y2: G.py(H[bj].y), stroke: "#fb7185", "stroke-width": 4 }, svg);
+    }
+    H.forEach(function (p, idx) {
+      var c = (idx === i && !fin) ? "#fbbf24" : ((idx === j && !fin) ? "#a78bfa" : ((idx === bi || idx === bj) ? "#fb7185" : "#2dd4bf"));
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: (idx === i || idx === j) && !fin ? 10 : 8, fill: c, stroke: "#0b1120", "stroke-width": 2 }, svg);
+      txt(svg, G.px(p.x), G.py(p.y) - 16, idx, { fill: "#94a3b8", "font-size": 12 });
+    });
+    pts.forEach(function (p) {
+      if (!H.some(function (q) { return q.x === p.x && q.y === p.y; }))
+        el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: 5, fill: "#475569" }, svg);
+    });
+    txt(svg, 520, 55, "i = " + i + (fin ? "" : ",  j = " + j), { fill: "#fbbf24", "font-size": 17, "text-anchor": "start", "font-weight": "700" });
+    if (!fin && H.length >= 2) txt(svg, 520, 88, "d\u00b2(i,j) = " + d2(H[i], H[j]), { fill: "#a78bfa", "font-size": 16, "text-anchor": "start" });
+    txt(svg, 520, 130, "\ucd5c\ub300 d\u00b2 = " + best, { fill: "#fb7185", "font-size": 22, "text-anchor": "start", "font-weight": "900" });
+    if (best > 0) {
+      txt(svg, 520, 164, "\uc30d: (" + H[bi].x + "," + H[bi].y + ") - (" + H[bj].x + "," + H[bj].y + ")", { fill: "#94a3b8", "font-size": 15, "text-anchor": "start" });
+      txt(svg, 520, 194, "\uac70\ub9ac \u2248 " + Math.sqrt(best).toFixed(4), { fill: "#e2e8f0", "font-size": 16, "text-anchor": "start" });
+    }
+  }
+  function stepOne() {
+    if (fin || H.length < 2) return;
+    while (d2(H[i], H[(j + 1) % H.length]) > d2(H[i], H[j])) j = (j + 1) % H.length;
+    var d = d2(H[i], H[j]);
+    if (d > best) { best = d; bi = i; bj = j; }
+    i++;
+    if (i >= H.length) {
+      fin = true; i = H.length - 1; draw();
+      var bf = 0, p1 = null, p2 = null;
+      for (var a = 0; a < pts.length; a++) for (var b = a + 1; b < pts.length; b++) {
+        var dd = d2(pts[a], pts[b]);
+        if (dd > bf) { bf = dd; p1 = pts[a]; p2 = pts[b]; }
+      }
+      read.innerHTML = "\u2705 \ud55c \ubc14\ud034 \uc644\ub8cc \u2014 \ucd5c\ub300 d\u00b2 = <span class='rv'>" + best + "</span>, \uac70\ub9ac \u2248 " + Math.sqrt(best).toFixed(4) +
+        "<br>\uce98\ub9ac\ud37c\uc2a4 \uc30d (" + H[bi].x + "," + H[bi].y + ")-(" + H[bj].x + "," + H[bj].y + ") &nbsp;|&nbsp; " +
+        "\uc804\uccb4 " + pts.length + "\uc810 \ube0c\ub8e8\ud2b8\ud3ec\uc2a4 \uacb0\uacfc d\u00b2 = " + bf + " \u2192 " +
+        (bf === best ? "<b style='color:#4ade80'>\uc77c\uce58 \u2705 (O(h) \ub85c \uac19\uc740 \ub2f5)</b>" : "<b style='color:#fb7185'>\ubd88\uc77c\uce58</b>");
+      if (timer) { clearInterval(timer); timer = null; }
+      return;
+    }
+    draw();
+    read.innerHTML = "i = " + i + ", j = " + j + " \u2192 d\u00b2 = " + d2(H[i], H[j]) + " &nbsp;|&nbsp; \ud604\uc7ac \ucd5c\ub300 d\u00b2 = <span class='rv'>" + best + "</span>";
+  }
+  $("cal-run").addEventListener("click", function () { reset(); timer = setInterval(stepOne, 600); });
+  $("cal-step").addEventListener("click", function () { if (fin) reset(); else stepOne(); });
+  $("cal-reset").addEventListener("click", reset);
+  reset();
+})();
+
+/* ---------- Quiz ---------- */
+(function () {
+  var data = JSON.parse($("quiz-data").textContent);
+  var area = $("quiz-area");
+  var solved = {}, score = 0;
+  data.problems.forEach(function (p, qi) {
+    var box = document.createElement("div"); box.className = "quiz";
+    var head = document.createElement("div"); head.className = "qh";
+    head.innerHTML = "<span class='qtag" + (p.hard ? " hard" : "") + "'>" + p.tag + "</span><span class='qtitle'>" + p.title + "</span>";
+    box.appendChild(head);
+    var body = document.createElement("div"); body.className = "qbody"; body.textContent = p.body;
+    box.appendChild(body);
+    var opts = document.createElement("div"); opts.className = "opts";
+    var expl = document.createElement("div"); expl.className = "expl";
+    p.opts.forEach(function (o, oi) {
+      var b = document.createElement("button");
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (solved[qi]) return;
+        solved[qi] = true;
+        opts.querySelectorAll("button")[p.ans].classList.add("correct");
+        var right = oi === p.ans;
+        if (right) score++; else b.classList.add("wrong");
+        expl.innerHTML = (right ? "<span class='ok'>\uc815\ub2f5!</span> " : "<span class='no'>\uc624\ub2f5</span> \uc815\ub2f5\uc740 " + p.opts[p.ans] + ". ") + p.expl;
+        expl.classList.add("show");
+        $("quiz-score").textContent = "\uc810\uc218: " + score + " / " + data.problems.length;
+      });
+      opts.appendChild(b);
+    });
+    box.appendChild(opts); box.appendChild(expl);
+    area.appendChild(box);
+  });
+  $("quiz-score").textContent = "\uc810\uc218: 0 / " + data.problems.length;
+})();
+</script>
+</body>
+</html>

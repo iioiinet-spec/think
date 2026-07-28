@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>넓이와 신발끈 공식 완전정복 — KOI 계산기하 심화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1120; --panel:#111a2e; --panel2:#16213c; --line:#233250;
+  --teal:#2dd4bf; --teal-dim:#14b8a6; --cyan:#38bdf8; --amber:#fbbf24;
+  --rose:#fb7185; --violet:#a78bfa; --green:#4ade80;
+  --tx:#e2e8f0; --tx-dim:#94a3b8;
+  --mono:'JetBrains Mono',monospace; --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);line-height:1.7;font-size:17px}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 20px 80px}
+header{padding:36px 0 20px;border-bottom:2px solid var(--line);margin-bottom:20px}
+.badge{display:inline-block;background:rgba(45,212,191,.12);color:var(--teal);border:1px solid var(--teal-dim);border-radius:999px;padding:3px 14px;font-size:14px;font-weight:700;margin-bottom:12px}
+h1{font-size:32px;font-weight:900;letter-spacing:-.5px}
+h1 .sig{color:var(--teal);font-family:var(--mono)}
+.sub{color:var(--tx-dim);margin-top:8px;font-size:16px}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0;position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:50;border-bottom:1px solid var(--line)}
+nav.tabs button{background:var(--panel);color:var(--tx-dim);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
+nav.tabs button:hover{border-color:var(--teal-dim);color:var(--tx)}
+nav.tabs button.on{background:var(--teal);color:#04211c;border-color:var(--teal)}
+section.tab{display:none}
+section.tab.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:22px}
+.card h2{font-size:23px;font-weight:900;margin-bottom:14px;color:#fff}
+.card h2 .num{color:var(--teal);font-family:var(--mono);margin-right:8px}
+.card h3{font-size:18px;font-weight:700;color:var(--cyan);margin:18px 0 8px}
+p.desc{color:var(--tx);margin-bottom:10px}
+.hl{color:var(--amber);font-weight:700}
+.hl-t{color:var(--teal);font-weight:700}
+.hl-r{color:var(--rose);font-weight:700}
+.hl-v{color:var(--violet);font-weight:700}
+.formula{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:17px;margin:12px 0;overflow-x:auto}
+.formula.amber{border-left-color:var(--amber)}
+.formula.rose{border-left-color:var(--rose)}
+.formula.big{font-size:20px;text-align:center}
+sup,sub{font-size:.62em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.codebox{background:#0a0f1d;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.codebox .cap{background:var(--panel2);padding:7px 14px;font-size:13.5px;font-weight:700;color:var(--tx-dim);display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}
+.codebox .cap .lang-c{color:var(--cyan)}
+.codebox pre{padding:14px 16px;font-family:var(--mono);font-size:14.5px;line-height:1.65;overflow-x:auto;color:#dbe4f0}
+.kw{color:#c792ea}.fn{color:#82aaff}.strv{color:#c3e88d}.numv{color:#f78c6c}.cm{color:#546e8a;font-style:italic}
+.mark{background:rgba(251,191,36,.15);border-radius:3px;padding:0 3px}
+.bad{background:rgba(251,113,133,.13);border-radius:3px;padding:0 3px}
+.ctrl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.ctrl label{font-size:14.5px;font-weight:700;color:var(--tx-dim)}
+.ctrl input[type=range]{accent-color:var(--teal);width:140px}
+.ctrl select,.ctrl input[type=number]{background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-family:var(--mono);font-size:15px}
+.btn{background:var(--teal);color:#04211c;border:none;border-radius:9px;padding:9px 19px;font-family:var(--sans);font-size:15px;font-weight:900;cursor:pointer;transition:.15s}
+.btn:hover{background:#5eead4}
+.btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal-dim)}
+.btn.ghost:hover{background:rgba(45,212,191,.1)}
+.svgbox{background:#0a0f1d;border:1px solid var(--line);border-radius:12px;padding:10px;margin:12px 0}
+.svgbox svg{touch-action:none;display:block}
+.drag-hint{color:var(--amber);font-size:14.5px;font-weight:700;margin-bottom:6px}
+.readout{font-family:var(--mono);font-size:16px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0;line-height:1.9}
+.readout .rv{color:var(--teal);font-weight:700;font-size:20px}
+.step-pill{display:inline-block;background:rgba(56,189,248,.12);border:1px solid var(--cyan);color:var(--cyan);border-radius:8px;padding:2px 12px;font-size:13.5px;font-weight:700;margin-bottom:8px}
+table.map{width:100%;border-collapse:collapse;margin:12px 0;font-size:15.5px}
+table.map th{background:var(--panel2);color:var(--teal);padding:10px 12px;border:1px solid var(--line);text-align:left;font-size:14.5px}
+table.map td{padding:10px 12px;border:1px solid var(--line)}
+table.map td.mono{font-family:var(--mono);font-size:14.5px}
+.quiz{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
+.quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.quiz .qtag{background:var(--violet);color:#1b1035;border-radius:7px;padding:2px 11px;font-size:13px;font-weight:900}
+.quiz .qtag.hard{background:var(--rose);color:#3d0a14}
+.quiz .qtitle{font-weight:900;font-size:17px}
+.quiz .qbody{margin-bottom:12px;white-space:pre-wrap}
+.quiz .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:10px}
+.quiz .opts button{background:var(--bg);border:1.5px solid var(--line);color:var(--tx);border-radius:9px;padding:10px;font-family:var(--mono);font-size:16px;font-weight:700;cursor:pointer;transition:.12s}
+.quiz .opts button:hover{border-color:var(--teal-dim)}
+.quiz .opts button.correct{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green)}
+.quiz .opts button.wrong{background:rgba(251,113,133,.13);border-color:var(--rose);color:var(--rose)}
+.quiz .expl{display:none;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px;font-size:15.5px}
+.quiz .expl.show{display:block}
+.quiz .expl .ok{color:var(--green);font-weight:900}
+.quiz .expl .no{color:var(--rose);font-weight:900}
+.tip{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:13px 16px;margin:12px 0;font-size:15.5px}
+.tip b{color:var(--amber)}
+.tip.rose{background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.4)}
+.tip.rose b{color:var(--rose)}
+.tip.green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.4)}
+.tip.green b{color:var(--green)}
+.score{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--teal);background:var(--panel2);border:1px solid var(--teal-dim);border-radius:10px;padding:12px 18px;text-align:center;margin-top:8px}
+.buildstep{border-left:3px solid var(--teal);padding-left:18px;margin:16px 0}
+.buildstep .bh{font-weight:900;font-size:17px;color:var(--cyan);margin-bottom:6px}
+.signcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.signcard .big{font-size:30px;font-weight:900;font-family:var(--mono)}
+.signcard .lbl{font-size:15px;font-weight:700;margin-top:4px}
+.signcard .dsc{font-size:14px;color:var(--tx-dim);margin-top:6px}
+footer{text-align:center;color:var(--tx-dim);font-size:13.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="badge">중등 정보올림피아드 · KOI 알고리즘 시리즈 · 심화편</div>
+  <h1><span class="sig">▱</span> 넓이와 신발끈 공식 완전정복</h1>
+  <div class="sub">삼각형 넓이에서 출발해 신발끈 공식의 유도, 오목 다각형에서도 통하는 이유, 그리고 정수만으로 답을 내는 C 구현까지.</div>
+</header>
+<nav class="tabs" id="tabnav">
+  <button data-t="t1" class="on">1. 삼각형 넓이</button>
+  <button data-t="t2">2. 신발끈 공식</button>
+  <button data-t="t3">3. 왜 오목에서도?</button>
+  <button data-t="t4">4. C 코드 구현</button>
+  <button data-t="t5">5. 기출 응용 5선</button>
+  <button data-t="t6">6. 기출 도전</button>
+</nav>
+<!-- ============ TAB 1 ============ -->
+<section class="tab show" id="t1">
+<div class="card">
+  <h2><span class="num">1-1</span>삼각형 넓이 — 밑변×높이를 버리는 이유</h2>
+  <p class="desc">중학교에서 배운 공식은 <span style="font-family:var(--mono)">밑변 × 높이 ÷ 2</span> 입니다. 하지만 좌표평면 위의 임의의 삼각형에서 <span class="hl-r">"높이"를 구하려면 수선의 발을 찾아야 하고, 그러려면 나눗셈과 루트가 필요합니다.</span></p>
+  <div class="formula rose">
+    높이 = |ax + by + c| / √(a² + b²) &nbsp;&nbsp;<span style="color:var(--tx-dim)">// 점과 직선 사이 거리 — 루트 등장!</span>
+  </div>
+  <p class="desc">반면 외적을 쓰면 <span class="hl-t">덧셈·뺄셈·곱셈만으로</span> 넓이의 2배가 정수로 나옵니다.</p>
+  <div class="formula big amber">
+    넓이(ABC) = |cross(A, B, C)| / 2
+  </div>
+  <div class="tip green"><b>왜 2로 나누나</b> — 외적의 절댓값은 두 벡터가 만드는 <b>평행사변형</b>의 넓이입니다. 평행사변형을 대각선으로 자르면 합동인 삼각형 두 개가 되므로 절반이 삼각형 넓이입니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">1-2</span>인터랙티브: 두 공식 비교하기</h2>
+  <p class="desc drag-hint">▶ 세 점을 끌어 보세요. 밑변×높이 방식(실수 계산)과 외적 방식(정수 계산)이 같은 값을 내지만, 중간 과정이 얼마나 다른지 확인하세요.</p>
+  <div class="svgbox"><svg id="tri-svg" viewBox="0 0 1000 400" width="100%"></svg></div>
+  <div class="readout" id="tri-read"></div>
+  <div class="tip"><b>관찰</b> — 밑변과 높이는 대부분 <span class="hl-r">무리수(루트)</span>가 되지만, 곱해서 반으로 나누면 신기하게도 정수 아니면 .5로 떨어집니다. 외적은 그 최종 결과를 <b>중간 오차 없이 곧장</b> 계산합니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">1-3</span>부호 있는 넓이(signed area) — 이번 강의의 핵심 개념</h2>
+  <p class="desc">절댓값을 벗기면 넓이에 <span class="hl">부호</span>가 생깁니다. 이것이 신발끈 공식이 작동하는 비밀입니다.</p>
+  <div class="formula">
+    signed_area(A,B,C) = cross(A,B,C) / 2
+  </div>
+  <div class="grid3">
+    <div class="signcard" style="border-color:var(--teal)">
+      <div class="big" style="color:var(--teal)">+</div>
+      <div class="lbl" style="color:var(--teal)">반시계 순서</div>
+      <div class="dsc">양의 넓이<br>"제대로 덮은 영역"</div>
+    </div>
+    <div class="signcard" style="border-color:var(--rose)">
+      <div class="big" style="color:var(--rose)">−</div>
+      <div class="lbl" style="color:var(--rose)">시계 순서</div>
+      <div class="dsc">음의 넓이<br>"다시 걷어내는 영역"</div>
+    </div>
+    <div class="signcard" style="border-color:var(--amber)">
+      <div class="big" style="color:var(--amber)">0</div>
+      <div class="lbl" style="color:var(--amber)">공선</div>
+      <div class="dsc">넓이 없음<br>납작한 삼각형</div>
+    </div>
+  </div>
+  <p class="desc" style="margin-top:14px">"음의 넓이"는 실제로 존재하는 넓이가 아니라 <span class="hl-t">중복해서 센 부분을 도로 빼주는 회계 장부</span>라고 생각하면 됩니다. 3번 탭에서 이 장부가 어떻게 정확히 맞아떨어지는지 눈으로 확인합니다.</p>
+</div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="t2">
+<div class="card">
+  <h2><span class="num">2-1</span>신발끈 공식의 세 가지 얼굴 — 전부 같은 식</h2>
+  <p class="desc">교재마다 다르게 생긴 식이 나와서 헷갈립니다. 하지만 <span class="hl">셋 다 완전히 같은 값</span>을 냅니다.</p>
+  <div class="formula amber">
+    <b>① 원점 기준형 (가장 많이 쓰임)</b><br>
+    2A = | Σ<sub>i=1</sub><sup>n</sup> (x<sub>i</sub>·y<sub>i+1</sub> − x<sub>i+1</sub>·y<sub>i</sub>) | &nbsp;&nbsp;<span style="color:var(--tx-dim)">// P<sub>n+1</sub> = P<sub>1</sub></span>
+  </div>
+  <div class="formula">
+    <b>② 부채꼴(삼각형 분할)형</b><br>
+    2A = | Σ<sub>i=2</sub><sup>n−1</sup> cross(P<sub>1</sub>, P<sub>i</sub>, P<sub>i+1</sub>) |
+  </div>
+  <div class="formula">
+    <b>③ 사다리꼴형</b><br>
+    2A = | Σ<sub>i=1</sub><sup>n</sup> (x<sub>i</sub> − x<sub>i+1</sub>)(y<sub>i</sub> + y<sub>i+1</sub>) |
+  </div>
+  <div class="tip"><b>어느 걸 외울까</b> — <b>①번</b>을 외우세요. 코드가 가장 짧고, 원점을 따로 정할 필요가 없으며, 항이 대칭이라 실수가 적습니다. ②번은 "왜 성립하는가"를 이해할 때, ③번은 적분과 연결할 때 씁니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">2-2</span>왜 "신발끈"이라는 이름일까 — 계산 애니메이션</h2>
+  <p class="desc">좌표를 세로로 나열하고 <span class="hl-t">엇갈려 곱하면</span> 그 모양이 운동화 끈을 묶은 것처럼 보입니다. 아래 <b>[한 줄씩 계산]</b>을 눌러 확인하세요.</p>
+  <div class="ctrl">
+    <label>다각형</label>
+    <select id="lace-poly">
+      <option value="pent">오각형 (0,0)(4,0)(5,3)(2,5)(0,3)</option>
+      <option value="rect">직사각형 (0,0)(4,0)(4,3)(0,3)</option>
+      <option value="tri">삼각형 (1,1)(5,2)(3,6)</option>
+    </select>
+    <button class="btn" id="lace-step">한 줄씩 계산 ▶</button>
+    <button class="btn ghost" id="lace-auto">자동 재생</button>
+    <button class="btn ghost" id="lace-reset">초기화</button>
+  </div>
+  <div class="svgbox"><svg id="lace-svg" viewBox="0 0 1000 460" width="100%"></svg></div>
+  <div class="readout" id="lace-read">[한 줄씩 계산]을 누르면 신발끈이 한 칸씩 엮입니다.</div>
+  <div class="tip green"><b>규칙 정리</b> — <span style="color:var(--teal)">↘ 방향(내려가며 오른쪽)</span>으로 곱한 것은 <b>더하고</b>, <span style="color:var(--rose)">↙ 방향(내려가며 왼쪽)</span>으로 곱한 것은 <b>뺍니다.</b> 마지막 줄에서 첫 좌표로 돌아와 끈을 묶어 마무리합니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">2-3</span>중요한 성질 ①: 원점이 어디든 상관없다</h2>
+  <p class="desc">①번 식은 <span style="font-family:var(--mono)">x<sub>i</sub>y<sub>i+1</sub> − x<sub>i+1</sub>y<sub>i</sub></span> 로, 마치 <b>원점 O를 기준으로 삼각형 O-P<sub>i</sub>-P<sub>i+1</sub></b>의 넓이를 더하는 것처럼 보입니다. 그런데 다각형이 원점에서 아무리 멀리 떨어져 있어도 답은 같습니다.</p>
+  <div class="ctrl">
+    <label>평행이동 dx</label><input type="number" id="sh-dx" value="0" style="width:96px">
+    <label>dy</label><input type="number" id="sh-dy" value="0" style="width:96px">
+    <button class="btn" id="sh-run">이동 후 계산</button>
+    <button class="btn ghost" id="sh-far">좌표 한계까지 (+10억)</button>
+  </div>
+  <div class="readout" id="sh-read">오각형 (0,0)(4,0)(5,3)(2,5)(0,3)을 평행이동해도 2A가 같은지 확인하세요.</div>
+  <div class="tip"><b>이유</b> — 원점 바깥쪽에서 <b>더해지는 삼각형</b>과 <b>빼지는 삼각형</b>이 정확히 상쇄되기 때문입니다. 즉 신발끈 공식은 <span class="hl-t">평행이동에 대해 불변(invariant)</span>입니다. 좌표가 음수여도, 원점이 다각형 안이든 밖이든 그냥 쓰면 됩니다. 다만 <span class="hl-r">개별 항은 좌표 크기에 비례해 커지므로</span> 누적 변수는 반드시 long long이어야 합니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">2-4</span>중요한 성질 ②: 부호가 곧 꼭짓점의 방향</h2>
+  <table class="map">
+    <tr><th>Σ 부호</th><th>꼭짓점 순서</th><th>활용</th></tr>
+    <tr><td class="mono" style="color:var(--teal)">양수</td><td>반시계(CCW)</td><td>볼록껍질 결과는 보통 CCW</td></tr>
+    <tr><td class="mono" style="color:var(--rose)">음수</td><td>시계(CW)</td><td>입력을 뒤집어 CCW로 정규화</td></tr>
+  </table>
+  <p class="desc">넓이만 필요하면 절댓값을 씌우면 되지만, <span class="hl">"다각형 내부 판정"이나 "볼록껍질"</span>처럼 방향이 중요한 알고리즘에서는 먼저 <b>CCW로 방향을 통일</b>해 두는 것이 안전합니다. 4번 탭에 정규화 코드가 있습니다.</p>
+</div>
+</section>
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="t3">
+<div class="card">
+  <h2><span class="num">3-1</span>가장 큰 의문: 오목 다각형에서도 왜 맞을까?</h2>
+  <p class="desc">부채꼴 분할(②번 식)을 보면 이상합니다. P<sub>1</sub>에서 삼각형을 쪼개면 <span class="hl-r">다각형 바깥으로 삐져나오는 삼각형</span>이 생깁니다. 그런데도 답은 정확합니다.</p>
+  <div class="formula amber">
+    비밀: 바깥으로 나간 삼각형은 <span style="color:var(--rose)">시계 방향</span>이 되어 <b>음수 넓이</b>가 되고,<br>
+    안쪽에서 <span style="color:var(--teal)">두 번 세어진 부분</span>과 정확히 상쇄된다.
+  </div>
+  <p class="desc">즉 신발끈 공식은 "잘 쪼개서 더하는" 것이 아니라 <span class="hl-t">"더하고 빼는 회계"</span>입니다. 이 관점이 잡히면 오목·별 모양 등 어떤 단순다각형에서도 안심하고 쓸 수 있습니다.</p>
+</div>
+
+<div class="card">
+  <h2><span class="num">3-2</span>인터랙티브: 음수 삼각형 상쇄 관찰</h2>
+  <p class="desc">오목 다각형에서 <b>[삼각형 하나씩 추가]</b>를 눌러 보세요. 세 번째 삼각형이 <span class="hl-r">음수</span>로 나오며 합계를 깎아내리는 장면이 핵심입니다.</p>
+  <div class="ctrl">
+    <label>다각형</label>
+    <select id="fan-poly">
+      <option value="concave">오목 오각형 (음수 등장)</option>
+      <option value="convex">볼록 오각형 (전부 양수)</option>
+      <option value="arrow">화살표 모양 (깊은 오목)</option>
+    </select>
+    <button class="btn" id="fan-step">삼각형 하나씩 추가 ▶</button>
+    <button class="btn ghost" id="fan-auto">자동 재생</button>
+    <button class="btn ghost" id="fan-reset">초기화</button>
+  </div>
+  <div class="svgbox"><svg id="fan-svg" viewBox="0 0 1000 430" width="100%"></svg></div>
+  <div class="readout" id="fan-read">[삼각형 하나씩 추가]를 눌러 부채꼴 분할을 관찰하세요.</div>
+  <div class="tip green"><b>확인 포인트</b> — 마지막에 나온 합계가 ①번 원점 기준형으로 계산한 값과 <b>완전히 일치</b>합니다. 세 가지 식이 같다는 것을 수치로 확인하는 것입니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">3-3</span>주의: 통하는 다각형과 안 통하는 다각형</h2>
+  <table class="map">
+    <tr><th>다각형 종류</th><th>신발끈</th><th>설명</th></tr>
+    <tr><td>볼록 다각형</td><td style="color:var(--green)">✅ 정확</td><td>모든 항이 같은 부호</td></tr>
+    <tr><td>오목 다각형</td><td style="color:var(--green)">✅ 정확</td><td>음수 항이 상쇄를 담당</td></tr>
+    <tr><td>단순다각형 (변이 안 만남)</td><td style="color:var(--green)">✅ 정확</td><td>위 두 가지를 포함</td></tr>
+    <tr><td><b>자기교차 다각형</b> (변끼리 교차)</td><td style="color:var(--rose)">❌ 틀림</td><td>겹친 영역이 상쇄되거나 두 번 세어짐</td></tr>
+    <tr><td>꼭짓점 순서가 뒤섞인 입력</td><td style="color:var(--rose)">❌ 틀림</td><td>다각형 자체가 달라짐</td></tr>
+  </table>
+  <div class="tip rose"><b>시험에서의 함정</b> — 문제에 <b>"점들이 다각형을 이루는 순서대로 주어진다"</b>는 문장이 있는지 꼭 확인하세요. 그냥 점 집합만 주어졌다면 신발끈을 바로 쓰면 안 되고, <span class="hl-r">볼록 껍질을 먼저 구하거나 각도로 정렬</span>해야 합니다.</div>
+</div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="t4">
+<div class="card">
+  <h2><span class="num">4-1</span>구현 4단계 — 정수만으로 끝까지 간다</h2>
+
+  <div class="buildstep">
+    <div class="bh">STEP 1. 넓이가 아니라 "넓이의 2배"를 구한다</div>
+    <p class="desc">넓이는 항상 <span class="hl">정수 ÷ 2</span> 꼴입니다. 그래서 2로 나누는 순간 실수가 되어 오차가 생깁니다. <b>2배 값을 정수로 끝까지 들고 갑니다.</b></p>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>shoelace.c</span></div>
+<pre><span class="kw">typedef struct</span> { <span class="kw">long long</span> x, y; } P;
+
+<span class="cm">// 넓이의 2배 (부호 있음)</span>
+<span class="kw">long long</span> <span class="fn">shoelace2</span>(P *p, <span class="kw">int</span> n) {
+    <span class="kw">long long</span> s = <span class="numv">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {
+        P a = p[i], b = p[<span class="mark">(i+<span class="numv">1</span>) % n</span>];   <span class="cm">// 마지막 → 첫 점 순환</span>
+        s += a.x*b.y - b.x*a.y;
+    }
+    <span class="kw">return</span> s;                        <span class="cm">// 절댓값은 호출한 쪽에서</span>
+}</pre></div>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 2. 소수 첫째 자리까지 출력하기</div>
+    <p class="desc">KOI·BOJ의 다각형 넓이 문제는 대부분 <b>"소수점 아래 첫째 자리까지 출력"</b>을 요구합니다. 2A가 짝수면 .0, 홀수면 .5입니다.</p>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>print_area.c</span></div>
+<pre><span class="kw">void</span> <span class="fn">printArea</span>(<span class="kw">long long</span> s2) {
+    <span class="kw">long long</span> a = <span class="fn">llabs</span>(s2);
+    <span class="fn">printf</span>(<span class="strv">"%lld.%lld\n"</span>, <span class="mark">a/<span class="numv">2</span></span>, <span class="mark">(a%<span class="numv">2</span>)*<span class="numv">5</span></span>);   <span class="cm">// 홀수면 .5</span>
+}
+<span class="cm">// 2A=37 → "18.5"   2A=24 → "12.0"   2A=100 → "50.0"</span></pre></div>
+    <div class="tip rose"><b>%.1f 를 쓰면?</b> — <span class="bad">printf("%.1f", s2/2.0)</span> 는 대부분 맞지만, 좌표가 크면 double 정밀도(약 15자리)를 넘어 <b>마지막 자리가 틀립니다.</b> 정수 나눗셈·나머지로 출력하는 위 방법이 100% 안전합니다.</div>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 3. 오버플로 점검</div>
+    <div class="formula rose">
+      좌표 |x|, |y| ≤ 10<sup>5</sup>, n ≤ 10<sup>4</sup> 일 때<br>
+      항 하나: 10<sup>5</sup> × 10<sup>5</sup> × 2 = 2×10<sup>10</sup> → <b>int(2.1×10<sup>9</sup>) 초과!</b><br>
+      전체 합: 2×10<sup>10</sup> × 10<sup>4</sup> = 2×10<sup>14</sup> → long long(9.2×10<sup>18</sup>) 안전
+    </div>
+    <p class="desc">누적 변수 <span style="font-family:var(--mono)">s</span>는 반드시 <b>long long</b>. 항 하나만으로도 int를 넘기므로 <span class="hl-r">int 배열에 좌표를 담았다면 곱하기 전에 캐스팅</span>해야 합니다.</p>
+  </div>
+
+  <div class="buildstep">
+    <div class="bh">STEP 4. 방향 정규화 (필요할 때만)</div>
+    <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>normalize.c</span></div>
+<pre><span class="cm">// 꼭짓점 순서를 항상 반시계(CCW)로 맞추기</span>
+<span class="kw">void</span> <span class="fn">makeCCW</span>(P *p, <span class="kw">int</span> n) {
+    <span class="kw">if</span> (<span class="fn">shoelace2</span>(p, n) &lt; <span class="numv">0</span>) {          <span class="cm">// 시계 방향이면</span>
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n/<span class="numv">2</span>; i++) {   <span class="cm">// 배열을 뒤집는다</span>
+            P t = p[i]; p[i] = p[n-<span class="numv">1</span>-i]; p[n-<span class="numv">1</span>-i] = t;
+        }
+    }
+}</pre></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2><span class="num">4-2</span>완성 코드 — KOI 표준 제출 형태</h2>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>polygon_area.c — 입력: n, 이어서 n개의 좌표</span></div>
+<pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="kw">#include</span> &lt;stdlib.h&gt;
+
+<span class="kw">typedef struct</span> { <span class="kw">long long</span> x, y; } P;
+P p[<span class="numv">10005</span>];
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    <span class="kw">int</span> n;
+    <span class="fn">scanf</span>(<span class="strv">"%d"</span>, &amp;n);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++)
+        <span class="fn">scanf</span>(<span class="strv">"%lld %lld"</span>, &amp;p[i].x, &amp;p[i].y);   <span class="cm">// %lld !</span>
+
+    <span class="kw">long long</span> s = <span class="numv">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {
+        P a = p[i], b = p[(i+<span class="numv">1</span>) % n];
+        s += a.x*b.y - b.x*a.y;
+    }
+    s = <span class="fn">llabs</span>(s);
+    <span class="fn">printf</span>(<span class="strv">"%lld.%lld\n"</span>, s/<span class="numv">2</span>, (s%<span class="numv">2</span>)*<span class="numv">5</span>);
+    <span class="kw">return</span> <span class="numv">0</span>;
+}
+<span class="cm">// 입력: 3 / 0 0 / 0 10 / 10 0   →  출력: 50.0</span></pre></div>
+  <p class="desc">이 20줄이 <span class="hl-t">다각형 넓이 문제의 완성형</span>입니다. 시간복잡도 O(n), 오차 0.</p>
+</div>
+
+<div class="card">
+  <h2><span class="num">4-3</span>인터랙티브: 넓이 계산기 (출력 형식 확인)</h2>
+  <p class="desc">꼭짓점을 끌어 모양을 바꾸면 2A와 실제 출력 문자열이 함께 갱신됩니다.</p>
+  <div class="ctrl">
+    <button class="btn ghost" id="ar-tri">삼각형</button>
+    <button class="btn ghost" id="ar-pent">오각형</button>
+    <button class="btn ghost" id="ar-conc">오목</button>
+    <button class="btn ghost" id="ar-add">꼭짓점 추가</button>
+    <button class="btn ghost" id="ar-del">꼭짓점 삭제</button>
+  </div>
+  <div class="svgbox"><svg id="ar-svg" viewBox="0 0 1000 400" width="100%"></svg></div>
+  <div class="readout" id="ar-read"></div>
+</div>
+</section>
+<!-- ============ TAB 5 ============ -->
+<section class="tab" id="t5">
+<div class="card">
+  <h2><span class="num">5-1</span>응용 ①: 점이 다각형 내부인가 — 넓이 합으로 판정</h2>
+  <span class="step-pill">아이디어가 예쁜 고전 기법</span>
+  <p class="desc">점 q를 <b>볼록다각형</b>의 모든 변과 이어 삼각형을 만듭니다. <span class="hl">q가 내부에 있으면</span> 이 삼각형들이 다각형을 빈틈없이 정확히 덮으므로 넓이 합 = 다각형 넓이. <span class="hl-r">밖에 있으면</span> 삼각형들이 다각형 바깥까지 덮어 합이 더 커집니다.</p>
+  <div class="formula amber">
+    <b>[볼록다각형 전용]</b><br>
+    Σ<sub>i</sub> |cross(P<sub>i</sub>, P<sub>i+1</sub>, q)| &nbsp;==&nbsp; |2A| &nbsp;→ 내부(또는 경계)<br>
+    Σ<sub>i</sub> |cross(P<sub>i</sub>, P<sub>i+1</sub>, q)| &nbsp;&nbsp;&gt;&nbsp; |2A| &nbsp;→ 외부
+  </div>
+  <p class="desc drag-hint">▶ 노란 점 q를 끌어 안팎으로 옮겨 보세요. [오목 반례] 버튼을 누르면 <b>이 방법이 깨지는 장면</b>을 직접 볼 수 있습니다.</p>
+  <div class="ctrl">
+    <button class="btn ghost" id="in-conv">볼록 오각형 (정상 작동)</button>
+    <button class="btn ghost" id="in-conc">오목 오각형 (반례!)</button>
+  </div>
+  <div class="svgbox"><svg id="in-svg" viewBox="0 0 1000 400" width="100%"></svg></div>
+  <div class="readout" id="in-read"></div>
+  <div class="tip rose"><b>오목에서는 왜 깨지나</b> — 안으로 파인(reflex) 꼭짓점 근처에서는 q와 변을 이은 삼각형이 <span class="hl-r">다각형 바깥으로 삐져나가</span> 내부의 점인데도 합이 2A보다 커집니다. 예를 들어 오목 오각형 (1,1)(11,1)(11,8)(6,4)(1,8)에서 q=(3,3)은 분명 내부인데 합은 114, 2A는 100입니다.</div>
+  <div class="tip"><b>정리</b> — 이 방법은 <b>볼록다각형에서만</b> 쓰세요. 코드가 짧은 대신 <span class="hl-r">내부와 경계를 구분하지 못합니다</span>(둘 다 등호). 오목까지 다뤄야 하면 <b>광선 쏘기(ray casting)</b>를, 경계 구분이 필요하면 <b>CCW 부호 방식</b>을 씁니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-2</span>응용 ②: 픽의 정리로 내부 격자점 세기</h2>
+  <p class="desc">신발끈으로 구한 <b>2A</b>와 gcd로 구한 <b>B</b>만 있으면 내부 격자점 I를 <span class="hl-t">O(n)에 정수로</span> 구할 수 있습니다.</p>
+  <div class="formula">
+    A = I + B/2 − 1 &nbsp;&nbsp;→&nbsp;&nbsp; 양변에 2를 곱하면 &nbsp;&nbsp; <b>I = (2A − B + 2) / 2</b>
+  </div>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>pick_interior.c</span></div>
+<pre><span class="kw">long long</span> <span class="fn">gcd</span>(<span class="kw">long long</span> a, <span class="kw">long long</span> b){ <span class="kw">return</span> b ? <span class="fn">gcd</span>(b, a%b) : a; }
+
+<span class="kw">long long</span> A2 = <span class="fn">llabs</span>(<span class="fn">shoelace2</span>(p, n));      <span class="cm">// 넓이의 2배</span>
+<span class="kw">long long</span> B = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++) {
+    <span class="kw">long long</span> dx = <span class="fn">llabs</span>(p[(i+<span class="numv">1</span>)%n].x - p[i].x);
+    <span class="kw">long long</span> dy = <span class="fn">llabs</span>(p[(i+<span class="numv">1</span>)%n].y - p[i].y);
+    B += <span class="fn">gcd</span>(dx, dy);                       <span class="cm">// 변마다 gcd 개</span>
+}
+<span class="kw">long long</span> I = <span class="mark">(A2 - B + <span class="numv">2</span>) / <span class="numv">2</span></span>;
+<span class="cm">// 오각형 (0,0)(4,0)(5,3)(2,5)(0,3): 2A=37, B=11 → I=14</span></pre></div>
+  <div class="ctrl">
+    <label>다각형</label>
+    <select id="pk-sel">
+      <option value="pent">오각형 (2A=37)</option>
+      <option value="rect">직사각형 (2A=24)</option>
+      <option value="conc">오목 (2A=100)</option>
+      <option value="tri">삼각형 (2A=18)</option>
+    </select>
+    <button class="btn" id="pk-run">격자점 세어 검증</button>
+  </div>
+  <div class="svgbox"><svg id="pk-svg" viewBox="0 0 1000 380" width="100%"></svg></div>
+  <div class="readout" id="pk-read">다각형을 고르고 [격자점 세어 검증]을 눌러 공식과 실제 개수를 대조하세요.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-3</span>응용 ③: 최대 넓이 삼각형 찾기</h2>
+  <p class="desc">점 n개 중 세 개를 골라 만드는 삼각형의 <span class="hl">최대 넓이</span>를 구합니다. n이 작으면(≤ 300 정도) 삼중 반복문으로 충분합니다.</p>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>max_triangle.c — O(n³)</span></div>
+<pre><span class="kw">long long</span> best = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++)
+  <span class="kw">for</span> (<span class="kw">int</span> j = i+<span class="numv">1</span>; j &lt; n; j++)
+    <span class="kw">for</span> (<span class="kw">int</span> k = j+<span class="numv">1</span>; k &lt; n; k++) {
+        <span class="kw">long long</span> v = <span class="fn">llabs</span>(<span class="fn">cross</span>(p[i], p[j], p[k]));
+        <span class="kw">if</span> (v &gt; best) best = v;      <span class="cm">// 2배 값끼리 비교 (나누지 않음!)</span>
+    }
+<span class="fn">printf</span>(<span class="strv">"%lld.%lld\n"</span>, best/<span class="numv">2</span>, (best%<span class="numv">2</span>)*<span class="numv">5</span>);</pre></div>
+  <div class="tip green"><b>핵심 요령</b> — 비교는 <b>2배 값 그대로</b> 합니다. 매번 2로 나누면 실수 연산이 n³번 들어가 느리고 부정확합니다. "나눗셈은 마지막 출력에서 딱 한 번"이 계산기하의 철칙입니다.</div>
+  <div class="ctrl">
+    <button class="btn" id="mx-run">탐색 애니메이션 ▶</button>
+    <button class="btn ghost" id="mx-fast">즉시 계산</button>
+    <button class="btn ghost" id="mx-reset">초기화</button>
+  </div>
+  <div class="svgbox"><svg id="mx-svg" viewBox="0 0 1000 400" width="100%"></svg></div>
+  <div class="readout" id="mx-read">점 8개 중 최대 넓이 삼각형을 찾습니다. C₈,₃ = 56가지를 전부 확인합니다.</div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-4</span>응용 ④: 볼록 껍질의 넓이 · 둘레</h2>
+  <p class="desc">"울타리를 쳐서 모든 점을 감싸라" 유형입니다. <span class="hl-t">볼록 껍질을 구한 뒤 신발끈</span>이면 끝입니다.</p>
+  <div class="formula">
+    ① 볼록 껍질 구하기 O(n log n) &nbsp;→&nbsp; ② 껍질 꼭짓점에 신발끈 O(h) &nbsp;→&nbsp; 넓이
+  </div>
+  <div class="tip rose"><b>둘레는 예외</b> — 둘레는 각 변의 <b>실제 길이</b>가 필요하므로 <span class="hl-r">여기서만 sqrt를 씁니다.</span> 넓이는 정수, 둘레는 실수 — 이 구분을 헷갈리지 마세요.</div>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>hull_area.c</span></div>
+<pre><span class="kw">int</span> h = <span class="fn">convexHull</span>(p, n, st);          <span class="cm">// 껍질 꼭짓점 h개</span>
+<span class="kw">long long</span> A2 = <span class="fn">llabs</span>(<span class="fn">shoelace2</span>(st, h));  <span class="cm">// 넓이 2배 (정수)</span>
+
+<span class="kw">double</span> peri = <span class="numv">0</span>;                     <span class="cm">// 둘레는 실수</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; h; i++) {
+    <span class="kw">double</span> dx = st[(i+<span class="numv">1</span>)%h].x - st[i].x;
+    <span class="kw">double</span> dy = st[(i+<span class="numv">1</span>)%h].y - st[i].y;
+    peri += <span class="fn">sqrt</span>(dx*dx + dy*dy);
+}</pre></div>
+</div>
+
+<div class="card">
+  <h2><span class="num">5-5</span>응용 ⑤: 삼각형 분할로 다각형 넓이 검산하기</h2>
+  <p class="desc">시험장에서 답이 의심스러울 때, <span class="hl">서로 다른 두 식으로 계산해 비교</span>하면 실수를 잡을 수 있습니다.</p>
+  <div class="codebox"><div class="cap"><span class="lang-c">C</span><span>verify.c — 두 방식 교차 검증</span></div>
+<pre><span class="cm">// 방법 1: 원점 기준형</span>
+<span class="kw">long long</span> s1 = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">0</span>; i &lt; n; i++)
+    s1 += p[i].x*p[(i+<span class="numv">1</span>)%n].y - p[(i+<span class="numv">1</span>)%n].x*p[i].y;
+
+<span class="cm">// 방법 2: 부채꼴(삼각형 분할)형</span>
+<span class="kw">long long</span> s2 = <span class="numv">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="numv">1</span>; i &lt; n-<span class="numv">1</span>; i++)
+    s2 += <span class="fn">cross</span>(p[<span class="numv">0</span>], p[i], p[i+<span class="numv">1</span>]);
+
+<span class="cm">// 반드시 s1 == s2 (부호까지 동일)</span>
+<span class="kw">if</span> (s1 != s2) <span class="fn">printf</span>(<span class="strv">"구현 오류!\n"</span>);</pre></div>
+  <div class="tip green"><b>디버깅 팁</b> — 두 값이 다르면 대부분 <b>인덱스 순환(%n)을 빠뜨렸거나</b>, 마지막 꼭짓점에서 첫 꼭짓점으로 돌아오는 변을 계산하지 않은 것입니다.</div>
+</div>
+</section>
+
+<!-- ============ TAB 6 ============ -->
+<section class="tab" id="t6">
+<div class="card">
+  <h2><span class="num">6</span>기출 수준 도전 문제</h2>
+  <p class="desc">모든 정답은 실제 C/Python 코드 실행으로 검증되었습니다.</p>
+  <div id="quiz-area"></div>
+  <div class="score" id="quiz-score">점수: 0 / 8</div>
+</div>
+</section>
+
+<footer>세영코딩연구소 · KOI 알고리즘 강의 시리즈 — 넓이와 신발끈 공식 심화편</footer>
+</div>
+
+<script type="application/json" id="quiz-data">
+{
+  "problems": [
+    {
+      "tag": "기본", "hard": false,
+      "title": "Q1. \uc0bc\uac01\ud615 \ub113\uc774",
+      "body": "A(1,1), B(5,2), C(3,6) \uc758 \ub113\uc774\ub294? (cross = 18)",
+      "opts": ["4.5", "9.0", "18.0", "36.0"],
+      "ans": 1,
+      "expl": "\ub113\uc774 = |cross| / 2 = 18 / 2 = 9.0. \uc678\uc801\uc740 \ud3c9\ud589\uc0ac\ubcc0\ud615 \ub113\uc774\uc774\ubbc0\ub85c \ubc18\uc73c\ub85c \ub098\ub215\ub2c8\ub2e4."
+    },
+    {
+      "tag": "신발끈", "hard": false,
+      "title": "Q2. \uc9c1\uc0ac\uac01\ud615 \uac80\uc0b0",
+      "body": "\uaf2d\uc9d3\uc810 (0,0) (4,0) (4,3) (0,3) \uc758 \uc2e0\ubc1c\ub048 \ud569\uc740 24\uc774\ub2e4.\n\ub113\uc774\ub294 \uc5bc\ub9c8\uc778\uac00?",
+      "opts": ["6", "12", "24", "48"],
+      "ans": 1,
+      "expl": "\uc2e0\ubc1c\ub048 \ud569\uc740 \ub113\uc774\uc758 2\ubc30\uc774\ubbc0\ub85c 24/2 = 12. \uac00\ub85c 4 \u00d7 \uc138\ub85c 3 = 12 \uc640 \uc77c\uce58\ud569\ub2c8\ub2e4."
+    },
+    {
+      "tag": "출력형식", "hard": false,
+      "title": "Q3. \ucd9c\ub825 \ubb38\uc790\uc5f4",
+      "body": "2A = 37 \uc77c \ub54c printf(\"%lld.%lld\", a/2, (a%2)*5) \uac00 \ucd9c\ub825\ud558\ub294 \uac83\uc740?",
+      "opts": ["18.0", "18.5", "18.7", "37.0"],
+      "ans": 1,
+      "expl": "37/2 = 18 (\uc815\uc218 \ub098\ub217\uc148), 37%2 = 1 \u2192 1\u00d75 = 5. \ub530\ub77c\uc11c \"18.5\". \ub113\uc774\ub294 \ud56d\uc0c1 .0 \uc544\ub2c8\uba74 .5 \uc785\ub2c8\ub2e4."
+    },
+    {
+      "tag": "성질", "hard": true,
+      "title": "Q4. \ud3c9\ud589\uc774\ub3d9 \ubd88\ubcc0",
+      "body": "\uc624\uac01\ud615 (0,0)(4,0)(5,3)(2,5)(0,3) \uc758 \uc2e0\ubc1c\ub048 \ud569\uc740 37\uc774\ub2e4.\n\ubaa8\ub4e0 \uc810\uc5d0 (+1000000, +1000000) \uc744 \ub354\ud574 \ud3c9\ud589\uc774\ub3d9\ud558\uba74 \uc2e0\ubc1c\ub048 \ud569\uc740?",
+      "opts": ["37", "1000037", "\ud6e8\uc52c \ucee4\uc9c4\ub2e4", "0"],
+      "ans": 0,
+      "expl": "\uadf8\ub300\ub85c 37\uc785\ub2c8\ub2e4. \uc2e0\ubc1c\ub048 \uacf5\uc2dd\uc740 \ud3c9\ud589\uc774\ub3d9\uc5d0 \ubd88\ubcc0\uc785\ub2c8\ub2e4(\uc774\ub3d9\ub7c9\uc758 \uc81c\uacf1 \ud56d\uc774 \uc11c\ub85c \uc0c1\uc1c4). \ub2e4\ub9cc \uac1c\ubcc4 \ud56d\uc740 \uc774\ub3d9\ub7c9\uc5d0 \ube44\ub840\ud574 \ucee4\uc838 \uc5ec\uae30\uc11c\ub294 \ucd5c\ub300 40\uc5b5 \uaddc\ubaa8\uac00 \ub418\ubbc0\ub85c int\ub97c \uc4f0\uba74 \ub118\uce69\ub2c8\ub2e4. \ud569\uc740 \uac19\uc544\ub3c4 \uc911\uac04 \uacc4\uc0b0\uc774 \uae68\uc9c0\ubbc0\ub85c long long\uc774 \ud544\uc694\ud569\ub2c8\ub2e4."
+    },
+    {
+      "tag": "오목", "hard": true,
+      "title": "Q5. \uc74c\uc218 \uc0bc\uac01\ud615",
+      "body": "\uc624\ubaa9 \uc624\uac01\ud615 (1,1)(11,1)(11,8)(6,4)(1,8) \uc744 P\u2081 \uae30\uc900 \ubd80\ucc44\uaf34\ub85c \ubd84\ud560\ud588\ub354\ub2c8\n\uc138 \ud56d\uc774 70, \u22125, 35 \uac00 \ub098\uc654\ub2e4. \ub113\uc774\ub294?",
+      "opts": ["35", "50", "55", "100"],
+      "ans": 1,
+      "expl": "70 \u2212 5 + 35 = 100 \uc774 \ub113\uc774\uc758 2\ubc30 \u2192 \ub113\uc774 50. \uc74c\uc218 \ud56d(\u22125)\uc740 \ubc16\uc73c\ub85c \uc0d0\ub824\ub098\uac04 \uc0bc\uac01\ud615\uc774 \uc911\ubcf5\ubd84\uc744 \uae4e\uc544\ub0b8 \uac83\uc785\ub2c8\ub2e4."
+    },
+    {
+      "tag": "함정", "hard": true,
+      "title": "Q6. \uc2e0\ubc1c\ub048\uc774 \ud2c0\ub9ac\ub294 \uacbd\uc6b0",
+      "body": "\ub2e4\uc74c \uc911 \uc2e0\ubc1c\ub048 \uacf5\uc2dd\uc744 \uadf8\ub300\ub85c \uc4f0\uba74 \ud2c0\ub9b0 \ub2f5\uc774 \ub098\uc624\ub294 \uacbd\uc6b0\ub294?",
+      "opts": [
+        "\uc624\ubaa9 \ub2e4\uac01\ud615\uc77c \ub54c",
+        "\ubcc0\ub07c\ub9ac \uc11c\ub85c \uad50\ucc28\ud558\ub294 \uc790\uae30\uad50\ucc28 \ub2e4\uac01\ud615\uc77c \ub54c",
+        "\uc88c\ud45c\uc5d0 \uc74c\uc218\uac00 \uc788\uc744 \ub54c",
+        "\uaf2d\uc9d3\uc810\uc774 \uc2dc\uacc4 \ubc29\ud5a5\uc77c \ub54c"
+      ],
+      "ans": 1,
+      "expl": "\uc790\uae30\uad50\ucc28 \ub2e4\uac01\ud615\uc5d0\uc11c\ub9cc \ud2c0\ub9bd\ub2c8\ub2e4. \uc624\ubaa9\u00b7\uc74c\uc218 \uc88c\ud45c\ub294 \ubb38\uc81c\uc5c6\uace0, \uc2dc\uacc4 \ubc29\ud5a5\uc740 \ubd80\ud638\ub9cc \uc74c\uc218\uac00 \ub418\ubbc0\ub85c \uc808\ub313\uac12\uc744 \uc528\uc6b0\uba74 \ub429\ub2c8\ub2e4."
+    },
+    {
+      "tag": "픽의정리", "hard": true,
+      "title": "Q7. \ub0b4\ubd80 \uaca9\uc790\uc810",
+      "body": "\uc624\ubaa9 \uc624\uac01\ud615\uc758 2A = 100, \uacbd\uacc4 \uaca9\uc790\uc810 B = 26 \uc774\ub2e4.\nI = (2A \u2212 B + 2) / 2 \ub85c \uad6c\ud55c \ub0b4\ubd80 \uaca9\uc790\uc810\uc740?",
+      "opts": ["36", "37", "38", "39"],
+      "ans": 2,
+      "expl": "(100 \u2212 26 + 2) / 2 = 76 / 2 = 38. \uc2e0\ubc1c\ub048\uc73c\ub85c \uad6c\ud55c 2A \uc640 gcd \ud569 B \ub9cc \uc788\uc73c\uba74 \uaca9\uc790\uc810\uc744 \uc9c1\uc811 \uc138\uc9c0 \uc54a\uace0 O(n)\uc5d0 \uad6c\ud569\ub2c8\ub2e4."
+    },
+    {
+      "tag": "구현", "hard": true,
+      "title": "Q8. \ucd5c\ub300 \uc0bc\uac01\ud615 \uad6c\ud604",
+      "body": "\uc810 n\uac1c \uc911 \ucd5c\ub300 \ub113\uc774 \uc0bc\uac01\ud615\uc744 \ucc3e\uc744 \ub54c \uac00\uc7a5 \uc88b\uc740 \ube44\uad50 \ubc29\ubc95\uc740?",
+      "opts": [
+        "\ub9e4\ubc88 |cross|/2.0 \uc744 \uacc4\uc0b0\ud574 double \ub85c \ube44\uad50",
+        "|cross| (\ub113\uc774\uc758 2\ubc30) \uadf8\ub300\ub85c \uc815\uc218 \ube44\uad50",
+        "sqrt \ub85c \ubcc0\uae38\uc774\ub97c \uad6c\ud574 \ud5e4\ub860 \uacf5\uc2dd \uc0ac\uc6a9",
+        "\ubc11\ubcc0\uacfc \ub192\uc774\ub97c \uac01\uac01 \uad6c\ud574 \ube44\uad50"
+      ],
+      "ans": 1,
+      "expl": "2\ubc30 \uac12\uc73c\ub85c \uc815\uc218 \ube44\uad50\ud558\uace0 \ub9c8\uc9c0\ub9c9 \ucd9c\ub825\uc5d0\uc11c\ub9cc \ub098\ub215\ub2c8\ub2e4. \ub098\ub217\uc148\uc744 n\u00b3\ubc88 \ud558\uba74 \ub290\ub9ac\uace0 \uc2e4\uc218 \uc624\ucc28\uae4c\uc9c0 \uc313\uc785\ub2c8\ub2e4."
+    }
+  ]
+}
+</script>
+<script>
+"use strict";
+var NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  var e = document.createElementNS(NS, tag);
+  for (var k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function $(id) { return document.getElementById(id); }
+function clearSvg(s) { while (s.firstChild) s.removeChild(s.firstChild); }
+function txt(parent, x, y, s, attrs) {
+  var o = { x: x, y: y, "text-anchor": "middle", fill: "#e2e8f0", "font-size": 14, "font-family": "JetBrains Mono, monospace" };
+  for (var k in attrs) o[k] = attrs[k];
+  var t = el("text", o, parent);
+  t.textContent = s;
+  return t;
+}
+function cross(a, b, c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+function shoe2(P) {
+  var s = 0;
+  for (var i = 0; i < P.length; i++) {
+    var a = P[i], b = P[(i + 1) % P.length];
+    s += a.x * b.y - b.x * a.y;
+  }
+  return s;
+}
+function areaStr(s2) {
+  var a = Math.abs(s2);
+  return Math.floor(a / 2) + "." + ((a % 2) * 5);
+}
+
+/* tabs */
+(function () {
+  var nav = $("tabnav");
+  nav.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button");
+    if (!b) return;
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    document.querySelectorAll("section.tab").forEach(function (s) { s.classList.remove("show"); });
+    $(b.dataset.t).classList.add("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+/* grid + drag */
+function Grid(svg, cfg) {
+  this.svg = svg; this.ox = cfg.ox; this.oy = cfg.oy; this.cell = cfg.cell;
+  this.nx = cfg.nx; this.ny = cfg.ny; this.vbW = cfg.vbW; this.vbH = cfg.vbH;
+  this.minx = cfg.minx === undefined ? 0 : cfg.minx;
+  this.miny = cfg.miny === undefined ? 0 : cfg.miny;
+}
+Grid.prototype.px = function (x) { return this.ox + x * this.cell; };
+Grid.prototype.py = function (y) { return this.oy - y * this.cell; };
+Grid.prototype.toGrid = function (cx, cy) {
+  var r = this.svg.getBoundingClientRect();
+  var sx = this.vbW / r.width, sy = this.vbH / r.height;
+  return { x: Math.round(((cx - r.left) * sx - this.ox) / this.cell), y: Math.round((this.oy - (cy - r.top) * sy) / this.cell) };
+};
+Grid.prototype.clamp = function (p) {
+  return { x: Math.max(this.minx, Math.min(this.nx, p.x)), y: Math.max(this.miny, Math.min(this.ny, p.y)) };
+};
+Grid.prototype.draw = function () {
+  var g = el("g", { "pointer-events": "none" }, this.svg);
+  for (var i = this.minx; i <= this.nx; i++)
+    el("line", { x1: this.px(i), y1: this.py(this.miny), x2: this.px(i), y2: this.py(this.ny), stroke: i === 0 ? "#3d5375" : "#1b2740", "stroke-width": i === 0 ? 2 : 1 }, g);
+  for (var j = this.miny; j <= this.ny; j++)
+    el("line", { x1: this.px(this.minx), y1: this.py(j), x2: this.px(this.nx), y2: this.py(j), stroke: j === 0 ? "#3d5375" : "#1b2740", "stroke-width": j === 0 ? 2 : 1 }, g);
+  for (var a = this.minx; a <= this.nx; a += 2) txt(g, this.px(a), this.py(this.miny) + 18, a, { fill: "#4b6285", "font-size": 11 });
+  for (var b = this.miny; b <= this.ny; b += 2) if (b !== 0) txt(g, this.px(this.minx) - 15, this.py(b) + 4, b, { fill: "#4b6285", "font-size": 11 });
+  return g;
+};
+function draggable(grid, node, onDrag) {
+  node.style.cursor = "grab";
+  node.addEventListener("pointerdown", function (ev) {
+    ev.preventDefault(); ev.stopPropagation();
+    var live = true;
+    function move(e) { if (live) onDrag(grid.clamp(grid.toGrid(e.clientX, e.clientY))); }
+    function end() {
+      if (!live) return; live = false;
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+      window.removeEventListener("blur", end);
+    }
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    window.addEventListener("blur", end);
+  });
+}
+function dot(parent, grid, p, color, label, r) {
+  var g = el("g", {}, parent);
+  el("circle", { cx: grid.px(p.x), cy: grid.py(p.y), r: r || 10, fill: color, stroke: "#0b1120", "stroke-width": 2.5 }, g);
+  if (label) txt(g, grid.px(p.x), grid.py(p.y) - 19, label, { fill: color, "font-size": 14, "font-weight": "700" });
+  return g;
+}
+var POLYS = {
+  pent: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 3 }, { x: 2, y: 5 }, { x: 0, y: 3 }],
+  rect: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 3 }, { x: 0, y: 3 }],
+  tri: [{ x: 1, y: 1 }, { x: 5, y: 2 }, { x: 3, y: 6 }],
+  conc: [{ x: 1, y: 1 }, { x: 11, y: 1 }, { x: 11, y: 8 }, { x: 6, y: 4 }, { x: 1, y: 8 }],
+  pentBig: [{ x: 1, y: 1 }, { x: 9, y: 1 }, { x: 12, y: 5 }, { x: 6, y: 9 }, { x: 1, y: 5 }],
+  arrow: [{ x: 1, y: 1 }, { x: 12, y: 5 }, { x: 1, y: 9 }, { x: 4, y: 5 }]
+};
+function copyPoly(k) { return POLYS[k].map(function (p) { return { x: p.x, y: p.y }; }); }
+
+/* ============ T1 : triangle area ============ */
+(function () {
+  var svg = $("tri-svg"), read = $("tri-read");
+  var G = new Grid(svg, { ox: 70, oy: 350, cell: 34, nx: 13, ny: 9, vbW: 1000, vbH: 400 });
+  var A = { x: 1, y: 1 }, B = { x: 9, y: 3 }, C = { x: 4, y: 8 };
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    var v = cross(A, B, C);
+    var col = v > 0 ? "#2dd4bf" : (v < 0 ? "#fb7185" : "#fbbf24");
+    el("polygon", { points: [A, B, C].map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: col, "fill-opacity": 0.18, stroke: col, "stroke-width": 2.5 }, svg);
+    // foot of perpendicular from C to line AB
+    var dx = B.x - A.x, dy = B.y - A.y;
+    var len2 = dx * dx + dy * dy;
+    if (len2 > 0) {
+      var t = ((C.x - A.x) * dx + (C.y - A.y) * dy) / len2;
+      var fx = A.x + t * dx, fy = A.y + t * dy;
+      el("line", { x1: G.px(C.x), y1: G.py(C.y), x2: G.px(fx), y2: G.py(fy), stroke: "#a78bfa", "stroke-width": 2, "stroke-dasharray": "5 4" }, svg);
+      el("circle", { cx: G.px(fx), cy: G.py(fy), r: 4, fill: "#a78bfa" }, svg);
+    }
+    el("line", { x1: G.px(A.x), y1: G.py(A.y), x2: G.px(B.x), y2: G.py(B.y), stroke: "#38bdf8", "stroke-width": 4 }, svg);
+    var da = dot(svg, G, A, "#38bdf8", "A(" + A.x + "," + A.y + ")");
+    var db = dot(svg, G, B, "#38bdf8", "B(" + B.x + "," + B.y + ")");
+    var dc = dot(svg, G, C, col, "C(" + C.x + "," + C.y + ")");
+    draggable(G, da, function (p) { A = p; draw(); });
+    draggable(G, db, function (p) { B = p; draw(); });
+    draggable(G, dc, function (p) { C = p; draw(); });
+    var base = Math.sqrt(len2);
+    var h = base > 0 ? Math.abs(v) / base : 0;
+    var lines = [
+      ["\u3010\ubc11\ubcc0 \u00d7 \ub192\uc774 \ubc29\uc2dd\u3011", "#a78bfa", 1],
+      ["\ubc11\ubcc0 |AB| = \u221a" + len2 + " \u2248 " + base.toFixed(4), "#94a3b8", 0],
+      ["\ub192\uc774 h \u2248 " + h.toFixed(4), "#94a3b8", 0],
+      ["\ub113\uc774 = " + base.toFixed(3) + " \u00d7 " + h.toFixed(3) + " / 2", "#94a3b8", 0],
+      ["      \u2248 " + (base * h / 2).toFixed(4), "#a78bfa", 1],
+      ["", "#000", 0],
+      ["\u3010\uc678\uc801 \ubc29\uc2dd\u3011", "#2dd4bf", 1],
+      ["cross = " + v + "  (\uc815\uc218!)", "#94a3b8", 0],
+      ["\ub113\uc774 = |" + v + "| / 2 = " + (Math.abs(v) / 2), col, 1]
+    ];
+    lines.forEach(function (L, i) {
+      if (!L[0]) return;
+      txt(svg, 600, 55 + i * 33, L[0], { fill: L[1], "font-size": 15, "text-anchor": "start", "font-weight": L[2] ? "700" : "400", "font-family": i === 0 || i === 6 ? "Noto Sans KR, sans-serif" : "JetBrains Mono, monospace" });
+    });
+    read.innerHTML = "\ubc11\ubcc0\u00d7\ub192\uc774: " + base.toFixed(4) + " \u00d7 " + h.toFixed(4) + " / 2 = " + (base * h / 2).toFixed(4) +
+      " &nbsp;|&nbsp; \uc678\uc801: |" + v + "|/2 = <span class='rv'>" + (Math.abs(v) / 2) + "</span>" +
+      " &nbsp;\u2192 " + (Math.abs(base * h / 2 - Math.abs(v) / 2) < 1e-9 ? "\u2705 \uac19\uc740 \uac12" : "\u2248");
+  }
+  draw();
+})();
+
+/* ============ T2 : shoelace animation ============ */
+(function () {
+  var svg = $("lace-svg"), read = $("lace-read");
+  var P = copyPoly("pent"), step = 0, timer = null;
+  function stop() { if (timer) { clearInterval(timer); timer = null; $("lace-auto").textContent = "\uc790\ub3d9 \uc7ac\uc0dd"; } }
+  function reset() { stop(); P = copyPoly($("lace-poly").value); step = 0; draw(); read.innerHTML = "\uc88c\ud45c\ub97c \uc138\ub85c\ub85c \ub098\uc5f4\ud558\uace0 \ub9c8\uc9c0\ub9c9\uc5d0 \uccab \uc88c\ud45c\ub97c \ud55c \ubc88 \ub354 \uc501\ub2c8\ub2e4. [\ud55c \uc904\uc529 \uacc4\uc0b0]\uc744 \ub204\ub974\uc138\uc694."; }
+  function draw() {
+    clearSvg(svg);
+    var n = P.length;
+    var rows = n + 1;
+    var x1 = 200, x2 = 340, y0 = 60, dy = Math.min(58, 330 / rows);
+    txt(svg, x1, y0 - 26, "x", { fill: "#38bdf8", "font-size": 18, "font-weight": "700" });
+    txt(svg, x2, y0 - 26, "y", { fill: "#a78bfa", "font-size": 18, "font-weight": "700" });
+    var tot = 0;
+    for (var i = 0; i < rows; i++) {
+      var p = P[i % n];
+      var isLast = i === n;
+      txt(svg, x1, y0 + i * dy, p.x, { fill: isLast ? "#64748b" : "#38bdf8", "font-size": 17, "font-weight": "700" });
+      txt(svg, x2, y0 + i * dy, p.y, { fill: isLast ? "#64748b" : "#a78bfa", "font-size": 17, "font-weight": "700" });
+      txt(svg, x1 - 60, y0 + i * dy, "P" + (i % n + 1) + (isLast ? "\u2191" : ""), { fill: "#475569", "font-size": 13, "text-anchor": "start" });
+    }
+    for (var k = 0; k < Math.min(step, n); k++) {
+      var a = P[k], b = P[(k + 1) % n];
+      var ya = y0 + k * dy, yb = y0 + (k + 1) * dy;
+      var cur = k === step - 1;
+      el("line", { x1: x1 + 16, y1: ya + 6, x2: x2 - 16, y2: yb - 6, stroke: "#2dd4bf", "stroke-width": cur ? 3.5 : 2, opacity: cur ? 1 : 0.55 }, svg);
+      el("line", { x1: x2 - 16, y1: ya + 6, x2: x1 + 16, y2: yb - 6, stroke: "#fb7185", "stroke-width": cur ? 3.5 : 2, opacity: cur ? 1 : 0.55 }, svg);
+      var t = a.x * b.y - b.x * a.y;
+      tot += t;
+      txt(svg, 470, (ya + yb) / 2 + 5,
+        a.x + "\u00b7" + b.y + " \u2212 " + b.x + "\u00b7" + a.y + " = " + t,
+        { fill: cur ? "#fbbf24" : "#5eead4", "font-size": 15, "text-anchor": "start", "font-weight": cur ? "700" : "400" });
+    }
+    txt(svg, 760, 55, "\ub204\uc801 \ud569", { fill: "#94a3b8", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif", "font-weight": "700" });
+    txt(svg, 760, 92, tot, { fill: "#fbbf24", "font-size": 30, "text-anchor": "start", "font-weight": "900" });
+    if (step >= n) {
+      txt(svg, 760, 150, "2A = |" + tot + "|", { fill: "#e2e8f0", "font-size": 16, "text-anchor": "start" });
+      txt(svg, 760, 182, "\ub113\uc774 = " + areaStr(tot), { fill: "#2dd4bf", "font-size": 22, "text-anchor": "start", "font-weight": "900" });
+      txt(svg, 760, 218, tot > 0 ? "\ubc29\ud5a5: \ubc18\uc2dc\uacc4" : "\ubc29\ud5a5: \uc2dc\uacc4", { fill: tot > 0 ? "#2dd4bf" : "#fb7185", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif" });
+    }
+    // legend
+    el("line", { x1: 60, y1: 400, x2: 100, y2: 420, stroke: "#2dd4bf", "stroke-width": 3 }, svg);
+    txt(svg, 110, 418, "\u2198 \ub354\ud568 (x\u1d62\u00b7y\u1d62\u208a\u2081)", { fill: "#2dd4bf", "font-size": 14, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif" });
+    el("line", { x1: 330, y1: 400, x2: 290, y2: 420, stroke: "#fb7185", "stroke-width": 3 }, svg);
+    txt(svg, 340, 418, "\u2199 \ubbfc\ud568 (x\u1d62\u208a\u2081\u00b7y\u1d62)", { fill: "#fb7185", "font-size": 14, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif" });
+  }
+  function doStep() {
+    var n = P.length;
+    if (step >= n) {
+      stop();
+      var s = shoe2(P);
+      read.innerHTML = "\u2705 \uc644\ub8cc \u2014 \uc2e0\ubc1c\ub048 \ud569 = <span class='rv'>" + s + "</span> = 2A &nbsp;\u2192&nbsp; \ub113\uc774 = <b>" + areaStr(s) + "</b>" +
+        " &nbsp;|&nbsp; \ubd80\ud638 " + (s > 0 ? "\uc591\uc218 \u2192 \ubc18\uc2dc\uacc4" : "\uc74c\uc218 \u2192 \uc2dc\uacc4");
+      return;
+    }
+    step++;
+    draw();
+    var a = P[step - 1], b = P[step % P.length];
+    var t = a.x * b.y - b.x * a.y;
+    read.innerHTML = (step) + "\ubc88\uc9f8 \ub05c: P" + step + "(" + a.x + "," + a.y + ") \u00d7 P" + (step % P.length + 1) + "(" + b.x + "," + b.y + ") \u2192 " +
+      a.x + "\u00b7" + b.y + " \u2212 " + b.x + "\u00b7" + a.y + " = <span class='rv'>" + t + "</span> &nbsp;(" + step + "/" + P.length + ")";
+    if (step >= P.length) doStep();
+  }
+  $("lace-step").addEventListener("click", function () { stop(); doStep(); });
+  $("lace-auto").addEventListener("click", function () {
+    if (timer) { stop(); return; }
+    if (step >= P.length) reset();
+    $("lace-auto").textContent = "\uc77c\uc2dc\uc815\uc9c0";
+    timer = setInterval(doStep, 750);
+  });
+  $("lace-reset").addEventListener("click", reset);
+  $("lace-poly").addEventListener("change", reset);
+  reset();
+})();
+
+/* ============ T2-3 : translation invariance ============ */
+(function () {
+  var read = $("sh-read");
+  /* term_i(dx,dy) = (x_i*y_{i+1} - x_{i+1}*y_i) + dy*(x_i - x_{i+1}) + dx*(y_{i+1} - y_i)
+     dx*dy 항이 대수적으로 상쇄되므로 이 형태로 계산하면 큰 좌표에서도 정확하다 */
+  function terms(dx, dy) {
+    var base = copyPoly("pent"), out = [];
+    for (var i = 0; i < base.length; i++) {
+      var a = base[i], b = base[(i + 1) % base.length];
+      out.push((a.x * b.y - b.x * a.y) + dy * (a.x - b.x) + dx * (b.y - a.y));
+    }
+    return out;
+  }
+  function run(dx, dy) {
+    var base = copyPoly("pent");
+    var s0 = shoe2(base);
+    var t = terms(dx, dy);
+    var s1 = t.reduce(function (p, q) { return p + q; }, 0);
+    var mx = 0;
+    t.forEach(function (v) { if (Math.abs(v) > mx) mx = Math.abs(v); });
+    var over = mx > 2147483647;
+    read.innerHTML =
+      "\uc6d0\ubcf8 2A = <b>" + s0 + "</b> &nbsp;|&nbsp; (" + (dx >= 0 ? "+" : "") + dx.toLocaleString() + ", " + (dy >= 0 ? "+" : "") + dy.toLocaleString() +
+      ") \uc774\ub3d9 \ud6c4 2A = <span class='rv'>" + s1 + "</span> \u2192 " +
+      (s0 === s1 ? "\u2705 \ub3d9\uc77c (\ud3c9\ud589\uc774\ub3d9 \ubd88\ubcc0)" : "\u26a0\ufe0f \ub2e4\ub984") +
+      "<br>\uac1c\ubcc4 \ud56d: [" + t.map(function (v) { return v.toLocaleString(); }).join(", ") + "]" +
+      "<br>\ud56d\uc758 \ucd5c\ub313\uac12 |t| = " + mx.toLocaleString() +
+      (over
+        ? " &nbsp;<b style='color:#fb7185'>\u274c int \ubc94\uc704(2,147,483,647) \ucd08\uacfc \u2014 long long \ud544\uc218!</b>"
+        : " &nbsp;<span style='color:#4ade80'>\u2705 int \ubc94\uc704 \uc548</span>");
+  }
+  $("sh-run").addEventListener("click", function () {
+    run(Math.floor(+$("sh-dx").value || 0), Math.floor(+$("sh-dy").value || 0));
+  });
+  $("sh-far").addEventListener("click", function () {
+    $("sh-dx").value = 1000000000; $("sh-dy").value = 1000000000;
+    run(1000000000, 1000000000);
+  });
+})();
+
+/* ============ T3 : fan decomposition ============ */
+(function () {
+  var svg = $("fan-svg"), read = $("fan-read");
+  var G = new Grid(svg, { ox: 60, oy: 380, cell: 30, nx: 13, ny: 10, vbW: 1000, vbH: 430 });
+  var P = copyPoly("conc"), step = 0, timer = null;
+  function stop() { if (timer) { clearInterval(timer); timer = null; $("fan-auto").textContent = "\uc790\ub3d9 \uc7ac\uc0dd"; } }
+  function reset() {
+    stop();
+    var k = $("fan-poly").value;
+    P = copyPoly(k === "concave" ? "conc" : (k === "convex" ? "pentBig" : "arrow"));
+    step = 0; draw();
+    read.innerHTML = "P\u2081 \uae30\uc900\uc73c\ub85c \ubd80\ucc44\uaf34\ucc98\ub7fc \uc0bc\uac01\ud615\uc744 \ucabc\uac1c\uc2b5\ub2c8\ub2e4. [\uc0bc\uac01\ud615 \ud558\ub098\uc529 \ucd94\uac00]\ub97c \ub204\ub974\uc138\uc694.";
+  }
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    var n = P.length;
+    el("polygon", { points: P.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "none", stroke: "#38bdf8", "stroke-width": 3 }, svg);
+    var tot = 0;
+    for (var i = 1; i <= Math.min(step, n - 2); i++) {
+      var v = cross(P[0], P[i], P[i + 1]);
+      tot += v;
+      var col = v >= 0 ? "#2dd4bf" : "#fb7185";
+      var cur = i === step;
+      el("polygon", {
+        points: [P[0], P[i], P[i + 1]].map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "),
+        fill: col, "fill-opacity": cur ? 0.42 : 0.2, stroke: col, "stroke-width": cur ? 2.5 : 1.2
+      }, svg);
+      var cx = (G.px(P[0].x) + G.px(P[i].x) + G.px(P[i + 1].x)) / 3;
+      var cy = (G.py(P[0].y) + G.py(P[i].y) + G.py(P[i + 1].y)) / 3;
+      txt(svg, cx, cy + 5, v, { fill: v >= 0 ? "#04211c" : "#fff", "font-size": 15, "font-weight": "900" });
+    }
+    P.forEach(function (p, i) {
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: i === 0 ? 9 : 6.5, fill: i === 0 ? "#fbbf24" : "#38bdf8", stroke: "#0b1120", "stroke-width": 2 }, svg);
+      if (i === 0) txt(svg, G.px(p.x), G.py(p.y) - 18, "P\u2081", { fill: "#fbbf24", "font-size": 15, "font-weight": "700" });
+    });
+    // panel
+    txt(svg, 520, 50, "\ubd80\ucc44\uaf34 \ud56d", { fill: "#94a3b8", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif", "font-weight": "700" });
+    var run = 0;
+    for (var k = 1; k <= Math.min(step, n - 2); k++) {
+      var vv = cross(P[0], P[k], P[k + 1]);
+      run += vv;
+      txt(svg, 520, 84 + (k - 1) * 30, "cross(P\u2081, P" + (k + 1) + ", P" + (k + 2) + ") = " + (vv >= 0 ? " " : "") + vv,
+        { fill: vv >= 0 ? "#5eead4" : "#fb7185", "font-size": 15, "text-anchor": "start" });
+    }
+    txt(svg, 520, 300, "\ud569\uacc4 = " + run, { fill: "#fbbf24", "font-size": 20, "text-anchor": "start", "font-weight": "900" });
+    if (step >= n - 2) {
+      var s1 = shoe2(P);
+      txt(svg, 520, 336, "\uc2e0\ubc1c\ub048(\u2460\ubc88\uc2dd) = " + s1, { fill: "#94a3b8", "font-size": 15, "text-anchor": "start" });
+      txt(svg, 520, 366, run === s1 ? "\u2705 \uc77c\uce58 \u2014 \ub113\uc774 " + areaStr(s1) : "\u26a0 \ubd88\uc77c\uce58",
+        { fill: run === s1 ? "#4ade80" : "#fb7185", "font-size": 17, "text-anchor": "start", "font-weight": "700", "font-family": "Noto Sans KR, sans-serif" });
+    }
+  }
+  function doStep() {
+    var n = P.length;
+    if (step >= n - 2) { stop(); return; }
+    step++;
+    draw();
+    var v2 = cross(P[0], P[step], P[step + 1]);
+    var msg = "\uc0bc\uac01\ud615 " + step + ": cross(P\u2081, P" + (step + 1) + ", P" + (step + 2) + ") = " +
+      "<span class='rv' style='color:" + (v2 >= 0 ? "#2dd4bf" : "#fb7185") + "'>" + v2 + "</span>" +
+      (v2 < 0 ? " &nbsp;<b style='color:#fb7185'>\u2190 \uc74c\uc218! \ub2e4\uac01\ud615 \ubc16\uc73c\ub85c \uc090\uc838\ub098\uac04 \uc0bc\uac01\ud615\uc785\ub2c8\ub2e4</b>" : "") +
+      " &nbsp;(" + step + "/" + (n - 2) + ")";
+    if (step >= n - 2) {
+      stop();
+      var s = shoe2(P);
+      var neg = [];
+      for (var i = 1; i <= n - 2; i++) { var v = cross(P[0], P[i], P[i + 1]); if (v < 0) neg.push(v); }
+      msg += "<br>\u2705 \ubd84\ud560 \uc644\ub8cc \u2014 \ud569\uacc4 = <span class='rv'>" + s + "</span> = 2A, \ub113\uc774 = <b>" + areaStr(s) + "</b>" +
+        (neg.length
+          ? " &nbsp;|&nbsp; <b style='color:#fb7185'>\uc74c\uc218 \ud56d " + neg.length + "\uac1c (" + neg.join(", ") + ") \uac00 \uc911\ubcf5\ubd84\uc744 \uc0c1\uc1c4</b>"
+          : " &nbsp;|&nbsp; \ubaa8\ub4e0 \ud56d\uc774 \uc591\uc218 (\ubcfc\ub85d)");
+    }
+    read.innerHTML = msg;
+  }
+  $("fan-step").addEventListener("click", function () { stop(); doStep(); });
+  $("fan-auto").addEventListener("click", function () {
+    if (timer) { stop(); return; }
+    if (step >= P.length - 2) reset();
+    $("fan-auto").textContent = "\uc77c\uc2dc\uc815\uc9c0";
+    timer = setInterval(doStep, 900);
+  });
+  $("fan-reset").addEventListener("click", reset);
+  $("fan-poly").addEventListener("change", reset);
+  reset();
+})();
+
+/* ============ T4 : area calculator ============ */
+(function () {
+  var svg = $("ar-svg"), read = $("ar-read");
+  var G = new Grid(svg, { ox: 60, oy: 350, cell: 30, nx: 13, ny: 9, vbW: 1000, vbH: 400 });
+  var P = copyPoly("pent");
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    var s = shoe2(P);
+    var col = s > 0 ? "#2dd4bf" : (s < 0 ? "#fb7185" : "#fbbf24");
+    el("polygon", { points: P.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: col, "fill-opacity": 0.15, stroke: col, "stroke-width": 2.5 }, svg);
+    P.forEach(function (p, i) {
+      var d = dot(svg, G, p, "#fbbf24", "P" + (i + 1), 9);
+      draggable(G, d, function (q) { P[i] = q; draw(); });
+    });
+    var a = Math.abs(s);
+    var info = [
+      ["\uaf2d\uc9d3\uc810 n = " + P.length, "#94a3b8"],
+      ["\uc2e0\ubc1c\ub048 \ud569 s = " + s, "#94a3b8"],
+      ["2A = |s| = " + a, "#e2e8f0"],
+      ["", ""],
+      ["a/2 = " + Math.floor(a / 2), "#5eead4"],
+      ["(a%2)*5 = " + ((a % 2) * 5), "#5eead4"],
+      ["", ""],
+      ["\ucd9c\ub825: \"" + areaStr(s) + "\"", "#fbbf24"],
+      ["\ubc29\ud5a5: " + (s > 0 ? "\ubc18\uc2dc\uacc4(CCW)" : s < 0 ? "\uc2dc\uacc4(CW)" : "-"), s > 0 ? "#2dd4bf" : "#fb7185"]
+    ];
+    info.forEach(function (L, i) {
+      if (!L[0]) return;
+      txt(svg, 540, 55 + i * 33, L[0], { fill: L[1], "font-size": i === 7 ? 20 : 15, "text-anchor": "start", "font-weight": i === 7 ? "900" : "400" });
+    });
+    read.innerHTML = "n = " + P.length + " &nbsp;|&nbsp; \uc2e0\ubc1c\ub048 = " + s + " &nbsp;|&nbsp; 2A = " + a +
+      " &nbsp;\u2192&nbsp; printf(\"%lld.%lld\") \u2192 <span class='rv'>" + areaStr(s) + "</span>";
+  }
+  $("ar-tri").addEventListener("click", function () { P = copyPoly("tri"); draw(); });
+  $("ar-pent").addEventListener("click", function () { P = copyPoly("pent"); draw(); });
+  $("ar-conc").addEventListener("click", function () { P = copyPoly("conc"); draw(); });
+  $("ar-add").addEventListener("click", function () {
+    if (P.length >= 8) return;
+    var last = P[P.length - 1], first = P[0];
+    P.push({ x: Math.max(0, Math.min(13, Math.round((last.x + first.x) / 2))), y: Math.max(0, Math.min(9, Math.round((last.y + first.y) / 2) + 1)) });
+    draw();
+  });
+  $("ar-del").addEventListener("click", function () { if (P.length > 3) { P.pop(); draw(); } });
+  draw();
+})();
+
+/* ============ T5-1 : point in polygon by area (convex only) ============ */
+(function () {
+  var svg = $("in-svg"), read = $("in-read");
+  var G = new Grid(svg, { ox: 60, oy: 350, cell: 30, nx: 13, ny: 9, vbW: 1000, vbH: 400 });
+  var P = copyPoly("pentBig");
+  var q = { x: 5, y: 4 };
+  function isConvex(poly) {
+    var n = poly.length, s = 0;
+    for (var i = 0; i < n; i++) {
+      var v = cross(poly[i], poly[(i + 1) % n], poly[(i + 2) % n]);
+      var g = v > 0 ? 1 : (v < 0 ? -1 : 0);
+      if (!g) continue;
+      if (!s) s = g; else if (s !== g) return false;
+    }
+    return true;
+  }
+  function rayInside(x, y) {
+    var c = 0;
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      if ((a.y > y) !== (b.y > y)) {
+        var xin = a.x + (y - a.y) * (b.x - a.x) / (b.y - a.y);
+        if (xin > x) c++;
+      }
+    }
+    return c % 2 === 1;
+  }
+  function onBoundary(x, y) {
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      if (cross(a, b, { x: x, y: y }) === 0 &&
+        Math.min(a.x, b.x) <= x && x <= Math.max(a.x, b.x) &&
+        Math.min(a.y, b.y) <= y && y <= Math.max(a.y, b.y)) return true;
+    }
+    return false;
+  }
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    var convex = isConvex(P);
+    var total = Math.abs(shoe2(P));
+    var sum = 0, parts = [];
+    var COL = ["#2dd4bf", "#38bdf8", "#a78bfa", "#fbbf24", "#4ade80"];
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      var v = Math.abs(cross(a, b, q));
+      sum += v; parts.push(v);
+      el("polygon", {
+        points: [a, b, q].map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "),
+        fill: COL[i % 5], "fill-opacity": 0.18, stroke: COL[i % 5], "stroke-width": 1.2
+      }, svg);
+    }
+    var eq = sum === total;
+    var truth = rayInside(q.x, q.y) || onBoundary(q.x, q.y);
+    var wrong = eq !== truth;
+    el("polygon", { points: P.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "none", stroke: eq ? "#2dd4bf" : "#fb7185", "stroke-width": 3 }, svg);
+    P.forEach(function (p) { el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: 6, fill: "#38bdf8", stroke: "#0b1120", "stroke-width": 2 }, svg); });
+    var dq = dot(svg, G, q, eq ? "#fbbf24" : "#fb7185", "q(" + q.x + "," + q.y + ")");
+    draggable(G, dq, function (p) { q = p; draw(); });
+    txt(svg, 540, 46, "\uac01 \uc0bc\uac01\ud615 |cross|", { fill: "#94a3b8", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif", "font-weight": "700" });
+    parts.forEach(function (v, i) {
+      txt(svg, 540, 76 + i * 26, "\ubcc0" + (i + 1) + " : " + v, { fill: COL[i % 5], "font-size": 15, "text-anchor": "start" });
+    });
+    txt(svg, 540, 240, "\ud569 = " + sum, { fill: "#fbbf24", "font-size": 18, "text-anchor": "start", "font-weight": "700" });
+    txt(svg, 540, 268, "2A = " + total, { fill: "#e2e8f0", "font-size": 18, "text-anchor": "start", "font-weight": "700" });
+    txt(svg, 540, 306, eq ? "\ud310\uc815 \u21d2 \ub0b4\ubd80" : "\ud310\uc815 \u21d2 \uc678\ubd80",
+      { fill: eq ? "#2dd4bf" : "#fb7185", "font-size": 21, "text-anchor": "start", "font-weight": "900", "font-family": "Noto Sans KR, sans-serif" });
+    txt(svg, 540, 340, (convex ? "\ubcfc\ub85d \ub2e4\uac01\ud615" : "\uc624\ubaa9 \ub2e4\uac01\ud615") + " / \uc2e4\uc81c\ub294 " + (truth ? "\ub0b4\ubd80" : "\uc678\ubd80"),
+      { fill: wrong ? "#fb7185" : "#94a3b8", "font-size": 15, "text-anchor": "start", "font-family": "Noto Sans KR, sans-serif", "font-weight": wrong ? "700" : "400" });
+    read.innerHTML = "\uc0bc\uac01\ud615 \ub113\uc774 \ud569 = " + sum + " &nbsp;vs&nbsp; \ub2e4\uac01\ud615 2A = " + total + " &nbsp;\u2192&nbsp; " +
+      (eq ? "<b style='color:#2dd4bf'>\uac19\uc74c \u2192 \ub0b4\ubd80(\ub610\ub294 \uacbd\uacc4)\ub85c \ud310\uc815</b>"
+          : "<b style='color:#fb7185'>\ud569\uc774 \ub354 \ud07c (\ucc28\uc774 " + (sum - total) + ") \u2192 \uc678\ubd80\ub85c \ud310\uc815</b>") +
+      (wrong
+        ? "<br><b style='color:#fb7185'>\u274c \uc624\ud310\uc815! \uc2e4\uc81c q\ub294 " + (truth ? "\ub0b4\ubd80" : "\uc678\ubd80") + "\uc785\ub2c8\ub2e4 \u2014 \uc624\ubaa9 \ub2e4\uac01\ud615\uc5d0\uc11c\ub294 \uc774 \ubc29\ubc95\uc774 \ud1b5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4</b>"
+        : (convex ? "" : "<br><span style='color:#fbbf24'>\u26a0 \uc624\ubaa9 \ub2e4\uac01\ud615 \u2014 \uc9c0\uae08\uc740 \ub9de\uc558\uc9c0\ub9cc \uc704\uce58\uc5d0 \ub530\ub77c \ud2c0\ub9bd\ub2c8\ub2e4. q\ub97c (3,3) \uadfc\ucc98\ub85c \uc62e\uaca8 \ubcf4\uc138\uc694</span>"));
+  }
+  $("in-conv").addEventListener("click", function () { P = copyPoly("pentBig"); q = { x: 5, y: 4 }; draw(); });
+  $("in-conc").addEventListener("click", function () { P = copyPoly("conc"); q = { x: 3, y: 3 }; draw(); });
+  draw();
+})();
+
+/* ============ T5-2 : Pick ============ */
+(function () {
+  var svg = $("pk-svg"), read = $("pk-read");
+  var G = new Grid(svg, { ox: 60, oy: 330, cell: 30, nx: 13, ny: 9, vbW: 1000, vbH: 380 });
+  var P = copyPoly("pent"), marks = null;
+  function onBoundary(x, y) {
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      if (cross(a, b, { x: x, y: y }) === 0 &&
+        Math.min(a.x, b.x) <= x && x <= Math.max(a.x, b.x) &&
+        Math.min(a.y, b.y) <= y && y <= Math.max(a.y, b.y)) return true;
+    }
+    return false;
+  }
+  function insideRay(x, y) {
+    var c = 0;
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      if ((a.y > y) !== (b.y > y)) {
+        var xin = a.x + (y - a.y) * (b.x - a.x) / (b.y - a.y);
+        if (xin > x) c++;
+      }
+    }
+    return c % 2 === 1;
+  }
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    el("polygon", { points: P.map(function (p) { return G.px(p.x) + "," + G.py(p.y); }).join(" "), fill: "#a78bfa", "fill-opacity": 0.12, stroke: "#a78bfa", "stroke-width": 2.5 }, svg);
+    if (marks) marks.forEach(function (m) {
+      el("circle", { cx: G.px(m.x), cy: G.py(m.y), r: 5, fill: m.b ? "#fb7185" : "#4ade80", stroke: "#0b1120", "stroke-width": 1.2 }, svg);
+    });
+    P.forEach(function (p) { el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: 7, fill: "#fbbf24", stroke: "#0b1120", "stroke-width": 2 }, svg); });
+    var A2 = Math.abs(shoe2(P)), B = 0;
+    for (var i = 0; i < P.length; i++) {
+      var a = P[i], b = P[(i + 1) % P.length];
+      B += gcd(b.x - a.x, b.y - a.y);
+    }
+    var I = (A2 - B + 2) / 2;
+    var rows = [["2A = " + A2, "#e2e8f0"], ["B = \u03a3gcd = " + B, "#fb7185"], ["I = (2A\u2212B+2)/2 = " + I, "#4ade80"], ["\ub113\uc774 A = " + areaStr(A2), "#fbbf24"]];
+    rows.forEach(function (r, k) {
+      txt(svg, 540, 70 + k * 38, r[0], { fill: r[1], "font-size": 17, "text-anchor": "start", "font-weight": "700" });
+    });
+    return { A2: A2, B: B, I: I };
+  }
+  $("pk-run").addEventListener("click", function () {
+    marks = [];
+    var I = 0, B = 0;
+    for (var x = 0; x <= G.nx; x++) for (var y = 0; y <= G.ny; y++) {
+      if (onBoundary(x, y)) { marks.push({ x: x, y: y, b: true }); B++; }
+      else if (insideRay(x, y)) { marks.push({ x: x, y: y, b: false }); I++; }
+    }
+    var r = draw();
+    read.innerHTML = "\uc9c1\uc811 \uc13c \uacb0\uacfc: \ub0b4\ubd80 I = <b style='color:#4ade80'>" + I + "</b>, \uacbd\uacc4 B = <b style='color:#fb7185'>" + B + "</b><br>" +
+      "\uacf5\uc2dd \uc608\uce21: I = (2A\u2212B+2)/2 = (" + r.A2 + "\u2212" + r.B + "+2)/2 = <span class='rv'>" + r.I + "</span> \u2192 " +
+      (I === r.I && B === r.B ? "\u2705 \uc77c\uce58" : "\u26a0\ufe0f \ubd88\uc77c\uce58");
+  });
+  $("pk-sel").addEventListener("change", function () {
+    P = copyPoly($("pk-sel").value); marks = null; draw();
+    read.innerHTML = "\ub2e4\uac01\ud615\uc744 \ubcc0\uacbd\ud588\uc2b5\ub2c8\ub2e4. [\uaca9\uc790\uc810 \uc138\uc5b4 \uac80\uc99d]\uc744 \ub204\ub974\uc138\uc694.";
+  });
+  draw();
+})();
+
+/* ============ T5-3 : max triangle ============ */
+(function () {
+  var svg = $("mx-svg"), read = $("mx-read");
+  var G = new Grid(svg, { ox: 60, oy: 350, cell: 34, nx: 12, ny: 8, vbW: 1000, vbH: 400 });
+  var pts = [{ x: 0, y: 0 }, { x: 4, y: 1 }, { x: 2, y: 5 }, { x: 6, y: 4 }, { x: 3, y: 2 }, { x: 1, y: 3 }, { x: 5, y: 0 }, { x: 7, y: 2 }];
+  var combos = [], idx = 0, best = 0, bestT = null, timer = null;
+  function build() {
+    combos = [];
+    for (var i = 0; i < pts.length; i++)
+      for (var j = i + 1; j < pts.length; j++)
+        for (var k = j + 1; k < pts.length; k++) combos.push([i, j, k]);
+    idx = 0; best = 0; bestT = null;
+  }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  function draw() {
+    clearSvg(svg);
+    G.draw();
+    if (bestT) el("polygon", { points: bestT.map(function (i) { return G.px(pts[i].x) + "," + G.py(pts[i].y); }).join(" "), fill: "#2dd4bf", "fill-opacity": 0.25, stroke: "#2dd4bf", "stroke-width": 2.5 }, svg);
+    if (idx > 0 && idx <= combos.length) {
+      var c = combos[idx - 1];
+      el("polygon", { points: c.map(function (i) { return G.px(pts[i].x) + "," + G.py(pts[i].y); }).join(" "), fill: "#fbbf24", "fill-opacity": 0.2, stroke: "#fbbf24", "stroke-width": 2, "stroke-dasharray": "5 4" }, svg);
+    }
+    pts.forEach(function (p, i) {
+      var inBest = bestT && bestT.indexOf(i) >= 0;
+      el("circle", { cx: G.px(p.x), cy: G.py(p.y), r: inBest ? 9 : 7, fill: inBest ? "#2dd4bf" : "#64748b", stroke: "#0b1120", "stroke-width": 2 }, svg);
+    });
+    txt(svg, 500, 60, "\uc9c4\ud589 " + idx + " / " + combos.length + "  (C(8,3) = 56)", { fill: "#94a3b8", "font-size": 16, "text-anchor": "start" });
+    if (idx > 0 && idx <= combos.length) {
+      var cc = combos[idx - 1];
+      var v = Math.abs(cross(pts[cc[0]], pts[cc[1]], pts[cc[2]]));
+      txt(svg, 500, 100, "\ud604\uc7ac: (" + cc.map(function (i) { return "P" + (i + 1); }).join(", ") + ") \u2192 |cross| = " + v, { fill: "#fbbf24", "font-size": 15, "text-anchor": "start" });
+    }
+    txt(svg, 500, 150, "\ucd5c\ub300 2A = " + best, { fill: "#2dd4bf", "font-size": 22, "text-anchor": "start", "font-weight": "900" });
+    txt(svg, 500, 186, "\ub113\uc774 = " + areaStr(best), { fill: "#2dd4bf", "font-size": 20, "text-anchor": "start", "font-weight": "700" });
+    if (bestT) txt(svg, 500, 222, "\uaf2d\uc9d3\uc810: " + bestT.map(function (i) { return "(" + pts[i].x + "," + pts[i].y + ")"; }).join(" "), { fill: "#94a3b8", "font-size": 14, "text-anchor": "start" });
+  }
+  function doStep() {
+    if (idx >= combos.length) {
+      stop();
+      read.innerHTML = "\u2705 \ud0d0\uc0c9 \uc644\ub8cc \u2014 56\uac00\uc9c0 \uc870\ud569 \uc911 \ucd5c\ub300 2A = <span class='rv'>" + best + "</span> \u2192 \ub113\uc774 <b>" + areaStr(best) + "</b><br>" +
+        "\uaf2d\uc9d3\uc810: " + bestT.map(function (i) { return "(" + pts[i].x + "," + pts[i].y + ")"; }).join(", ") + " &nbsp;<span style='color:#94a3b8'>(\ub098\ub217\uc148 \uc5c6\uc774 2\ubc30 \uac12\ub9cc\uc73c\ub85c \ube44\uad50)</span>";
+      draw();
+      return;
+    }
+    var c = combos[idx];
+    var v = Math.abs(cross(pts[c[0]], pts[c[1]], pts[c[2]]));
+    idx++;
+    if (v > best) { best = v; bestT = c.slice(); }
+    draw();
+    read.innerHTML = "\uc870\ud569 " + idx + "/" + combos.length + ": |cross| = " + v + " &nbsp;|&nbsp; \ud604\uc7ac \ucd5c\ub300 2A = <span class='rv'>" + best + "</span>";
+  }
+  $("mx-run").addEventListener("click", function () { stop(); build(); timer = setInterval(doStep, 70); });
+  $("mx-fast").addEventListener("click", function () {
+    stop(); build();
+    while (idx < combos.length) {
+      var c = combos[idx];
+      var v = Math.abs(cross(pts[c[0]], pts[c[1]], pts[c[2]]));
+      idx++;
+      if (v > best) { best = v; bestT = c.slice(); }
+    }
+    doStep();
+  });
+  $("mx-reset").addEventListener("click", function () { stop(); build(); draw(); read.innerHTML = "\ucd08\uae30\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4."; });
+  build(); draw();
+})();
+
+/* ---------- Quiz ---------- */
+(function () {
+  var data = JSON.parse($("quiz-data").textContent);
+  var area = $("quiz-area");
+  var solved = {}, score = 0;
+  data.problems.forEach(function (p, qi) {
+    var box = document.createElement("div");
+    box.className = "quiz";
+    var head = document.createElement("div");
+    head.className = "qh";
+    head.innerHTML = "<span class='qtag" + (p.hard ? " hard" : "") + "'>" + p.tag + "</span><span class='qtitle'>" + p.title + "</span>";
+    box.appendChild(head);
+    var body = document.createElement("div");
+    body.className = "qbody"; body.textContent = p.body;
+    box.appendChild(body);
+    var opts = document.createElement("div"); opts.className = "opts";
+    var expl = document.createElement("div"); expl.className = "expl";
+    p.opts.forEach(function (o, oi) {
+      var b = document.createElement("button");
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (solved[qi]) return;
+        solved[qi] = true;
+        opts.querySelectorAll("button")[p.ans].classList.add("correct");
+        var right = oi === p.ans;
+        if (right) score++; else b.classList.add("wrong");
+        expl.innerHTML = (right ? "<span class='ok'>\uc815\ub2f5!</span> " : "<span class='no'>\uc624\ub2f5</span> \uc815\ub2f5\uc740 " + p.opts[p.ans] + ". ") + p.expl;
+        expl.classList.add("show");
+        $("quiz-score").textContent = "\uc810\uc218: " + score + " / " + data.problems.length;
+      });
+      opts.appendChild(b);
+    });
+    box.appendChild(opts); box.appendChild(expl);
+    area.appendChild(box);
+  });
+  $("quiz-score").textContent = "\uc810\uc218: 0 / " + data.problems.length;
+})();
+</script>
+</body>
+</html>
