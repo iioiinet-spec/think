@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>중등 정보올림피아드 · 그래프 이론 실전 10문항</title>
+<style>
+:root{
+  --bg:#050b16; --card:#0e1b2e; --card2:#0a1421; --line:#1c3150;
+  --ink:#e9eefb; --dim:#9cb0d1; --faint:#6a80a5;
+  --teal:#2dd4bf; --violet:#a78bfa; --cyan:#38bdf8; --amber:#fbbf24;
+  --green:#4ade80; --red:#fb7185;
+  --mono:"D2Coding",Consolas,"Courier New",monospace;
+  --sans:"Pretendard","Malgun Gothic","맑은 고딕",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); font-family:var(--sans); line-height:1.72;
+  background:
+    radial-gradient(1100px 540px at 84% -8%, #1b2247 0%, rgba(27,34,71,0) 58%),
+    radial-gradient(900px 480px at 8% 0%, #0c2f3a 0%, rgba(12,47,58,0) 55%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px; margin:0 auto; padding:0 20px 90px}
+
+header.hero{padding:48px 0 24px}
+.eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.24em; color:var(--teal); margin-bottom:13px}
+h1{font-size:clamp(26px,4.6vw,40px); font-weight:800; margin:0 0 12px; letter-spacing:-.02em; line-height:1.24}
+h1 em{font-style:normal; color:var(--teal)}
+.sub{color:var(--dim); font-size:15.5px; max-width:66ch; margin:0}
+.spread{display:flex; gap:9px; flex-wrap:wrap; margin-top:18px}
+.spread span{
+  font-family:var(--mono); font-size:11.5px; padding:5px 11px; border-radius:999px;
+  background:rgba(167,139,250,.09); border:1px solid rgba(167,139,250,.3); color:var(--violet);
+}
+
+.hud{
+  position:sticky; top:0; z-index:60; margin:22px 0 8px;
+  background:rgba(5,11,22,.94); backdrop-filter:blur(10px);
+  border:1px solid var(--line); border-radius:13px; padding:12px 16px;
+}
+.hudrow{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.hudstat{display:flex; align-items:baseline; gap:7px}
+.hudstat .lb{font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; color:var(--faint)}
+.hudstat .vl{font-family:var(--mono); font-size:19px; font-weight:700; color:var(--ink)}
+.hudstat .vl.good{color:var(--green)}
+.hudstat .vl.amb{color:var(--violet)}
+.bar{flex:1; min-width:130px; height:7px; border-radius:99px; background:#122036; overflow:hidden}
+.bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--violet)); transition:width .35s}
+.hud button{
+  font-family:var(--sans); font-size:13px; font-weight:700; cursor:pointer;
+  padding:8px 16px; border-radius:8px; border:1px solid var(--line);
+  background:#111f36; color:var(--dim); transition:.15s;
+}
+.hud button:hover{color:var(--ink); border-color:var(--teal)}
+.hud button.main{background:var(--teal); color:#04211d; border-color:var(--teal)}
+.hud button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+
+.filters{display:flex; gap:7px; flex-wrap:wrap; margin:16px 0 4px}
+.filters button{
+  font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer;
+  padding:6px 14px; border-radius:999px; border:1px solid var(--line);
+  background:var(--card2); color:var(--dim); transition:.15s;
+}
+.filters button:hover{color:var(--ink)}
+.filters button.on{background:var(--violet); color:#160f2b; border-color:var(--violet)}
+.filters button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+
+article.q{
+  background:var(--card); border:1px solid var(--line); border-radius:15px;
+  margin:18px 0; overflow:hidden; scroll-margin-top:96px;
+}
+article.q.hide{display:none}
+article.q.solved{border-color:rgba(74,222,128,.4)}
+article.q.missed{border-color:rgba(251,113,133,.4)}
+.qtop{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:12px 20px; background:#122239; border-bottom:1px solid var(--line);
+}
+.num{font-family:var(--mono); font-size:16px; font-weight:800; color:var(--violet)}
+.area{
+  font-size:11.5px; font-family:var(--mono); letter-spacing:.09em; padding:3px 9px;
+  border-radius:6px; background:rgba(45,212,191,.1); color:var(--teal); border:1px solid rgba(45,212,191,.28);
+}
+.lv{margin-left:auto; font-size:12.5px; color:var(--amber); letter-spacing:.15em}
+.qbody{padding:19px 22px 20px}
+.qt{font-size:15.3px; margin:0 0 6px}
+.qt b{color:#fff}
+.qt .em{color:var(--violet); font-weight:700}
+.given{
+  font-family:var(--mono); font-size:14px; background:#091524; border:1px solid var(--line);
+  border-radius:10px; padding:12px 15px; margin:13px 0; color:var(--cyan); line-height:1.9;
+}
+code{font-family:var(--mono); font-size:.9em; background:#091524; color:var(--teal); padding:2px 6px; border-radius:5px; border:1px solid #1a2f4d}
+svg{max-width:100%; height:auto}
+.fig{text-align:center; margin:14px 0 4px}
+.figcap{text-align:center; font-size:12.5px; color:var(--faint); font-family:var(--mono); margin-top:4px}
+
+.ansrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:15px}
+.ilab{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; color:var(--faint)}
+input.num{
+  font-family:var(--mono); font-size:16px; width:160px; padding:9px 12px;
+  background:#091524; border:1px solid var(--line); border-radius:9px; color:var(--ink);
+}
+input.num:focus{outline:none; border-color:var(--teal)}
+.unit{font-size:13.5px; color:var(--faint)}
+.opts{display:flex; flex-direction:column; gap:7px; margin-top:14px}
+.opt{
+  display:flex; align-items:flex-start; gap:11px; cursor:pointer; font-size:14.5px;
+  padding:10px 14px; border-radius:9px; background:#0a1626; border:1px solid var(--line); transition:.14s;
+}
+.opt:hover{border-color:#3d6395}
+.opt input{accent-color:var(--teal); margin:5px 0 0}
+.opt .ov{font-family:var(--mono); font-size:13px; color:var(--cyan); font-weight:700}
+.opt.right{border-color:var(--green); background:rgba(74,222,128,.09)}
+.opt.wrong{border-color:var(--red); background:rgba(251,113,133,.09)}
+
+.btns{display:flex; gap:8px; margin-top:17px; flex-wrap:wrap}
+.btns button{
+  font-family:var(--sans); font-size:13.5px; font-weight:700; cursor:pointer;
+  padding:9px 20px; border-radius:9px; border:1px solid var(--line);
+  background:transparent; color:var(--dim); transition:.15s;
+}
+.btns button.grade{background:var(--teal); color:#04211d; border-color:var(--teal)}
+.btns button.grade:hover{filter:brightness(1.12)}
+.btns button.hintb{color:var(--amber); border-color:rgba(251,191,36,.35)}
+.btns button:hover{color:var(--ink)}
+.btns button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+.mk{font-size:13.5px; font-weight:700; margin-left:4px; align-self:center}
+.mk.o{color:var(--green)} .mk.x{color:var(--red)} .mk.n{color:var(--faint)}
+
+.hintbox{
+  display:none; margin-top:14px; padding:12px 16px; font-size:14px;
+  border-left:3px solid var(--amber); background:rgba(251,191,36,.06); border-radius:0 9px 9px 0; color:var(--dim);
+}
+.hintbox.show{display:block; animation:fade .25s ease}
+.hintbox b{color:var(--amber)}
+.sol{display:none; padding:19px 22px 23px; border-top:1px solid var(--line); background:#0a1625}
+.sol.show{display:block; animation:fade .3s ease}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+.soltop{
+  display:flex; align-items:baseline; gap:12px; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid rgba(167,139,250,.26);
+}
+.soltop .tag{font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; color:var(--violet)}
+.soltop .val{font-family:var(--mono); font-size:17px; font-weight:800; color:var(--teal)}
+.steps{margin:10px 0}
+.steps>div{position:relative; padding:8px 0 8px 25px; font-size:14.4px; color:var(--dim); border-bottom:1px dashed #172a44}
+.steps>div:last-child{border-bottom:0}
+.steps>div::before{content:"›"; position:absolute; left:7px; top:7px; color:var(--teal); font-weight:700}
+.steps b{color:var(--ink)}
+.hl{color:var(--teal); font-weight:700}
+.bad{color:var(--red); font-weight:700}
+.sm{font-size:13.3px; color:var(--faint)}
+.tipbox{
+  margin-top:14px; padding:11px 15px; font-size:13.6px; border-radius:0 9px 9px 0;
+  border-left:3px solid var(--cyan); background:rgba(56,189,248,.06); color:var(--dim);
+}
+.tipbox b{color:var(--cyan)}
+table{width:100%; border-collapse:collapse; margin:12px 0; font-size:14px}
+th,td{border:1px solid var(--line); padding:8px 11px}
+th{background:#132743; color:var(--cyan); font-weight:700}
+td.c,th.c{text-align:center}
+.mono{font-family:var(--mono)}
+
+#report{display:none; margin-top:34px}
+#report.show{display:block; animation:fade .35s ease}
+.rcard{background:linear-gradient(140deg,#16233f,#0c1728); border:1px solid var(--line); border-radius:16px; padding:26px 24px}
+.rtitle{font-family:var(--mono); font-size:11.5px; letter-spacing:.22em; color:var(--faint); text-align:center}
+.rbig{text-align:center; font-family:var(--mono); font-size:46px; font-weight:800; color:var(--violet); margin:6px 0 2px}
+.rbig small{font-size:20px; color:var(--faint)}
+.rmsg{text-align:center; font-size:14.5px; color:var(--dim); margin-bottom:20px}
+.rarea{display:grid; grid-template-columns:repeat(4,1fr); gap:11px}
+@media(max-width:700px){.rarea{grid-template-columns:repeat(2,1fr)}}
+.ra{background:#0b1626; border:1px solid var(--line); border-radius:11px; padding:13px; text-align:center}
+.ra .nm{font-size:12px; color:var(--faint); font-family:var(--mono); letter-spacing:.04em}
+.ra .sc{font-family:var(--mono); font-size:21px; font-weight:800; margin-top:4px}
+.ra .sc.full{color:var(--green)} .ra .sc.part{color:var(--amber)} .ra .sc.zero{color:var(--red)}
+.rlist{margin-top:18px; font-size:14px; color:var(--dim)}
+.rlist .li{display:flex; gap:10px; padding:7px 0; border-bottom:1px dashed #172a44}
+.rlist .li:last-child{border-bottom:0}
+.rlist .li .st{font-family:var(--mono); font-weight:700; flex:0 0 46px}
+.rlist .li .st.o{color:var(--green)} .rlist .li .st.x{color:var(--red)} .rlist .li .st.n{color:var(--faint)}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">KOI · 중등부 필기 대비 &nbsp;/&nbsp; 그래프 이론 집중</div>
+  <h1>그래프 이론 실전 10문항<em>.</em><br>차수부터 채색수까지 한 바퀴</h1>
+  <p class="sub">그래프 이론만으로 구성한 10문항입니다. 악수 정리, 인접행렬, 연결 보장, 이분그래프, 오일러 획수, 해밀턴 회로, 신장 트리, 평면그래프, 채색수를 차례로 짚습니다. 채점하면 단계별 해설이 열리고, 마지막에 주제별 성취도 리포트가 나옵니다.</p>
+  <div class="spread">
+    <span>차수 · 표현 2</span><span>연결 · 이분 2</span><span>오일러 · 해밀턴 3</span><span>트리 · 평면 · 색칠 3</span>
+  </div>
+</header>
+
+<div class="hud">
+  <div class="hudrow">
+    <div class="hudstat"><span class="lb">경과</span><span class="vl" id="clock">00:00</span></div>
+    <div class="hudstat"><span class="lb">채점</span><span class="vl amb" id="doneN">0</span><span class="lb">/ 10</span></div>
+    <div class="hudstat"><span class="lb">정답</span><span class="vl good" id="okN">0</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <button id="btnPause">일시정지</button>
+    <button class="main" id="btnAll">전체 채점</button>
+    <button id="btnReset">초기화</button>
+  </div>
+</div>
+
+<div class="filters" id="filters">
+  <button class="on" data-f="all">전체 10문항</button>
+  <button data-f="base">차수 · 표현</button>
+  <button data-f="conn">연결 · 이분</button>
+  <button data-f="euler">오일러 · 해밀턴</button>
+  <button data-f="tree">트리 · 평면 · 색칠</button>
+</div>
+
+<!-- ─────────── 01 ─────────── -->
+<article class="q" data-a="base" id="Q1">
+  <div class="qtop"><span class="num">01</span><span class="area">차수 · 악수 정리</span><span class="lv">★★☆</span></div>
+  <div class="qbody">
+    <p class="qt">정점이 12개, 간선이 20개인 단순그래프 G가 있다. G에서 차수가 3인 정점이 5개, 차수가 4인 정점이 4개이고, <b>나머지 3개 정점의 차수는 모두 같다.</b> 이 나머지 정점들의 차수는?</p>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a1" placeholder="정수 입력">
+      <span class="unit">차수</span>
+      <span class="mk n" id="m1"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="1">채점하기</button>
+      <button class="hintb" data-h="1">힌트</button>
+    </div>
+    <div class="hintbox" id="h1"><b>힌트</b> — 간선 수가 주어졌으니 차수의 총합을 바로 알 수 있습니다. 악수 정리 <code>Σdeg = 2|E|</code>를 쓰고, 이미 아는 정점들의 차수를 빼면 나머지 3개가 나눠 가질 몫이 남습니다.</div>
+  </div>
+  <div class="sol" id="s1">
+    <div class="soltop"><span class="tag">정답</span><span class="val">3</span></div>
+    <div class="steps">
+      <div><b>차수의 총합</b> — 악수 정리에 의해 Σdeg = 2|E| = 2 × 20 = <b class="hl">40</b></div>
+      <div><b>이미 아는 부분</b> — 3 × 5 + 4 × 4 = 15 + 16 = <b>31</b></div>
+      <div><b>나머지 3개의 몫</b> — 40 − 31 = <b>9</b></div>
+      <div>세 정점의 차수가 모두 같으므로 9 ÷ 3 = <b class="hl">3</b></div>
+    </div>
+    <p class="sm"><b>검산</b> — 결과적으로 차수 3인 정점이 8개, 차수 4인 정점이 4개입니다. Σdeg = 24 + 16 = 40 = 2 × 20 ✓. 최대 차수 4는 n−1 = 11 이하이고 차수 수열의 합이 짝수이므로 실제로 그릴 수 있는 그래프입니다(하벨–하키미로 확인 가능).</p>
+    <div class="tipbox"><b>출제 패턴</b> — 악수 정리 문제는 "간선 수 → 차수 합" 또는 "차수 합 → 간선 수" 둘 중 하나로 방향만 바뀝니다. 미지수가 섞여 있으면 <b>Σdeg = 2|E| 라는 한 줄짜리 방정식</b>을 세우는 것으로 대부분 끝납니다. 답이 정수가 아니거나 음수가 나오면 조건 자체가 모순이라는 뜻입니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 02 ─────────── -->
+<article class="q" data-a="conn" id="Q2">
+  <div class="qtop"><span class="num">02</span><span class="area">연결성 · 극단 원리</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">정점이 10개인 단순그래프가 <b>간선을 어떻게 배치하더라도 반드시 연결그래프가 되도록</b> 하려면, 간선이 최소 몇 개 있어야 하는가?</p>
+    <div class="given">주의 — "연결이 되려면 최소 몇 개 필요한가"가 아니라 <br>"무슨 수를 써도 연결이 <b>깨질 수 없게</b> 하려면 몇 개인가"를 묻고 있다.</div>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a2" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m2"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="2">채점하기</button>
+      <button class="hintb" data-h="2">힌트</button>
+    </div>
+    <div class="hintbox" id="h2"><b>힌트</b> — 반대로 생각하세요. <b>연결이 되지 않으면서 간선을 최대한 많이</b> 넣으려면 어떻게 배치해야 할까요? 정점을 두 덩어리로 나눌 때, 한쪽에 몇 개를 몰아주는 것이 간선 수를 최대로 만들까요?</div>
+  </div>
+  <div class="sol" id="s2">
+    <div class="soltop"><span class="tag">정답</span><span class="val">37 개</span></div>
+    <p>"반드시 연결"을 직접 다루기는 어렵습니다. <b>연결이 안 되는 최악의 경우</b>를 먼저 만들어 보는 것이 정석입니다.</p>
+    <div class="steps">
+      <div><b>① 분리된 상태로 간선을 최대한 넣기</b> — 정점 10개를 두 덩어리 (k개, 10−k개)로 나누고, 각 덩어리 안을 완전그래프로 채웁니다. 두 덩어리 사이에는 간선을 놓을 수 없습니다.</div>
+      <div><b>② 간선 수 비교</b> — 덩어리를 균등하게 나누면 간선이 오히려 적어집니다. 한쪽에 최대한 몰아야 합니다.</div>
+      <div><b>③ 최악의 경우</b> — 정점 9개로 K₉를 만들고 나머지 1개를 고립점으로 둡니다. 이때 간선은 <span class="mono">₉C₂ = 9 × 8 / 2 = <b class="hl">36개</b></span></div>
+      <div>즉 <b>36개까지는 연결되지 않을 수도</b> 있습니다.</div>
+      <div><b>④ 답</b> — 간선이 <b class="hl">37개</b>가 되면 어떤 방법으로도 분리 상태를 유지할 수 없으므로 반드시 연결됩니다.</div>
+    </div>
+    <table>
+      <tr><th class="c">분할 (k, 10−k)</th><th class="c">1 + 9</th><th class="c">2 + 8</th><th class="c">3 + 7</th><th class="c">4 + 6</th><th class="c">5 + 5</th></tr>
+      <tr><th class="c">최대 간선</th><td class="c mono" style="color:var(--teal);font-weight:700">36</td><td class="c mono">29</td><td class="c mono">24</td><td class="c mono">21</td><td class="c mono">20</td></tr>
+    </table>
+    <div class="tipbox"><b>일반 공식</b> — 정점이 n개일 때 답은 <span class="mono">₍ₙ₋₁₎C₂ + 1</span>입니다. n = 10이면 36 + 1 = 37. 이런 유형은 "최댓값의 최솟값"을 묻는 <b>극단 원리(extremal principle)</b> 문제로, 반례를 최대한 크게 만든 뒤 +1 하는 것이 공통 전략입니다. 참고로 "연결이 <b>가능한</b> 최소 간선 수"는 n − 1 = 9개(트리)로 전혀 다른 답이니 문제를 끝까지 읽어야 합니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 03 ─────────── -->
+<article class="q" data-a="base" id="Q3">
+  <div class="qtop"><span class="num">03</span><span class="area">인접행렬 · 대각합</span><span class="lv">★★☆</span></div>
+  <div class="qbody">
+    <p class="qt">정점이 8개인 단순그래프 G의 인접행렬을 A라 하자. 행렬 <span class="em">A²의 대각합(trace)</span>, 즉 A²의 주대각선 성분을 모두 더한 값이 30이었다. G의 간선은 몇 개인가?</p>
+    <div class="given">tr(A²) = [A²]₁₁ + [A²]₂₂ + ... + [A²]₈₈ = 30</div>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a3" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m3"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="3">채점하기</button>
+      <button class="hintb" data-h="3">힌트</button>
+    </div>
+    <div class="hintbox" id="h3"><b>힌트</b> — [A²]ᵢᵢ 는 정점 i에서 출발해 간선 2개를 지나 <b>다시 i로 돌아오는 걷기</b>의 수입니다. 그런 걷기는 "이웃으로 갔다가 되돌아오기"뿐인데, 그 개수는 무엇과 같을까요?</div>
+  </div>
+  <div class="sol" id="s3">
+    <div class="soltop"><span class="tag">정답</span><span class="val">15 개</span></div>
+    <div class="steps">
+      <div><b>① A²의 의미</b> — <span class="mono">[A²]ᵢⱼ = Σₖ AᵢₖAₖⱼ</span> 로, i에서 j까지 간선을 정확히 2개 지나는 걷기의 수입니다.</div>
+      <div><b>② 대각 성분</b> — i에서 출발해 2걸음 만에 i로 돌아오려면 <b>이웃 k로 갔다가 그대로 되돌아오는</b> 방법뿐입니다. 그런 k의 개수는 곧 <span class="mono">[A²]ᵢᵢ = <b class="hl">deg(i)</b></span></div>
+      <div><b>③ 대각합</b> — <span class="mono">tr(A²) = Σ deg(i) = 30</span></div>
+      <div><b>④ 악수 정리</b> — Σdeg = 2|E| 이므로 30 = 2|E| → |E| = <b class="hl">15</b></div>
+    </div>
+    <p class="sm">정점이 8개이므로 간선의 최댓값은 ₈C₂ = 28개입니다. 15개는 그 안에 들어오므로 모순이 없습니다.</p>
+    <div class="tipbox"><b>함께 외울 세트</b> — <span class="mono">tr(A) = 0</span> (루프가 없는 단순그래프), <span class="mono">tr(A²) = 2|E|</span>, <span class="mono">tr(A³) = 6 × (삼각형의 개수)</span>. 마지막 식에서 6으로 나누는 이유는 하나의 삼각형이 <b>시작점 3가지 × 방향 2가지 = 6번</b> 세어지기 때문입니다. 이 세 가지는 서술형에서 근거까지 요구되는 단골이니 이유와 함께 익혀 두세요.</div>
+  </div>
+</article>
+
+<!-- ─────────── 04 ─────────── -->
+<article class="q" data-a="conn" id="Q4">
+  <div class="qtop"><span class="num">04</span><span class="area">이분그래프 · 최대 간선</span><span class="lv">★★☆</span></div>
+  <div class="qbody">
+    <p class="qt">정점이 10개인 <b>이분그래프</b>가 가질 수 있는 간선 개수의 최댓값은?</p>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a4" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m4"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="4">채점하기</button>
+      <button class="hintb" data-h="4">힌트</button>
+    </div>
+    <div class="hintbox" id="h4"><b>힌트</b> — 정점을 두 집합 X, Y로 나누고 <b>사이의 모든 쌍</b>을 연결하면 완전이분그래프 K<sub>m,n</sub>이 되어 간선이 최대가 됩니다. |X| = m이라 하면 간선 수는 m(10 − m)입니다. 이 값을 최대로 만드는 m을 찾으세요.</div>
+  </div>
+  <div class="sol" id="s4">
+    <div class="soltop"><span class="tag">정답</span><span class="val">25 개</span></div>
+    <div class="steps">
+      <div><b>① 최대 구조</b> — 이분그래프에서 간선은 두 집합 <b>사이에만</b> 놓을 수 있습니다. 간선이 최대가 되려면 가능한 모든 쌍을 이은 완전이분그래프 K<sub>m, 10−m</sub>이어야 합니다.</div>
+      <div><b>② 식 세우기</b> — 간선 수 <span class="mono">f(m) = m(10 − m) = 10m − m²</span></div>
+      <div><b>③ 최댓값</b> — 위로 볼록한 이차식이므로 <span class="mono">m = 5</span>에서 최대 → <span class="mono">5 × 5 = <b class="hl">25</b></span></div>
+    </div>
+    <table>
+      <tr><th class="c">m</th><td class="c mono">1</td><td class="c mono">2</td><td class="c mono">3</td><td class="c mono">4</td><td class="c mono">5</td><td class="c mono">6</td><td class="c mono">7</td></tr>
+      <tr><th class="c">m(10−m)</th><td class="c mono">9</td><td class="c mono">16</td><td class="c mono">21</td><td class="c mono">24</td><td class="c mono" style="color:var(--teal);font-weight:700">25</td><td class="c mono">24</td><td class="c mono">21</td></tr>
+    </table>
+    <div class="tipbox"><b>비교해서 외우기</b> — 정점 10개 <b>일반</b> 단순그래프의 최대 간선은 ₁₀C₂ = 45개인데, 이분그래프라는 제약이 붙으면 25개로 줄어듭니다. 일반적으로 정점이 n개인 이분그래프의 최대 간선은 <span class="mono">⌊n²/4⌋</span>입니다. n = 10이면 100/4 = 25 ✓. 이 값은 "삼각형이 없는 그래프의 최대 간선 수"를 다루는 <b>투란(Turán) 정리</b>의 가장 기본 형태이기도 합니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 05 ─────────── -->
+<article class="q" data-a="euler" id="Q5">
+  <div class="qtop"><span class="num">05</span><span class="area">오일러 · 최소 획수</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">어떤 <b>연결그래프</b>의 차수 수열이 아래와 같다. 이 그래프의 모든 간선을 <b>한 번씩만</b> 지나 남김없이 그리려면, 붓을 최소 몇 번 이어 그려야 하는가? (붓을 떼지 않고 이어 그린 선을 한 획으로 센다)</p>
+    <div class="given">차수 수열 = ( 5, 5, 4, 4, 3, 3, 2 )</div>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a5" placeholder="정수 입력">
+      <span class="unit">획</span>
+      <span class="mk n" id="m5"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="5">채점하기</button>
+      <button class="hintb" data-h="5">힌트</button>
+    </div>
+    <div class="hintbox" id="h5"><b>힌트</b> — 홀수 차수 정점이 몇 개인지 세어 보세요. 한 획(자취)은 시작점과 끝점에서만 차수의 짝이 어긋나므로, <b>홀수 차수 정점을 정확히 2개씩 소비</b>합니다.</div>
+  </div>
+  <div class="sol" id="s5">
+    <div class="soltop"><span class="tag">정답</span><span class="val">2 획</span></div>
+    <div class="steps">
+      <div><b>① 기본 정보 확인</b> — 차수의 합 = 5+5+4+4+3+3+2 = <b>26</b> → 간선 수 = 26 ÷ 2 = <b class="hl">13개</b> (합이 짝수이므로 모순 없음)</div>
+      <div><b>② 홀수 차수 정점 세기</b> — 5, 5, 3, 3 → <b class="hl">4개</b> (짝수 개이므로 악수 정리와 일치)</div>
+      <div><b>③ 판정</b> — 홀수 차수가 0개도 2개도 아니므로 오일러 회로도 오일러 경로도 없습니다. <b class="bad">한붓그리기 불가능</b>.</div>
+      <div><b>④ 최소 획수</b> — 홀수 차수 정점이 2k개이면 최소 획수는 <b class="hl">k</b>입니다. 여기서 2k = 4 → k = <b class="hl">2획</b></div>
+    </div>
+    <p>한 획을 그리는 동안 중간에 지나는 정점에서는 "들어온 간선"과 "나간 간선"이 항상 짝을 이루므로 차수가 짝수가 됩니다. 짝이 맞지 않는 곳은 <b>그 획의 시작점과 끝점 두 곳뿐</b>입니다. 따라서 획 하나가 처리할 수 있는 홀수 차수 정점은 최대 2개이고, 4개를 모두 처리하려면 최소 2획이 필요합니다.</p>
+    <div class="tipbox"><b>정리하면</b> — 연결그래프에서 홀수 차수 정점이 <span class="mono">0개 → 1획(오일러 회로)</span>, <span class="mono">2개 → 1획(오일러 경로)</span>, <span class="mono">2k개(k ≥ 1) → k획</span>입니다. 0개와 2개가 모두 1획이라는 점이 헷갈리기 쉬우니 주의하세요. 참고로 이 차수 수열은 실제로 연결그래프로 실현 가능하며(하벨–하키미로 확인됨), 문제에서 "연결"을 명시한 이유는 <b>그래프가 분리되어 있으면 획수가 더 늘어나기 때문</b>입니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 06 ─────────── -->
+<article class="q" data-a="euler" id="Q6">
+  <div class="qtop"><span class="num">06</span><span class="area">오일러 · 해밀턴 · 종합 판정</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">아래 그래프(삼각기둥 그래프)에 대한 설명으로 <span class="em">옳은</span> 것은?</p>
+    <div class="fig">
+      <svg viewBox="0 0 340 275" style="max-width:330px">
+        <g stroke="#38bdf8" stroke-width="2.5" fill="none" stroke-linecap="round">
+          <line x1="170" y1="45" x2="55" y2="228"/>
+          <line x1="55" y1="228" x2="285" y2="228"/>
+          <line x1="285" y1="228" x2="170" y2="45"/>
+        </g>
+        <g stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round">
+          <line x1="170" y1="112" x2="118" y2="196"/>
+          <line x1="118" y1="196" x2="222" y2="196"/>
+          <line x1="222" y1="196" x2="170" y2="112"/>
+        </g>
+        <g stroke="#2dd4bf" stroke-width="2.5" stroke-dasharray="5 4" fill="none" stroke-linecap="round">
+          <line x1="170" y1="45" x2="170" y2="112"/>
+          <line x1="55" y1="228" x2="118" y2="196"/>
+          <line x1="285" y1="228" x2="222" y2="196"/>
+        </g>
+        <g fill="#0e1b2e" stroke="#2dd4bf" stroke-width="2.5">
+          <circle cx="170" cy="45" r="16"/><circle cx="55" cy="228" r="16"/><circle cx="285" cy="228" r="16"/>
+          <circle cx="170" cy="112" r="16"/><circle cx="118" cy="196" r="16"/><circle cx="222" cy="196" r="16"/>
+        </g>
+        <g fill="#e9eefb" font-family="Consolas,monospace" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="middle">
+          <text x="170" y="46">A</text><text x="55" y="229">B</text><text x="285" y="229">C</text>
+          <text x="170" y="113">D</text><text x="118" y="197">E</text><text x="222" y="197">F</text>
+        </g>
+      </svg>
+      <div class="figcap">정점 6개 · 간선 9개 &nbsp;/&nbsp; A−B, B−C, C−A, D−E, E−F, F−D, A−D, B−E, C−F</div>
+    </div>
+    <div class="opts" id="a6">
+      <label class="opt"><input type="radio" name="a6" value="A"><span class="ov">①</span><span>오일러 회로가 존재한다.</span></label>
+      <label class="opt"><input type="radio" name="a6" value="B"><span class="ov">②</span><span>이분그래프이다.</span></label>
+      <label class="opt"><input type="radio" name="a6" value="C"><span class="ov">③</span><span>해밀턴 회로가 존재한다.</span></label>
+      <label class="opt"><input type="radio" name="a6" value="D"><span class="ov">④</span><span>평면그래프가 아니다.</span></label>
+    </div>
+    <span class="mk n" id="m6"></span>
+    <div class="btns">
+      <button class="grade" data-q="6">채점하기</button>
+      <button class="hintb" data-h="6">힌트</button>
+    </div>
+    <div class="hintbox" id="h6"><b>힌트</b> — 먼저 모든 정점의 차수를 세어 보세요(①의 판정 끝). 삼각형이 보이는지도 확인하세요(②의 판정 끝). ③은 여섯 정점을 한 번씩 지나 제자리로 돌아오는 순회를 실제로 하나 찾아보면 됩니다.</div>
+  </div>
+  <div class="sol" id="s6">
+    <div class="soltop"><span class="tag">정답</span><span class="val">③</span></div>
+    <p>이 그래프는 삼각기둥의 모서리 구조와 같습니다. 모든 정점의 차수가 <b>3</b>인 3-정규 그래프이고, 간선은 <span class="mono">6 × 3 / 2 = 9개</span>입니다.</p>
+    <div class="steps">
+      <div><b class="bad">① 틀림</b> — 모든 정점의 차수가 3으로 <b>홀수</b>입니다. 홀수 차수 정점이 6개이므로 오일러 회로는커녕 오일러 경로도 없습니다. (최소 3획 필요)</div>
+      <div><b class="bad">② 틀림</b> — A−B−C−A라는 <b>길이 3의 홀수 사이클</b>이 존재합니다. 이분그래프는 홀수 사이클을 가질 수 없으므로 이분그래프가 아닙니다. 실제로 채색수는 3입니다.</div>
+      <div><b class="hl">③ 옳음</b> — 여섯 정점을 모두 한 번씩 지나 출발점으로 돌아오는 회로가 존재합니다. 예: <span class="mono hl">A → B → E → D → F → C → A</span></div>
+      <div><b class="bad">④ 틀림</b> — 그림 자체가 간선이 교차하지 않게 그려져 있으므로 <b>평면그래프</b>입니다. 검산: v = 6, e = 9 이고 3v − 6 = 12 ≥ 9로 필요조건도 만족합니다.</div>
+    </div>
+    <p class="sm"><b>③ 간선 확인</b> — 사용한 간선은 AB(바깥 삼각형), BE(옆면), ED(안쪽 삼각형), DF(안쪽 삼각형), FC(옆면), CA(바깥 삼각형)로 모두 실제 존재하며, 여섯 정점을 정확히 한 번씩 지납니다. 반면 A와 F, B와 D, C와 E는 서로 인접하지 않으므로 이 쌍을 잇는 순회를 시도하면 막힙니다.</p>
+    <div class="tipbox"><b>오일러 vs 해밀턴</b> — 이 문제의 핵심은 둘이 완전히 별개라는 점입니다. 이 그래프처럼 <b>오일러 회로는 없지만 해밀턴 회로는 있는</b> 경우가 흔합니다. 반대로 8자 모양 그래프는 오일러 회로는 있지만 해밀턴 회로가 없습니다. "간선을 다 지나는가(오일러)"와 "정점을 다 지나는가(해밀턴)"를 항상 구분하세요.</div>
+  </div>
+</article>
+
+<!-- ─────────── 07 ─────────── -->
+<article class="q" data-a="euler" id="Q7">
+  <div class="qtop"><span class="num">07</span><span class="area">해밀턴 회로의 개수</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">완전그래프 <span class="em">K₇</span>에서 서로 다른 해밀턴 회로는 모두 몇 개인가? (회전하여 같아지거나 방향만 반대인 회로는 <b>같은 것</b>으로 본다)</p>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a7" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m7"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="7">채점하기</button>
+      <button class="hintb" data-h="7">힌트</button>
+    </div>
+    <div class="hintbox" id="h7"><b>힌트</b> — 7개 정점을 원형으로 배열하는 문제입니다. 일렬 배열 7!에서 출발해, ① 회전해서 같아지는 경우와 ② 시계·반시계 방향만 다른 경우를 각각 나눠 주세요. 원순열 공식을 떠올리면 됩니다.</div>
+  </div>
+  <div class="sol" id="s7">
+    <div class="soltop"><span class="tag">정답</span><span class="val">360 개</span></div>
+    <p>해밀턴 회로는 모든 정점을 한 번씩 지나 제자리로 돌아오는 <b>고리 모양의 배열</b>이므로, 원순열 문제와 완전히 같습니다.</p>
+    <div class="steps">
+      <div><b>① 일렬로 배열</b> — 7개 정점을 순서대로 나열하는 방법: <span class="mono">7! = 5040</span></div>
+      <div><b>② 회전 중복 제거</b> — ABCDEFG, BCDEFGA, CDEFGAB … 는 모두 같은 고리입니다. 7가지가 한 묶음이 되므로 7로 나눕니다: <span class="mono">7! / 7 = 6! = 720</span></div>
+      <div><b>③ 방향 중복 제거</b> — ABCDEFG와 그 역순 GFEDCBA는 같은 회로를 반대로 돈 것입니다. 2로 나눕니다: <span class="mono">720 / 2 = <b class="hl">360</b></span></div>
+    </div>
+    <div class="given">K<sub>n</sub>의 해밀턴 회로 개수 = (n − 1)! / 2 &nbsp;&nbsp;(n ≥ 3)</div>
+    <table>
+      <tr><th class="c">n</th><td class="c mono">3</td><td class="c mono">4</td><td class="c mono">5</td><td class="c mono">6</td><td class="c mono">7</td></tr>
+      <tr><th class="c">(n−1)!/2</th><td class="c mono">1</td><td class="c mono">3</td><td class="c mono">12</td><td class="c mono">60</td><td class="c mono" style="color:var(--teal);font-weight:700">360</td></tr>
+    </table>
+    <div class="tipbox"><b>단서를 놓치지 말 것</b> — "방향이 반대인 것을 같게 본다"는 조건이 없으면 답은 720이 됩니다. 문제에 이 문장이 있는지 반드시 확인하세요. 한편 이 값은 외판원 문제(TSP)에서 <b>완전 탐색해야 할 경우의 수</b>와 같으며, n이 커질수록 폭발적으로 증가하기 때문에 실기에서는 비트마스크 DP로 <span class="mono">O(2ⁿ·n²)</span>까지 줄입니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 08 ─────────── -->
+<article class="q" data-a="tree" id="Q8">
+  <div class="qtop"><span class="num">08</span><span class="area">트리 · 신장 트리</span><span class="lv">★★☆</span></div>
+  <div class="qbody">
+    <p class="qt">정점에 각각 이름이 붙어 있는 완전그래프 <span class="em">K₆</span>의 서로 다른 <b>신장 트리(spanning tree)</b>는 모두 몇 개인가?</p>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a8" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m8"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="8">채점하기</button>
+      <button class="hintb" data-h="8">힌트</button>
+    </div>
+    <div class="hintbox" id="h8"><b>힌트</b> — 케일리(Cayley)의 공식을 떠올리세요. 이름이 붙은 정점 n개로 만들 수 있는 서로 다른 트리의 개수는 <code>n의 (n−2)제곱</code>입니다.</div>
+  </div>
+  <div class="sol" id="s8">
+    <div class="soltop"><span class="tag">정답</span><span class="val">1296 개</span></div>
+    <div class="steps">
+      <div><b>① 신장 트리란</b> — 원래 그래프의 <b>모든 정점</b>을 포함하면서 트리가 되는 부분그래프입니다. K₆의 신장 트리는 정점 6개를 잇는 모든 트리와 같습니다.</div>
+      <div><b>② 케일리 공식</b> — 이름이 붙은 정점 n개로 만드는 트리의 개수는 <span class="mono">n<sup>n−2</sup></span></div>
+      <div><b>③ 대입</b> — <span class="mono">6<sup>6−2</sup> = 6<sup>4</sup> = 1296</span></div>
+      <div>각 신장 트리의 간선 수는 n − 1 = <b>5개</b>이고, K₆의 간선 15개 중 10개를 지운 형태입니다.</div>
+    </div>
+    <table>
+      <tr><th class="c">n</th><td class="c mono">2</td><td class="c mono">3</td><td class="c mono">4</td><td class="c mono">5</td><td class="c mono">6</td></tr>
+      <tr><th class="c">n<sup>n−2</sup></th><td class="c mono">1</td><td class="c mono">3</td><td class="c mono">16</td><td class="c mono">125</td><td class="c mono" style="color:var(--teal);font-weight:700">1296</td></tr>
+    </table>
+    <div class="tipbox"><b>주의할 조건 두 가지</b> — ① <b>정점에 이름이 붙어 있어야</b> 합니다. 모양만 구분하는 비표지 트리라면 n = 6일 때 6개뿐입니다. ② 케일리 공식은 <b>완전그래프</b>에만 그대로 적용됩니다. 일반 그래프의 신장 트리 개수는 <b>키르히호프의 행렬-트리 정리</b>(라플라시안 행렬의 여인수)로 구하며, 실제로 K₆에 적용해도 1296이 나옵니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 09 ─────────── -->
+<article class="q" data-a="tree" id="Q9">
+  <div class="qtop"><span class="num">09</span><span class="area">평면그래프 · 오일러 공식</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">연결 평면그래프 G를 간선이 교차하지 않게 평면에 그렸더니, <b>모든 면이 정확히 5개의 간선으로 둘러싸여 있고</b>, <b>모든 정점의 차수가 3</b>이었다. G의 정점은 몇 개인가? (바깥의 무한 영역도 오각형인 면 하나로 센다)</p>
+    <div class="ansrow">
+      <span class="ilab">ANSWER</span>
+      <input type="number" class="num" id="a9" placeholder="정수 입력">
+      <span class="unit">개</span>
+      <span class="mk n" id="m9"></span>
+    </div>
+    <div class="btns">
+      <button class="grade" data-q="9">채점하기</button>
+      <button class="hintb" data-h="9">힌트</button>
+    </div>
+    <div class="hintbox" id="h9"><b>힌트</b> — 식이 세 개 필요합니다. ① 차수 조건에서 <code>3v = 2e</code>(악수 정리), ② 면 조건에서 <code>5f = 2e</code>(각 간선은 두 면에 접함), ③ 오일러 공식 <code>v − e + f = 2</code>. v로 통일해 연립하세요.</div>
+  </div>
+  <div class="sol" id="s9">
+    <div class="soltop"><span class="tag">정답</span><span class="val">20 개</span></div>
+    <p>"모든 간선은 정확히 <b>두 개</b>의 면에 접하고, 양 끝 <b>두 개</b>의 정점에 붙는다"는 사실에서 두 개의 관계식이 나옵니다.</p>
+    <div class="steps">
+      <div><b>① 정점 쪽 세기</b> — 정점마다 붙은 간선을 세면 각 간선이 2번 세어집니다. <span class="mono">3v = 2e</span> → <span class="mono">e = 3v/2</span></div>
+      <div><b>② 면 쪽 세기</b> — 면마다 둘러싼 간선을 세면 각 간선이 2번 세어집니다. <span class="mono">5f = 2e</span> → <span class="mono">f = 2e/5</span></div>
+      <div><b>③ e를 v로 바꿔 f 정리</b> — <span class="mono">f = (2/5)(3v/2) = 3v/5</span></div>
+      <div><b>④ 오일러 공식에 대입</b> — <span class="mono">v − 3v/2 + 3v/5 = 2</span></div>
+      <div>통분하면 <span class="mono">(10v − 15v + 6v)/10 = v/10 = 2</span> → <b class="hl">v = 20</b></div>
+    </div>
+    <p class="sm"><b>나머지 값</b> — e = 3 × 20 / 2 = <b>30</b>, f = 3 × 20 / 5 = <b>12</b>. 검산: 20 − 30 + 12 = 2 ✓. 이 그래프가 바로 <b>정십이면체</b>의 꼭짓점·모서리·면 구조입니다.</p>
+    <div class="tipbox"><b>정다면체가 5개뿐인 이유</b> — 같은 방식으로 "모든 면이 p각형, 모든 정점의 차수가 q"라 두면 <span class="mono">1/p + 1/q &gt; 1/2</span>이라는 조건이 나오고, 이를 만족하는 자연수 쌍은 (3,3) 정사면체, (3,4) 정팔면체, (4,3) 정육면체, (3,5) 정이십면체, (5,3) 정십이면체 다섯 가지뿐입니다. 오일러 공식 하나로 플라톤 입체가 5개임을 증명할 수 있다는 점이 이 단원의 백미입니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 10 ─────────── -->
+<article class="q" data-a="tree" id="Q10">
+  <div class="qtop"><span class="num">10</span><span class="area">그래프 색칠 · 채색수</span><span class="lv">★★★</span></div>
+  <div class="qbody">
+    <p class="qt">다음 그래프 중 <b>채색수 χ(G)가 가장 큰</b> 것은?</p>
+    <div class="opts" id="a10">
+      <label class="opt"><input type="radio" name="a10" value="A"><span class="ov">①</span><span>정점이 10개인 트리</span></label>
+      <label class="opt"><input type="radio" name="a10" value="B"><span class="ov">②</span><span>사이클그래프 C₉</span></label>
+      <label class="opt"><input type="radio" name="a10" value="C"><span class="ov">③</span><span>완전이분그래프 K₃,₃</span></label>
+      <label class="opt"><input type="radio" name="a10" value="D"><span class="ov">④</span><span>바퀴그래프 W₅ &mdash; 사이클 C₅의 모든 정점을 중심의 새 정점 하나와 연결한 그래프</span></label>
+    </div>
+    <span class="mk n" id="m10"></span>
+    <div class="btns">
+      <button class="grade" data-q="10">채점하기</button>
+      <button class="hintb" data-h="10">힌트</button>
+    </div>
+    <div class="hintbox" id="h10"><b>힌트</b> — 채색수가 2라는 것은 곧 <b>이분그래프</b>라는 뜻이고, 이는 <b>홀수 사이클이 없다</b>는 뜻입니다. 각 선택지에 홀수 사이클이 있는지부터 확인하세요. ④의 중심 정점은 나머지 <b>모든</b> 정점과 인접하다는 점이 결정적입니다.</div>
+  </div>
+  <div class="sol" id="s10">
+    <div class="soltop"><span class="tag">정답</span><span class="val">④ &nbsp;χ = 4</span></div>
+    <table>
+      <tr><th style="width:34%">그래프</th><th class="c">채색수</th><th>근거</th></tr>
+      <tr><td>① 정점 10개인 트리</td><td class="c mono">2</td><td>사이클이 없음 → 이분그래프</td></tr>
+      <tr><td>② C₉</td><td class="c mono">3</td><td>홀수 사이클 → 2색 불가, 3색이면 충분</td></tr>
+      <tr><td>③ K₃,₃</td><td class="c mono">2</td><td>이분그래프의 정의 그대로</td></tr>
+      <tr><td><b>④ W₅ (C₅ + 중심)</b></td><td class="c mono" style="color:var(--teal);font-weight:700">4</td><td>바깥 C₅에 3색 + 중심에 1색</td></tr>
+    </table>
+    <div class="steps">
+      <div><b>바깥 사이클</b> — C₅는 길이 5의 홀수 사이클이므로 2색으로는 칠할 수 없고 <b>3색</b>이 필요합니다.</div>
+      <div><b>중심 정점</b> — 바깥의 다섯 정점 <b>모두와 인접</b>하므로, 이미 쓴 3가지 색을 하나도 쓸 수 없습니다. 반드시 <b class="hl">네 번째 색</b>이 필요합니다.</div>
+      <div>따라서 χ(W₅) = 3 + 1 = <b class="hl">4</b></div>
+    </div>
+    <div class="fig">
+      <svg viewBox="0 0 300 220" style="max-width:260px">
+        <g stroke="#2b4463" stroke-width="2" fill="none">
+          <line x1="150" y1="30" x2="264" y2="113"/><line x1="264" y1="113" x2="220" y2="196"/>
+          <line x1="220" y1="196" x2="80" y2="196"/><line x1="80" y1="196" x2="36" y2="113"/>
+          <line x1="36" y1="113" x2="150" y2="30"/>
+          <line x1="150" y1="110" x2="150" y2="30"/><line x1="150" y1="110" x2="264" y2="113"/>
+          <line x1="150" y1="110" x2="220" y2="196"/><line x1="150" y1="110" x2="80" y2="196"/>
+          <line x1="150" y1="110" x2="36" y2="113"/>
+        </g>
+        <g stroke="#0e1b2e" stroke-width="2">
+          <circle cx="150" cy="30" r="14" fill="#38bdf8"/>
+          <circle cx="264" cy="113" r="14" fill="#fbbf24"/>
+          <circle cx="220" cy="196" r="14" fill="#38bdf8"/>
+          <circle cx="80" cy="196" r="14" fill="#fbbf24"/>
+          <circle cx="36" cy="113" r="14" fill="#4ade80"/>
+          <circle cx="150" cy="110" r="15" fill="#f472b6"/>
+        </g>
+      </svg>
+      <div class="figcap">바깥 5개는 3색으로 번갈아, 중심은 네 번째 색</div>
+    </div>
+    <div class="tipbox"><b>일반화</b> — 바퀴그래프 W<sub>n</sub>(사이클 C<sub>n</sub> + 중심)의 채색수는 n이 <b>홀수면 4</b>, <b>짝수면 3</b>입니다. 또한 중심 정점과 사이클의 인접한 두 정점이 항상 삼각형을 이루므로 χ ≥ 3은 언제나 성립합니다. 참고로 W₅는 정점 6개·간선 10개인 <b>평면그래프</b>이므로 4색 정리의 상한 4를 정확히 채우는 예이기도 합니다.</div>
+  </div>
+</article>
+
+<!-- ─────────── 결과 리포트 ─────────── -->
+<div id="report">
+  <div class="rcard">
+    <div class="rtitle">채점 결과</div>
+    <div class="rbig"><span id="rScore">0</span><small> / 10</small></div>
+    <div class="rmsg" id="rMsg"></div>
+    <div class="rarea" id="rArea"></div>
+    <div class="rlist" id="rList"></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script type="application/json" id="D">
+{
+  "mk": { "right": "정답", "wrong": "오답 — 해설을 확인하세요", "blank": "답을 입력하거나 선택해 주세요" },
+  "areas": { "base": "차수 · 표현", "conn": "연결 · 이분", "euler": "오일러 · 해밀턴", "tree": "트리 · 평면 · 색칠" },
+  "titles": {
+    "1": "악수 정리와 미지 차수", "2": "연결을 보장하는 최소 간선", "3": "인접행렬의 대각합",
+    "4": "이분그래프의 최대 간선", "5": "홀수 차수와 최소 획수", "6": "삼각기둥 그래프의 성질",
+    "7": "해밀턴 회로의 개수", "8": "신장 트리의 개수", "9": "평면그래프와 오일러 공식",
+    "10": "채색수 비교"
+  },
+  "msg": {
+    "p10": "만점입니다. 그래프 이론 전 주제를 안정적으로 이해하고 있습니다.",
+    "p8": "우수합니다. 틀린 문항의 해설만 짚고 넘어가면 충분합니다.",
+    "p5": "기본기는 갖췄습니다. 틀린 주제의 공식을 다시 정리해 보세요.",
+    "p0": "개념 복습이 먼저입니다. 각 해설의 정리 상자를 중심으로 다시 학습해 보세요.",
+    "weak": "보완이 필요한 주제 — ",
+    "none": "약한 주제 없음",
+    "todo": "아직 채점하지 않은 문항이 있습니다."
+  },
+  "btn": { "pause": "일시정지", "resume": "이어서 풀기", "hintOn": "힌트 닫기", "hintOff": "힌트" },
+  "st": { "o": "정답", "x": "오답", "n": "미채점" }
+}
+</script>
+
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("D").textContent);
+
+  var ANS = { 1: 3, 2: 37, 3: 15, 4: 25, 5: 2, 6: "C", 7: 360, 8: 1296, 9: 20, 10: "D" };
+  var MCQ = { 6: true, 10: true };
+  var AREA = { 1: "base", 2: "conn", 3: "base", 4: "conn", 5: "euler", 6: "euler", 7: "euler", 8: "tree", 9: "tree", 10: "tree" };
+  var ORDER = ["base", "conn", "euler", "tree"];
+  var state = {};
+
+  /* ══════ 타이머 ══════ */
+  var sec = 0, running = true;
+  var clock = document.getElementById("clock");
+  function two(x) { return (x < 10 ? "0" : "") + x; }
+  setInterval(function () {
+    if (!running) return;
+    sec++;
+    clock.textContent = two(Math.floor(sec / 60)) + ":" + two(sec % 60);
+  }, 1000);
+
+  var bp = document.getElementById("btnPause");
+  bp.addEventListener("click", function () {
+    running = !running;
+    bp.textContent = running ? D.btn.pause : D.btn.resume;
+    clock.style.color = running ? "" : "#6a80a5";
+  });
+
+  /* ══════ 필터 ══════ */
+  var fbtns = document.querySelectorAll("#filters button");
+  for (var fi = 0; fi < fbtns.length; fi++) {
+    fbtns[fi].addEventListener("click", function () {
+      var f = this.getAttribute("data-f");
+      for (var i = 0; i < fbtns.length; i++) fbtns[i].className = "";
+      this.className = "on";
+      var arts = document.querySelectorAll("article.q");
+      for (var k = 0; k < arts.length; k++) {
+        arts[k].classList.toggle("hide", !(f === "all" || arts[k].getAttribute("data-a") === f));
+      }
+    });
+  }
+
+  /* ══════ 힌트 ══════ */
+  var hbs = document.querySelectorAll("button.hintb");
+  for (var hi = 0; hi < hbs.length; hi++) {
+    hbs[hi].addEventListener("click", function () {
+      var box = document.getElementById("h" + this.getAttribute("data-h"));
+      this.textContent = box.classList.toggle("show") ? D.btn.hintOn : D.btn.hintOff;
+    });
+  }
+
+  /* ══════ 채점 ══════ */
+  function setMk(n, kind, txt) {
+    var el = document.getElementById("m" + n);
+    el.className = "mk " + kind;
+    el.textContent = txt;
+  }
+
+  function gradeOne(n, silent) {
+    var art = document.getElementById("Q" + n);
+    var ok, i;
+    if (MCQ[n]) {
+      var ins = document.getElementById("a" + n).querySelectorAll("input");
+      var chosen = null;
+      for (i = 0; i < ins.length; i++) if (ins[i].checked) chosen = ins[i].value;
+      if (chosen === null) {
+        if (!silent) setMk(n, "n", D.mk.blank);
+        return null;
+      }
+      for (i = 0; i < ins.length; i++) {
+        var lb = ins[i].parentNode;
+        lb.className = "opt";
+        if (ins[i].value === ANS[n]) lb.className = "opt right";
+        else if (ins[i].checked) lb.className = "opt wrong";
+      }
+      ok = chosen === ANS[n];
+    } else {
+      var el = document.getElementById("a" + n);
+      if (el.value === "") {
+        if (!silent) setMk(n, "n", D.mk.blank);
+        return null;
+      }
+      ok = parseInt(el.value, 10) === ANS[n];
+      el.style.borderColor = ok ? "#4ade80" : "#fb7185";
+    }
+    setMk(n, ok ? "o" : "x", (ok ? "O  " : "X  ") + (ok ? D.mk.right : D.mk.wrong));
+    art.className = "q" + (art.classList.contains("hide") ? " hide" : "") + (ok ? " solved" : " missed");
+    document.getElementById("s" + n).className = "sol show";
+    state[n] = ok;
+    updateHud();
+    return ok;
+  }
+
+  var gbs = document.querySelectorAll("button.grade");
+  for (var gi = 0; gi < gbs.length; gi++) {
+    gbs[gi].addEventListener("click", function () {
+      gradeOne(parseInt(this.getAttribute("data-q"), 10), false);
+    });
+  }
+
+  function updateHud() {
+    var done = 0, ok = 0, k;
+    for (k in state) { done++; if (state[k]) ok++; }
+    document.getElementById("doneN").textContent = String(done);
+    document.getElementById("okN").textContent = String(ok);
+    document.getElementById("barFill").style.width = (done * 10) + "%";
+    return { done: done, ok: ok };
+  }
+
+  /* ══════ 전체 채점 + 리포트 ══════ */
+  function textRow(parent, cls, st, label) {
+    var d = document.createElement("div");
+    d.className = "li";
+    var a = document.createElement("span");
+    a.className = "st " + cls;
+    a.textContent = st;
+    var b = document.createElement("span");
+    b.textContent = label;
+    d.appendChild(a); d.appendChild(b);
+    parent.appendChild(d);
+  }
+
+  document.getElementById("btnAll").addEventListener("click", function () {
+    var n;
+    for (n = 1; n <= 10; n++) if (!state.hasOwnProperty(n)) gradeOne(n, true);
+    var s = updateHud();
+    running = false;
+    bp.textContent = D.btn.resume;
+    document.getElementById("rScore").textContent = String(s.ok);
+
+    var msg = D.msg.p0;
+    if (s.ok === 10) msg = D.msg.p10;
+    else if (s.ok >= 8) msg = D.msg.p8;
+    else if (s.ok >= 5) msg = D.msg.p5;
+    if (s.done < 10) msg = D.msg.todo + " " + msg;
+    document.getElementById("rMsg").textContent = msg;
+
+    var tot = {}, got = {}, key;
+    for (n = 1; n <= 10; n++) {
+      key = AREA[n];
+      tot[key] = (tot[key] || 0) + 1;
+      if (state[n]) got[key] = (got[key] || 0) + 1;
+    }
+    var ab = document.getElementById("rArea");
+    while (ab.firstChild) ab.removeChild(ab.firstChild);
+    var weak = [];
+    ORDER.forEach(function (a) {
+      var g = got[a] || 0, t = tot[a];
+      var card = document.createElement("div");
+      card.className = "ra";
+      var nm = document.createElement("div");
+      nm.className = "nm"; nm.textContent = D.areas[a];
+      var sc = document.createElement("div");
+      sc.className = "sc " + (g === t ? "full" : (g === 0 ? "zero" : "part"));
+      sc.textContent = g + " / " + t;
+      card.appendChild(nm); card.appendChild(sc);
+      ab.appendChild(card);
+      if (g < t) weak.push(D.areas[a]);
+    });
+
+    var lb = document.getElementById("rList");
+    while (lb.firstChild) lb.removeChild(lb.firstChild);
+    for (n = 1; n <= 10; n++) {
+      var has = state.hasOwnProperty(n);
+      var cls = has ? (state[n] ? "o" : "x") : "n";
+      var stt = has ? (state[n] ? D.st.o : D.st.x) : D.st.n;
+      textRow(lb, cls, stt, n + ". " + D.titles[n]);
+    }
+    var wrapRow = document.createElement("div");
+    wrapRow.className = "li";
+    var w1 = document.createElement("span");
+    w1.className = "st n"; w1.textContent = "";
+    var w2 = document.createElement("span");
+    w2.style.color = weak.length ? "#fbbf24" : "#4ade80";
+    w2.textContent = weak.length ? D.msg.weak + weak.join(", ") : D.msg.none;
+    wrapRow.appendChild(w1); wrapRow.appendChild(w2);
+    lb.appendChild(wrapRow);
+
+    var rep = document.getElementById("report");
+    rep.className = "show";
+    rep.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* ══════ 초기화 ══════ */
+  document.getElementById("btnReset").addEventListener("click", function () {
+    var n, i;
+    for (n = 1; n <= 10; n++) {
+      if (MCQ[n]) {
+        var ins = document.getElementById("a" + n).querySelectorAll("input");
+        for (i = 0; i < ins.length; i++) { ins[i].checked = false; ins[i].parentNode.className = "opt"; }
+      } else {
+        var el = document.getElementById("a" + n);
+        el.value = ""; el.style.borderColor = "";
+      }
+      setMk(n, "n", "");
+      document.getElementById("s" + n).className = "sol";
+      document.getElementById("h" + n).className = "hintbox";
+      var art = document.getElementById("Q" + n);
+      art.className = "q" + (art.classList.contains("hide") ? " hide" : "");
+    }
+    for (i = 0; i < hbs.length; i++) hbs[i].textContent = D.btn.hintOff;
+    state = {};
+    sec = 0; running = true;
+    clock.textContent = "00:00"; clock.style.color = "";
+    bp.textContent = D.btn.pause;
+    document.getElementById("report").className = "";
+    updateHud();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  updateHud();
+})();
+</script>
+</body>
+</html>
