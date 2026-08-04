@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>좌표평면 위의 직선 — 기울기 · 절편 · 거리 · 교점</title>
+<style>
+:root{
+  --bg:#f4f7fc; --card:#fff; --line:#dde6f3; --ink:#16233c; --sub:#5a6b8a;
+  --sub2:#5c6d8a; --pale:#93a3bd;
+  --c1:#2563eb; --c2:#ea580c; --cp:#7c3aed; --cd:#059669; --cx:#db2777;
+  --warn:#d97706; --bad:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:linear-gradient(#e6edf8 1px,transparent 1px),linear-gradient(90deg,#e6edf8 1px,transparent 1px);
+  background-size:30px 30px;
+  color:var(--ink);font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.78;font-size:16px;padding-bottom:60px;
+}
+.wrap{max-width:1400px;margin:0 auto;padding:0 18px}
+.mono,code{font-family:'D2Coding','Consolas','Menlo',monospace}
+
+header{background:linear-gradient(120deg,#16233c,#1e3a8a 60%,#4c1d95);color:#fff;
+  padding:38px 0 30px;text-align:center}
+.kicker{font-size:12.5px;letter-spacing:3px;font-weight:800;color:#93c5fd}
+h1{font-size:34px;font-weight:800;margin:9px 0 8px;letter-spacing:-1px}
+header p{opacity:.9;font-size:15px}
+.tagrow{display:flex;gap:7px;justify-content:center;margin-top:13px;flex-wrap:wrap}
+.tg{font-size:12.5px;padding:3px 12px;border-radius:20px;background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);font-family:'D2Coding',Consolas,monospace}
+
+nav{position:sticky;top:0;z-index:70;background:rgba(244,247,252,.95);backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--line);padding:10px 0;margin-bottom:26px}
+.tabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.tab{background:#fff;border:2px solid var(--line);color:var(--sub2);padding:8px 16px;border-radius:11px;
+  cursor:pointer;font-size:14.5px;font-weight:700;font-family:inherit;transition:.13s}
+.tab:hover{border-color:var(--c1);color:var(--c1)}
+.tab.on{background:var(--c1);color:#fff;border-color:var(--c1)}
+
+section.sec{display:none;animation:fd .26s ease}
+section.sec.on{display:block}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h2{font-size:26px;font-weight:800;margin:4px 0 14px;padding-left:14px;border-left:6px solid var(--c1)}
+h3{font-size:19px;font-weight:800;margin:26px 0 10px;color:var(--c1)}
+h4{font-size:13px;font-weight:800;letter-spacing:1px;color:var(--sub2);margin-bottom:8px}
+p{margin:8px 0;color:#2c3a55}
+.small{font-size:14px;color:var(--sub2)}
+b.b1{color:var(--c1)}b.b2{color:var(--c2)}b.bp{color:var(--cp)}b.bd{color:var(--cd)}b.bx{color:var(--cx)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 20px;margin:13px 0;
+  box-shadow:0 1px 3px rgba(22,35,60,.06)}
+.card.l1{border-left:5px solid var(--c1)}
+.card.l2{border-left:5px solid var(--c2)}
+.card.lp{border-left:5px solid var(--cp)}
+.card.ld{border-left:5px solid var(--cd)}
+.card.lx{border-left:5px solid var(--cx)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+ul.li{list-style:none;margin:7px 0}
+ul.li li{padding-left:20px;position:relative;margin:6px 0;color:#2c3a55}
+ul.li li::before{content:'▪';position:absolute;left:3px;color:var(--c1);font-weight:800}
+
+.eq{background:#0f1a2e;color:#e8eefc;border-radius:11px;padding:13px 18px;margin:10px 0;
+  font-family:'D2Coding',Consolas,monospace;font-size:17px;text-align:center;letter-spacing:.3px}
+.eq b{color:#fcd34d}
+.eq small{display:block;font-family:inherit;font-size:12.5px;color:#93a3bd;margin-top:6px;letter-spacing:0}
+
+/* 실습판 */
+.lab{background:#fff;border:2px solid var(--line);border-radius:18px;padding:15px;margin:14px 0;
+  box-shadow:0 2px 8px rgba(22,35,60,.07)}
+.guide{background:linear-gradient(90deg,#1e3a8a,#4c1d95);color:#fff;border-radius:12px;
+  padding:11px 17px;font-weight:700;font-size:15.5px;margin-bottom:11px;display:flex;align-items:center;gap:12px}
+.guide .num{background:#fcd34d;color:#16233c;border-radius:8px;padding:1px 11px;font-weight:800;font-size:14px;flex:0 0 auto}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center;background:#eef3fb;border:1px solid var(--line);
+  border-radius:11px;padding:9px 11px;margin-bottom:12px}
+.bt{background:#fff;border:2px solid var(--line);color:var(--ink);padding:7px 13px;border-radius:9px;
+  cursor:pointer;font-size:13.5px;font-weight:700;font-family:inherit;transition:.12s}
+.bt:hover{border-color:var(--c1);color:var(--c1)}
+.bt.a1{border-color:#bfd4fb;color:var(--c1)}
+.bt.a2{border-color:#fdd0ae;color:var(--c2)}
+.bt.ap{border-color:#ddd0fb;color:var(--cp)}
+.bt.solid{background:var(--c1);color:#fff;border-color:var(--c1)}
+.bt.gray{background:#16233c;color:#fff;border-color:#16233c}
+.labgrid{display:grid;grid-template-columns:1fr 470px;gap:15px;align-items:start}
+.pane svg{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;
+  border:1px solid var(--line);border-radius:12px}
+.side{display:flex;flex-direction:column;gap:11px;max-height:none}
+
+.rc{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rc .hd{padding:8px 13px;font-weight:800;font-size:14px;color:#fff;display:flex;align-items:center;gap:8px}
+.rc .bd{padding:12px 14px;background:#fff}
+.rc.h1 .hd{background:var(--c1)} .rc.h2 .hd{background:var(--c2)}
+.rc.hp .hd{background:var(--cp)} .rc.hx .hd{background:var(--cx)}
+.step{font-family:'D2Coding',Consolas,monospace;font-size:13.4px;line-height:1.95;
+  color:#25324b;white-space:pre-wrap;word-break:break-word}
+.step .k{color:var(--c1);font-weight:700}
+.hl{background:#fff7cd;border-radius:5px;padding:1px 6px;font-weight:700}
+.big{font-family:'D2Coding',Consolas,monospace;font-size:19px;font-weight:800;text-align:center;
+  padding:9px;background:#f2f6fd;border-radius:9px;margin:8px 0;color:#16233c}
+.empty{color:var(--pale);font-size:13.5px;text-align:center;padding:14px 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.chip{background:#f1f5fc;border:1px solid var(--line);border-radius:7px;padding:3px 9px;
+  font-family:'D2Coding',Consolas,monospace;font-size:12.8px}
+
+table.t{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+table.t th{background:#eef3fb;padding:9px;border:1px solid var(--line);color:var(--c1);font-weight:800;text-align:left}
+table.t td{padding:9px;border:1px solid var(--line);color:#2c3a55}
+td.m,th.m{font-family:'D2Coding',Consolas,monospace}
+
+.q{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 18px;margin:11px 0}
+.qq{font-weight:800;margin-bottom:9px}
+.opt{background:#f7faff;border:2px solid var(--line);color:#2c3a55;padding:8px 13px;border-radius:9px;
+  margin:5px 0;cursor:pointer;font-size:14.5px;font-weight:600;font-family:inherit;width:100%;text-align:left}
+.opt:hover{border-color:var(--c1)}
+.opt.ok{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.opt.no{background:#fee2e2;border-color:var(--bad);color:#b91c1c}
+.qa{margin-top:8px;font-size:13.5px;color:var(--sub2);display:none}
+.qa.show{display:block}
+
+footer{text-align:center;color:var(--pale);font-size:13.5px;padding:34px 0 8px;border-top:1px solid var(--line);margin-top:36px}
+@media(max-width:1150px){.labgrid{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kicker">중학교 수학 · 좌표평면과 일차함수</div>
+  <h1>좌표평면 위의 직선</h1>
+  <p>두 점을 찍으면 직선이 그려지고, 기울기 · 절편 · 점까지의 거리 · 두 직선의 교점까지 <b style="color:#fcd34d">계산 과정이 그대로</b> 나옵니다</p>
+  <div class="tagrow">
+    <span class="tg">기울기</span><span class="tg">x절편 · y절편</span>
+    <span class="tg">점과 직선 사이의 거리</span><span class="tg">연립방정식</span>
+  </div>
+</div></header>
+
+<nav><div class="wrap"><div class="tabs">
+  <button class="tab on" onclick="go(0)">0. 준비 — 좌표와 기울기</button>
+  <button class="tab" onclick="go(1)">1. 통합 실습판</button>
+  <button class="tab" onclick="go(2)">2. 점과 직선 사이의 거리</button>
+  <button class="tab" onclick="go(3)">3. 두 직선의 교점</button>
+  <button class="tab" onclick="go(4)">4. 정리 · 확인문제</button>
+</div></div></nav>
+
+<div class="wrap">
+<!-- ================= 0 ================= -->
+<section class="sec on" id="s0">
+  <h2>준비 — 좌표평면, 기울기, 절편</h2>
+
+  <div class="card l1">
+    <p>좌표평면 위의 점은 <b class="mono">(x, y)</b> 두 수로 정해집니다. 그런데 <b class="b1">점 두 개</b>가 주어지면 놀랍게도 그 둘을 지나는 직선은 <b>단 하나</b>뿐입니다. 그래서 "두 점 → 직선의 방정식"을 구할 수 있는 것이지요.</p>
+    <p class="small">직선을 나타내는 방법은 여러 가지입니다. 이 자료에서는 두 가지를 함께 씁니다.</p>
+    <div class="grid2">
+      <div><div class="eq" style="font-size:16px">y = a x + b<small>기울기 a, y절편 b — 세로선(x = k)은 표현 못 함</small></div></div>
+      <div><div class="eq" style="font-size:16px">p x + q y = r<small>일반형 — 세로선도 가로선도 모두 표현 가능</small></div></div>
+    </div>
+  </div>
+
+  <h3>기울기 — "오른쪽으로 갈 때 얼마나 올라가나"</h3>
+  <p>두 점 <b class="mono">A(x₁, y₁)</b>, <b class="mono">B(x₂, y₂)</b>를 지나는 직선의 기울기는 <b>세로로 변한 양을 가로로 변한 양으로 나눈 값</b>입니다.</p>
+  <div class="eq">기울기 &nbsp;a = ( y₂ − y₁ ) ÷ ( x₂ − x₁ ) = <b>Δy / Δx</b>
+    <small>어느 점을 먼저 잡아도 결과는 같습니다 (분자·분모 부호가 함께 바뀌므로)</small></div>
+
+  <div class="lab">
+    <div class="tools">
+      <span class="small" style="font-weight:700">기울기 a</span>
+      <input type="range" id="sa" min="-3" max="3" value="1" step="0.5" style="width:150px">
+      <span class="mono" id="saV" style="font-weight:800;color:#2563eb;min-width:46px;display:inline-block">1</span>
+      <span class="small" style="font-weight:700;margin-left:12px">y절편 b</span>
+      <input type="range" id="sb" min="-6" max="6" value="0" step="1" style="width:150px">
+      <span class="mono" id="sbV" style="font-weight:800;color:#ea580c;min-width:36px;display:inline-block">0</span>
+      <span class="bt gray" style="margin-left:auto;cursor:default" id="sEq">y = x</span>
+    </div>
+    <div class="labgrid" style="grid-template-columns:1fr 340px">
+      <div class="pane"><svg id="svgS"></svg></div>
+      <div>
+        <div class="card" style="margin:0">
+          <h4>슬라이더를 움직이며 확인하세요</h4>
+          <ul class="li">
+            <li><b class="b1">a &gt; 0</b> 이면 오른쪽 위로 올라가는 직선</li>
+            <li><b class="b1">a &lt; 0</b> 이면 오른쪽 아래로 내려가는 직선</li>
+            <li><b class="b1">a = 0</b> 이면 가로로 눕는 직선 (y = b)</li>
+            <li><b>|a|가 클수록</b> 더 가파릅니다</li>
+            <li><b class="b2">b</b>는 직선이 y축을 지나는 자리 <b class="mono">(0, b)</b></li>
+          </ul>
+          <p class="small" style="margin-top:9px">그림의 <b class="b1">계단</b>이 기울기를 보여 줍니다. 오른쪽으로 1칸 갈 때 세로로 a칸 움직이지요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card l2">
+    <h4>절편 — 축과 만나는 자리</h4>
+    <div class="grid2">
+      <div><p><b class="b2">y절편</b> : 직선이 y축과 만나는 점의 y좌표. <b class="mono">x = 0</b>을 대입해서 구합니다.</p></div>
+      <div><p><b class="b2">x절편</b> : 직선이 x축과 만나는 점의 x좌표. <b class="mono">y = 0</b>을 대입해서 구합니다.</p></div>
+    </div>
+    <p class="small">예) <b class="mono">y = 2x − 6</b> 에서 &nbsp;y절편은 x=0을 넣어 <b class="mono">−6</b>, &nbsp;x절편은 y=0을 넣어 <b class="mono">0 = 2x − 6 → x = 3</b> 입니다.</p>
+  </div>
+</section>
+
+<!-- ================= 1 통합 실습판 ================= -->
+<section class="sec" id="s1">
+  <h2>통합 실습판 — 찍고, 끌고, 확인하기</h2>
+
+  <div class="card">
+    <p><b>사용법</b> &nbsp;① 좌표평면을 클릭하면 격자점(정수 좌표)에 점이 찍힙니다. &nbsp;② 찍은 점은 <b class="b1">드래그로 옮길 수 있고</b>, 옮기는 즉시 모든 계산이 다시 됩니다. &nbsp;③ 아래 순서대로 진행하면 직선 → 거리 → 교점까지 한 번에 볼 수 있습니다.</p>
+  </div>
+
+  <div class="lab">
+    <div class="guide" id="guide"><span class="num">STEP 1</span><span id="guideTx">직선 ①을 만들 두 점 A, B를 클릭하세요. (0 / 2)</span></div>
+    <div class="tools">
+      <button class="bt a1" onclick="LB.clearLine(1)">직선 ① 다시 찍기</button>
+      <button class="bt ap" onclick="LB.clearP()">점 P 다시 찍기</button>
+      <button class="bt a2" onclick="LB.clearLine(2)">직선 ② 다시 찍기</button>
+      <button class="bt" onclick="LB.reset()">전체 지우기</button>
+      <button class="bt solid" onclick="LB.demo()">예시 불러오기</button>
+      <label class="small" style="margin-left:auto;font-weight:700">
+        <input type="checkbox" id="showPerp" checked onchange="LB.draw()"> 수선 보기</label>
+      <label class="small" style="font-weight:700">
+        <input type="checkbox" id="showStair" checked onchange="LB.draw()"> 기울기 계단 보기</label>
+    </div>
+    <div class="labgrid">
+      <div class="pane"><svg id="svgL"></svg></div>
+      <div class="side">
+        <div class="rc h1"><div class="hd">직선 ① &nbsp;<span style="opacity:.8;font-weight:600">두 점 A, B를 지나는 직선</span></div>
+          <div class="bd" id="out1"></div></div>
+        <div class="rc hp"><div class="hd">점 P 와 직선 ① 사이의 거리</div>
+          <div class="bd" id="outP"></div></div>
+        <div class="rc h2"><div class="hd">직선 ② &nbsp;<span style="opacity:.8;font-weight:600">두 점 C, D를 지나는 직선</span></div>
+          <div class="bd" id="out2"></div></div>
+        <div class="rc hx"><div class="hd">두 직선의 교점 &nbsp;<span style="opacity:.8;font-weight:600">연립방정식으로 확인</span></div>
+          <div class="bd" id="outX"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card l1"><h4>확인 1</h4><p class="small">점 A와 B의 <b>순서를 바꿔도</b> 기울기가 같은지 드래그해서 확인해 보세요.</p></div>
+    <div class="card lp"><h4>확인 2</h4><p class="small">점 P를 직선 위로 끌고 가면 거리는 어떻게 될까요? <b>0</b>이 되는지 확인해 보세요.</p></div>
+    <div class="card lx"><h4>확인 3</h4><p class="small">직선 ②를 직선 ①과 <b>기울기가 같게</b> 만들면 교점이 어떻게 되는지 살펴보세요.</p></div>
+  </div>
+</section>
+<!-- ================= 2 거리 ================= -->
+<section class="sec" id="s2">
+  <h2>점과 직선 사이의 거리</h2>
+
+  <div class="card lp">
+    <p><b>"거리"란 무엇을 말할까요?</b> 점 P에서 직선 위의 여러 점까지 선을 그어 보면 길이가 제각각입니다. 그중 <b class="bp">가장 짧은 것</b>을 점과 직선 사이의 거리라고 약속합니다. 그리고 가장 짧은 선은 항상 <b class="bp">직선과 수직</b>입니다.</p>
+    <p class="small">직선과 수직으로 만나는 그 점을 <b>수선의 발 H</b>라고 부르고, 거리는 선분 PH의 길이입니다. 실습판에서 초록 점선이 바로 이 선분이에요.</p>
+  </div>
+
+  <h3>방법 1 · 수선의 발을 찾아 피타고라스 정리 (원리)</h3>
+  <div class="card">
+    <ul class="li">
+      <li>직선에 수직인 방향을 찾아 점 P에서 직선까지 선을 내립니다 → 수선의 발 <b class="mono">H(x_H, y_H)</b></li>
+      <li>두 점 사이의 거리 공식으로 계산합니다.</li>
+    </ul>
+    <div class="eq">PH = √{ ( x_P − x_H )² + ( y_P − y_H )² }
+      <small>실습판에서 이 값과 아래 공식 값이 정확히 같은지 비교해 보세요</small></div>
+  </div>
+
+  <h3>방법 2 · 공식으로 한 번에 (심화)</h3>
+  <div class="card lp">
+    <p>직선을 일반형 <b class="mono">px + qy = r</b> 로 써 두면, 점 <b class="mono">(x₀, y₀)</b> 까지의 거리는 다음 한 줄로 나옵니다.</p>
+    <div class="eq">d = <b>| p·x₀ + q·y₀ − r |</b> ÷ √( p² + q² )
+      <small>분자에 절댓값이 붙는 이유: 점이 직선의 어느 쪽에 있든 거리는 양수여야 하니까요</small></div>
+    <ul class="li">
+      <li><b>분자</b>는 점의 좌표를 방정식에 넣었을 때 <b>얼마나 안 맞는지</b>를 나타냅니다. 점이 직선 위에 있으면 정확히 0이 되고, 그래서 거리도 0이 됩니다.</li>
+      <li><b>분모</b> √(p² + q²) 는 방정식을 몇 배로 쓰든 답이 같아지도록 크기를 맞춰 주는 역할을 합니다. 예를 들어 <b class="mono">2x + 2y = 4</b> 와 <b class="mono">x + y = 2</b> 는 같은 직선이니 거리도 같아야 하지요.</li>
+    </ul>
+    <p class="small"><b>참고</b> — 이 공식은 고등학교에서 정식으로 배웁니다. 중학교 과정에서는 <b>수선의 발을 찾아 계산하는 방법 1</b>을 이해하는 것이 목표이고, 공식은 답을 빠르게 확인하는 도구로 쓰세요.</p>
+  </div>
+
+  <h3>손으로 따라 해 보기</h3>
+  <div class="card">
+    <p><b>문제</b> — 두 점 A(1, 2), B(5, 4)를 지나는 직선과 점 P(4, 7) 사이의 거리를 구하시오.</p>
+    <div class="step" style="background:#f7faff;border-radius:10px;padding:13px 15px;margin-top:9px">
+① 기울기 : a = (4 − 2) ÷ (5 − 1) = 2/4 = <span class="hl">1/2</span>
+② 방정식 : y − 2 = (1/2)(x − 1) → y = (1/2)x + 3/2
+③ 일반형 : 양변에 2를 곱하면 2y = x + 3 → <span class="hl">x − 2y = −3</span>   (p=1, q=−2, r=−3)
+④ 대입   : p·4 + q·7 − r = 1×4 + (−2)×7 − (−3) = 4 − 14 + 3 = −7
+⑤ 거리   : d = |−7| ÷ √(1² + (−2)²) = 7 ÷ √5 = 7√5 / 5 ≒ <span class="hl">3.13</span></div>
+    <p class="small" style="margin-top:9px">실습판 탭에서 A(1,2), B(5,4), P(4,7)을 찍어 같은 답이 나오는지 확인해 보세요.</p>
+  </div>
+</section>
+
+<!-- ================= 3 교점 ================= -->
+<section class="sec" id="s3">
+  <h2>두 직선의 교점 — 연립방정식으로 증명하기</h2>
+
+  <div class="card lx">
+    <p><b>교점의 정체</b> — 교점은 <b class="bx">두 직선 위에 동시에 있는 점</b>입니다. 즉 그 점의 좌표를 <b>두 방정식에 모두 넣었을 때 둘 다 성립</b>해야 합니다. 그래서 교점을 구하는 일은 두 방정식을 <b>동시에 만족하는 (x, y)</b>를 찾는 일, 곧 <b>연립방정식을 푸는 일</b>과 완전히 같습니다.</p>
+  </div>
+
+  <h3>두 직선의 위치 관계 세 가지</h3>
+  <table class="t">
+    <tr><th style="width:18%">위치 관계</th><th style="width:26%">기울기와 y절편</th><th style="width:22%">연립방정식의 해</th><th>교점</th></tr>
+    <tr><td><b class="bx">한 점에서 만남</b></td><td class="m">기울기가 다르다</td><td>해가 하나</td><td>교점 1개</td></tr>
+    <tr><td><b>평행</b></td><td class="m">기울기 같음, y절편 다름</td><td>해가 없다</td><td>교점 없음</td></tr>
+    <tr><td><b>일치</b></td><td class="m">기울기 같음, y절편 같음</td><td>해가 무수히 많다</td><td>모든 점이 교점</td></tr>
+  </table>
+
+  <h3>푸는 방법 두 가지</h3>
+  <div class="grid2">
+    <div class="card l1">
+      <h4>방법 A · 대입법 (y = ax + b 꼴일 때 편리)</h4>
+      <div class="step" style="background:#f7faff;border-radius:10px;padding:12px 14px">
+①  y = 2x − 1
+②  y = −x + 5
+
+y가 같으므로 우변끼리 같다고 놓는다
+   2x − 1 = −x + 5
+   3x = 6  →  <span class="hl">x = 2</span>
+①에 대입 : y = 2×2 − 1 = <span class="hl">3</span>
+교점 (2, 3)</div>
+    </div>
+    <div class="card l2">
+      <h4>방법 B · 가감법 (일반형 px + qy = r 일 때 편리)</h4>
+      <div class="step" style="background:#fffaf5;border-radius:10px;padding:12px 14px">
+①  2x − y = 1
+②   x + y = 5
+
+두 식을 <b>더하면</b> y가 사라진다
+   (2x + x) + (−y + y) = 1 + 5
+   3x = 6  →  <span class="hl">x = 2</span>
+②에 대입 : 2 + y = 5 → <span class="hl">y = 3</span>
+교점 (2, 3)</div>
+    </div>
+  </div>
+
+  <div class="card ld">
+    <h4>반드시 해야 할 마지막 단계 — 검산</h4>
+    <p class="small">구한 좌표를 <b>두 방정식 모두에</b> 넣어 좌변과 우변이 같은지 확인합니다. 하나만 맞고 다른 하나가 틀리면 그 점은 교점이 아닙니다. 실습판의 교점 카드에서도 검산 과정을 함께 보여 줍니다.</p>
+    <div class="step" style="background:#f4fdf8;border-radius:10px;padding:12px 14px;margin-top:8px">
+① 에 (2, 3) 대입 : 2×2 − 3 = 4 − 3 = 1  ✓ 우변과 같다
+② 에 (2, 3) 대입 : 2 + 3 = 5  ✓ 우변과 같다
+→ 따라서 (2, 3)은 확실히 두 직선의 교점이다</div>
+  </div>
+
+  <div class="card">
+    <h4>왜 "기울기가 다르면 반드시 한 점에서 만날까?"</h4>
+    <p class="small">일반형 <b class="mono">p₁x + q₁y = r₁</b>, <b class="mono">p₂x + q₂y = r₂</b> 를 가감법으로 풀면 x의 계수가 <b class="mono">p₁q₂ − p₂q₁</b> 이 됩니다. 이 값이 <b>0이 아니면</b> x가 딱 하나로 정해지고, 따라서 y도 하나로 정해집니다. 그런데 이 값이 0이라는 것은 두 직선의 기울기가 같다는 뜻이에요. 그래서 <b>기울기가 다르다 = 반드시 한 점에서 만난다</b>가 됩니다.</p>
+  </div>
+</section>
+
+<!-- ================= 4 정리 ================= -->
+<section class="sec" id="s4">
+  <h2>정리 · 확인문제</h2>
+
+  <h3>한 장 요약</h3>
+  <table class="t">
+    <tr><th style="width:22%">구하는 것</th><th style="width:38%">방법</th><th>식</th></tr>
+    <tr><td><b class="b1">기울기</b></td><td>세로 변화량 ÷ 가로 변화량</td><td class="m">a = (y₂ − y₁) / (x₂ − x₁)</td></tr>
+    <tr><td><b class="b1">직선의 방정식</b></td><td>기울기를 구한 뒤 한 점을 대입</td><td class="m">y − y₁ = a(x − x₁)</td></tr>
+    <tr><td><b class="b2">y절편</b></td><td>x = 0 을 대입</td><td class="m">(0, b)</td></tr>
+    <tr><td><b class="b2">x절편</b></td><td>y = 0 을 대입</td><td class="m">(−b/a, 0)</td></tr>
+    <tr><td><b class="bp">점과 직선의 거리</b></td><td>수선의 발까지의 길이 (공식은 심화)</td><td class="m">d = |px₀+qy₀−r| / √(p²+q²)</td></tr>
+    <tr><td><b class="bx">교점</b></td><td>두 방정식을 연립해서 풀기</td><td class="m">대입법 또는 가감법 + 검산</td></tr>
+  </table>
+
+  <div class="card l1">
+    <h4>자주 하는 실수</h4>
+    <ul class="li">
+      <li>기울기를 구할 때 <b>분자와 분모를 뒤집는 실수</b> — 세로가 분자입니다. (Δy가 위)</li>
+      <li>x축과 평행한 직선의 기울기는 <b>0</b>, y축과 평행한 직선은 <b>기울기를 정할 수 없습니다</b> (분모가 0). 이때는 <b class="mono">x = k</b> 로 씁니다.</li>
+      <li>x절편을 구할 때 <b>y에 0을 넣어야</b> 하는데 x에 0을 넣는 실수가 잦습니다.</li>
+      <li>교점을 구한 뒤 <b>검산을 생략</b>하면 계산 실수를 못 잡습니다.</li>
+    </ul>
+  </div>
+
+  <h3>확인문제</h3>
+  <div id="quiz"></div>
+</section>
+</div>
+
+<footer>
+  <div>좌표평면 위의 직선 — 기울기 · 절편 · 점과 직선 사이의 거리 · 두 직선의 교점</div>
+  <div style="margin-top:5px;font-size:12.5px">모든 점은 정수 좌표 위에만 찍히며, 계산 결과는 분수로 정확하게 표시됩니다</div>
+</footer>
+<script>
+/* ============ 공통 ============ */
+var NS='http://www.w3.org/2000/svg';
+function $(i){return document.getElementById(i);}
+function sv(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function tx(t,a,p){var e=sv('text',a,p);e.textContent=t;return e;}
+function el(t,c,s){var e=document.createElement(t);if(c)e.className=c;if(s!==undefined)e.textContent=s;return e;}
+function clr(n){while(n.firstChild)n.removeChild(n.firstChild);}
+function go(i){
+  var s=document.querySelectorAll('section.sec'),t=document.querySelectorAll('.tab');
+  for(var k=0;k<s.length;k++){s[k].classList.toggle('on',k===i);t[k].classList.toggle('on',k===i);}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function stepEl(txt){
+  var d=el('div','step'),parts=txt.split(/\[\[|\]\]/);
+  parts.forEach(function(s,i){
+    if(i%2===1)d.appendChild(el('span','hl',s));
+    else d.appendChild(document.createTextNode(s));
+  });
+  return d;
+}
+var MIN='\u2212', RT='\u221A';
+
+/* ============ 분수 ============ */
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a;}
+function F(n,d){if(d===undefined)d=1;if(d<0){n=-n;d=-d;}var g=gcd(n,d)||1;n=n/g;d=d/g;if(n===0)n=0;return{n:n,d:d};}
+function fadd(a,b){return F(a.n*b.d+b.n*a.d,a.d*b.d);}
+function fsub(a,b){return F(a.n*b.d-b.n*a.d,a.d*b.d);}
+function fmul(a,b){return F(a.n*b.n,a.d*b.d);}
+function fv(f){return f.n/f.d;}
+function feq(a,b){return a.n===b.n&&a.d===b.d;}
+function sn(x){return x<0?MIN+(-x):''+x;}
+function pr(x){return x<0?'('+MIN+(-x)+')':''+x;}
+function tm0(c,v){return (c<0?MIN:'')+(Math.abs(c)===1?'':Math.abs(c))+v;}
+function tm(c,v){return (c<0?' '+MIN+' ':' + ')+(Math.abs(c)===1?'':Math.abs(c))+v;}
+function lin(a,b,v1,v2){var s='';if(a!==0)s+=tm0(a,v1);if(b!==0)s+=(s?tm(b,v2):tm0(b,v2));return s||'0';}
+function fs(f){if(f.d===1)return sn(f.n);return (f.n<0?MIN:'')+Math.abs(f.n)+'/'+f.d;}
+function fpr(f){return f.n<0?'('+fs(f)+')':fs(f);}
+function cf(f){return f.d===1?fs(f):'('+fs(f)+')';}
+function simpSqrt(m){var k=1,s=m;for(var i=2;i*i<=s;i++){while(s%(i*i)===0){s/=i*i;k*=i;}}return[k,s];}
+function radStr(N,m){
+  N=Math.abs(N);
+  var q=simpSqrt(m),k=q[0],s=q[1];
+  if(N===0)return '0';
+  if(s===1)return fs(F(N,k));
+  var num=N,den=k*s,g=gcd(num,den)||1;num/=g;den/=g;
+  return (num===1?'':num)+RT+s+(den===1?'':' / '+den);
+}
+
+/* ============ 직선 ============ */
+function mkLine(A,B){
+  if(!A||!B)return null;
+  if(A[0]===B[0]&&A[1]===B[1])return null;
+  var p=B[1]-A[1],q=-(B[0]-A[0]),r=p*A[0]+q*A[1];
+  var g=gcd(Math.abs(p),Math.abs(q))||1;
+  p/=g;q/=g;r/=g;
+  if(p<0||(p===0&&q<0)){p=-p;q=-q;r=-r;}
+  return {p:p,q:q,r:r,A:A,B:B};
+}
+function slope(L){return L.q===0?null:F(-L.p,L.q);}
+function yint(L){return L.q===0?null:F(L.r,L.q);}
+function xint(L){return L.p===0?null:F(L.r,L.p);}
+function eqY(L){
+  if(L.q===0)return 'x = '+fs(F(L.r,L.p));
+  var a=slope(L),b=yint(L),s='y = ';
+  if(a.n===0)return 'y = '+fs(b);
+  if(a.n===a.d)s+='x';else if(a.n===-a.d)s+=MIN+'x';else s+=cf(a)+'x';
+  if(b.n!==0)s+=(b.n>0?' + ':' '+MIN+' ')+fs(F(Math.abs(b.n),b.d));
+  return s;
+}
+function eqG(L){
+  var s='';
+  if(L.p!==0)s+=(L.p===1?'x':(L.p===-1?MIN+'x':sn(L.p)+'x'));
+  if(L.q!==0){
+    var aq=Math.abs(L.q),sg=L.q>0?(s?' + ':''):(s?' '+MIN+' ':MIN);
+    s+=sg+(aq===1?'y':aq+'y');
+  }
+  return s+' = '+sn(L.r);
+}
+function clipLine(L,x0,x1,y0,y1){
+  var pts=[],e=1e-9,v;
+  if(L.q!==0){
+    v=(L.r-L.p*x0)/L.q; if(v>=y0-e&&v<=y1+e)pts.push([x0,v]);
+    v=(L.r-L.p*x1)/L.q; if(v>=y0-e&&v<=y1+e)pts.push([x1,v]);
+  }
+  if(L.p!==0){
+    v=(L.r-L.q*y0)/L.p; if(v>=x0-e&&v<=x1+e)pts.push([v,y0]);
+    v=(L.r-L.q*y1)/L.p; if(v>=x0-e&&v<=x1+e)pts.push([v,y1]);
+  }
+  var u=[];
+  pts.forEach(function(p){
+    for(var i=0;i<u.length;i++)if(Math.abs(u[i][0]-p[0])<1e-7&&Math.abs(u[i][1]-p[1])<1e-7)return;
+    u.push(p);
+  });
+  return u.length>=2?[u[0],u[u.length-1]]:null;
+}
+
+/* ============ 좌표평면 ============ */
+function Plane(id,o){
+  o=o||{};this.svg=$(id);
+  this.x0=o.x0;this.x1=o.x1;this.y0=o.y0;this.y1=o.y1;this.c=o.c;this.p=34;
+  this.W=this.p*2+(this.x1-this.x0)*this.c;
+  this.H=this.p*2+(this.y1-this.y0)*this.c;
+  this.svg.setAttribute('viewBox','0 0 '+this.W+' '+this.H);
+  this.svg.style.maxWidth=this.W+'px';
+}
+Plane.prototype.X=function(x){return this.p+(x-this.x0)*this.c;};
+Plane.prototype.Y=function(y){return this.p+(this.y1-y)*this.c;};
+Plane.prototype.raw=function(e){
+  var r=this.svg.getBoundingClientRect();
+  var sx=(e.clientX-r.left)/r.width*this.W, sy=(e.clientY-r.top)/r.height*this.H;
+  return {x:(sx-this.p)/this.c+this.x0, y:this.y1-(sy-this.p)/this.c};
+};
+Plane.prototype.snap=function(e){
+  var q=this.raw(e);
+  return {x:Math.max(this.x0,Math.min(this.x1,Math.round(q.x))),
+          y:Math.max(this.y0,Math.min(this.y1,Math.round(q.y)))};
+};
+Plane.prototype.grid=function(sk){
+  var s=this.svg,i;clr(s);
+  sv('rect',{x:0,y:0,width:this.W,height:this.H,fill:'#fff'},s);
+  for(i=this.x0;i<=this.x1;i++)
+    sv('line',{x1:this.X(i),y1:this.Y(this.y1),x2:this.X(i),y2:this.Y(this.y0),
+      stroke:i===0?'#64748b':'#e7eefa','stroke-width':i===0?2:1},s);
+  for(i=this.y0;i<=this.y1;i++)
+    sv('line',{x1:this.X(this.x0),y1:this.Y(i),x2:this.X(this.x1),y2:this.Y(i),
+      stroke:i===0?'#64748b':'#e7eefa','stroke-width':i===0?2:1},s);
+  for(i=this.x0;i<=this.x1;i++)if(i!==0&&(!sk||i%sk===0))
+    tx(i,{x:this.X(i),y:this.Y(0)+14,'text-anchor':'middle','font-size':10,fill:'#93a3bd',
+      'font-family':'D2Coding,Consolas,monospace'},s);
+  for(i=this.y0;i<=this.y1;i++)if(i!==0&&(!sk||i%sk===0))
+    tx(i,{x:this.X(0)-7,y:this.Y(i)+4,'text-anchor':'end','font-size':10,fill:'#93a3bd',
+      'font-family':'D2Coding,Consolas,monospace'},s);
+  tx('O',{x:this.X(0)-8,y:this.Y(0)+14,'text-anchor':'end','font-size':11,fill:'#93a3bd'},s);
+  tx('x',{x:this.X(this.x1)+4,y:this.Y(0)-7,'font-size':13,fill:'#64748b','font-weight':'bold'},s);
+  tx('y',{x:this.X(0)+7,y:this.Y(this.y1)-5,'font-size':13,fill:'#64748b','font-weight':'bold'},s);
+};
+Plane.prototype.seg=function(a,b,o){
+  sv('line',{x1:this.X(a[0]),y1:this.Y(a[1]),x2:this.X(b[0]),y2:this.Y(b[1]),
+    stroke:o.c,'stroke-width':o.w||2,'stroke-dasharray':o.dash||'','stroke-linecap':'round',
+    opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.pt=function(x,y,c,lab,r){
+  sv('circle',{cx:this.X(x),cy:this.Y(y),r:r||6,fill:c,stroke:'#fff','stroke-width':2},this.svg);
+  if(lab)tx(lab,{x:this.X(x)+10,y:this.Y(y)-9,'font-size':13,'font-weight':'bold',fill:c,
+    'font-family':'D2Coding,Consolas,monospace'},this.svg);
+};
+
+/* ============ 탭0 : 기울기 데모 ============ */
+var SD={pl:null};
+SD.init=function(){
+  this.pl=new Plane('svgS',{x0:-7,x1:7,y0:-7,y1:7,c:24});
+  var self=this;
+  ['sa','sb'].forEach(function(i){$(i).addEventListener('input',function(){self.draw();});});
+  this.draw();
+};
+SD.fmt=function(a){
+  if(a===Math.round(a))return sn(a);
+  return fs(F(Math.round(a*2),2));
+};
+SD.draw=function(){
+  var a=parseFloat($('sa').value),b=parseInt($('sb').value,10),pl=this.pl;
+  $('saV').textContent=this.fmt(a);$('sbV').textContent=sn(b);
+  var s='y = ';
+  if(a===0)s+=sn(b);
+  else{
+    s+=(a===1?'x':(a===-1?MIN+'x':this.fmt(a)+'x'));
+    if(b!==0)s+=(b>0?' + '+b:' '+MIN+' '+(-b));
+  }
+  $('sEq').textContent=s;
+  pl.grid();
+  var L={p:-a,q:1,r:b};
+  if(a===Math.round(a*2)/2){L={p:-Math.round(a*2),q:2,r:2*b};}
+  var cp=clipLine(L,-7,7,-7,7);
+  if(cp)pl.seg(cp[0],cp[1],{c:'#2563eb',w:3.5});
+  if($('showStairS')===null){}
+  var x1=0,y1=b,x2=1,y2=b+a;
+  if(y2>=-7&&y2<=7&&y1>=-7&&y1<=7){
+    pl.seg([x1,y1],[x2,y1],{c:'#ea580c',w:2.5,dash:'5 4'});
+    pl.seg([x2,y1],[x2,y2],{c:'#ea580c',w:2.5,dash:'5 4'});
+    tx('오른쪽 1',{x:pl.X(0.5),y:pl.Y(y1)+16,'text-anchor':'middle','font-size':11.5,
+      fill:'#ea580c','font-weight':'bold'},pl.svg);
+    tx((a>=0?'위 ':'아래 ')+this.fmt(Math.abs(a)),{x:pl.X(x2)+7,y:pl.Y((y1+y2)/2)+4,
+      'font-size':11.5,fill:'#ea580c','font-weight':'bold'},pl.svg);
+  }
+  pl.pt(0,b,'#ea580c','(0, '+sn(b)+')',6);
+  if(a!==0){
+    var xi=F(Math.round(-b*2),Math.round(a*2));
+    if(Math.abs(fv(xi))<=7)pl.pt(fv(xi),0,'#7c3aed','x절편 '+fs(xi),5);
+  }
+};
+
+/* ============ 탭1 : 통합 실습판 ============ */
+var LB={pl:null,pts:{A:null,B:null,P:null,C:null,D:null},drag:null};
+var ORD=['A','B','P','C','D'];
+var COL={A:'#2563eb',B:'#2563eb',P:'#7c3aed',C:'#ea580c',D:'#ea580c'};
+LB.init=function(){
+  this.pl=new Plane('svgL',{x0:-10,x1:10,y0:-8,y1:8,c:30});
+  var self=this,s=this.pl.svg;
+  s.addEventListener('pointerdown',function(e){self.down(e);});
+  s.addEventListener('pointermove',function(e){self.move(e);});
+  s.addEventListener('pointerup',function(e){self.up(e);});
+  s.addEventListener('pointerleave',function(e){self.up(e);});
+  this.draw();
+};
+LB.next=function(){
+  for(var i=0;i<5;i++)if(!this.pts[ORD[i]])return ORD[i];
+  return null;
+};
+LB.down=function(e){
+  var q=this.pl.raw(e),best=null,bd=0.75;
+  for(var i=0;i<5;i++){
+    var k=ORD[i],p=this.pts[k];if(!p)continue;
+    var d=Math.sqrt((p[0]-q.x)*(p[0]-q.x)+(p[1]-q.y)*(p[1]-q.y));
+    if(d<bd){bd=d;best=k;}
+  }
+  if(best){this.drag=best;this.pl.svg.setPointerCapture(e.pointerId);return;}
+  var n=this.next();if(!n)return;
+  var s=this.pl.snap(e);
+  this.pts[n]=[s.x,s.y];
+  this.draw();
+};
+LB.move=function(e){
+  if(!this.drag)return;
+  var s=this.pl.snap(e),p=this.pts[this.drag];
+  if(p[0]===s.x&&p[1]===s.y)return;
+  this.pts[this.drag]=[s.x,s.y];this.draw();
+};
+LB.up=function(){this.drag=null;};
+LB.clearLine=function(n){
+  if(n===1){this.pts.A=null;this.pts.B=null;}else{this.pts.C=null;this.pts.D=null;}
+  this.draw();
+};
+LB.clearP=function(){this.pts.P=null;this.draw();};
+LB.reset=function(){this.pts={A:null,B:null,P:null,C:null,D:null};this.draw();};
+LB.demo=function(){
+  this.pts={A:[1,2],B:[5,4],P:[4,7],C:[-1,7],D:[6,0]};this.draw();
+};
+LB.guide=function(){
+  var n=this.next(),g=$('guideTx'),num=$('guide').querySelector('.num');
+  var have1=(this.pts.A?1:0)+(this.pts.B?1:0), have2=(this.pts.C?1:0)+(this.pts.D?1:0);
+  if(n==='A'||n==='B'){num.textContent='STEP 1';
+    g.textContent='직선 ①을 만들 두 점 A, B를 클릭하세요. ('+have1+' / 2)';}
+  else if(n==='P'){num.textContent='STEP 2';
+    g.textContent='직선 ①이 완성되었습니다! 이제 거리를 잴 점 P를 클릭하세요.';}
+  else if(n==='C'||n==='D'){num.textContent='STEP 3';
+    g.textContent='직선 ②를 만들 두 점 C, D를 클릭하세요. ('+have2+' / 2)';}
+  else{num.textContent='완성';
+    g.textContent='모두 완성! 이제 점을 드래그하며 값이 어떻게 달라지는지 살펴보세요.';}
+};
+LB.draw=function(){
+  var pl=this.pl,P=this.pts,i;
+  pl.grid();
+  var L1=mkLine(P.A,P.B), L2=mkLine(P.C,P.D);
+  if(L1){
+    var c1=clipLine(L1,-10,10,-8,8);
+    if(c1)pl.seg(c1[0],c1[1],{c:'#2563eb',w:3.2});
+    var yi=yint(L1),xi=xint(L1);
+    if(yi&&Math.abs(fv(yi))<=8)pl.pt(0,fv(yi),'#1d4ed8',null,4.5);
+    if(xi&&Math.abs(fv(xi))<=10)pl.pt(fv(xi),0,'#1d4ed8',null,4.5);
+    if($('showStair').checked&&P.A&&P.B&&P.A[0]!==P.B[0]&&P.A[1]!==P.B[1]){
+      var cx=[P.B[0],P.A[1]];
+      pl.seg(P.A,cx,{c:'#60a5fa',w:2,dash:'5 4'});
+      pl.seg(cx,P.B,{c:'#60a5fa',w:2,dash:'5 4'});
+      tx('\u0394x = '+sn(P.B[0]-P.A[0]),{x:pl.X((P.A[0]+P.B[0])/2),y:pl.Y(P.A[1])+(P.B[1]>P.A[1]?16:-8),
+        'text-anchor':'middle','font-size':11.5,fill:'#2563eb','font-weight':'bold',
+        'font-family':'D2Coding,Consolas,monospace'},pl.svg);
+      tx('\u0394y = '+sn(P.B[1]-P.A[1]),{x:pl.X(P.B[0])+7,y:pl.Y((P.A[1]+P.B[1])/2)+4,
+        'font-size':11.5,fill:'#2563eb','font-weight':'bold',
+        'font-family':'D2Coding,Consolas,monospace'},pl.svg);
+    }
+  }
+  if(L2){
+    var c2=clipLine(L2,-10,10,-8,8);
+    if(c2)pl.seg(c2[0],c2[1],{c:'#ea580c',w:3.2});
+  }
+  if(L1&&P.P&&$('showPerp').checked){
+    var m=L1.p*L1.p+L1.q*L1.q;
+    var t=F(L1.p*P.P[0]+L1.q*P.P[1]-L1.r,m);
+    var hx=fsub(F(P.P[0]),fmul(F(L1.p),t)), hy=fsub(F(P.P[1]),fmul(F(L1.q),t));
+    var H=[fv(hx),fv(hy)];
+    pl.seg(P.P,H,{c:'#059669',w:2.6,dash:'6 4'});
+    var N=Math.abs(L1.p*P.P[0]+L1.q*P.P[1]-L1.r), d=N/Math.sqrt(m);
+    if(d>0.001){
+      var ux=(H[0]-P.P[0])/d, uy=(H[1]-P.P[1])/d;
+      var vx=-uy,vy=ux,k=0.42;
+      var q1=[H[0]-ux*k,H[1]-uy*k], q2=[H[0]-ux*k+vx*k,H[1]-uy*k+vy*k], q3=[H[0]+vx*k,H[1]+vy*k];
+      pl.seg(q1,q2,{c:'#059669',w:1.6});pl.seg(q2,q3,{c:'#059669',w:1.6});
+      tx('d \u2245 '+d.toFixed(2),{x:pl.X((P.P[0]+H[0])/2)+9,y:pl.Y((P.P[1]+H[1])/2),
+        'font-size':12,fill:'#059669','font-weight':'bold','font-family':'D2Coding,Consolas,monospace'},pl.svg);
+    }
+    pl.pt(H[0],H[1],'#059669','H',5);
+  }
+  if(L1&&L2){
+    var det=L1.p*L2.q-L2.p*L1.q;
+    if(det!==0){
+      var X=F(L1.r*L2.q-L2.r*L1.q,det), Y=F(L1.p*L2.r-L2.p*L1.r,det);
+      var xx=fv(X),yy=fv(Y);
+      if(xx>=-10&&xx<=10&&yy>=-8&&yy<=8){
+        sv('circle',{cx:pl.X(xx),cy:pl.Y(yy),r:12,fill:'none',stroke:'#db2777','stroke-width':2,opacity:.45},pl.svg);
+        pl.pt(xx,yy,'#db2777',null,7);
+        tx('교점 ('+fs(X)+', '+fs(Y)+')',{x:pl.X(xx)+15,y:pl.Y(yy)+18,'font-size':12.5,
+          fill:'#db2777','font-weight':'bold','font-family':'D2Coding,Consolas,monospace'},pl.svg);
+      }
+    }
+  }
+  for(i=0;i<5;i++){
+    var k=ORD[i],p=P[k];if(!p)continue;
+    pl.pt(p[0],p[1],COL[k],k+'('+sn(p[0])+', '+sn(p[1])+')',6.5);
+  }
+  this.guide();this.report(L1,L2);
+};
+LB.lineCard=function(box,L,n1,n2,A,B,name){
+  clr(box);
+  if(!A||!B){box.appendChild(el('div','empty','두 점 '+n1+', '+n2+'를 클릭하면 계산이 시작됩니다.'));return;}
+  if(!L){box.appendChild(el('div','empty','두 점이 같은 자리예요. 서로 다른 곳으로 옮겨 주세요.'));return;}
+  var dx=B[0]-A[0],dy=B[1]-A[1],s='';
+  s+=n1+'('+sn(A[0])+', '+sn(A[1])+')   '+n2+'('+sn(B[0])+', '+sn(B[1])+')\n\n';
+  s+='① 기울기\n';
+  if(dx===0){
+    s+='   \u0394x = 0 이므로 기울기를 정할 수 없습니다.\n   \u2192 y축에 평행한 직선입니다.\n\n';
+  }else{
+    var a=slope(L);
+    s+='   a = \u0394y \u00f7 \u0394x = ('+sn(B[1])+' '+MIN+' '+pr(A[1])+') \u00f7 ('+sn(B[0])+' '+MIN+' '+pr(A[0])+')\n';
+    s+='     = '+sn(dy)+' / '+sn(dx)+' = [['+fs(a)+']]\n\n';
+    s+='② 한 점을 대입\n';
+    s+='   y '+MIN+' '+pr(A[1])+' = '+fs(a)+' \u00d7 ( x '+MIN+' '+pr(A[0])+' )\n\n';
+  }
+  s+='③ 직선의 방정식\n   [['+eqY(L)+']]\n\n';
+  s+='④ 일반형\n   [['+eqG(L)+']]      ( p='+sn(L.p)+', q='+sn(L.q)+', r='+sn(L.r)+' )\n\n';
+  s+='⑤ 절편\n';
+  var yi=yint(L),xi=xint(L);
+  s+='   y절편 : '+(yi?'x=0 대입 \u2192 '+fs(yi)+'   점 (0, '+fs(yi)+')':'없음 (x축에 수직)')+'\n';
+  s+='   x절편 : '+(xi?'y=0 대입 \u2192 '+fs(xi)+'   점 ('+fs(xi)+', 0)':'없음 (x축에 평행)');
+  box.appendChild(stepEl(s));
+};
+LB.report=function(L1,L2){
+  var P=this.pts;
+  this.lineCard($('out1'),L1,'A','B',P.A,P.B);
+  this.lineCard($('out2'),L2,'C','D',P.C,P.D);
+  /* --- 거리 --- */
+  var bp=$('outP');clr(bp);
+  if(!L1||!P.P){
+    bp.appendChild(el('div','empty',!L1?'먼저 직선 ①을 만들어 주세요.':'거리를 잴 점 P를 클릭해 주세요.'));
+  }else{
+    var p=L1.p,q=L1.q,r=L1.r,x0=P.P[0],y0=P.P[1];
+    var N=p*x0+q*y0-r, m=p*p+q*q, d=Math.abs(N)/Math.sqrt(m);
+    var t=F(N,m), hx=fsub(F(x0),fmul(F(p),t)), hy=fsub(F(y0),fmul(F(q),t));
+    var s='점 P('+sn(x0)+', '+sn(y0)+')   직선 ① : '+eqG(L1)+'\n\n';
+    if(N===0){
+      s+='① 대입 : '+sn(p)+'\u00d7'+sn(x0)+' + '+sn(q)+'\u00d7'+sn(y0)+' '+MIN+' '+sn(r)+' = [[0]]\n';
+      s+='   \u2192 점 P가 직선 위에 있습니다.\n\n② 거리 d = [[0]]';
+    }else{
+      s+='① 공식에 넣을 값 구하기\n';
+      s+='   p\u00b7x\u2080 + q\u00b7y\u2080 '+MIN+' r = '+sn(p)+'\u00d7'+pr(x0)+' + '+pr(q)+'\u00d7'+pr(y0)+' '+MIN+' '+pr(r)+'\n';
+      s+='                 = '+sn(p*x0)+' + '+pr(q*y0)+' '+MIN+' '+pr(r)+' = '+sn(N)+'\n';
+      s+='   p\u00b2 + q\u00b2 = '+(p*p)+' + '+(q*q)+' = '+m+'\n\n';
+      s+='② 거리\n   d = |'+sn(N)+'| \u00f7 '+RT+m+' = [['+radStr(N,m)+']] \u2245 [['+d.toFixed(3)+']]\n\n';
+      s+='③ 수선의 발 H (직선과 수직으로 만나는 점)\n';
+      s+='   H = ( '+fs(hx)+' , '+fs(hy)+' )\n\n';
+      var ddx=fsub(F(x0),hx), ddy=fsub(F(y0),hy);
+      var d2=fadd(fmul(ddx,ddx),fmul(ddy,ddy));
+      s+='④ 검산 : 두 점 P, H 사이의 거리로 다시 계산\n';
+      s+='   PH\u00b2 = ('+fs(ddx)+')\u00b2 + ('+fs(ddy)+')\u00b2 = '+fs(d2)+'\n';
+      s+='   PH  = '+RT+'('+fs(d2)+') \u2245 [['+Math.sqrt(fv(d2)).toFixed(3)+']]   \u2713 ②와 같다';
+    }
+    bp.appendChild(stepEl(s));
+  }
+  /* --- 교점 --- */
+  var bx=$('outX');clr(bx);
+  if(!L1||!L2){bx.appendChild(el('div','empty','직선 ①과 직선 ②가 모두 있어야 교점을 구할 수 있습니다.'));return;}
+  bx.appendChild(stepEl(this.solveText(L1,L2)));
+};
+LB.solveText=function(L1,L2){
+  var p1=L1.p,q1=L1.q,r1=L1.r,p2=L2.p,q2=L2.q,r2=L2.r;
+  var det=p1*q2-p2*q1;
+  var s='① '+eqG(L1)+'\n② '+eqG(L2)+'\n\n';
+  if(det===0){
+    var sameL=(r1*q2===r2*q1)&&(r1*p2===r2*p1);
+    s+='x의 계수를 맞춰 빼면 x, y가 함께 사라집니다.\n';
+    s+='p\u2081q\u2082 '+MIN+' p\u2082q\u2081 = '+sn(p1)+'\u00d7'+sn(q2)+' '+MIN+' '+sn(p2)+'\u00d7'+sn(q1)+' = [[0]]\n\n';
+    if(sameL)s+='두 방정식이 같은 직선을 나타냅니다.\n\u2192 [[일치]] : 해가 무수히 많습니다. 모든 점이 교점입니다.';
+    else s+='기울기는 같은데 절편이 다릅니다.\n\u2192 [[평행]] : 해가 없습니다. 교점이 없습니다.';
+    return s;
+  }
+  var X=F(r1*q2-r2*q1,det), Y=F(p1*r2-p2*r1,det);
+  if(q1!==0&&q2!==0){
+    var a1=slope(L1),b1=yint(L1),a2=slope(L2),b2=yint(L2);
+    s+='[방법 A · 대입법]\n';
+    s+='   ① '+eqY(L1)+'\n   ② '+eqY(L2)+'\n';
+    s+='   y가 같으므로 우변끼리 같다고 놓는다\n';
+    s+='   '+tm0(1,'')+fs(a1)+'x '+(b1.n>=0?'+ '+fs(b1):MIN+' '+fs(F(-b1.n,b1.d)))+' = '+cf(a2)+'x '+(b2.n>=0?'+ '+fs(b2):MIN+' '+fs(F(-b2.n,b2.d)))+'\n';
+    var da=fsub(a1,a2), db=fsub(b2,b1);
+    s+='   ( '+fs(a1)+' '+MIN+' '+fpr(a2)+' )x = '+fs(b2)+' '+MIN+' '+fpr(b1)+'\n';
+    s+='   '+fs(da)+' x = '+fs(db)+'   \u2192   x = [['+fs(X)+']]\n\n';
+  }
+  s+='[방법 B · 가감법]\n';
+  if(q1===0){
+    s+='   ①은 세로선이므로 x = '+fs(F(r1,p1))+' 로 바로 정해진다.\n';
+    s+='   ②에 대입 : '+sn(p2)+'\u00d7'+fpr(X)+tm(q2,'y')+' = '+sn(r2)+'\n';
+  }else if(q2===0){
+    s+='   ②는 세로선이므로 x = '+fs(F(r2,p2))+' 로 바로 정해진다.\n';
+    s+='   ①에 대입 : '+sn(p1)+'\u00d7'+fpr(X)+tm(q1,'y')+' = '+sn(r1)+'\n';
+  }else{
+    s+='   ①\u00d7'+pr(q2)+' : '+lin(p1*q2,q1*q2,'x','y')+' = '+sn(r1*q2)+'\n';
+    s+='   ②\u00d7'+pr(q1)+' : '+lin(p2*q1,q1*q2,'x','y')+' = '+sn(r2*q1)+'\n';
+    s+='   빼면 y가 사라진다\n';
+    s+='   ( '+sn(p1*q2)+' '+MIN+' '+pr(p2*q1)+' )x = '+sn(r1*q2)+' '+MIN+' '+pr(r2*q1)+'\n';
+    s+='   '+sn(det)+' x = '+sn(r1*q2-r2*q1)+'   \u2192   x = [['+fs(X)+']]\n';
+    s+='   ①에 대입 : '+sn(p1)+'\u00d7'+fpr(X)+tm(q1,'y')+' = '+sn(r1)+'\n';
+  }
+  s+='   \u2192 y = [['+fs(Y)+']]\n\n';
+  s+='[교점] ( '+fs(X)+' , '+fs(Y)+' )'+(X.d===1&&Y.d===1?'':'   (분수 좌표)')+'\n\n';
+  var c1=fadd(fmul(F(p1),X),fmul(F(q1),Y)), c2=fadd(fmul(F(p2),X),fmul(F(q2),Y));
+  s+='[검산] 두 방정식에 모두 넣어 확인\n';
+  s+='   ① '+sn(p1)+'\u00d7'+fpr(X)+' + '+pr(q1)+'\u00d7'+fpr(Y)+' = '+fs(c1)+
+     '  '+(c1.n===r1&&c1.d===1?'\u2713 우변 '+sn(r1)+'와 같다':'\u2717')+'\n';
+  s+='   ② '+sn(p2)+'\u00d7'+fpr(X)+' + '+pr(q2)+'\u00d7'+fpr(Y)+' = '+fs(c2)+
+     '  '+(c2.n===r2&&c2.d===1?'\u2713 우변 '+sn(r2)+'와 같다':'\u2717')+'\n';
+  s+='   \u2192 따라서 이 점은 두 직선 위에 동시에 있습니다.';
+  return s;
+};
+
+/* ============ 퀴즈 ============ */
+var QZ=[
+ {q:'두 점 (2, 3), (6, 11)을 지나는 직선의 기울기는?',
+  o:['1/2','2','4','8'],a:1,
+  e:'a = (11 − 3) ÷ (6 − 2) = 8 ÷ 4 = 2 입니다. 분자가 세로 변화량임을 잊지 마세요.'},
+ {q:'직선 y = −3x + 6 의 x절편은?',
+  o:['6','−6','2','−2'],a:2,
+  e:'x절편은 y = 0을 대입합니다. 0 = −3x + 6 → 3x = 6 → x = 2.'},
+ {q:'두 점 (−1, 4), (3, 4)를 지나는 직선의 방정식은?',
+  o:['x = 4','y = 4','y = x + 5','y = 4x'],a:1,
+  e:'y좌표가 둘 다 4로 같으므로 기울기는 (4−4)/(3−(−1)) = 0. 가로로 눕는 직선 y = 4 입니다.'},
+ {q:'점 (0, 0)과 직선 3x + 4y = 10 사이의 거리는?',
+  o:['1','2','10','5'],a:1,
+  e:'d = |3×0 + 4×0 − 10| ÷ √(3² + 4²) = 10 ÷ 5 = 2 입니다.'},
+ {q:'두 직선 y = 2x − 1 과 y = 2x + 3 의 교점은 몇 개일까요?',
+  o:['0개','1개','2개','무수히 많다'],a:0,
+  e:'기울기가 2로 같고 y절편이 다르므로 두 직선은 평행합니다. 연립방정식의 해가 없으므로 교점은 없습니다.'},
+ {q:'연립방정식 x + y = 7, x − y = 1 의 해, 즉 두 직선의 교점은?',
+  o:['(3, 4)','(4, 3)','(5, 2)','(1, 6)'],a:1,
+  e:'두 식을 더하면 2x = 8 → x = 4, 대입하면 y = 3. 검산: 4+3=7 ✓, 4−3=1 ✓'},
+ {q:'직선을 일반형 px + qy = r 로 쓸 때, y축에 평행한 직선(세로선)의 특징은?',
+  o:['p = 0','q = 0','r = 0','p = q'],a:1,
+  e:'q = 0 이면 px = r, 즉 x = r/p 인 세로선입니다. 이때는 기울기를 정할 수 없어 y = ax + b 꼴로 쓸 수 없습니다.'}
+];
+function buildQuiz(){
+  var box=$('quiz');
+  QZ.forEach(function(it,qi){
+    var d=el('div','q');
+    d.appendChild(el('div','qq','문제 '+(qi+1)+'. '+it.q));
+    var ans=el('div','qa','\u2192 '+it.e);
+    it.o.forEach(function(o,oi){
+      var b=el('button','opt',(oi+1)+') '+o);
+      b.onclick=function(){
+        var s=d.querySelectorAll('.opt');
+        for(var i=0;i<s.length;i++)s[i].className='opt';
+        if(oi===it.a)b.className='opt ok';else{b.className='opt no';s[it.a].className='opt ok';}
+        ans.className='qa show';
+      };
+      d.appendChild(b);
+    });
+    d.appendChild(ans);box.appendChild(d);
+  });
+}
+
+/* ============ 시작 ============ */
+(function(){SD.init();LB.init();buildQuiz();})();
+</script>
+</body>
+</html>
