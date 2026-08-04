@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>좌표로 배우는 대칭과 도형 옮기기 (초등 3~6학년)</title>
+<style>
+:root{
+  --ink:#1b2740; --sub:#5a6a88; --pale:#8fa0be;
+  --bg:#f3f8ff; --card:#ffffff; --line:#d9e6f8;
+  --blue:#2f6fed; --orange:#ff7a1a; --pink:#ff3f83; --green:#12b26a;
+  --purple:#8b5cf6; --yellow:#ffc93c; --red:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:linear-gradient(#e2edfd 1px,transparent 1px),linear-gradient(90deg,#e2edfd 1px,transparent 1px);
+  background-size:28px 28px;
+  color:var(--ink);font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.8;font-size:16.5px;padding-bottom:60px;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:0 18px}
+.mono{font-family:'D2Coding','Consolas',monospace}
+
+header{background:linear-gradient(135deg,#2f6fed,#7c3aed 55%,#ff3f83);
+  color:#fff;padding:40px 0 34px;text-align:center;border-bottom:6px solid #1b2740}
+h1{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+header p{font-size:16px;opacity:.95}
+.hb{display:inline-block;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.5);
+  border-radius:30px;padding:4px 16px;font-size:13.5px;font-weight:700;margin-bottom:12px}
+
+nav{position:sticky;top:0;z-index:60;background:rgba(243,248,255,.95);backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--line);padding:11px 0;margin-bottom:28px}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tab{background:#fff;border:2px solid var(--line);color:var(--sub);padding:9px 15px;border-radius:14px;
+  cursor:pointer;font-size:14.5px;font-weight:800;font-family:inherit;transition:.13s;
+  box-shadow:0 3px 0 var(--line)}
+.tab:hover{transform:translateY(-1px);border-color:var(--blue);color:var(--blue)}
+.tab.on{background:var(--blue);color:#fff;border-color:#1b4fc0;box-shadow:0 3px 0 #1b4fc0}
+
+section.sec{display:none;animation:pop .28s ease}
+section.sec.on{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+h2{font-size:27px;font-weight:800;margin:4px 0 14px;display:flex;align-items:center;gap:11px}
+h2 .ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+  background:var(--blue);color:#fff;font-size:20px;flex:0 0 auto}
+h3{font-size:20px;font-weight:800;margin:26px 0 10px;color:var(--blue)}
+p{margin:8px 0;color:#31405e}
+.small{font-size:14.5px;color:var(--sub)}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px 22px;
+  margin:14px 0;box-shadow:0 4px 0 var(--line)}
+.card.b{border-color:#bcd4fb;box-shadow:0 4px 0 #bcd4fb}
+.card.o{border-color:#ffd2ad;box-shadow:0 4px 0 #ffd2ad;background:#fffaf4}
+.card.p{border-color:#ffc4da;box-shadow:0 4px 0 #ffc4da;background:#fff6fa}
+.card.g{border-color:#b6ebd2;box-shadow:0 4px 0 #b6ebd2;background:#f4fdf8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+
+.rule{background:#1b2740;color:#fff;border-radius:16px;padding:15px 20px;margin:12px 0;text-align:center;
+  font-family:'D2Coding',Consolas,monospace;font-size:20px;font-weight:700;letter-spacing:.5px}
+.rule b{color:var(--yellow)}
+.rule small{display:block;font-family:inherit;font-size:13.5px;color:#a9bbdb;margin-top:6px;font-weight:400;letter-spacing:0}
+
+ul.li{list-style:none;margin:8px 0}
+ul.li li{padding-left:24px;position:relative;margin:6px 0}
+ul.li li::before{content:'●';position:absolute;left:4px;color:var(--blue);font-size:11px;top:1px}
+
+/* 실습판 */
+.lab{background:#fff;border:3px solid var(--line);border-radius:22px;padding:16px;margin:16px 0;
+  box-shadow:0 5px 0 var(--line)}
+.labrow{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;align-items:start}
+.pane svg{width:100%;height:auto;display:block;touch-action:none}
+.pad{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;
+  background:#f0f6ff;border:2px solid var(--line);border-radius:14px;padding:10px 12px}
+.b{background:#fff;border:2px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:12px;
+  cursor:pointer;font-size:14.5px;font-weight:800;font-family:inherit;box-shadow:0 3px 0 var(--line);transition:.12s}
+.b:hover{transform:translateY(-1px)}
+.b:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.b.blue{background:var(--blue);color:#fff;border-color:#1b4fc0;box-shadow:0 3px 0 #1b4fc0}
+.b.org{background:var(--orange);color:#fff;border-color:#d1610f;box-shadow:0 3px 0 #d1610f}
+.b.pnk{background:var(--pink);color:#fff;border-color:#c4265f;box-shadow:0 3px 0 #c4265f}
+.b.grn{background:var(--green);color:#fff;border-color:#0a8a51;box-shadow:0 3px 0 #0a8a51}
+.b.pur{background:var(--purple);color:#fff;border-color:#6d33d6;box-shadow:0 3px 0 #6d33d6}
+.b.on{outline:3px solid var(--yellow);outline-offset:1px}
+.b.arrow{font-size:19px;padding:6px 15px;min-width:48px}
+.lbl{font-size:13.5px;font-weight:800;color:var(--sub)}
+
+table.pt{width:100%;border-collapse:collapse;font-size:15px;font-family:'D2Coding',Consolas,monospace}
+table.pt th{background:#eaf1ff;color:var(--sub);padding:7px;border:2px solid var(--line);font-weight:800;font-size:13.5px}
+table.pt td{padding:7px;text-align:center;border:2px solid var(--line);font-weight:700}
+table.pt td.o{color:var(--blue)}
+table.pt td.n{color:var(--orange)}
+.speech{background:#fffbe8;border:2px dashed var(--yellow);border-radius:16px;padding:12px 16px;
+  margin-top:12px;font-size:15px;color:#6b5300;font-weight:600;min-height:56px}
+.score{font-weight:800;color:var(--green)}
+
+/* 도형 갤러리 */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.gcard{background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px;text-align:center;
+  box-shadow:0 4px 0 var(--line)}
+.gcard svg{width:100%;height:auto}
+.gcard .nm{font-weight:800;font-size:15px;margin:6px 0 8px}
+.gopts{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.gopts button{padding:6px 4px;font-size:12.5px;font-weight:800;border-radius:9px;border:2px solid var(--line);
+  background:#f7faff;cursor:pointer;font-family:inherit;color:var(--sub)}
+.gopts button:hover{border-color:var(--blue)}
+.gopts button.ok{background:#dcfce7;border-color:var(--green);color:#0a7a45}
+.gopts button.no{background:#fee2e2;border-color:var(--red);color:#b91c1c}
+.gmsg{font-size:12.5px;margin-top:7px;color:var(--sub);min-height:20px;font-weight:700}
+
+/* 미션 */
+.mbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#1b2740;color:#fff;
+  border-radius:16px;padding:12px 16px;margin-bottom:12px}
+.mbar .stage{background:var(--yellow);color:#1b2740;font-weight:800;padding:3px 12px;border-radius:20px;font-size:14px}
+.mbar .goal{font-weight:700}
+.done{background:#dcfce7;border:2px solid var(--green);color:#0a7a45;border-radius:14px;
+  padding:11px 16px;font-weight:800;margin-top:11px}
+
+.q{background:#fff;border:2px solid var(--line);border-radius:18px;padding:15px 18px;margin:11px 0;
+  box-shadow:0 4px 0 var(--line)}
+.qq{font-weight:800;margin-bottom:9px}
+.opt{background:#f7faff;border:2px solid var(--line);color:#31405e;padding:9px 13px;border-radius:12px;
+  margin:5px 0;cursor:pointer;font-size:15px;font-weight:700;font-family:inherit;width:100%;text-align:left}
+.opt:hover{border-color:var(--blue)}
+.opt.ok{background:#dcfce7;border-color:var(--green);color:#0a7a45}
+.opt.no{background:#fee2e2;border-color:var(--red);color:#b91c1c}
+.qa{margin-top:8px;font-size:14px;color:var(--sub);display:none;font-weight:600}
+.qa.show{display:block}
+
+footer{text-align:center;color:var(--pale);font-size:14px;padding:34px 0 10px;margin-top:36px;
+  border-top:2px solid var(--line)}
+@media(max-width:960px){
+  .labrow{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}
+  .gal{grid-template-columns:1fr 1fr}h1{font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="hb">초등 3~6학년 · 이산수학 기하</div>
+    <h1>좌표로 배우는 대칭과 도형 옮기기</h1>
+    <p>밀고 · 뒤집고 · 돌리면서 숫자가 어떻게 바뀌는지 직접 찾아보아요</p>
+  </div>
+</header>
+
+<nav><div class="wrap"><div class="tabs">
+  <button class="tab on" onclick="go(0)">① 좌표 놀이터</button>
+  <button class="tab" onclick="go(1)">② 밀기</button>
+  <button class="tab" onclick="go(2)">③ 뒤집기</button>
+  <button class="tab" onclick="go(3)">④ 돌리기</button>
+  <button class="tab" onclick="go(4)">⑤ 점대칭</button>
+  <button class="tab" onclick="go(5)">⑥ 대칭 도형 찾기</button>
+  <button class="tab" onclick="go(6)">⑦ 미션 게임</button>
+</div></div></nav>
+
+<div class="wrap">
+<!-- ===== 0 좌표 놀이터 ===== -->
+<section class="sec on" id="s0">
+  <h2><span class="ic">①</span>좌표 놀이터 — 숫자 두 개로 자리를 정해요</h2>
+
+  <div class="card b">
+    <p>운동장에서 친구를 찾을 때 <b>"오른쪽으로 3걸음, 위로 2걸음"</b> 이라고 말하면 정확히 찾을 수 있지요? 수학에서도 똑같이 합니다. 가로로 몇 칸, 세로로 몇 칸인지 <b style="color:#2f6fed">숫자 두 개</b>로 자리를 정하는 거예요.</p>
+    <div class="rule">( <b>가로</b> , <b>세로</b> ) = ( x , y )<small>가로 x가 먼저, 세로 y가 나중! 순서를 바꾸면 다른 곳이 됩니다</small></div>
+    <ul class="li">
+      <li><b>x</b>가 커지면 <b style="color:#2f6fed">오른쪽</b>으로, 작아지면(음수) <b style="color:#2f6fed">왼쪽</b>으로 갑니다.</li>
+      <li><b>y</b>가 커지면 <b style="color:#ff7a1a">위쪽</b>으로, 작아지면(음수) <b style="color:#ff7a1a">아래쪽</b>으로 갑니다.</li>
+      <li>가운데 <b>(0, 0)</b> 자리를 <b>원점</b>이라고 불러요. 모든 여행의 출발점입니다.</li>
+    </ul>
+  </div>
+
+  <h3>보물찾기 놀이</h3>
+  <p class="small">알려 주는 좌표를 판에서 찾아 <b>클릭</b>해 보세요. 다섯 번 맞히면 성공!</p>
+  <div class="lab">
+    <div class="pad">
+      <button class="b grn" onclick="TQ.start()">새 문제 내기</button>
+      <span class="lbl">찾아야 할 자리</span>
+      <span class="mono" id="tqTarget" style="font-size:22px;font-weight:800;color:#ff3f83">( ? , ? )</span>
+      <span class="lbl" style="margin-left:auto">맞힌 개수</span>
+      <span class="score" id="tqScore" style="font-size:20px">0 / 5</span>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg0"></svg></div>
+      <div>
+        <div class="speech" id="tqMsg">준비되면 <b>새 문제 내기</b>를 눌러 주세요!</div>
+        <div class="card o" style="margin-top:12px">
+          <p class="small" style="margin:0"><b>도움말</b><br>
+          먼저 가운데 원점 (0, 0)을 찾으세요. 거기서 <b>가로로 x칸</b> 간 다음, <b>세로로 y칸</b> 가면 됩니다.<br>
+          숫자 앞에 <b>빼기(−)</b>가 붙으면 반대 방향이에요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 1 밀기 ===== -->
+<section class="sec" id="s1">
+  <h2><span class="ic" style="background:#ff7a1a">②</span>밀기 — 모양 그대로 자리만 옮기기</h2>
+
+  <div class="card o">
+    <p>도형을 <b>밀면</b> 어떻게 될까요? 크기도 그대로, 모양도 그대로, 심지어 방향도 그대로입니다. <b>오직 자리만</b> 바뀌어요. 종이에 그린 그림을 그대로 들어서 다른 곳에 내려놓는 것과 같습니다.</p>
+  </div>
+
+  <div class="lab">
+    <div class="pad">
+      <span class="lbl">한 칸씩 밀기</span>
+      <button class="b arrow" onclick="MV.step(-1,0)">←</button>
+      <button class="b arrow" onclick="MV.step(1,0)">→</button>
+      <button class="b arrow" onclick="MV.step(0,1)">↑</button>
+      <button class="b arrow" onclick="MV.step(0,-1)">↓</button>
+      <span class="lbl" style="margin-left:14px">한꺼번에 밀기</span>
+      <button class="b blue" onclick="MV.jump(4,3)">오른쪽 4, 위 3</button>
+      <button class="b blue" onclick="MV.jump(-5,-2)">왼쪽 5, 아래 2</button>
+      <button class="b" onclick="MV.reset()" style="margin-left:auto">처음으로</button>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg1"></svg></div>
+      <div>
+        <h4 class="lbl" style="margin-bottom:6px">꼭짓점 좌표가 어떻게 변했나요?</h4>
+        <table class="pt" id="tbl1"></table>
+        <div class="speech" id="mvMsg"></div>
+        <div class="card b" style="margin-top:12px">
+          <p class="small" style="margin:0">네 꼭짓점 모두 <b>똑같은 만큼</b> 움직였나요? 표의 숫자를 비교해 보세요. 이것이 밀기의 가장 중요한 성질입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">( x , y ) &nbsp;→&nbsp; ( x <b>+ ●</b> , y <b>+ ▲</b> )
+    <small>오른쪽으로 ●칸, 위로 ▲칸 밀었다면 모든 점의 x에 ●를, y에 ▲를 더합니다</small></div>
+
+  <div class="grid2">
+    <div class="card g"><p><b>생각해 보기 1</b><br><span class="small">점 (2, 5)를 오른쪽으로 3칸, 아래로 4칸 밀면 어디로 갈까요?<br>→ 아래로 가는 것은 y에서 <b>빼기</b>! 답은 (5, 1)</span></p></div>
+    <div class="card g"><p><b>생각해 보기 2</b><br><span class="small">밀기를 아무리 많이 해도 도형이 <b>뒤집히거나 돌아가지</b> 않습니다. 왜 그럴까요? 모든 점이 같은 방향, 같은 거리로 움직이기 때문이에요.</span></p></div>
+  </div>
+</section>
+
+<!-- ===== 2 뒤집기 ===== -->
+<section class="sec" id="s2">
+  <h2><span class="ic" style="background:#ff3f83">③</span>뒤집기 — 거울에 비친 모습 (선대칭)</h2>
+
+  <div class="card p">
+    <p>거울 앞에 서면 나와 똑같이 생긴 모습이 반대편에 보이지요. 도형도 <b style="color:#ff3f83">거울선(대칭축)</b>을 하나 정하고 뒤집으면 반대편에 똑같은 도형이 생깁니다. 이것을 <b>선대칭</b>이라고 해요.</p>
+    <ul class="li">
+      <li>어떤 점이든 <b>거울선까지의 거리가 똑같습니다.</b> 3칸 떨어져 있었으면 반대편도 3칸!</li>
+      <li>거울선 <b>위에</b> 있는 점은 뒤집어도 제자리입니다.</li>
+      <li>모양과 크기는 그대로지만 <b>왼쪽·오른쪽이 바뀝니다</b>. 글자를 뒤집어 보면 금방 알 수 있어요.</li>
+    </ul>
+  </div>
+
+  <div class="lab">
+    <div class="pad">
+      <span class="lbl">거울선 고르기</span>
+      <button class="b pnk on" id="fb0" onclick="FL.setAxis(0)">세로선 (y축)</button>
+      <button class="b pnk" id="fb1" onclick="FL.setAxis(1)">가로선 (x축)</button>
+      <button class="b pnk" id="fb2" onclick="FL.setAxis(2)">세로선 x = k</button>
+      <button class="b pnk" id="fb3" onclick="FL.setAxis(3)">가로선 y = k</button>
+      <span class="lbl" id="fkLbl" style="display:none">k = <b id="fkV">3</b></span>
+      <input type="range" id="fk" min="-6" max="6" value="3" step="1" style="display:none;width:110px">
+      <button class="b org" onclick="FL.flip()" style="margin-left:auto">거울에 비추기!</button>
+      <button class="b" onclick="FL.reset()">처음으로</button>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg2"></svg></div>
+      <div>
+        <table class="pt" id="tbl2"></table>
+        <div class="speech" id="flMsg"></div>
+        <div class="card p" style="margin-top:12px" id="flRule"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><div class="rule" style="font-size:18px">세로선(y축)에 뒤집기<br>( x , y ) → ( <b>−x</b> , y )<small>왼쪽·오른쪽만 바뀌고 위아래는 그대로</small></div></div>
+    <div class="card"><div class="rule" style="font-size:18px">가로선(x축)에 뒤집기<br>( x , y ) → ( x , <b>−y</b> )<small>위아래만 바뀌고 왼쪽·오른쪽은 그대로</small></div></div>
+  </div>
+  <div class="card g">
+    <p><b>조금 더!</b> 거울선이 원점이 아니라 <b>x = 3</b> 같은 곳에 있으면 어떻게 될까요? 점에서 거울선까지 거리를 재서 반대편에 같은 거리로 놓으면 됩니다. 식으로 쓰면 <b class="mono">( 2×3 − x , y )</b> 예요. 위 실습판에서 k를 바꿔 가며 확인해 보세요.</p>
+  </div>
+</section>
+<!-- ===== 3 돌리기 ===== -->
+<section class="sec" id="s3">
+  <h2><span class="ic" style="background:#8b5cf6">④</span>돌리기 — 압정을 꽂고 빙글 (회전)</h2>
+
+  <div class="card b" style="border-color:#d9ccfb;box-shadow:0 4px 0 #d9ccfb;background:#faf7ff">
+    <p>종이 도형에 <b style="color:#8b5cf6">압정 하나</b>를 꽂고 빙글 돌려 보세요. 압정을 꽂은 자리는 움직이지 않고, 나머지는 모두 그 자리를 중심으로 돕니다. 이 압정 자리를 <b>회전의 중심</b>이라고 해요.</p>
+    <ul class="li">
+      <li>시계 방향은 시곗바늘이 도는 쪽, 반시계 방향은 그 반대입니다.</li>
+      <li>90°는 <b>직각만큼</b>, 180°는 <b>반 바퀴</b>, 360°는 <b>한 바퀴</b>(제자리)예요.</li>
+      <li>중심에서 각 꼭짓점까지의 <b>거리는 변하지 않습니다</b>.</li>
+    </ul>
+  </div>
+
+  <div class="lab">
+    <div class="pad">
+      <span class="lbl">회전의 중심</span>
+      <button class="b pur on" id="rc0" onclick="RT.setCenter(0)">원점 (0,0)</button>
+      <button class="b pur" id="rc1" onclick="RT.setCenter(1)">점 (3,1)</button>
+      <button class="b pur" id="rc2" onclick="RT.setCenter(2)">도형의 꼭짓점 ㄱ</button>
+      <button class="b org" onclick="RT.turn(1)" style="margin-left:14px">↺ 반시계 90°</button>
+      <button class="b org" onclick="RT.turn(-1)">↻ 시계 90°</button>
+      <button class="b org" onclick="RT.turn(2)">↻↻ 180°</button>
+      <button class="b" onclick="RT.reset()" style="margin-left:auto">처음으로</button>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg3"></svg></div>
+      <div>
+        <table class="pt" id="tbl3"></table>
+        <div class="speech" id="rtMsg"></div>
+        <div class="card" style="margin-top:12px;border-color:#d9ccfb;box-shadow:0 4px 0 #d9ccfb">
+          <p class="small" style="margin:0"><b>규칙을 찾아보세요!</b> 원점을 중심으로 반시계 방향 90° 돌리면, 표에서 <b>x자리와 y자리 숫자가 서로 바뀌고</b> 하나에 빼기가 붙습니다. 몇 번 눌러 보면 규칙이 보일 거예요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card"><div class="rule" style="font-size:17px">반시계 90°<br>( x , y ) → ( <b>−y</b> , <b>x</b> )</div></div>
+    <div class="card"><div class="rule" style="font-size:17px">180°<br>( x , y ) → ( <b>−x</b> , <b>−y</b> )</div></div>
+    <div class="card"><div class="rule" style="font-size:17px">시계 90°<br>( x , y ) → ( <b>y</b> , <b>−x</b> )</div></div>
+  </div>
+  <p class="small" style="text-align:center">※ 위 식은 <b>원점</b>을 중심으로 돌릴 때예요. 중심이 다른 곳이면 중심에서 얼마나 떨어졌는지를 먼저 재야 합니다.</p>
+</section>
+
+<!-- ===== 4 점대칭 ===== -->
+<section class="sec" id="s4">
+  <h2><span class="ic" style="background:#12b26a">⑤</span>점대칭 — 점 하나를 콕 찍고 반대편으로</h2>
+
+  <div class="card g">
+    <p>점 하나를 정하고, 도형의 모든 꼭짓점을 그 점 <b>너머 똑같은 거리</b>에 옮겨 놓아 보세요. 이것이 <b style="color:#12b26a">점대칭</b>입니다. 이때 찍은 점을 <b>대칭의 중심</b>이라고 해요.</p>
+    <p><b>비밀 하나:</b> 점대칭은 사실 <b>180°로 돌리기와 똑같습니다!</b> ④번 탭에서 180° 버튼을 눌러 본 것과 비교해 보세요.</p>
+  </div>
+
+  <div class="lab">
+    <div class="pad">
+      <span class="lbl">대칭의 중심을 움직여 보세요</span>
+      <span class="lbl">가로 <b class="mono" id="pcxV">0</b></span>
+      <input type="range" id="pcx" min="-6" max="6" value="0" step="1" style="width:120px">
+      <span class="lbl">세로 <b class="mono" id="pcyV">0</b></span>
+      <input type="range" id="pcy" min="-5" max="5" value="0" step="1" style="width:120px">
+      <button class="b grn" id="pcLine" onclick="PS.toggleLine()">연결선 보기</button>
+      <button class="b" onclick="PS.reset()" style="margin-left:auto">처음으로</button>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg4"></svg></div>
+      <div>
+        <table class="pt" id="tbl4"></table>
+        <div class="speech" id="psMsg"></div>
+        <div class="card g" style="margin-top:12px">
+          <p class="small" style="margin:0"><b>확인해 보세요</b><br>
+          연결선을 켜면 <b>원래 점 — 중심 — 옮긴 점</b>이 한 줄로 이어집니다. 그리고 중심은 두 점의 <b>정확히 한가운데</b>에 있어요. 이것이 점대칭의 핵심입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">중심이 ( p , q ) 일 때 &nbsp; ( x , y ) → ( <b>2p − x</b> , <b>2q − y</b> )
+    <small>중심이 원점 (0, 0)이면 그냥 ( −x , −y ) 가 됩니다</small></div>
+</section>
+
+<!-- ===== 5 대칭 도형 찾기 ===== -->
+<section class="sec" id="s5">
+  <h2><span class="ic" style="background:#ffc93c;color:#1b2740">⑥</span>이 도형은 어떤 대칭일까?</h2>
+
+  <div class="card">
+    <div class="grid2">
+      <div><p><b style="color:#ff3f83">선대칭 도형</b><br><span class="small">직선 하나를 그어 <b>반으로 접었을 때 딱 포개지면</b> 선대칭 도형입니다. 그 직선이 대칭축이에요. 대칭축은 하나일 수도, 여러 개일 수도 있습니다.</span></p></div>
+      <div><p><b style="color:#12b26a">점대칭 도형</b><br><span class="small">한 점을 중심으로 <b>반 바퀴(180°) 돌렸을 때 똑같아 보이면</b> 점대칭 도형입니다. 그 점이 대칭의 중심이에요.</span></p></div>
+    </div>
+  </div>
+
+  <p class="small">아래 일곱 도형을 살펴보고 어떤 대칭인지 골라 보세요. 답을 고르면 <b>대칭축(분홍 점선)</b>이나 <b>대칭의 중심(초록 점)</b>이 나타납니다.</p>
+  <div class="gal" id="gal"></div>
+
+  <div class="card o" style="margin-top:16px">
+    <p><b>헷갈리기 쉬운 것</b></p>
+    <ul class="li">
+      <li><b>평행사변형</b>은 반으로 접어도 안 포개집니다. 하지만 반 바퀴 돌리면 똑같아요 → <b>점대칭만</b></li>
+      <li><b>정삼각형·정오각형</b>처럼 변이 <b>홀수</b>개인 정다각형은 선대칭이지만 점대칭은 아닙니다.</li>
+      <li><b>바람개비</b>는 돌리면 같지만 접으면 안 포개져요. 날개가 한쪽으로 휘어 있기 때문이에요.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 6 미션 게임 ===== -->
+<section class="sec" id="s6">
+  <h2><span class="ic" style="background:#12b26a">⑦</span>미션 게임 — 회색 자리에 똑같이 겹쳐라!</h2>
+
+  <div class="card">
+    <p>회색 도형이 <b>목표 자리</b>입니다. 아래 버튼으로 파란 도형을 <b>밀고 · 뒤집고 · 돌려서</b> 회색과 정확히 겹치게 만들면 성공! 꼭짓점 <b>ㄱㄴㄷㄹ</b>까지 모두 맞아야 합니다.</p>
+  </div>
+
+  <div class="lab">
+    <div class="mbar">
+      <span class="stage" id="gmStage">미션 1</span>
+      <span class="goal" id="gmGoal">준비 중...</span>
+      <span style="margin-left:auto">움직인 횟수 <b id="gmCnt" style="color:#ffc93c;font-size:19px">0</b></span>
+    </div>
+    <div class="pad">
+      <button class="b arrow" onclick="GM.step(-1,0)">←</button>
+      <button class="b arrow" onclick="GM.step(1,0)">→</button>
+      <button class="b arrow" onclick="GM.step(0,1)">↑</button>
+      <button class="b arrow" onclick="GM.step(0,-1)">↓</button>
+      <button class="b pnk" onclick="GM.flip('y')">↔ 세로선 뒤집기</button>
+      <button class="b pnk" onclick="GM.flip('x')">↕ 가로선 뒤집기</button>
+      <button class="b pur" onclick="GM.turn(1)">↺ 90°</button>
+      <button class="b pur" onclick="GM.turn(-1)">↻ 90°</button>
+      <button class="b" onclick="GM.retry()">다시 하기</button>
+    </div>
+    <div class="labrow">
+      <div class="pane"><svg id="svg6"></svg></div>
+      <div>
+        <table class="pt" id="tbl6"></table>
+        <div class="speech" id="gmMsg"></div>
+        <div id="gmDone"></div>
+        <div class="pad" style="margin-top:12px">
+          <span class="lbl">미션 고르기</span>
+          <button class="b" onclick="GM.load(0)">1</button><button class="b" onclick="GM.load(1)">2</button>
+          <button class="b" onclick="GM.load(2)">3</button><button class="b" onclick="GM.load(3)">4</button>
+          <button class="b" onclick="GM.load(4)">5</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>오늘 배운 것 한눈에 보기</h3>
+  <div class="card">
+    <table class="pt" style="font-size:14.5px">
+      <tr><th style="width:16%">움직임</th><th style="width:22%">무엇이 바뀌나</th><th>좌표는 이렇게 변해요</th></tr>
+      <tr><td style="color:#2f6fed">밀기</td><td>자리만</td><td>( x + ● , y + ▲ )</td></tr>
+      <tr><td style="color:#ff3f83">세로선 뒤집기</td><td>왼쪽↔오른쪽</td><td>( −x , y )</td></tr>
+      <tr><td style="color:#ff3f83">가로선 뒤집기</td><td>위↔아래</td><td>( x , −y )</td></tr>
+      <tr><td style="color:#8b5cf6">반시계 90°</td><td>방향이 직각만큼</td><td>( −y , x )</td></tr>
+      <tr><td style="color:#8b5cf6">시계 90°</td><td>방향이 직각만큼</td><td>( y , −x )</td></tr>
+      <tr><td style="color:#12b26a">180° = 점대칭</td><td>반 바퀴</td><td>( −x , −y )</td></tr>
+    </table>
+    <p class="small" style="margin-top:10px">어떤 움직임이든 <b>도형의 모양과 크기는 절대 변하지 않습니다.</b> 그래서 처음 도형과 옮긴 도형은 언제나 <b>합동</b>이에요.</p>
+  </div>
+
+  <h3>얼마나 알게 되었을까?</h3>
+  <div id="quiz"></div>
+</section>
+</div>
+
+<footer>
+  <div>좌표로 배우는 대칭과 도형 옮기기 · 초등 3~6학년 이산수학 기하</div>
+  <div style="margin-top:5px;font-size:12.5px">모든 좌표는 정수로만 움직입니다</div>
+</footer>
+<script>
+/* ============ 공통 ============ */
+var NS='http://www.w3.org/2000/svg';
+function $(i){return document.getElementById(i);}
+function sv(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function tx(t,a,p){var e=sv('text',a,p);e.textContent=t;return e;}
+function clr(n){while(n.firstChild)n.removeChild(n.firstChild);}
+function el(t,c,s){var e=document.createElement(t);if(c)e.className=c;if(s!==undefined)e.textContent=s;return e;}
+function go(i){
+  var s=document.querySelectorAll('section.sec'),t=document.querySelectorAll('.tab');
+  for(var k=0;k<s.length;k++){s[k].classList.toggle('on',k===i);t[k].classList.toggle('on',k===i);}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function anim(dur,fn,done){
+  var st=null;
+  function tick(t){
+    if(st===null)st=t;
+    var k=Math.min(1,(t-st)/dur);
+    var e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    fn(e);
+    if(k<1)requestAnimationFrame(tick);else if(done)done();
+  }
+  requestAnimationFrame(tick);
+}
+var NAME=['\u3131','\u3134','\u3137','\u3139'];
+var SH=[[1,1],[4,1],[4,2],[1,3]];
+function cpy(p){return p.map(function(q){return [q[0],q[1]];});}
+function same(a,b){for(var i=0;i<a.length;i++)if(a[i][0]!==b[i][0]||a[i][1]!==b[i][1])return false;return true;}
+
+/* ============ 좌표평면 ============ */
+function Plane(id,o){
+  o=o||{};
+  this.svg=$(id);
+  this.x0=o.x0!==undefined?o.x0:-9; this.x1=o.x1!==undefined?o.x1:9;
+  this.y0=o.y0!==undefined?o.y0:-7; this.y1=o.y1!==undefined?o.y1:7;
+  this.c=o.c||30; this.p=36;
+  this.W=this.p*2+(this.x1-this.x0)*this.c;
+  this.H=this.p*2+(this.y1-this.y0)*this.c;
+  this.svg.setAttribute('viewBox','0 0 '+this.W+' '+this.H);
+  this.svg.style.maxWidth=this.W+'px';
+}
+Plane.prototype.X=function(x){return this.p+(x-this.x0)*this.c;};
+Plane.prototype.Y=function(y){return this.p+(this.y1-y)*this.c;};
+Plane.prototype.clear=function(){clr(this.svg);};
+Plane.prototype.at=function(e){
+  var r=this.svg.getBoundingClientRect();
+  var sx=(e.clientX-r.left)/r.width*this.W, sy=(e.clientY-r.top)/r.height*this.H;
+  return {x:Math.round((sx-this.p)/this.c)+this.x0, y:this.y1-Math.round((sy-this.p)/this.c)};
+};
+Plane.prototype.grid=function(){
+  var s=this.svg,i;
+  sv('rect',{x:0,y:0,width:this.W,height:this.H,fill:'#ffffff',rx:14},s);
+  for(i=this.x0;i<=this.x1;i++)
+    sv('line',{x1:this.X(i),y1:this.Y(this.y1),x2:this.X(i),y2:this.Y(this.y0),
+      stroke:i===0?'#5b6f95':'#e3edfc','stroke-width':i===0?2.5:1.4},s);
+  for(i=this.y0;i<=this.y1;i++)
+    sv('line',{x1:this.X(this.x0),y1:this.Y(i),x2:this.X(this.x1),y2:this.Y(i),
+      stroke:i===0?'#5b6f95':'#e3edfc','stroke-width':i===0?2.5:1.4},s);
+  for(i=this.x0;i<=this.x1;i++)if(i!==0)
+    tx(i,{x:this.X(i),y:this.Y(0)+15,'text-anchor':'middle','font-size':11,fill:'#8fa0be',
+      'font-family':'D2Coding,Consolas,monospace'},s);
+  for(i=this.y0;i<=this.y1;i++)if(i!==0)
+    tx(i,{x:this.X(0)-8,y:this.Y(i)+4,'text-anchor':'end','font-size':11,fill:'#8fa0be',
+      'font-family':'D2Coding,Consolas,monospace'},s);
+  tx('0',{x:this.X(0)-8,y:this.Y(0)+15,'text-anchor':'end','font-size':11,fill:'#8fa0be'},s);
+  tx('x',{x:this.X(this.x1)+3,y:this.Y(0)-8,'font-size':14,fill:'#5b6f95','font-weight':'bold'},s);
+  tx('y',{x:this.X(0)+8,y:this.Y(this.y1)-6,'font-size':14,fill:'#5b6f95','font-weight':'bold'},s);
+};
+Plane.prototype.poly=function(pts,o){
+  var d=pts.map(function(p){return this.X(p[0])+','+this.Y(p[1]);},this).join(' ');
+  return sv('polygon',{points:d,fill:o.fill||'none',stroke:o.stroke||'#000',
+    'stroke-width':o.w||3,'stroke-dasharray':o.dash||'','stroke-linejoin':'round',
+    opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.dots=function(pts,col,lab,dy){
+  for(var i=0;i<pts.length;i++){
+    sv('circle',{cx:this.X(pts[i][0]),cy:this.Y(pts[i][1]),r:i===0?7:5.5,
+      fill:i===0?'#ffc93c':col,stroke:'#fff','stroke-width':2},this.svg);
+    if(lab)tx(NAME[i],{x:this.X(pts[i][0])+11,y:this.Y(pts[i][1])+(dy||-9),
+      'font-size':14,'font-weight':'bold',fill:col},this.svg);
+  }
+};
+Plane.prototype.mark=function(x,y,col,r){
+  sv('circle',{cx:this.X(x),cy:this.Y(y),r:r||8,fill:col,stroke:'#fff','stroke-width':2.5},this.svg);
+};
+Plane.prototype.line=function(a,b,o){
+  sv('line',{x1:this.X(a[0]),y1:this.Y(a[1]),x2:this.X(b[0]),y2:this.Y(b[1]),
+    stroke:o.stroke,'stroke-width':o.w||2,'stroke-dasharray':o.dash||'','stroke-linecap':'round',
+    opacity:o.op===undefined?1:o.op},this.svg);
+};
+
+/* 좌표표 */
+function ptTable(id,a,b,h1,h2){
+  var t=$(id);clr(t);
+  var hr=el('tr');[' ',h1,h2].forEach(function(h){hr.appendChild(el('th',null,h));});
+  t.appendChild(hr);
+  for(var i=0;i<a.length;i++){
+    var r=el('tr');
+    r.appendChild(el('td',null,NAME[i]));
+    r.appendChild(el('td','o','('+a[i][0]+', '+a[i][1]+')'));
+    r.appendChild(el('td','n','('+b[i][0]+', '+b[i][1]+')'));
+    t.appendChild(r);
+  }
+}
+function say(id,s){$(id).textContent=s;}
+
+/* ============ ① 좌표 놀이터 ============ */
+var TQ={pl:null,t:null,score:0,found:[],last:null,ok:null};
+TQ.init=function(){
+  this.pl=new Plane('svg0');
+  var self=this;
+  this.pl.svg.addEventListener('pointerdown',function(e){self.click(e);});
+  this.draw();
+};
+TQ.start=function(){
+  if(this.score>=5){this.score=0;this.found=[];}
+  var x,y;
+  do{x=Math.floor(Math.random()*15)-7;y=Math.floor(Math.random()*11)-5;}
+  while(x===0&&y===0);
+  this.t={x:x,y:y};this.last=null;this.ok=null;
+  $('tqTarget').textContent='( '+x+' , '+y+' )';
+  say('tqMsg','\uD83C\uDF1F 보물이 ( '+x+' , '+y+' ) 에 숨어 있어요. 그 자리를 찾아 눌러 보세요!');
+  this.draw();
+};
+TQ.click=function(e){
+  if(!this.t)return;
+  var p=this.pl.at(e);
+  if(p.x<this.pl.x0||p.x>this.pl.x1||p.y<this.pl.y0||p.y>this.pl.y1)return;
+  this.last=p;
+  if(p.x===this.t.x&&p.y===this.t.y){
+    this.ok=true;this.score++;this.found.push([p.x,p.y]);
+    $('tqScore').textContent=this.score+' / 5';
+    if(this.score>=5)say('tqMsg','\uD83C\uDF89 다섯 개 모두 찾았어요! 좌표 읽기 완벽합니다. 새 문제를 눌러 다시 도전해 보세요.');
+    else say('tqMsg','\u2705 정답! ( '+p.x+' , '+p.y+' ) 맞아요. 새 문제 내기를 눌러 계속해 볼까요?');
+    this.t=null;$('tqTarget').textContent='( ? , ? )';
+  }else{
+    this.ok=false;
+    var hx=p.x<this.t.x?'더 오른쪽':(p.x>this.t.x?'더 왼쪽':'가로는 맞았어요');
+    var hy=p.y<this.t.y?'더 위쪽':(p.y>this.t.y?'더 아래쪽':'세로도 맞았어요');
+    say('tqMsg','\u274C 여기는 ( '+p.x+' , '+p.y+' ) 예요. '+hx+', '+hy+'으로 가 보세요!');
+  }
+  this.draw();
+};
+TQ.draw=function(){
+  var pl=this.pl;pl.clear();pl.grid();
+  this.found.forEach(function(f){
+    pl.mark(f[0],f[1],'#12b26a',7);
+    tx('\u2605',{x:pl.X(f[0]),y:pl.Y(f[1])+4,'text-anchor':'middle','font-size':11,fill:'#fff'},pl.svg);
+  });
+  if(this.last){
+    var c=this.ok?'#12b26a':'#ef4444';
+    pl.mark(this.last.x,this.last.y,c,9);
+    tx('( '+this.last.x+' , '+this.last.y+' )',{x:pl.X(this.last.x),y:pl.Y(this.last.y)-16,
+      'text-anchor':'middle','font-size':13,'font-weight':'bold',fill:c},pl.svg);
+    pl.line([this.last.x,0],[this.last.x,this.last.y],{stroke:c,dash:'4 4',w:2,op:.7});
+    pl.line([0,this.last.y],[this.last.x,this.last.y],{stroke:c,dash:'4 4',w:2,op:.7});
+  }
+};
+
+/* ============ ② 밀기 ============ */
+var MV={pl:null,cur:cpy(SH)};
+MV.init=function(){this.pl=new Plane('svg1');this.draw(this.cur);this.info();};
+MV.draw=function(d){
+  var pl=this.pl;pl.clear();pl.grid();
+  pl.poly(SH,{stroke:'#2f6fed',dash:'6 5',w:2.5,fill:'rgba(47,111,237,.10)'});
+  pl.dots(SH,'#2f6fed',false);
+  for(var i=0;i<4;i++)pl.line(SH[i],d[i],{stroke:'#ffb37a',w:2,dash:'3 4'});
+  pl.poly(d,{stroke:'#ff7a1a',w:3.5,fill:'rgba(255,122,26,.20)'});
+  pl.dots(d,'#ff7a1a',true);
+};
+MV.info=function(){
+  ptTable('tbl1',SH,this.cur,'처음 자리','옮긴 자리');
+  var dx=this.cur[0][0]-SH[0][0],dy=this.cur[0][1]-SH[0][1];
+  if(dx===0&&dy===0)say('mvMsg','화살표 버튼을 눌러 도형을 밀어 보세요. 네 점이 모두 함께 움직입니다!');
+  else say('mvMsg','가로로 '+(dx>=0?'오른쪽 '+dx:'왼쪽 '+(-dx))+'칸, 세로로 '+(dy>=0?'위 '+dy:'아래 '+(-dy))+
+    '칸 밀었어요. \u2192 모든 점의 x에 '+(dx>=0?'+':'')+dx+', y에 '+(dy>=0?'+':'')+dy+' 를 했습니다.');
+};
+MV.move=function(t){
+  var f=cpy(this.cur),self=this;
+  this.cur=t;
+  anim(420,function(e){
+    self.draw(f.map(function(p,i){return [p[0]+(t[i][0]-p[0])*e,p[1]+(t[i][1]-p[1])*e];}));
+  },function(){self.draw(t);self.info();});
+};
+MV.step=function(dx,dy){
+  var t=this.cur.map(function(p){return [p[0]+dx,p[1]+dy];});
+  if(t.some(function(p){return p[0]<-9||p[0]>9||p[1]<-7||p[1]>7;}))return;
+  this.move(t);
+};
+MV.jump=function(dx,dy){
+  var t=SH.map(function(p){return [p[0]+dx,p[1]+dy];});this.move(t);
+};
+MV.reset=function(){this.move(cpy(SH));};
+
+/* ============ ③ 뒤집기 ============ */
+var FL={pl:null,axis:0,pre:cpy(SH),cur:cpy(SH)};
+FL.init=function(){
+  this.pl=new Plane('svg2');
+  var self=this;
+  $('fk').addEventListener('input',function(){$('fkV').textContent=$('fk').value;self.draw(self.cur);self.info();});
+  this.draw(this.cur);this.info();
+};
+FL.k=function(){return parseInt($('fk').value,10);};
+FL.setAxis=function(a){
+  this.axis=a;
+  for(var i=0;i<4;i++)$('fb'+i).classList.toggle('on',i===a);
+  var need=(a===2||a===3);
+  $('fkLbl').style.display=need?'':'none';$('fk').style.display=need?'':'none';
+  this.pre=cpy(this.cur);this.draw(this.cur);this.info();
+};
+FL.ref=function(p){
+  var a=this.axis,k=this.k();
+  if(a===0)return [-p[0],p[1]];
+  if(a===1)return [p[0],-p[1]];
+  if(a===2)return [2*k-p[0],p[1]];
+  return [p[0],2*k-p[1]];
+};
+FL.axLine=function(){
+  var a=this.axis,k=this.k();
+  if(a===0)return {v:true,at:0};
+  if(a===1)return {v:false,at:0};
+  if(a===2)return {v:true,at:k};
+  return {v:false,at:k};
+};
+FL.draw=function(d){
+  var pl=this.pl;pl.clear();pl.grid();
+  var L=this.axLine();
+  if(L.v)pl.line([L.at,-7],[L.at,7],{stroke:'#ff3f83',w:4,dash:'9 6'});
+  else pl.line([-9,L.at],[9,L.at],{stroke:'#ff3f83',w:4,dash:'9 6'});
+  tx(L.v?'거울선 x = '+L.at:'거울선 y = '+L.at,
+    {x:L.v?pl.X(L.at)+8:pl.X(-8.6),y:L.v?pl.Y(6.6):pl.Y(L.at)-8,'font-size':13,
+     'font-weight':'bold',fill:'#ff3f83'},pl.svg);
+  pl.poly(this.pre,{stroke:'#2f6fed',dash:'6 5',w:2.5,fill:'rgba(47,111,237,.10)'});
+  pl.dots(this.pre,'#2f6fed',false);
+  if(!same(this.pre,this.cur))
+    for(var i=0;i<4;i++){
+      pl.line(this.pre[i],this.cur[i],{stroke:'#ffa8c6',w:2,dash:'3 4'});
+      var m=L.v?[L.at,this.pre[i][1]]:[this.pre[i][0],L.at];
+      var d1=L.v?Math.abs(this.pre[i][0]-L.at):Math.abs(this.pre[i][1]-L.at);
+      if(d1>0){
+        var mx=L.v?(this.pre[i][0]+L.at)/2:this.pre[i][0], my=L.v?this.pre[i][1]:(this.pre[i][1]+L.at)/2;
+        tx(d1,{x:pl.X(mx),y:pl.Y(my)-5,'text-anchor':'middle','font-size':11.5,fill:'#c4265f','font-weight':'bold'},pl.svg);
+        var nx=L.v?(this.cur[i][0]+L.at)/2:this.cur[i][0], ny=L.v?this.cur[i][1]:(this.cur[i][1]+L.at)/2;
+        tx(d1,{x:pl.X(nx),y:pl.Y(ny)-5,'text-anchor':'middle','font-size':11.5,fill:'#c4265f','font-weight':'bold'},pl.svg);
+      }
+    }
+  pl.poly(d,{stroke:'#ff7a1a',w:3.5,fill:'rgba(255,122,26,.20)'});
+  pl.dots(d,'#ff7a1a',true);
+};
+FL.info=function(){
+  ptTable('tbl2',this.pre,this.cur,'비추기 전','비춘 뒤');
+  var a=this.axis,k=this.k(),r=$('flRule');clr(r);
+  var txt={0:'( x , y ) \u2192 ( \u2212x , y )',1:'( x , y ) \u2192 ( x , \u2212y )',
+    2:'( x , y ) \u2192 ( 2\u00d7'+k+' \u2212 x , y ) = ( '+(2*k)+' \u2212 x , y )',
+    3:'( x , y ) \u2192 ( x , 2\u00d7'+k+' \u2212 y ) = ( x , '+(2*k)+' \u2212 y )'}[a];
+  var d=el('div','rule');d.style.fontSize='17px';d.textContent=txt;r.appendChild(d);
+  if(same(this.pre,this.cur))say('flMsg','거울선을 고르고 <거울에 비추기!> 버튼을 눌러 보세요.');
+  else say('flMsg','\u2728 각 점에서 거울선까지의 거리를 세어 보세요. 비추기 전과 비춘 뒤가 똑같지요? 분홍 숫자가 그 거리입니다.');
+};
+FL.flip=function(){
+  var self=this,f=cpy(this.cur);
+  this.pre=cpy(this.cur);
+  var t=this.cur.map(function(p){return self.ref(p);});
+  if(t.some(function(p){return p[0]<-9||p[0]>9||p[1]<-7||p[1]>7;})){
+    say('flMsg','\u26A0\uFE0F 판 밖으로 나가요! 거울선 k를 조절하거나 처음으로 돌아가 보세요.');return;}
+  this.cur=t;
+  anim(600,function(e){
+    self.draw(f.map(function(p,i){return [p[0]+(t[i][0]-p[0])*e,p[1]+(t[i][1]-p[1])*e];}));
+  },function(){self.draw(t);self.info();});
+};
+FL.reset=function(){this.pre=cpy(SH);this.cur=cpy(SH);this.draw(this.cur);this.info();};
+
+/* ============ ④ 돌리기 ============ */
+var RT={pl:null,ci:0,cur:cpy(SH),pre:cpy(SH),total:0};
+RT.init=function(){this.pl=new Plane('svg3');this.draw(this.cur);this.info();};
+RT.center=function(){
+  if(this.ci===0)return [0,0];
+  if(this.ci===1)return [3,1];
+  return [this.cur[0][0],this.cur[0][1]];
+};
+RT.setCenter=function(i){this.ci=i;for(var k=0;k<3;k++)$('rc'+k).classList.toggle('on',k===i);
+  this.draw(this.cur);this.info();};
+RT.draw=function(d,ctr){
+  var pl=this.pl;pl.clear();pl.grid();
+  var c=ctr||this.center();
+  pl.poly(this.pre,{stroke:'#2f6fed',dash:'6 5',w:2.5,fill:'rgba(47,111,237,.10)'});
+  pl.dots(this.pre,'#2f6fed',false);
+  for(var i=0;i<4;i++)pl.line(c,d[i],{stroke:'#c9b4f7',w:1.8,dash:'3 4'});
+  pl.poly(d,{stroke:'#8b5cf6',w:3.5,fill:'rgba(139,92,246,.20)'});
+  pl.dots(d,'#8b5cf6',true);
+  pl.mark(c[0],c[1],'#8b5cf6',9);
+  tx('\u2716',{x:pl.X(c[0]),y:pl.Y(c[1])+4,'text-anchor':'middle','font-size':11,fill:'#fff'},pl.svg);
+  tx('회전의 중심 ( '+c[0]+' , '+c[1]+' )',{x:pl.X(c[0])+13,y:pl.Y(c[1])+20,'font-size':12.5,
+    'font-weight':'bold',fill:'#8b5cf6'},pl.svg);
+};
+RT.info=function(){
+  ptTable('tbl3',this.pre,this.cur,'돌리기 전','돌린 뒤');
+  var c=this.center();
+  if(same(this.pre,this.cur))say('rtMsg','회전의 중심을 고르고 돌리기 버튼을 눌러 보세요. 보라 점선의 길이는 절대 변하지 않아요!');
+  else say('rtMsg','\u2728 중심 ( '+c[0]+' , '+c[1]+' ) 에서 각 꼭짓점까지의 거리를 보세요. 돌려도 길이는 그대로! 방향만 바뀝니다.');
+};
+RT.turn=function(dir){
+  var c=this.center(),self=this,f=cpy(this.cur);
+  var ang=dir===2?Math.PI:(dir>0?Math.PI/2:-Math.PI/2);
+  var t=this.cur.map(function(p){
+    var x=p[0]-c[0],y=p[1]-c[1];
+    if(dir===2)return [c[0]-x,c[1]-y];
+    if(dir>0)return [c[0]-y,c[1]+x];
+    return [c[0]+y,c[1]-x];
+  });
+  if(t.some(function(p){return p[0]<-9||p[0]>9||p[1]<-7||p[1]>7;})){
+    say('rtMsg','\u26A0\uFE0F 판 밖으로 나가요! 다른 중심을 골라 보세요.');return;}
+  this.pre=cpy(this.cur);this.cur=t;
+  anim(700,function(e){
+    var a=ang*e,co=Math.cos(a),si=Math.sin(a);
+    self.draw(f.map(function(p){
+      var x=p[0]-c[0],y=p[1]-c[1];
+      return [c[0]+x*co-y*si, c[1]+x*si+y*co];
+    }),c);
+  },function(){self.draw(t,c);self.info();});
+};
+RT.reset=function(){this.pre=cpy(SH);this.cur=cpy(SH);this.draw(this.cur);this.info();};
+
+/* ============ ⑤ 점대칭 ============ */
+var PS={pl:null,showLine:true};
+PS.init=function(){
+  this.pl=new Plane('svg4');
+  var self=this;
+  ['pcx','pcy'].forEach(function(i){$(i).addEventListener('input',function(){self.draw();});});
+  this.draw();
+};
+PS.c=function(){return [parseInt($('pcx').value,10),parseInt($('pcy').value,10)];};
+PS.toggleLine=function(){this.showLine=!this.showLine;
+  $('pcLine').textContent=this.showLine?'연결선 숨기기':'연결선 보기';this.draw();};
+PS.reset=function(){$('pcx').value=0;$('pcy').value=0;this.draw();};
+PS.draw=function(){
+  var pl=this.pl,c=this.c();
+  $('pcxV').textContent=c[0];$('pcyV').textContent=c[1];
+  var img=SH.map(function(p){return [2*c[0]-p[0],2*c[1]-p[1]];});
+  pl.clear();pl.grid();
+  if(this.showLine)for(var i=0;i<4;i++)pl.line(SH[i],img[i],{stroke:'#9be3c0',w:2,dash:'4 4'});
+  pl.poly(SH,{stroke:'#2f6fed',w:3.2,fill:'rgba(47,111,237,.16)'});
+  pl.dots(SH,'#2f6fed',true);
+  pl.poly(img,{stroke:'#12b26a',w:3.2,fill:'rgba(18,178,106,.18)'});
+  pl.dots(img,'#12b26a',true,18);
+  pl.mark(c[0],c[1],'#ef4444',9);
+  tx('대칭의 중심 ( '+c[0]+' , '+c[1]+' )',{x:pl.X(c[0])+14,y:pl.Y(c[1])+23,'font-size':12.5,
+    'font-weight':'bold',fill:'#ef4444'},pl.svg);
+  ptTable('tbl4',SH,img,'처음 점','점대칭 점');
+  say('psMsg','점 \u3131 ( '+SH[0][0]+' , '+SH[0][1]+' ) 은 ( 2\u00d7'+c[0]+'\u2212'+SH[0][0]+
+    ' , 2\u00d7'+c[1]+'\u2212'+SH[0][1]+' ) = ( '+img[0][0]+' , '+img[0][1]+' ) 로 갑니다. '+
+    (c[0]===0&&c[1]===0?'중심이 원점이라 부호만 바뀌었네요!':'중심을 옮기면 결과도 함께 움직여요.'));
+};
+
+/* ============ ⑥ 대칭 도형 찾기 ============ */
+function penta(){var p=[];for(var i=0;i<5;i++){var a=Math.PI/2+i*2*Math.PI/5;
+  p.push([2.7*Math.cos(a),2.7*Math.sin(a)]);}return p;}
+var GAL=[
+ {n:'이등변삼각형',p:[[0,2.6],[-2.2,-1.6],[2.2,-1.6]],a:'line',ax:[90],msg:'대칭축 1개. 반 바퀴 돌리면 달라져요.'},
+ {n:'정오각형',p:penta(),a:'line',ax:[90,162,234,306,18],msg:'대칭축 5개! 변이 홀수라서 점대칭은 아니에요.'},
+ {n:'직사각형',p:[[-2.6,1.4],[2.6,1.4],[2.6,-1.4],[-2.6,-1.4]],a:'both',ax:[0,90],msg:'대칭축 2개 + 점대칭까지!'},
+ {n:'정사각형',p:[[-1.9,1.9],[1.9,1.9],[1.9,-1.9],[-1.9,-1.9]],a:'both',ax:[0,45,90,135],msg:'대칭축이 무려 4개, 점대칭도 됩니다.'},
+ {n:'평행사변형',p:[[-1.3,1.4],[2.8,1.4],[1.3,-1.4],[-2.8,-1.4]],a:'point',ax:[],msg:'접으면 안 포개져요. 하지만 반 바퀴 돌리면 똑같아요!'},
+ {n:'바람개비',p:[[3,0],[1,1.5],[0,3],[-1.5,1],[-3,0],[-1,-1.5],[0,-3],[1.5,-1]],a:'point',ax:[],msg:'날개가 한쪽으로 휘어 접으면 안 맞아요. 돌리면 딱!'},
+ {n:'부등변삼각형',p:[[-2.6,-1.6],[2.6,-1],[0.6,2.2]],a:'none',ax:[],msg:'접어도 돌려도 겹치지 않는 도형이에요.'}
+];
+var GOPT=[['line','선대칭만'],['point','점대칭만'],['both','둘 다'],['none','둘 다 아님']];
+function buildGal(){
+  var box=$('gal');
+  GAL.forEach(function(g,gi){
+    var card=el('div','gcard');
+    var s=document.createElementNS(NS,'svg');
+    s.setAttribute('viewBox','0 0 150 150');s.id='gs'+gi;
+    card.appendChild(s);
+    card.appendChild(el('div','nm',g.n));
+    var op=el('div','gopts');
+    GOPT.forEach(function(o){
+      var b=el('button',null,o[1]);
+      b.onclick=function(){
+        var bs=op.querySelectorAll('button');
+        for(var i=0;i<bs.length;i++){bs[i].className='';bs[i].disabled=false;}
+        if(o[0]===g.a){b.className='ok';$('gm'+gi).textContent='\u2705 맞아요! '+g.msg;}
+        else{b.className='no';
+          for(var j=0;j<bs.length;j++)if(GOPT[j][0]===g.a)bs[j].className='ok';
+          $('gm'+gi).textContent='\uD83D\uDCA1 정답은 <'+GOPT.filter(function(x){return x[0]===g.a;})[0][1]+'>. '+g.msg;}
+        drawGal(gi,true);
+      };
+      op.appendChild(b);
+    });
+    card.appendChild(op);
+    var m=el('div','gmsg');m.id='gm'+gi;card.appendChild(m);
+    box.appendChild(card);
+    drawGal(gi,false);
+  });
+}
+function drawGal(gi,reveal){
+  var g=GAL[gi],s=$('gs'+gi);clr(s);
+  var cx=75,cy=75,k=20;
+  sv('rect',{x:0,y:0,width:150,height:150,fill:'#f7faff',rx:12},s);
+  for(var i=-3;i<=3;i++){
+    sv('line',{x1:cx+i*k,y1:cy-70,x2:cx+i*k,y2:cy+70,stroke:'#e3edfc','stroke-width':1},s);
+    sv('line',{x1:cx-70,y1:cy+i*k,x2:cx+70,y2:cy+i*k,stroke:'#e3edfc','stroke-width':1},s);
+  }
+  var d=g.p.map(function(p){return (cx+p[0]*k)+','+(cy-p[1]*k);}).join(' ');
+  sv('polygon',{points:d,fill:'rgba(47,111,237,.22)',stroke:'#2f6fed','stroke-width':2.5,'stroke-linejoin':'round'},s);
+  if(reveal){
+    g.ax.forEach(function(a){
+      var r=a*Math.PI/180,L=68;
+      sv('line',{x1:cx-Math.cos(r)*L,y1:cy+Math.sin(r)*L,x2:cx+Math.cos(r)*L,y2:cy-Math.sin(r)*L,
+        stroke:'#ff3f83','stroke-width':2.2,'stroke-dasharray':'6 4'},s);
+    });
+    if(g.a==='point'||g.a==='both')
+      sv('circle',{cx:cx,cy:cy,r:6,fill:'#12b26a',stroke:'#fff','stroke-width':2},s);
+  }
+}
+
+/* ============ ⑦ 미션 게임 ============ */
+var MIS=[
+ {g:'오른쪽으로 3칸, 위로 2칸 옮겨 보세요.',t:SH.map(function(p){return [p[0]+3,p[1]+2];})},
+ {g:'세로선(y축) 거울에 비춘 자리로 옮겨 보세요.',t:SH.map(function(p){return [-p[0],p[1]];})},
+ {g:'원점을 중심으로 반 바퀴(180°) 돌려 보세요.',t:SH.map(function(p){return [-p[0],-p[1]];})},
+ {g:'가로선(x축)에 뒤집은 다음, 왼쪽으로 5칸 옮겨 보세요.',t:SH.map(function(p){return [p[0]-5,-p[1]];})},
+ {g:'반시계로 90° 돌린 다음, 오른쪽 2칸 아래 3칸 옮겨 보세요.',t:SH.map(function(p){return [-p[1]+2,p[0]-3];})}
+];
+var GM={pl:null,i:0,cur:cpy(SH),n:0,clear:false};
+GM.init=function(){this.pl=new Plane('svg6');this.load(0);};
+GM.load=function(i){
+  this.i=i;this.cur=cpy(SH);this.n=0;this.clear=false;
+  $('gmStage').textContent='미션 '+(i+1);
+  $('gmGoal').textContent=MIS[i].g;
+  clr($('gmDone'));
+  say('gmMsg','파란 도형을 움직여 회색 도형에 정확히 겹쳐 보세요!');
+  this.draw(this.cur);this.info();
+};
+GM.retry=function(){this.load(this.i);};
+GM.draw=function(d){
+  var pl=this.pl;pl.clear();pl.grid();
+  var t=MIS[this.i].t;
+  pl.poly(t,{stroke:'#9aa8c2',w:3,dash:'7 5',fill:'rgba(120,140,175,.22)'});
+  for(var i=0;i<4;i++)tx(NAME[i],{x:pl.X(t[i][0])+10,y:pl.Y(t[i][1])+16,'font-size':12.5,
+    'font-weight':'bold',fill:'#8494b0'},pl.svg);
+  pl.poly(d,{stroke:this.clear?'#12b26a':'#2f6fed',w:3.8,
+    fill:this.clear?'rgba(18,178,106,.28)':'rgba(47,111,237,.22)'});
+  pl.dots(d,this.clear?'#12b26a':'#2f6fed',true);
+};
+GM.info=function(){
+  ptTable('tbl6',MIS[this.i].t,this.cur,'목표 자리','지금 자리');
+  $('gmCnt').textContent=this.n;
+};
+GM.after=function(t){
+  var self=this,f=cpy(this.cur);
+  if(t.some(function(p){return p[0]<-9||p[0]>9||p[1]<-7||p[1]>7;})){
+    say('gmMsg','\u26A0\uFE0F 판 밖으로 나가요! 다른 움직임을 골라 보세요.');return;}
+  this.cur=t;this.n++;
+  anim(450,function(e){
+    self.draw(f.map(function(p,i){return [p[0]+(t[i][0]-p[0])*e,p[1]+(t[i][1]-p[1])*e];}));
+  },function(){
+    self.check();self.draw(self.cur);self.info();
+  });
+};
+GM.check=function(){
+  if(same(this.cur,MIS[this.i].t)){
+    this.clear=true;
+    say('gmMsg','\uD83C\uDF89 성공! 네 꼭짓점이 모두 정확히 겹쳤어요.');
+    var d=$('gmDone');clr(d);
+    var box=el('div','done','\u2B50 미션 '+(this.i+1)+' 성공! 움직인 횟수 '+this.n+'번'+
+      (this.i<4?'  \u2192 아래에서 미션 '+(this.i+2)+'에 도전해 보세요!':'  \u2192 모든 미션을 끝냈어요!'));
+    d.appendChild(box);
+  }else{
+    this.clear=false;
+    var t=MIS[this.i].t,near=0;
+    for(var i=0;i<4;i++)if(this.cur[i][0]===t[i][0]&&this.cur[i][1]===t[i][1])near++;
+    say('gmMsg',near===0?'아직 모양이나 자리가 달라요. 뒤집기나 돌리기가 필요할까요?':
+      '거의 다 왔어요! '+near+'개 꼭짓점이 맞았습니다.');
+  }
+};
+GM.step=function(dx,dy){this.after(this.cur.map(function(p){return [p[0]+dx,p[1]+dy];}));};
+GM.flip=function(k){this.after(this.cur.map(function(p){return k==='y'?[-p[0],p[1]]:[p[0],-p[1]];}));};
+GM.turn=function(d){this.after(this.cur.map(function(p){return d>0?[-p[1],p[0]]:[p[1],-p[0]];}));};
+
+/* ============ 퀴즈 ============ */
+var QZ=[
+ {q:'점 (4, 2)를 왼쪽으로 6칸, 위로 3칸 밀면 어디로 갈까요?',
+  o:['(10, 5)','(−2, 5)','(−2, −1)','(4, 5)'],a:1,
+  e:'왼쪽은 x에서 빼기, 위쪽은 y에 더하기! 4−6=−2, 2+3=5 이므로 (−2, 5)입니다.'},
+ {q:'점 (3, −5)를 세로선(y축) 거울에 비추면?',
+  o:['(−3, −5)','(3, 5)','(−3, 5)','(5, 3)'],a:0,
+  e:'세로선 거울은 왼쪽·오른쪽만 바꿉니다. x만 부호가 바뀌어 (−3, −5)가 됩니다.'},
+ {q:'점 (2, 6)을 원점을 중심으로 반 바퀴(180°) 돌리면?',
+  o:['(6, 2)','(−6, 2)','(2, −6)','(−2, −6)'],a:3,
+  e:'반 바퀴 돌리기는 점대칭과 같아서 x와 y 모두 부호가 바뀝니다. (−2, −6)입니다.'},
+ {q:'다음 중 <점대칭 도형이지만 선대칭 도형은 아닌> 것은?',
+  o:['정사각형','평행사변형','이등변삼각형','정오각형'],a:1,
+  e:'평행사변형은 반으로 접으면 포개지지 않지만, 반 바퀴 돌리면 똑같아집니다.'},
+ {q:'도형을 밀고, 뒤집고, 돌려도 절대 변하지 않는 것은?',
+  o:['도형의 자리','도형이 바라보는 방향','도형의 모양과 크기','꼭짓점의 좌표'],a:2,
+  e:'세 가지 움직임 모두 모양과 크기를 바꾸지 않습니다. 그래서 처음 도형과 옮긴 도형은 합동입니다.'},
+ {q:'대칭의 중심이 (2, 1)일 때 점 (5, 3)의 점대칭 점은?',
+  o:['(−1, −1)','(−5, −3)','(7, 4)','(3, 2)'],a:0,
+  e:'2×2−5 = −1, 2×1−3 = −1 이므로 (−1, −1)입니다. 중심이 두 점의 한가운데인지 확인해 보세요!'}
+];
+function buildQuiz(){
+  var box=$('quiz');
+  QZ.forEach(function(it,qi){
+    var d=el('div','q');
+    d.appendChild(el('div','qq','문제 '+(qi+1)+'. '+it.q));
+    var ans=el('div','qa','\u2192 '+it.e);
+    it.o.forEach(function(o,oi){
+      var b=el('button','opt',(oi+1)+') '+o);
+      b.onclick=function(){
+        var s=d.querySelectorAll('.opt');
+        for(var i=0;i<s.length;i++)s[i].className='opt';
+        if(oi===it.a)b.className='opt ok';else{b.className='opt no';s[it.a].className='opt ok';}
+        ans.className='qa show';
+      };
+      d.appendChild(b);
+    });
+    d.appendChild(ans);box.appendChild(d);
+  });
+}
+
+/* ============ 시작 ============ */
+(function(){
+  TQ.init();MV.init();FL.init();RT.init();PS.init();buildGal();GM.init();buildQuiz();
+})();
+</script>
+</body>
+</html>
