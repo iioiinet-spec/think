@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>벡터 실습판 — 좌표평면에서 클릭하고, 계산하고, 코드로 옮기기</title>
+<style>
+:root{
+  --bg:#080c14; --panel:#111a2a; --panel2:#0d1522; --line:#1f2e45; --code:#050912;
+  --tx:#e6edf8; --mut:#8ea3c2; --dim:#5b6f8f;
+  --va:#22d3ee;   /* 벡터 a */
+  --vb:#fbbf24;   /* 벡터 b */
+  --vr:#34d399;   /* 결과 */
+  --vk:#a78bfa;   /* 스칼라 */
+  --vx:#f472b6;   /* 넓이/외적 */
+  --red:#f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);
+  background-image:radial-gradient(circle at 10% -5%,rgba(34,211,238,.10),transparent 42%),
+                   radial-gradient(circle at 90% 2%,rgba(251,191,36,.07),transparent 42%);
+  color:var(--tx);font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.75;font-size:16px;padding-bottom:60px}
+.wrap{max-width:1460px;margin:0 auto;padding:0 18px}
+code,pre,.mono{font-family:'D2Coding','Consolas','Menlo',monospace}
+
+header{padding:40px 0 26px;text-align:center;border-bottom:1px solid var(--line)}
+.kick{font-size:12.5px;letter-spacing:3.5px;font-weight:800;color:var(--va)}
+h1{font-size:35px;font-weight:800;margin:10px 0 8px;letter-spacing:-1px}
+h1 .g{background:linear-gradient(90deg,var(--va),var(--vb));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{color:var(--mut);font-size:15px}
+.tags{display:flex;gap:7px;justify-content:center;margin-top:13px;flex-wrap:wrap}
+.tg{font-size:12px;padding:3px 12px;border-radius:20px;border:1px solid var(--line);
+  background:var(--panel);color:var(--mut);font-family:'D2Coding',Consolas,monospace}
+
+nav{position:sticky;top:0;z-index:70;background:rgba(8,12,20,.94);backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:28px}
+.tabs{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--mut);padding:8px 16px;
+  border-radius:10px;cursor:pointer;font-size:13.8px;font-weight:700;font-family:inherit;transition:.13s}
+.tab:hover{color:var(--tx);border-color:var(--va)}
+.tab.on{background:linear-gradient(135deg,var(--va),#0ea5e9);color:#03212a;border-color:transparent}
+
+section.sec{display:none;animation:fd .26s ease}
+section.sec.on{display:block}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h2{font-size:25px;font-weight:800;margin:4px 0 14px;display:flex;align-items:center;gap:11px}
+h2::before{content:'';width:5px;height:25px;background:linear-gradient(var(--va),var(--vb));border-radius:3px}
+h3{font-size:18.5px;font-weight:800;margin:26px 0 10px;color:var(--va)}
+h4{font-size:12.5px;font-weight:800;letter-spacing:1.2px;color:var(--mut);margin-bottom:8px}
+p{margin:8px 0;color:#c7d4e8}
+.small{font-size:14px;color:var(--mut)}
+b.a{color:var(--va)}b.b{color:var(--vb)}b.r{color:var(--vr)}b.k{color:var(--vk)}b.x{color:var(--vx)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 20px;margin:13px 0}
+.card.ca{border-left:4px solid var(--va)}.card.cb{border-left:4px solid var(--vb)}
+.card.cr{border-left:4px solid var(--vr)}.card.ck{border-left:4px solid var(--vk)}
+.card.cx{border-left:4px solid var(--vx)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+ul.li{list-style:none;margin:7px 0}
+ul.li li{padding-left:19px;position:relative;margin:6px 0;color:#c7d4e8}
+ul.li li::before{content:'▸';position:absolute;left:0;color:var(--va)}
+
+.eq{background:#050912;border:1px solid var(--line);border-radius:11px;padding:13px 17px;margin:10px 0;
+  font-family:'D2Coding',Consolas,monospace;font-size:16.5px;text-align:center;color:#fcd34d;letter-spacing:.3px}
+.eq small{display:block;font-family:inherit;font-size:12.5px;color:var(--dim);margin-top:6px;letter-spacing:0}
+
+/* 실습판 */
+.lab{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px;margin:14px 0}
+.bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;background:var(--panel2);
+  border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:12px}
+.bt{background:#182740;border:1px solid var(--line);color:var(--tx);padding:7px 13px;border-radius:9px;
+  cursor:pointer;font-size:13.5px;font-weight:700;font-family:inherit;transition:.12s}
+.bt:hover{border-color:var(--va);color:var(--va)}
+.bt.on{background:linear-gradient(135deg,var(--va),#0ea5e9);color:#03212a;border-color:transparent}
+.bt.gh{border-color:#334b6d}
+.lbl{font-size:12.5px;font-weight:800;color:var(--mut);font-family:'D2Coding',Consolas,monospace}
+input[type=range]{accent-color:var(--vk)}
+.labtop{display:grid;grid-template-columns:1fr 480px;gap:14px;align-items:start}
+.pane svg{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;
+  background:#060b14;border:1px solid var(--line);border-radius:12px}
+
+.box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:11px}
+.box .hd{padding:7px 13px;font-weight:800;font-size:13px;color:#03212a;background:var(--va)}
+.box.hb .hd{background:var(--vb);color:#2a1d00}
+.box.hr .hd{background:var(--vr);color:#03231a}
+.box.hc .hd{background:#64748b;color:#fff}
+.box .bd{padding:11px 13px}
+.st{font-family:'D2Coding',Consolas,monospace;font-size:13.2px;line-height:1.9;color:#c7d4e8;white-space:pre-wrap}
+.hl{background:rgba(251,191,36,.18);color:#fcd34d;border-radius:4px;padding:1px 6px;font-weight:700}
+.empty{color:var(--dim);font-size:13.5px;text-align:center;padding:12px 0}
+
+table.v{width:100%;border-collapse:collapse;font-size:13px;font-family:'D2Coding',Consolas,monospace}
+table.v th{background:#16233a;color:var(--mut);padding:6px;border:1px solid var(--line);font-size:11.5px;font-weight:800}
+table.v td{padding:6px;border:1px solid var(--line);text-align:center;color:#c7d4e8}
+table.v td.a{color:var(--va);font-weight:700}
+table.v td.b{color:var(--vb);font-weight:700}
+
+/* 코딩 정보 */
+.codearea{display:grid;grid-template-columns:280px 1fr 1fr;gap:12px;margin-top:13px}
+.arrbox{display:flex;gap:6px;align-items:flex-end;margin:7px 0}
+.cell{width:60px;text-align:center}
+.cell .v{background:#050912;border:2px solid var(--va);border-radius:8px;padding:8px 0;
+  font-family:'D2Coding',Consolas,monospace;font-size:17px;font-weight:800;color:var(--va)}
+.cell.b .v{border-color:var(--vb);color:var(--vb)}
+.cell.r .v{border-color:var(--vr);color:var(--vr)}
+.cell .i{font-size:11px;color:var(--dim);font-family:'D2Coding',Consolas,monospace;margin-top:3px}
+.cell .n{font-size:11px;color:var(--mut);margin-bottom:3px;font-family:'D2Coding',Consolas,monospace}
+.brk{font-size:30px;color:var(--dim);line-height:1;padding-bottom:14px}
+.codehd{display:flex;align-items:center;gap:8px;background:#0c1524;border:1px solid var(--line);
+  border-bottom:none;border-radius:11px 11px 0 0;padding:7px 12px;font-size:12.5px;color:var(--mut);
+  font-family:'D2Coding',Consolas,monospace}
+pre.code{background:var(--code);border:1px solid var(--line);border-radius:0 0 11px 11px;
+  padding:12px 14px;overflow-x:auto;font-size:12.4px;line-height:1.78;color:#c3d3e8;margin:0;max-height:400px}
+.cp{margin-left:auto;background:#182740;border:1px solid var(--line);color:var(--tx);padding:4px 11px;
+  border-radius:7px;cursor:pointer;font-size:11.5px;font-weight:700;font-family:inherit}
+.cp:hover{border-color:var(--va);color:var(--va)}
+.cp.done{background:var(--vr);color:#03231a;border-color:transparent}
+.kw{color:#ff7b9c}.ty{color:#7dd3fc}.cm{color:#4d6684;font-style:italic}.nu{color:#c9b6ff}.sr{color:#a5e8a5}
+
+table.t{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+table.t th{background:#16233a;padding:9px;border:1px solid var(--line);color:var(--va);text-align:left;font-weight:800}
+table.t td{padding:9px;border:1px solid var(--line);color:#c7d4e8}
+td.m{font-family:'D2Coding',Consolas,monospace;color:#fcd34d}
+
+.q{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin:11px 0}
+.qq{font-weight:800;margin-bottom:9px}
+.opt{background:#141f33;border:1px solid var(--line);color:#c7d4e8;padding:8px 13px;border-radius:9px;
+  margin:5px 0;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;width:100%;text-align:left}
+.opt:hover{border-color:var(--va)}
+.opt.ok{background:rgba(52,211,153,.16);border-color:var(--vr);color:var(--vr)}
+.opt.no{background:rgba(248,113,113,.15);border-color:var(--red);color:var(--red)}
+.qa{margin-top:8px;font-size:13.5px;color:var(--mut);display:none}
+.qa.show{display:block}
+
+footer{text-align:center;color:var(--dim);font-size:13px;padding:34px 0 8px;border-top:1px solid var(--line);margin-top:36px}
+@media(max-width:1200px){.labtop{grid-template-columns:1fr}.codearea{grid-template-columns:1fr}
+  .grid2,.grid3{grid-template-columns:1fr}h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kick">좌표평면 · 벡터 · 코드</div>
+  <h1>클릭으로 만드는 <span class="g">벡터 실습판</span></h1>
+  <p>두 점을 클릭해 벡터를 만들고, 합·차·스칼라배·내적·외적을 눈으로 확인하고, 그대로 코드로 옮깁니다</p>
+  <div class="tags">
+    <span class="tg">성분 · 크기 · 방향각</span><span class="tg">합과 차</span>
+    <span class="tg">내적 · 외적</span><span class="tg">NumPy · JavaScript</span>
+  </div>
+</div></header>
+
+<nav><div class="wrap"><div class="tabs">
+  <button class="tab on" onclick="go(0)">0. 벡터란?</button>
+  <button class="tab" onclick="go(1)">1. 실습판</button>
+  <button class="tab" onclick="go(2)">2. 합과 차</button>
+  <button class="tab" onclick="go(3)">3. 곱 — 내적 · 외적</button>
+  <button class="tab" onclick="go(4)">4. 코드로 옮기기</button>
+  <button class="tab" onclick="go(5)">5. 정리 · 확인문제</button>
+</div></div></nav>
+
+<div class="wrap">
+<!-- ============ 0 ============ -->
+<section class="sec on" id="s0">
+  <h2>벡터란 — 크기와 방향을 함께 가진 양</h2>
+
+  <div class="card ca">
+    <p>몸무게 60kg, 온도 25℃ 처럼 <b>숫자 하나</b>로 끝나는 양을 <b>스칼라</b>라고 합니다. 그런데 "시속 30km로 <b class="a">북동쪽으로</b>"처럼 <b>방향</b>까지 있어야 뜻이 통하는 양이 있습니다. 이것이 <b class="a">벡터</b>입니다.</p>
+    <p>좌표평면에서는 원점 O에서 점 (x, y)로 향하는 화살표로 그리고, 그 점의 좌표를 그대로 벡터의 <b>성분</b>이라고 부릅니다.</p>
+    <div class="eq">a = ( a<sub>x</sub> , a<sub>y</sub> )<small>화살표의 "가로로 얼마, 세로로 얼마"가 곧 성분입니다</small></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>벡터가 가진 세 가지 정보</h4>
+      <svg viewBox="0 0 400 280" style="width:100%;height:auto">
+        <line x1="40" y1="240" x2="380" y2="240" stroke="#4a5f7f" stroke-width="2"/>
+        <line x1="40" y1="240" x2="40" y2="20" stroke="#4a5f7f" stroke-width="2"/>
+        <text x="384" y="245" fill="#8ea3c2" font-size="13" font-family="monospace">x</text>
+        <text x="30" y="20" fill="#8ea3c2" font-size="13" font-family="monospace">y</text>
+        <line x1="40" y1="240" x2="290" y2="240" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="290" y1="240" x2="290" y2="90" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="160" y="262" fill="#fbbf24" font-size="14" font-family="monospace" text-anchor="middle">aₓ = 5</text>
+        <text x="300" y="170" fill="#fbbf24" font-size="14" font-family="monospace">a_y = 3</text>
+        <line x1="40" y1="240" x2="282" y2="97" stroke="#22d3ee" stroke-width="4"/>
+        <polygon points="292,90 274,94 282,107" fill="#22d3ee"/>
+        <text x="140" y="150" fill="#22d3ee" font-size="15" font-family="monospace" font-weight="bold">|a| = √34</text>
+        <path d="M 90 240 A 50 50 0 0 0 82 219" stroke="#34d399" stroke-width="2.5" fill="none"/>
+        <text x="96" y="222" fill="#34d399" font-size="13" font-family="monospace">θ</text>
+        <circle cx="40" cy="240" r="5" fill="#e6edf8"/>
+        <text x="22" y="258" fill="#8ea3c2" font-size="12" font-family="monospace">O</text>
+        <circle cx="290" cy="90" r="5" fill="#22d3ee"/>
+        <text x="298" y="82" fill="#22d3ee" font-size="13" font-family="monospace">(5, 3)</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h4>세 가지를 식으로</h4>
+      <div class="eq" style="font-size:15px;text-align:left">
+성분 &nbsp;&nbsp;a = (aₓ, a_y) = (5, 3)
+
+크기 &nbsp;&nbsp;|a| = √(aₓ² + a_y²) = √34 ≒ 5.831
+
+방향각 θ = atan2(a_y, aₓ) ≒ 30.96°
+
+단위벡터 â = a / |a| ≒ (0.857, 0.514)</div>
+      <ul class="li">
+        <li><b class="a">크기</b>는 피타고라스 정리 그대로입니다. 화살표의 길이예요.</li>
+        <li><b class="r">방향각</b>은 x축 양의 방향에서 반시계로 잰 각입니다.</li>
+        <li><b class="k">단위벡터</b>는 크기를 1로 줄인 것. <b>방향만</b> 남긴 벡터라서 코딩에서 아주 많이 씁니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card cb">
+    <h4>왜 atan2 를 쓸까? — 코딩에서 꼭 알아야 할 것</h4>
+    <p class="small">각도를 구할 때 <code>arctan(y/x)</code>를 쓰면 <b class="r">두 가지 문제</b>가 생깁니다. 첫째, x = 0이면 나눗셈이 안 됩니다. 둘째, (3, 4)와 (−3, −4)는 y/x 값이 같아서 정반대 방향인데도 같은 각이 나옵니다. <b class="a">atan2(y, x)</b>는 x와 y의 부호를 각각 보기 때문에 네 사분면을 모두 구별하고 x = 0도 처리합니다. 그래서 거의 모든 언어가 이 함수를 따로 제공합니다.</p>
+  </div>
+</section>
+
+<!-- ============ 1 실습판 ============ -->
+<section class="sec" id="s1">
+  <h2>실습판 — 클릭 · 드래그 · 연산 선택</h2>
+
+  <div class="card">
+    <p><b>사용법</b> &nbsp;① 좌표평면을 클릭하면 원점에서 그 점으로 향하는 <b class="a">벡터 a</b>가 생깁니다. &nbsp;② 한 번 더 클릭하면 <b class="b">벡터 b</b>가 생깁니다. &nbsp;③ 화살표 끝을 <b>드래그</b>하면 값이 실시간으로 바뀝니다. &nbsp;④ 아래 <b>연산 메뉴</b>를 눌러 결과를 눈으로 확인하세요.</p>
+  </div>
+
+  <div class="lab">
+    <div class="bar">
+      <span class="lbl" style="color:#22d3ee">연산 선택</span>
+      <button class="bt on" id="op_sum"    onclick="VL.setOp('sum')">합 &nbsp;a + b</button>
+      <button class="bt"    id="op_diff"   onclick="VL.setOp('diff')">차 &nbsp;a − b</button>
+      <button class="bt"    id="op_scalar" onclick="VL.setOp('scalar')">스칼라배 &nbsp;k·a</button>
+      <button class="bt"    id="op_dot"    onclick="VL.setOp('dot')">내적 &nbsp;a · b</button>
+      <button class="bt"    id="op_cross"  onclick="VL.setOp('cross')">외적 &nbsp;a × b</button>
+      <button class="bt"    id="op_unit"   onclick="VL.setOp('unit')">단위벡터 · 각도</button>
+      <span id="kwrap" style="display:none;align-items:center;gap:7px">
+        <span class="lbl" style="color:#a78bfa">k</span>
+        <input type="range" id="kv" min="-3" max="3" value="2" step="0.5" style="width:110px">
+        <span class="mono" id="kvV" style="color:#a78bfa;font-weight:800;min-width:38px">2</span>
+      </span>
+    </div>
+    <div class="bar">
+      <button class="bt gh" onclick="VL.reset()">전체 지우기</button>
+      <button class="bt gh" onclick="VL.demo()">예시 (4,3) · (−2,4)</button>
+      <button class="bt gh" onclick="VL.swap()">a ↔ b 바꾸기</button>
+      <label class="lbl" style="margin-left:auto"><input type="checkbox" id="showGuide" checked onchange="VL.draw()"> 보조선</label>
+      <label class="lbl"><input type="checkbox" id="showComp" checked onchange="VL.draw()"> 성분 표시</label>
+    </div>
+
+    <div class="labtop">
+      <div class="pane"><svg id="svgV"></svg></div>
+      <div>
+        <div class="box"><div class="hd">벡터 정보</div><div class="bd" id="infoV"></div></div>
+        <div class="box hr"><div class="hd" id="opTitle">연산 결과</div><div class="bd" id="outV"></div></div>
+      </div>
+    </div>
+
+    <h3 style="margin:18px 0 8px">코딩에 필요한 정보</h3>
+    <div class="codearea">
+      <div class="box hc"><div class="hd">메모리 위의 모양 — 길이 2짜리 배열</div>
+        <div class="bd" id="arrView"></div></div>
+      <div>
+        <div class="codehd"><span style="width:9px;height:9px;border-radius:50%;background:#f87171"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#fbbf24"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#34d399"></span>
+          <span>Python · NumPy</span><button class="cp" onclick="cp(this,'pyCode')">복사</button></div>
+        <pre class="code" id="pyCode"></pre>
+      </div>
+      <div>
+        <div class="codehd"><span style="width:9px;height:9px;border-radius:50%;background:#f87171"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#fbbf24"></span>
+          <span style="width:9px;height:9px;border-radius:50%;background:#34d399"></span>
+          <span>JavaScript · Canvas / p5</span><button class="cp" onclick="cp(this,'jsCode')">복사</button></div>
+        <pre class="code" id="jsCode"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============ 2 ============ -->
+<section class="sec" id="s2">
+  <h2>합과 차 — 성분끼리 더하고 빼면 끝</h2>
+
+  <div class="card cr">
+    <div class="eq">a + b = ( aₓ + bₓ , a_y + b_y )　　　a − b = ( aₓ − bₓ , a_y − b_y )
+      <small>x는 x끼리, y는 y끼리. 이것이 벡터 덧셈이 코드로 옮기기 쉬운 이유입니다</small></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card ca">
+      <h4>삼각형법 — 이어 붙이기</h4>
+      <p class="small">a의 화살표 끝에서 b를 다시 그리면, 원점에서 마지막 끝점까지가 <b class="r">a + b</b>입니다. "동쪽으로 3, 그다음 북쪽으로 4를 갔더니 결국 어디?"라는 뜻이에요.</p>
+      <p class="small" style="margin-top:8px"><b>순서를 바꿔도 같습니다.</b> b를 먼저 가고 a를 가도 도착점은 같아요. 이것이 <b class="a">교환법칙 a + b = b + a</b> 이고, 실습판에서 평행사변형이 보이는 이유입니다.</p>
+    </div>
+    <div class="card cb">
+      <h4>평행사변형법 — 두 변으로 둘러싸기</h4>
+      <p class="small">a와 b를 두 변으로 하는 평행사변형을 그리면 <b class="r">대각선이 곧 a + b</b>입니다. 힘 두 개가 동시에 작용할 때 실제로 물체가 움직이는 방향이 이 대각선입니다.</p>
+      <p class="small" style="margin-top:8px">그리고 <b>나머지 대각선</b>(b의 끝에서 a의 끝으로 가는 화살표)이 바로 <b class="r">a − b</b> 입니다. 실습판에서 <b>차</b>를 눌러 확인해 보세요.</p>
+    </div>
+  </div>
+
+  <div class="card cr">
+    <h4>차를 이해하는 가장 좋은 방법</h4>
+    <div class="eq" style="font-size:15px">a − b = a + ( −b )<small>−b 는 b와 크기는 같고 방향만 정반대인 벡터</small></div>
+    <p class="small"><b>게임 코드에서 가장 많이 쓰는 형태</b> — 적의 위치 <code>enemy</code>에서 내 위치 <code>me</code>를 빼면 <code>enemy − me</code> 는 <b class="r">나에게서 적을 향하는 방향 벡터</b>가 됩니다. 여기에 단위벡터를 씌우고 속도를 곱하면 추적 AI가 완성되지요. 뺄셈의 순서를 바꾸면 반대 방향이 되니 주의하세요.</p>
+  </div>
+
+  <div class="card ck">
+    <h4>스칼라배 — 방향은 그대로, 길이만 조절</h4>
+    <div class="eq" style="font-size:15px">k · a = ( k·aₓ , k·a_y )</div>
+    <ul class="li">
+      <li><b>k &gt; 1</b> : 같은 방향으로 길어짐 &nbsp;·&nbsp; <b>0 &lt; k &lt; 1</b> : 같은 방향으로 짧아짐</li>
+      <li><b>k &lt; 0</b> : <b class="r">방향이 정반대</b>로 뒤집힘 &nbsp;·&nbsp; <b>k = 0</b> : 영벡터 (0, 0)</li>
+      <li><b>|k·a| = |k| × |a|</b> — 크기는 |k|배가 됩니다</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="sec" id="s3">
+  <h2>곱 — 벡터의 곱셈은 두 종류다</h2>
+
+  <div class="card">
+    <p>수의 곱셈은 하나뿐이지만, 벡터의 곱셈은 <b>결과가 무엇이냐</b>에 따라 두 가지로 나뉩니다. 이름과 결과를 헷갈리지 않는 것이 가장 중요합니다.</p>
+    <table class="t">
+      <tr><th style="width:16%">이름</th><th style="width:22%">기호와 식</th><th style="width:14%">결과</th><th>무엇을 알려주나</th></tr>
+      <tr><td><b class="a">내적</b><br><span class="small">dot product</span></td>
+          <td class="m">a · b = aₓbₓ + a_yb_y</td><td><b>스칼라</b> (수)</td>
+          <td>두 벡터가 <b>얼마나 같은 방향</b>을 보는가. 각도 계산과 수직 판정에 씁니다.</td></tr>
+      <tr><td><b class="x">외적</b><br><span class="small">cross product</span></td>
+          <td class="m">a × b = aₓb_y − a_ybₓ</td><td><b>수</b> (2D)<br><span class="small">3D에서는 벡터</span></td>
+          <td>두 벡터가 만드는 <b>평행사변형의 넓이</b>와 <b>회전 방향</b>(왼쪽/오른쪽)을 알려줍니다.</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card ca">
+      <h4>내적의 핵심 — 방향이 얼마나 닮았나</h4>
+      <div class="eq" style="font-size:15px">a · b = |a| |b| cos θ</div>
+      <ul class="li">
+        <li><b class="r">a · b &gt; 0</b> : 사잇각이 예각 — 대체로 같은 쪽을 봄</li>
+        <li><b class="r">a · b = 0</b> : 사잇각이 <b>직각</b> — 두 벡터가 수직!</li>
+        <li><b class="r">a · b &lt; 0</b> : 사잇각이 둔각 — 대체로 반대쪽을 봄</li>
+      </ul>
+      <p class="small" style="margin-top:9px"><b>수직 판정이 이렇게 쉬워집니다.</b> 기울기를 구해 −1인지 볼 필요 없이 <code>dot(a,b) === 0</code> 한 줄이면 됩니다. 세로선처럼 기울기를 정할 수 없는 경우도 문제없어요.</p>
+      <p class="small"><b>사잇각 구하기</b> — 위 식을 뒤집으면 <code>θ = acos( (a·b) / (|a||b|) )</code> 입니다. 실습판의 <b>내적</b> 메뉴에서 계산 과정을 볼 수 있습니다.</p>
+    </div>
+    <div class="card cx">
+      <h4>외적의 핵심 — 넓이와 회전 방향</h4>
+      <div class="eq" style="font-size:15px">a × b = |a| |b| sin θ</div>
+      <ul class="li">
+        <li><b>|a × b|</b> = a, b가 만드는 <b class="x">평행사변형의 넓이</b></li>
+        <li>그 절반은 <b>삼각형의 넓이</b> — 좌표로 삼각형 넓이를 구할 때 그대로 씁니다</li>
+        <li><b class="r">a × b &gt; 0</b> : b가 a의 <b>왼쪽</b>(반시계) &nbsp;·&nbsp; <b class="r">&lt; 0</b> : <b>오른쪽</b>(시계)</li>
+        <li><b class="r">a × b = 0</b> : 두 벡터가 <b>평행</b> (넓이가 0)</li>
+      </ul>
+      <p class="small" style="margin-top:9px"><b>이것이 CCW입니다.</b> 알고리즘에서 점 세 개의 방향을 판정하는 CCW 함수가 바로 이 외적이에요. 볼록 껍질, 선분 교차 판정, 다각형 넓이(신발끈 공식)가 전부 여기서 나옵니다.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>주의 — 성분끼리 곱하는 것은 벡터의 곱이 아닙니다</h4>
+    <p class="small"><code>(aₓ·bₓ, a_y·b_y)</code> 처럼 성분끼리 곱한 것은 수학의 벡터 곱이 아니라 프로그래밍에서 쓰는 <b>요소별 곱</b>(element-wise)입니다. NumPy에서 <code>a * b</code>를 쓰면 이 요소별 곱이 나오므로, 내적을 원한다면 반드시 <code>np.dot(a, b)</code> 또는 <code>a @ b</code> 를 써야 합니다. 실습에서 가장 흔한 실수예요.</p>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="sec" id="s4">
+  <h2>코드로 옮기기</h2>
+
+  <div class="card ca">
+    <p>벡터는 <b>길이 2짜리 숫자 묶음</b>일 뿐입니다. 그래서 어떤 언어로든 배열이나 객체 하나면 표현할 수 있고, 연산은 전부 <b>성분별 계산</b>으로 끝납니다. 실습판 아래쪽에서 지금 값에 맞춘 코드가 실시간으로 만들어지니 함께 보세요.</p>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <div class="codehd"><span>vector.py — 재사용 가능한 형태</span><button class="cp" onclick="cp(this,'pyLib')">복사</button></div>
+      <pre class="code" id="pyLib"></pre>
+    </div>
+    <div>
+      <div class="codehd"><span>vector.js — 재사용 가능한 형태</span><button class="cp" onclick="cp(this,'jsLib')">복사</button></div>
+      <pre class="code" id="jsLib"></pre>
+    </div>
+  </div>
+
+  <h3>실전에서 이렇게 쓰입니다</h3>
+  <div class="grid3">
+    <div class="card cr"><h4>① 추적 / 이동</h4>
+      <p class="small">목표까지의 방향 벡터를 구해 단위벡터로 만들고 속도를 곱해 더합니다.</p>
+      <div class="st" style="font-size:12.3px">dir = normalize(target − pos)
+pos = pos + dir * speed * dt</div></div>
+    <div class="card ck"><h4>② 반사 (튕기기)</h4>
+      <p class="small">벽의 법선 n을 알면 내적 하나로 반사 벡터가 나옵니다.</p>
+      <div class="st" style="font-size:12.3px">r = v − 2 * dot(v, n) * n
+// n은 반드시 단위벡터</div></div>
+    <div class="card cx"><h4>③ 시야 판정</h4>
+      <p class="small">내가 보는 방향과 적 방향의 내적으로 "앞에 있는가"를 판정합니다.</p>
+      <div class="st" style="font-size:12.3px">if dot(forward, toEnemy) &gt; 0:
+    # 앞쪽에 있다</div></div>
+    <div class="card ca"><h4>④ 삼각형 넓이</h4>
+      <p class="small">두 변 벡터의 외적 절댓값의 절반입니다.</p>
+      <div class="st" style="font-size:12.3px">area = abs(cross(B−A, C−A)) / 2</div></div>
+    <div class="card cb"><h4>⑤ 좌우 판정 (CCW)</h4>
+      <p class="small">외적의 부호만 보면 됩니다. 볼록 껍질 알고리즘의 핵심.</p>
+      <div class="st" style="font-size:12.3px">s = cross(B−A, C−A)
+s &gt; 0 → 반시계, s &lt; 0 → 시계</div></div>
+    <div class="card cr"><h4>⑥ 회전</h4>
+      <p class="small">각도만큼 돌리는 것도 성분 계산 두 줄입니다.</p>
+      <div class="st" style="font-size:12.3px">x' = x·cosθ − y·sinθ
+y' = x·sinθ + y·cosθ</div></div>
+  </div>
+
+  <div class="card cx">
+    <h4>NumPy 사용 시 꼭 알아둘 두 가지</h4>
+    <ul class="li">
+      <li><code>a * b</code> 는 <b class="r">내적이 아닙니다</b>. 성분끼리 곱하는 요소별 곱이에요. 내적은 <code>np.dot(a, b)</code> 또는 <code>a @ b</code>.</li>
+      <li><code>np.cross</code> 로 2차원 벡터의 외적을 구하는 방식은 <b class="r">NumPy 2.0부터 사용이 권장되지 않습니다</b>(deprecated). 2D에서는 <code>a[0]*b[1] - a[1]*b[0]</code> 로 직접 계산하는 것이 안전합니다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="sec" id="s5">
+  <h2>정리 · 확인문제</h2>
+  <table class="t">
+    <tr><th style="width:20%">구하는 것</th><th style="width:34%">식</th><th>결과의 종류 · 쓰임</th></tr>
+    <tr><td><b class="a">성분</b></td><td class="m">a = (aₓ, a_y)</td><td>벡터 — 배열 [x, y]</td></tr>
+    <tr><td><b class="a">크기</b></td><td class="m">|a| = √(aₓ² + a_y²)</td><td>스칼라 — 거리, 속력</td></tr>
+    <tr><td><b class="r">합 · 차</b></td><td class="m">(aₓ ± bₓ , a_y ± b_y)</td><td>벡터 — 이동, 방향 구하기</td></tr>
+    <tr><td><b class="k">스칼라배</b></td><td class="m">(k·aₓ , k·a_y)</td><td>벡터 — 속도 조절, 반전</td></tr>
+    <tr><td><b class="a">내적</b></td><td class="m">aₓbₓ + a_yb_y = |a||b|cosθ</td><td>스칼라 — 각도, 수직 판정, 투영</td></tr>
+    <tr><td><b class="x">외적(2D)</b></td><td class="m">aₓb_y − a_ybₓ = |a||b|sinθ</td><td>스칼라 — 넓이, 좌우 판정(CCW)</td></tr>
+    <tr><td><b class="k">단위벡터</b></td><td class="m">â = a / |a|</td><td>벡터 — 방향만 필요할 때</td></tr>
+    <tr><td><b class="r">방향각</b></td><td class="m">θ = atan2(a_y, aₓ)</td><td>스칼라 — 회전, 조준</td></tr>
+  </table>
+  <div id="quiz"></div>
+</section>
+</div>
+
+<footer>
+  <div>벡터 실습판 — 좌표평면 · 합과 차 · 내적과 외적 · 코드 변환</div>
+  <div style="margin-top:5px;font-size:12px">화면의 모든 값은 정수 성분에서 정확히 계산되며, 코드는 현재 값에 맞춰 실시간 생성됩니다</div>
+</footer>
+<script>
+/* ============ 공통 ============ */
+var NS='http://www.w3.org/2000/svg';
+function $(i){return document.getElementById(i);}
+function sv(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function tx(t,a,p){var e=sv('text',a,p);e.textContent=t;return e;}
+function el(t,c,s){var e=document.createElement(t);if(c)e.className=c;if(s!==undefined)e.textContent=s;return e;}
+function clr(n){while(n.firstChild)n.removeChild(n.firstChild);}
+function go(i){
+  var s=document.querySelectorAll('section.sec'),t=document.querySelectorAll('.tab');
+  for(var k=0;k<s.length;k++){s[k].classList.toggle('on',k===i);t[k].classList.toggle('on',k===i);}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cp(btn,id){
+  var t=$(id).textContent;
+  function done(){btn.textContent='복사됨 \u2713';btn.classList.add('done');
+    setTimeout(function(){btn.textContent='복사';btn.classList.remove('done');},1500);}
+  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}
+    document.body.removeChild(ta);}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done,fb);else fb();
+}
+var MIN='\u2212',RT='\u221A';
+function sn(x){return x<0?MIN+(-x):''+x;}
+function pr(x){return x<0?'('+MIN+(-x)+')':''+x;}
+function d3(x){return (Math.round(x*1000)/1000).toFixed(3);}
+function d2(x){return (Math.round(x*100)/100).toFixed(2);}
+function simpSqrt(m){var k=1,s=m;for(var i=2;i*i<=s;i++){while(s%(i*i)===0){s/=i*i;k*=i;}}return[k,s];}
+function sqrtStr(m){if(m===0)return '0';var q=simpSqrt(m);return q[1]===1?''+q[0]:(q[0]===1?'':q[0])+RT+q[1];}
+
+/* ============ 코드 하이라이트 ============ */
+var KW={'import':1,'as':1,'def':1,'return':1,'if':1,'else':1,'const':1,'let':1,'var':1,'function':1,'print':1,'from':1};
+var TY={'np':1,'Math':1,'console':1,'math':1,'numpy':1};
+function renderCode(box,src,lang){
+  clr(box);
+  var cmark=lang==='py'?'#':'//';
+  src.split('\n').forEach(function(line,li){
+    var row=box;
+    if(li>0)box.appendChild(document.createTextNode('\n'));
+    var ci=line.indexOf(cmark);
+    var main=ci>=0?line.slice(0,ci):line, cm=ci>=0?line.slice(ci):'';
+    var toks=main.match(/"[^"]*"|'[^']*'|[A-Za-z_][A-Za-z0-9_]*|\d+\.?\d*|\s+|./g)||[];
+    toks.forEach(function(t){
+      var c='';
+      if(/^["']/.test(t))c='sr';
+      else if(KW[t])c='kw';
+      else if(TY[t])c='ty';
+      else if(/^\d/.test(t))c='nu';
+      row.appendChild(c?el('span',c,t):document.createTextNode(t));
+    });
+    if(cm)row.appendChild(el('span','cm',cm));
+  });
+}
+/* NumPy 정수배열 출력 형식 흉내 : 오른쪽 정렬 + 공백 1칸 */
+function npInt(v){
+  var s=v.map(function(x){return ''+x;}),w=Math.max.apply(null,s.map(function(t){return t.length;}));
+  return '['+s.map(function(t){while(t.length<w)t=' '+t;return t;}).join(' ')+']';
+}
+
+/* ============ 좌표평면 ============ */
+function Plane(id,o){
+  this.svg=$(id);this.x0=o.x0;this.x1=o.x1;this.y0=o.y0;this.y1=o.y1;this.c=o.c;this.p=34;
+  this.W=this.p*2+(this.x1-this.x0)*this.c;this.H=this.p*2+(this.y1-this.y0)*this.c;
+  this.svg.setAttribute('viewBox','0 0 '+this.W+' '+this.H);
+  this.svg.style.maxWidth=this.W+'px';
+}
+Plane.prototype.X=function(x){return this.p+(x-this.x0)*this.c;};
+Plane.prototype.Y=function(y){return this.p+(this.y1-y)*this.c;};
+Plane.prototype.raw=function(e){
+  var r=this.svg.getBoundingClientRect();
+  return {x:((e.clientX-r.left)/r.width*this.W-this.p)/this.c+this.x0,
+          y:this.y1-((e.clientY-r.top)/r.height*this.H-this.p)/this.c};
+};
+Plane.prototype.snap=function(e){var q=this.raw(e);
+  return [Math.max(this.x0,Math.min(this.x1,Math.round(q.x))),
+          Math.max(this.y0,Math.min(this.y1,Math.round(q.y)))];};
+Plane.prototype.grid=function(){
+  var s=this.svg,i;clr(s);
+  sv('rect',{x:0,y:0,width:this.W,height:this.H,fill:'#060b14'},s);
+  for(i=this.x0;i<=this.x1;i++)
+    sv('line',{x1:this.X(i),y1:this.Y(this.y1),x2:this.X(i),y2:this.Y(this.y0),
+      stroke:i===0?'#4a5f7f':'#152135','stroke-width':i===0?2:1},s);
+  for(i=this.y0;i<=this.y1;i++)
+    sv('line',{x1:this.X(this.x0),y1:this.Y(i),x2:this.X(this.x1),y2:this.Y(i),
+      stroke:i===0?'#4a5f7f':'#152135','stroke-width':i===0?2:1},s);
+  for(i=this.x0;i<=this.x1;i++)if(i!==0&&i%2===0)
+    tx(i,{x:this.X(i),y:this.Y(0)+14,'text-anchor':'middle','font-size':10,fill:'#5b6f8f','font-family':'monospace'},s);
+  for(i=this.y0;i<=this.y1;i++)if(i!==0&&i%2===0)
+    tx(i,{x:this.X(0)-7,y:this.Y(i)+4,'text-anchor':'end','font-size':10,fill:'#5b6f8f','font-family':'monospace'},s);
+  tx('O',{x:this.X(0)-8,y:this.Y(0)+15,'text-anchor':'end','font-size':11,fill:'#5b6f8f'},s);
+  tx('x',{x:this.X(this.x1)+4,y:this.Y(0)-7,'font-size':13,fill:'#8ea3c2','font-weight':'bold'},s);
+  tx('y',{x:this.X(0)+7,y:this.Y(this.y1)-5,'font-size':13,fill:'#8ea3c2','font-weight':'bold'},s);
+};
+Plane.prototype.arrow=function(a,b,o){
+  var x1=this.X(a[0]),y1=this.Y(a[1]),x2=this.X(b[0]),y2=this.Y(b[1]);
+  var dx=x2-x1,dy=y2-y1,L=Math.sqrt(dx*dx+dy*dy);
+  if(L<2){sv('circle',{cx:x1,cy:y1,r:4,fill:o.c},this.svg);return;}
+  var ux=dx/L,uy=dy/L,h=Math.min(13,L*0.45),w=h*0.5;
+  var bx=x2-ux*h,by=y2-uy*h;
+  sv('line',{x1:x1,y1:y1,x2:bx,y2:by,stroke:o.c,'stroke-width':o.w||3.4,
+    'stroke-dasharray':o.dash||'','stroke-linecap':'round',opacity:o.op===undefined?1:o.op},this.svg);
+  sv('polygon',{points:x2+','+y2+' '+(bx-uy*w)+','+(by+ux*w)+' '+(bx+uy*w)+','+(by-ux*w),
+    fill:o.c,opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.seg=function(a,b,o){
+  sv('line',{x1:this.X(a[0]),y1:this.Y(a[1]),x2:this.X(b[0]),y2:this.Y(b[1]),
+    stroke:o.c,'stroke-width':o.w||2,'stroke-dasharray':o.dash||'','stroke-linecap':'round',
+    opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.poly=function(pts,o){
+  sv('polygon',{points:pts.map(function(p){return this.X(p[0])+','+this.Y(p[1]);},this).join(' '),
+    fill:o.fill||'none',stroke:o.c||'none','stroke-width':o.w||0,
+    'stroke-dasharray':o.dash||'',opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.lab=function(t,x,y,col,dx,dy,sz){
+  tx(t,{x:this.X(x)+(dx||0),y:this.Y(y)+(dy||0),'font-size':sz||13,fill:col,'font-weight':'bold',
+    'font-family':'D2Coding,Consolas,monospace'},this.svg);
+};
+Plane.prototype.arc=function(rad,a1,a2,col){
+  var r=rad*this.c,cx=this.X(0),cy=this.Y(0);
+  var x1=cx+r*Math.cos(a1),y1=cy-r*Math.sin(a1);
+  var x2=cx+r*Math.cos(a2),y2=cy-r*Math.sin(a2);
+  var d=a2-a1;while(d<0)d+=2*Math.PI;while(d>2*Math.PI)d-=2*Math.PI;
+  sv('path',{d:'M '+x1+' '+y1+' A '+r+' '+r+' 0 '+(d>Math.PI?1:0)+' 0 '+x2+' '+y2,
+    fill:'none',stroke:col,'stroke-width':2.2},this.svg);
+};
+
+/* ============ 실습판 ============ */
+var CA='#22d3ee',CB='#fbbf24',CR='#34d399',CK='#a78bfa',CX='#f472b6';
+var VL={pl:null,a:null,b:null,op:'sum',drag:null};
+VL.init=function(){
+  this.pl=new Plane('svgV',{x0:-10,x1:10,y0:-8,y1:8,c:30});
+  var self=this,s=this.pl.svg;
+  s.addEventListener('pointerdown',function(e){self.down(e);});
+  s.addEventListener('pointermove',function(e){self.move(e);});
+  s.addEventListener('pointerup',function(){self.drag=null;});
+  s.addEventListener('pointerleave',function(){self.drag=null;});
+  $('kv').addEventListener('input',function(){$('kvV').textContent=$('kv').value;self.draw();});
+  this.demo();
+};
+VL.setOp=function(o){
+  this.op=o;
+  ['sum','diff','scalar','dot','cross','unit'].forEach(function(k){$('op_'+k).classList.toggle('on',k===o);});
+  $('kwrap').style.display=(o==='scalar')?'inline-flex':'none';
+  this.draw();
+};
+VL.k=function(){return parseFloat($('kv').value);};
+VL.down=function(e){
+  var q=this.pl.raw(e);
+  var near=function(v){return v&&Math.sqrt((v[0]-q.x)*(v[0]-q.x)+(v[1]-q.y)*(v[1]-q.y))<0.85;};
+  if(near(this.a)){this.drag='a';this.pl.svg.setPointerCapture(e.pointerId);return;}
+  if(near(this.b)){this.drag='b';this.pl.svg.setPointerCapture(e.pointerId);return;}
+  var s=this.pl.snap(e);
+  if(!this.a)this.a=s;else if(!this.b)this.b=s;else return;
+  this.draw();
+};
+VL.move=function(e){
+  if(!this.drag)return;
+  var s=this.pl.snap(e),v=this[this.drag];
+  if(v[0]===s[0]&&v[1]===s[1])return;
+  this[this.drag]=s;this.draw();
+};
+VL.reset=function(){this.a=null;this.b=null;this.draw();};
+VL.demo=function(){this.a=[4,3];this.b=[-2,4];this.draw();};
+VL.swap=function(){var t=this.a;this.a=this.b;this.b=t;this.draw();};
+
+VL.draw=function(){
+  var pl=this.pl,a=this.a,b=this.b,op=this.op;
+  pl.grid();
+  var gd=$('showGuide').checked, cm=$('showComp').checked;
+  if(cm){
+    if(a){pl.seg([0,0],[a[0],0],{c:CA,w:1.6,dash:'5 4',op:.55});pl.seg([a[0],0],a,{c:CA,w:1.6,dash:'5 4',op:.55});}
+    if(b){pl.seg([0,0],[b[0],0],{c:CB,w:1.6,dash:'5 4',op:.55});pl.seg([b[0],0],b,{c:CB,w:1.6,dash:'5 4',op:.55});}
+  }
+  if(a&&b){
+    var ax=a[0],ay=a[1],bx=b[0],by=b[1];
+    var la=Math.sqrt(ax*ax+ay*ay), lb=Math.sqrt(bx*bx+by*by);
+    if(op==='sum'){
+      var r=[ax+bx,ay+by];
+      pl.poly([[0,0],a,r,b],{fill:'rgba(52,211,153,.10)',c:CR,w:1.4,dash:'5 5'});
+      if(gd){pl.arrow(a,r,{c:CB,w:2.4,dash:'6 4',op:.8});pl.arrow(b,r,{c:CA,w:2.4,dash:'6 4',op:.8});}
+      pl.arrow([0,0],r,{c:CR,w:4.2});
+      pl.lab('a+b ('+sn(r[0])+', '+sn(r[1])+')',r[0],r[1],CR,10,-10);
+    }else if(op==='diff'){
+      var d=[ax-bx,ay-by],nb=[-bx,-by];
+      if(gd){pl.arrow([0,0],nb,{c:CB,w:2.4,dash:'6 4',op:.8});pl.lab(MIN+'b',nb[0],nb[1],CB,9,14,12);
+        pl.arrow(b,a,{c:CR,w:2.4,dash:'6 4',op:.85});}
+      pl.arrow([0,0],d,{c:CR,w:4.2});
+      pl.lab('a'+MIN+'b ('+sn(d[0])+', '+sn(d[1])+')',d[0],d[1],CR,10,-10);
+    }else if(op==='scalar'){
+      var k=this.k(),r2=[ax*k,ay*k];
+      pl.arrow([0,0],r2,{c:CK,w:4.4,op:.95});
+      pl.lab(k+'a ('+d2(r2[0])+', '+d2(r2[1])+')',r2[0],r2[1],CK,10,-10);
+    }else if(op==='dot'){
+      var dp=ax*bx+ay*by;
+      if(la>0){
+        var t=dp/(la*la),Fp=[ax*t,ay*t];
+        pl.seg([0,0],Fp,{c:CR,w:8,op:.35});
+        pl.seg(b,Fp,{c:CR,w:2,dash:'5 4'});
+        pl.lab('b의 그림자 = '+d3(dp/la),Fp[0],Fp[1],CR,8,20,11.5);
+      }
+      if(la>0&&lb>0){
+        var t1=Math.atan2(ay,ax),t2=Math.atan2(by,bx);
+        pl.arc(1.6,Math.min(t1,t2),Math.max(t1,t2),CR);
+        var mid=(t1+t2)/2, ang=Math.acos(Math.max(-1,Math.min(1,dp/(la*lb))))*180/Math.PI;
+        pl.lab('\u03b8 = '+d2(ang)+'\u00b0',1.95*Math.cos(mid),1.95*Math.sin(mid),CR,-14,-4,12);
+      }
+    }else if(op==='cross'){
+      var cr=ax*by-ay*bx;
+      pl.poly([[0,0],a,[ax+bx,ay+by],b],{fill:'rgba(244,114,182,.16)',c:CX,w:1.6,dash:'5 5'});
+      pl.lab('넓이 = '+Math.abs(cr),(ax+bx)/2,(ay+by)/2,CX,-24,4,13.5);
+      if(la>0&&lb>0){
+        var u1=Math.atan2(ay,ax),u2=Math.atan2(by,bx);
+        pl.arc(1.3,u1,u2,CX);
+        pl.lab(cr>0?'반시계 (+)':(cr<0?'시계 ('+MIN+')':'평행 (0)'),1.6*Math.cos((u1+u2)/2),
+          1.6*Math.sin((u1+u2)/2),CX,-18,-6,11.5);
+      }
+    }else if(op==='unit'){
+      var cx=[],i;
+      for(i=0;i<=64;i++)cx.push([Math.cos(i/64*2*Math.PI),Math.sin(i/64*2*Math.PI)]);
+      pl.poly(cx,{fill:'none',c:'#334b6d',w:1.4,dash:'4 4'});
+      if(la>0){pl.arrow([0,0],[ax/la,ay/la],{c:CA,w:5});
+        pl.arc(2.3,0,Math.atan2(ay,ax),CA);}
+      if(lb>0){pl.arrow([0,0],[bx/lb,by/lb],{c:CB,w:5});
+        pl.arc(2.9,0,Math.atan2(by,bx),CB);}
+    }
+  }
+  if(a){pl.arrow([0,0],a,{c:CA,w:3.6});pl.lab('a ('+sn(a[0])+', '+sn(a[1])+')',a[0],a[1],CA,11,-9);}
+  if(b){pl.arrow([0,0],b,{c:CB,w:3.6});pl.lab('b ('+sn(b[0])+', '+sn(b[1])+')',b[0],b[1],CB,11,-9);}
+  this.info();this.result();this.codes();
+};
+
+VL.vinfo=function(v){
+  var m=v[0]*v[0]+v[1]*v[1],L=Math.sqrt(m);
+  var deg=Math.atan2(v[1],v[0])*180/Math.PI;if(deg<0)deg+=360;
+  return {m:m,L:L,deg:deg,ux:L?v[0]/L:0,uy:L?v[1]/L:0};
+};
+VL.info=function(){
+  var box=$('infoV');clr(box);
+  if(!this.a&&!this.b){box.appendChild(el('div','empty','좌표평면을 클릭해 벡터 a를 만들어 보세요.'));return;}
+  var t=el('table','v'),hr=el('tr');
+  ['','성분','크기','방향각','단위벡터'].forEach(function(h){hr.appendChild(el('th',null,h));});
+  t.appendChild(hr);
+  var self=this;
+  [['a',this.a,'a',CA],['b',this.b,'b',CB]].forEach(function(row){
+    if(!row[1])return;
+    var v=row[1],q=self.vinfo(v),tr=el('tr');
+    tr.appendChild(el('td',row[2],row[0]));
+    tr.appendChild(el('td',row[2],'('+sn(v[0])+', '+sn(v[1])+')'));
+    tr.appendChild(el('td',null,RT+q.m+' = '+sqrtStr(q.m)+(simpSqrt(q.m)[1]===1?'':' \u2245 '+d3(q.L))));
+    tr.appendChild(el('td',null,d2(q.deg)+'\u00b0'));
+    tr.appendChild(el('td',null,'('+d3(q.ux)+', '+d3(q.uy)+')'));
+    t.appendChild(tr);
+  });
+  box.appendChild(t);
+  if(!this.b)box.appendChild(el('div','empty','한 번 더 클릭하면 벡터 b가 만들어집니다.'));
+};
+VL.result=function(){
+  var box=$('outV');clr(box);
+  var a=this.a,b=this.b,op=this.op;
+  var T={sum:'합 a + b',diff:'차 a \u2212 b',scalar:'스칼라배 k\u00b7a',dot:'내적 a \u00b7 b',
+         cross:'외적 a \u00d7 b (2D)',unit:'단위벡터와 방향각'}[op];
+  $('opTitle').textContent='연산 결과 \u2014 '+T;
+  if(!a||(!b&&op!=='scalar'&&op!=='unit')){
+    box.appendChild(el('div','empty','벡터 a와 b를 모두 만들어 주세요.'));return;}
+  var ax=a[0],ay=a[1],s='';
+  var qa=this.vinfo(a),qb=b?this.vinfo(b):null;
+  if(op==='sum'&&b){
+    s ='a + b = ('+sn(ax)+' + '+pr(b[0])+' , '+sn(ay)+' + '+pr(b[1])+')\n';
+    s+='      = [['+sn(ax+b[0])+', '+sn(ay+b[1])+']]\n\n';
+    s+='크기 |a+b| = '+RT+((ax+b[0])*(ax+b[0])+(ay+b[1])*(ay+b[1]))+' \u2245 '+
+       d3(Math.sqrt((ax+b[0])*(ax+b[0])+(ay+b[1])*(ay+b[1])))+'\n';
+    s+='\u203b 교환법칙 : a + b = b + a  (평행사변형의 대각선)';
+  }else if(op==='diff'&&b){
+    s ='a \u2212 b = ('+sn(ax)+' \u2212 '+pr(b[0])+' , '+sn(ay)+' \u2212 '+pr(b[1])+')\n';
+    s+='      = [['+sn(ax-b[0])+', '+sn(ay-b[1])+']]\n\n';
+    s+='이 벡터는 b의 끝점에서 a의 끝점으로 향합니다.\n';
+    s+='\u2192 "b에서 a를 향하는 방향"이라는 뜻이에요.\n';
+    s+='\u203b b \u2212 a 는 방향이 정반대 : ('+sn(b[0]-ax)+', '+sn(b[1]-ay)+')';
+  }else if(op==='scalar'){
+    var k=this.k();
+    s ='k = '+k+'\n';
+    s+='k\u00b7a = ('+k+'\u00d7'+pr(ax)+' , '+k+'\u00d7'+pr(ay)+') = [['+d2(k*ax)+', '+d2(k*ay)+']]\n\n';
+    s+='|k\u00b7a| = |k| \u00d7 |a| = '+Math.abs(k)+' \u00d7 '+d3(qa.L)+' = '+d3(Math.abs(k)*qa.L)+'\n';
+    s+='방향 : '+(k>0?'a와 같은 방향':(k<0?'a와 정반대 방향':'영벡터 (방향 없음)'));
+  }else if(op==='dot'&&b){
+    var dp=ax*b[0]+ay*b[1];
+    s ='a \u00b7 b = '+pr(ax)+'\u00d7'+pr(b[0])+' + '+pr(ay)+'\u00d7'+pr(b[1])+'\n';
+    s+='      = '+sn(ax*b[0])+' + '+pr(ay*b[1])+' = [['+sn(dp)+']]\n\n';
+    if(qa.L>0&&qb.L>0){
+      var cosv=dp/(qa.L*qb.L),ang=Math.acos(Math.max(-1,Math.min(1,cosv)))*180/Math.PI;
+      s+='cos\u03b8 = (a\u00b7b) \u00f7 (|a||b|) = '+sn(dp)+' \u00f7 ('+d3(qa.L)+'\u00d7'+d3(qb.L)+')\n';
+      s+='      = '+d3(cosv)+'\n';
+      s+='\u03b8 = acos('+d3(cosv)+') = [['+d2(ang)+'\u00b0]]\n\n';
+      s+='판정 : '+(dp>0?'a\u00b7b > 0 \u2192 예각 (같은 쪽)':(dp<0?'a\u00b7b < 0 \u2192 둔각 (반대 쪽)':'a\u00b7b = 0 \u2192 [[두 벡터는 수직!]]'))+'\n';
+      s+='b가 a 위에 드리우는 그림자 길이 = (a\u00b7b)\u00f7|a| = '+d3(dp/qa.L);
+    }
+  }else if(op==='cross'&&b){
+    var cr=ax*b[1]-ay*b[0];
+    s ='a \u00d7 b = '+pr(ax)+'\u00d7'+pr(b[1])+' \u2212 '+pr(ay)+'\u00d7'+pr(b[0])+'\n';
+    s+='      = '+sn(ax*b[1])+' \u2212 '+pr(ay*b[0])+' = [['+sn(cr)+']]\n\n';
+    s+='평행사변형의 넓이 = |a\u00d7b| = [['+Math.abs(cr)+']]\n';
+    s+='삼각형 O-a-b 의 넓이 = '+Math.abs(cr)+' \u00f7 2 = '+(Math.abs(cr)/2)+'\n\n';
+    s+='부호 판정 : '+(cr>0?'양수 \u2192 b는 a의 [[왼쪽]] (반시계)':
+                       (cr<0?'음수 \u2192 b는 a의 [[오른쪽]] (시계)':'0 \u2192 [[두 벡터는 평행]]'))+'\n';
+    s+='\u203b 이것이 알고리즘의 CCW 판정과 같은 식입니다.';
+  }else if(op==='unit'){
+    s ='a\u0302 = a \u00f7 |a| = ('+sn(ax)+', '+sn(ay)+') \u00f7 '+d3(qa.L)+'\n';
+    s+='   = [['+d3(qa.ux)+', '+d3(qa.uy)+']]   (크기 1)\n';
+    s+='방향각 \u03b8a = atan2('+sn(ay)+', '+sn(ax)+') = [['+d2(qa.deg)+'\u00b0]]\n';
+    if(b){
+      s+='\nb\u0302 = ('+d3(qb.ux)+', '+d3(qb.uy)+')\n';
+      s+='방향각 \u03b8b = atan2('+sn(b[1])+', '+sn(b[0])+') = [['+d2(qb.deg)+'\u00b0]]\n';
+      var diff=Math.abs(qa.deg-qb.deg);if(diff>180)diff=360-diff;
+      s+='두 방향각의 차 = '+d2(diff)+'\u00b0';
+    }
+  }
+  var d=el('div','st'),parts=s.split(/\[\[|\]\]/);
+  parts.forEach(function(t,i){
+    if(i%2===1)d.appendChild(el('span','hl',t));else d.appendChild(document.createTextNode(t));
+  });
+  box.appendChild(d);
+};
+
+/* ---- 배열 시각화 ---- */
+function arrRow(name,v,cls,fmt){
+  var wrap=el('div');
+  wrap.appendChild(el('div','lbl',name));
+  var row=el('div','arrbox');
+  row.appendChild(el('span','brk','['));
+  [0,1].forEach(function(i){
+    var c=el('div','cell'+(cls?' '+cls:''));
+    c.appendChild(el('div','n',i===0?'x':'y'));
+    c.appendChild(el('div','v',fmt?fmt(v[i]):sn(v[i])));
+    c.appendChild(el('div','i','['+i+']'));
+    row.appendChild(c);
+  });
+  row.appendChild(el('span','brk',']'));
+  wrap.appendChild(row);
+  return wrap;
+}
+VL.arrView=function(){
+  var box=$('arrView');clr(box);
+  if(!this.a){box.appendChild(el('div','empty','벡터를 만들면 표시됩니다.'));return;}
+  box.appendChild(arrRow('a  (shape: 2,)',this.a,''));
+  if(this.b)box.appendChild(arrRow('b  (shape: 2,)',this.b,'b'));
+  var op=this.op,a=this.a,b=this.b;
+  if(b&&op==='sum')box.appendChild(arrRow('a + b',[a[0]+b[0],a[1]+b[1]],'r'));
+  else if(b&&op==='diff')box.appendChild(arrRow('a - b',[a[0]-b[0],a[1]-b[1]],'r'));
+  else if(op==='scalar')box.appendChild(arrRow(this.k()+' * a',[a[0]*this.k(),a[1]*this.k()],'r',function(x){return d2(x);}));
+  else if(b&&(op==='dot'||op==='cross')){
+    var val=op==='dot'?(a[0]*b[0]+a[1]*b[1]):(a[0]*b[1]-a[1]*b[0]);
+    var w=el('div');w.appendChild(el('div','lbl',op==='dot'?'dot(a, b)  \u2192 스칼라':'cross(a, b)  \u2192 스칼라'));
+    var r=el('div','arrbox');var c=el('div','cell r');
+    c.appendChild(el('div','n','scalar'));c.appendChild(el('div','v',sn(val)));c.appendChild(el('div','i','수 하나'));
+    r.appendChild(c);w.appendChild(r);box.appendChild(w);
+  }
+  var note=el('div','small');
+  note.style.marginTop='6px';note.style.fontSize='12px';
+  note.textContent='벡터 하나 = 길이 2인 배열. 인덱스 0이 x, 1이 y입니다. 3차원이면 길이 3이 되고 나머지 규칙은 그대로예요.';
+  box.appendChild(note);
+};
+
+/* ---- 코드 생성 ---- */
+VL.codes=function(){
+  this.arrView();
+  var a=this.a,b=this.b;
+  if(!a){renderCode($('pyCode'),'# 벡터를 만들면 코드가 생성됩니다.','py');
+         renderCode($('jsCode'),'// 벡터를 만들면 코드가 생성됩니다.','js');return;}
+  var B=b||[0,0];
+  var dp=a[0]*B[0]+a[1]*B[1], crv=a[0]*B[1]-a[1]*B[0];
+  var La=Math.sqrt(a[0]*a[0]+a[1]*a[1]), Lb=Math.sqrt(B[0]*B[0]+B[1]*B[1]);
+  var ang=(La>0&&Lb>0)?Math.acos(Math.max(-1,Math.min(1,dp/(La*Lb))))*180/Math.PI:0;
+  var k=this.k();
+  var py='import numpy as np\n\n'+
+    'a = np.array(['+a[0]+', '+a[1]+'])\n'+
+    (b?'b = np.array(['+b[0]+', '+b[1]+'])\n':'')+'\n'+
+    'print("a      =", a)            # '+npInt(a)+'\n';
+  if(b){
+    py+='print("b      =", b)            # '+npInt(b)+'\n'+
+        'print("a + b  =", a + b)        # '+npInt([a[0]+b[0],a[1]+b[1]])+'\n'+
+        'print("a - b  =", a - b)        # '+npInt([a[0]-b[0],a[1]-b[1]])+'\n';
+  }
+  py+='print("'+k+' * a  =", '+k+' * a)        # 스칼라배\n';
+  if(b){
+    py+='\n# 내적 : a * b 가 아니라 np.dot 또는 @ 를 써야 한다\n'+
+        'print("dot    =", np.dot(a, b))    # '+dp+'\n'+
+        'print("dot    =", a @ b)           # '+dp+' (같은 결과)\n\n'+
+        '# 외적(2D) : np.cross 는 NumPy 2.0에서 deprecated → 직접 계산\n'+
+        'cross = a[0] * b[1] - a[1] * b[0]\n'+
+        'print("cross  =", cross)           # '+crv+'  (평행사변형 넓이 '+Math.abs(crv)+')\n\n';
+  }
+  py+='print("|a|    =", np.linalg.norm(a))   # 약 '+d3(La)+'\n'+
+      'print("unit   =", a / np.linalg.norm(a))  # 약 ['+d3(a[0]/(La||1))+' '+d3(a[1]/(La||1))+']\n'+
+      'print("deg    =", np.degrees(np.arctan2(a[1], a[0])))  # 약 '+d3(Math.atan2(a[1],a[0])*180/Math.PI)+'\n';
+  if(b&&La>0&&Lb>0){
+    py+='\ncos_t = np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\n'+
+        'print("사잇각 =", np.degrees(np.arccos(np.clip(cos_t, -1, 1))))  # 약 '+d3(ang)+'\n';
+  }
+  renderCode($('pyCode'),py,'py');
+
+  var js='const a = { x: '+a[0]+', y: '+a[1]+' };\n'+
+    (b?'const b = { x: '+b[0]+', y: '+b[1]+' };\n':'')+'\n'+
+    'const add   = (u, v) => ({ x: u.x + v.x, y: u.y + v.y });\n'+
+    'const sub   = (u, v) => ({ x: u.x - v.x, y: u.y - v.y });\n'+
+    'const scale = (u, k) => ({ x: u.x * k,   y: u.y * k   });\n'+
+    'const dot   = (u, v) => u.x * v.x + u.y * v.y;\n'+
+    'const cross = (u, v) => u.x * v.y - u.y * v.x;\n'+
+    'const len   = (u)    => Math.hypot(u.x, u.y);\n'+
+    'const norm  = (u)    => { const L = len(u); return { x: u.x / L, y: u.y / L }; };\n'+
+    'const deg   = (u)    => Math.atan2(u.y, u.x) * 180 / Math.PI;\n\n';
+  if(b){
+    js+='console.log(add(a, b));   // { x: '+(a[0]+b[0])+', y: '+(a[1]+b[1])+' }\n'+
+        'console.log(sub(a, b));   // { x: '+(a[0]-b[0])+', y: '+(a[1]-b[1])+' }\n'+
+        'console.log(dot(a, b));   // '+dp+'\n'+
+        'console.log(cross(a, b)); // '+crv+'\n';
+  }
+  js+='console.log(scale(a, '+k+')); // { x: '+(a[0]*k)+', y: '+(a[1]*k)+' }\n'+
+      'console.log(len(a));      // '+d3(La)+'\n'+
+      'console.log(deg(a));      // '+d3(Math.atan2(a[1],a[0])*180/Math.PI)+'\n\n'+
+      '// 캔버스에 화살표로 그리기 (원점이 화면 중앙, y축은 위쪽이 +)\n'+
+      'function drawVec(ctx, v, cx, cy, unit, color) {\n'+
+      '  ctx.strokeStyle = color; ctx.lineWidth = 3;\n'+
+      '  ctx.beginPath();\n'+
+      '  ctx.moveTo(cx, cy);\n'+
+      '  ctx.lineTo(cx + v.x * unit, cy - v.y * unit);  // y 부호 뒤집기\n'+
+      '  ctx.stroke();\n'+
+      '}';
+  renderCode($('jsCode'),js,'js');
+};
+
+/* ============ 라이브러리 코드 ============ */
+var PYLIB='import math\n\n'+
+'def add(a, b):     return (a[0] + b[0], a[1] + b[1])\n'+
+'def sub(a, b):     return (a[0] - b[0], a[1] - b[1])\n'+
+'def scale(a, k):   return (a[0] * k, a[1] * k)\n'+
+'def dot(a, b):     return a[0] * b[0] + a[1] * b[1]\n'+
+'def cross(a, b):   return a[0] * b[1] - a[1] * b[0]   # 2D는 스칼라\n'+
+'def length(a):     return math.hypot(a[0], a[1])\n\n'+
+'def normalize(a):\n'+
+'    L = length(a)\n'+
+'    if L == 0:\n'+
+'        return (0.0, 0.0)        # 영벡터는 방향이 없다\n'+
+'    return (a[0] / L, a[1] / L)\n\n'+
+'def angle_deg(a):\n'+
+'    return math.degrees(math.atan2(a[1], a[0]))\n\n'+
+'def angle_between(a, b):\n'+
+'    c = dot(a, b) / (length(a) * length(b))\n'+
+'    c = max(-1.0, min(1.0, c))   # 반올림 오차로 범위를 벗어나는 것 방지\n'+
+'    return math.degrees(math.acos(c))\n\n'+
+'def rotate(a, deg):\n'+
+'    t = math.radians(deg)\n'+
+'    c, s = math.cos(t), math.sin(t)\n'+
+'    return (a[0] * c - a[1] * s, a[0] * s + a[1] * c)\n\n'+
+'def is_perpendicular(a, b):\n'+
+'    return abs(dot(a, b)) < 1e-9   # 실수 비교는 == 대신 오차 허용\n';
+var JSLIB='const V = {\n'+
+'  add:   (a, b) => ({ x: a.x + b.x, y: a.y + b.y }),\n'+
+'  sub:   (a, b) => ({ x: a.x - b.x, y: a.y - b.y }),\n'+
+'  scale: (a, k) => ({ x: a.x * k,   y: a.y * k   }),\n'+
+'  dot:   (a, b) => a.x * b.x + a.y * b.y,\n'+
+'  cross: (a, b) => a.x * b.y - a.y * b.x,\n'+
+'  len:   (a)    => Math.hypot(a.x, a.y),\n\n'+
+'  norm(a) {\n'+
+'    const L = this.len(a);\n'+
+'    return L === 0 ? { x: 0, y: 0 } : { x: a.x / L, y: a.y / L };\n'+
+'  },\n\n'+
+'  angleDeg: (a) => Math.atan2(a.y, a.x) * 180 / Math.PI,\n\n'+
+'  angleBetween(a, b) {\n'+
+'    let c = this.dot(a, b) / (this.len(a) * this.len(b));\n'+
+'    c = Math.max(-1, Math.min(1, c));   // 오차 방지\n'+
+'    return Math.acos(c) * 180 / Math.PI;\n'+
+'  },\n\n'+
+'  rotate(a, degree) {\n'+
+'    const t = degree * Math.PI / 180;\n'+
+'    const c = Math.cos(t), s = Math.sin(t);\n'+
+'    return { x: a.x * c - a.y * s, y: a.x * s + a.y * c };\n'+
+'  },\n\n'+
+'  reflect(v, n) {                       // n은 단위벡터여야 한다\n'+
+'    const d = 2 * this.dot(v, n);\n'+
+'    return { x: v.x - d * n.x, y: v.y - d * n.y };\n'+
+'  }\n'+
+'};\n';
+
+/* ============ 퀴즈 ============ */
+var QZ=[
+ {q:'a = (3, 4), b = (−1, 2) 일 때 a + b 는?',
+  o:['(2, 6)','(4, 2)','(−3, 8)','(2, 2)'],a:0,
+  e:'성분끼리 더합니다. (3 + (−1), 4 + 2) = (2, 6).'},
+ {q:'a = (6, −8) 의 크기 |a| 는?',
+  o:['2','10','14','√14'],a:1,
+  e:'|a| = √(6² + (−8)²) = √(36 + 64) = √100 = 10 입니다.'},
+ {q:'a = (2, 3), b = (3, −2) 의 내적은? 그리고 두 벡터의 관계는?',
+  o:['12, 평행','0, 수직','−12, 둔각','13, 예각'],a:1,
+  e:'2×3 + 3×(−2) = 6 − 6 = 0. 내적이 0이면 두 벡터는 수직입니다.'},
+ {q:'a = (4, 1), b = (2, 3) 이 만드는 평행사변형의 넓이는?',
+  o:['10','11','14','5'],a:0,
+  e:'외적 = 4×3 − 1×2 = 12 − 2 = 10. 절댓값이 곧 평행사변형의 넓이입니다. (삼각형이면 5)'},
+ {q:'NumPy에서 두 배열 a, b의 내적을 구하려면?',
+  o:['a * b','np.dot(a, b) 또는 a @ b','a + b','np.cross(a, b)'],a:1,
+  e:'a * b 는 성분끼리 곱하는 요소별 곱입니다. 내적은 np.dot(a, b) 또는 a @ b 를 써야 합니다.'},
+ {q:'각도를 구할 때 arctan(y/x) 대신 atan2(y, x) 를 쓰는 이유로 알맞은 것은?',
+  o:['계산이 더 빠르다','x = 0 을 처리하고 네 사분면을 모두 구별한다','결과가 라디안으로 나온다','정수만 다룰 수 있다'],a:1,
+  e:'arctan(y/x)는 x=0에서 나눗셈이 안 되고, (3,4)와 (−3,−4)를 구별하지 못합니다. atan2는 부호를 각각 보므로 둘 다 해결합니다.'},
+ {q:'게임에서 내 위치 me 에서 적 enemy 를 향하는 방향 벡터를 구하려면?',
+  o:['me − enemy','enemy − me','me + enemy','dot(me, enemy)'],a:1,
+  e:'도착점 − 출발점 입니다. enemy − me 를 정규화하면 적을 향하는 단위 방향 벡터가 됩니다.'}
+];
+function buildQuiz(){
+  var box=$('quiz');
+  QZ.forEach(function(it,qi){
+    var d=el('div','q');
+    d.appendChild(el('div','qq','문제 '+(qi+1)+'. '+it.q));
+    var ans=el('div','qa','\u2192 '+it.e);
+    it.o.forEach(function(o,oi){
+      var bn=el('button','opt',(oi+1)+') '+o);
+      bn.onclick=function(){
+        var s=d.querySelectorAll('.opt');
+        for(var i=0;i<s.length;i++)s[i].className='opt';
+        if(oi===it.a)bn.className='opt ok';else{bn.className='opt no';s[it.a].className='opt ok';}
+        ans.className='qa show';
+      };
+      d.appendChild(bn);
+    });
+    d.appendChild(ans);box.appendChild(d);
+  });
+}
+
+/* ============ 시작 ============ */
+(function(){
+  VL.init();
+  renderCode($('pyLib'),PYLIB,'py');
+  renderCode($('jsLib'),JSLIB,'js');
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
