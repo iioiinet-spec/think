@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대칭 대모험 — 좌표로 배우는 도형 옮기기 게임</title>
+<style>
+:root{
+  --deep:#140f38; --deep2:#251a5e; --card:#ffffff; --ink:#1b1740;
+  --cy:#22d3ee; --mg:#f472b6; --lm:#a3e635; --am:#fbbf24; --or:#fb923c;
+  --pu:#a78bfa; --gr:#34d399; --rd:#fb7185;
+  --line:#e3e8f5; --mut:#6c7699;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:#140f38;
+  background-image:radial-gradient(circle at 15% 0%,rgba(167,139,250,.35),transparent 45%),
+                   radial-gradient(circle at 85% 5%,rgba(34,211,238,.25),transparent 45%),
+                   radial-gradient(circle at 50% 100%,rgba(244,114,182,.20),transparent 50%);
+  background-attachment:fixed;
+  color:#fff;font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.7;min-height:100vh;padding-bottom:40px;overflow-x:hidden;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.mono{font-family:'D2Coding','Consolas',monospace}
+.screen{display:none;animation:in .3s ease}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ===== 홈 ===== */
+.hero{text-align:center;padding:34px 0 20px}
+.hero .sub{font-size:13px;letter-spacing:4px;color:var(--cy);font-weight:800}
+.hero h1{font-size:44px;font-weight:900;letter-spacing:-1.5px;margin:8px 0;
+  background:linear-gradient(90deg,#22d3ee,#a78bfa 45%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:float 4s ease-in-out infinite}
+.hero p{color:#c5cbe8;font-size:15px}
+.starbar{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);
+  border:2px solid rgba(255,255,255,.25);border-radius:30px;padding:7px 22px;margin-top:14px;
+  font-weight:900;font-size:19px}
+.starbar .s{color:var(--am);font-size:23px}
+
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
+.gcard{background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.2);border-radius:22px;
+  padding:20px;cursor:pointer;transition:.16s;text-align:left;color:#fff;font-family:inherit;
+  display:flex;gap:16px;align-items:center;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.gcard:hover{transform:translateY(-4px);border-color:var(--cy);background:rgba(255,255,255,.16)}
+.gcard:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.gcard .ic{width:70px;height:70px;flex:0 0 70px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--cy),var(--pu))}
+.gcard.c2 .ic{background:linear-gradient(135deg,var(--am),var(--or))}
+.gcard.c3 .ic{background:linear-gradient(135deg,var(--mg),var(--pu))}
+.gcard.c4 .ic{background:linear-gradient(135deg,var(--lm),var(--gr))}
+.gcard h3{font-size:20px;font-weight:900;margin-bottom:2px}
+.gcard .d{font-size:13.5px;color:#c5cbe8;line-height:1.5}
+.gcard .rec{font-size:12.5px;color:var(--am);font-weight:800;margin-top:5px;font-family:'D2Coding',monospace}
+
+/* ===== 게임 공통 ===== */
+.hud{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.12);
+  border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:11px 16px;margin:16px 0 14px;flex-wrap:wrap}
+.hud .ttl{font-weight:900;font-size:19px}
+.hud .val{font-family:'D2Coding',monospace;font-weight:900;font-size:19px}
+.pill{background:rgba(0,0,0,.28);border-radius:12px;padding:4px 13px;font-size:14px;font-weight:800;
+  display:flex;align-items:center;gap:7px}
+.btn{background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.3);color:#fff;
+  padding:9px 16px;border-radius:13px;cursor:pointer;font-size:14.5px;font-weight:800;
+  font-family:inherit;transition:.13s;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.btn:hover{transform:translateY(-2px);border-color:var(--cy)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn.cy{background:linear-gradient(135deg,var(--cy),#0891b2);border-color:transparent;color:#04222b}
+.btn.mg{background:linear-gradient(135deg,var(--mg),#db2777);border-color:transparent}
+.btn.am{background:linear-gradient(135deg,var(--am),var(--or));border-color:transparent;color:#3a2200}
+.btn.pu{background:linear-gradient(135deg,var(--pu),#7c3aed);border-color:transparent}
+.btn.lm{background:linear-gradient(135deg,var(--lm),var(--gr));border-color:transparent;color:#0d2b12}
+.btn.big{font-size:17px;padding:12px 26px;border-radius:15px}
+.btn.arrow{font-size:20px;padding:7px 17px;min-width:54px}
+
+.play{background:#fff;border-radius:22px;padding:16px;color:var(--ink);box-shadow:0 8px 0 rgba(0,0,0,.22)}
+.play svg{width:100%;height:auto;display:block;touch-action:none}
+.split{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+.panel{background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:15px}
+.panel h4{font-size:12.5px;letter-spacing:1.3px;color:#a9b3d8;font-weight:800;margin-bottom:8px}
+.speech{background:rgba(251,191,36,.16);border:2px dashed var(--am);border-radius:14px;
+  padding:11px 15px;font-size:14.5px;font-weight:700;color:#ffe6ae;min-height:52px;margin-top:12px}
+.timebar{height:12px;background:rgba(0,0,0,.35);border-radius:8px;overflow:hidden;margin:10px 0}
+.timebar i{display:block;height:100%;background:linear-gradient(90deg,var(--lm),var(--am));transition:width .1s linear}
+.timebar.low i{background:linear-gradient(90deg,var(--or),var(--rd))}
+.combo{color:var(--mg);font-weight:900;font-family:'D2Coding',monospace}
+.lives{letter-spacing:3px;font-size:19px}
+
+/* 스테이지 선택 */
+.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}
+.st{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);border-radius:14px;
+  padding:9px 4px;text-align:center;cursor:pointer;font-family:inherit;color:#fff;transition:.13s}
+.st:hover{border-color:var(--am);transform:translateY(-2px)}
+.st.on{background:linear-gradient(135deg,var(--am),var(--or));color:#3a2200;border-color:transparent}
+.st .n{font-weight:900;font-size:17px}
+.st .s{font-size:11px;color:var(--am);letter-spacing:-1px}
+.st.on .s{color:#7a4b00}
+
+/* 그리기 게임 */
+.gridwrap{display:flex;justify-content:center}
+.cellgrid{display:grid;gap:3px;background:#dfe5f4;padding:5px;border-radius:14px}
+.cellgrid button{width:38px;height:38px;border-radius:7px;border:2px solid #cfd7ec;background:#fff;
+  cursor:pointer;transition:.1s;padding:0}
+.cellgrid button.given{background:#6366f1;border-color:#4f46e5;cursor:not-allowed}
+.cellgrid button.on{background:#22d3ee;border-color:#0891b2}
+.cellgrid button.hint{background:#fef3c7;border-color:#fbbf24}
+.cellgrid button.good{background:#34d399;border-color:#059669}
+.cellgrid button.bad{background:#fb7185;border-color:#e11d48}
+.cellgrid button.miss{background:#fff;border:3px dashed #fb7185}
+.cellgrid button:disabled{cursor:default}
+.axisline{background:#f472b6 !important;border-radius:2px}
+
+/* 도형 카드 */
+.shapebox{background:#fff;border-radius:20px;padding:14px;display:grid;place-items:center;
+  box-shadow:0 6px 0 rgba(0,0,0,.22)}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+.ch{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.28);color:#fff;
+  padding:14px;border-radius:15px;cursor:pointer;font-size:16px;font-weight:800;font-family:inherit;
+  transition:.13s;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.ch:hover{transform:translateY(-2px);border-color:var(--cy)}
+.ch.ok{background:linear-gradient(135deg,var(--lm),var(--gr));border-color:transparent;color:#0d2b12}
+.ch.no{background:linear-gradient(135deg,var(--rd),#e11d48);border-color:transparent}
+
+/* 모달 */
+.modal{position:fixed;inset:0;background:rgba(10,6,30,.82);display:none;place-items:center;z-index:100;padding:18px}
+.modal.on{display:grid}
+.mbox{background:linear-gradient(160deg,#2a1f66,#1a1145);border:3px solid rgba(255,255,255,.25);
+  border-radius:26px;padding:30px 34px;text-align:center;max-width:440px;width:100%;animation:pop .35s ease}
+.mbox h2{font-size:30px;font-weight:900;margin-bottom:6px}
+.mbox .stars{font-size:44px;letter-spacing:6px;margin:10px 0;color:var(--am)}
+.mbox p{color:#c5cbe8;font-size:15px;margin:6px 0}
+.mbox .bs{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+
+.tip{background:rgba(255,255,255,.08);border-left:4px solid var(--cy);border-radius:12px;
+  padding:12px 16px;margin:12px 0;font-size:14px;color:#d3d8f0}
+table.rule{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+table.rule th{background:rgba(255,255,255,.14);padding:9px;border:1px solid rgba(255,255,255,.2);text-align:left}
+table.rule td{padding:9px;border:1px solid rgba(255,255,255,.2);color:#d3d8f0}
+td.m{font-family:'D2Coding',monospace;color:var(--am)}
+
+@media(max-width:900px){
+  .cards{grid-template-columns:1fr}.split{grid-template-columns:1fr}
+  .hero h1{font-size:31px}.stages{grid-template-columns:repeat(4,1fr)}
+  .cellgrid button{width:32px;height:32px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<!-- ============ 홈 ============ -->
+<div class="screen on" id="home">
+  <div class="hero">
+    <div class="sub">좌표평면 대모험</div>
+    <h1>대칭 대모험</h1>
+    <p>밀고 · 뒤집고 · 돌리며 별을 모으는 네 가지 게임</p>
+    <div class="starbar"><span class="s">★</span><span id="totStar">0 / 60</span></div>
+  </div>
+
+  <div class="cards">
+    <button class="gcard c1" onclick="G1.open()">
+      <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="#fff" stroke-width="3"/><circle cx="20" cy="20" r="6" fill="none" stroke="#fff" stroke-width="3"/><circle cx="20" cy="20" r="2.5" fill="#fff"/><path d="M20 2v7M20 31v7M2 20h7M31 20h7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></div>
+      <div><h3>① 좌표 사격장</h3>
+        <div class="d">불러 주는 좌표를 60초 안에 최대한 많이 맞혀요. 콤보를 이어 가면 점수가 쑥쑥!</div>
+        <div class="rec" id="rec1">최고 점수 0점 · ☆☆☆</div></div>
+    </button>
+
+    <button class="gcard c2" onclick="G2.open()">
+      <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><rect x="4" y="6" width="13" height="13" rx="2" fill="none" stroke="#fff" stroke-width="3"/><rect x="23" y="21" width="13" height="13" rx="2" fill="#fff" opacity=".9"/><path d="M19 12h9l-3-3M28 12l-3 3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><h3>② 변환 퍼즐</h3>
+        <div class="d">밀기·뒤집기·돌리기로 회색 목표에 정확히 겹쳐 놓기. 적게 움직일수록 별 세 개!</div>
+        <div class="rec" id="rec2">0 / 12 스테이지 · ★0</div></div>
+    </button>
+
+    <button class="gcard c3" onclick="G3.open()">
+      <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 3v34" stroke="#fff" stroke-width="2.5" stroke-dasharray="4 3"/><path d="M17 8h-9v9h9zM17 21h-9v11h9z" fill="#fff" opacity=".95"/><path d="M23 8h9v9h-9z" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"/></svg></div>
+      <div><h3>③ 대칭 그림 완성</h3>
+        <div class="d">반쪽만 있는 그림을 대칭이 되게 채워 넣기. 선대칭과 점대칭 두 가지 모드!</div>
+        <div class="rec" id="rec3">0 / 6 그림 · ★0</div></div>
+    </button>
+
+    <button class="gcard c4" onclick="G4.open()">
+      <div class="ic"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 5l4.5 9.5L35 16l-7.5 7.3L29.2 34 20 28.8 10.8 34l1.7-10.7L5 16l10.5-1.5z" fill="none" stroke="#fff" stroke-width="2.8" stroke-linejoin="round"/></svg></div>
+      <div><h3>④ 대칭 판별 스피드전</h3>
+        <div class="d">도형이 나오면 8초 안에 선대칭인지 점대칭인지 판단! 목숨은 세 개뿐이에요.</div>
+        <div class="rec" id="rec4">최고 점수 0점 · ☆☆☆</div></div>
+    </button>
+  </div>
+
+  <div style="text-align:center;margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn" onclick="show('help')">📖 규칙 알아보기</button>
+    <button class="btn" id="sndBtn" onclick="toggleSnd()">🔊 소리 켜짐</button>
+    <button class="btn" onclick="resetAll()">↺ 기록 초기화</button>
+  </div>
+</div>
+
+<!-- ============ 도움말 ============ -->
+<div class="screen" id="help">
+  <div class="hud"><button class="btn" onclick="show('home')">← 홈으로</button><span class="ttl">규칙 알아보기</span></div>
+  <div class="panel">
+    <h4>좌표 읽는 법</h4>
+    <p style="color:#d3d8f0">점의 자리는 <b class="mono" style="color:#22d3ee">(가로, 세로)</b> 두 수로 나타냅니다. 가로 x가 먼저, 세로 y가 나중이에요. 가운데 (0, 0)은 <b>원점</b>이고, 숫자 앞에 <b>−</b>가 붙으면 왼쪽이나 아래쪽입니다.</p>
+    <h4 style="margin-top:16px">세 가지 움직임</h4>
+    <table class="rule">
+      <tr><th style="width:22%">움직임</th><th style="width:26%">무엇이 바뀌나</th><th>좌표는 이렇게</th></tr>
+      <tr><td><b style="color:#22d3ee">밀기</b></td><td>자리만 바뀜</td><td class="m">(x + ●, y + ▲)</td></tr>
+      <tr><td><b style="color:#f472b6">세로선 뒤집기</b></td><td>왼쪽 ↔ 오른쪽</td><td class="m">(−x, y)</td></tr>
+      <tr><td><b style="color:#f472b6">가로선 뒤집기</b></td><td>위 ↔ 아래</td><td class="m">(x, −y)</td></tr>
+      <tr><td><b style="color:#a78bfa">반시계 90°</b></td><td>직각만큼 돌기</td><td class="m">(−y, x)</td></tr>
+      <tr><td><b style="color:#a78bfa">시계 90°</b></td><td>직각만큼 돌기</td><td class="m">(y, −x)</td></tr>
+      <tr><td><b style="color:#34d399">반 바퀴 180°</b></td><td>점대칭과 같음</td><td class="m">(−x, −y)</td></tr>
+    </table>
+    <h4 style="margin-top:16px">선대칭과 점대칭</h4>
+    <div class="tip"><b style="color:#f472b6">선대칭 도형</b> — 직선 하나로 반을 접었을 때 딱 포개지는 도형. 그 직선이 <b>대칭축</b>입니다.</div>
+    <div class="tip" style="border-left-color:#34d399"><b style="color:#34d399">점대칭 도형</b> — 한 점을 중심으로 반 바퀴(180°) 돌렸을 때 처음과 똑같아 보이는 도형. 그 점이 <b>대칭의 중심</b>입니다.</div>
+    <div class="tip" style="border-left-color:#fbbf24"><b style="color:#fbbf24">헷갈리기 쉬워요!</b> 평행사변형은 접으면 안 포개지지만 돌리면 똑같습니다(점대칭만). 반대로 정삼각형은 접으면 포개지지만 돌리면 달라져요(선대칭만).</div>
+    <p style="color:#8f98bd;font-size:13.5px;margin-top:14px">어떤 움직임을 해도 <b>도형의 모양과 크기는 절대 변하지 않습니다.</b> 그래서 처음 도형과 옮긴 도형은 언제나 합동이에요.</p>
+  </div>
+</div>
+
+<!-- ============ 게임 1 ============ -->
+<div class="screen" id="g1">
+  <div class="hud">
+    <button class="btn" onclick="G1.quit()">← 홈</button>
+    <span class="ttl">① 좌표 사격장</span>
+    <span class="pill">⏱ <span class="val" id="g1t">60</span>초</span>
+    <span class="pill">⭐ <span class="val" id="g1s">0</span>점</span>
+    <span class="pill">🔥 <span class="val combo" id="g1c">×1</span></span>
+    <span style="margin-left:auto;font-size:13.5px;color:#c5cbe8">최고 <b id="g1b" class="mono">0</b>점</span>
+  </div>
+  <div class="timebar" id="g1bar"><i style="width:100%"></i></div>
+  <div class="split">
+    <div class="play"><svg id="g1svg"></svg></div>
+    <div>
+      <div class="panel" style="text-align:center">
+        <h4>이 자리를 찾아 눌러요!</h4>
+        <div class="mono" id="g1target" style="font-size:40px;font-weight:900;color:#fbbf24">( ? , ? )</div>
+      </div>
+      <div class="speech" id="g1msg">시작 버튼을 누르면 60초가 흘러갑니다!</div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn cy big" id="g1start" onclick="G1.start()">▶ 시작하기</button>
+      </div>
+      <div class="panel" style="margin-top:12px">
+        <h4>점수 규칙</h4>
+        <div style="font-size:13.5px;color:#d3d8f0">맞히면 <b style="color:#fbbf24">10점 × 콤보</b><br>
+        연속으로 맞히면 콤보가 올라가요 (최대 ×5)<br>
+        틀리면 콤보가 사라지고 <b style="color:#fb7185">3초</b>를 잃어요</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 게임 2 ============ -->
+<div class="screen" id="g2">
+  <div class="hud">
+    <button class="btn" onclick="show('home')">← 홈</button>
+    <span class="ttl">② 변환 퍼즐</span>
+    <span class="pill" id="g2stage">STAGE 1</span>
+    <span class="pill">👣 <span class="val" id="g2mv">0</span></span>
+    <span class="pill">🎯 최소 <span class="val" id="g2par">0</span></span>
+    <span style="margin-left:auto" class="lives" id="g2star">☆☆☆</span>
+  </div>
+  <div class="stages" id="g2list"></div>
+  <div class="split" style="margin-top:14px">
+    <div class="play"><svg id="g2svg"></svg></div>
+    <div>
+      <div class="panel">
+        <h4>움직이기</h4>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center" id="g2pad"></div>
+        <div style="display:flex;gap:7px;margin-top:11px;justify-content:center;flex-wrap:wrap">
+          <button class="btn" onclick="G2.undo()">↶ 취소</button>
+          <button class="btn" onclick="G2.retry()">↺ 처음부터</button>
+          <button class="btn am" onclick="G2.hint()">💡 힌트</button>
+        </div>
+      </div>
+      <div class="speech" id="g2msg"></div>
+      <div class="panel" style="margin-top:12px">
+        <h4>꼭짓점 좌표</h4>
+        <div id="g2tbl"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 게임 3 ============ -->
+<div class="screen" id="g3">
+  <div class="hud">
+    <button class="btn" onclick="show('home')">← 홈</button>
+    <span class="ttl">③ 대칭 그림 완성</span>
+    <span class="pill" id="g3no">그림 1 / 6</span>
+    <span class="pill" id="g3mode">선대칭</span>
+    <span style="margin-left:auto" class="lives" id="g3star">☆☆☆</span>
+  </div>
+  <div class="stages" id="g3list" style="grid-template-columns:repeat(6,1fr)"></div>
+  <div class="split" style="margin-top:14px">
+    <div class="play">
+      <div class="gridwrap"><div class="cellgrid" id="g3grid"></div></div>
+    </div>
+    <div>
+      <div class="speech" id="g3msg"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn lm big" onclick="G3.check()">✓ 확인하기</button>
+        <button class="btn" onclick="G3.clear()">지우개</button>
+        <button class="btn am" onclick="G3.hint()">💡 힌트 1칸</button>
+      </div>
+      <div class="panel" style="margin-top:12px">
+        <h4>어떻게 하나요?</h4>
+        <div style="font-size:13.5px;color:#d3d8f0" id="g3how"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 게임 4 ============ -->
+<div class="screen" id="g4">
+  <div class="hud">
+    <button class="btn" onclick="G4.quit()">← 홈</button>
+    <span class="ttl">④ 대칭 판별 스피드전</span>
+    <span class="pill">⭐ <span class="val" id="g4s">0</span>점</span>
+    <span class="pill">🔥 <span class="val combo" id="g4c">×1</span></span>
+    <span class="pill lives" id="g4l">❤❤❤</span>
+    <span style="margin-left:auto;font-size:13.5px;color:#c5cbe8">최고 <b id="g4b" class="mono">0</b>점</span>
+  </div>
+  <div class="timebar" id="g4bar"><i style="width:100%"></i></div>
+  <div class="split" style="grid-template-columns:1fr 380px">
+    <div class="shapebox"><svg id="g4svg" viewBox="0 0 260 260" style="width:100%;max-width:300px"></svg></div>
+    <div>
+      <div class="panel" style="text-align:center">
+        <h4>이 도형은 어떤 대칭일까요?</h4>
+        <div style="font-size:22px;font-weight:900;color:#fbbf24" id="g4name">준비!</div>
+      </div>
+      <div class="choices" id="g4ch"></div>
+      <div class="speech" id="g4msg">시작 버튼을 누르세요!</div>
+      <div style="margin-top:12px;text-align:center">
+        <button class="btn mg big" id="g4start" onclick="G4.start()">▶ 시작하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<script>
+/* ================= 공통 ================= */
+var NS='http://www.w3.org/2000/svg';
+function $(i){return document.getElementById(i);}
+function sv(t,a,p){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+function tx(t,a,p){var e=sv('text',a,p);e.textContent=t;return e;}
+function el(t,c,s){var e=document.createElement(t);if(c)e.className=c;if(s!==undefined)e.textContent=s;return e;}
+function clr(n){while(n.firstChild)n.removeChild(n.firstChild);}
+function show(id){
+  var s=document.querySelectorAll('.screen');
+  for(var i=0;i<s.length;i++)s[i].classList.toggle('on',s[i].id===id);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function stars(n){return '★★★☆☆☆'.substr(3-n,3);}
+
+/* ---- 소리 ---- */
+var AC=null,SND=true;
+function beep(f,d,ty,v){
+  if(!SND)return;
+  try{
+    if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+    var o=AC.createOscillator(),g=AC.createGain();
+    o.type=ty||'square';o.frequency.value=f;
+    g.gain.setValueAtTime(v||0.05,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+d);
+    o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);
+  }catch(e){}
+}
+function sGood(){beep(660,.09);setTimeout(function(){beep(990,.12);},75);}
+function sBad(){beep(150,.25,'sawtooth',.045);}
+function sWin(){[523,659,784,1046].forEach(function(f,i){setTimeout(function(){beep(f,.17,'triangle',.06);},i*95);});}
+function sClick(){beep(520,.04,'square',.025);}
+function toggleSnd(){SND=!SND;$('sndBtn').textContent=SND?'🔊 소리 켜짐':'🔇 소리 꺼짐';if(SND)sClick();}
+
+/* ---- 기록 ---- */
+var ST={g1:0,g2:[0,0,0,0,0,0,0,0,0,0,0,0],g3:[0,0,0,0,0,0],g4:0};
+var MAXSTAR=3+12*3+6*3+3;
+function scoreStar(v,a,b,c){return v>=c?3:(v>=b?2:(v>=a?1:0));}
+function totalStars(){
+  var t=scoreStar(ST.g1,100,220,360)+scoreStar(ST.g4,80,180,300);
+  ST.g2.forEach(function(v){t+=v;});ST.g3.forEach(function(v){t+=v;});
+  return t;
+}
+function save(){
+  try{if(window.storage&&window.storage.set)window.storage.set('symgame_v1',JSON.stringify(ST));}catch(e){}
+}
+function loadST(cb){
+  if(window.storage&&window.storage.get){
+    try{
+      Promise.resolve(window.storage.get('symgame_v1')).then(function(r){
+        if(r&&r.value){try{var d=JSON.parse(r.value);
+          if(d&&d.g2&&d.g3){ST.g1=d.g1||0;ST.g4=d.g4||0;ST.g2=d.g2;ST.g3=d.g3;}}catch(e){}}
+        cb();
+      },function(){cb();}).catch(function(){cb();});
+      return;
+    }catch(e){}
+  }
+  cb();
+}
+function resetAll(){
+  ST={g1:0,g2:[0,0,0,0,0,0,0,0,0,0,0,0],g3:[0,0,0,0,0,0],g4:0};
+  save();refreshHome();sClick();
+}
+function refreshHome(){
+  $('totStar').textContent=totalStars()+' / '+MAXSTAR;
+  $('rec1').textContent='최고 점수 '+ST.g1+'점 · '+stars(scoreStar(ST.g1,100,220,360));
+  var c2=0,s2=0;ST.g2.forEach(function(v){if(v>0)c2++;s2+=v;});
+  $('rec2').textContent=c2+' / 12 스테이지 · ★'+s2;
+  var c3=0,s3=0;ST.g3.forEach(function(v){if(v>0)c3++;s3+=v;});
+  $('rec3').textContent=c3+' / 6 그림 · ★'+s3;
+  $('rec4').textContent='최고 점수 '+ST.g4+'점 · '+stars(scoreStar(ST.g4,80,180,300));
+}
+/* ---- 모달 ---- */
+function modal(title,starStr,lines,btns){
+  var b=$('mbox');clr(b);
+  b.appendChild(el('h2',null,title));
+  if(starStr)b.appendChild(el('div','stars',starStr));
+  lines.forEach(function(t){b.appendChild(el('p',null,t));});
+  var row=el('div','bs');
+  btns.forEach(function(o){
+    var x=el('button','btn '+(o.c||'')+' big',o.t);
+    x.onclick=function(){$('modal').classList.remove('on');sClick();if(o.f)o.f();};
+    row.appendChild(x);
+  });
+  b.appendChild(row);
+  $('modal').classList.add('on');
+}
+
+/* ================= 좌표평면 ================= */
+function Plane(id,o){
+  this.svg=$(id);this.x0=o.x0;this.x1=o.x1;this.y0=o.y0;this.y1=o.y1;this.c=o.c;this.p=o.p||32;
+  this.W=this.p*2+(this.x1-this.x0)*this.c;this.H=this.p*2+(this.y1-this.y0)*this.c;
+  this.svg.setAttribute('viewBox','0 0 '+this.W+' '+this.H);
+  this.svg.style.maxWidth=this.W+'px';this.svg.style.margin='0 auto';
+}
+Plane.prototype.X=function(x){return this.p+(x-this.x0)*this.c;};
+Plane.prototype.Y=function(y){return this.p+(this.y1-y)*this.c;};
+Plane.prototype.at=function(e){
+  var r=this.svg.getBoundingClientRect();
+  var sx=(e.clientX-r.left)/r.width*this.W,sy=(e.clientY-r.top)/r.height*this.H;
+  return {x:Math.round((sx-this.p)/this.c)+this.x0,y:this.y1-Math.round((sy-this.p)/this.c)};
+};
+Plane.prototype.grid=function(){
+  var s=this.svg,i;clr(s);
+  sv('rect',{x:0,y:0,width:this.W,height:this.H,fill:'#ffffff',rx:12},s);
+  for(i=this.x0;i<=this.x1;i++)
+    sv('line',{x1:this.X(i),y1:this.Y(this.y1),x2:this.X(i),y2:this.Y(this.y0),
+      stroke:i===0?'#7c86a8':'#e5ebf7','stroke-width':i===0?2.4:1.2},s);
+  for(i=this.y0;i<=this.y1;i++)
+    sv('line',{x1:this.X(this.x0),y1:this.Y(i),x2:this.X(this.x1),y2:this.Y(i),
+      stroke:i===0?'#7c86a8':'#e5ebf7','stroke-width':i===0?2.4:1.2},s);
+  for(i=this.x0;i<=this.x1;i++)if(i!==0)
+    tx(i,{x:this.X(i),y:this.Y(0)+15,'text-anchor':'middle','font-size':11,fill:'#8a95b5','font-family':'monospace'},s);
+  for(i=this.y0;i<=this.y1;i++)if(i!==0)
+    tx(i,{x:this.X(0)-8,y:this.Y(i)+4,'text-anchor':'end','font-size':11,fill:'#8a95b5','font-family':'monospace'},s);
+  tx('O',{x:this.X(0)-8,y:this.Y(0)+15,'text-anchor':'end','font-size':11,fill:'#8a95b5'},s);
+};
+Plane.prototype.poly=function(pts,o){
+  sv('polygon',{points:pts.map(function(p){return this.X(p[0])+','+this.Y(p[1]);},this).join(' '),
+    fill:o.fill||'none',stroke:o.c||'none','stroke-width':o.w||3,
+    'stroke-dasharray':o.dash||'','stroke-linejoin':'round',opacity:o.op===undefined?1:o.op},this.svg);
+};
+Plane.prototype.dot=function(x,y,c,r){
+  sv('circle',{cx:this.X(x),cy:this.Y(y),r:r||6,fill:c,stroke:'#fff','stroke-width':2},this.svg);
+};
+
+/* ================= 게임 1 : 좌표 사격장 ================= */
+var G1={pl:null,run:false,t:0,score:0,combo:1,q:null,n:0,fx:[],iv:null,last:null};
+G1.open=function(){
+  if(!this.pl){
+    this.pl=new Plane('g1svg',{x0:-6,x1:6,y0:-5,y1:5,c:38});
+    var self=this;
+    this.pl.svg.addEventListener('pointerdown',function(e){self.click(e);});
+  }
+  $('g1b').textContent=ST.g1;this.draw();show('g1');sClick();
+};
+G1.quit=function(){this.stop();show('home');};
+G1.stop=function(){this.run=false;if(this.iv){clearInterval(this.iv);this.iv=null;}};
+G1.start=function(){
+  this.run=true;this.t=60;this.score=0;this.combo=1;this.n=0;this.fx=[];this.last=null;
+  $('g1start').disabled=true;
+  this.newQ();
+  var self=this;
+  this.iv=setInterval(function(){
+    self.t-=0.05;
+    if(self.t<=0){self.t=0;self.end();return;}
+    $('g1t').textContent=Math.ceil(self.t);
+    var bar=$('g1bar');bar.firstChild.style.width=(self.t/60*100)+'%';
+    bar.classList.toggle('low',self.t<15);
+    self.draw();
+  },50);
+  sClick();
+};
+G1.newQ=function(){
+  var easy=this.n<5,x,y;
+  do{
+    if(easy){x=Math.floor(Math.random()*6);y=Math.floor(Math.random()*5);}
+    else{x=Math.floor(Math.random()*13)-6;y=Math.floor(Math.random()*11)-5;}
+  }while(x===0&&y===0);
+  this.q={x:x,y:y};this.n++;
+  $('g1target').textContent='( '+x+' , '+y+' )';
+  $('g1msg').textContent=this.n<=5?'쉬운 단계! 원점에서 오른쪽·위로만 세어 보세요.':
+    '이제 음수도 나와요. 빼기는 왼쪽 또는 아래쪽!';
+};
+G1.click=function(e){
+  if(!this.run||!this.q)return;
+  var p=this.pl.at(e);
+  if(p.x<-6||p.x>6||p.y<-5||p.y>5)return;
+  if(p.x===this.q.x&&p.y===this.q.y){
+    var pts=10*this.combo;
+    this.score+=pts;this.combo=Math.min(5,this.combo+1);
+    this.fx.push({x:p.x,y:p.y,t:Date.now(),ok:true,v:'+'+pts});
+    $('g1msg').textContent='좋아요! +'+pts+'점';
+    sGood();this.newQ();
+  }else{
+    this.combo=1;this.t=Math.max(0,this.t-3);
+    this.fx.push({x:p.x,y:p.y,t:Date.now(),ok:false,v:'-3초'});
+    var hx=p.x<this.q.x?'더 오른쪽':(p.x>this.q.x?'더 왼쪽':'가로는 맞았어요');
+    var hy=p.y<this.q.y?'더 위':(p.y>this.q.y?'더 아래':'세로도 맞았어요');
+    $('g1msg').textContent='앗! 거기는 ('+p.x+', '+p.y+') — '+hx+', '+hy+'!';
+    sBad();
+  }
+  $('g1s').textContent=this.score;$('g1c').textContent='×'+this.combo;
+  this.draw();
+};
+G1.draw=function(){
+  var pl=this.pl;if(!pl)return;
+  pl.grid();
+  var now=Date.now(),keep=[];
+  this.fx.forEach(function(f){
+    var age=now-f.t;if(age>700)return;
+    keep.push(f);
+    var k=age/700,r=8+k*26;
+    sv('circle',{cx:pl.X(f.x),cy:pl.Y(f.y),r:r,fill:'none',
+      stroke:f.ok?'#22c55e':'#ef4444','stroke-width':3,opacity:1-k},pl.svg);
+    tx(f.v,{x:pl.X(f.x),y:pl.Y(f.y)-14-k*20,'text-anchor':'middle','font-size':15,
+      'font-weight':'bold',fill:f.ok?'#16a34a':'#dc2626',opacity:1-k,'font-family':'monospace'},pl.svg);
+  });
+  this.fx=keep;
+  if(this.run&&this.q){
+    pl.dot(0,0,'#7c3aed',5);
+  }
+};
+G1.end=function(){
+  this.stop();$('g1start').disabled=false;$('g1t').textContent='0';
+  var s=scoreStar(this.score,100,220,360);
+  if(this.score>ST.g1){ST.g1=this.score;save();refreshHome();$('g1b').textContent=ST.g1;}
+  sWin();
+  modal('시간 종료!',stars(s),['점수 '+this.score+'점 · 최고 콤보 ×'+this.combo,
+    s===3?'좌표 읽기 완벽해요!':(s===2?'조금만 더 하면 별 세 개!':'다시 도전해 볼까요?')],
+    [{t:'다시 하기',c:'cy',f:function(){G1.start();}},{t:'홈으로',f:function(){show('home');}}]);
+};
+
+/* ================= 게임 2 : 변환 퍼즐 ================= */
+var SH=[[1,1],[4,1],[4,2],[1,3]];
+var NAME=['\u3131','\u3134','\u3137','\u3139'];
+var OPS={
+  left:{t:'←',f:function(p){return [p[0]-1,p[1]];},k:'왼쪽으로 1칸'},
+  right:{t:'→',f:function(p){return [p[0]+1,p[1]];},k:'오른쪽으로 1칸'},
+  up:{t:'↑',f:function(p){return [p[0],p[1]+1];},k:'위로 1칸'},
+  down:{t:'↓',f:function(p){return [p[0],p[1]-1];},k:'아래로 1칸'},
+  flipY:{t:'↔ 세로선 뒤집기',f:function(p){return [-p[0],p[1]];},k:'세로선(y축)에 뒤집기'},
+  flipX:{t:'↕ 가로선 뒤집기',f:function(p){return [p[0],-p[1]];},k:'가로선(x축)에 뒤집기'},
+  ccw:{t:'↺ 90°',f:function(p){return [-p[1],p[0]];},k:'반시계로 90° 돌리기'},
+  cw:{t:'↻ 90°',f:function(p){return [p[1],-p[0]];},k:'시계로 90° 돌리기'}
+};
+function applyOps(pts,seq){
+  var c=pts.map(function(p){return [p[0],p[1]];});
+  seq.forEach(function(k){c=c.map(OPS[k].f);});
+  return c;
+}
+var MOVE4=['left','right','up','down'];
+var ALL8=['left','right','up','down','flipY','flipX','ccw','cw'];
+var STAGES=[
+ {sol:['right','right','right'],ops:MOVE4,tip:'화살표로 미는 연습이에요.'},
+ {sol:['up','up','right','right'],ops:MOVE4,tip:'가로로도 세로로도 밀어 보세요.'},
+ {sol:['flipY'],ops:['flipY','flipX'],tip:'거울에 한 번만 비추면 됩니다.'},
+ {sol:['flipX'],ops:['flipY','flipX'],tip:'위아래가 바뀌었네요!'},
+ {sol:['ccw'],ops:['ccw','cw'],tip:'어느 쪽으로 돌아갔을까요?'},
+ {sol:['cw','cw'],ops:['ccw','cw'],tip:'반 바퀴는 90°를 두 번!'},
+ {sol:['flipY','right','right'],ops:ALL8,tip:'뒤집고 나서 밀어야 해요.'},
+ {sol:['ccw','up','up'],ops:ALL8,tip:'먼저 돌리고 그다음 미세요.'},
+ {sol:['flipX','flipY'],ops:ALL8,tip:'두 번 뒤집으면? 반 바퀴와 같아요!'},
+ {sol:['ccw','flipY'],ops:ALL8,tip:'돌리기와 뒤집기를 섞어 보세요.'},
+ {sol:['cw','down','down','left'],ops:ALL8,tip:'순서를 잘 생각해 보세요.'},
+ {sol:['flipY','ccw','up','right'],ops:ALL8,tip:'마지막 관문! 침착하게.'}
+];
+STAGES.forEach(function(s){s.tgt=applyOps(SH,s.sol);s.par=s.sol.length;});
+
+var G2={pl:null,i:0,cur:null,mv:0,hist:[],done:false};
+G2.open=function(){
+  if(!this.pl)this.pl=new Plane('g2svg',{x0:-7,x1:7,y0:-6,y1:6,c:32});
+  this.list();this.load(0);show('g2');sClick();
+};
+G2.list=function(){
+  var box=$('g2list');clr(box);
+  STAGES.forEach(function(s,i){
+    var b=el('button','st'+(i===G2.i?' on':''));
+    b.appendChild(el('div','n',i+1));
+    b.appendChild(el('div','s',stars(ST.g2[i])));
+    b.onclick=function(){G2.load(i);};
+    box.appendChild(b);
+  });
+};
+G2.load=function(i){
+  this.i=i;this.cur=SH.map(function(p){return [p[0],p[1]];});this.mv=0;this.hist=[];this.done=false;
+  $('g2stage').textContent='STAGE '+(i+1);
+  $('g2par').textContent=STAGES[i].par;
+  $('g2msg').textContent=STAGES[i].tip;
+  var pad=$('g2pad');clr(pad);
+  STAGES[i].ops.forEach(function(k){
+    var b=el('button','btn '+(k.indexOf('flip')===0?'mg':(k==='ccw'||k==='cw'?'pu':'arrow')),OPS[k].t);
+    b.onclick=function(){G2.doOp(k);};
+    pad.appendChild(b);
+  });
+  this.list();this.draw();sClick();
+};
+G2.doOp=function(k){
+  if(this.done)return;
+  var nx=this.cur.map(OPS[k].f);
+  if(nx.some(function(p){return p[0]<-7||p[0]>7||p[1]<-6||p[1]>6;})){
+    $('g2msg').textContent='앗, 판 밖으로 나가요! 다른 움직임을 해 보세요.';sBad();return;}
+  this.hist.push(this.cur);this.cur=nx;this.mv++;
+  sClick();this.draw();this.check();
+};
+G2.undo=function(){
+  if(!this.hist.length||this.done)return;
+  this.cur=this.hist.pop();this.mv=Math.max(0,this.mv-1);this.draw();sClick();
+};
+G2.retry=function(){this.load(this.i);};
+G2.hint=function(){
+  var s=STAGES[this.i];
+  $('g2msg').textContent='힌트 : '+s.sol.map(function(k){return OPS[k].k;}).join(' → ');
+  sClick();
+};
+G2.check=function(){
+  var t=STAGES[this.i].tgt,ok=true;
+  for(var i=0;i<4;i++)if(this.cur[i][0]!==t[i][0]||this.cur[i][1]!==t[i][1])ok=false;
+  if(!ok){
+    var n=0;
+    for(i=0;i<4;i++)if(this.cur[i][0]===t[i][0]&&this.cur[i][1]===t[i][1])n++;
+    $('g2msg').textContent=n===0?'아직 달라요. 뒤집기나 돌리기가 필요할까요?':'거의 다 왔어요! 꼭짓점 '+n+'개가 맞았습니다.';
+    return;
+  }
+  this.done=true;
+  $('g2msg').textContent='\uD83C\uDF89 성공! 네 꼭짓점이 모두 정확히 겹쳤어요.';
+  var par=STAGES[this.i].par;
+  var s=this.mv<=par?3:(this.mv<=par+2?2:1);
+  if(s>ST.g2[this.i]){ST.g2[this.i]=s;save();refreshHome();}
+  this.list();this.draw();sWin();
+  var self=this;
+  modal('STAGE '+(this.i+1)+' 클리어!',stars(s),
+    ['움직인 횟수 '+this.mv+'번 (최소 '+par+'번)',
+     s===3?'최소 횟수로 해냈어요! 완벽합니다.':'더 적게 움직이면 별 세 개를 받아요.'],
+    (this.i<11?[{t:'다음 스테이지',c:'am',f:function(){G2.load(self.i+1);}},
+                {t:'다시 하기',f:function(){G2.load(self.i);}}]
+              :[{t:'홈으로',c:'am',f:function(){show('home');}},
+                {t:'다시 하기',f:function(){G2.load(self.i);}}]));
+};
+G2.draw=function(){
+  var pl=this.pl,t=STAGES[this.i].tgt,c=this.cur;
+  pl.grid();
+  pl.poly(t,{c:'#9aa8c2',w:3,dash:'7 5',fill:'rgba(120,140,175,.20)'});
+  for(var i=0;i<4;i++)tx(NAME[i],{x:pl.X(t[i][0])+9,y:pl.Y(t[i][1])+16,'font-size':12.5,
+    'font-weight':'bold',fill:'#8494b0','font-family':'monospace'},pl.svg);
+  pl.poly(c,{c:this.done?'#12b26a':'#2563eb',w:4,
+    fill:this.done?'rgba(18,178,106,.28)':'rgba(37,99,235,.22)'});
+  for(i=0;i<4;i++){
+    pl.dot(c[i][0],c[i][1],i===0?'#fbbf24':(this.done?'#12b26a':'#2563eb'),i===0?7:5.5);
+    tx(NAME[i],{x:pl.X(c[i][0])+10,y:pl.Y(c[i][1])-9,'font-size':13,'font-weight':'bold',
+      fill:this.done?'#12b26a':'#2563eb','font-family':'monospace'},pl.svg);
+  }
+  $('g2mv').textContent=this.mv;
+  var par=STAGES[this.i].par;
+  $('g2star').textContent=this.done?stars(this.mv<=par?3:(this.mv<=par+2?2:1)):stars(ST.g2[this.i]);
+  var tb=$('g2tbl');clr(tb);
+  var tab=el('table','rule');tab.style.fontSize='12.5px';
+  var hr=el('tr');['점','지금','목표'].forEach(function(h){hr.appendChild(el('th',null,h));});
+  tab.appendChild(hr);
+  for(i=0;i<4;i++){
+    var r=el('tr');
+    r.appendChild(el('td',null,NAME[i]));
+    var a=el('td','m','('+c[i][0]+', '+c[i][1]+')');
+    var b=el('td','m','('+t[i][0]+', '+t[i][1]+')');
+    if(c[i][0]===t[i][0]&&c[i][1]===t[i][1])a.style.color='#34d399';
+    r.appendChild(a);r.appendChild(b);tab.appendChild(r);
+  }
+  tb.appendChild(tab);
+};
+
+/* ================= 게임 3 : 대칭 그림 완성 ================= */
+var PUZ=[
+ {m:'line',g:['...#','..##','.###','####','..##','..##','..##','####'],n:'집'},
+ {m:'line',g:['....','.##.','####','####','####','.###','..##','...#'],n:'하트'},
+ {m:'line',g:['##..','###.','####','..##','..##','####','###.','##..'],n:'나비'},
+ {m:'point',g:['..####..','.#....#.','#......#','###.....'],n:'회오리'},
+ {m:'point',g:['....###.','...##...','..##....','###.....'],n:'바람개비'},
+ {m:'point',g:['#..##..#','.#....#.','..####..','...##...'],n:'별무리'}
+];
+var G3={i:0,cell:null,tgt:null,given:null,mis:0,done:false};
+G3.open=function(){this.list();this.load(0);show('g3');sClick();};
+G3.list=function(){
+  var box=$('g3list');clr(box);
+  PUZ.forEach(function(p,i){
+    var b=el('button','st'+(i===G3.i?' on':''));
+    b.appendChild(el('div','n',i+1));
+    b.appendChild(el('div','s',stars(ST.g3[i])));
+    b.onclick=function(){G3.load(i);};
+    box.appendChild(b);
+  });
+};
+G3.load=function(i){
+  this.i=i;this.mis=0;this.done=false;
+  var p=PUZ[i],r,c;
+  this.given=[];this.tgt=[];this.cell=[];
+  for(r=0;r<8;r++){this.given.push([]);this.tgt.push([]);this.cell.push([]);
+    for(c=0;c<8;c++){this.given[r].push(false);this.tgt[r].push(false);this.cell[r].push(false);}}
+  if(p.m==='line'){
+    for(r=0;r<8;r++)for(c=0;c<4;c++){
+      var on=p.g[r].charAt(c)==='#';
+      this.given[r][c]=on;this.tgt[r][7-c]=on;
+    }
+  }else{
+    for(r=0;r<4;r++)for(c=0;c<8;c++){
+      var on2=p.g[r].charAt(c)==='#';
+      this.given[r][c]=on2;this.tgt[7-r][7-c]=on2;
+    }
+  }
+  $('g3no').textContent='그림 '+(i+1)+' / 6 · '+p.n;
+  $('g3mode').textContent=p.m==='line'?'선대칭 (세로 거울)':'점대칭 (가운데 중심)';
+  $('g3how').textContent=p.m==='line'
+    ? '분홍 거울선을 기준으로 왼쪽 그림과 똑같이 포개지도록 오른쪽 칸을 눌러 채우세요. 거울선에서 같은 칸 수만큼 떨어진 자리예요.'
+    : '가운데 분홍 점을 중심으로 반 바퀴 돌렸을 때 겹치도록 아래쪽 칸을 채우세요. 위에서 왼쪽에 있던 칸은 아래에서 오른쪽으로 갑니다.';
+  $('g3msg').textContent='칸을 눌러 색칠하고, 다 되면 확인하기를 누르세요!';
+  this.list();this.build();sClick();
+};
+G3.free=function(r,c){return PUZ[this.i].m==='line'?c>=4:r>=4;};
+G3.build=function(){
+  var box=$('g3grid');clr(box);
+  box.style.gridTemplateColumns='repeat(8, auto)';
+  box.style.position='relative';
+  var self=this;
+  for(var r=0;r<8;r++)for(var c=0;c<8;c++){
+    var b=el('button');
+    b.id='c'+r+'_'+c;
+    if(!this.free(r,c)){
+      if(this.given[r][c])b.className='given';
+      b.disabled=true;
+    }else if(this.cell[r][c])b.className='on';
+    if(PUZ[this.i].m==='line'&&c===3)b.style.boxShadow='4px 0 0 #f472b6';
+    if(PUZ[this.i].m==='point'&&r===3)b.style.boxShadow='0 4px 0 rgba(244,114,182,.45)';
+    (function(rr,cc,btn){btn.onclick=function(){self.tap(rr,cc);};})(r,c,b);
+    box.appendChild(b);
+  }
+  if(PUZ[this.i].m==='point'){
+    var d=el('div');
+    d.style.cssText='position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;'+
+      'background:#f472b6;border:3px solid #fff;border-radius:50%;pointer-events:none;z-index:5';
+    box.appendChild(d);
+  }
+};
+G3.tap=function(r,c){
+  if(this.done||!this.free(r,c))return;
+  this.cell[r][c]=!this.cell[r][c];
+  $('c'+r+'_'+c).className=this.cell[r][c]?'on':'';
+  sClick();
+};
+G3.clear=function(){
+  if(this.done)return;
+  for(var r=0;r<8;r++)for(var c=0;c<8;c++)if(this.free(r,c)){this.cell[r][c]=false;$('c'+r+'_'+c).className='';}
+  sClick();
+};
+G3.hint=function(){
+  if(this.done)return;
+  for(var r=0;r<8;r++)for(var c=0;c<8;c++)
+    if(this.free(r,c)&&this.tgt[r][c]&&!this.cell[r][c]){
+      this.cell[r][c]=true;$('c'+r+'_'+c).className='on hint';this.mis++;sClick();
+      $('g3msg').textContent='한 칸 알려 드렸어요! (힌트를 쓰면 별이 줄어들 수 있어요)';return;
+    }
+  $('g3msg').textContent='더 채울 칸이 없어요. 확인하기를 눌러 보세요!';
+};
+G3.check=function(){
+  if(this.done)return;
+  var wrong=0,missn=0,r,c;
+  for(r=0;r<8;r++)for(c=0;c<8;c++){
+    if(!this.free(r,c))continue;
+    var b=$('c'+r+'_'+c);
+    if(this.cell[r][c]&&this.tgt[r][c])b.className='on good';
+    else if(this.cell[r][c]&&!this.tgt[r][c]){b.className='bad';wrong++;}
+    else if(!this.cell[r][c]&&this.tgt[r][c]){b.className='miss';missn++;}
+    else b.className='';
+  }
+  if(wrong+missn>0){
+    this.mis+=1;
+    $('g3msg').textContent='아직이에요! 빨강은 잘못 칠한 칸('+wrong+'), 점선은 빠뜨린 칸('+missn+')입니다.';
+    sBad();
+    var self=this;
+    setTimeout(function(){
+      for(var r2=0;r2<8;r2++)for(var c2=0;c2<8;c2++)
+        if(self.free(r2,c2))$('c'+r2+'_'+c2).className=self.cell[r2][c2]?'on':'';
+    },1400);
+    return;
+  }
+  this.done=true;
+  var s=this.mis===0?3:(this.mis<=2?2:1);
+  if(s>ST.g3[this.i]){ST.g3[this.i]=s;save();refreshHome();}
+  this.list();sWin();
+  var self2=this;
+  modal('완성!',stars(s),[PUZ[this.i].n+' 그림을 '+(PUZ[this.i].m==='line'?'선대칭':'점대칭')+'으로 완성했어요.',
+    this.mis===0?'한 번에 정확하게 해냈습니다!':'힌트나 실수가 '+this.mis+'번 있었어요.'],
+    (this.i<5?[{t:'다음 그림',c:'lm',f:function(){G3.load(self2.i+1);}},{t:'다시',f:function(){G3.load(self2.i);}}]
+             :[{t:'홈으로',c:'lm',f:function(){show('home');}},{t:'다시',f:function(){G3.load(self2.i);}}]));
+};
+
+/* ================= 게임 4 : 대칭 판별 ================= */
+function reg(n,r,off){var p=[];for(var i=0;i<n;i++){var a=(off||90)*Math.PI/180+i*2*Math.PI/n;
+  p.push([r*Math.cos(a),r*Math.sin(a)]);}return p;}
+var SHAPES=[
+ {n:'정삼각형',p:reg(3,2.6)},
+ {n:'이등변삼각형',p:[[0,2.5],[-2,-1.6],[2,-1.6]]},
+ {n:'부등변삼각형',p:[[-2.5,-1.6],[2.5,-1.0],[0.6,2.2]]},
+ {n:'정사각형',p:[[-1.9,1.9],[1.9,1.9],[1.9,-1.9],[-1.9,-1.9]]},
+ {n:'직사각형',p:[[-2.6,1.4],[2.6,1.4],[2.6,-1.4],[-2.6,-1.4]]},
+ {n:'마름모',p:[[0,2.4],[2,0],[0,-2.4],[-2,0]]},
+ {n:'평행사변형',p:[[-1.3,1.4],[2.8,1.4],[1.3,-1.4],[-2.8,-1.4]]},
+ {n:'등변사다리꼴',p:[[-1.4,1.6],[1.4,1.6],[2.6,-1.6],[-2.6,-1.6]]},
+ {n:'정오각형',p:reg(5,2.6)},
+ {n:'정육각형',p:reg(6,2.4,0)},
+ {n:'바람개비',p:[[3,0],[1,1.5],[0,3],[-1.5,1],[-3,0],[-1,-1.5],[0,-3],[1.5,-1]]},
+ {n:'비스듬한 육각형',p:[[-3,1],[-1,2],[3,1],[3,-1],[1,-2],[-3,-1]]},
+ {n:'십자 모양',p:[[-1,3],[1,3],[1,1],[3,1],[3,-1],[1,-1],[1,-3],[-1,-3],[-1,-1],[-3,-1],[-3,1],[-1,1]]},
+ {n:'일반 사각형',p:[[-2.6,1.2],[2.2,1.9],[2.7,-1.1],[-1.4,-2.2]]}
+];
+function ctr(p){var sx=0,sy=0;p.forEach(function(q){sx+=q[0];sy+=q[1];});
+  var n=p.length;return p.map(function(q){return [q[0]-sx/n,q[1]-sy/n];});}
+function sameSet(A,B){
+  var u=B.map(function(){return false;}),i,j,f;
+  for(i=0;i<A.length;i++){
+    f=-1;
+    for(j=0;j<B.length;j++)if(!u[j]&&Math.abs(A[i][0]-B[j][0])<1e-6&&Math.abs(A[i][1]-B[j][1])<1e-6){f=j;break;}
+    if(f<0)return false;u[f]=true;
+  }
+  return true;
+}
+function isPointSym(p){var q=ctr(p);return sameSet(q,q.map(function(v){return [-v[0],-v[1]];}));}
+function findAxes(p){
+  var q=ctr(p),res=[],d;
+  for(d=0;d<180;d+=0.5){
+    var t=2*d*Math.PI/180,c=Math.cos(t),s=Math.sin(t);
+    if(sameSet(q,q.map(function(v){return [c*v[0]+s*v[1],s*v[0]-c*v[1]];})))res.push(d);
+  }
+  var out=[];res.forEach(function(x){if(!out.length||Math.abs(x-out[out.length-1])>1)out.push(x);});
+  return out;
+}
+function answerOf(sh){
+  var ax=findAxes(sh.p).length>0,pt=isPointSym(sh.p);
+  return ax&&pt?'both':(ax?'line':(pt?'point':'none'));
+}
+SHAPES.forEach(function(s){s.a=answerOf(s);s.ax=findAxes(s.p);});
+var CH=[['line','선대칭만'],['point','점대칭만'],['both','둘 다'],['none','둘 다 아님']];
+
+var G4={run:false,score:0,combo:1,life:3,cur:null,t:0,iv:null,lock:false,order:[],idx:0};
+G4.open=function(){$('g4b').textContent=ST.g4;this.reset();show('g4');sClick();};
+G4.quit=function(){this.stop();show('home');};
+G4.stop=function(){this.run=false;if(this.iv){clearInterval(this.iv);this.iv=null;}};
+G4.reset=function(){
+  this.score=0;this.combo=1;this.life=3;this.cur=null;this.lock=false;
+  $('g4s').textContent=0;$('g4c').textContent='×1';$('g4l').textContent='❤❤❤';
+  $('g4name').textContent='준비!';$('g4msg').textContent='시작 버튼을 누르세요!';
+  $('g4start').disabled=false;
+  clr($('g4ch'));clr($('g4svg'));
+  $('g4bar').firstChild.style.width='100%';
+};
+G4.start=function(){
+  this.reset();this.run=true;$('g4start').disabled=true;
+  this.order=SHAPES.map(function(_,i){return i;});
+  for(var i=this.order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=this.order[i];this.order[i]=this.order[j];this.order[j]=t;}
+  this.idx=0;this.next();sClick();
+};
+G4.next=function(){
+  if(!this.run)return;
+  if(this.idx>=this.order.length){
+    this.order.sort(function(){return Math.random()-0.5;});this.idx=0;}
+  this.cur=SHAPES[this.order[this.idx++]];
+  this.lock=false;this.t=8;
+  $('g4name').textContent='???';
+  this.drawShape(false);
+  var box=$('g4ch');clr(box);
+  var self=this;
+  CH.forEach(function(o){
+    var b=el('button','ch',o[1]);
+    b.onclick=function(){self.answer(o[0],b);};
+    box.appendChild(b);
+  });
+  if(this.iv)clearInterval(this.iv);
+  this.iv=setInterval(function(){
+    self.t-=0.05;
+    var bar=$('g4bar');
+    bar.firstChild.style.width=Math.max(0,self.t/8*100)+'%';
+    bar.classList.toggle('low',self.t<3);
+    if(self.t<=0){clearInterval(self.iv);self.iv=null;self.answer(null,null);}
+  },50);
+};
+G4.answer=function(v,btn){
+  if(this.lock||!this.run)return;
+  this.lock=true;
+  if(this.iv){clearInterval(this.iv);this.iv=null;}
+  var ok=(v===this.cur.a);
+  $('g4name').textContent=this.cur.n;
+  var box=$('g4ch'),bs=box.querySelectorAll('.ch');
+  for(var i=0;i<bs.length;i++){
+    if(CH[i][0]===this.cur.a)bs[i].className='ch ok';
+    else if(bs[i]===btn)bs[i].className='ch no';
+    bs[i].disabled=true;
+  }
+  this.drawShape(true);
+  if(ok){
+    var pts=10*this.combo+Math.round(this.t*2);
+    this.score+=pts;this.combo=Math.min(5,this.combo+1);
+    $('g4msg').textContent='정답! +'+pts+'점 · '+this.cur.n+'은(는) '+this.desc();
+    sGood();
+  }else{
+    this.combo=1;this.life--;
+    $('g4msg').textContent=(v===null?'시간 초과! ':'아쉬워요! ')+this.cur.n+'은(는) '+this.desc();
+    sBad();
+  }
+  $('g4s').textContent=this.score;$('g4c').textContent='×'+this.combo;
+  $('g4l').textContent='❤❤❤♡♡♡'.substr(3-this.life,3);
+  var self=this;
+  if(this.life<=0){setTimeout(function(){self.end();},1500);return;}
+  setTimeout(function(){self.next();},1500);
+};
+G4.desc=function(){
+  var a=this.cur.a,n=this.cur.ax.length;
+  if(a==='both')return '대칭축 '+n+'개 + 점대칭까지 되는 도형이에요.';
+  if(a==='line')return '대칭축이 '+n+'개 있지만 반 바퀴 돌리면 달라져요.';
+  if(a==='point')return '접으면 안 포개지지만 반 바퀴 돌리면 똑같아요.';
+  return '접어도 돌려도 겹치지 않는 도형이에요.';
+};
+G4.drawShape=function(rev){
+  var s=$('g4svg');clr(s);
+  var cx=130,cy=130,k=32,p=ctr(this.cur.p);
+  sv('rect',{x:0,y:0,width:260,height:260,fill:'#f7faff',rx:16},s);
+  for(var i=-3;i<=3;i++){
+    sv('line',{x1:cx+i*k,y1:cy-100,x2:cx+i*k,y2:cy+100,stroke:'#e5ebf7','stroke-width':1},s);
+    sv('line',{x1:cx-100,y1:cy+i*k,x2:cx+100,y2:cy+i*k,stroke:'#e5ebf7','stroke-width':1},s);
+  }
+  sv('polygon',{points:p.map(function(q){return (cx+q[0]*k)+','+(cy-q[1]*k);}).join(' '),
+    fill:'rgba(99,102,241,.25)',stroke:'#4f46e5','stroke-width':3,'stroke-linejoin':'round'},s);
+  if(rev){
+    this.cur.ax.forEach(function(a){
+      var r=a*Math.PI/180,L=105;
+      sv('line',{x1:cx-Math.cos(r)*L,y1:cy+Math.sin(r)*L,x2:cx+Math.cos(r)*L,y2:cy-Math.sin(r)*L,
+        stroke:'#f472b6','stroke-width':2.6,'stroke-dasharray':'7 5'},s);
+    });
+    if(this.cur.a==='point'||this.cur.a==='both')
+      sv('circle',{cx:cx,cy:cy,r:7,fill:'#34d399',stroke:'#fff','stroke-width':2.5},s);
+  }
+};
+G4.end=function(){
+  this.stop();$('g4start').disabled=false;
+  var st=scoreStar(this.score,80,180,300);
+  if(this.score>ST.g4){ST.g4=this.score;save();refreshHome();$('g4b').textContent=ST.g4;}
+  sWin();
+  modal('게임 끝!',stars(st),['점수 '+this.score+'점',
+    st===3?'대칭 판별의 달인이에요!':(st===2?'훌륭해요! 조금만 더!':'규칙을 다시 보고 도전해 볼까요?')],
+    [{t:'다시 하기',c:'mg',f:function(){G4.start();}},
+     {t:'규칙 보기',f:function(){show('help');}},
+     {t:'홈으로',f:function(){show('home');}}]);
+};
+
+/* ================= 시작 ================= */
+loadST(function(){refreshHome();});
+</script>
+</body>
+</html>
