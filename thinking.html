@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 주관식 커리큘럼 — 전체 목차 설계서</title>
+<style>
+:root{
+  --ink:#16202f; --sub:#55637a; --pale:#93a0b5; --line:#dce3ee; --soft:#f3f6fb;
+  --c1:#1d4ed8; --c2:#b45309; --c3:#7c3aed; --c4:#0f766e; --c5:#be123c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.72;font-size:14.6px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:14mm 14mm 13mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+.head{border-bottom:3px double var(--ink);padding-bottom:8px;margin-bottom:12px}
+.head .row{display:flex;align-items:flex-end;gap:12px}
+.head h1{font-size:21px;font-weight:800;letter-spacing:-.6px}
+.head .sub{font-size:12px;color:var(--sub);margin-top:2px}
+.head .meta{margin-left:auto;font-size:11.5px;color:var(--sub);text-align:right;line-height:1.5}
+
+h2{font-size:18px;font-weight:800;margin:14px 0 9px;padding-left:11px;border-left:5px solid var(--c1);
+   break-after:avoid}
+h2.a{border-color:var(--c1)}h2.b{border-color:var(--c2)}h2.c{border-color:var(--c3)}
+h2.d{border-color:var(--c4)}h2.e{border-color:var(--c5)}
+h3{font-size:15px;font-weight:800;margin:11px 0 6px;color:var(--c1)}
+p{margin:5px 0;color:#2b3648}
+.small{font-size:12.8px;color:var(--sub)}
+b.b1{color:var(--c1)}b.b2{color:var(--c2)}b.b3{color:var(--c3)}b.b4{color:var(--c4)}b.b5{color:var(--c5)}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 13px;margin:8px 0}
+.card.s{background:var(--soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+ul.li{list-style:none;margin:5px 0}
+ul.li li{padding-left:16px;position:relative;margin:3px 0}
+ul.li li::before{content:'▪';position:absolute;left:2px;color:var(--c1);font-weight:800}
+
+table{width:100%;border-collapse:collapse;font-size:12.4px;margin:7px 0}
+th{background:#e9eefa;border:1px solid var(--line);padding:5px 6px;font-weight:800;color:#243352;text-align:left}
+td{border:1px solid var(--line);padding:4px 6px;color:#2b3648;vertical-align:top}
+td.c{text-align:center}
+td.m{font-family:'D2Coding','Consolas',monospace;font-size:11.6px}
+tr.lv1 td:first-child{background:#eef4ff;font-weight:800;color:var(--c1)}
+tr.lv2 td:first-child{background:#fff5e8;font-weight:800;color:var(--c2)}
+tr.lv3 td:first-child{background:#f6f1ff;font-weight:800;color:var(--c3)}
+
+.badge{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:9px;
+  color:#fff;background:var(--c1);vertical-align:1px}
+.badge.b{background:var(--c2)}.badge.c{background:var(--c3)}
+.badge.d{background:var(--c4)}.badge.e{background:var(--c5)}
+.badge.g{background:#64748b}
+
+.foot{position:absolute;left:14mm;right:14mm;bottom:7mm;border-top:1px solid var(--line);
+  padding-top:4px;display:flex;font-size:10.5px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c1);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.3px;color:#555}
+
+.flow{display:flex;align-items:stretch;gap:0;margin:9px 0}
+.flow .st{flex:1;border:2px solid var(--line);border-radius:9px;padding:8px 10px;text-align:center}
+.flow .st.a{border-color:#a9c3f7;background:#f2f7ff}
+.flow .st.b{border-color:#f2cfa0;background:#fff9f0}
+.flow .st.c{border-color:#d3c2f7;background:#f9f5ff}
+.flow .ar{display:grid;place-items:center;width:26px;color:var(--pale);font-size:17px;font-weight:800}
+.flow .st .nm{font-weight:800;font-size:13.5px}
+.flow .st .de{font-size:11.4px;color:var(--sub);line-height:1.45;margin-top:2px}
+
+/* 밀도 조정 */
+body{font-size:12.4px;line-height:1.5}
+.page{padding:12mm 12mm 10mm}
+h2{font-size:15px;margin:8px 0 5px}
+h3{font-size:13.6px;margin:8px 0 4px}
+table{font-size:10.5px;margin:4px 0}
+th{padding:2px 4px}
+td{padding:2px 4px}
+td.m{font-size:10.6px}
+.card{padding:6px 10px;margin:5px 0}
+p{margin:4px 0}
+.small{font-size:11px}
+ul.li li{margin:2px 0}
+.head{padding-bottom:6px;margin-bottom:9px}
+.head h1{font-size:19px}
+.flow .st{padding:6px 8px}
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="t">📐 사고력수학 주관식 커리큘럼 — 전체 목차 설계서</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">이 문서는 <b>교재 제작을 위한 설계도</b>입니다. 확정 후 단계별 이론서·문제집을 만듭니다.</span>
+</div>
+
+<!-- ===== 1쪽 : 설계 원칙 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div>
+        <h1>사고력수학 주관식 커리큘럼 — 전체 목차 설계서</h1>
+        <div class="sub">영재교육원 대비 · 3단계 72주제 · 이론서 + 문제집 통합 설계</div>
+      </div>
+      <div class="meta">세영코딩연구소<br>1 / 6 쪽</div>
+    </div>
+  </div>
+
+  <h2 class="a">1. 왜 이 구조인가 — 설계의 근거</h2>
+  <div class="card s">
+    <p><b class="b1">① 시장 표준을 따른다.</b> 대표 교재인 <b>필즈수학</b>(씨투엠에듀)은 <b>기본 → 발전 → 심화</b>로 이어지는
+    <b>3단계 영재교육원 대비 프로그램</b>으로 구성되어 있고, 주제는 <b>수와 연산 · 패턴 · 도형 · 측정 · 문제 해결 방법</b>을 축으로 합니다.
+    본 커리큘럼도 같은 3단계·5영역 뼈대를 채택해 <b>기존 교재와 호환</b>되도록 했습니다.</p>
+    <p style="margin-top:6px"><b class="b1">② 선발 평가의 실제를 반영한다.</b> 영재교육원 선발은 <b>영재성검사</b>와
+    <b>창의적 문제해결력 평가</b>로 이루어지며, <b>창의성 · 수학적 사고력 · 융합 사고력</b>을 봅니다.
+    특히 한국교육개발원(KEDI)의 창의적 문제해결력 검사는 <b>실생활 상황을 제시</b>하고
+    <b>해결 과정과 결과를 함께</b> 측정합니다. 그래서 본 커리큘럼은 <b>답만 쓰는 훈련이 아니라
+    “과정을 문장으로 쓰는 훈련”</b>을 전 단계에 배치했습니다.</p>
+    <p style="margin-top:6px"><b class="b1">③ 주관식에 최적화한다.</b> 객관식은 “답을 고르는 힘”이지만
+    주관식은 <b>“생각을 남기는 힘”</b>입니다. 모든 주제에 <b>대표 전략 1개</b>를 명시하고,
+    <b>서술형 답안 틀</b>을 함께 제공합니다.</p>
+  </div>
+
+  <h2 class="a">2. 전체 구조 — 3단계 × 5영역 × 24주제</h2>
+  <div class="flow">
+    <div class="st a"><div class="nm">1단계 · 기본</div>
+      <div class="de">초3~초4<br>도구를 <b>알게</b> 한다<br>24주제</div></div>
+    <div class="ar">▶</div>
+    <div class="st b"><div class="nm">2단계 · 발전</div>
+      <div class="de">초5~초6<br>도구를 <b>고르게</b> 한다<br>24주제</div></div>
+    <div class="ar">▶</div>
+    <div class="st c"><div class="nm">3단계 · 심화</div>
+      <div class="de">초6~중1<br>도구를 <b>엮게</b> 한다<br>24주제</div></div>
+  </div>
+
+  <table>
+    <tr><th style="width:16%">영역</th><th style="width:28%">다루는 것</th><th>1단계 → 2단계 → 3단계의 성장</th></tr>
+    <tr><td><span class="badge">A</span> <b>수와 연산</b></td>
+      <td>수의 성질, 연산의 구조, 수 퍼즐</td>
+      <td>규칙적으로 세기 → 약수·배수로 구조 보기 → 나머지·진법으로 일반화</td></tr>
+    <tr><td><span class="badge b">B</span> <b>규칙과 패턴</b></td>
+      <td>수열, 도형 패턴, 대응</td>
+      <td>다음 항 찾기 → 몇 번째 항 구하기 → 식으로 나타내기</td></tr>
+    <tr><td><span class="badge c">C</span> <b>도형과 공간</b></td>
+      <td>평면·입체, 전개도, 대칭, 최단거리</td>
+      <td>보고 세기 → 규칙으로 세기 → 잘라 붙여 변형하기</td></tr>
+    <tr><td><span class="badge d">D</span> <b>측정과 비율</b></td>
+      <td>길이·넓이·부피, 단위, 비, 속력</td>
+      <td>직접 재기 → 비로 비교하기 → 비율로 관계 만들기</td></tr>
+    <tr><td><span class="badge e">E</span> <b>논리와 문제해결</b></td>
+      <td>경우의 수, 논리 추론, 게임 전략</td>
+      <td>빠짐없이 세기 → 조건으로 좁히기 → 불변량으로 증명하기</td></tr>
+  </table>
+
+  <div class="card">
+    <h3>영역별 배분 (단계당 24주제)</h3>
+    <table>
+      <tr><th style="width:14%">단계</th><th class="c">A 수와 연산</th><th class="c">B 규칙</th><th class="c">C 도형</th>
+        <th class="c">D 측정</th><th class="c">E 논리</th><th class="c">합계</th></tr>
+      <tr class="lv1"><td>1단계 기본</td><td class="c">6</td><td class="c">5</td><td class="c">5</td><td class="c">3</td><td class="c">5</td><td class="c"><b>24</b></td></tr>
+      <tr class="lv2"><td>2단계 발전</td><td class="c">5</td><td class="c">5</td><td class="c">5</td><td class="c">4</td><td class="c">5</td><td class="c"><b>24</b></td></tr>
+      <tr class="lv3"><td>3단계 심화</td><td class="c">5</td><td class="c">4</td><td class="c">6</td><td class="c">4</td><td class="c">5</td><td class="c"><b>24</b></td></tr>
+    </table>
+    <p class="small" style="margin-top:4px">※ 단계가 올라갈수록 <b>도형</b>과 <b>논리</b> 비중이 커집니다.
+    영재원 지필의 변별 문항이 대체로 이 두 영역에서 나오기 때문입니다.</p>
+  </div>
+
+  <h2 class="a">3. 한 주제(1차시)의 표준 구성</h2>
+  <table>
+    <tr><th style="width:15%">단계</th><th style="width:12%">분량</th><th>내용</th></tr>
+    <tr><td><b class="b1">① 상황 열기</b></td><td class="c">1/2쪽</td>
+      <td>실생활 장면이나 퍼즐로 시작. <b>답이 아니라 질문</b>을 던진다. (“어떻게 하면 빠짐없이 셀까?”)</td></tr>
+    <tr><td><b class="b1">② 이론</b></td><td class="c">1쪽</td>
+      <td>핵심 개념 + <b>대표 전략 1개</b>를 이름 붙여 제시. 그림·표 필수. 공식은 <b>유도 과정과 함께</b>.</td></tr>
+    <tr><td><b class="b1">③ 예제</b></td><td class="c">1쪽</td>
+      <td>전략을 <b>그대로 따라 하는</b> 문제 2개. 풀이 과정을 <b>빈칸으로</b> 두어 채우게 한다.</td></tr>
+    <tr><td><b class="b1">④ 연습</b></td><td class="c">1쪽</td>
+      <td>같은 전략, 다른 옷을 입은 문제 4~5개. <b>답만</b> 쓰는 문항 포함(속도 훈련).</td></tr>
+    <tr><td><b class="b1">⑤ 도전</b></td><td class="c">1쪽</td>
+      <td>전략을 <b>변형</b>해야 풀리는 문제 2~3개. 영재원 기출 수준.</td></tr>
+    <tr><td><b class="b1">⑥ 서술형</b></td><td class="c">1/2쪽</td>
+      <td><b>주관식 핵심.</b> “왜 그런지 설명하시오”, “다른 방법을 찾으시오”, “더 큰 수로 바꾸면?”</td></tr>
+  </table>
+  <p class="small">한 주제 = <b>5쪽 내외</b>, 수업 <b>50분</b> + 과제. 24주제 = 한 단계 <b>약 6개월</b>(주 1회 기준).</p>
+
+  <div class="foot"><span>사고력수학 주관식 커리큘럼 설계서</span><span class="r">1 / 6</span></div>
+</div>
+<!-- ===== 2쪽 : 1단계 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div><h1>1단계 · <span style="color:#1d4ed8">기본</span> — 도구를 <b>알게</b> 한다</h1>
+        <div class="sub">초등 3~4학년 · 24주제 · 목표 : “이런 방법이 있구나”를 경험한다</div></div>
+      <div class="meta">전체 72주제 중 1~24<br>2 / 6 쪽</div>
+    </div>
+  </div>
+
+  <div class="card s">
+    <p><b class="b1">이 단계의 한 문장.</b> 문제를 보고 <b>무작정 계산하지 않고, 표를 그리거나 그림을 그려 보는 습관</b>을 만든다.
+    정답률보다 <b>“어떻게 접근했는가”</b>를 기록하게 하는 것이 목표다.</p>
+    <p class="small" style="margin-top:4px">서술형 목표 : <b>한 문장으로 이유 쓰기</b> — “왜냐하면 ○○이기 때문입니다.”</p>
+  </div>
+
+  <h2 class="a">A. 수와 연산 <span class="badge">6주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">1</td><td><b>수 세기의 기술</b></td><td>빠짐없이·중복없이 세는 법, 순서대로 나열</td><td><b>표 만들기</b> / “왜 빠뜨리지 않았다고 확신하나요?”</td></tr>
+    <tr><td class="c">2</td><td><b>조건에 맞는 수 찾기</b></td><td>자릿수 조건, 대소 조건, 배수 조건 걸기</td><td><b>조건 하나씩 걸기</b> / 조건 순서를 바꾸면 왜 빨라지나</td></tr>
+    <tr><td class="c">3</td><td><b>연산 퍼즐 (복면산)</b></td><td>덧셈·뺄셈의 자리올림, 각 자리 관계</td><td><b>확실한 자리부터</b> / 맨 앞자리가 1인 이유 설명</td></tr>
+    <tr><td class="c">4</td><td><b>수의 배열과 마방진</b></td><td>3×3 마방진, 합이 같아지는 원리, 가운데 수</td><td><b>합에서 거꾸로</b> / 가운데가 5인 이유 설명</td></tr>
+    <tr><td class="c">5</td><td><b>거꾸로 생각하기</b></td><td>역연산, 처음 수 구하기, 시간 되돌리기</td><td><b>거꾸로 풀기</b> / 순서를 바꾸면 답이 달라지는 까닭</td></tr>
+    <tr><td class="c">6</td><td><b>규칙적으로 더하기</b></td><td>1+2+…+n, 짝지어 더하기(가우스)</td><td><b>짝짓기</b> / 100까지 합을 10초에 구하는 방법 설명</td></tr>
+  </table>
+
+  <h2 class="b">B. 규칙과 패턴 <span class="badge b">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">7</td><td><b>수 배열의 규칙</b></td><td>차가 일정, 곱이 일정, 건너뛰며 세기</td><td><b>차를 적어 보기</b> / 20번째 수를 세지 않고 구하기</td></tr>
+    <tr><td class="c">8</td><td><b>도형이 자라는 규칙</b></td><td>성냥개비·바둑돌 배열, 늘어나는 개수</td><td><b>몇 개씩 느는지</b> / 그림을 안 그리고 아는 방법</td></tr>
+    <tr><td class="c">9</td><td><b>반복되는 규칙 (주기)</b></td><td>주기 찾기, 나머지로 위치 알기</td><td><b>나머지로 판정</b> / 100번째가 무엇인지와 그 근거</td></tr>
+    <tr><td class="c">10</td><td><b>표로 나타낸 대응</b></td><td>□와 △의 관계, 하나가 정해지면 다른 하나</td><td><b>표로 짝짓기</b> / 관계를 말로 설명하기</td></tr>
+    <tr><td class="c">11</td><td><b>수 피라미드 · 파스칼 삼각형</b></td><td>위 두 수를 더해 아래로, 대칭성</td><td><b>양쪽 끝부터</b> / 좌우가 같은 이유 설명</td></tr>
+  </table>
+
+  <h2 class="c">C. 도형과 공간 <span class="badge c">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">12</td><td><b>도형의 개수 세기</b></td><td>크기별로 나누어 세기(삼각형·사각형)</td><td><b>크기별 분류</b> / 겹치는 것을 어떻게 처리했나</td></tr>
+    <tr><td class="c">13</td><td><b>쌓기나무</b></td><td>위·앞·옆에서 본 모양, 보이지 않는 것</td><td><b>위에서 본 모양에 수 쓰기</b> / 숨은 나무를 아는 방법</td></tr>
+    <tr><td class="c">14</td><td><b>정육면체의 전개도</b></td><td>11가지 전개도, 마주 보는 면</td><td><b>한 면 고정하고 돌리기</b> / 안 되는 전개도의 이유</td></tr>
+    <tr><td class="c">15</td><td><b>대칭과 도형 옮기기</b></td><td>선대칭·점대칭, 밀기·뒤집기·돌리기</td><td><b>대칭축 찾기</b> / 접으면 안 되고 돌리면 되는 도형</td></tr>
+    <tr><td class="c">16</td><td><b>한붓그리기</b></td><td>점에 모인 선의 개수(홀수점)</td><td><b>홀수점 세기</b> / 시도가 아니라 <b>미리</b> 판정하기</td></tr>
+  </table>
+
+  <h2 class="d">D. 측정과 비율 <span class="badge d">3주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">17</td><td><b>둘레와 넓이</b></td><td>둘레가 같아도 넓이는 다르다</td><td><b>표로 비교</b> / 넓이가 가장 클 때의 모양과 이유</td></tr>
+    <tr><td class="c">18</td><td><b>단위의 이해</b></td><td>길이·무게·시간 단위 바꾸기, 어림</td><td><b>기준 정하기</b> / 어림값이 타당한 이유 설명</td></tr>
+    <tr><td class="c">19</td><td><b>물통과 저울</b></td><td>양 옮기기, 양팔저울로 비교</td><td><b>단계 적기</b> / 최소 횟수임을 설명하기</td></tr>
+  </table>
+
+  <h2 class="e">E. 논리와 문제해결 <span class="badge e">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">20</td><td><b>경우의 수 기초</b></td><td>나뭇가지 그림, 곱의 법칙과 합의 법칙</td><td><b>나뭇가지 그리기</b> / 곱해야 할 때와 더해야 할 때</td></tr>
+    <tr><td class="c">21</td><td><b>참말과 거짓말</b></td><td>가정하고 모순 찾기(귀류법의 씨앗)</td><td><b>한쪽으로 가정</b> / 모순이 난 지점 지목하기</td></tr>
+    <tr><td class="c">22</td><td><b>순서 정하기 (리그·토너먼트)</b></td><td>표로 대진 정리, 악수 문제</td><td><b>표 채우기</b> / 중복해서 센 부분 설명</td></tr>
+    <tr><td class="c">23</td><td><b>최단 거리</b></td><td>격자 위 길 세기, 지나는 점 세기</td><td><b>교차점에 수 적기</b> / 막힌 길을 처리하는 법</td></tr>
+    <tr><td class="c">24</td><td><b>단순하게 만들어 보기</b></td><td>작은 경우부터 → 규칙 발견 → 일반화</td><td><b>작게 줄이기</b> / 줄여서 알아낸 규칙이 맞다는 근거</td></tr>
+  </table>
+
+  <div class="card s">
+    <p class="small"><b>1단계 마무리 평가</b> — 5영역에서 각 2문항, 총 10문항 · 60분.
+    <b>답 5문항 + 서술 5문항</b>으로 구성해 “설명하는 힘”을 처음부터 점검한다.</p>
+  </div>
+
+  <div class="foot"><span>1단계 기본 · 초3~초4</span><span class="r">2 / 6</span></div>
+</div>
+<!-- ===== 3쪽 : 2단계 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div><h1>2단계 · <span style="color:#b45309">발전</span> — 도구를 <b>고르게</b> 한다</h1>
+        <div class="sub">초등 5~6학년 · 24주제 · 목표 : 문제를 보고 “어떤 방법을 꺼낼지” 판단한다</div></div>
+      <div class="meta">전체 72주제 중 25~48<br>3 / 6 쪽</div>
+    </div>
+  </div>
+
+  <div class="card s">
+    <p><b class="b2">이 단계의 한 문장.</b> 1단계에서 배운 도구가 <b>여러 개 섞여</b> 나온다.
+    이제 <b>“이 문제는 표인가, 그림인가, 거꾸로인가”</b>를 스스로 고르는 훈련을 한다.</p>
+    <p class="small" style="margin-top:4px">서술형 목표 : <b>세 문장으로 과정 쓰기</b> — “먼저 ○○했습니다. 그러면 △△가 됩니다. 따라서 답은 □□입니다.”</p>
+  </div>
+
+  <h2 class="a">A. 수와 연산 <span class="badge">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">25</td><td><b>약수와 배수의 구조</b></td><td>약수의 개수, 약수의 짝, 제곱수</td><td><b>짝지어 세기</b> / 약수가 홀수 개인 수의 정체 설명</td></tr>
+    <tr><td class="c">26</td><td><b>최대공약수 · 최소공배수</b></td><td>공통으로 나누기, GCD×LCM = 두 수의 곱</td><td><b>공통인수 뽑기</b> / 타일 깔기·톱니바퀴로 해석하기</td></tr>
+    <tr><td class="c">27</td><td><b>나머지의 규칙</b></td><td>나머지로 분류, 되풀이되는 나머지</td><td><b>나머지로 묶기</b> / 큰 수를 계산 없이 판정하기</td></tr>
+    <tr><td class="c">28</td><td><b>분수와 소수의 관계</b></td><td>유한소수 조건, 순환소수, 크기 비교</td><td><b>분모를 소인수분해</b> / 유한·순환이 갈리는 이유</td></tr>
+    <tr><td class="c">29</td><td><b>수의 표현 바꾸기</b></td><td>이진법·다른 진법, 저울추와 진법</td><td><b>자리값으로 쪼개기</b> / 추 4개로 40kg을 재는 원리</td></tr>
+  </table>
+
+  <h2 class="b">B. 규칙과 패턴 <span class="badge b">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">30</td><td><b>등차수열</b></td><td>n번째 항 구하기, 합 구하기</td><td><b>차 × (개수−1)</b> / 식으로 나타내고 검산하기</td></tr>
+    <tr><td class="c">31</td><td><b>피보나치와 계단 오르기</b></td><td>앞의 두 항의 합, 마지막 한 걸음으로 나누기</td><td><b>경우 나누기</b> / 10칸을 세지 않고 구하는 근거</td></tr>
+    <tr><td class="c">32</td><td><b>도형수 (삼각수 · 사각수)</b></td><td>점을 늘어놓아 만든 수, 두 배로 만들기</td><td><b>두 개 붙이기</b> / 삼각수 공식 유도 설명</td></tr>
+    <tr><td class="c">33</td><td><b>규칙을 식으로</b></td><td>□를 써서 관계 나타내기, 대응 규칙</td><td><b>표 → 식</b> / 만든 식이 맞는지 확인하는 방법</td></tr>
+    <tr><td class="c">34</td><td><b>겹쳐지는 규칙</b></td><td>두 규칙이 동시에 일어나는 때(공배수)</td><td><b>주기의 공배수</b> / 두 신호가 다시 만나는 시각</td></tr>
+  </table>
+
+  <h2 class="c">C. 도형과 공간 <span class="badge c">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">35</td><td><b>각의 성질</b></td><td>삼각형 내각합, 외각, 다각형 내각합</td><td><b>삼각형으로 쪼개기</b> / 별 모양 다섯 각의 합 설명</td></tr>
+    <tr><td class="c">36</td><td><b>넓이를 옮기기</b></td><td>등적변형, 밑변·높이가 같은 삼각형</td><td><b>평행선 이용</b> / 모양이 달라도 넓이가 같은 까닭</td></tr>
+    <tr><td class="c">37</td><td><b>색칠된 부분의 넓이</b></td><td>더하고 빼기, 부채꼴과 삼각형의 조합</td><td><b>전체 − 나머지</b> / 두 번 센 부분 찾아내기</td></tr>
+    <tr><td class="c">38</td><td><b>입체의 겉넓이와 부피</b></td><td>쌓기나무의 겉면, 잘라 낸 입체</td><td><b>면별로 세기</b> / 잘라도 겉넓이가 그대로인 경우</td></tr>
+    <tr><td class="c">39</td><td><b>도형의 회전과 자취</b></td><td>굴러간 자리, 돌린 도형이 지나간 영역</td><td><b>중심의 자취</b> / 원이 굴러간 거리와 원주의 관계</td></tr>
+  </table>
+
+  <h2 class="d">D. 측정과 비율 <span class="badge d">4주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">40</td><td><b>비와 비례배분</b></td><td>비의 성질, 전체를 비로 나누기</td><td><b>단위량 잡기</b> / 비를 잘못 적용한 사례 찾기</td></tr>
+    <tr><td class="c">41</td><td><b>농도와 섞기</b></td><td>소금의 양은 변하지 않는다, 섞음 계산</td><td><b>변하지 않는 양</b> / 평균이 답이 아닌 이유</td></tr>
+    <tr><td class="c">42</td><td><b>속력 · 거리 · 시간</b></td><td>마주 보기와 따라잡기, 평균 속력</td><td><b>합·차로 보기</b> / 평균 속력이 산술평균이 아닌 까닭</td></tr>
+    <tr><td class="c">43</td><td><b>일의 양</b></td><td>전체를 1로 두기, 함께 하면 걸리는 시간</td><td><b>1시간의 일</b> / 전체를 1로 두면 편한 까닭</td></tr>
+  </table>
+
+  <h2 class="e">E. 논리와 문제해결 <span class="badge e">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">44</td><td><b>경우의 수 심화</b></td><td>순서가 있을 때·없을 때, 같은 것이 있을 때</td><td><b>중복 나누기</b> / 왜 나누어야 하는지 설명</td></tr>
+    <tr><td class="c">45</td><td><b>여사건 — 빼서 세기</b></td><td>전체에서 반대 경우를 빼기</td><td><b>반대로 세기</b> / 직접 세기보다 쉬운 이유</td></tr>
+    <tr><td class="c">46</td><td><b>비둘기집 원리</b></td><td>서랍을 무엇으로 잡을 것인가</td><td><b>서랍 정하기</b> / <b>반례</b>까지 제시해야 완성</td></tr>
+    <tr><td class="c">47</td><td><b>표와 그래프로 추론</b></td><td>조건표 채우기, ○×로 지우기</td><td><b>확정 칸부터</b> / 지운 근거를 순서대로 쓰기</td></tr>
+    <tr><td class="c">48</td><td><b>최적화 — 가장 크게, 가장 작게</b></td><td>합이 일정할 때 곱의 최대, 배치 최적화</td><td><b>양 끝 비교</b> / 최적임을 보이는 근거 쓰기</td></tr>
+  </table>
+
+  <p class="small" style="margin-top:5px"><b>2단계 마무리 평가</b> — 10문항 · 80분 · <b>서술 7문항</b>. 이 시점부터 <b>“다른 방법으로도 풀어 보시오”</b> 문항을 반드시 포함한다.</p>
+
+  <div class="foot"><span>2단계 발전 · 초5~초6</span><span class="r">3 / 6</span></div>
+</div>
+<!-- ===== 4쪽 : 3단계 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div><h1>3단계 · <span style="color:#7c3aed">심화</span> — 도구를 <b>엮게</b> 한다</h1>
+        <div class="sub">초등 6학년~중1 · 24주제 · 목표 : 두세 개의 도구를 이어 붙여 <b>증명</b>까지 간다</div></div>
+      <div class="meta">전체 72주제 중 49~72<br>4 / 6 쪽</div>
+    </div>
+  </div>
+
+  <div class="card s">
+    <p><b class="b3">이 단계의 한 문장.</b> 답을 구하는 것으로는 부족하다.
+    <b>“왜 그것뿐인가”, “왜 불가능한가”</b>를 보여야 한다. 영재원 지필의 변별 문항과 중등 경시의 입구가 여기다.</p>
+    <p class="small" style="margin-top:4px">서술형 목표 : <b>주장 + 근거 + 검산</b>의 세 덩어리로 답안 쓰기. 반례 제시 훈련 포함.</p>
+  </div>
+
+  <h2 class="a">A. 수와 연산 <span class="badge">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">49</td><td><b>소수의 성질</b></td><td>소수 판정, 3으로 나눈 나머지로 분류</td><td><b>mod 3 분류</b> / “이것뿐”임을 증명하기</td></tr>
+    <tr><td class="c">50</td><td><b>자릿수의 표현</b></td><td>10a+b로 놓기, 배수 판정의 원리</td><td><b>문자로 놓기</b> / 3·9의 배수 판정이 통하는 이유</td></tr>
+    <tr><td class="c">51</td><td><b>나머지 연립</b></td><td>여러 조건을 동시에 만족하는 수, 주기</td><td><b>센 조건부터</b> / 주기가 최소공배수인 이유</td></tr>
+    <tr><td class="c">52</td><td><b>부정방정식</b></td><td>ax+by=c의 자연수해, 배수 조건으로 좁히기</td><td><b>배수 조건</b> / 해가 유한개인 이유 설명</td></tr>
+    <tr><td class="c">53</td><td><b>제곱수 만들기</b></td><td>(m−n)(m+n) 인수분해, 지수의 짝수 조건</td><td><b>차의 인수분해</b> / 홀짝이 같아야 하는 까닭</td></tr>
+  </table>
+
+  <h2 class="b">B. 규칙과 패턴 <span class="badge b">4주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">54</td><td><b>점화식으로 생각하기</b></td><td>앞의 항으로 다음 항 나타내기, 하노이탑</td><td><b>한 단계 전으로</b> / 최소 횟수임을 설명</td></tr>
+    <tr><td class="c">55</td><td><b>수열의 합</b></td><td>계차수열, 부분합, 망원경 소거</td><td><b>차로 쪼개기</b> / 소거되는 구조 보이기</td></tr>
+    <tr><td class="c">56</td><td><b>규칙의 증명</b></td><td>귀납적 발견 → 문자로 일반화 → 확인</td><td><b>n으로 놓기</b> / 관찰과 증명의 차이 설명</td></tr>
+    <tr><td class="c">57</td><td><b>불변량 찾기</b></td><td>조작해도 변하지 않는 값(합·나머지·색)</td><td><b>불변량 지목</b> / 불가능함을 증명하는 도구</td></tr>
+  </table>
+
+  <h2 class="c">C. 도형과 공간 <span class="badge c">6주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">58</td><td><b>피타고라스 정리</b></td><td>직각삼각형, 정수 세 쌍, 접은 도형</td><td><b>직각 찾기</b> / 접었을 때 같아지는 길이 지목</td></tr>
+    <tr><td class="c">59</td><td><b>닮음과 넓이비·부피비</b></td><td>길이 k배 → 넓이 k², 부피 k³</td><td><b>비를 두 번</b> / 왜 제곱·세제곱인지 설명</td></tr>
+    <tr><td class="c">60</td><td><b>원의 성질</b></td><td>원주각과 중심각, 접선과 반지름</td><td><b>반원의 직각</b> / 접선 길이가 같은 이유</td></tr>
+    <tr><td class="c">61</td><td><b>내심과 외심</b></td><td>각의 이등분선, 수직이등분선, 넓이=r×s</td><td><b>넓이 두 가지로</b> / 두 공식이 같은 값인지 확인</td></tr>
+    <tr><td class="c">62</td><td><b>공간에서의 최단거리</b></td><td>전개도로 펴기, 거미와 파리 문제</td><td><b>펴서 직선으로</b> / 여러 경로 중 최소 비교</td></tr>
+    <tr><td class="c">63</td><td><b>도형의 분할과 재구성</b></td><td>같은 넓이로 나누기, 잘라 붙여 옮기기</td><td><b>잘라 붙이기</b> / 분할이 공평함을 설명</td></tr>
+  </table>
+
+  <h2 class="d">D. 측정과 비율 <span class="badge d">4주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">64</td><td><b>비례식의 활용</b></td><td>그림자와 높이, 축척, 지도</td><td><b>닮음비 세우기</b> / 측정할 수 없는 것을 재는 법</td></tr>
+    <tr><td class="c">65</td><td><b>평균의 함정</b></td><td>평균·중앙값·최빈값, 극단값의 영향</td><td><b>대푯값 고르기</b> / 어느 값이 적절한지 근거 쓰기</td></tr>
+    <tr><td class="c">66</td><td><b>최댓값·최솟값</b></td><td>합이 일정할 때, 곱이 일정할 때</td><td><b>완전제곱 만들기</b> / 등호 조건 확인</td></tr>
+    <tr><td class="c">67</td><td><b>실생활 모델링</b></td><td>조건을 수식으로 옮기기, 가정 세우기</td><td><b>가정 명시</b> / 가정이 바뀌면 답이 어떻게 변하나</td></tr>
+  </table>
+
+  <h2 class="e">E. 논리와 문제해결 <span class="badge e">5주제</span></h2>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:23%">주제</th><th style="width:30%">핵심 이론</th><th>대표 전략 · 주관식 포인트</th></tr>
+    <tr><td class="c">68</td><td><b>색칠 논법</b></td><td>도미노 덮기, 격자 색칠로 불가능 증명</td><td><b>색으로 세기</b> / 시도와 증명의 결정적 차이</td></tr>
+    <tr><td class="c">69</td><td><b>귀류법</b></td><td>가정 → 모순 → 결론 뒤집기</td><td><b>모순 지목</b> / √2가 분수가 아님을 설명</td></tr>
+    <tr><td class="c">70</td><td><b>게임의 필승 전략</b></td><td>대칭 전략, 지는 자리(패배 상태) 찾기</td><td><b>거꾸로 분석</b> / 항상 이긴다는 것을 증명</td></tr>
+    <tr><td class="c">71</td><td><b>그래프로 생각하기</b></td><td>점과 선으로 바꾸기, 한붓그리기 일반화</td><td><b>점·선으로 번역</b> / 실생활 문제를 그래프로</td></tr>
+    <tr><td class="c">72</td><td><b>종합 — 여러 도구 엮기</b></td><td>한 문제에 2~3개 도구가 필요한 복합 문항</td><td><b>도구 목록화</b> / 어떤 순서로 꺼냈는지 서술</td></tr>
+  </table>
+
+  <div class="foot"><span>3단계 심화 · 초6~중1</span><span class="r">4 / 6</span></div>
+</div>
+
+<!-- ===== 5쪽 : 전략 트랙 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div><h1>가로 트랙 — 전 단계를 관통하는 <b>10가지 문제해결 전략</b></h1>
+        <div class="sub">주제(세로)와 별개로, 매 차시 <b>이 전략 중 하나에 이름을 붙여</b> 반복 노출한다</div></div>
+      <div class="meta">전략 · 서술형 · 평가<br>5 / 6 쪽</div>
+    </div>
+  </div>
+
+  <div class="card s">
+    <p><b class="b1">왜 전략에 이름을 붙이나.</b> 사고력 문제는 “새로운 발상”이 필요해 보이지만, 실제로는
+    <b>열 가지 남짓한 전략의 조합</b>입니다. 전략에 <b>이름</b>이 있으면 학생이 <b>꺼내 쓸 수 있게</b> 됩니다.
+    매 차시 도입부에 <b>“오늘의 전략”</b>을 한 줄로 걸어 두세요.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:4%">#</th><th style="width:18%">전략 이름</th><th style="width:30%">언제 꺼내나</th><th>주로 쓰이는 주제 번호</th></tr>
+    <tr><td class="c">1</td><td><b>표 만들기</b></td><td>경우가 여럿이고 빠뜨리기 쉬울 때</td><td class="m">1, 10, 22, 47</td></tr>
+    <tr><td class="c">2</td><td><b>그림 그리기</b></td><td>관계가 말로만 있을 때, 도형 문제</td><td class="m">12, 20, 23, 62</td></tr>
+    <tr><td class="c">3</td><td><b>작게 만들어 보기</b></td><td>수가 너무 커서 손을 못 댈 때</td><td class="m">24, 31, 55, 68</td></tr>
+    <tr><td class="c">4</td><td><b>거꾸로 풀기</b></td><td>결과는 아는데 처음을 모를 때</td><td class="m">5, 54, 70</td></tr>
+    <tr><td class="c">5</td><td><b>규칙 찾아 일반화</b></td><td>같은 일이 반복될 때</td><td class="m">7, 8, 30, 33, 56</td></tr>
+    <tr><td class="c">6</td><td><b>나머지로 분류</b></td><td>주기가 있거나 “항상/절대”를 물을 때</td><td class="m">9, 27, 49, 51</td></tr>
+    <tr><td class="c">7</td><td><b>반대로 세기(여사건)</b></td><td>“적어도 하나”가 나올 때</td><td class="m">45, 23</td></tr>
+    <tr><td class="c">8</td><td><b>변하지 않는 것 찾기</b></td><td>“불가능함”을 보여야 할 때</td><td class="m">41, 57, 68</td></tr>
+    <tr><td class="c">9</td><td><b>가정하고 모순 찾기</b></td><td>“이것뿐이다”를 보여야 할 때</td><td class="m">21, 46, 69</td></tr>
+    <tr><td class="c">10</td><td><b>문자로 놓기</b></td><td>수가 바뀌어도 통하는 답이 필요할 때</td><td class="m">33, 50, 53, 66</td></tr>
+  </table>
+
+  <h2 class="e">주관식 답안 쓰기 — 3단계 훈련</h2>
+  <table>
+    <tr><th style="width:14%">단계</th><th style="width:24%">답안의 형태</th><th>문장 틀 (그대로 외우게 한다)</th></tr>
+    <tr class="lv1"><td>1단계</td><td>한 문장 근거</td>
+      <td>“답은 <b>___</b>입니다. 왜냐하면 <b>___</b>이기 때문입니다.”</td></tr>
+    <tr class="lv2"><td>2단계</td><td>세 문장 과정</td>
+      <td>“먼저 <b>___</b>했습니다. 그러면 <b>___</b>가 됩니다. 따라서 답은 <b>___</b>입니다.”</td></tr>
+    <tr class="lv3"><td>3단계</td><td>주장 + 근거 + 검산</td>
+      <td>“구하는 값은 <b>___</b>입니다. <b>[근거]</b> ___이므로 ___입니다.
+      <b>[확인]</b> ___에 넣으면 ___가 되어 조건을 만족합니다. <b>[유일성]</b> 다른 경우는 ___이므로 불가능합니다.”</td></tr>
+  </table>
+
+  <div class="card">
+    <h3>채점 기준 (모든 서술형 공통 · 10점 만점)</h3>
+    <table>
+      <tr><th style="width:22%">항목</th><th class="c" style="width:10%">배점</th><th>보는 것</th></tr>
+      <tr><td><b>답의 정확성</b></td><td class="c">3</td><td>최종 답이 맞는가</td></tr>
+      <tr><td><b>과정의 논리</b></td><td class="c">4</td><td>단계가 이어지는가, 비약이 없는가</td></tr>
+      <tr><td><b>근거 제시</b></td><td class="c">2</td><td>“왜 그런가”가 쓰여 있는가</td></tr>
+      <tr><td><b>검산 · 확인</b></td><td class="c">1</td><td>답을 조건에 넣어 확인했는가</td></tr>
+    </table>
+    <p class="small" style="margin-top:4px">※ <b>답이 틀려도 과정이 옳으면 최대 6점</b>을 준다. 이것이 주관식 훈련의 핵심 메시지다.</p>
+  </div>
+
+  <div class="foot"><span>가로 트랙 · 전략과 서술형</span><span class="r">5 / 6</span></div>
+</div>
+
+<!-- ===== 6쪽 : 제작 로드맵 ===== -->
+<div class="page">
+  <div class="head">
+    <div class="row">
+      <div><h1>제작 로드맵 — 무엇을 어떤 순서로 만들 것인가</h1>
+        <div class="sub">이 설계서를 확정한 뒤, 아래 순서대로 이론서와 문제집을 제작합니다</div></div>
+      <div class="meta">산출물 계획<br>6 / 6 쪽</div>
+    </div>
+  </div>
+
+  <h2 class="a">단계별 산출물</h2>
+  <table>
+    <tr><th style="width:12%">단계</th><th style="width:22%">산출물</th><th style="width:12%">분량</th><th>설명</th></tr>
+    <tr class="lv1"><td rowspan="3">1단계<br>기본</td><td><b>이론서</b></td><td class="c">24주제 × 2쪽</td>
+      <td>개념 + 대표 전략 + 예제 2문항(풀이 빈칸형)</td></tr>
+    <tr class="lv1"><td><b>문제집</b></td><td class="c">24주제 × 3쪽</td><td>연습 4~5 + 도전 2~3 + 서술형 1</td></tr>
+    <tr class="lv1"><td><b>해설집</b></td><td class="c">전 문항</td><td>정답 + 풀이 + <b>자주 하는 오답</b> + 지도 팁</td></tr>
+    <tr class="lv2"><td rowspan="3">2단계<br>발전</td><td><b>이론서</b></td><td class="c">24주제 × 2쪽</td><td>동일 구조, 전략 <b>선택</b> 훈련 추가</td></tr>
+    <tr class="lv2"><td><b>문제집</b></td><td class="c">24주제 × 3쪽</td><td>서술형 <b>2문항</b>으로 증량</td></tr>
+    <tr class="lv2"><td><b>해설집</b></td><td class="c">전 문항</td><td>+ <b>다른 풀이</b> 병기</td></tr>
+    <tr class="lv3"><td rowspan="3">3단계<br>심화</td><td><b>이론서</b></td><td class="c">24주제 × 2쪽</td><td>+ <b>증명의 형식</b> 안내</td></tr>
+    <tr class="lv3"><td><b>문제집</b></td><td class="c">24주제 × 3쪽</td><td>서술형 <b>3문항</b>, 복합 도구 문항</td></tr>
+    <tr class="lv3"><td><b>해설집</b></td><td class="c">전 문항</td><td>+ <b>채점 기준표</b>(부분점수 배분)</td></tr>
+  </table>
+
+  <div class="card s">
+    <p><b>부가 산출물</b> — ① 단계별 <b>마무리 평가</b> 각 2회분 ② <b>전략 카드</b> 10장(교실 게시용)
+    ③ <b>서술형 답안 작성 워크북</b> 1권 ④ 학부모용 <b>관찰추천 대비 안내문</b></p>
+  </div>
+
+  <h2 class="b">제작 순서 제안</h2>
+  <table>
+    <tr><th style="width:8%">순서</th><th style="width:30%">만들 것</th><th>이유</th></tr>
+    <tr><td class="c"><b>1</b></td><td><b>1단계 A영역(1~6번) 이론 + 문제</b></td>
+      <td>가장 짧고 검증이 쉬운 영역. 여기서 <b>편집 형식(레이아웃·난이도·분량)</b>을 확정한다.</td></tr>
+    <tr><td class="c"><b>2</b></td><td>형식 검토 및 확정</td>
+      <td>실제 수업에 한 번 써 보고 분량·난이도를 조정한다. <b>이후 전체에 그대로 적용.</b></td></tr>
+    <tr><td class="c"><b>3</b></td><td>1단계 B~E영역 (7~24번)</td><td>확정된 형식으로 속도를 낸다.</td></tr>
+    <tr><td class="c"><b>4</b></td><td>1단계 해설집 + 마무리 평가</td><td>한 단계를 <b>완결</b>시킨 뒤 다음으로 간다.</td></tr>
+    <tr><td class="c"><b>5</b></td><td>2단계 → 3단계 (같은 순서 반복)</td><td>1단계에서 만든 자산(전략 카드·답안 틀)을 재사용한다.</td></tr>
+  </table>
+
+  <div class="card">
+    <h3>제작 시 지킬 원칙 5가지</h3>
+    <ul class="li">
+      <li><b>모든 문제의 답은 사전에 검증한다.</b> 계산·경우의 수는 코드로 전수 확인해 오답을 원천 차단한다.</li>
+      <li><b>이론에 공식을 먼저 주지 않는다.</b> 예제로 발견하게 한 뒤 공식을 이름 붙여 정리한다.</li>
+      <li><b>“왜 안 되는가”를 묻는 문항을 각 주제에 1개 이상</b> 넣는다. 불가능 증명이 사고력의 핵심이다.</li>
+      <li><b>정답이 여러 개인 개방형 문항</b>을 단계마다 3개 이상 배치한다. 영재원은 이런 문항을 선호한다.</li>
+      <li><b>실생활 상황</b>으로 포장한다. 창의적 문제해결력 검사가 실생활 맥락을 제시하기 때문이다.</li>
+    </ul>
+  </div>
+
+  <div class="card s">
+    <p><b>다음 작업.</b> 이 목차를 검토해 주시고, 수정할 부분(주제 추가·삭제·순서·학년 범위)을 알려 주세요.
+    확정되면 <b>제작 순서 1번(1단계 A영역 6주제)</b>부터 <b>이론서와 문제집을 실제로</b> 만들겠습니다.</p>
+  </div>
+
+  <div class="foot"><span>제작 로드맵</span><span class="r">6 / 6</span></div>
+</div>
+
+</body>
+</html>
