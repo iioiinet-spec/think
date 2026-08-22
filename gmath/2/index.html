@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 B영역 — 이론서 (규칙과 패턴)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --c1:#1d4ed8; --c2:#ea580c; --c3:#0f766e; --c4:#be123c; --c5:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.62;font-size:13.5px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:12mm 12mm 10mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+/* 머리글 */
+.head{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:6px;margin-bottom:10px}
+.head .no{background:var(--c1);color:#fff;font-weight:800;font-size:13px;
+  padding:3px 12px;border-radius:6px;flex:0 0 auto}
+.head h1{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.head .tag{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.45}
+
+/* 요소 */
+.open{background:#fff8ee;border:1.6px dashed #e0b070;border-radius:10px;padding:9px 13px;margin-bottom:9px}
+.open .lb{font-size:11px;font-weight:800;color:#a56a12;letter-spacing:1px}
+.open p{margin:2px 0;font-size:13.6px;color:#5b451c}
+
+h2{font-size:14.6px;font-weight:800;margin:9px 0 5px;padding-left:10px;border-left:4px solid var(--c1)}
+h2.b{border-color:var(--c2)}h2.c{border-color:var(--c3)}
+h3{font-size:13.6px;font-weight:800;color:var(--c1);margin:8px 0 4px}
+p{margin:4px 0;color:#2a3446}
+.small{font-size:12.2px;color:var(--sub)}
+b.b1{color:var(--c1)}b.b2{color:var(--c2)}b.b3{color:var(--c3)}b.b4{color:var(--c4)}
+
+.strat{background:#eef4ff;border:1.6px solid #b6cdf5;border-radius:10px;padding:8px 12px;margin:7px 0}
+.strat .lb{display:inline-block;background:var(--c1);color:#fff;font-size:10.5px;font-weight:800;
+  padding:1px 9px;border-radius:8px;margin-right:7px}
+.strat .nm{font-weight:800;font-size:14.5px;color:var(--c1)}
+.strat p{font-size:13px;margin:4px 0 0}
+
+.key{background:#0f1a2b;color:#eaf0fb;border-radius:9px;padding:9px 15px;margin:7px 0;
+  font-family:'D2Coding','Consolas',monospace;font-size:14px;text-align:center}
+.key b{color:#fcd34d}
+.key small{display:block;font-family:inherit;font-size:11.5px;color:#93a3bd;margin-top:4px}
+
+.ex{border:1.6px solid var(--line);border-radius:10px;overflow:hidden;margin:8px 0}
+.ex .hd{background:var(--soft);padding:5px 12px;font-weight:800;font-size:13px;color:var(--c1);
+  border-bottom:1px solid var(--line)}
+.ex .bd{padding:8px 12px}
+.ex.o .hd{background:#fff4ea;color:var(--c2)}
+.fill{display:inline-block;min-width:44px;border-bottom:1.6px solid #9fb0c8;
+  text-align:center;color:#c0392b;font-weight:800;font-family:'D2Coding',monospace}
+.sol{font-family:'D2Coding','Consolas',monospace;font-size:12px;line-height:1.72;
+  background:#f8fafd;border-radius:7px;padding:7px 11px;margin:5px 0;white-space:pre-wrap;color:#2a3446}
+
+table{width:100%;border-collapse:collapse;font-size:11.8px;margin:5px 0}
+th{background:#e9eefa;border:1px solid var(--line);padding:3px 5px;font-weight:800;color:#22314e}
+td{border:1px solid var(--line);padding:3px 5px;text-align:center;color:#2a3446}
+td.l{text-align:left}
+td.m{font-family:'D2Coding',monospace}
+
+.note{background:var(--soft);border-left:4px solid var(--c3);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#25404a}
+.warn{background:#fff1f2;border-left:4px solid var(--c4);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#7a2231}
+ul.li{list-style:none;margin:4px 0}
+ul.li li{padding-left:16px;position:relative;margin:2px 0}
+ul.li li::before{content:'▪';position:absolute;left:2px;color:var(--c1);font-weight:800}
+
+.write{background:#f6f4ff;border:1.6px solid #cfc2f3;border-radius:10px;padding:7px 12px;margin:6px 0}
+.write .lb{font-size:11px;font-weight:800;color:var(--c5);letter-spacing:1px}
+.write .frame{font-size:13.2px;color:#3d2f66;margin-top:3px}
+.write .frame u{color:#8b5cf6;text-decoration-thickness:1.5px}
+
+.foot{position:absolute;left:13mm;right:13mm;bottom:6mm;border-top:1px solid var(--line);
+  padding-top:4px;display:flex;font-size:10.5px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c1);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+svg{display:block;margin:0 auto}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="t">📘 사고력수학 1단계 · B영역 <b>이론서</b> — 규칙과 패턴 (주제 7~12)</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">짝이 되는 <b>문제집</b>과 함께 사용하세요. 주제당 2쪽입니다.</span>
+</div>
+
+<!-- ===== 주제 7 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 7</span>
+    <h1>수 배열의 규칙 — 20번째를 세지 않고 알기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>1 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>수가 다음과 같이 늘어서 있습니다. <b class="mono">3, 7, 11, 15, 19, …</b></p>
+    <p style="margin-top:3px"><b>잠깐!</b> <b>20번째 수</b>를 알려면 어떻게 해야 할까요?
+    하나씩 4를 더해 가며 20번을 계산할 수도 있지만, <b>단 한 번의 곱셈</b>으로 알아낼 수 있습니다.</p>
+  </div>
+
+  <h2>1. 먼저 <span style="color:#ea580c">차</span>를 적어 본다</h2>
+  <p>수 배열을 만나면 <b>가장 먼저 할 일</b>은 이웃한 두 수의 <b class="b2">차를 적어 보는 것</b>입니다.</p>
+  <div class="sol">   3     7     11    15    19
+     ＼   ／＼   ／＼   ／＼   ／
+       <b>+4</b>    <b>+4</b>    <b>+4</b>    <b>+4</b>      ← 차가 모두 같다!</div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">차를 적어 보기</span></div>
+    <p><b>① 이웃한 두 수의 차를 적는다</b> → <b>② 차가 일정한지 확인한다</b>
+    → <b>③ 일정하면 “처음 수 + 차 × (몇 번 더했나)”</b> 로 구한다.</p>
+  </div>
+
+  <h2>2. 몇 번 더했을까 — 가장 흔한 함정</h2>
+  <table>
+    <tr><th style="width:18%">몇 번째</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th><th>…</th><th class="c">20</th></tr>
+    <tr><td class="l">수</td><td>3</td><td>7</td><td>11</td><td>15</td><td>19</td><td>…</td><td><b>?</b></td></tr>
+    <tr><td class="l">4를 더한 횟수</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>…</td><td><b>19</b></td></tr>
+  </table>
+  <div class="warn"><b>주의!</b> 20번째라고 해서 4를 <b>20번</b> 더하는 것이 아닙니다.
+  첫 번째 수는 이미 있으므로 <b>19번</b>만 더합니다. 언제나 <b>(몇 번째 − 1)</b> 번입니다.</div>
+
+  <div class="sol">20번째 = 3 + 4 × <b>19</b> = 3 + 76 = <b>79</b>
+
+[검산] 5번째 = 3 + 4 × 4 = 19  ✓  (표와 일치)</div>
+
+  <div class="key">몇 번째 수 = (처음 수) + (차) × ( 몇 번째 <b>− 1</b> )
+    <small>“− 1”을 빠뜨리는 것이 이 단원 오답의 대부분이다</small></div>
+
+  <h2>3. 줄어드는 배열도 마찬가지</h2>
+  <p><b class="mono">100, 94, 88, 82, …</b> 처럼 줄어들면 차가 <b class="b4">− 6</b> 입니다.
+  방법은 똑같고 빼기만 하면 됩니다.</p>
+  <div class="sol">10번째 = 100 − 6 × 9 = 100 − 54 = <b>46</b></div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 7 · 1 / 12</span></div>
+</div>
+
+<!-- ===== 주제 7 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 7</span>
+    <h1>수 배열의 규칙 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>2 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p><b class="mono">5, 12, 19, 26, …</b> 에서 <b>15번째 수</b>를 구하세요.</p>
+      <div class="sol">[1단계] 차를 적는다.
+   5 → 12 → 19 → 26     차는 모두 <span class="fill">+7</span>
+
+[2단계] 몇 번 더하는가?
+   15번째이므로 15 − 1 = <span class="fill">14</span>번
+
+[3단계] 계산
+   5 + 7 × 14 = 5 + <span class="fill">98</span> = <b>103</b></div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>103</u>입니다. 왜냐하면 <u>차가 7씩 일정하고, 15번째는 7을 14번 더한 것</u>이기 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p><b class="mono">2, 5, 8, 11, …</b> 에서 <b>59</b>는 몇 번째 수일까요?</p>
+      <div class="sol">[거꾸로 생각한다] 59가 되려면 3을 몇 번 더해야 할까?
+   59 − 2 = <span class="fill">57</span>       ← 처음 수를 빼면 “더한 양”만 남는다
+   57 ÷ 3 = <span class="fill">19</span>번 더했다
+
+[몇 번째?] 0번 더한 것이 1번째이므로
+   19번 더한 것은 <span class="fill">20</span>번째
+
+[검산] 2 + 3 × 19 = 2 + 57 = <b>59</b>  ✓</div>
+      <div class="note">이 문제는 <b>주제 5(거꾸로 생각하기)</b> 의 방법을 그대로 쓴 것입니다.
+      배운 도구는 다른 주제에서도 계속 쓰입니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">4. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>수 배열을 만나면 <b>차부터 적어 본다</b>.</li>
+    <li>차가 일정하면 &nbsp;<b>(처음 수) + (차) × (몇 번째 − 1)</b>.</li>
+    <li><b>− 1</b> 을 빠뜨리지 않는다. 첫 번째 수는 이미 있기 때문이다.</li>
+    <li>“몇 번째인지” 묻는 문제는 <b>거꾸로</b> 계산한다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“<b class="mono">3, 7, 11, …</b> 의 20번째를 구할 때, 4를 <b>20번이 아니라 19번</b> 더하는 이유를 설명하세요.”<br>
+    <span class="small">→ “첫 번째 수 3은 <u>4를 한 번도 더하지 않은 상태</u>입니다. 그래서 20번째는 <u>20 − 1 = 19번</u>만 더합니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 7 · 2 / 12</span></div>
+</div>
+
+<!-- ===== 주제 8 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 8</span>
+    <h1>도형이 자라는 규칙 — 그리지 않고 세기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>3 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>성냥개비로 삼각형을 옆으로 이어 붙입니다.</p>
+    <figure style="margin:4px 0">
+      <svg viewBox="0 0 330 62" xmlns="http://www.w3.org/2000/svg" style="max-width:320px">
+        <g stroke="#333" stroke-width="2" fill="none" stroke-linecap="round">
+          <path d="M12 46 L30 14 L48 46 Z"/>
+          <path d="M96 46 L114 14 L132 46 Z M132 46 L150 14 L114 14"/>
+          <path d="M200 46 L218 14 L236 46 Z M236 46 L254 14 L218 14 M254 14 L272 46 L236 46"/>
+        </g>
+        <g font-size="10" fill="#555" text-anchor="middle" font-family="monospace">
+          <text x="30" y="60">1개 · 3개비</text>
+          <text x="123" y="60">2개 · 5개비</text>
+          <text x="236" y="60">3개 · 7개비</text>
+        </g>
+      </svg>
+    </figure>
+    <p><b>잠깐!</b> <b>삼각형 20개</b>를 만들려면 성냥개비가 몇 개 필요할까요?
+    20개를 다 그려 볼 건가요? <b>더 좋은 방법</b>이 있습니다.</p>
+  </div>
+
+  <h2>1. 몇 개씩 늘어나는지 본다</h2>
+  <table>
+    <tr><th style="width:22%">삼각형 개수</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr>
+    <tr><td class="l">성냥개비</td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td></tr>
+    <tr><td class="l">늘어난 개수</td><td>–</td><td>+2</td><td>+2</td><td>+2</td><td>+2</td></tr>
+  </table>
+  <p><b>왜 2개씩</b> 늘어날까요? 삼각형을 하나 더 붙일 때 <b>한 변은 이미 있는 것을 함께 쓰기</b> 때문에
+  새로 필요한 것은 <b class="b2">2개</b>뿐입니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">몇 개씩 느는지 세고, 처음 것과 이어 붙이기</span></div>
+    <p><b>① 표를 만든다</b> → <b>② 늘어나는 개수를 확인한다</b>
+    → <b>③ “처음 것 + 늘어난 양 × (개수 − 1)”</b> 로 구한다.
+    → <b>④ 왜 그만큼 느는지</b> 그림으로 설명한다.</p>
+  </div>
+
+  <div class="sol">삼각형 20개 = 3 + 2 × <span style="color:#c0392b;font-weight:800">19</span> = 3 + 38 = <b>41개</b>
+
+[다른 방법] 삼각형 하나마다 2개씩 쓰고 맨 앞에 1개를 더 붙인 셈
+            2 × 20 + 1 = <b>41개</b>  ← 같은 답 ✓</div>
+
+  <h2>2. 정사각형이면 어떻게 될까</h2>
+  <p>정사각형을 이어 붙이면 <b>3개씩</b> 늘어납니다. (한 변을 함께 쓰므로 4개가 아니라 3개)</p>
+  <div class="key">정사각형 n개 = 3 × n + 1
+    <small>삼각형은 2n + 1, 정사각형은 3n + 1 — <b>겹치는 변이 하나</b>라는 점이 같다</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 8 · 3 / 12</span></div>
+</div>
+
+<!-- ===== 주제 8 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 8</span>
+    <h1>도형이 자라는 규칙 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>4 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>바둑돌을 정사각형 <b>테두리</b>에만 놓습니다. <b>10 × 10</b> 테두리에는 바둑돌이 몇 개 필요할까요?</p>
+      <figure style="margin:3px 0">
+        <svg viewBox="0 0 250 60" xmlns="http://www.w3.org/2000/svg" style="max-width:240px">
+          <g fill="#333">
+            <circle cx="16" cy="20" r="4"/><circle cx="32" cy="20" r="4"/>
+            <circle cx="16" cy="36" r="4"/><circle cx="32" cy="36" r="4"/>
+          </g>
+          <g fill="#333">
+            <circle cx="86" cy="12" r="4"/><circle cx="102" cy="12" r="4"/><circle cx="118" cy="12" r="4"/>
+            <circle cx="86" cy="28" r="4"/><circle cx="102" cy="28" r="4" fill="#ddd"/><circle cx="118" cy="28" r="4"/>
+            <circle cx="86" cy="44" r="4"/><circle cx="102" cy="44" r="4"/><circle cx="118" cy="44" r="4"/>
+          </g>
+          <g fill="#333">
+            <circle cx="176" cy="8" r="4"/><circle cx="192" cy="8" r="4"/><circle cx="208" cy="8" r="4"/><circle cx="224" cy="8" r="4"/>
+            <circle cx="176" cy="24" r="4"/><circle cx="192" cy="24" r="4" fill="#ddd"/><circle cx="208" cy="24" r="4" fill="#ddd"/><circle cx="224" cy="24" r="4"/>
+            <circle cx="176" cy="40" r="4"/><circle cx="192" cy="40" r="4" fill="#ddd"/><circle cx="208" cy="40" r="4" fill="#ddd"/><circle cx="224" cy="40" r="4"/>
+            <circle cx="176" cy="56" r="4"/><circle cx="192" cy="56" r="4"/><circle cx="208" cy="56" r="4"/><circle cx="224" cy="56" r="4"/>
+          </g>
+          <g font-size="9.5" fill="#555" text-anchor="middle" font-family="monospace">
+            <text x="24" y="56">2×2 · 4개</text><text x="102" y="58">3×3 · 8개</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="sol">[표 만들기]
+   크기   : 2×2   3×3   4×4   5×5
+   바둑돌 :  4     8     12    16      → <span class="fill">4</span>개씩 늘어난다
+
+[식] 2×2 일 때 4개이고, 한 칸 커질 때마다 4개씩
+   10×10 = 4 + 4 × <span class="fill">8</span> = <b>36개</b>
+
+[다른 방법] 한 변에 10개씩 4줄 = 40개인데, <b>네 모서리를 두 번</b> 세었으므로
+   40 − <span class="fill">4</span> = <b>36개</b>  ← 같은 답 ✓</div>
+      <div class="note"><b>두 가지 방법으로 풀어 답이 같으면</b> 훨씬 믿을 수 있습니다.
+      경시나 영재원에서는 “다른 방법으로도 풀어 보시오”를 자주 묻습니다.</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>긴 의자 1개에 <b>4명</b>이 앉습니다. 의자를 옆으로 이어 붙이면 이어진 자리 하나가 겹쳐
+      <b>3명씩</b> 늘어납니다. 의자 <b>12개</b>를 이어 붙이면 몇 명이 앉을 수 있을까요?</p>
+      <div class="sol">   의자 :  1    2    3    4
+   사람 :  4    7    10   13     → <span class="fill">3</span>명씩 늘어난다
+
+   12개 = 4 + 3 × <span class="fill">11</span> = 4 + 33 = <b>37명</b>
+
+[검산] 3 × 12 + 1 = 36 + 1 = <b>37</b> ✓</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>도형이 자라는 문제는 <b>표를 만들어 몇 개씩 느는지</b> 본다.</li>
+    <li><b>왜 그만큼 느는가</b>를 그림으로 설명할 수 있어야 한다. (겹치는 부분!)</li>
+    <li>“처음 것 + 늘어난 양 × (개수 − 1)” 로 계산한다.</li>
+    <li>가능하면 <b>두 가지 방법</b>으로 풀어 답을 맞춰 본다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“삼각형을 하나 더 붙일 때 성냥개비가 <b>3개가 아니라 2개</b>만 더 필요한 이유를 설명하세요.”<br>
+    <span class="small">→ “새 삼각형은 <u>앞 삼각형의 한 변을 함께 쓰기</u> 때문에, 새로 놓아야 할 성냥개비는 <u>2개</u>뿐입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 8 · 4 / 12</span></div>
+</div>
+<!-- ===== 주제 9 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 9</span>
+    <h1>반복되는 규칙 — 100번째를 나머지로 알기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>5 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>구슬을 <b class="mono">빨 · 주 · 노 · 초</b> 순서로 계속 반복해서 꿰었습니다.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> <b>100번째 구슬</b>은 무슨 색일까요?
+    100개를 다 그려 볼 수는 없습니다. 그런데 <b>나눗셈 한 번</b>이면 알 수 있습니다.</p>
+  </div>
+
+  <h2>1. 몇 개마다 되풀이되는지 — <span style="color:#ea580c">주기</span>를 찾는다</h2>
+  <table>
+    <tr><th style="width:16%">번호</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th>
+      <th class="c">5</th><th class="c">6</th><th class="c">7</th><th class="c">8</th></tr>
+    <tr><td class="l">색</td><td>빨</td><td>주</td><td>노</td><td>초</td><td>빨</td><td>주</td><td>노</td><td>초</td></tr>
+    <tr><td class="l">4로 나눈 나머지</td><td>1</td><td>2</td><td>3</td><td><b>0</b></td><td>1</td><td>2</td><td>3</td><td><b>0</b></td></tr>
+  </table>
+  <p><b>4개마다</b> 똑같은 것이 되풀이됩니다. 이 <b>4</b>를 <b class="b2">주기</b>라고 합니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">나머지로 자리 찾기</span></div>
+    <p><b>① 몇 개마다 반복되는지(주기) 센다</b> → <b>② 번호를 주기로 나눈다</b>
+    → <b>③ 나머지가 몇 번째 자리인지</b> 확인한다.</p>
+  </div>
+
+  <div class="sol">100 ÷ 4 = 25 … 나머지 <b>0</b>
+
+나머지가 0이면 <b>주기의 마지막</b> → <b>초록</b>
+
+[확인] 4번째, 8번째, 12번째 … 모두 초록 ✓ (4의 배수)</div>
+
+  <div class="warn"><b>가장 흔한 실수!</b> 나머지가 <b>0</b>일 때 “0번째”라고 생각하면 안 됩니다.
+  나머지 0은 <b>딱 떨어졌다</b>는 뜻이므로 <b>주기의 맨 마지막</b>입니다.
+  <br>나머지 1 → 첫 번째, 나머지 2 → 두 번째, 나머지 3 → 세 번째, 나머지 <b>0 → 네 번째(마지막)</b></div>
+
+  <h2>2. 요일도 주기가 있다</h2>
+  <p>요일은 <b>7일</b>마다 되풀이됩니다. 그래서 <b>7로 나눈 나머지</b>를 보면 됩니다.</p>
+  <div class="sol">오늘이 <b>월요일</b>일 때, <b>100일 뒤</b>는 무슨 요일일까?
+
+   100 ÷ 7 = 14 … 나머지 <b>2</b>
+
+   월요일에서 <b>2일</b> 더 간 날 →  화 → <b>수요일</b></div>
+
+  <div class="key">번호 ÷ 주기 = 몫 … <b>나머지</b>
+    <small>몫은 “몇 바퀴 돌았나”, 나머지는 “그다음 몇 번째인가”</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 9 · 5 / 12</span></div>
+</div>
+
+<!-- ===== 주제 9 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 9</span>
+    <h1>반복되는 규칙 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>6 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>글자를 <b class="mono">A B B C C</b> 순서로 계속 반복해서 씁니다. <b>30번째</b> 글자는 무엇일까요?</p>
+      <div class="sol">[주기] A B B C C → <span class="fill">5</span>개마다 반복
+
+[나눗셈] 30 ÷ 5 = 6 … 나머지 <span class="fill">0</span>
+
+[판정] 나머지 0 → 주기의 <b>마지막</b> → <b>C</b>
+
+[확인] 5번째, 10번째, 15번째 … 모두 C ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>C</u>입니다. 왜냐하면 <u>5개마다 반복되고 30 ÷ 5 의 나머지가 0이어서 주기의 마지막 글자</u>이기 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>어느 해 <b>1월 1일이 화요일</b>이었습니다. 이 해의 <b>3월 1일</b>은 무슨 요일일까요?
+      (2월은 28일까지)</p>
+      <div class="sol">[며칠 뒤인가?]
+   1월은 31일까지 있고, 2월은 28일까지 있으므로
+   1월 1일부터 3월 1일까지는  31 + 28 = <span class="fill">59</span>일 뒤
+
+[나눗셈] 59 ÷ 7 = 8 … 나머지 <span class="fill">3</span>
+
+[판정] 화요일에서 <b>3일</b> 더 가면
+   수 → 목 → <b>금요일</b>
+
+[확인] 1월 1일 화요일이면 1월 8일, 15일, 22일, 29일도 화요일 (7일 주기) ✓</div>
+      <div class="note"><b>“며칠 뒤인가”를 먼저 구하는 것</b>이 핵심입니다.
+      날짜 문제는 대부분 <b>날수를 세는 부분에서 실수</b>가 납니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>반복되는 규칙을 만나면 <b>주기(몇 개마다 반복되는지)</b>부터 센다.</li>
+    <li>번호를 주기로 나눈 <b>나머지</b>가 자리를 알려 준다.</li>
+    <li>나머지가 <b>0</b>이면 주기의 <b>마지막</b>이다. (0번째가 아니다!)</li>
+    <li>요일 문제는 주기가 <b>7</b>이다. 먼저 <b>며칠 뒤인지</b> 정확히 센다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“빨주노초가 반복될 때 <b>100번째가 초록</b>인 이유를 나눗셈을 써서 설명하세요.”<br>
+    <span class="small">→ “<u>4개마다 반복</u>되므로 100 ÷ 4 = 25 … 나머지 <u>0</u> 입니다.
+    나머지 0은 <u>주기의 마지막</u>을 뜻하므로 네 번째 색인 <u>초록</u>입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 9 · 6 / 12</span></div>
+</div>
+
+<!-- ===== 주제 10 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 10</span>
+    <h1>표로 나타낸 대응 — 두 수의 짝을 찾아라</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>7 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>세발자전거가 <b>1대</b>면 바퀴는 <b>3개</b>, <b>2대</b>면 <b>6개</b>, <b>3대</b>면 <b>9개</b>입니다.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 자전거가 <b>25대</b>라면 바퀴는 몇 개일까요?
+    하나씩 세지 않아도 됩니다. <b>자전거 수와 바퀴 수 사이의 관계</b>를 찾으면 되니까요.</p>
+  </div>
+
+  <h2>1. 표를 만들어 짝을 나란히 적는다</h2>
+  <table>
+    <tr><th style="width:24%">자전거 (대)</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th><th>…</th><th class="c">25</th></tr>
+    <tr><td class="l">바퀴 (개)</td><td>3</td><td>6</td><td>9</td><td>12</td><td>15</td><td>…</td><td><b>?</b></td></tr>
+  </table>
+  <p>자전거 수에 <b class="b2">3을 곱하면</b> 바퀴 수가 됩니다. 이렇게 두 수가 짝을 이루는 관계를
+  <b>대응</b>이라고 합니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">표로 짝짓고 관계를 말로 쓰기</span></div>
+    <p><b>① 표를 세로 두 줄로 만든다</b> → <b>② 위와 아래를 비교한다</b>
+    → <b>③ “○에 ◇를 곱하고 △를 더한다”</b> 처럼 <b>말로</b> 쓴다 → <b>④ 다른 값으로 확인한다</b>.</p>
+  </div>
+  <div class="sol">자전거 25대 → 25 × 3 = <b>75개</b>
+
+[확인] 표의 4를 넣어 보면 4 × 3 = 12  ✓ (표와 일치)</div>
+
+  <h2>2. 곱하기만으로 안 될 때 — 더하는 수를 찾는다</h2>
+  <p>긴 의자를 이어 붙이는 문제를 봅시다. 1개에 4명, 이어 붙이면 3명씩 늘어납니다.</p>
+  <table>
+    <tr><th style="width:24%">의자 (개)</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr>
+    <tr><td class="l">사람 (명)</td><td>4</td><td>7</td><td>10</td><td>13</td><td>16</td></tr>
+    <tr><td class="l">의자 × 3</td><td>3</td><td>6</td><td>9</td><td>12</td><td>15</td></tr>
+    <tr><td class="l">차이</td><td><b>+1</b></td><td><b>+1</b></td><td><b>+1</b></td><td><b>+1</b></td><td><b>+1</b></td></tr>
+  </table>
+  <div class="key">사람 수 = 의자 수 × <b>3</b> + <b>1</b>
+    <small>먼저 <b>몇씩 느는지</b>로 곱할 수를 찾고, 그다음 <b>차이</b>로 더할 수를 찾는다</small></div>
+
+  <div class="note"><b>순서가 중요합니다.</b> ① 늘어나는 양 → 곱할 수 &nbsp; ② 남는 차이 → 더할 수.
+  이 두 단계로 나누면 어떤 대응 관계든 찾을 수 있습니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 10 · 7 / 12</span></div>
+</div>
+
+<!-- ===== 주제 10 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 10</span>
+    <h1>표로 나타낸 대응 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>8 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>표를 보고 □와 △의 관계를 찾아, △가 <b>20</b>일 때의 값을 구하세요.</p>
+      <table>
+        <tr><th style="width:20%">□</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th><th class="c">20</th></tr>
+        <tr><td class="l">△</td><td>5</td><td>8</td><td>11</td><td>14</td><td>17</td><td><span class="fill">62</span></td></tr>
+      </table>
+      <div class="sol">[1단계] △가 몇씩 느는가?   5 → 8 → 11 → 14   <span class="fill">3</span>씩 늘어남
+        → 곱할 수는 <b>3</b>
+
+[2단계] □ × 3 을 적어 비교한다.
+   □ × 3 :  3   6   9   12  15
+   △     :  5   8   11  14  17
+   차이   : <span class="fill">+2</span>  +2  +2  +2  +2
+
+[관계] △ = □ × 3 + 2
+
+[답] □ = 20 일 때  20 × 3 + 2 = <b>62</b>
+
+[확인] 5 × 3 + 2 = 17 ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>62</u>입니다. 왜냐하면 <u>△는 □에 3을 곱하고 2를 더한 값</u>이기 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>한 변이 1cm인 색종이를 한 줄로 이어 붙입니다. 1장일 때 둘레가 <b>4cm</b>,
+      이어 붙일 때마다 <b>2cm씩</b> 늘어납니다. <b>15장</b>일 때 둘레는?</p>
+      <div class="sol">   색종이 :  1    2    3    4
+   둘레   :  4    6    8    10     → <span class="fill">2</span>cm씩 늘어남
+
+[관계] 둘레 = 색종이 × 2 + <span class="fill">2</span>   (3장 → 8 ✓)
+[답] 15 × 2 + 2 = <b>32 cm</b>
+[왜 2씩만?] 맞닿는 두 변이 <b>안으로 숨기</b> 때문에 4 − 2 = 2cm.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>두 양의 관계를 찾을 때는 <b>표를 세로 두 줄</b>로 만든다.</li>
+    <li><b>몇씩 느는지</b>가 <b>곱할 수</b>, 그다음 <b>남는 차이</b>가 <b>더할 수</b>다.</li>
+    <li>관계를 찾으면 <b>표의 다른 값</b>으로 확인하고, <b>말로 설명</b>할 수 있어야 한다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“□와 △의 관계를 찾는 <b>순서</b>를 두 단계로 나누어 설명하세요.”<br>
+    <span class="small">→ “먼저 <u>△가 몇씩 늘어나는지</u> 보아 곱할 수를 찾습니다.
+    그다음 <u>□ × (곱할 수)와 △의 차이</u>를 보아 더할 수를 찾습니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 10 · 8 / 12</span></div>
+</div>
+<!-- ===== 주제 11 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 11</span>
+    <h1>수 피라미드 — 위로 쌓고 아래로 내려가기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>9 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>아래 두 수를 더해 위 칸에 쓰는 <b>수 피라미드</b>입니다. 맨 위의 수는 얼마일까요?</p>
+    <div style="text-align:center;font-family:'D2Coding',monospace;font-size:14px;line-height:1.55;margin:4px 0">
+      　　　　　□<br>　　　□　　□<br>　　□　　□　　□<br>　3　　5　　2　　7
+    </div>
+    <p><b>잠깐!</b> 아래에서 위로 차근차근 더하면 됩니다.
+    그런데 <b>맨 위 칸이 주어지고 아래를 찾아야 한다면?</b> 그때는 거꾸로 생각해야 합니다.</p>
+  </div>
+
+  <h2>1. 아래에서 위로 — 차근차근 더한다</h2>
+  <div class="sol">   3   5   2   7          ← 맨 아래
+     8   7   9            ← 3+5, 5+2, 2+7
+      15  16              ← 8+7, 7+9
+        <b>31</b>                ← 15+16
+
+맨 위의 수 = <b>31</b></div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">한 층씩 차근차근 · 막히면 거꾸로</span></div>
+    <p><b>① 아래층부터 한 줄씩</b> 완성한다 → <b>② 빈칸이 섞여 있으면</b>
+    <b>두 칸이 채워진 곳</b>부터 공략한다 → <b>③ 위 칸 − 옆 칸 = 빈칸</b> (뺄셈으로 거꾸로).</p>
+  </div>
+
+  <h2>2. 거꾸로 내려가기</h2>
+  <p>위 칸이 <b>12</b>이고 아래 왼쪽이 <b>5</b>라면, 아래 오른쪽은?</p>
+  <div class="sol">   5 + □ = 12   →   □ = 12 − 5 = <b>7</b>
+
+위 칸에서 <b>아는 칸을 빼면</b> 모르는 칸이 나온다.</div>
+  <div class="note">이것은 <b>주제 5(거꾸로 생각하기)</b> 와 같은 방법입니다.
+  더하기로 올라갔으니 <b>빼기로 내려옵니다.</b></div>
+
+  <h2>3. 특별한 피라미드 — 파스칼 삼각형</h2>
+  <p>양쪽 끝을 모두 <b>1</b>로 두고 같은 방법으로 쌓으면 아주 유명한 삼각형이 됩니다.</p>
+  <div class="sol">           1                  합 = 1
+         1   1                합 = 2
+       1   2   1              합 = 4
+     1   3   3   1            합 = 8
+   1   4   6   4   1          합 = 16
+ 1   5  10  10   5   1        합 = 32</div>
+  <div class="key">각 줄의 합이 <b>1 → 2 → 4 → 8 → 16 → 32</b> 로 <b>2배씩</b> 늘어난다
+    <small>또 각 줄은 <b>좌우가 똑같다(대칭)</b></small></div>
+  <p class="small"><b>왜 2배일까?</b> 다음 줄의 각 수는 윗줄의 수를 <b>두 번씩</b> 쓴 셈이기 때문입니다.
+  (한 번은 왼쪽 아래로, 한 번은 오른쪽 아래로)</p>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 11 · 9 / 12</span></div>
+</div>
+
+<!-- ===== 주제 11 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 11</span>
+    <h1>수 피라미드 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>10 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>빈칸을 채워 피라미드를 완성하세요.</p>
+      <div style="text-align:center;font-family:'D2Coding',monospace;font-size:14px;line-height:1.55;margin:4px 0">
+        　　　　<span class="fill">30</span><br>　　<span class="fill">13</span>　　<span class="fill">17</span><br>　6　　7　　10
+      </div>
+      <div class="sol">[아래에서 위로]
+   6 + 7 = <span class="fill">13</span>        7 + 10 = <span class="fill">17</span>
+   13 + 17 = <b>30</b></div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>이번에는 <b>맨 위</b>가 주어졌습니다. 빈칸을 채우세요.</p>
+      <div style="text-align:center;font-family:'D2Coding',monospace;font-size:14px;line-height:1.55;margin:4px 0">
+        　　　　20<br>　　9　　<span class="fill">11</span><br>　4　　<span class="fill">5</span>　　<span class="fill">6</span>
+      </div>
+      <div class="sol">[1단계] <b>두 칸이 채워진 곳</b>부터. 맨 윗줄이 그렇다.
+   9 + □ = 20   →   □ = 20 − 9 = <span class="fill">11</span>
+
+[2단계] 아랫줄로 내려간다.
+   4 + □ = 9    →   □ = 9 − 4 = <span class="fill">5</span>
+   5 + □ = 11   →   □ = 11 − 5 = <span class="fill">6</span>
+
+[검산] 4, 5, 6 → 9, 11 → <b>20</b>  ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">아래층은 <u>4, 5, 6</u>입니다. 왜냐하면 <u>위 칸에서 아는 칸을 빼면 모르는 칸이 나오고, 다시 더해 보니 20이 되기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>수 피라미드는 <b>아래 두 수를 더해</b> 위로 올라간다.</li>
+    <li>빈칸이 섞이면 <b>두 칸이 채워진 곳</b>부터 공략한다.</li>
+    <li>위에서 아래로 갈 때는 <b>뺄셈</b>을 쓴다. (거꾸로 생각하기)</li>
+    <li>파스칼 삼각형은 각 줄의 합이 <b>2배씩</b> 늘고, <b>좌우가 대칭</b>이다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“파스칼 삼각형에서 각 줄의 합이 <b>2배씩</b> 늘어나는 이유를 설명하세요.”<br>
+    <span class="small">→ “다음 줄을 만들 때 윗줄의 각 수를 <u>왼쪽 아래와 오른쪽 아래로 한 번씩, 모두 두 번</u> 쓰기 때문에
+    전체 합이 <u>2배</u>가 됩니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 11 · 10 / 12</span></div>
+</div>
+
+<!-- ===== 주제 12 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 12</span>
+    <h1>달력 속 규칙 — 7씩 커지는 세상</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>11 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>달력에서 <b>세로로 이웃한 세 날짜</b>를 골라 더해 보세요. 예를 들어 <b>8, 15, 22</b> 를 더하면 <b>45</b>입니다.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 어떤 세 날짜를 골라도 <b>합은 가운데 수의 3배</b>가 됩니다.
+    왜 그럴까요? 달력에 숨은 <b>7</b>이라는 규칙 때문입니다.</p>
+  </div>
+
+  <h2>1. 달력의 기본 규칙</h2>
+  <table>
+    <tr><th class="c">일</th><th class="c">월</th><th class="c">화</th><th class="c">수</th><th class="c">목</th><th class="c">금</th><th class="c">토</th></tr>
+    <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+    <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+    <tr><td>15</td><td>16</td><td><b style="color:#1d4ed8">17</b></td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+    <tr><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td></tr>
+  </table>
+  <ul class="li">
+    <li><b>오른쪽</b>으로 한 칸 → <b>+1</b> &nbsp;·&nbsp; <b>아래</b>로 한 칸 → <b class="b2">+7</b></li>
+    <li><b>오른쪽 아래 대각선</b> → +8 &nbsp;·&nbsp; <b>왼쪽 아래 대각선</b> → +6</li>
+  </ul>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">가운데를 기준으로 삼기</span></div>
+    <p><b>① 가운데 수를 □ 라고 놓는다</b> → <b>② 나머지를 □ 로 나타낸다</b>
+    (위는 □−7, 아래는 □+7 …) → <b>③ 더하면 ± 가 서로 지워진다</b>.</p>
+  </div>
+
+  <div class="sol">세로 세 칸의 합
+   (□ − 7) + □ + (□ + 7)
+   = □ + □ + □ − 7 + 7
+   = <b>□ × 3</b>        ← −7과 +7이 서로 지워진다!
+
+[확인] 8 + 15 + 22 = 45 = 15 × 3  ✓</div>
+
+  <h2>2. 2 × 2 칸의 신기한 성질</h2>
+  <p>달력에서 <b>2 × 2</b> 정사각형을 잡으면 <b>대각선 두 쌍의 합이 같습니다.</b></p>
+  <div class="sol">   □      □+1
+   □+7    □+8
+
+   왼쪽 위 + 오른쪽 아래 = □ + (□+8) = <b>2□ + 8</b>
+   오른쪽 위 + 왼쪽 아래 = (□+1) + (□+7) = <b>2□ + 8</b>   ← 같다!
+
+[확인] 10, 11, 17, 18 →  10+18 = 28,  11+17 = 28 ✓</div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 12 · 11 / 12</span></div>
+</div>
+
+<!-- ===== 주제 12 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 12</span>
+    <h1>달력 속 규칙 — 예제로 익히기</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>12 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>달력에서 <b>3 × 3</b> 정사각형으로 아홉 날짜를 골랐습니다.
+      가운데 날짜가 <b>16</b>일 때, 아홉 날짜의 <b>합</b>을 구하세요.</p>
+      <div class="sol">[가운데를 □ 로 놓고 나머지를 나타낸다]
+   □−8   □−7   □−6
+   □−1    □    □+1
+   □+6   □+7   □+8
+
+[더하기] □가 <span class="fill">9</span>개 있고, 나머지 수들은
+   (−8과 +8), (−7과 +7), (−6과 +6), (−1과 +1) 이 <b>서로 지워진다.</b>
+
+   합 = □ × 9 = 16 × 9 = <b>144</b>
+
+[검산] 8+9+10+15+16+17+22+23+24 = <b>144</b> ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>144</u>입니다. 왜냐하면 <u>가운데를 뺀 여덟 수가 짝을 지어 서로 지워지므로 합이 가운데의 9배</u>이기 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>어느 달의 <b>같은 요일</b>인 날짜를 모두 더했더니 <b>80</b>이었고, 날짜는 <b>5개</b>였습니다.
+      가장 빠른 날짜는 며칠일까요?</p>
+      <div class="sol">[같은 요일은 7씩 커진다] 가장 빠른 날을 □ 라 하면
+   □, □+7, □+14, □+21, □+28
+
+[더하기] □ × 5 + (7 + 14 + 21 + 28) = □ × 5 + <span class="fill">70</span> = 80
+   □ × 5 = <span class="fill">10</span>   →   □ = <b>2</b>
+
+[검산] 2 + 9 + 16 + 23 + 30 = <b>80</b> ✓</div>
+      <div class="note">한 달에 같은 요일이 <b>5번</b> 있으려면 그 달이 <b>29일 이상</b>이어야 하고,
+      첫 번째 날짜가 <b>1일, 2일, 3일</b> 중 하나여야 합니다. 답 2일은 조건에 맞습니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>달력은 <b>오른쪽 +1, 아래 +7</b> 이 기본 규칙이다.</li>
+    <li><b>가운데를 □ 로 놓으면</b> 나머지가 □±7 처럼 깔끔하게 나타난다.</li>
+    <li>대칭으로 놓인 수들은 더할 때 <b>서로 지워진다</b>.</li>
+    <li>세로 3칸 합 = 가운데 × 3, &nbsp; 3 × 3 합 = 가운데 × 9.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“달력에서 세로로 이웃한 세 날짜의 합이 <b>항상 가운데의 3배</b>인 이유를 설명하세요.”<br>
+    <span class="small">→ “가운데를 □라 하면 위는 <u>□−7</u>, 아래는 <u>□+7</u> 입니다.
+    셋을 더하면 <u>−7과 +7이 서로 지워져</u> □가 3개만 남습니다.”</span></div>
+  </div>
+
+  <div class="note" style="margin-top:6px"><b>B영역을 마치며.</b> 여섯 전략의 공통점은
+  <b>“다 세지 않고 규칙으로 알아내기”</b> 입니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 B영역 이론서</span><span class="r">주제 12 · 12 / 12</span></div>
+</div>
+
+</body>
+</html>

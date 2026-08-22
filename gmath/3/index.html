@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 C영역 — 이론서 (도형과 공간)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --c1:#1d4ed8; --c2:#ea580c; --c3:#0f766e; --c4:#be123c; --c5:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.62;font-size:13.5px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:12mm 12mm 10mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+/* 머리글 */
+.head{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:6px;margin-bottom:10px}
+.head .no{background:var(--c1);color:#fff;font-weight:800;font-size:13px;
+  padding:3px 12px;border-radius:6px;flex:0 0 auto}
+.head h1{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.head .tag{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.45}
+
+/* 요소 */
+.open{background:#fff8ee;border:1.6px dashed #e0b070;border-radius:10px;padding:9px 13px;margin-bottom:9px}
+.open .lb{font-size:11px;font-weight:800;color:#a56a12;letter-spacing:1px}
+.open p{margin:2px 0;font-size:13.6px;color:#5b451c}
+
+h2{font-size:14.6px;font-weight:800;margin:9px 0 5px;padding-left:10px;border-left:4px solid var(--c1)}
+h2.b{border-color:var(--c2)}h2.c{border-color:var(--c3)}
+h3{font-size:13.6px;font-weight:800;color:var(--c1);margin:8px 0 4px}
+p{margin:4px 0;color:#2a3446}
+.small{font-size:12.2px;color:var(--sub)}
+b.b1{color:var(--c1)}b.b2{color:var(--c2)}b.b3{color:var(--c3)}b.b4{color:var(--c4)}
+
+.strat{background:#eef4ff;border:1.6px solid #b6cdf5;border-radius:10px;padding:8px 12px;margin:7px 0}
+.strat .lb{display:inline-block;background:var(--c1);color:#fff;font-size:10.5px;font-weight:800;
+  padding:1px 9px;border-radius:8px;margin-right:7px}
+.strat .nm{font-weight:800;font-size:14.5px;color:var(--c1)}
+.strat p{font-size:13px;margin:4px 0 0}
+
+.key{background:#0f1a2b;color:#eaf0fb;border-radius:9px;padding:9px 15px;margin:7px 0;
+  font-family:'D2Coding','Consolas',monospace;font-size:14px;text-align:center}
+.key b{color:#fcd34d}
+.key small{display:block;font-family:inherit;font-size:11.5px;color:#93a3bd;margin-top:4px}
+
+.ex{border:1.6px solid var(--line);border-radius:10px;overflow:hidden;margin:8px 0}
+.ex .hd{background:var(--soft);padding:5px 12px;font-weight:800;font-size:13px;color:var(--c1);
+  border-bottom:1px solid var(--line)}
+.ex .bd{padding:8px 12px}
+.ex.o .hd{background:#fff4ea;color:var(--c2)}
+.fill{display:inline-block;min-width:44px;border-bottom:1.6px solid #9fb0c8;
+  text-align:center;color:#c0392b;font-weight:800;font-family:'D2Coding',monospace}
+.sol{font-family:'D2Coding','Consolas',monospace;font-size:12px;line-height:1.72;
+  background:#f8fafd;border-radius:7px;padding:7px 11px;margin:5px 0;white-space:pre-wrap;color:#2a3446}
+
+table{width:100%;border-collapse:collapse;font-size:11.8px;margin:5px 0}
+th{background:#e9eefa;border:1px solid var(--line);padding:3px 5px;font-weight:800;color:#22314e}
+td{border:1px solid var(--line);padding:3px 5px;text-align:center;color:#2a3446}
+td.l{text-align:left}
+td.m{font-family:'D2Coding',monospace}
+
+.note{background:var(--soft);border-left:4px solid var(--c3);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#25404a}
+.warn{background:#fff1f2;border-left:4px solid var(--c4);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#7a2231}
+ul.li{list-style:none;margin:4px 0}
+ul.li li{padding-left:16px;position:relative;margin:2px 0}
+ul.li li::before{content:'▪';position:absolute;left:2px;color:var(--c1);font-weight:800}
+
+.write{background:#f6f4ff;border:1.6px solid #cfc2f3;border-radius:10px;padding:7px 12px;margin:6px 0}
+.write .lb{font-size:11px;font-weight:800;color:var(--c5);letter-spacing:1px}
+.write .frame{font-size:13.2px;color:#3d2f66;margin-top:3px}
+.write .frame u{color:#8b5cf6;text-decoration-thickness:1.5px}
+
+.foot{position:absolute;left:13mm;right:13mm;bottom:6mm;border-top:1px solid var(--line);
+  padding-top:4px;display:flex;font-size:10.5px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c1);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+svg{display:block;margin:0 auto}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always;min-height:294mm}
+  .page:last-child{page-break-after:auto}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="t">📘 사고력수학 1단계 · C영역 <b>이론서</b> — 도형과 공간 (주제 13~18)</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">짝이 되는 <b>문제집</b>과 함께 사용하세요. 주제당 2쪽입니다.</span>
+</div>
+
+<!-- ===== 주제 13 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 13</span>
+    <h1>도형의 개수 세기 — 크기별로 나누어 세기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>1 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>오른쪽처럼 <b>3 × 3</b> 으로 나뉜 정사각형 판이 있습니다.
+    이 그림에서 찾을 수 있는 <b>정사각형</b>은 모두 몇 개일까요?</p>
+    <figure style="margin:4px 0">
+      <svg viewBox="0 0 250 76" xmlns="http://www.w3.org/2000/svg" style="max-width:245px">
+        <g stroke="#333" stroke-width="1.6" fill="none">
+          <rect x="10" y="8" width="60" height="60"/>
+          <path d="M30 8v60M50 8v60M10 28h60M10 48h60"/>
+        </g>
+        <g stroke="#1d4ed8" stroke-width="2.2" fill="rgba(29,78,216,.14)">
+          <rect x="100" y="8" width="20" height="20"/>
+          <rect x="142" y="8" width="40" height="40"/>
+          <rect x="196" y="8" width="60" height="60" transform="translate(-8,0)"/>
+        </g>
+        <g fill="#555" font-size="9.5" text-anchor="middle" font-family="monospace">
+          <text x="40" y="76">3×3 판</text><text x="110" y="76">1칸</text>
+          <text x="162" y="76">4칸</text><text x="218" y="76">9칸</text>
+        </g>
+      </svg>
+    </figure>
+    <p><b>잠깐!</b> 9개라고 답하기 쉽지만, <b>여러 칸을 묶은 정사각형</b>도 세어야 합니다.
+    마구 세면 반드시 빠뜨립니다. <b>어떻게 나누어 셀까요?</b></p>
+  </div>
+
+  <h2>1. 크기별로 나누어 센다</h2>
+  <p>주제 1에서 배운 것과 같습니다. <b class="b2">기준을 정해</b> 순서대로 세는 것이지요.
+  도형 세기의 기준은 <b>크기</b>입니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">크기별로 나누어 세기</span></div>
+    <p><b>① 가장 작은 것부터 크기별로 분류</b>한다 → <b>② 각 크기가 몇 개씩인지</b> 센다
+    → <b>③ 모두 더한다</b> → <b>④ 개수에 규칙이 있는지</b> 확인한다.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:26%">정사각형 크기</th><th class="c">1 × 1</th><th class="c">2 × 2</th><th class="c">3 × 3</th><th class="c">합계</th></tr>
+    <tr><td class="l">개수</td><td>9</td><td>4</td><td>1</td><td><b>14</b></td></tr>
+    <tr><td class="l">규칙</td><td>3²</td><td>2²</td><td>1²</td><td>제곱수의 합</td></tr>
+  </table>
+
+  <div class="sol">[2 × 2 는 왜 4개일까?]
+   2×2 정사각형의 <b>왼쪽 위 꼭짓점</b>이 놓일 수 있는 자리를 센다.
+   가로로 <b>2</b>곳, 세로로 <b>2</b>곳  →  2 × 2 = <b>4개</b>
+
+[3 × 3 은?]  가로 1곳 × 세로 1곳 = <b>1개</b></div>
+
+  <div class="key">n × n 판의 정사각형 = 1² + 2² + … + n²
+    <small>4×4 판이면 16 + 9 + 4 + 1 = <b>30개</b></small></div>
+
+  <div class="warn"><b>주의!</b> 문제에 <b>“기울어진 정사각형은 세지 않는다”</b>는 조건이 있는지 꼭 확인하세요.
+  조건이 없으면 대각선으로 기울어진 정사각형까지 세어야 할 수도 있습니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 13 · 1 / 12</span></div>
+</div>
+
+<!-- ===== 주제 13 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 13</span>
+    <h1>도형의 개수 세기 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>2 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p><b>3 × 3</b> 판에서 찾을 수 있는 <b>직사각형</b>은 모두 몇 개일까요?
+      (정사각형도 직사각형에 포함합니다.)</p>
+      <div class="sol">[가로 · 세로를 따로 생각한다]
+   직사각형 하나를 정하려면 <b>세로선 2개</b>와 <b>가로선 2개</b>를 고르면 된다.
+   3×3 판에는 세로선이 <span class="fill">4</span>개, 가로선이 <span class="fill">4</span>개 있다.
+
+[세로선 2개 고르기]  4개 중 2개 → 1·2, 1·3, 1·4, 2·3, 2·4, 3·4 → <span class="fill">6</span>가지
+[가로선 2개 고르기]  마찬가지로 <span class="fill">6</span>가지
+
+[답] 6 × 6 = <b>36개</b></div>
+      <div class="note"><b>다른 방법</b> — 크기별로 세어도 됩니다.
+      1×1이 9개, 1×2가 6개, 2×1이 6개, 1×3이 3개, 3×1이 3개, 2×2가 4개,
+      2×3이 2개, 3×2가 2개, 3×3이 1개 → 모두 <b>36개</b>. 답이 같습니다 ✓</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>큰 삼각형을 <b>3단</b>으로 나누었습니다. 크고 작은 삼각형은 모두 몇 개일까요?</p>
+      <figure style="margin:3px 0">
+        <svg viewBox="0 0 120 62" xmlns="http://www.w3.org/2000/svg" style="max-width:130px">
+          <g stroke="#333" stroke-width="1.5" fill="none">
+            <path d="M60 6 L102 56 L18 56 Z"/>
+            <path d="M46 22h28 M32 39h56 M46 22 L32 39 M74 22 L88 39 M46 56 L60 39 M74 56 L60 39"/>
+            <path d="M46 22 L74 56 M74 22 L46 56"/>
+          </g>
+        </svg>
+      </figure>
+      <div class="sol">[<b>위로 향한</b> 삼각형]
+   1단 크기 : <span class="fill">6</span>개     2단 크기 : <span class="fill">3</span>개     3단 크기 : <span class="fill">1</span>개   →  10개
+
+[<b>아래로 향한</b> 삼각형]  ▽ 모양은 1단 크기만 <span class="fill">3</span>개
+
+[답] 10 + 3 = <b>13개</b></div>
+      <div class="warn"><b>가장 흔한 실수!</b> <b>아래로 향한 삼각형(▽)</b>을 빠뜨리는 것입니다.
+      삼각형 세기는 반드시 <b>△와 ▽를 따로</b> 세세요.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>도형 세기는 <b>크기별로 나누어</b> 센다. 마구 세면 반드시 빠뜨린다.</li>
+    <li>정사각형 개수는 <b>왼쪽 위 꼭짓점이 놓일 자리</b>를 세면 된다.</li>
+    <li>직사각형은 <b>가로선 2개 × 세로선 2개</b>를 고르는 것과 같다.</li>
+    <li>삼각형은 <b>△와 ▽를 따로</b> 센다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“3 × 3 판에서 <b>2 × 2 정사각형이 4개</b>인 이유를 설명하세요.”<br>
+    <span class="small">→ “2×2 정사각형의 <u>왼쪽 위 꼭짓점</u>이 놓일 수 있는 자리가 가로 <u>2곳</u>, 세로 <u>2곳</u>이므로
+    2 × 2 = <u>4개</u>입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 13 · 2 / 12</span></div>
+</div>
+
+<!-- ===== 주제 14 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 14</span>
+    <h1>쌓기나무 — 보이지 않는 것까지 세기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>3 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>쌓기나무로 모양을 만들었습니다. 겉에서 보이는 나무를 세었더니 <b>10개</b>였습니다.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 정말 10개일까요? <b>안쪽에 숨어 있는 나무</b>는
+    어느 방향에서도 보이지 않습니다. <b>보이는 것을 세면 안 됩니다.</b></p>
+  </div>
+
+  <h2>1. 위에서 본 모양에 <span style="color:#ea580c">수를 쓴다</span></h2>
+  <p>쌓기나무는 <b>공중에 뜰 수 없습니다.</b> 바닥이나 다른 나무 위에만 놓이지요.
+  그래서 <b>각 칸에 몇 층인지</b>만 알면 모양 전체를 나타낼 수 있습니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">위에서 본 모양에 수 쓰기</span></div>
+    <p><b>① 위에서 본 모양을 그린다</b> → <b>② 각 칸에 쌓인 개수를 적는다</b>
+    → <b>③ 모두 더하면 전체 개수</b> → <b>④ 각 방향에서 본 모양을 확인</b>한다.</p>
+  </div>
+
+  <table>
+    <tr><th colspan="4" style="text-align:center">위에서 본 모양에 수 쓰기</th></tr>
+    <tr><td class="c" style="background:#e8eefb;font-weight:800">2</td>
+        <td class="c" style="background:#e8eefb;font-weight:800">1</td>
+        <td class="c" style="background:#f5f7fb">·</td>
+        <td class="l" style="border:none;padding-left:12px">전체 = 2+1+1+3+1+1+2<br>&nbsp;&nbsp;&nbsp;&nbsp;= <b>11개</b></td></tr>
+    <tr><td class="c" style="background:#e8eefb;font-weight:800">1</td>
+        <td class="c" style="background:#e8eefb;font-weight:800">3</td>
+        <td class="c" style="background:#e8eefb;font-weight:800">1</td>
+        <td class="l" style="border:none;padding-left:12px">1층 7개 · 2층 3개 · 3층 1개</td></tr>
+    <tr><td class="c" style="background:#f5f7fb">·</td>
+        <td class="c" style="background:#e8eefb;font-weight:800">1</td>
+        <td class="c" style="background:#e8eefb;font-weight:800">2</td>
+        <td class="l" style="border:none;padding-left:12px">7 + 3 + 1 = <b>11</b> ✓</td></tr>
+  </table>
+
+  <h2>2. 어느 방향에서 보든 <span style="color:#be123c">가장 높은 것</span>만 보인다</h2>
+  <div class="sol">앞에서 볼 때 : 각 <b>세로줄</b>에서 가장 큰 수만 보인다.
+   왼쪽 줄 max(2,1,·) = <b>2</b>    가운데 줄 max(1,3,1) = <b>3</b>    오른쪽 줄 max(·,1,2) = <b>2</b>
+   → 앞에서 본 모양의 높이는 <b>2, 3, 2</b>
+
+옆에서 볼 때 : 각 <b>가로줄</b>에서 가장 큰 수만 보인다.  → <b>2, 3, 2</b></div>
+
+  <div class="key">앞·옆에서 본 모양만으로는 <b>개수가 하나로 정해지지 않는다</b>
+    <small>그래서 문제는 “가장 적을 때”, “가장 많을 때”를 따로 묻는다</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 14 · 3 / 12</span></div>
+</div>
+
+<!-- ===== 주제 14 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 14</span>
+    <h1>쌓기나무 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>4 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>쌓기나무 <b>27개</b>로 <b>3 × 3 × 3</b> 큰 정육면체를 만들었습니다.
+      <b>어느 방향에서도 보이지 않는</b> 쌓기나무는 몇 개일까요?</p>
+      <div class="sol">[생각] 겉면에 닿지 않은 나무는 <b>속에 완전히 갇힌</b> 것뿐이다.
+   3 × 3 × 3 에서 겉껍질을 한 겹 벗기면 안쪽에 남는 것은
+   (3 − 2) × (3 − 2) × (3 − 2) = 1 × 1 × 1 = <span class="fill">1</span>개
+
+[답] <b>1개</b> (정중앙)
+
+[확인] 겉에서 보이는 것 26개 + 숨은 것 1개 = <b>27개</b> ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>1개</u>입니다. 왜냐하면 <u>겉껍질을 한 겹 벗기면 1×1×1만 남으므로 정중앙 하나만 숨어 있기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>위에서 본 모양이 <b>3 × 3 아홉 칸 모두</b>이고, 앞과 옆에서 본 모양의 높이가
+      모두 <b class="mono">2, 3, 2</b> 입니다. 쌓기나무가 <b>가장 많을 때</b>의 개수를 구하세요.</p>
+      <div class="sol">[각 칸의 높이는 얼마까지 가능한가?]
+   어떤 칸의 높이는 <b>그 세로줄의 앞 모양</b>과 <b>그 가로줄의 옆 모양</b> 중
+   <b>작은 값</b>을 넘을 수 없다. (넘으면 그 방향에서 더 높게 보이기 때문)
+
+[표 채우기] 앞 : 2 3 2  /  옆 : 2 3 2
+      <b>2   2   2</b>      각 칸 = min(앞, 옆)
+      <b>2   3   2</b>
+      <b>2   2   2</b>
+
+[답] 2×8 + 3 = <b>19개</b>
+
+[참고] 가장 적을 때는 <b>13개</b>이다. (한 방향씩만 만족시키도록 낮게 배치)</div>
+      <div class="note"><b>왜 최대가 min(앞, 옆)일까?</b> 그보다 높이면 앞이나 옆에서 볼 때
+      <b>주어진 모양보다 높게 보여</b> 조건을 어기기 때문입니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>쌓기나무는 <b>공중에 뜰 수 없다</b>. 그래서 칸마다 <b>층수</b>만 정하면 된다.</li>
+    <li><b>위에서 본 모양에 수 쓰기</b>가 가장 확실한 방법이다.</li>
+    <li>어느 방향에서 보든 그 줄에서 <b>가장 높은 것</b>만 보인다.</li>
+    <li>보이는 것만 세면 <b>숨은 나무</b>를 빠뜨린다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“앞과 옆에서 본 모양이 같아도 <b>쌓기나무 개수가 다를 수 있는</b> 이유를 설명하세요.”<br>
+    <span class="small">→ “각 방향에서는 <u>그 줄에서 가장 높은 것</u>만 보이므로,
+    <u>뒤에 숨은 낮은 나무</u>는 개수가 달라도 보이는 모양이 같습니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 14 · 4 / 12</span></div>
+</div>
+<!-- ===== 주제 15 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 15</span>
+    <h1>정육면체의 전개도 — 접었을 때 마주 보는 면</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>5 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>주사위는 <b>마주 보는 면의 눈의 합이 7</b>입니다. 1의 맞은편은 6, 2의 맞은편은 5, 3의 맞은편은 4이지요.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 아래 전개도를 접으면 <b>①의 맞은편</b>은 어느 면일까요?
+    머릿속으로 접기 어렵다면, <b>접지 않고 알아내는 방법</b>이 있습니다.</p>
+    <figure style="margin:4px 0">
+      <svg viewBox="0 0 150 66" xmlns="http://www.w3.org/2000/svg" style="max-width:160px">
+        <g stroke="#333" stroke-width="1.4" fill="#fff">
+          <rect x="10" y="6" width="18" height="18"/>
+          <rect x="10" y="24" width="18" height="18"/><rect x="28" y="24" width="18" height="18"/>
+          <rect x="46" y="24" width="18" height="18"/><rect x="64" y="24" width="18" height="18"/>
+          <rect x="64" y="42" width="18" height="18"/>
+        </g>
+        <g font-size="10" fill="#1d4ed8" text-anchor="middle" font-family="monospace" font-weight="bold">
+          <text x="19" y="19">①</text><text x="19" y="37">②</text><text x="37" y="37">③</text>
+          <text x="55" y="37">④</text><text x="73" y="37">⑤</text><text x="73" y="55">⑥</text>
+        </g>
+      </svg>
+    </figure>
+  </div>
+
+  <h2>1. <span style="color:#ea580c">한 칸 건너뛴</span> 면이 마주 본다</h2>
+  <p>전개도를 접으면, <b>일직선으로 이어진 네 면</b>은 옆면을 빙 두르게 됩니다.
+  그중 <b class="b2">한 칸 건너뛴 두 면</b>이 서로 마주 봅니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">한 칸 건너뛰기로 맞은편 찾기</span></div>
+    <p><b>① 일직선으로 이어진 줄</b>을 찾는다 → <b>② 그 줄에서 한 칸 건너뛴 두 면</b>이 마주 본다
+    → <b>③ 줄에서 벗어난 면</b>은 옆으로 옮겨 붙여 같은 줄로 만든다.</p>
+  </div>
+
+  <div class="sol">위 전개도에서 <b>②③④⑤</b> 가 일직선으로 이어져 있다.
+   ② ↔ <b>④</b>   (한 칸 건너뜀)
+   ③ ↔ <b>⑤</b>   (한 칸 건너뜀)
+   남은 <b>①</b> 과 <b>⑥</b> 이 서로 마주 본다.</div>
+
+  <div class="note"><b>왜 “한 칸 건너뛰기”일까?</b> 옆면 네 개가 정사각기둥처럼 빙 두르는데,
+  네 면 중 <b>1번째와 3번째</b>, <b>2번째와 4번째</b>가 서로 등을 맞대기 때문입니다.</div>
+
+  <h2>2. 정육면체의 기본 수</h2>
+  <table>
+    <tr><th class="c">면</th><th class="c">모서리</th><th class="c">꼭짓점</th><th class="c">전개도의 가짓수</th></tr>
+    <tr><td>6개</td><td>12개</td><td>8개</td><td><b>11가지</b></td></tr>
+  </table>
+  <p class="small">전개도가 <b>11가지</b>뿐이라는 것은 유명한 사실입니다.
+  (돌리거나 뒤집어서 같아지는 것은 한 가지로 셉니다.)</p>
+
+  <div class="warn"><b>접히지 않는 전개도도 있습니다.</b> 정사각형 6개를 이어 붙였다고 해서
+  모두 정육면체가 되는 것은 아닙니다. <b>2 × 3 직사각형</b> 모양으로 붙이면
+  접었을 때 <b>면이 겹쳐</b> 정육면체가 되지 않습니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 15 · 5 / 12</span></div>
+</div>
+
+<!-- ===== 주제 15 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 15</span>
+    <h1>정육면체의 전개도 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>6 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>주사위의 전개도입니다. <b>㉮</b>와 <b>㉯</b>에 알맞은 눈의 수를 구하세요.
+      (마주 보는 면의 합은 7)</p>
+      <figure style="margin:3px 0">
+        <svg viewBox="0 0 150 66" xmlns="http://www.w3.org/2000/svg" style="max-width:160px">
+          <g stroke="#333" stroke-width="1.4" fill="#fff">
+            <rect x="10" y="6" width="18" height="18"/>
+            <rect x="10" y="24" width="18" height="18"/><rect x="28" y="24" width="18" height="18"/>
+            <rect x="46" y="24" width="18" height="18"/><rect x="64" y="24" width="18" height="18"/>
+            <rect x="64" y="42" width="18" height="18"/>
+          </g>
+          <g font-size="10" fill="#333" text-anchor="middle" font-family="monospace" font-weight="bold">
+            <text x="19" y="19">3</text><text x="19" y="37">1</text><text x="37" y="37">2</text>
+            <text x="55" y="37" fill="#c0392b">㉮</text><text x="73" y="37" fill="#c0392b">㉯</text><text x="73" y="55">4</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="sol">[일직선으로 이어진 줄] 1 · 2 · ㉮ · ㉯ 가 한 줄에 있다.
+
+[한 칸 건너뛰기]
+   1 ↔ ㉮   →   ㉮ = 7 − 1 = <span class="fill">6</span>
+   2 ↔ ㉯   →   ㉯ = 7 − 2 = <span class="fill">5</span>
+
+[남은 면] 3 ↔ 4  →  3 + 4 = 7 ✓ (조건에 맞다)
+
+[확인] 여섯 면이 1, 2, 3, 4, 5, 6 으로 모두 나왔다 ✓</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>아래 전개도를 접었을 때, 점 <b>A</b>와 만나는 점을 찾으려고 합니다.
+      어떻게 생각하면 될까요?</p>
+      <div class="sol">[요령] 전개도를 접을 때 <b>맞닿는 모서리</b>를 하나씩 짝지어 나간다.
+
+   ① 접었을 때 <b>붙게 되는 두 변</b>을 찾아 같은 표시(●, ▲ …)를 한다.
+   ② 그 변의 <b>양 끝점</b>이 서로 만난다.
+   ③ 한 점에는 <b>세 면</b>이 모이므로, 한 점에 <b>세 개의 꼭짓점</b>이 모인다.
+
+[꼭 기억] 정육면체의 꼭짓점은 <span class="fill">8</span>개인데
+   전개도의 꼭짓점은 그보다 많다. 여러 점이 <b>한 점으로 모이기</b> 때문이다.</div>
+      <div class="note"><b>실제로 접어 보는 것이 가장 좋습니다.</b>
+      종이에 전개도를 그려 오려서 접어 보면, 머릿속 상상보다 훨씬 빨리 이해됩니다.
+      한 번 접어 본 학생은 다음부터 상상만으로도 풀 수 있습니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>전개도에서 <b>일직선으로 이어진 줄</b>을 먼저 찾는다.</li>
+    <li>그 줄에서 <b>한 칸 건너뛴 두 면</b>이 마주 본다.</li>
+    <li>정육면체 : 면 <b>6</b>, 모서리 <b>12</b>, 꼭짓점 <b>8</b>, 전개도 <b>11가지</b>.</li>
+    <li>정사각형 6개를 붙였다고 <b>모두 정육면체가 되지는 않는다</b>.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“전개도에서 <b>한 칸 건너뛴 면이 마주 보는</b> 이유를 설명하세요.”<br>
+    <span class="small">→ “일직선으로 이어진 <u>네 면</u>이 옆면을 빙 두르는데,
+    그중 <u>1번째와 3번째</u>, <u>2번째와 4번째</u>가 서로 등을 맞대기 때문입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 15 · 6 / 12</span></div>
+</div>
+
+<!-- ===== 주제 16 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 16</span>
+    <h1>대칭 — 접어서 포개기, 돌려서 겹치기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>7 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p><b>평행사변형</b>은 접어서 포갤 수 있을까요? 여러 방향으로 접어 보면 <b>어느 쪽으로도 포개지지 않습니다.</b></p>
+    <p style="margin-top:3px">그런데 <b>반 바퀴(180°) 돌려 보면</b> 처음과 똑같아집니다!
+    <b>접는 것</b>과 <b>돌리는 것</b>은 서로 다른 이야기입니다.</p>
+  </div>
+
+  <h2>1. 두 가지 대칭</h2>
+  <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+    <div class="card" style="border-left:4px solid #be123c">
+      <b style="color:#be123c">선대칭 도형</b>
+      <p class="small">직선 하나로 접었을 때 <b>완전히 포개지는</b> 도형.
+      그 직선을 <b>대칭축</b>이라 한다.</p>
+    </div>
+    <div class="card" style="border-left:4px solid #0f766e">
+      <b style="color:#0f766e">점대칭 도형</b>
+      <p class="small">한 점을 중심으로 <b>반 바퀴(180°) 돌렸을 때</b> 처음과 똑같아지는 도형.
+      그 점을 <b>대칭의 중심</b>이라 한다.</p>
+    </div>
+  </div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">접어 보기와 돌려 보기를 따로 확인</span></div>
+    <p><b>① 접어서 포개지는 직선</b>이 있는지 모두 찾는다 (대칭축 개수)
+    → <b>② 반 바퀴 돌려서 같아지는지</b> 확인한다 → <b>③ 둘은 별개</b>임을 잊지 않는다.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:26%">도형</th><th class="c" style="width:20%">대칭축</th><th class="c" style="width:20%">점대칭</th><th>기억할 점</th></tr>
+    <tr><td class="l">이등변삼각형</td><td>1개</td><td>✗</td><td class="l">접히지만 돌리면 다름</td></tr>
+    <tr><td class="l">정삼각형</td><td>3개</td><td><b>✗</b></td><td class="l">축이 3개인데도 점대칭이 아니다!</td></tr>
+    <tr><td class="l">직사각형</td><td>2개</td><td>○</td><td class="l">대각선은 대칭축이 <b>아니다</b></td></tr>
+    <tr><td class="l">마름모</td><td>2개</td><td>○</td><td class="l">대각선이 대칭축</td></tr>
+    <tr><td class="l">정사각형</td><td><b>4개</b></td><td>○</td><td class="l">가로·세로·대각선 2개</td></tr>
+    <tr><td class="l">평행사변형</td><td><b>0개</b></td><td>○</td><td class="l">접히지 않지만 돌리면 같다</td></tr>
+    <tr><td class="l">정오각형</td><td>5개</td><td>✗</td><td class="l">홀수각형은 점대칭이 아니다</td></tr>
+    <tr><td class="l">정육각형</td><td>6개</td><td>○</td><td class="l">짝수각형은 점대칭</td></tr>
+  </table>
+
+  <div class="key">정 n 각형 → 대칭축 <b>n개</b>, &nbsp; n이 <b>짝수</b>일 때만 점대칭
+    <small>정삼각형·정오각형은 축이 많아도 점대칭이 아니다</small></div>
+
+  <div class="warn"><b>가장 흔한 오해 두 가지</b><br>
+  ① “직사각형의 대각선도 대칭축이다” → <b>아닙니다.</b> 대각선으로 접으면 포개지지 않습니다.<br>
+  ② “대칭축이 있으면 점대칭이다” → <b>아닙니다.</b> 정삼각형이 반례입니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 16 · 7 / 12</span></div>
+</div>
+
+<!-- ===== 주제 16 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 16</span>
+    <h1>대칭 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>8 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>알파벳 <b class="mono">A · H · N · O · S</b> 중에서
+      <b>(1) 선대칭</b>인 것과 <b>(2) 점대칭</b>인 것을 각각 찾으세요.</p>
+      <div class="sol">[하나씩 확인]
+   <b>A</b> : 세로로 접으면 포개짐 → 선대칭 ○ / 돌리면 ∀ 가 되어 다름 → 점대칭 ✗
+   <b>H</b> : 가로·세로 모두 포개짐 → 선대칭 ○ / 돌려도 H → 점대칭 ○
+   <b>N</b> : 어느 쪽으로 접어도 안 됨 → 선대칭 ✗ / 돌리면 N → 점대칭 ○
+   <b>O</b> : 어느 방향이든 포개짐 → 선대칭 ○ / 돌려도 O → 점대칭 ○
+   <b>S</b> : 접으면 안 됨 → 선대칭 ✗ / 돌리면 S → 점대칭 ○
+
+[답] 선대칭 : <span class="fill">A, H, O</span>　　점대칭 : <span class="fill">H, N, O, S</span></div>
+      <div class="note"><b>N과 S가 좋은 예입니다.</b> 접어서는 절대 포개지지 않지만
+      <b>반 바퀴 돌리면</b> 원래대로 돌아옵니다. 평행사변형과 똑같은 성질이지요.</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>어떤 도형이 <b>선대칭이면서 점대칭</b>이려면 어떤 조건이 필요할까요?
+      정다각형을 예로 설명하세요.</p>
+      <div class="sol">[정다각형 조사]
+   정삼각형(3) : 축 3개, 점대칭 <b>✗</b>
+   정사각형(4) : 축 4개, 점대칭 <b>○</b>
+   정오각형(5) : 축 5개, 점대칭 <b>✗</b>
+   정육각형(6) : 축 6개, 점대칭 <b>○</b>
+
+[규칙 발견] 변의 수가 <span class="fill">짝수</span>일 때만 점대칭이다.
+
+[왜?] 반 바퀴 돌리면 각 꼭짓점이 <b>맞은편 자리</b>로 간다.
+   변이 짝수면 꼭짓점끼리 <b>정확히 짝</b>이 맞지만,
+   홀수면 맞은편에 <b>꼭짓점이 아니라 변의 한가운데</b>가 있어 겹치지 않는다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li><b>선대칭</b>은 접어서 포개지는 것, <b>점대칭</b>은 반 바퀴 돌려 같아지는 것.</li>
+    <li>둘은 <b>완전히 별개</b>다. 하나만 되는 도형이 많다.</li>
+    <li>정 n 각형은 대칭축이 <b>n개</b>이고, n이 <b>짝수</b>일 때만 점대칭이다.</li>
+    <li>직사각형의 <b>대각선은 대칭축이 아니다</b>. 반드시 접어서 확인한다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“<b>정삼각형</b>은 대칭축이 3개나 있는데도 <b>점대칭이 아닙니다.</b> 그 이유를 설명하세요.”<br>
+    <span class="small">→ “반 바퀴 돌리면 <u>위 꼭짓점이 아래로</u> 가는데, 아래에는 꼭짓점이 아니라 <u>변의 한가운데</u>가 있어
+    처음 모양과 겹치지 않기 때문입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 16 · 8 / 12</span></div>
+</div>
+<!-- ===== 주제 17 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 17</span>
+    <h1>한붓그리기 — 그려 보기 전에 판정하기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>9 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>연필을 종이에서 <b>떼지 않고</b>, 같은 선을 <b>두 번 지나지 않으면서</b> 아래 그림을 그릴 수 있을까요?</p>
+    <figure style="margin:4px 0">
+      <svg viewBox="0 0 240 62" xmlns="http://www.w3.org/2000/svg" style="max-width:235px">
+        <g stroke="#333" stroke-width="1.7" fill="none" stroke-linejoin="round">
+          <path d="M14 50h44v-28h-44z M14 22l22-14 22 14 M14 22l44 28 M58 22l-44 28"/>
+          <path d="M110 50h44v-44h-44z M110 6l44 44 M154 6l-44 44"/>
+        </g>
+        <g fill="#555" font-size="9.5" text-anchor="middle" font-family="monospace">
+          <text x="36" y="60">(가) 집 모양</text><text x="132" y="60">(나) 사각형+대각선</text>
+        </g>
+        <text x="198" y="28" font-size="9" fill="#c0392b" font-family="monospace" font-weight="bold" text-anchor="middle">하나는 되고</text>
+        <text x="198" y="41" font-size="9" fill="#c0392b" font-family="monospace" font-weight="bold" text-anchor="middle">하나는 안 된다!</text>
+      </svg>
+    </figure>
+    <p><b>잠깐!</b> 여러 번 시도해서 안 된다고 <b>“불가능하다”고 말할 수는 없습니다.</b>
+    <b>그려 보기 전에</b> 판정하는 방법이 있습니다.</p>
+  </div>
+
+  <h2>1. 점에 모인 <span style="color:#ea580c">선의 개수</span>를 센다</h2>
+  <p>각 점(꼭짓점)에 <b>몇 개의 선이 모여 있는지</b> 세어 보세요.
+  이것을 그 점의 <b class="b2">차수</b>라고 합니다.</p>
+
+  <div class="sol">(가) 집 모양의 차수
+   아래 왼쪽 <b>3</b>　아래 오른쪽 <b>3</b>　위 왼쪽 4　위 오른쪽 4　꼭대기 2
+   → <b>홀수</b>인 점이 <span style="color:#c0392b;font-weight:800">2개</span>
+
+(나) 사각형+대각선의 차수
+   네 꼭짓점 모두 <b>3</b>
+   → <b>홀수</b>인 점이 <span style="color:#c0392b;font-weight:800">4개</span></div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">홀수점 세기</span></div>
+    <p><b>① 각 점에 모인 선의 개수를 센다</b> → <b>② 홀수인 점이 몇 개인지</b> 센다
+    → <b>③ 아래 규칙으로 판정</b>한다.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:22%">홀수점 개수</th><th style="width:20%">그릴 수 있나?</th><th>어디서 출발하나?</th></tr>
+    <tr><td class="c"><b>0개</b></td><td class="c" style="color:#0f766e"><b>가능</b></td><td class="l">어디서 시작해도 되고, <b>출발점으로 돌아온다</b></td></tr>
+    <tr><td class="c"><b>2개</b></td><td class="c" style="color:#0f766e"><b>가능</b></td><td class="l"><b>홀수점에서 출발</b>해 <b>다른 홀수점에서 끝난다</b></td></tr>
+    <tr><td class="c"><b>4개 이상</b></td><td class="c" style="color:#be123c"><b>불가능</b></td><td class="l">아무리 시도해도 안 된다</td></tr>
+  </table>
+
+  <h2>2. 왜 이런 규칙이 성립할까</h2>
+  <div class="sol">지나가기만 하는 점은  <b>들어온 선 1개 + 나가는 선 1개</b> 가 짝을 이룬다.
+   → 짝이 맞으므로 차수가 <b>짝수</b>다.
+
+짝이 맞지 않는(홀수) 점은  <b>출발점</b>이거나 <b>도착점</b>일 수밖에 없다.
+   → 출발점과 도착점은 최대 <b>2개</b>뿐이므로 홀수점도 <b>2개까지</b>만 가능하다.</div>
+
+  <div class="key">홀수점은 <b>0개 또는 2개</b>여야 한다
+    <small>시도가 아니라 <b>세어서</b> 판정하는 것이 핵심이다</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 17 · 9 / 12</span></div>
+</div>
+
+<!-- ===== 주제 17 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 17</span>
+    <h1>한붓그리기 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>10 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>(가) 집 모양은 한붓그리기가 <b>가능</b>합니다. <b>어디에서 출발</b>해야 할까요?</p>
+      <div class="sol">[홀수점을 찾는다]
+   차수가 홀수인 점 : <b>아래 왼쪽(3)</b>, <b>아래 오른쪽(3)</b> — 2개
+
+[판정] 홀수점이 2개이므로
+   <b>아래 두 꼭짓점 중 하나에서 출발</b>해서
+   <b>나머지 하나에서 끝난다.</b>
+
+[확인] 위쪽 꼭대기(차수 2)에서 출발하면? → 반드시 실패한다.
+   지나가기만 해야 할 점에서 출발했기 때문이다.</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>아래 두 꼭짓점 중 하나</u>입니다. 왜냐하면 <u>홀수점이 2개일 때는 반드시 홀수점에서 출발해 다른 홀수점에서 끝나기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>옛날 쾨니히스베르크라는 도시에 강과 <b>다리 7개</b>가 있었습니다.
+      사람들은 <b>모든 다리를 한 번씩만 건너</b> 산책할 수 있는지 궁금해했습니다. 가능할까요?</p>
+      <div class="sol">[땅을 점으로, 다리를 선으로 바꾼다]
+   땅 A에 붙은 다리 <b>5</b>개,  B에 <b>3</b>개,  C에 <b>3</b>개,  D에 <b>3</b>개
+
+[홀수점 세기] 5, 3, 3, 3 → 모두 홀수! → 홀수점 <span class="fill">4</span>개
+
+[판정] 홀수점이 4개이므로 <b>불가능하다.</b>
+
+[역사] 1736년 수학자 <b>오일러</b>가 이렇게 불가능함을 증명했고,
+   이것이 <b>그래프 이론</b>의 시작이 되었습니다.</div>
+      <div class="note"><b>중요한 발상.</b> 복잡한 지도를 <b>점과 선</b>으로 바꾼 것이 핵심입니다.
+      강의 넓이도 다리의 길이도 답과 상관이 없었습니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>각 점에 모인 <b>선의 개수(차수)</b>를 센다.</li>
+    <li>홀수점이 <b>0개</b>면 어디서든 가능(제자리로 돌아옴), <b>2개</b>면 홀수점에서 출발.</li>
+    <li>홀수점이 <b>4개 이상</b>이면 <b>불가능</b>하다.</li>
+    <li>시도와 <b>불가능함의 증명</b>은 전혀 다르다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“여러 번 시도해서 안 되었다고 해서 <b>불가능하다고 말할 수 없는</b> 이유는 무엇인가요?
+    그러면 어떻게 해야 할까요?”<br>
+    <span class="small">→ “시도하지 <u>않은 방법이 남아 있을 수</u> 있기 때문입니다.
+    <u>홀수점의 개수</u>를 세면 시도하지 않고도 확실하게 판정할 수 있습니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 17 · 10 / 12</span></div>
+</div>
+
+<!-- ===== 주제 18 (1) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 18</span>
+    <h1>최단 거리 — 교차점에 수를 적어라</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>11 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>바둑판 모양의 길에서 집 <b>P</b> 에서 학교 <b>Q</b> 까지 <b>가장 짧은 길</b>로 가려고 합니다.
+    (오른쪽 또는 위쪽으로만 이동)</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 가장 짧은 길은 <b>한 가지가 아닙니다.</b>
+    돌아가지만 않으면 길이가 모두 같지요. 그런 길이 <b>몇 가지</b>일까요?</p>
+  </div>
+
+  <h2>1. 교차점마다 수를 적어 나간다</h2>
+  <p>어떤 교차점에 도착하는 방법은, <b class="b2">왼쪽에서 오는 방법 + 아래에서 오는 방법</b> 입니다.
+  오른쪽이나 위로만 가기 때문이지요.</p>
+
+  <figure style="margin:5px 0">
+    <svg viewBox="0 0 200 96" xmlns="http://www.w3.org/2000/svg" style="max-width:230px">
+      <g stroke="#c3cfe4" stroke-width="1.2">
+        <path d="M20 84h150M20 62h150M20 40h150M20 18h150"/>
+        <path d="M20 18v66M70 18v66M120 18v66M170 18v66"/>
+      </g>
+      <g font-size="10.5" font-family="monospace" text-anchor="middle" font-weight="bold">
+        <text x="20" y="88" fill="#1d4ed8">1</text><text x="70" y="88" fill="#333">1</text>
+        <text x="120" y="88" fill="#333">1</text><text x="170" y="88" fill="#333">1</text>
+        <text x="20" y="66" fill="#333">1</text><text x="70" y="66" fill="#333">2</text>
+        <text x="120" y="66" fill="#333">3</text><text x="170" y="66" fill="#333">4</text>
+        <text x="20" y="44" fill="#333">1</text><text x="70" y="44" fill="#333">3</text>
+        <text x="120" y="44" fill="#333">6</text><text x="170" y="44" fill="#333">10</text>
+        <text x="20" y="22" fill="#333">1</text><text x="70" y="22" fill="#333">4</text>
+        <text x="120" y="22" fill="#333">10</text><text x="170" y="22" fill="#c0392b">20</text>
+      </g>
+      <text x="12" y="94" font-size="9" fill="#1d4ed8" font-family="monospace">P</text>
+      <text x="176" y="16" font-size="9" fill="#c0392b" font-family="monospace">Q</text>
+    </svg>
+  </figure>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">교차점에 수 적기</span></div>
+    <p><b>① 출발점에 1을 적는다</b> → <b>② 맨 아래 줄과 맨 왼쪽 줄은 모두 1</b>
+    (한 길밖에 없으므로) → <b>③ 나머지는 왼쪽 수 + 아래 수</b> → <b>④ 도착점의 수가 답</b>.</p>
+  </div>
+
+  <div class="sol">3 × 3 격자에서 P → Q 의 최단 경로는 <b>20가지</b>
+
+[확인] 오른쪽으로 3번, 위로 3번, 모두 6번 움직인다.
+   6번 중 <b>오른쪽으로 갈 3번</b>을 고르는 것과 같다.</div>
+
+  <div class="note"><b>파스칼 삼각형과 같습니다!</b> 주제 11에서 배운
+  “위 두 수를 더해 아래로” 와 똑같은 규칙이지요. 방향만 바뀌었을 뿐입니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 18 · 11 / 12</span></div>
+</div>
+
+<!-- ===== 주제 18 (2) ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 18</span>
+    <h1>최단 거리 — 예제로 익히기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>12 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>3 × 3 격자에서 가운데 교차점 <b>R</b> 이 공사 중이라 지날 수 없습니다.
+      P에서 Q까지 가는 최단 경로는 몇 가지일까요?</p>
+      <div class="sol">[방법 1 — 막힌 곳에 0을 적는다]
+   R 자리에 <b>0</b>을 쓰고 나머지는 그대로 “왼쪽 + 아래”로 채워 나간다.
+   → 답 <b>8가지</b>
+
+[방법 2 — 전체에서 빼기]
+   전체 경로 : <span class="fill">20</span>가지
+   R을 <b>지나는</b> 경로 : (P → R) × (R → Q) = <span class="fill">2</span> × <span class="fill">6</span> = 12가지
+   답 = 20 − 12 = <b>8가지</b>  ← 같은 답 ✓</div>
+      <div class="note"><b>빼는 방법이 더 빠릅니다.</b> “지나지 않는 경로”를 직접 세려면 경우를 여러 갈래로
+      나눠야 하지만, <b>전체에서 지나는 것을 빼면</b> 곱셈 한 번으로 끝납니다.</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>P에서 Q까지 가는데, 도중에 문구점 <b>M</b> 을 <b>반드시 들러야</b> 합니다.
+      (M은 오른쪽 2칸·위 1칸 지점) 최단 경로는 몇 가지일까요?</p>
+      <div class="sol">[두 구간으로 나눈다]
+   P → M : 오른쪽 2번, 위 1번  →  <span class="fill">3</span>가지
+   M → Q : 오른쪽 1번, 위 2번  →  <span class="fill">3</span>가지
+
+[이어 붙이기] 앞 구간과 뒤 구간은 <b>연달아</b> 일어나므로 <b>곱한다</b>.
+   3 × 3 = <b>9가지</b></div>
+      <div class="warn"><b>주의!</b> 두 구간의 가짓수를 <b>더하면 안 됩니다.</b>
+      P→M 을 정하고 <b>그다음</b> M→Q 를 정하는 구조이므로 <b>곱해야</b> 합니다.
+      (주제 1에서 배운 “먼저 정하고 → 그다음 정하면 곱셈”과 같습니다.)</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>최단 경로는 <b>교차점에 수를 적어</b> 센다. (왼쪽 수 + 아래 수)</li>
+    <li>맨 아래 줄과 맨 왼쪽 줄은 길이 하나뿐이므로 <b>모두 1</b>이다.</li>
+    <li>막힌 곳이 있으면 그 자리에 <b>0</b>을 적거나, <b>전체에서 빼기</b>.</li>
+    <li>반드시 들러야 하는 곳이 있으면 <b>두 구간으로 나누어 곱한다</b>.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“막힌 지점이 있을 때 <b>‘직접 세기’와 ‘전체에서 빼기’</b> 중
+    어느 쪽이 더 편한지 고르고 이유를 쓰세요.”<br>
+    <span class="small">→ “<u>전체에서 빼는 것</u>이 편합니다. 직접 세려면 <u>여러 갈래로 경우를 나눠야</u> 하지만,
+    빼는 방법은 <u>곱셈 한 번</u>이면 되기 때문입니다.”</span></div>
+  </div>
+
+  <div class="note" style="margin-top:6px"><b>C영역을 마치며.</b> 여섯 전략의 공통점은
+  <b>“눈으로 보지 말고 규칙으로 세기”</b> 입니다. 특히 <b>한붓그리기</b>는
+  <b>“해 봤는데 안 되더라”와 “절대 불가능하다”가 다르다</b>는 것을 배우는 중요한 주제였습니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 이론서</span><span class="r">주제 18 · 12 / 12</span></div>
+</div>
+
+</body>
+</html>

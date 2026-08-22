@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 C영역 — 문제집 (도형과 공간)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --c1:#1d4ed8; --c2:#ea580c; --c3:#0f766e; --c4:#be123c; --c5:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.62;font-size:13.6px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:12mm 12mm 10mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+.head{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:5px;margin-bottom:7px}
+.head .no{background:var(--c2);color:#fff;font-weight:800;font-size:13px;
+  padding:3px 12px;border-radius:6px;flex:0 0 auto}
+.head h1{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.head .tag{margin-left:auto;font-size:10.5px;color:var(--sub);text-align:right;line-height:1.4}
+
+.namebar{display:flex;gap:7px;font-size:11.5px;margin-bottom:6px}
+.namebar span{border:1px solid var(--line);border-radius:4px;padding:2px 9px}
+.namebar .f{flex:1}
+
+.recall{background:#eef4ff;border:1.5px solid #b6cdf5;border-radius:9px;padding:6px 11px;margin-bottom:7px;font-size:12.6px}
+.recall .lb{display:inline-block;background:var(--c1);color:#fff;font-size:10px;font-weight:800;
+  padding:1px 8px;border-radius:8px;margin-right:6px}
+.recall b{color:var(--c1)}
+
+h2{font-size:13.5px;font-weight:800;margin:7px 0 4px;padding-left:9px;border-left:4px solid var(--c2)}
+h2 .cnt{font-size:11px;color:var(--sub);font-weight:700;margin-left:5px}
+h2.ch{border-color:var(--c4)}
+h2.wr{border-color:var(--c5)}
+
+.q{margin-bottom:4px}
+.qh{display:flex;align-items:baseline;gap:7px}
+.qn{background:var(--ink);color:#fff;font-weight:800;font-size:11px;padding:1px 8px;
+  border-radius:4px;flex:0 0 auto}
+.qn.c{background:var(--c4)}
+.qn.w{background:var(--c5)}
+.qt{font-size:13.2px;color:#26303f}
+.qt b{color:#0f2a5c}
+.hintbox{font-size:11px;color:#7a5a10;background:#fffaef;border:1px dashed #ddb968;
+  border-radius:6px;padding:3px 9px;margin-top:3px;display:inline-block}
+.ans{border:1px solid var(--line);border-radius:6px;margin-top:4px;
+  background:repeating-linear-gradient(#fff 0 22px,#eef1f7 22px 23px)}
+.ans.h1{height:44px}.ans.h2{height:65px}.ans.h3{height:86px}.ans.h4{height:107px}
+.short{display:inline-block;min-width:110px;border-bottom:1.4px solid #9fb0c8;margin-left:5px;height:15px}
+
+table{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0}
+th{background:#eef2f9;border:1px solid var(--line);padding:3px 5px;font-weight:800;color:#22314e}
+td{border:1px solid var(--line);padding:4px 5px;text-align:center;color:#2a3446;height:22px}
+td.l{text-align:left}
+.mono,td.m{font-family:'D2Coding','Consolas',monospace}
+.grid{width:auto;margin:4px auto;font-size:15px}
+.grid td{width:36px;height:30px;font-family:'D2Coding',monospace;font-weight:700}
+.given{background:#e8eefb;color:var(--c1)}
+
+.vert{text-align:center;font-family:'D2Coding',monospace;font-size:13.5px;line-height:1.28;margin:2px 0}
+.vert .ln{border-top:1.5px solid #333;display:inline-block;padding-top:2px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:6mm;border-top:1px solid var(--line);
+  padding-top:3px;display:flex;font-size:10px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c2);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always;min-height:294mm}
+  .page:last-child{page-break-after:auto}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="t">📙 사고력수학 1단계 · C영역 <b>문제집</b> — 도형과 공간 (주제 13~18)</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">이론서를 먼저 읽고 푸세요. 주제당 <b>연습 5 + 도전 3 + 서술형 1</b>입니다.</span>
+</div>
+
+<!-- ===== 주제 13 ===== -->
+<div class="page">
+  <div class="head">
+<span class="no">주제 13</span>
+    <h1>도형의 개수 세기 — 크기별로 나누어 세기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>1 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>크기별로 나누어 세기</b> — 가장 작은 것부터 크기별로 분류해 센다.
+    정사각형은 <b>왼쪽 위 꼭짓점이 놓일 자리</b>를 세면 되고, 삼각형은 <b>△와 ▽를 따로</b> 센다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    <b>2 × 2</b> 판에서 찾을 수 있는 정사각형은 모두 몇 개입니까? <span class="short"></span> 개</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    <b>4 × 4</b> 판의 정사각형 개수를 크기별로 세어 표를 채우시오.</span></div>
+    <table>
+      <tr><th style="width:26%">크기</th><th class="c">1×1</th><th class="c">2×2</th><th class="c">3×3</th><th class="c">4×4</th><th class="c">합계</th></tr>
+      <tr><td class="l">개수</td><td>16</td><td></td><td></td><td></td><td></td></tr>
+    </table></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>5 × 5</b> 판의 정사각형은 모두 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">1² + 2² + … + 5² 을 계산하면 됩니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    <b>2 × 2</b> 판에서 찾을 수 있는 <b>직사각형</b>은 모두 몇 개입니까?
+    (정사각형 포함) <span class="short"></span> 개</span></div>
+    <div class="hintbox">세로선 3개 중 2개, 가로선 3개 중 2개를 고르는 것과 같습니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    <b>3 × 3</b> 판의 <b>직사각형</b>은 모두 몇 개입니까? <span class="short"></span> 개</span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    큰 삼각형을 <b>3단</b>으로 나누었습니다. 크고 작은 삼각형은 모두 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">▲(위로 향한 것)와 ▽(아래로 향한 것)를 <b>따로</b> 세세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    큰 삼각형을 <b>4단</b>으로 나누면 삼각형은 모두 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">1단 1개, 2단 5개, 3단 13개 … 어떤 규칙일까요? 직접 세어 확인하세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    <b>4 × 4</b> 판에서 <b>정사각형이 아닌 직사각형</b>은 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">전체 직사각형에서 <b>정사각형을 빼면</b> 됩니다. 4×4 직사각형은 100개입니다.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    <b>3 × 3</b> 판에서 <b>2 × 2 정사각형이 4개</b>인 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 13 · 1 / 6</span></div>
+</div>
+
+<!-- ===== 주제 14 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 14</span>
+    <h1>쌓기나무 — 보이지 않는 것까지 세기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>2 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>위에서 본 모양에 수 쓰기</b> — 각 칸에 쌓인 개수를 적고 모두 더한다.
+    어느 방향에서 보든 그 줄에서 <b>가장 높은 것</b>만 보인다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    위에서 본 모양에 수를 쓴 것입니다. 쌓기나무는 모두 몇 개입니까? <span class="short"></span> 개</span></div>
+    <table class="grid">
+      <tr><td class="given">2</td><td class="given">1</td><td class="given">3</td></tr>
+      <tr><td class="given">1</td><td class="given">2</td><td class="given">1</td></tr>
+    </table></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    1번 모양을 <b>앞에서</b> 보면 각 줄의 높이는 얼마입니까?
+    <span class="short" style="min-width:90px"></span></span></div>
+    <div class="hintbox">앞에서 볼 때는 각 <b>세로줄</b>에서 가장 큰 수만 보입니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    쌓기나무 <b>27개</b>로 3 × 3 × 3 정육면체를 만들었습니다.
+    어느 방향에서도 <b>보이지 않는</b> 나무는 몇 개입니까? <span class="short"></span> 개</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    쌓기나무 <b>64개</b>로 4 × 4 × 4 정육면체를 만들었습니다.
+    보이지 않는 나무는 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">겉껍질을 한 겹 벗기면 몇 × 몇 × 몇 이 남을까요?</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    1번 모양의 <b>층별 개수</b>를 구하시오.
+    1층 <span class="short" style="min-width:40px"></span>　2층 <span class="short" style="min-width:40px"></span>　3층 <span class="short" style="min-width:40px"></span></span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    위에서 본 모양이 <b>3 × 3 아홉 칸 모두</b>이고, 앞과 옆에서 본 높이가 모두 <b class="mono">2, 3, 2</b> 입니다.
+    쌓기나무가 <b>가장 많을 때</b>의 개수는? <span class="short"></span> 개</span></div>
+    <div class="hintbox">각 칸의 높이는 <b>min(앞, 옆)</b> 을 넘을 수 없습니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    쌓기나무 27개로 만든 3 × 3 × 3 정육면체의 <b>바깥면 전체</b>에 페인트를 칠한 뒤 분해했습니다.
+    <b>세 면</b>이 칠해진 나무는 몇 개입니까? <span class="short"></span> 개</span></div>
+    <div class="hintbox">세 면이 칠해지려면 큰 정육면체의 <b>어디</b>에 있어야 할까요?</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    7번에서 <b>두 면</b>이 칠해진 나무와 <b>한 면</b>만 칠해진 나무는 각각 몇 개입니까?
+    두 면 <span class="short" style="min-width:40px"></span>　한 면 <span class="short" style="min-width:40px"></span>
+    　(합이 27이 되는지 확인!)</span></div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    앞과 옆에서 본 모양이 같아도 <b>쌓기나무 개수가 다를 수 있는</b> 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 14 · 2 / 6</span></div>
+</div>
+
+<!-- ===== 주제 15 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 15</span>
+    <h1>정육면체의 전개도 — 마주 보는 면 찾기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>3 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>한 칸 건너뛰기로 맞은편 찾기</b> — 일직선으로 이어진 줄에서
+    <b>한 칸 건너뛴 두 면</b>이 마주 본다. 정육면체 전개도는 모두 <b>11가지</b>.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    주사위에서 마주 보는 면의 눈의 합은 <b>7</b>입니다. 빈칸을 채우시오.<br>
+    1의 맞은편 <span class="short" style="min-width:35px"></span>　
+    2의 맞은편 <span class="short" style="min-width:35px"></span>　
+    3의 맞은편 <span class="short" style="min-width:35px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    정육면체의 <b>면</b>, <b>모서리</b>, <b>꼭짓점</b>은 각각 몇 개입니까?
+    면 <span class="short" style="min-width:35px"></span>　모서리 <span class="short" style="min-width:35px"></span>　꼭짓점 <span class="short" style="min-width:35px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    아래 전개도에서 <b>㉮</b>와 마주 보는 면을 찾아 번호를 쓰시오. <span class="short"></span></span></div>
+    <div style="text-align:center;font-family:'D2Coding',monospace;font-size:13px;line-height:1.35;margin:2px 0">
+      ┌─┐<br>│㉮│<br>├─┼─┬─┬─┐<br>│①│②│③│④│<br>└─┴─┴─┴─┼─┐<br>　　　　　　　│⑤│<br>　　　　　　　└─┘
+    </div>
+    <div class="hintbox">면이 <b>6개</b>인지 먼저 세어 보세요. 일직선 줄은 ①②③④ 입니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    정육면체의 전개도는 모두 몇 가지입니까? (돌리거나 뒤집어 같아지는 것은 한 가지로 셈)
+    <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    정사각형 6개를 <b>2 × 3 직사각형</b> 모양으로 붙였습니다. 접으면 정육면체가 될까요?
+    <span class="short"></span>　그 이유는? </span></div>
+    <div class="ans h1"></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    주사위 전개도입니다. ㉮와 ㉯에 알맞은 눈의 수를 구하시오.
+    ㉮ <span class="short" style="min-width:35px"></span>　㉯ <span class="short" style="min-width:35px"></span></span></div>
+    <div style="text-align:center;font-family:'D2Coding',monospace;font-size:13px;line-height:1.35;margin:2px 0">
+      ┌─┐<br>│3│<br>├─┼─┬─┬─┐<br>│1│2│㉮│㉯│<br>└─┴─┴─┼─┤<br>　　　　　│4│<br>　　　　　└─┘
+    </div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    주사위를 굴렸더니 <b>윗면이 5</b>였습니다. <b>아랫면</b>은 얼마입니까? <span class="short" style="min-width:35px"></span>
+    　또 <b>옆면 4개</b>의 눈의 합은? <span class="short" style="min-width:45px"></span></span></div>
+    <div class="hintbox">여섯 면의 합은 1+2+…+6 = 21 입니다. 여기서 윗면과 아랫면을 빼면 됩니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    주사위 <b>2개</b>를 위아래로 붙여 놓았습니다. 붙어서 <b>보이지 않게 된 두 면</b>의 눈의 합이 <b>7</b>일 때,
+    겉으로 보이는 모든 면의 눈의 합은? <span class="short"></span></span></div>
+    <div class="hintbox">주사위 하나의 여섯 면 합은 21입니다.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    전개도에서 <b>한 칸 건너뛴 면이 마주 보는</b> 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 15 · 3 / 6</span></div>
+</div>
+
+<!-- ===== 주제 16 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 16</span>
+    <h1>대칭 — 접어서 포개기, 돌려서 겹치기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>4 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>접어 보기와 돌려 보기를 따로 확인</b> — <b>선대칭</b>은 접어서 포개짐,
+    <b>점대칭</b>은 반 바퀴 돌려 같아짐. 정 n 각형은 축 <b>n개</b>, n이 <b>짝수</b>일 때만 점대칭.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    다음 도형의 <b>대칭축 개수</b>를 쓰시오.<br>
+    정삼각형 <span class="short" style="min-width:35px"></span>　정사각형 <span class="short" style="min-width:35px"></span>　
+    직사각형 <span class="short" style="min-width:35px"></span>　평행사변형 <span class="short" style="min-width:35px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    위 네 도형 중 <b>점대칭</b>인 것을 모두 쓰시오. <span class="short"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>정육각형</b>의 대칭축은 몇 개입니까? <span class="short" style="min-width:35px"></span>
+    　점대칭입니까? <span class="short" style="min-width:35px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    알파벳 <b class="mono">A　H　N　O　S</b> 중 <b>선대칭</b>인 것을 모두 쓰시오. <span class="short"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    위 알파벳 중 <b>점대칭</b>인 것을 모두 쓰시오. <span class="short"></span></span></div>
+    <div class="hintbox">종이에 써서 <b>거꾸로 돌려</b> 보세요.</div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    <b>정오각형</b>은 대칭축이 5개나 있는데도 점대칭이 <b>아닙니다.</b> 맞습니까, 틀립니까?
+    <span class="short" style="min-width:45px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    <b>선대칭이 아니면서 점대칭인</b> 도형을 하나 그리거나 이름을 쓰시오. <span class="short"></span></span></div>
+    <div class="hintbox">이론서의 표에서 대칭축이 <b>0개</b>인데 점대칭인 도형을 찾아보세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    숫자 <b class="mono">0　1　2　6　8　9</b> 중에서, 종이를 <b>거꾸로 돌려도</b> 같은 숫자로 보이는 것을 모두 쓰시오.
+    <span class="short"></span></span></div>
+    <div class="hintbox">6을 돌리면 무엇이 될까요? 자기 자신이 되어야 합니다.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    <b>정삼각형</b>은 대칭축이 3개인데도 점대칭이 아닙니다. 그 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 16 · 4 / 6</span></div>
+</div>
+
+<!-- ===== 주제 17 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 17</span>
+    <h1>한붓그리기 — 그려 보기 전에 판정하기</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>5 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>홀수점 세기</b> — 각 점에 모인 선의 개수를 세어 <b>홀수인 점</b>이 몇 개인지 본다.
+    <b>0개</b>면 어디서든 가능, <b>2개</b>면 홀수점에서 출발, <b>4개 이상</b>이면 불가능.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    한 점에 모인 선의 개수를 무엇이라고 합니까? <span class="short"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    홀수점이 <b>0개</b>일 때, 한붓그리기가 끝나는 곳은 어디입니까? <span class="short"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>집 모양</b>(사각형 + 지붕 + 대각선 2개)의 각 점의 차수를 세어 홀수점이 몇 개인지 쓰시오.
+    <span class="short" style="min-width:45px"></span> 개　→ 한붓그리기 <span class="short" style="min-width:60px"></span></span></div>
+    <figure style="margin:2px 0">
+      <svg viewBox="0 0 70 52" xmlns="http://www.w3.org/2000/svg" style="max-width:80px">
+        <g stroke="#333" stroke-width="1.6" fill="none" stroke-linejoin="round">
+          <path d="M10 44h44v-26h-44z M10 18l22-13 22 13 M10 18l44 26 M54 18l-44 26"/>
+        </g>
+      </svg>
+    </figure></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    <b>사각형 + 대각선 2개</b>는 한붓그리기가 가능합니까? <span class="short" style="min-width:50px"></span>
+    　홀수점은 몇 개입니까? <span class="short" style="min-width:35px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    홀수점이 <b>2개</b>인 그림은 어디에서 출발해야 합니까? <span class="short"></span></span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    옛 도시 쾨니히스베르크에는 땅 <b>4곳</b>과 다리 <b>7개</b>가 있었고, 각 땅에 붙은 다리 수는
+    <b class="mono">5, 3, 3, 3</b> 이었습니다. 모든 다리를 한 번씩만 건널 수 있습니까?
+    <span class="short" style="min-width:50px"></span></span></div>
+    <div class="hintbox">땅을 <b>점</b>으로, 다리를 <b>선</b>으로 바꾸어 생각하세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    <b>원 하나에 지름 2개</b>를 그은 그림이 있습니다.
+    각 점의 차수를 세어 한붓그리기가 가능한지 판정하시오. <span class="short"></span></span></div>
+    <div class="hintbox">원 위의 점은 <b>호 2개 + 지름 1개</b>가 모입니다. 가운데 점은 몇 개일까요?</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    4번의 <b>사각형 + 대각선 2개</b> 그림에 <b>선을 하나만 더 그어</b>
+    한붓그리기가 가능하게 만들려면 어디에 그어야 할까요? 이유와 함께 쓰시오.</span></div>
+    <div class="ans h2"></div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    여러 번 시도해서 안 되었다고 해서 <b>“불가능하다”고 말할 수 없는 이유</b>는 무엇이며,
+    그러면 어떻게 판정해야 합니까?</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 17 · 5 / 6</span></div>
+</div>
+
+<!-- ===== 주제 18 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 18</span>
+    <h1>최단 거리 — 교차점에 수를 적어라</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>6 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>교차점에 수 적기</b> — 맨 아래 줄과 맨 왼쪽 줄은 모두 <b>1</b>,
+    나머지는 <b>왼쪽 수 + 아래 수</b>. 막힌 곳은 <b>0</b>을 적거나 <b>전체에서 빼기</b>.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    <b>2 × 2</b> 격자에서 P에서 Q까지 가는 최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    <b>3 × 2</b> 격자(오른쪽 3칸, 위 2칸)의 최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>3 × 3</b> 격자의 최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">교차점마다 수를 적어 나가면 확실합니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    <b>4 × 3</b> 격자(오른쪽 4칸, 위 3칸)의 최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    3 × 3 격자에서 최단 경로로 갈 때 <b>모두 몇 번</b> 움직입니까?
+    <span class="short" style="min-width:40px"></span> 번　(오른쪽 <span class="short" style="min-width:30px"></span> 번, 위 <span class="short" style="min-width:30px"></span> 번)</span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    3 × 3 격자에서 <b>P로부터 오른쪽 1칸·위 1칸</b> 떨어진 교차점이 공사 중이라 지날 수 없습니다.
+    최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">막힌 자리에 <b>0</b>을 적고 세거나, <b>전체에서 지나는 경로를 빼세요.</b></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    3 × 3 격자에서 <b>오른쪽 1칸·위 2칸 지점 M</b>을 <b>반드시 지나야</b> 합니다.
+    최단 경로는 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">P→M 과 M→Q 를 따로 세어 <b>곱하세요</b>. 더하면 안 됩니다!</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    <b>4 × 3</b> 격자에서 오른쪽 2칸·위 1칸 지점이 막혔습니다. 최단 경로는 몇 가지입니까?
+    <span class="short"></span> 가지</span></div>
+    <div class="hintbox">전체는 35가지입니다. 막힌 점을 지나는 경로를 구해 빼세요.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    막힌 지점이 있을 때 <b>‘직접 세기’와 ‘전체에서 빼기’</b> 중 어느 쪽이 더 편한지 고르고
+    그 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 C영역 문제집</span><span class="r">주제 18 · 6 / 6</span></div>
+</div>
+
+</body>
+</html>

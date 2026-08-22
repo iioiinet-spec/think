@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 A영역 — 이론서 (수와 연산)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --c1:#1d4ed8; --c2:#ea580c; --c3:#0f766e; --c4:#be123c; --c5:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.62;font-size:13.5px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:12mm 12mm 10mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+/* 머리글 */
+.head{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:6px;margin-bottom:10px}
+.head .no{background:var(--c1);color:#fff;font-weight:800;font-size:13px;
+  padding:3px 12px;border-radius:6px;flex:0 0 auto}
+.head h1{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.head .tag{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.45}
+
+/* 요소 */
+.open{background:#fff8ee;border:1.6px dashed #e0b070;border-radius:10px;padding:9px 13px;margin-bottom:9px}
+.open .lb{font-size:11px;font-weight:800;color:#a56a12;letter-spacing:1px}
+.open p{margin:2px 0;font-size:13.6px;color:#5b451c}
+
+h2{font-size:14.6px;font-weight:800;margin:9px 0 5px;padding-left:10px;border-left:4px solid var(--c1)}
+h2.b{border-color:var(--c2)}h2.c{border-color:var(--c3)}
+h3{font-size:13.6px;font-weight:800;color:var(--c1);margin:8px 0 4px}
+p{margin:4px 0;color:#2a3446}
+.small{font-size:12.2px;color:var(--sub)}
+b.b1{color:var(--c1)}b.b2{color:var(--c2)}b.b3{color:var(--c3)}b.b4{color:var(--c4)}
+
+.strat{background:#eef4ff;border:1.6px solid #b6cdf5;border-radius:10px;padding:8px 12px;margin:7px 0}
+.strat .lb{display:inline-block;background:var(--c1);color:#fff;font-size:10.5px;font-weight:800;
+  padding:1px 9px;border-radius:8px;margin-right:7px}
+.strat .nm{font-weight:800;font-size:14.5px;color:var(--c1)}
+.strat p{font-size:13px;margin:4px 0 0}
+
+.key{background:#0f1a2b;color:#eaf0fb;border-radius:9px;padding:9px 15px;margin:7px 0;
+  font-family:'D2Coding','Consolas',monospace;font-size:14px;text-align:center}
+.key b{color:#fcd34d}
+.key small{display:block;font-family:inherit;font-size:11.5px;color:#93a3bd;margin-top:4px}
+
+.ex{border:1.6px solid var(--line);border-radius:10px;overflow:hidden;margin:8px 0}
+.ex .hd{background:var(--soft);padding:5px 12px;font-weight:800;font-size:13px;color:var(--c1);
+  border-bottom:1px solid var(--line)}
+.ex .bd{padding:8px 12px}
+.ex.o .hd{background:#fff4ea;color:var(--c2)}
+.fill{display:inline-block;min-width:44px;border-bottom:1.6px solid #9fb0c8;
+  text-align:center;color:#c0392b;font-weight:800;font-family:'D2Coding',monospace}
+.sol{font-family:'D2Coding','Consolas',monospace;font-size:12px;line-height:1.72;
+  background:#f8fafd;border-radius:7px;padding:7px 11px;margin:5px 0;white-space:pre-wrap;color:#2a3446}
+
+table{width:100%;border-collapse:collapse;font-size:11.8px;margin:5px 0}
+th{background:#e9eefa;border:1px solid var(--line);padding:3px 5px;font-weight:800;color:#22314e}
+td{border:1px solid var(--line);padding:3px 5px;text-align:center;color:#2a3446}
+td.l{text-align:left}
+td.m{font-family:'D2Coding',monospace}
+
+.note{background:var(--soft);border-left:4px solid var(--c3);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#25404a}
+.warn{background:#fff1f2;border-left:4px solid var(--c4);border-radius:7px;
+  padding:6px 11px;margin:6px 0;font-size:12px;color:#7a2231}
+ul.li{list-style:none;margin:4px 0}
+ul.li li{padding-left:16px;position:relative;margin:2px 0}
+ul.li li::before{content:'▪';position:absolute;left:2px;color:var(--c1);font-weight:800}
+
+.write{background:#f6f4ff;border:1.6px solid #cfc2f3;border-radius:10px;padding:7px 12px;margin:6px 0}
+.write .lb{font-size:11px;font-weight:800;color:var(--c5);letter-spacing:1px}
+.write .frame{font-size:13.2px;color:#3d2f66;margin-top:3px}
+.write .frame u{color:#8b5cf6;text-decoration-thickness:1.5px}
+
+.foot{position:absolute;left:13mm;right:13mm;bottom:6mm;border-top:1px solid var(--line);
+  padding-top:4px;display:flex;font-size:10.5px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c1);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+svg{display:block;margin:0 auto}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="t">📘 사고력수학 1단계 · A영역 <b>이론서</b> — 수와 연산 (주제 1~6)</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">짝이 되는 <b>문제집</b>과 함께 사용하세요. 주제당 2쪽입니다.</span>
+</div>
+
+<!-- ============ 주제 1 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 1</span>
+    <h1>수 세기의 기술 — 빠짐없이, 겹치지 않게</h1>
+    <div class="tag">1단계 · A 수와 연산<br>1 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>숫자 카드 <b>1, 2, 3, 4</b> 가 있습니다. 이 중 <b>두 장</b>을 뽑아 두 자리 수를 만들려고 해요.
+    만들 수 있는 수는 모두 몇 개일까요?</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 답을 바로 세지 말고 생각해 보세요.
+    친구는 “12, 21, 13, 31 …” 하고 마구 적다가 <b>34를 빠뜨렸습니다.</b>
+    어떻게 하면 <b>하나도 빠뜨리지 않을</b> 수 있을까요?</p>
+  </div>
+
+  <h2>1. 마구 세면 반드시 빠뜨린다</h2>
+  <p>세어야 할 것이 10개만 넘어가도 사람은 <b class="b4">반드시 실수</b>합니다.
+  그래서 수학에서는 세기 전에 먼저 <b>순서</b>를 정합니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">표 만들기 · 순서대로 나열하기</span></div>
+    <p><b>① 기준을 하나 정한다</b>(예: 십의 자리) → <b>② 그 기준을 작은 것부터 차례로</b> 고정한다
+    → <b>③ 각 경우마다 나머지를 순서대로</b> 적는다.</p>
+  </div>
+
+  <h3>실제로 해 보기</h3>
+  <p>십의 자리를 <b>1 → 2 → 3 → 4</b> 순서로 고정하고, 각각에 대해 일의 자리를 작은 수부터 적습니다.</p>
+  <table>
+    <tr><th style="width:22%">십의 자리</th><th>만들 수 있는 수</th><th style="width:14%">개수</th></tr>
+    <tr><td><b>1</b></td><td class="m l">12　13　14</td><td>3</td></tr>
+    <tr><td><b>2</b></td><td class="m l">21　23　24</td><td>3</td></tr>
+    <tr><td><b>3</b></td><td class="m l">31　32　34</td><td>3</td></tr>
+    <tr><td><b>4</b></td><td class="m l">41　42　43</td><td>3</td></tr>
+    <tr><th colspan="2" style="text-align:right">모두</th><th>12개</th></tr>
+  </table>
+  <div class="note">표를 만들면 <b>“빠뜨렸을까?”</b> 하는 불안이 사라집니다.
+  각 줄이 3개씩 <b>규칙적으로</b> 채워졌기 때문에, 한 칸이라도 비면 바로 눈에 띕니다.</div>
+
+  <h2>2. 왜 3개씩일까 — 곱셈으로 세기</h2>
+  <p>십의 자리를 정하고 나면, 일의 자리에는 <b>남은 3장</b> 중 하나를 놓을 수 있습니다.</p>
+  <div class="key">십의 자리 <b>4가지</b> × 일의 자리 <b>3가지</b> = <b>12개</b>
+    <small>먼저 정하고 → 그다음 정하는 구조일 때는 <b>곱한다</b></small></div>
+
+  <div class="warn"><b>주의!</b> 카드에 <b>0</b>이 있으면 이야기가 달라집니다.
+  <b>0은 맨 앞에 올 수 없기</b> 때문이에요. 카드가 <b>0, 1, 2, 3</b> 이라면
+  십의 자리는 <b>3가지</b>(1, 2, 3)뿐이고, 일의 자리는 0을 포함한 남은 <b>3가지</b>여서
+  <b>3 × 3 = 9개</b>가 됩니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 1 · 1 / 12</span></div>
+</div>
+
+<!-- ============ 주제 1 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 1</span>
+    <h1>수 세기의 기술 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>2 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>숫자 카드 <b>1, 2, 3, 5</b> 중 <b>세 장</b>을 뽑아 세 자리 수를 만듭니다.
+      만들 수 있는 수는 모두 몇 개일까요?</p>
+      <div class="sol">[생각] 백의 자리부터 차례로 정한다.
+  백의 자리 : <span class="fill">4</span>가지 (1, 2, 3, 5 중 하나)
+  십의 자리 : 남은 카드 중 하나 → <span class="fill">3</span>가지
+  일의 자리 : 또 남은 카드 중 하나 → <span class="fill">2</span>가지
+
+[식] 4 × 3 × 2 = <span class="fill">24</span>개</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>24개</u>입니다. 왜냐하면 <u>백의 자리 4가지, 십의 자리 3가지, 일의 자리 2가지를 곱하면 되기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>숫자 카드 <b>0, 1, 2, 3</b> 중 두 장을 뽑아 두 자리 수를 만듭니다.
+      만들 수 있는 수를 <b>모두 적고</b>, 개수를 구하세요.</p>
+      <table>
+        <tr><th style="width:22%">십의 자리</th><th>만들 수 있는 수</th><th style="width:14%">개수</th></tr>
+        <tr><td><b>1</b></td><td class="m l"><span class="fill">10</span>　<span class="fill">12</span>　<span class="fill">13</span></td><td>3</td></tr>
+        <tr><td><b>2</b></td><td class="m l"><span class="fill">20</span>　<span class="fill">21</span>　<span class="fill">23</span></td><td>3</td></tr>
+        <tr><td><b>3</b></td><td class="m l"><span class="fill">30</span>　<span class="fill">31</span>　<span class="fill">32</span></td><td>3</td></tr>
+        <tr><th colspan="2" style="text-align:right">모두</th><th><span class="fill">9</span>개</th></tr>
+      </table>
+      <div class="sol">[꼭 확인] 십의 자리에 <b>0</b>이 오면 「01」처럼 되어 두 자리 수가 아니다.
+그래서 십의 자리는 <span class="fill">3</span>가지뿐이다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>세기 전에 <b>순서(기준)</b>를 먼저 정한다. 그래야 빠뜨리지 않는다.</li>
+    <li><b>표</b>로 정리하면 빠진 곳이 눈에 보인다.</li>
+    <li>“먼저 정하고 → 그다음 정하는” 구조는 <b>곱셈</b>으로 셀 수 있다.</li>
+    <li><b>0</b>은 맨 앞자리에 올 수 없다. 조건이 하나 붙으면 개수가 달라진다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“친구가 세다가 하나를 빠뜨렸습니다. <b>빠뜨리지 않았다고 어떻게 확신</b>할 수 있나요?”<br>
+    <span class="small">→ “<u>십의 자리를 1부터 4까지 차례로 고정하고</u> 각각 <u>3개씩</u> 나오는 것을 확인했기 때문입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 1 · 2 / 12</span></div>
+</div>
+
+<!-- ============ 주제 2 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 2</span>
+    <h1>조건에 맞는 수 찾기 — 그물을 좁혀라</h1>
+    <div class="tag">1단계 · A 수와 연산<br>3 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>두 자리 수 중에서 <b>① 십의 자리가 일의 자리보다 크고</b>,
+    <b>② 각 자리 숫자의 합이 9</b>인 수를 모두 찾아보세요.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 두 자리 수는 10부터 99까지 <b>90개</b>나 됩니다.
+    90개를 다 확인할 건가요? 더 좋은 방법이 있습니다.</p>
+  </div>
+
+  <h2>1. 조건은 <span style="color:#ea580c">그물</span>이다</h2>
+  <p>조건이 하나 붙을 때마다 후보가 <b>확 줄어듭니다.</b>
+  중요한 것은 <b class="b2">어느 조건부터 거는가</b>입니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">센 조건부터 하나씩 걸기</span></div>
+    <p><b>① 후보를 가장 많이 줄이는 조건</b>을 먼저 건다 → <b>② 남은 후보에 다음 조건</b>을 건다
+    → <b>③ 마지막에 검산</b>한다.</p>
+  </div>
+
+  <h3>어느 조건이 더 셀까?</h3>
+  <table>
+    <tr><th style="width:34%">조건</th><th>남는 후보</th><th style="width:14%">개수</th></tr>
+    <tr><td class="l">아무 조건 없음</td><td class="m l">10 ~ 99</td><td>90개</td></tr>
+    <tr><td class="l"><b>② 자리 합이 9</b>만 걸면</td><td class="m l">18, 27, 36, 45, 54, 63, 72, 81, 90</td><td><b>9개</b></td></tr>
+    <tr><td class="l"><b>① 십 &gt; 일</b>만 걸면</td><td class="m l">10, 20, 21, 30, 31, 32, …</td><td>45개</td></tr>
+  </table>
+  <div class="note"><b>②를 먼저 거는 것이 훨씬 좋습니다.</b> 90개가 단숨에 <b>9개</b>로 줄어드니까요.
+  ①을 먼저 걸면 45개나 남아서 여전히 힘듭니다.</div>
+
+  <h3>이제 남은 9개에 ① 조건 걸기</h3>
+  <div class="sol">18 → 1 &lt; 8  ✗      27 → 2 &lt; 7  ✗      36 → 3 &lt; 6  ✗
+45 → 4 &lt; 5  ✗      <b>54 → 5 &gt; 4  ✓</b>      <b>63 → 6 &gt; 3  ✓</b>
+<b>72 → 7 &gt; 2  ✓</b>      <b>81 → 8 &gt; 1  ✓</b>      <b>90 → 9 &gt; 0  ✓</b>
+
+답 : <b>54, 63, 72, 81, 90</b>  (모두 5개)</div>
+
+  <div class="key">조건이 여럿일 때는 <b>후보를 가장 많이 줄이는 것</b>부터
+    <small>순서를 잘 고르면 90번 확인할 일이 9번으로 줄어든다</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 2 · 3 / 12</span></div>
+</div>
+
+<!-- ============ 주제 2 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 2</span>
+    <h1>조건에 맞는 수 찾기 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>4 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>두 자리 수 중에서 <b>각 자리 숫자의 곱이 12</b>인 수를 모두 찾으세요.</p>
+      <div class="sol">[생각] 곱이 12가 되는 <b>한 자리 수 두 개</b>를 먼저 찾는다.
+  12 = 2 × 6 = 3 × 4      (12 = 1 × 12 는 12가 한 자리가 아니라 ✗)
+
+[나열] 두 수의 순서를 바꾼 것도 모두 센다.
+  2와 6 → <span class="fill">26</span>, <span class="fill">62</span>
+  3와 4 → <span class="fill">34</span>, <span class="fill">43</span>
+
+답 : <b>26, 34, 43, 62</b>  (모두 <span class="fill">4</span>개)</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>26, 34, 43, 62</u>입니다. 왜냐하면 <u>곱이 12인 한 자리 수 짝은 (2,6)과 (3,4)뿐이고, 각각 순서를 바꾼 두 가지가 나오기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>두 자리 수 중에서 <b>① 4의 배수</b>이면서 <b>② 각 자리 숫자의 합이 12</b>인 수를 모두 찾으세요.</p>
+      <div class="sol">[어느 조건부터?] ②를 먼저 걸면 후보가 확 줄어든다.
+  자리 합이 12인 두 자리 수 :
+    <span class="fill">39</span>, <span class="fill">48</span>, <span class="fill">57</span>, <span class="fill">66</span>, <span class="fill">75</span>, <span class="fill">84</span>, <span class="fill">93</span>   → 7개
+
+[① 조건 걸기] 4의 배수인가?
+  39 ✗   <b>48 ✓</b>   57 ✗   66 ✗   75 ✗   <b>84 ✓</b>   93 ✗
+
+답 : <b>48, 84</b>
+[검산] 48 ÷ 4 = 12 ✓,  4 + 8 = 12 ✓ / 84 ÷ 4 = 21 ✓,  8 + 4 = 12 ✓</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>조건은 후보를 걸러 내는 <b>그물</b>이다.</li>
+    <li><b>가장 센 조건</b>(후보를 많이 줄이는 조건)부터 건다.</li>
+    <li>“합이 ○○”, “곱이 ○○” 같은 조건이 대체로 <b>가장 세다</b>.</li>
+    <li>답을 구한 뒤에는 반드시 <b>모든 조건에 넣어 검산</b>한다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“조건 <b>①과 ② 중 어느 것을 먼저</b> 거는 것이 좋을까요? 그 이유를 쓰세요.”<br>
+    <span class="small">→ “<u>②를 먼저</u> 거는 것이 좋습니다. 왜냐하면 <u>②를 걸면 후보가 7개로 줄지만 ①을 걸면 22개나 남기</u> 때문입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 2 · 4 / 12</span></div>
+</div>
+<!-- ============ 주제 3 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 3</span>
+    <h1>연산 퍼즐 — 숨은 숫자를 찾아라</h1>
+    <div class="tag">1단계 · A 수와 연산<br>5 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>아래 덧셈에서 <b>같은 글자는 같은 숫자</b>, <b>다른 글자는 다른 숫자</b>를 나타냅니다.
+    ㉮와 ㉯에 알맞은 숫자는 무엇일까요?</p>
+    <div style="text-align:center;font-family:'D2Coding',monospace;font-size:17px;line-height:1.5;margin-top:5px">
+      　㉮ 7<br>＋ 3 ㉯<br><span style="border-top:1.6px solid #5b451c;display:inline-block;padding-top:2px">　9 2</span>
+    </div>
+    <p style="margin-top:4px"><b>잠깐!</b> ㉮에 1부터 9까지 다 넣어 볼 수도 있지만, 그럴 필요가 없습니다.
+    <b>확실하게 알 수 있는 자리</b>가 하나 있거든요.</p>
+  </div>
+
+  <h2>1. 확실한 자리부터 공략한다</h2>
+  <p>연산 퍼즐(복면산)의 핵심은 <b class="b2">“여기는 무조건 이 수다”</b> 하는 자리를 먼저 찾는 것입니다.
+  그 자리 하나가 정해지면 나머지가 줄줄이 따라옵니다.</p>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">확실한 자리부터 · 자리올림 확인하기</span></div>
+    <p><b>① 일의 자리부터</b> 본다 (자리올림이 없어 가장 확실하다)
+    → <b>② 자리올림이 있었는지</b> 확인한다 → <b>③ 십의 자리</b>로 올라간다.</p>
+  </div>
+
+  <h3>실제로 풀어 보기</h3>
+  <div class="sol">[1단계] 일의 자리 :  7 + ㉯ 의 일의 자리가 <b>2</b> 다.
+   7 + ㉯ = 2  는 불가능하므로  <b>7 + ㉯ = 12</b>  →  ㉯ = <b>5</b>
+   이때 <b>십의 자리로 1을 올린다.</b>
+
+[2단계] 십의 자리 :  ㉮ + 3 + <b>1</b>(올림) = 9
+   ㉮ + 4 = 9  →  ㉮ = <b>5</b>
+
+[검산]  57 + 35 = <b>92</b>  ✓</div>
+
+  <div class="warn"><b>가장 흔한 실수!</b> 자리올림을 빠뜨리는 것입니다.
+  일의 자리에서 <b>10을 넘었다면 반드시 1을 위로</b> 올려야 합니다.
+  위 문제에서 올림을 빠뜨리면 ㉮ + 3 = 9 가 되어 ㉮ = 6 이라는 <b>틀린 답</b>이 나옵니다.
+  (67 + 35 = 102 로 세 자리가 되어 버립니다.)</div>
+
+  <h2>2. 맨 앞자리에서 알 수 있는 것</h2>
+  <p>두 자리 수끼리 더했는데 답이 <b>세 자리</b>가 되었다면, 맨 앞자리는 무엇일까요?</p>
+  <div class="key">두 자리 + 두 자리 ≤ 99 + 99 = <b>198</b>
+    <small>그러므로 답이 세 자리라면 맨 앞은 <b>반드시 1</b>이다</small></div>
+  <p class="small">이렇게 <b>“가능한 최댓값”</b>을 따져 보면 확인하지 않고도 알아낼 수 있는 것이 많습니다.</p>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 3 · 5 / 12</span></div>
+</div>
+
+<!-- ============ 주제 3 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 3</span>
+    <h1>연산 퍼즐 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>6 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>두 자리 수 <b>㉮㉯</b> 와, 그 두 자리를 바꾼 수 <b>㉯㉮</b> 를 더했더니 <b>121</b>이 되었습니다.
+      ㉮ + ㉯ 의 값을 구하세요. (㉮, ㉯ 는 0이 아닌 한 자리 수)</p>
+      <div class="sol">[생각] 두 수를 자리별로 풀어 쓴다.
+   ㉮㉯ = 10 × ㉮ + ㉯
+   ㉯㉮ = 10 × ㉯ + ㉮
+   더하면 = 11 × ㉮ + 11 × ㉯ = <b>11 × (㉮ + ㉯)</b>
+
+[식 세우기]  11 × (㉮ + ㉯) = 121
+             ㉮ + ㉯ = 121 ÷ 11 = <span class="fill">11</span>
+
+[예 찾기] ㉮ + ㉯ = 11 이 되는 짝 : 29, 38, 47, 56, 65, 74, 83, 92  → 8가지
+   확인 : 29 + 92 = <b>121</b> ✓</div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>11</u>입니다. 왜냐하면 <u>두 수를 더하면 항상 11 × (㉮+㉯) 가 되고, 121 ÷ 11 = 11 이기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>아래 뺄셈에서 ㉮, ㉯ 를 구하세요.</p>
+      <div style="text-align:center;font-family:'D2Coding',monospace;font-size:16px;line-height:1.45;margin:4px 0">
+        　8 ㉮<br>− ㉯ 6<br><span style="border-top:1.6px solid #333;display:inline-block;padding-top:2px">　2 7</span>
+      </div>
+      <div class="sol">[1단계] 일의 자리 :  ㉮ − 6 의 결과가 <b>7</b>
+   ㉮ − 6 = 7 이면 ㉮ = 13 → 한 자리가 아니므로 ✗
+   그러므로 <b>십의 자리에서 10을 빌려 왔다.</b>
+      ㉮ + 10 − 6 = 7   →   ㉮ = <span class="fill">3</span>
+
+[2단계] 십의 자리 : 빌려주었으므로 8이 <b>7</b>이 된 상태
+      7 − ㉯ = 2   →   ㉯ = <span class="fill">5</span>
+
+[검산]  83 − 56 = <b>27</b>  ✓</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li><b>일의 자리부터</b> 푼다. 자리올림·받아내림의 영향을 받지 않기 때문이다.</li>
+    <li>덧셈에서 <b>10을 넘으면 올림</b>, 뺄셈에서 <b>모자라면 빌려온다</b>. 이것을 절대 빠뜨리지 않는다.</li>
+    <li>답을 구하면 <b>원래 식에 넣어 검산</b>한다. 자리를 <b>10 × ㉮ + ㉯</b> 로 풀어 쓰면 숨은 규칙이 보인다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“두 자리 수끼리 더해 세 자리가 되었습니다. <b>맨 앞자리가 1인 이유</b>를 설명하세요.”<br>
+    <span class="small">→ “두 자리 수는 아무리 커도 99이므로 <u>99 + 99 = 198</u>이 최대입니다. 세 자리 수 중 198 이하는 <u>모두 100번대</u>이므로 맨 앞은 1입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 3 · 6 / 12</span></div>
+</div>
+
+<!-- ============ 주제 4 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 4</span>
+    <h1>마방진 — 어느 줄이든 합이 같게</h1>
+    <div class="tag">1단계 · A 수와 연산<br>7 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p><b>1부터 9까지</b>의 수를 3 × 3 칸에 한 번씩 넣어,
+    <b>가로 · 세로 · 대각선</b> 어느 줄을 더해도 합이 같게 만들려고 합니다.</p>
+    <p style="margin-top:3px"><b>잠깐!</b> 아무 데나 넣어 보며 맞추려면 <b>9 × 8 × 7 × … = 362880가지</b>를
+    시도해야 합니다. 그런데 <b>가운데 칸에 들어갈 수는 계산으로 정할 수 있습니다.</b></p>
+  </div>
+
+  <h2>1. 한 줄의 합부터 구한다</h2>
+  <p>세로줄이 3개이고, 그 세 줄을 모두 더하면 <b>1부터 9까지의 합</b>이 됩니다.</p>
+  <div class="sol">1 + 2 + 3 + … + 9 = <b>45</b>
+세로줄 3개의 합이 모두 같으므로   45 ÷ 3 = <b>15</b>
+
+→ <b>어느 줄이든 합은 15</b></div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">합에서 거꾸로 알아내기</span></div>
+    <p><b>① 전체 합</b>을 구한다 → <b>② 한 줄의 합</b>을 구한다
+    → <b>③ 여러 줄이 겹치는 칸</b>을 찾아 그 값을 알아낸다.</p>
+  </div>
+
+  <h2>2. 가운데 칸은 반드시 5</h2>
+  <p><b>가운데 칸</b>을 지나는 줄은 몇 개일까요? 가로 1개, 세로 1개, 대각선 2개 — 모두 <b>4개</b>입니다.</p>
+  <figure style="margin:5px 0">
+    <svg viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg" style="max-width:250px">
+      <g stroke="#333" stroke-width="1.5" fill="none">
+        <rect x="20" y="12" width="76" height="76"/>
+        <path d="M45.3 12v76M70.6 12v76M20 37.3h76M20 62.6h76"/>
+      </g>
+      <rect x="45.3" y="37.3" width="25.3" height="25.3" fill="rgba(29,78,216,.18)"/>
+      <g stroke="#1d4ed8" stroke-width="2" opacity=".85">
+        <path d="M20 50h76M58 12v76M20 12l76 76M96 12l-76 76"/>
+      </g>
+      <text x="58" y="98" font-size="9.5" fill="#555" text-anchor="middle" font-family="monospace">가운데를 지나는 줄 4개</text>
+      <text x="130" y="35" font-size="11.5" fill="#1d4ed8" font-family="monospace">4줄 × 15 = 60</text>
+      <text x="130" y="52" font-size="11.5" fill="#333" font-family="monospace">= 45 + 3 × (가운데)</text>
+      <text x="130" y="69" font-size="11.5" fill="#c0392b" font-family="monospace" font-weight="bold">→ 가운데 = 5</text>
+    </svg>
+  </figure>
+  <div class="sol">가운데를 지나는 4줄의 합 = 4 × 15 = <b>60</b>
+그런데 이 4줄에는 <b>1~9가 한 번씩</b> 들어가고, <b>가운데 칸만 4번</b> 세어진다.
+   60 = 45 + <b>3</b> × (가운데)        ← 가운데를 3번 더 센 셈
+   3 × (가운데) = 15   →   <b>가운데 = 5</b></div>
+
+  <div class="note"><b>놀랍지요?</b> 한 칸도 놓아 보지 않고 <b>계산만으로</b> 가운데가 5임을 알아냈습니다.
+  이것이 사고력 수학의 힘입니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 4 · 7 / 12</span></div>
+</div>
+
+<!-- ============ 주제 4 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 4</span>
+    <h1>마방진 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>8 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>1~9를 한 번씩 써서 마방진을 완성하세요. 빈칸을 채우면 됩니다.</p>
+      <table style="width:auto;margin:5px auto;font-size:15px">
+        <tr><td class="m" style="width:44px;height:34px"><b>2</b></td><td class="m"><span class="fill">7</span></td><td class="m"><b>6</b></td></tr>
+        <tr><td class="m"><span class="fill">9</span></td><td class="m"><b>5</b></td><td class="m"><span class="fill">1</span></td></tr>
+        <tr><td class="m"><b>4</b></td><td class="m"><span class="fill">3</span></td><td class="m"><span class="fill">8</span></td></tr>
+      </table>
+      <div class="sol">[순서] <b>두 칸이 이미 채워진 줄</b>부터 공략한다.
+  첫째 가로줄 : 2 + □ + 6 = 15  →  □ = <span class="fill">7</span>
+  첫째 세로줄 : 2 + □ + 4 = 15  →  □ = <span class="fill">9</span>
+  대각선(↘)  : 2 + 5 + □ = 15  →  □ = <span class="fill">8</span>
+  셋째 가로줄 : 4 + □ + 8 = 15  →  □ = <span class="fill">3</span>
+  마지막 남은 칸 = <span class="fill">1</span>
+
+[검산] 가로 15, 15, 15 / 세로 15, 15, 15 / 대각선 15, 15  ✓</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p><b>2부터 10까지</b>의 수로 마방진을 만들면 한 줄의 합은 얼마일까요?
+      또 가운데 칸에는 어떤 수가 들어갈까요?</p>
+      <div class="sol">[전체 합] 2 + 3 + … + 10 = 45 + 9 − 1 = <span class="fill">54</span>
+   (1~9의 합 45에서, 각 수가 1씩 커졌으므로 9를 더한다)
+
+[한 줄] 54 ÷ 3 = <span class="fill">18</span>
+
+[가운데] 4 × 18 = 72 = 54 + 3 × (가운데)
+   3 × (가운데) = 18   →   가운데 = <span class="fill">6</span>
+
+[확인] 1~9 마방진의 모든 수에 <b>1씩 더한 것</b>과 같다. 가운데도 5 + 1 = 6 ✓</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>마방진은 <b>한 줄의 합</b>부터 구한다. (전체 합 ÷ 줄 수)</li>
+    <li><b>여러 줄이 겹치는 칸</b>(가운데, 모서리)은 계산으로 알아낼 수 있다.</li>
+    <li>1~9 마방진 : 한 줄 합 <b>15</b>, 가운데 <b>5</b>, 모서리는 <b>짝수</b>(2, 4, 6, 8).</li>
+    <li>빈칸을 채울 때는 <b>두 칸이 이미 찬 줄</b>부터 공략한다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“1~9 마방진에서 <b>가운데 칸이 반드시 5</b>인 이유를 설명하세요.”<br>
+    <span class="small">→ “가운데를 지나는 줄이 <u>4개</u>이고 각 줄의 합이 15이므로 합은 <u>60</u>입니다.
+    이 4줄에는 1~9가 한 번씩 들어가 <u>45</u>이고, <u>가운데만 3번 더</u> 세어졌으므로 3 × (가운데) = 15, 즉 가운데는 <u>5</u>입니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 4 · 8 / 12</span></div>
+</div>
+<!-- ============ 주제 5 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 5</span>
+    <h1>거꾸로 생각하기 — 결과에서 처음으로</h1>
+    <div class="tag">1단계 · A 수와 연산<br>9 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>어떤 수에 <b>3을 곱하고</b>, 그다음 <b>7을 더했더니 34</b>가 되었습니다. 처음 수는 무엇일까요?</p>
+    <p style="margin-top:3px"><b>잠깐!</b> “1을 넣어 볼까? 아니네. 2를 넣어 볼까?” 하고 하나씩 넣어 보면
+    시간이 오래 걸립니다. <b>결과 34에서 거꾸로 되돌아가면</b> 한 번에 답이 나옵니다.</p>
+  </div>
+
+  <h2>1. 되돌아가려면 반대 연산을 한다</h2>
+  <table>
+    <tr><th style="width:30%">앞으로 갈 때</th><th style="width:14%"></th><th>거꾸로 갈 때</th></tr>
+    <tr><td class="m">＋ 7 (더하기)</td><td>↔</td><td class="m l"><b>− 7</b> (빼기)</td></tr>
+    <tr><td class="m">− 5 (빼기)</td><td>↔</td><td class="m l"><b>＋ 5</b> (더하기)</td></tr>
+    <tr><td class="m">× 3 (곱하기)</td><td>↔</td><td class="m l"><b>÷ 3</b> (나누기)</td></tr>
+    <tr><td class="m">÷ 4 (나누기)</td><td>↔</td><td class="m l"><b>× 4</b> (곱하기)</td></tr>
+  </table>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">거꾸로 풀기 (역연산)</span></div>
+    <p><b>① 한 일을 순서대로 적는다</b> → <b>② 화살표를 거꾸로 돌린다</b>
+    → <b>③ 각 연산을 반대로</b> 바꾸어 결과부터 계산한다.</p>
+  </div>
+
+  <h3>실제로 해 보기</h3>
+  <div class="sol">[앞으로]   처음 수  ──× 3──▶  ──＋ 7──▶  <b>34</b>
+
+[거꾸로]   처음 수  ◀──÷ 3──  ◀──− 7──  <b>34</b>
+
+   34 − 7 = 27
+   27 ÷ 3 = <b>9</b>
+
+[검산]  9 × 3 = 27,  27 + 7 = <b>34</b>  ✓</div>
+
+  <div class="warn"><b>가장 흔한 실수!</b> <b>순서까지 거꾸로</b> 해야 합니다.
+  앞으로 갈 때 「× 3 → + 7」이었다면, 거꾸로는 「− 7 → ÷ 3」입니다.
+  순서를 지키지 않고 「÷ 3 → − 7」로 하면 34 ÷ 3 이 되어 나누어떨어지지도 않습니다.</div>
+
+  <h2>2. 어디에 쓰일까</h2>
+  <ul class="li">
+    <li><b>사탕 문제</b> — “매일 절반을 먹고 하나 더 먹었더니 마지막에 5개 남았다. 처음에는?”</li>
+    <li><b>시각 문제</b> — “지금 3시인데, 5시간 전은 몇 시였나?”</li>
+    <li><b>이동 문제</b> — “동쪽으로 3칸, 북쪽으로 2칸 갔더니 여기다. 출발점은?”</li>
+  </ul>
+  <div class="key">결과는 아는데 <b>처음</b>을 모를 때 &nbsp;→&nbsp; <b>거꾸로</b>
+    <small>하나씩 넣어 보는 것보다 훨씬 빠르고 확실하다</small></div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 5 · 9 / 12</span></div>
+</div>
+
+<!-- ============ 주제 5 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 5</span>
+    <h1>거꾸로 생각하기 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>10 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p>사탕이 한 봉지 있습니다. 첫째 날 <b>전체의 절반을 먹고 1개를 더</b> 먹었고,
+      둘째 날에도 <b>남은 것의 절반을 먹고 1개를 더</b> 먹었더니 <b>5개</b>가 남았습니다.
+      처음 사탕은 몇 개였을까요?</p>
+      <div class="sol">[앞으로 간 순서]  처음 ─(÷2 하고 −1)─▶ 첫날 남은 것 ─(÷2 하고 −1)─▶ <b>5</b>
+
+[거꾸로]  각 단계를 반대로 : <b>＋1 하고 ×2</b>
+
+  둘째 날 되돌리기 :  (5 + 1) × 2 = <span class="fill">12</span>   ← 첫날 남은 것
+  첫째 날 되돌리기 :  (12 + 1) × 2 = <span class="fill">26</span>   ← 처음 사탕
+
+[검산] 26 → 절반 13, 1개 더 먹어 <b>12개</b> 남음
+       12 → 절반 6, 1개 더 먹어 <b>5개</b> 남음  ✓
+
+답 : <b>26개</b></div>
+      <div class="write">
+        <div class="lb">답안 쓰기</div>
+        <div class="frame">답은 <u>26개</u>입니다. 왜냐하면 <u>5에서 거꾸로 (＋1, ×2)를 두 번 하면 26이 나오고, 검산해도 5개가 남기</u> 때문입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p>물통에 물이 들어 있습니다. 3일 동안 매일 <b>남은 물의 절반을 쓰고 2L를 더</b> 썼더니
+      마지막에 <b>2L</b>가 남았습니다. 처음 물은 몇 L였을까요?</p>
+      <div class="sol">[거꾸로 계산] 매 단계 <b>＋2 하고 ×2</b>
+
+  3일째 되돌리기 : (2 + 2) × 2 = <span class="fill">8</span>
+  2일째 되돌리기 : (8 + 2) × 2 = <span class="fill">20</span>
+  1일째 되돌리기 : (20 + 2) × 2 = <span class="fill">44</span>
+
+[검산] 44 → 20 → 8 → <b>2</b>  ✓        답 : <b>44 L</b></div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>결과를 알고 처음을 구할 때는 <b>거꾸로</b> 간다.</li>
+    <li>연산을 반대로 바꿀 뿐 아니라 <b>순서도 거꾸로</b> 해야 한다.</li>
+    <li>거꾸로 구한 답은 <b>반드시 앞으로 다시 계산해 검산</b>한다.</li>
+    <li>“절반 쓰고 ○개 더”는 거꾸로 <b>＋○ 하고 ×2</b>가 된다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“거꾸로 갈 때 <b>순서를 바꾸지 않으면</b> 왜 안 되는지 예를 들어 설명하세요.”<br>
+    <span class="small">→ “× 3 후 + 7 = 34 에서 순서를 지키면 <u>34 − 7 = 27, 27 ÷ 3 = 9</u>로 정확합니다.
+    그러나 순서를 바꾸면 <u>34 ÷ 3</u>이 되어 나누어떨어지지 않아 틀립니다.”</span></div>
+  </div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 5 · 10 / 12</span></div>
+</div>
+
+<!-- ============ 주제 6 (1) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 6</span>
+    <h1>규칙적으로 더하기 — 1부터 100까지 10초에</h1>
+    <div class="tag">1단계 · A 수와 연산<br>11 / 12 쪽</div>
+  </div>
+
+  <div class="open">
+    <div class="lb">생각 열기</div>
+    <p>선생님이 말했습니다. <b>“1부터 100까지 모두 더해 보렴.”</b>
+    아이들이 끙끙대는 사이, 한 아이가 <b>10초 만에</b> 손을 들고 <b>5050</b>이라고 답했습니다.</p>
+    <p style="margin-top:3px">이 아이가 바로 훗날 위대한 수학자가 된 <b>가우스</b>입니다.
+    어떻게 그렇게 빨리 구했을까요?</p>
+  </div>
+
+  <h2>1. 양 끝에서 짝을 지어 보자</h2>
+  <p>1부터 10까지 더하는 것으로 먼저 연습해 봅시다. <b>맨 앞과 맨 뒤</b>를 짝지어 보세요.</p>
+  <figure style="margin:5px 0">
+    <svg viewBox="0 0 330 82" xmlns="http://www.w3.org/2000/svg" style="max-width:330px">
+      <g font-family="D2Coding,monospace" font-size="13" fill="#2a3446" text-anchor="middle">
+        <text x="24" y="22">1</text><text x="54" y="22">2</text><text x="84" y="22">3</text>
+        <text x="114" y="22">4</text><text x="144" y="22">5</text><text x="174" y="22">6</text>
+        <text x="204" y="22">7</text><text x="234" y="22">8</text><text x="264" y="22">9</text>
+        <text x="296" y="22">10</text>
+      </g>
+      <g stroke="#1d4ed8" stroke-width="1.6" fill="none">
+        <path d="M24 28 Q160 66 296 28"/><path d="M54 28 Q160 58 264 28"/>
+        <path d="M84 28 Q160 50 234 28"/><path d="M114 28 Q160 44 204 28"/>
+        <path d="M144 28 Q159 38 174 28"/>
+      </g>
+      <text x="160" y="78" font-size="12" fill="#1d4ed8" text-anchor="middle"
+        font-family="D2Coding,monospace" font-weight="bold">짝의 합은 모두 11 · 짝은 5개</text>
+    </svg>
+  </figure>
+  <div class="sol">1 + 10 = 11      2 + 9 = 11      3 + 8 = 11      4 + 7 = 11      5 + 6 = 11
+
+<b>11이 5쌍</b>  →  11 × 5 = <b>55</b>
+
+[검산] 1+2+3+4+5+6+7+8+9+10 = 55  ✓</div>
+
+  <div class="strat">
+    <div><span class="lb">오늘의 전략</span><span class="nm">양 끝에서 짝짓기 (가우스의 방법)</span></div>
+    <p><b>① 맨 앞과 맨 뒤를 짝짓는다</b> → <b>② 짝의 합은 모두 같다</b>
+    → <b>③ (짝의 합) × (짝의 개수)</b> 를 계산한다.</p>
+  </div>
+
+  <h2>2. 이제 1부터 100까지</h2>
+  <div class="sol">짝의 합 :  1 + 100 = <b>101</b>     (2 + 99 = 101,  3 + 98 = 101, …)
+짝의 개수 : 100개를 둘씩 묶으므로 100 ÷ 2 = <b>50</b>쌍
+
+      101 × 50 = <b>5050</b></div>
+  <div class="key">1 + 2 + … + n = ( n + 1 ) × n ÷ 2
+    <small>“짝의 합 × 짝의 개수” 를 식으로 쓴 것일 뿐이다</small></div>
+
+  <div class="note"><b>개수가 홀수라면?</b> 예를 들어 1부터 9까지라면 짝을 지어도 가운데 <b>5</b>가 남습니다.
+  그럴 때는 <b>(1 + 9) × 9 ÷ 2 = 45</b> 로 공식을 쓰면 됩니다.
+  공식은 홀수·짝수에 관계없이 언제나 통합니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 6 · 11 / 12</span></div>
+</div>
+
+<!-- ============ 주제 6 (2) ============ -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 6</span>
+    <h1>규칙적으로 더하기 — 예제로 익히기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>12 / 12 쪽</div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 1</div>
+    <div class="bd">
+      <p><b>11부터 50까지</b>의 자연수를 모두 더하면 얼마일까요?</p>
+      <div class="sol">[방법 1 — 짝짓기]
+  짝의 합 : 11 + 50 = <span class="fill">61</span>
+  개수 : 50 − 11 + 1 = <span class="fill">40</span>개  →  짝은 40 ÷ 2 = <span class="fill">20</span>쌍
+  합 = 61 × 20 = <b>1220</b>
+
+[방법 2 — 빼기]
+  (1부터 50까지의 합) − (1부터 10까지의 합)
+  = (51 × 50 ÷ 2) − (11 × 10 ÷ 2)
+  = <span class="fill">1275</span> − <span class="fill">55</span> = <b>1220</b>  ← 같은 답 ✓</div>
+      <div class="warn"><b>개수를 세는 법에 주의!</b> 11부터 50까지는 <b>50 − 11 = 39개가 아니라 40개</b>입니다.
+      <b>양 끝을 모두 세야</b> 하므로 <b>(끝 − 처음 + 1)</b> 입니다.</div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="hd">예제 2</div>
+    <div class="bd">
+      <p><b>2 + 4 + 6 + … + 100</b> 을 구하세요. (100까지의 짝수를 모두 더하기)</p>
+      <div class="sol">[방법 1 — 짝짓기]
+  짝의 합 : 2 + 100 = <span class="fill">102</span>
+  개수 : 100 ÷ 2 = <span class="fill">50</span>개  →  짝은 <span class="fill">25</span>쌍
+  합 = 102 × 25 = <b>2550</b>
+
+[방법 2 — 공통으로 묶기]
+  2 + 4 + 6 + … + 100 = 2 × (1 + 2 + 3 + … + 50)
+                      = 2 × <span class="fill">1275</span> = <b>2550</b>  ✓</div>
+      <div class="note"><b>방법 2가 훨씬 빠릅니다.</b> 모든 항에 <b>2가 공통</b>으로 들어 있으니
+      2를 밖으로 빼내면 이미 아는 문제(1부터 50까지의 합)가 되기 때문입니다.</div>
+    </div>
+  </div>
+
+  <h2 class="c">3. 오늘 배운 것 정리</h2>
+  <ul class="li">
+    <li>규칙적으로 늘어나는 수의 합은 <b>양 끝에서 짝지어</b> 구한다.</li>
+    <li><b>(짝의 합) × (짝의 개수)</b> = (처음 + 끝) × 개수 ÷ 2</li>
+    <li>개수는 <b>끝 − 처음 + 1</b>. 양 끝을 모두 세는 것을 잊지 않는다.</li>
+    <li>공통인 수가 있으면 <b>밖으로 묶어</b> 이미 아는 문제로 바꾼다.</li>
+  </ul>
+
+  <div class="write">
+    <div class="lb">이 주제의 서술형 질문</div>
+    <div class="frame">“1부터 100까지의 합을 <b>10초 안에</b> 구하는 방법을 설명하세요.”<br>
+    <span class="small">→ “<u>1과 100, 2와 99</u> 처럼 양 끝에서 짝지으면 합이 모두 <u>101</u>이고, 짝은 <u>50쌍</u>이므로
+    <u>101 × 50 = 5050</u> 입니다.”</span></div>
+  </div>
+
+  <div class="note" style="margin-top:8px"><b>A영역을 마치며.</b> 여섯 주제에서 배운 전략은
+  <b>표 만들기 · 조건 걸기 · 확실한 곳부터 · 합에서 거꾸로 · 역연산 · 짝짓기</b> 입니다.
+  이제 <b>문제집</b>에서 이 여섯 가지 도구를 직접 꺼내 써 보세요.
+  막히면 <b>“오늘의 전략”</b>이 무엇이었는지 다시 떠올리면 됩니다.</div>
+
+  <div class="foot"><span>사고력수학 1단계 A영역 이론서</span><span class="r">주제 6 · 12 / 12</span></div>
+</div>
+
+</body>
+</html>

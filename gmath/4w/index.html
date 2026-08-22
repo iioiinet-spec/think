@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 D+E영역 — 문제집 (측정과 논리)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --c1:#1d4ed8; --c2:#ea580c; --c3:#0f766e; --c4:#be123c; --c5:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.62;font-size:13.6px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:12mm 12mm 10mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+.head{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:5px;margin-bottom:7px}
+.head .no{background:var(--c2);color:#fff;font-weight:800;font-size:13px;
+  padding:3px 12px;border-radius:6px;flex:0 0 auto}
+.head h1{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.head .tag{margin-left:auto;font-size:10.5px;color:var(--sub);text-align:right;line-height:1.4}
+
+.namebar{display:flex;gap:7px;font-size:11.5px;margin-bottom:6px}
+.namebar span{border:1px solid var(--line);border-radius:4px;padding:2px 9px}
+.namebar .f{flex:1}
+
+.recall{background:#eef4ff;border:1.5px solid #b6cdf5;border-radius:9px;padding:6px 11px;margin-bottom:7px;font-size:12.6px}
+.recall .lb{display:inline-block;background:var(--c1);color:#fff;font-size:10px;font-weight:800;
+  padding:1px 8px;border-radius:8px;margin-right:6px}
+.recall b{color:var(--c1)}
+
+h2{font-size:13.5px;font-weight:800;margin:7px 0 4px;padding-left:9px;border-left:4px solid var(--c2)}
+h2 .cnt{font-size:11px;color:var(--sub);font-weight:700;margin-left:5px}
+h2.ch{border-color:var(--c4)}
+h2.wr{border-color:var(--c5)}
+
+.q{margin-bottom:4px}
+.qh{display:flex;align-items:baseline;gap:7px}
+.qn{background:var(--ink);color:#fff;font-weight:800;font-size:11px;padding:1px 8px;
+  border-radius:4px;flex:0 0 auto}
+.qn.c{background:var(--c4)}
+.qn.w{background:var(--c5)}
+.qt{font-size:13.2px;color:#26303f}
+.qt b{color:#0f2a5c}
+.hintbox{font-size:11px;color:#7a5a10;background:#fffaef;border:1px dashed #ddb968;
+  border-radius:6px;padding:3px 9px;margin-top:3px;display:inline-block}
+.ans{border:1px solid var(--line);border-radius:6px;margin-top:4px;
+  background:repeating-linear-gradient(#fff 0 22px,#eef1f7 22px 23px)}
+.ans.h1{height:44px}.ans.h2{height:65px}.ans.h3{height:86px}.ans.h4{height:107px}
+.short{display:inline-block;min-width:110px;border-bottom:1.4px solid #9fb0c8;margin-left:5px;height:15px}
+
+table{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0}
+th{background:#eef2f9;border:1px solid var(--line);padding:3px 5px;font-weight:800;color:#22314e}
+td{border:1px solid var(--line);padding:4px 5px;text-align:center;color:#2a3446;height:22px}
+td.l{text-align:left}
+.mono,td.m{font-family:'D2Coding','Consolas',monospace}
+.grid{width:auto;margin:4px auto;font-size:15px}
+.grid td{width:36px;height:30px;font-family:'D2Coding',monospace;font-weight:700}
+.given{background:#e8eefb;color:var(--c1)}
+
+.vert{text-align:center;font-family:'D2Coding',monospace;font-size:13.5px;line-height:1.28;margin:2px 0}
+.vert .ln{border-top:1.5px solid #333;display:inline-block;padding-top:2px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:6mm;border-top:1px solid var(--line);
+  padding-top:3px;display:flex;font-size:10px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--c2);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;min-height:0;height:295mm;overflow:hidden}
+  .page + .page{page-break-before:always}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="t">📙 사고력수학 1단계 · D+E영역 <b>문제집</b> — 측정과 논리 (주제 19~24)</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">이론서를 먼저 읽고 푸세요. 주제당 <b>연습 5 + 도전 3 + 서술형 1</b>입니다.</span>
+</div>
+
+<!-- ===== 주제 19 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 19</span>
+    <h1>둘레와 넓이 — 둘레가 같아도 넓이는 다르다</h1>
+    <div class="tag">1단계 · D 측정과 비율<br>1 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>표로 나열해 비교하기</b> — 둘레가 같으면 <b>정사각형에 가까울수록 넓이가 크고</b>,
+    넓이가 같으면 <b>정사각형에 가까울수록 둘레가 짧다</b>.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    둘레가 <b>20cm</b>인 직사각형입니다. 표를 채우시오. (가로·세로는 자연수)</span></div>
+    <table>
+      <tr><th style="width:20%">가로 (cm)</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr>
+      <tr><td class="l">세로 (cm)</td><td>9</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="l">넓이 (cm²)</td><td>9</td><td></td><td></td><td></td><td></td></tr>
+    </table></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    1번에서 넓이가 <b>가장 큰</b> 직사각형의 넓이는? <span class="short"></span> cm²</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    둘레가 <b>24cm</b>인 직사각형 중 넓이가 가장 큰 것의 넓이는? <span class="short"></span> cm²</span></div>
+    <div class="hintbox">가로 + 세로 = 12 입니다. 두 수가 가까울수록 곱이 커집니다.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    넓이가 <b>36cm²</b>인 직사각형 중 둘레가 <b>가장 짧은</b> 것의 둘레는? <span class="short"></span> cm</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    한 변이 1cm인 정사각형 <b>12개</b>를 이어 붙여 직사각형을 만듭니다.
+    둘레가 가장 짧은 것의 둘레는? <span class="short"></span> cm</span></div>
+    <div class="hintbox">12 = 1×12 = 2×6 = 3×4. 각각의 둘레를 구해 비교하세요.</div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    둘레가 <b>24cm</b>인 직사각형 중 넓이가 <b>가장 작은</b> 것의 넓이는? <span class="short"></span> cm²</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    한 변이 1cm인 정사각형 <b>20개</b>를 이어 붙여 직사각형을 만들 때,
+    가능한 둘레를 <b>모두</b> 구하시오.</span></div>
+    <div class="ans h1"></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    울타리 <b>40m</b>로 직사각형 밭을 만듭니다. 그런데 <b>한 변은 담장</b>을 그대로 써서
+    울타리를 치지 않아도 됩니다. 넓이를 가장 크게 하려면 담장과 <b>수직인 변</b>을 몇 m로 해야 할까요?
+    <span class="short"></span> m　(그때 넓이 <span class="short" style="min-width:50px"></span> m²)</span></div>
+    <div class="hintbox">담장과 수직인 변을 □라 하면 담장과 평행한 변은 <b>40 − □ × 2</b> 입니다. 표를 만들어 보세요.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    둘레가 같은데도 <b>넓이가 달라지는</b> 이유를 예를 들어 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 19 · 1 / 6</span></div>
+</div>
+
+<!-- ===== 주제 20 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 20</span>
+    <h1>단위와 어림 — 기준을 정해 짐작하기</h1>
+    <div class="tag">1단계 · D 측정과 비율<br>2 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>기준을 하나 정해 어림하기</b> — 큰 단위 → 작은 단위는 <b>곱하기</b>, 반대는 <b>나누기</b>.
+    계산 뒤에는 <b>어림값과 비교</b>해 실수를 잡는다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    빈칸을 채우시오.　4.2 km = <span class="short" style="min-width:55px"></span> m　
+    3400 g = <span class="short" style="min-width:45px"></span> kg　
+    2.5 L = <span class="short" style="min-width:55px"></span> mL</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    <b>1시간 15분</b>은 몇 분입니까? <span class="short" style="min-width:45px"></span> 분　
+    또 몇 초입니까? <span class="short" style="min-width:55px"></span> 초</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>1주일</b>은 몇 시간입니까? <span class="short"></span> 시간</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    <b>하루</b>는 몇 초입니까? <span class="short"></span> 초</span></div>
+    <div class="hintbox">24 × 60 × 60 을 계산하세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    다음 중 알맞은 단위를 고르시오.<br>
+    교실 문의 높이 약 2 <span class="short" style="min-width:40px"></span>　
+    사과 한 개의 무게 약 300 <span class="short" style="min-width:40px"></span>　
+    우유 한 팩 약 200 <span class="short" style="min-width:40px"></span></span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    <b>100만 초</b>는 약 며칠입니까? <span class="short"></span> 일쯤</span></div>
+    <div class="hintbox">하루가 몇 초인지 먼저 구하고 나누세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    걸음 한 발짝을 <b>50cm</b>로 볼 때, 가로로 <b>16걸음</b>, 세로로 <b>14걸음</b>인 교실의 넓이는
+    약 몇 m²입니까? <span class="short"></span> m²</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    어떤 학생이 <b>1억 초</b>를 살았다면 몇 살쯤일까요? <span class="short"></span> 살쯤</span></div>
+    <div class="hintbox">1년은 약 3천만 초입니다. (365 × 24 × 60 × 60 을 어림하세요)</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    자를 쓰지 않고 <b>교실의 넓이</b>를 어림하는 방법을 순서대로 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 20 · 2 / 6</span></div>
+</div>
+
+<!-- ===== 주제 21 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 21</span>
+    <h1>물통과 저울 — 눈금 없이 정확하게</h1>
+    <div class="tag">1단계 · D 측정과 비율<br>3 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>단계를 표로 적어 나가기</b> — 눈금이 없어도 <b>가득 채우기</b>와 <b>완전히 비우기</b>는 정확하다.
+    양팔저울은 결과가 세 가지이므로 <b>3등분</b>이 효율적이다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    <b>5L</b>와 <b>3L</b> 물통으로 정확히 <b>4L</b>를 만드는 과정을 표로 적으시오.</span></div>
+    <table>
+      <tr><th style="width:14%">단계</th><th>한 일</th><th class="c" style="width:14%">5L통</th><th class="c" style="width:14%">3L통</th></tr>
+      <tr><td class="c">시작</td><td class="l">–</td><td>0</td><td>0</td></tr>
+      <tr><td class="c">①</td><td></td><td></td><td></td></tr>
+      <tr><td class="c">②</td><td></td><td></td><td></td></tr>
+      <tr><td class="c">③</td><td></td><td></td><td></td></tr>
+      <tr><td class="c">④</td><td></td><td></td><td></td></tr>
+    </table></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    금화 <b>9개</b> 중 가벼운 가짜 1개를 양팔저울로 찾으려면 최소 몇 번 재야 합니까?
+    <span class="short"></span> 번</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    금화 <b>27개</b>라면 몇 번이면 됩니까? <span class="short"></span> 번</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    양팔저울을 한 번 쟀을 때 나올 수 있는 결과는 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">왼쪽이 무겁다 / 오른쪽이 무겁다 / …</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    <b>4L</b>와 <b>6L</b> 물통으로 <b>3L</b>를 만들 수 있습니까? <span class="short" style="min-width:50px"></span></span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    <b>7L</b>와 <b>4L</b> 물통으로 <b>5L</b>를 만드는 과정을 적으시오.</span></div>
+    <div class="ans h2"></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    금화가 <b>80개</b>라면 최소 몇 번 재야 합니까? <span class="short"></span> 번</span></div>
+    <div class="hintbox">3 → 9 → 27 → 81. 80은 어디에 들어갈까요?</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    <b>8L</b>와 <b>3L</b> 물통으로 <b>4L</b>를 만들 수 있습니까? <span class="short" style="min-width:50px"></span>
+    　그렇게 판단한 이유를 쓰시오.</span></div>
+    <div class="ans h1"></div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    물통이 <b>4L와 6L</b>일 때 <b>3L를 만들 수 없는</b> 이유를 설명하시오.</span></div>
+    <div class="ans h2"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 21 · 3 / 6</span></div>
+</div>
+
+<!-- ===== 주제 22 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 22</span>
+    <h1>경우의 수 — 곱할 때와 더할 때</h1>
+    <div class="tag">1단계 · E 논리와 문제해결<br>4 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>“그리고”면 곱하기, “또는”이면 더하기</b> — 둘 다 골라야 하면 <b>곱하기</b>,
+    하나만 고르면 <b>더하기</b>. <b>순서가 없으면</b> 중복해서 센 만큼 나눈다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    티셔츠 <b>4벌</b>과 바지 <b>3벌</b>로 옷을 입는 방법은 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    학교에 가는 방법이 버스 <b>3가지</b> <b>또는</b> 지하철 <b>2가지</b>입니다.
+    모두 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">“또는”이므로 <b>더합니다</b>. 1번과 비교해 보세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    동전 <b>3개</b>를 던질 때 나올 수 있는 경우는 모두 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    주사위 <b>2개</b>를 던질 때 눈의 합이 <b>7</b>이 되는 경우를 모두 쓰시오.</span></div>
+    <div class="ans h1"></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    가위바위보를 두 사람이 할 때 나올 수 있는 경우는 몇 가지입니까? <span class="short" style="min-width:45px"></span> 가지
+    　그중 <b>비기는</b> 경우는? <span class="short" style="min-width:45px"></span> 가지</span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    5명 중에서 <b>대표 1명과 부대표 1명</b>을 뽑는 방법은 몇 가지입니까? <span class="short"></span> 가지</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    5명 중에서 <b>청소 당번 2명</b>을 뽑는 방법은 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">6번과 무엇이 다른가요? <b>순서가 있는지</b> 따져 보세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    가, 나, 다 세 명이 한 줄로 서는 방법은 몇 가지입니까? <span class="short"></span> 가지</span></div>
+    <div class="hintbox">첫째 자리 3가지 → 둘째 자리 2가지 → 셋째 자리 1가지.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    티셔츠 3벌과 바지 2벌로 옷을 입을 때 <b>3+2=5가 아니라 3×2=6</b>인 이유를 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 22 · 4 / 6</span></div>
+</div>
+
+<!-- ===== 주제 23 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 23</span>
+    <h1>참말과 거짓말 — 가정하고 따져 보기</h1>
+    <div class="tag">1단계 · E 논리와 문제해결<br>5 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>한쪽으로 가정하고 따라가기</b> — 한 사람을 정해 놓고 따라가다
+    <b>모순</b>이 나오면 가정이 틀린 것. 답을 찾으면 <b>모든 말에 넣어 검산</b>한다.</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    참말족은 <b>어떤 말</b>만 합니까? <span class="short" style="min-width:60px"></span>
+    　거짓말족은? <span class="short" style="min-width:60px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    <b>“나는 거짓말족이야”</b> 라고 말할 수 있는 사람이 있습니까? <span class="short" style="min-width:50px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    민수 : “지혜는 거짓말족이야.” / 지혜 : “현우는 거짓말족이야.” /
+    현우 : “민수와 지혜는 둘 다 거짓말족이야.”<br>
+    세 사람은 각각 어느 쪽입니까?
+    민수 <span class="short" style="min-width:60px"></span>　지혜 <span class="short" style="min-width:60px"></span>　현우 <span class="short" style="min-width:60px"></span></span></div>
+    <div class="hintbox">민수를 <b>참말족이라고 가정</b>해 보고 모순이 생기는지 확인하세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    A : “B는 거짓말족이야.” / B : “A는 거짓말족이야.”<br>
+    두 사람이 누구인지 정할 수 있습니까? <span class="short" style="min-width:60px"></span></span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    어떤 사람이 <b>“나는 참말족이야”</b> 라고 말했습니다. 이 말로 그 사람이 누구인지 알 수 있습니까?
+    <span class="short" style="min-width:60px"></span></span></div>
+    <div class="hintbox">참말족이어도 거짓말족이어도 그렇게 말할 수 있는지 각각 따져 보세요.</div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    가, 나, 다 중 <b>한 명이 범인</b>이고, 세 사람의 말 중 <b>참말은 하나뿐</b>입니다. 범인은 누구입니까?
+    <span class="short"></span></span></div>
+    <div class="data" style="font-size:12.5px;padding:4px 9px;margin:3px 0;background:#f4f7fc;border:1px solid #dbe3ef;border-radius:6px;font-family:'D2Coding',monospace">가 : “나가 범인이야.”　나 : “나는 범인이 아니야.”　다 : “가는 범인이 아니야.”</div>
+    <div class="hintbox">범인이 가·나·다인 세 경우를 <b>표로</b> 만들어 참말 개수를 세어 보세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    6번에서 범인이 <b>나</b>라고 가정하면 참말은 몇 개가 됩니까? <span class="short"></span> 개</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    세 사람 중 <b>참말족이 정확히 한 명</b>입니다. 세 사람 모두가 <b>“나는 참말족이야”</b>라고 말했다면,
+    이 말만으로 누가 참말족인지 알 수 있습니까? <span class="short" style="min-width:60px"></span>　이유는?</span></div>
+    <div class="ans h1"></div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    3번 문제를 <b>민수가 참말족이라고 가정</b>하는 것부터 시작해 순서대로 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 23 · 5 / 6</span></div>
+</div>
+
+<!-- ===== 주제 24 ===== -->
+<div class="page">
+  <div class="head">
+    <span class="no">주제 24</span>
+    <h1>리그와 토너먼트 — 경기 수 세기</h1>
+    <div class="tag">1단계 · E 논리와 문제해결<br>6 / 6 쪽</div>
+  </div>
+  <div class="namebar"><span class="f">이름</span><span class="f">날짜　　　.　　.</span><span class="f">맞은 개수　　　/ 9</span></div>
+
+  <div class="recall"><span class="lb">오늘의 전략</span>
+    <b>중복해서 센 만큼 나누기</b> — 리그전 = <b>n × (n−1) ÷ 2</b>,
+    토너먼트 = <b>n − 1</b> (탈락자 수 = 경기 수).</div>
+
+  <h2>연습 <span class="cnt">기본기를 다지는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn">1</span><span class="qt">
+    <b>4팀</b>이 서로 한 번씩 경기하면 모두 몇 경기입니까? <span class="short"></span> 경기</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">2</span><span class="qt">
+    <b>6팀</b>이 서로 한 번씩 경기하면 모두 몇 경기입니까? <span class="short"></span> 경기</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">3</span><span class="qt">
+    <b>8팀</b> 토너먼트에서 우승팀이 정해지기까지 몇 경기를 합니까? <span class="short"></span> 경기</span></div>
+    <div class="hintbox">한 경기마다 <b>한 팀이 탈락</b>합니다. 몇 팀이 탈락해야 할까요?</div></div>
+
+  <div class="q"><div class="qh"><span class="qn">4</span><span class="qt">
+    <b>10명</b>이 서로 한 번씩 악수하면 모두 몇 번입니까? <span class="short"></span> 번</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn">5</span><span class="qt">
+    <b>16팀</b> 토너먼트의 경기 수는? <span class="short"></span> 경기</span></div></div>
+
+  <h2 class="ch">도전 <span class="cnt">한 번 더 생각해야 하는 문제</span></h2>
+
+  <div class="q"><div class="qh"><span class="qn c">6</span><span class="qt">
+    어느 모임에서 서로 한 번씩 악수했더니 모두 <b>45번</b>이었습니다. 참석자는 몇 명입니까?
+    <span class="short"></span> 명</span></div>
+    <div class="hintbox">n × (n−1) = 90 이 되는 <b>이웃한 두 수</b>를 찾으세요.</div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">7</span><span class="qt">
+    <b>16팀</b>이 리그전을 하면 몇 경기입니까? <span class="short" style="min-width:50px"></span> 경기
+    　토너먼트(5번 답)의 몇 배입니까? <span class="short" style="min-width:40px"></span> 배</span></div></div>
+
+  <div class="q"><div class="qh"><span class="qn c">8</span><span class="qt">
+    <b>8팀</b>이 서로 <b>두 번씩</b>(홈·원정) 경기하면 모두 몇 경기입니까? <span class="short"></span> 경기</span></div>
+    <div class="hintbox">한 번씩 할 때의 경기 수를 먼저 구하세요.</div></div>
+
+  <h2 class="wr">서술형 <span class="cnt">과정을 문장으로 쓰는 문제</span></h2>
+  <div class="q"><div class="qh"><span class="qn w">9</span><span class="qt">
+    6팀 리그에서 <b>6 × 5 = 30</b> 이 왜 틀렸는지 설명하시오.</span></div>
+    <div class="ans h3"></div></div>
+
+  <div class="foot"><span>사고력수학 1단계 D+E영역 문제집</span><span class="r">주제 24 · 6 / 6</span></div>
+</div>
+
+</body>
+</html>
