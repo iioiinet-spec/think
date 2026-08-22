@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2진수 마법카드 - 마음속 숫자 맞히기</title>
+<style>
+:root{
+  --pink:#ff4f9a;
+  --pink2:#ff86b8;
+  --rose:#fff0f6;
+  --deep:#662047;
+  --ink:#3a2733;
+  --line:#f2bed4;
+  --card:#fffafd;
+  --mint:#55c9a5;
+  --blue:#6b88e8;
+  --gold:#f3b94d;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 5%, #ffe1ef 0 8%, transparent 22%),
+    radial-gradient(circle at 90% 10%, #e6e4ff 0 8%, transparent 24%),
+    linear-gradient(135deg,#fff8fb,#fff 50%,#fff2f8);
+  min-height:100vh;
+}
+button{font:inherit}
+.wrap{max-width:1050px;margin:auto;padding:28px 18px 48px}
+.hero{
+  text-align:center;
+  padding:24px 14px 12px;
+}
+.badge{
+  display:inline-block;padding:7px 13px;border-radius:999px;
+  background:#fff;border:1px solid #ffd0e3;color:#b52d69;
+  font-weight:800;font-size:14px;
+}
+h1{font-size:clamp(29px,5vw,50px);margin:14px 0 8px;color:#622043;letter-spacing:-1.5px}
+.hero p{margin:0 auto;max-width:720px;line-height:1.75;color:#735265}
+.panel{
+  background:rgba(255,255,255,.92);
+  border:1px solid #f1cbdc;
+  border-radius:28px;
+  box-shadow:0 18px 45px rgba(143,62,100,.12);
+  overflow:hidden;
+}
+.progress-wrap{padding:22px 26px 0}
+.progress-head{display:flex;justify-content:space-between;gap:12px;font-weight:800;color:#87516c;font-size:14px}
+.progress{height:10px;background:#f9dce9;border-radius:999px;margin-top:10px;overflow:hidden}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--pink),#9c70ed);transition:.35s ease}
+.game{padding:22px 26px 30px}
+.intro{text-align:center;padding:25px 8px 12px}
+.intro .big{font-size:72px;line-height:1;margin-bottom:12px}
+.intro h2{font-size:26px;color:#6c274c}
+.rules{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px auto;max-width:800px
+}
+.rule{
+  background:#fff4f8;border:1px solid #f7d1e1;border-radius:18px;padding:16px;text-align:left;line-height:1.55
+}
+.rule b{color:#c62d73}
+.primary,.yes,.no,.ghost{
+  border:0;border-radius:16px;min-height:50px;padding:12px 22px;font-weight:900;cursor:pointer;
+  transition:.18s transform,.18s box-shadow;
+}
+.primary{background:linear-gradient(135deg,#ff4f9a,#be62db);color:white;box-shadow:0 8px 20px rgba(221,75,149,.25)}
+.primary:hover,.yes:hover,.no:hover,.ghost:hover{transform:translateY(-2px)}
+.card-stage{
+  display:grid;grid-template-columns:minmax(290px,540px) minmax(220px,1fr);gap:25px;align-items:center
+}
+.magic-card{
+  position:relative;aspect-ratio:3/4;border-radius:28px;padding:17px;
+  background:linear-gradient(145deg,#ffedf5,#ffffff 48%,#f0e9ff);
+  border:1px solid #e6aac5;
+  box-shadow:0 24px 42px rgba(121,61,92,.18);
+  overflow:hidden;
+}
+.magic-card:before,.magic-card:after{
+  content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.55
+}
+.magic-card:before{width:150px;height:150px;background:#ffb8d5;top:-55px;right:-45px}
+.magic-card:after{width:130px;height:130px;background:#c9b8ff;bottom:-55px;left:-45px}
+.card-inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bit{
+  width:52px;height:52px;border-radius:15px;display:grid;place-items:center;
+  background:#69254b;color:white;font-weight:1000;font-size:23px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.28)
+}
+.card-name{font-weight:900;color:#7c3157;text-align:right}
+.card-name small{display:block;font-size:12px;color:#9b7388;margin-top:2px}
+.numbers{
+  flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;align-content:center;margin:13px 0
+}
+.num{
+  min-height:35px;display:grid;place-items:center;border-radius:10px;
+  background:rgba(255,255,255,.80);border:1px solid #efccdc;font-weight:900;color:#5c3650;
+  box-shadow:0 2px 5px rgba(120,70,90,.05)
+}
+.card-foot{text-align:center;font-size:12px;font-weight:800;color:#8c6075;letter-spacing:.3px}
+.question h2{font-size:28px;margin:0 0 8px;color:#642145}
+.question p{line-height:1.7;color:#705566}
+.question-box{
+  background:#fff4f8;border:1px solid #f4c8db;border-radius:20px;padding:18px;margin:20px 0
+}
+.question-box strong{display:block;font-size:20px;color:#b72769;margin-bottom:4px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.yes{background:linear-gradient(135deg,#ff4f9a,#ff7fb5);color:white}
+.no{background:#f0edf1;color:#593d4d;border:1px solid #ded1d8}
+.binary-hint{
+  margin-top:18px;padding:13px;border-radius:14px;background:#f8f6ff;color:#71648a;
+  font-size:13px;line-height:1.55
+}
+.result{text-align:center;padding:15px 4px}
+.crystal{
+  width:160px;height:160px;margin:5px auto 18px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 28%,#fff 0 6%,#ffe1ef 15%,#ff8fbf 45%,#9f70dc 100%);
+  box-shadow:0 15px 40px rgba(204,76,145,.30),inset 0 0 30px rgba(255,255,255,.5);
+}
+.crystal span{font-size:70px;font-weight:1000;color:white;text-shadow:0 3px 16px rgba(92,37,73,.28)}
+.result h2{font-size:28px;color:#632046;margin-bottom:6px}
+.result .answer{font-size:clamp(40px,8vw,74px);font-weight:1000;color:#e22f80}
+.explain{
+  max-width:800px;margin:24px auto;text-align:left;background:#fff7fb;border:1px solid #f2cede;border-radius:20px;padding:20px
+}
+.bits{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.bit-pill{padding:8px 12px;border-radius:999px;font-weight:900;background:#f4e7ef;color:#98778a}
+.bit-pill.on{background:#ff5a9e;color:white}
+.sumline{font-size:18px;font-weight:900;color:#69254b;line-height:1.7}
+.ghost{background:white;border:1px solid #edb9d1;color:#a72c65}
+.history{font-size:13px;color:#7d6572;margin-top:10px;line-height:1.6}
+.learn{
+  margin-top:26px;background:linear-gradient(135deg,#70274f,#4c347c);color:white;border-radius:25px;padding:25px
+}
+.learn h3{margin-top:0;font-size:23px}
+.learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.learn-item{padding:15px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);border-radius:16px;line-height:1.55}
+.learn-item b{display:block;color:#ffd2e5;margin-bottom:4px}
+footer{text-align:center;padding:34px 10px 6px;color:#9c7187;font-weight:800}
+.hidden{display:none!important}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+  .rules,.learn-grid{grid-template-columns:1fr}
+  .card-stage{grid-template-columns:1fr}
+  .magic-card{max-width:470px;width:100%;margin:auto}
+  .question{text-align:center}
+  .progress-wrap,.game{padding-left:16px;padding-right:16px}
+}
+@media(max-width:390px){
+  .numbers{gap:4px}
+  .num{font-size:13px;min-height:31px}
+  .answers{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .primary,.yes,.no,.ghost,.progress-wrap{display:none!important}
+  .panel{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="badge">DISCRETE MATHEMATICS · BINARY MAGIC</span>
+    <h1>🔮 2진수 마법카드</h1>
+    <p>1부터 63까지의 숫자 하나를 마음속으로 생각하세요. 카드에 그 숫자가 보이는지만 대답하면, 2진수의 원리를 이용해 생각한 숫자를 정확히 맞혀드립니다.</p>
+  </section>
+
+  <main class="panel">
+    <div class="progress-wrap hidden" id="progressWrap">
+      <div class="progress-head">
+        <span id="stepText">카드 1 / 6</span>
+        <span id="scoreText">현재 마법의 합: 0</span>
+      </div>
+      <div class="progress"><div id="bar"></div></div>
+    </div>
+
+    <div class="game">
+      <section id="intro" class="intro">
+        <div class="big">🃏✨</div>
+        <h2>마음속 숫자를 준비하세요!</h2>
+        <div class="rules">
+          <div class="rule"><b>1.</b> 1~63 중 숫자 하나를 마음속으로 정합니다.</div>
+          <div class="rule"><b>2.</b> 카드에 그 숫자가 있으면 <b>YES</b>, 없으면 <b>NO</b>를 누릅니다.</div>
+          <div class="rule"><b>3.</b> 6장의 카드가 끝나면 마법처럼 숫자를 맞힙니다.</div>
+        </div>
+        <button class="primary" id="startBtn">마법카드 시작하기 ✨</button>
+      </section>
+
+      <section id="play" class="hidden">
+        <div class="card-stage fade">
+          <article class="magic-card" aria-label="현재 마법 카드">
+            <div class="card-inner">
+              <div class="card-top">
+                <div class="bit" id="bitValue">1</div>
+                <div class="card-name">BINARY MAGIC CARD<small id="cardSubtitle">2⁰ = 1의 자리</small></div>
+              </div>
+              <div class="numbers" id="numbers"></div>
+              <div class="card-foot">SEYOUNG CODING LAB · MAGIC NUMBER</div>
+            </div>
+          </article>
+
+          <div class="question">
+            <h2 id="qTitle">첫 번째 카드입니다</h2>
+            <p>마음속으로 생각한 숫자를 카드에서 천천히 찾아보세요.</p>
+            <div class="question-box">
+              <strong>생각한 숫자가 이 카드에 있나요?</strong>
+              보이면 YES, 보이지 않으면 NO를 선택하세요.
+            </div>
+            <div class="answers">
+              <button class="yes" id="yesBtn">YES · 있어요 ✓</button>
+              <button class="no" id="noBtn">NO · 없어요 ✕</button>
+            </div>
+            <div class="binary-hint" id="hint">이 카드에 YES라고 답하면 카드의 비밀 숫자 <b>1</b>이 결과에 더해집니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="result" class="result hidden fade">
+        <div class="crystal"><span id="crystalNum">?</span></div>
+        <h2>당신이 마음속으로 생각한 숫자는…</h2>
+        <div class="answer" id="answerNum">0</div>
+        <p>맞았나요? 🎉 이건 초능력이 아니라 <b>2진수</b>의 원리입니다.</p>
+
+        <div class="explain">
+          <h3>🧠 왜 숫자를 맞힐 수 있을까요?</h3>
+          <p>각 카드는 2진수의 한 자리와 연결되어 있습니다. YES라고 답한 카드의 대표값만 모두 더하면 바로 생각한 숫자가 됩니다.</p>
+          <div class="bits" id="bitPills"></div>
+          <div class="sumline" id="sumLine"></div>
+          <div class="history" id="history"></div>
+        </div>
+        <button class="primary" id="againBtn">다른 숫자로 다시 도전</button>
+        <button class="ghost" id="demoBtn">예시 37의 2진수 보기</button>
+      </section>
+
+      <section class="learn">
+        <h3>📘 이산수학 핵심 원리</h3>
+        <div class="learn-grid">
+          <div class="learn-item"><b>① 2의 거듭제곱</b>카드 대표값은 1, 2, 4, 8, 16, 32입니다.</div>
+          <div class="learn-item"><b>② 이진 표현</b>모든 1~63의 수는 이 값들을 겹치지 않게 더해 유일하게 만들 수 있습니다.</div>
+          <div class="learn-item"><b>③ YES = 비트 1</b>카드에 숫자가 있으면 해당 2진수 자리가 1이라는 뜻입니다.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>-세영코딩연구소- &nbsp;&nbsp;&nbsp; ph.D KIM</footer>
+</div>
+
+<script>
+(() => {
+  const values = [1,2,4,8,16,32];
+  const cards = values.map(v => {
+    const arr = [];
+    for(let n=1;n<=63;n++){
+      if((n & v) !== 0) arr.push(n);
+    }
+    return arr;
+  });
+
+  let step = 0;
+  let total = 0;
+  let answers = [];
+
+  const intro = document.getElementById('intro');
+  const play = document.getElementById('play');
+  const result = document.getElementById('result');
+  const progressWrap = document.getElementById('progressWrap');
+  const numbers = document.getElementById('numbers');
+  const bitValue = document.getElementById('bitValue');
+  const cardSubtitle = document.getElementById('cardSubtitle');
+  const qTitle = document.getElementById('qTitle');
+  const hint = document.getElementById('hint');
+  const stepText = document.getElementById('stepText');
+  const scoreText = document.getElementById('scoreText');
+  const bar = document.getElementById('bar');
+
+  function renderCard(){
+    const v = values[step];
+    numbers.innerHTML = '';
+    cards[step].forEach(n => {
+      const el = document.createElement('div');
+      el.className = 'num';
+      el.textContent = n;
+      numbers.appendChild(el);
+    });
+    bitValue.textContent = v;
+    cardSubtitle.textContent = `2${toSup(step)} = ${v}의 카드`;
+    qTitle.textContent = `${step+1}번째 마법카드`;
+    hint.innerHTML = `이 카드에 YES라고 답하면 카드의 비밀 숫자 <b>${v}</b>이 결과에 더해집니다.`;
+    stepText.textContent = `카드 ${step+1} / 6`;
+    scoreText.textContent = `현재 마법의 합: ${total}`;
+    bar.style.width = `${(step/6)*100}%`;
+  }
+
+  function toSup(n){
+    return ['⁰','¹','²','³','⁴','⁵'][n] || n;
+  }
+
+  function start(){
+    step=0; total=0; answers=[];
+    intro.classList.add('hidden');
+    result.classList.add('hidden');
+    play.classList.remove('hidden');
+    progressWrap.classList.remove('hidden');
+    renderCard();
+  }
+
+  function choose(isYes){
+    answers.push(isYes);
+    if(isYes) total += values[step];
+    step++;
+    if(step < 6){
+      renderCard();
+    }else{
+      showResult();
+    }
+  }
+
+  function showResult(){
+    play.classList.add('hidden');
+    result.classList.remove('hidden');
+    bar.style.width='100%';
+    stepText.textContent='6장의 카드 완료!';
+    scoreText.textContent=`마법의 합: ${total}`;
+    document.getElementById('answerNum').textContent=total;
+    document.getElementById('crystalNum').textContent=total;
+
+    const pills = document.getElementById('bitPills');
+    pills.innerHTML='';
+    values.forEach((v,i)=>{
+      const p=document.createElement('span');
+      p.className='bit-pill'+(answers[i]?' on':'');
+      p.textContent=`${v}: ${answers[i]?'YES':'NO'}`;
+      pills.appendChild(p);
+    });
+
+    const used = values.filter((v,i)=>answers[i]);
+    document.getElementById('sumLine').textContent =
+      used.length ? `${used.join(' + ')} = ${total}` : `YES 카드가 없어서 합은 0입니다.`;
+
+    const binary = total.toString(2).padStart(6,'0');
+    document.getElementById('history').innerHTML =
+      `결과 ${total}의 6비트 2진수는 <b>${binary}</b>입니다. 왼쪽부터 32, 16, 8, 4, 2, 1의 자리이며, 1인 자리의 카드에 YES라고 답한 것입니다.`;
+  }
+
+  document.getElementById('startBtn').addEventListener('click', start);
+  document.getElementById('againBtn').addEventListener('click', start);
+  document.getElementById('yesBtn').addEventListener('click',()=>choose(true));
+  document.getElementById('noBtn').addEventListener('click',()=>choose(false));
+
+  document.getElementById('demoBtn').addEventListener('click',()=>{
+    const n=37;
+    const parts=values.filter(v => (n & v)!==0);
+    alert(`37 = ${parts.slice().reverse().join(' + ')}\\n37의 2진수 = ${n.toString(2).padStart(6,'0')}\\n따라서 1, 4, 32 카드에서는 YES!`);
+  });
+})();
+</script>
+</body>
+</html>
