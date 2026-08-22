@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사고력수학 1단계 — 해설집 (교사용)</title>
+<style>
+:root{
+  --ink:#17202e; --sub:#54627a; --pale:#94a1b6; --line:#dbe3ef; --soft:#f4f7fc;
+  --ans:#b91c1c; --tip:#0f766e; --acc:#1d4ed8; --mis:#b45309;
+  --A:#1d4ed8; --B:#ea580c; --C:#7c3aed; --D:#0f766e; --E:#be123c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef1f7;color:var(--ink);
+  font-family:'Pretendard','Malgun Gothic','맑은 고딕',system-ui,sans-serif;
+  line-height:1.45;font-size:11.6px;padding:22px 12px}
+.page{width:210mm;min-height:297mm;margin:0 auto 16px;background:#fff;
+  padding:10mm 10mm 9mm;box-shadow:0 3px 14px rgba(0,0,0,.14);position:relative}
+
+.head{display:flex;align-items:center;gap:9px;border-bottom:2.5px solid var(--ink);
+  padding-bottom:4px;margin-bottom:6px}
+.head .no{background:var(--A);color:#fff;font-weight:800;font-size:11.5px;
+  padding:2px 10px;border-radius:5px;flex:0 0 auto}
+.head .no.B{background:var(--B)}.head .no.C{background:var(--C)}
+.head .no.D{background:var(--D)}.head .no.E{background:var(--E)}
+.head h1{font-size:15.5px;font-weight:800;letter-spacing:-.4px}
+.head .tag{margin-left:auto;font-size:10.2px;color:var(--sub);text-align:right;line-height:1.3}
+
+.quick{background:#fff8ec;border:1.5px solid #e6c48a;border-radius:7px;padding:4px 9px;margin-bottom:5px}
+.quick .lb{display:inline-block;background:var(--mis);color:#fff;font-size:9.5px;font-weight:800;
+  padding:1px 7px;border-radius:7px;margin-right:6px}
+.quick table{width:100%;border-collapse:collapse;font-size:10.2px;margin-top:2px}
+.quick th{background:#f6ead3;border:1px solid #e0c79a;padding:2px 3px;font-weight:800;color:#7a5410}
+.quick td{border:1px solid #e0c79a;padding:2px 3px;text-align:center;
+  font-family:'D2Coding',monospace;color:#5c4108;line-height:1.25}
+
+.item{border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:4px}
+.item .qh{background:var(--soft);padding:2px 8px;font-weight:800;font-size:11.4px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px}
+.item .qh .n{background:var(--ink);color:#fff;font-size:9.8px;padding:1px 6px;border-radius:3px}
+.item .qh .n.c{background:#be123c}.item .qh .n.w{background:#7c3aed}
+.item .qh .t{color:#2a3446}
+.item .bd{padding:4px 9px}
+.ansline{background:#fff1f1;border-left:3px solid var(--ans);border-radius:4px;
+  padding:2px 7px;margin-bottom:3px;font-size:11.4px}
+.ansline b{color:var(--ans)}
+.sol{font-family:'D2Coding','Consolas',monospace;font-size:10.2px;line-height:1.42;
+  background:#f8fafd;border-radius:5px;padding:3px 7px;margin:2px 0;white-space:pre-wrap;color:#2a3446}
+.sec{font-size:10.9px;margin:2px 0;line-height:1.38}
+.sec .lb{display:inline-block;color:#fff;font-size:9.2px;font-weight:800;
+  padding:1px 5px;border-radius:3px;margin-right:4px;vertical-align:1px;background:var(--acc)}
+.sec .lb.t{background:var(--tip)}
+.sec .lb.m{background:var(--mis)}
+.misbox{background:#fffbea;border:1px dashed #d8b06a;border-radius:5px;
+  padding:3px 7px;margin-top:2px;font-size:10.5px;color:#5c4708;line-height:1.38}
+.misbox b{color:#a4700f}
+
+table.g{width:100%;border-collapse:collapse;font-size:10.4px;margin:2px 0}
+table.g th{background:#eef2f9;border:1px solid var(--line);padding:2px 4px;font-weight:800;color:#22314e}
+table.g td{border:1px solid var(--line);padding:2px 4px;text-align:center;color:#2a3446}
+table.g td.l{text-align:left}
+
+.foot{position:absolute;left:10mm;right:10mm;bottom:5mm;border-top:1px solid var(--line);
+  padding-top:3px;display:flex;font-size:9.8px;color:var(--pale)}
+.foot .r{margin-left:auto}
+
+.bar{width:210mm;margin:0 auto 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:#fff;border-radius:9px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.09)}
+.bar .t{font-weight:800;font-size:14px}
+.btn{background:var(--ans);color:#fff;border:none;padding:8px 15px;border-radius:7px;
+  cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
+.hint{font-size:12.2px;color:#555}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff;padding:0}
+  .page{margin:0;box-shadow:none;min-height:0;height:293mm;overflow:hidden}
+  .page + .page{page-break-before:always}
+  .bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="t">📕 사고력수학 1단계 <b>해설집</b> — 정답 · 풀이 · 자주 하는 오답 · 지도 팁</span>
+  <button class="btn" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+  <span class="hint">문제집 <b>24주제 216문항</b> 전체 해설. <b>학생에게 배부하지 마세요.</b></span>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no ">해설집</span>
+    <h1>사고력수학 1단계 — 교사용 해설집</h1>
+    <div class="tag">24주제 216문항<br>0 / 14 쪽</div>
+  </div>
+<div class="item" style="border-color:var(--tip)">
+  <div class="qh" style="background:#effaf7"><span class="t" style="color:var(--tip);font-size:13px">이 해설집 사용법</span></div>
+  <div class="bd">
+    <div class="sec"><span class="lb t">구성</span>주제마다 <b>빠른 정답표</b>(8문항) → <b>주요 문항 풀이</b> → <b>자주 하는 오답</b> → <b>지도 팁</b> 순서입니다.
+    연습 문항은 정답표로 빠르게 채점하고, <b>도전과 서술형</b>은 풀이를 함께 읽어 주세요.
+    (각 주제 9번은 모두 서술형이며 정답표에는 넣지 않았습니다.)</div>
+    <div class="sec"><span class="lb">채점 기준</span>서술형은 <b>10점 만점</b> — 답의 정확성 <b>3</b>, 과정의 논리 <b>4</b>, 근거 제시 <b>2</b>, 검산 <b>1</b>.
+    <b>답이 틀려도 과정이 옳으면 최대 6점</b>을 줍니다. 이것이 주관식 훈련의 핵심 메시지입니다.</div>
+    <div class="sec"><span class="lb m">가장 중요한 원칙</span>정답을 <b>먼저 말하지 마세요.</b> 학생이 막히면
+    <b>“오늘의 전략이 뭐였지?”</b> 또는 <b>“숫자를 줄여서 해 볼까?”</b> 한마디면 대부분 스스로 길을 찾습니다.</div>
+  </div>
+</div>
+
+<div class="item" style="border-color:#be123c">
+  <div class="qh" style="background:#fff1f2"><span class="t" style="color:#be123c;font-size:13px">1단계 전체에서 특히 조심할 오답 다섯</span></div>
+  <div class="bd">
+    <table class="g">
+      <tr><th style="width:7%">순위</th><th style="width:25%">오답</th><th>왜 생기나 · 어떻게 잡나</th></tr>
+      <tr><td>1</td><td class="l"><b>“몇 번째 − 1”을 빠뜨림</b><br><span style="font-size:9.8px">(주제 7)</span></td>
+        <td class="l">첫 항은 이미 있으므로 차를 <b>(n−1)번</b> 더한다. <b>표의 “더한 횟수” 줄</b>을 반드시 쓰게 한다.</td></tr>
+      <tr><td>2</td><td class="l"><b>나머지 0을 “0번째”로 봄</b><br><span style="font-size:9.8px">(주제 9)</span></td>
+        <td class="l">나머지 0 = <b>주기의 마지막</b>. 4의 배수 번째가 모두 넷째 색임을 확인시킨다.</td></tr>
+      <tr><td>3</td><td class="l"><b>중복을 두 번 셈</b><br><span style="font-size:9.8px">(주제 1 · 22 · 24)</span></td>
+        <td class="l">악수 · 리그 · 당번 뽑기가 모두 같은 구조. <b>4명으로 줄여 직접 그려</b> 보게 한다.</td></tr>
+      <tr><td>4</td><td class="l"><b>보이는 것만 셈</b><br><span style="font-size:9.8px">(주제 14)</span></td>
+        <td class="l">숨은 쌓기나무를 놓친다. <b>위에서 본 모양에 수 쓰기</b>를 습관화한다.</td></tr>
+      <tr><td>5</td><td class="l"><b>시도를 증명으로 여김</b><br><span style="font-size:9.8px">(주제 17 · 21)</span></td>
+        <td class="l">“해 봤는데 안 돼요”는 답이 아니다. <b>홀수점 · 공약수</b>처럼 <b>세어서</b> 판정하게 한다.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="item" style="border-color:var(--acc)">
+  <div class="qh" style="background:#eef4ff"><span class="t" style="color:var(--acc);font-size:13px">영역별 도구 지도</span></div>
+  <div class="bd">
+    <table class="g">
+      <tr><th style="width:15%">영역</th><th style="width:12%">주제</th><th>이 영역에서 익히는 도구</th></tr>
+      <tr><td><b style="color:var(--A)">A 수와 연산</b></td><td>1 ~ 6</td><td class="l">표 만들기 · 조건 걸기 · 확실한 자리부터 · 합에서 거꾸로 · 역연산 · 짝짓기</td></tr>
+      <tr><td><b style="color:var(--B)">B 규칙과 패턴</b></td><td>7 ~ 12</td><td class="l">차 적기 · 몇 개씩 느는지 · 나머지로 자리 찾기 · 표로 짝짓기 · 한 층씩 · 가운데 기준</td></tr>
+      <tr><td><b style="color:var(--C)">C 도형과 공간</b></td><td>13 ~ 18</td><td class="l">크기별로 세기 · 위에서 수 쓰기 · 한 칸 건너뛰기 · 접기와 돌리기 · 홀수점 · 교차점에 수 적기</td></tr>
+      <tr><td><b style="color:var(--D)">D 측정</b></td><td>19 ~ 21</td><td class="l">표로 비교 · 기준 정해 어림 · 단계를 표로 적기</td></tr>
+      <tr><td><b style="color:var(--E)">E 논리</b></td><td>22 ~ 24</td><td class="l">곱하기와 더하기 구분 · 가정하고 모순 찾기 · 중복 센 만큼 나누기</td></tr>
+    </table>
+    <div class="sec" style="margin-top:3px"><span class="lb t">진도 운영</span>주제당 <b>50분 수업 + 과제</b>. 24주제 = 주 1회 기준 <b>약 6개월</b>.
+    영역이 끝날 때마다 <b>마무리 점검</b>(각 주제 서술형 1문항씩)을 권합니다.</div>
+  </div>
+</div>
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">0 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no A">A 영역</span>
+    <h1>주제 1 수 세기의 기술 · 주제 2 조건에 맞는 수 찾기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>1 / 14 쪽</div>
+  </div>
+
+<div class="quick"><span class="lb">주제 1 · 수 세기의 기술 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>12개</td><td>9개</td><td>60개</td><td>8가지</td><td>4쌍</td><td>6개</td><td>18개</td><td>6가지</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">2</span><span class="t">0, 3, 5, 7 로 두 자리 수</span></div>
+  <div class="bd">
+    <div class="ansline"><b>30·35·37 / 50·53·57 / 70·73·75 — 모두 9개</b></div>
+    <div class="sol">십의 자리에 <b>0을 놓을 수 없다</b> → 3, 5, 7 의 3가지
+일의 자리는 0을 포함한 남은 3가지     3 × 3 = <b>9개</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 12개(03, 05, 07까지 셈). “03은 두 자리 수인가?”를 물으면 스스로 고칩니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">1,2,3,4 로 만든 두 자리 수 중 짝수</span></div>
+  <div class="bd">
+    <div class="ansline"><b>12, 14, 24, 32, 34, 42 — 6개</b></div>
+    <div class="sol">짝수가 되려면 <b>일의 자리</b>가 2 또는 4 → <b>일의 자리를 먼저 고정</b>한다.
+   일의 자리 2 → 12, 32, 42        일의 자리 4 → 14, 24, 34
+   2 × 3 = <b>6개</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span>“조건이 붙은 자리를 <b>먼저</b> 정한다”가 핵심. 7번(백의 자리에 0 불가)과 <b>같은 발상</b>임을 연결해 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">0,1,2,3 중 세 장으로 세 자리 수</span></div>
+  <div class="bd">
+    <div class="ansline"><b>18개</b></div>
+    <div class="sol">백의 자리 : 0 제외 → <b>3</b>가지
+십의 자리 : 남은 3장 → <b>3</b>가지 (0을 쓸 수 있게 됨)
+일의 자리 : 남은 2장 → <b>2</b>가지      3 × 3 × 2 = <b>18개</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 24개(백의 자리 제한 망각) 또는 6개(0을 아예 빼 버림).</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 빠뜨리지 않았다고 확신하는 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>아래 모범 답안 참조</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“십의 자리를 <b>1, 2, 3, 4 순서로 고정</b>하고 각각 일의 자리를 작은 수부터 적었습니다. 각 줄이 <b>3개씩</b> 규칙적으로 채워졌으므로 한 칸이라도 빠지면 바로 눈에 띕니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>순서를 정했다(4) + 각 줄 3개씩 규칙적(4) + 빠짐 확인 가능(2). “표를 만들었다”만 쓰면 <b>5점</b>.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 2 · 조건에 맞는 수 찾기 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>16,25,34,<br>43,52,61,70</td><td>18,24,<br>42,81</td><td>65,74,<br>83,92</td><td>45</td><td>63</td><td>24, 60</td><td>105,123,<br>132,150</td><td>38</td></tr></table></div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">1 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no A">A 영역</span>
+    <h1>주제 2 조건에 맞는 수 찾기 · 주제 3 연산 퍼즐</h1>
+    <div class="tag">1단계 · A 수와 연산<br>2 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">백의 자리 1, 세 자리 모두 다름, 합 6</span></div>
+  <div class="bd">
+    <div class="ansline"><b>105, 123, 132, 150</b></div>
+    <div class="sol">백의 자리가 1 → <b>십 + 일 = 5</b>, 세 자리가 모두 달라야 한다.
+   (십,일) = (0,5) <s>(1,4)</s> (2,3) (3,2) <s>(4,1)</s> (5,0)   ← 1이 겹치면 제외</div>
+    <div class="misbox"><b>자주 하는 오답</b> 114, 141 포함. <b>“모두 다르다”</b> 조건 누락. 조건을 번호 매겨 지워 가며 확인시키세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">7로 나누어 3, 5로 나누어 3 남는 두 자리 수</span></div>
+  <div class="bd">
+    <div class="ansline"><b>38</b></div>
+    <div class="sol">조건이 <b>센 쪽(7)</b> 부터 나열한다.
+   7로 나누어 3 남는 수 : 3, 10, 17, 24, 31, <b>38</b>, 45, …
+   그중 5로 나누어 3 남는 수(끝자리 3 또는 8) → <b>38</b>
+[검산] 38 ÷ 7 = 5…3 ✓   38 ÷ 5 = 7…3 ✓</div>
+    <div class="sec"><span class="lb m">확장 질문</span>“다음 수는?” → 5와 7의 최소공배수 <b>35</b>를 더한 <b>73</b>. 주제 9(주기)로 이어지는 좋은 다리입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 어느 조건을 먼저 걸까</span></div>
+  <div class="bd">
+    <div class="ansline"><b>“자리 합이 6”을 먼저</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“<b>합이 6</b>을 먼저 걸면 후보가 <b>15, 24, 33, 42, 51, 60 의 6개</b>로 줄어듭니다. 4의 배수를 먼저 걸면 <b>22개</b>가 남아 훨씬 오래 걸립니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>합이 6 먼저(3) + <b>6개 vs 22개</b> 구체적 비교(5) + 결론(2). 개수를 안 쓰면 <b>5점</b>.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 3 · 연산 퍼즐 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>㉮=7<br>㉯=2</td><td>㉮=3<br>㉯=4</td><td>9</td><td>3</td><td>1</td><td>예)1,2,3</td><td>3과 8</td><td>1</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">1</span><span class="t">4㉮ + ㉯8 = 75</span></div>
+  <div class="bd">
+    <div class="ansline"><b>㉮ = 7, ㉯ = 2</b></div>
+    <div class="sol">[일의 자리] ㉮ + 8 의 일의 자리가 5 → ㉮ + 8 = <b>15</b> → ㉮ = <b>7</b> (1 올림)
+[십의 자리] 4 + ㉯ + <b>1</b> = 7 → ㉯ = <b>2</b>      [검산] 47 + 28 = <b>75</b> ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 올림을 빠뜨려 ㉯ = 3 (47+38 = 85 ✗). <b>“10을 넘었나?”</b>를 소리 내어 확인하게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n ">4</span><span class="t">㉮㉯ − ㉯㉮ = 27 일 때 ㉮ − ㉯</span></div>
+  <div class="bd">
+    <div class="ansline"><b>3</b></div>
+    <div class="sol">(10㉮+㉯) − (10㉯+㉮) = <b>9 × (㉮ − ㉯)</b> = 27  →  ㉮ − ㉯ = <b>3</b>
+[예] 41−14 = 27,  52−25 = 27,  96−69 = 27  ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span>차는 <b>항상 9의 배수</b>. “차가 50인 두 자리 수가 있을까?” → <b>없습니다.</b> 이 질문이 구조를 각인시킵니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">㉮㉮ + ㉯㉯ = ㉰㉰</span></div>
+  <div class="bd">
+    <div class="ansline"><b>㉮ + ㉯ = ㉰ 이면 모두 정답 (11+22=33, 22+55=77 …)</b></div>
+    <div class="sol">㉮㉮ = 11 × ㉮ 이므로   11㉮ + 11㉯ = 11㉰   →   <b>㉮ + ㉯ = ㉰</b>
+[조건] 세 글자가 서로 달라야 하고 ㉰ 가 한 자리 → <b>㉮ + ㉯ ≤ 9</b></div>
+    <div class="sec"><span class="lb m">채점</span>답이 <b>여러 개</b>인 문항. 하나만 맞아도 정답. <b>“왜 ㉮+㉯가 9 이하인가”</b>를 물으면 사고가 깊어집니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 백의 자리가 1인 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>99+99 = 198 이 최대이므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“두 자리 수는 아무리 커도 <b>99</b>이므로 합은 <b>99 + 99 = 198</b>이 최대입니다. 세 자리 수 중 198 이하는 <b>모두 100번대</b>이므로 백의 자리는 1입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>최대 198(5) + 198 이하는 100번대(3) + 결론(2). 198을 못 쓰면 <b>4점 이하</b>.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">2 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no A">A 영역</span>
+    <h1>주제 4 마방진 · 주제 5 거꾸로 생각하기</h1>
+    <div class="tag">1단계 · A 수와 연산<br>3 / 14 쪽</div>
+  </div>
+
+<div class="quick"><span class="lb">주제 4 · 마방진 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>15 / 5</td><td>아래 참조</td><td>아래 참조</td><td>21 / 7</td><td>짝수</td><td>30 / 10</td><td>꼭짓점<br>1,2,3</td><td>1, 5, 9</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">2·3</span><span class="t">마방진 완성 (두 문제 모두 같은 답)</span></div>
+  <div class="bd">
+    <div class="ansline"><b>8 1 6 / 3 5 7 / 4 9 2</b></div>
+    <div class="sol">[요령] <b>두 칸이 이미 채워진 줄</b>부터 공략한다.
+2번 : 8 □ 6 → □ = <b>1</b>,  8 □ 4 → □ = <b>3</b>,  6 □ 2 → □ = <b>7</b>,  4 □ 2 → □ = <b>9</b>
+3번 : □ 1 6 → □ = <b>8</b>,  3 5 □ → □ = <b>7</b>,  아래줄은 4 와 2</div>
+    <div class="sec"><span class="lb t">지도 팁</span>두 문제가 <b>같은 마방진</b>임을 알아채는 학생이 있습니다. 1~9 마방진은 회전·대칭을 빼면 <b>본질적으로 한 가지뿐</b>입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">삼각 마방진 — 한 변의 합 9</span></div>
+  <div class="bd">
+    <div class="ansline"><b>꼭짓점에 1, 2, 3 / 예: 변 가운데 6·4·5 (해 6가지)</b></div>
+    <div class="sol">[핵심] 세 변의 합을 모두 더하면 <b>꼭짓점만 두 번</b> 세어진다.
+   3 × 9 = 27 = 21 + (꼭짓점 합)   →   <b>꼭짓점 합 = 6</b>  →  1, 2, 3
+[배치 예] 꼭짓점 1,2,3 / 1–2 사이 <b>6</b>, 2–3 사이 <b>4</b>, 3–1 사이 <b>5</b>
+   확인 : 1+6+2 = 9,  2+4+3 = 9,  3+5+1 = 9 ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 무작정 넣어 보다 포기. <b>꼭짓점 합을 먼저 계산</b>하면 후보가 단숨에 좁혀집니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 가운데가 반드시 5인 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>4 × 15 = 60 = 45 + 3 × (가운데)</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“가운데를 지나는 줄이 <b>4개</b>이고 각 줄 합이 15이므로 <b>60</b>입니다. 이 4줄에는 1~9가 한 번씩 들어가 <b>45</b>이고 <b>가운데만 3번 더</b> 세어졌으므로 3 × (가운데) = 15, 가운데는 <b>5</b>입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>4줄(2) + 4×15=60(2) + <b>45와 3번 중복</b>(4) + 결론(2). 중복 설명에 배점을 크게 둡니다.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 5 · 거꾸로 생각하기 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>8</td><td>21</td><td>10시</td><td>16개</td><td>10</td><td>26개</td><td>44 L</td><td>형15<br>동생9</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">5</span><span class="t">＋7 → ×2 → −5 하니 29</span></div>
+  <div class="bd">
+    <div class="ansline"><b>10</b></div>
+    <div class="sol">[거꾸로] −5 → <b>＋5</b>,  ×2 → <b>÷2</b>,  ＋7 → <b>−7</b>  (순서도 뒤집는다)
+   29 + 5 = 34  →  34 ÷ 2 = 17  →  17 − 7 = <b>10</b>
+[검산] 10+7 = 17, 17×2 = 34, 34−5 = <b>29</b> ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 순서를 안 뒤집어 (29−7)÷2+5 로 계산. <b>화살표를 그려 방향을 뒤집게</b> 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">3일간 절반 쓰고 2L 더 → 2L 남음</span></div>
+  <div class="bd">
+    <div class="ansline"><b>44 L</b></div>
+    <div class="sol">거꾸로는 <b>＋2 하고 ×2</b> 를 세 번.
+   (2+2)×2 = <b>8</b>   (8+2)×2 = <b>20</b>   (20+2)×2 = <b>44</b>
+[검산] 44 → 20 → 8 → <b>2</b> ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span>검산을 <b>반드시</b> 시키세요. 앞으로 다시 계산해 보면 100% 확인됩니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">형이 동생에게 3개 주니 둘 다 12개</span></div>
+  <div class="bd">
+    <div class="ansline"><b>형 15개, 동생 9개</b></div>
+    <div class="sol">[거꾸로] 형은 3개를 <b>돌려받고</b>, 동생은 3개를 <b>돌려준다</b>.
+   형 12 + 3 = <b>15</b>,  동생 12 − 3 = <b>9</b>
+[검산] 15−3 = 12, 9+3 = 12 ✓   합 24는 변하지 않음 ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 둘 다 15 또는 둘 다 9. <b>주는 쪽과 받는 쪽이 반대</b>임을 화살표로 확인시키세요.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">3 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no A">A 영역</span>
+    <h1>주제 5 거꾸로 생각하기 · 주제 6 규칙적으로 더하기 · 주제 7 수 배열의 규칙</h1>
+    <div class="tag">1단계 · A 수와 연산<br>4 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 순서를 바꾸지 않으면 안 되는 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>나누어떨어지지 않아 틀린 답이 나온다</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“×4 후 −6 = 26 에서 순서를 지키면 <b>26+6 = 32, 32÷4 = 8</b>로 정확합니다. 순서를 바꾸면 <b>26÷4</b>가 되어 나누어떨어지지 않아 틀립니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>순서를 뒤집어야 함(4) + <b>구체적 계산으로 비교</b>(4) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 6 · 규칙적으로 더하기 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>210</td><td>1275</td><td>1220</td><td>2550</td><td>100</td><td>1683</td><td>360석</td><td>55개</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">3</span><span class="t">11부터 50까지의 합</span></div>
+  <div class="bd">
+    <div class="ansline"><b>1220</b></div>
+    <div class="sol">[방법 1] 짝의 합 11+50 = <b>61</b>,  개수 50−11<b>+1</b> = <b>40</b>개 → 20쌍
+   61 × 20 = <b>1220</b>
+[방법 2] (1~50) − (1~10) = 1275 − 55 = <b>1220</b> ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 개수를 39개로 셈. 양 끝을 모두 세야 하므로 <b>+1</b>. “1부터 3까지는 3개”로 확인시키면 즉시 이해합니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">1~100 중 3의 배수의 합</span></div>
+  <div class="bd">
+    <div class="ansline"><b>1683</b></div>
+    <div class="sol">3의 배수 : 3, 6, …, 99 → <b>33</b>개
+[방법 1] (3 + 99) × 33 ÷ 2 = <b>1683</b>
+[방법 2] 3으로 묶기 : 3 × (1+2+…+33) = 3 × 561 = <b>1683</b> ✓</div>
+    <div class="sec"><span class="lb m">확장</span>“3의 배수도 5의 배수도 아닌 수의 합은?” 5050 − 1683 − 1050 + 315 = <b>2632</b>. (15의 배수를 두 번 뺐으므로 다시 더함) 우수 학생용으로 좋습니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">극장 좌석 — 10석부터 2석씩, 15번째 줄까지</span></div>
+  <div class="bd">
+    <div class="ansline"><b>360석</b></div>
+    <div class="sol">[15번째 줄] 10 + 2 × <b>14</b> = <b>38</b>석   ← (15−1)번 더함
+[합] (10 + 38) × 15 ÷ 2 = <b>360</b>석</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>주제 7(수 배열)</b>의 예고편입니다. “15번째 줄을 먼저 구한다”는 두 단계 구조를 짚어 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 1~100을 10초에 구하기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>101 × 50 = 5050</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“<b>1과 100, 2와 99</b> 처럼 양 끝에서 짝지으면 짝의 합이 모두 <b>101</b>이고 짝은 <b>50쌍</b>이므로 <b>101 × 50 = 5050</b> 입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>양 끝 짝짓기(3) + 짝의 합 101(3) + 50쌍(2) + 답(2). <b>합과 개수를 둘 다</b> 밝혀야 만점.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 7 · 수 배열의 규칙 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>29 / 49</td><td>121</td><td>46</td><td>14번째</td><td>18,22,50</td><td>34번째</td><td>차4<br>첫항3</td><td>18번째<br>−2</td></tr></table></div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">4 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no B">B 영역</span>
+    <h1>주제 7 수 배열의 규칙 · 주제 8 도형이 자라는 규칙</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>5 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n ">4</span><span class="t">3, 8, 13, 18 … 에서 68은 몇 번째</span></div>
+  <div class="bd">
+    <div class="ansline"><b>14번째</b></div>
+    <div class="sol">[거꾸로] 68 − 3 = <b>65</b>  ← 처음 수를 빼면 “더한 양”만 남는다
+   65 ÷ 5 = <b>13</b>번 더했다   →   0번이 1번째이므로 <b>14</b>번째
+[검산] 3 + 5 × 13 = <b>68</b> ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>주제 5(거꾸로 생각하기)</b>를 그대로 쓴 문제입니다. 도구가 이어진다는 것을 짚어 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">3번째가 11, 7번째가 27</span></div>
+  <div class="bd">
+    <div class="ansline"><b>차 4, 첫 번째 수 3</b></div>
+    <div class="sol">3번째에서 7번째까지는 차를 <b>4번</b> 더한 것. (7 − 3 = 4)
+   (27 − 11) ÷ 4 = <b>4</b>  ← 차
+   첫 번째 = 11 − 4 × <b>2</b> = <b>3</b>   ← 1번째에서 3번째까지 2번
+[검산] 3, 7, 11, 15, 19, 23, 27 ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> (27−11)÷7 또는 ÷3 으로 계산. <b>“몇 칸 떨어졌나”</b>를 손가락으로 세게 하면 정확해집니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">100, 94, 88 … 처음 0보다 작아지는 항</span></div>
+  <div class="bd">
+    <div class="ansline"><b>18번째, −2</b></div>
+    <div class="sol">100 − 6 × (n−1) &lt; 0   →   6 × (n−1) &gt; 100   →   n−1 &gt; 16.6…
+   n − 1 = 17  →  <b>n = 18</b>
+[확인] 17번째 = 100 − 96 = <b>4</b>,  18번째 = 100 − 102 = <b>−2</b> ✓</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 왜 19번 더하는가</span></div>
+  <div class="bd">
+    <div class="ansline"><b>첫 항은 이미 있으므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“첫 번째 수 3은 <b>4를 한 번도 더하지 않은 상태</b>입니다. 그래서 20번째는 <b>20 − 1 = 19번</b>만 더합니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>첫 항은 0번 더함(5) + 그래서 n−1번(3) + 결론(2). <b>1단계 최다 오답</b>이므로 확실히 잡고 갑니다.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 8 · 도형이 자라는 규칙 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>21개</td><td>37개</td><td>12,16,20<br>4개씩</td><td>41명</td><td>36개</td><td>30개</td><td>42cm</td><td>55개</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">5</span><span class="t">10 × 10 정사각형 테두리의 바둑돌</span></div>
+  <div class="bd">
+    <div class="ansline"><b>36개</b></div>
+    <div class="sol">[방법 1] 한 변 10개씩 4줄 = 40개인데 <b>네 모서리를 두 번</b> 세었으므로
+   40 − <b>4</b> = <b>36개</b>
+[방법 2] 2×2 일 때 4개, 한 칸 커질 때마다 4개씩 → 4 + 4 × 8 = <b>36개</b> ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>두 방법의 답이 같은지</b> 확인시키세요. 영재원은 “다른 방법으로도 풀어 보시오”를 자주 묻습니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">성냥개비 61개로 삼각형 몇 개</span></div>
+  <div class="bd">
+    <div class="ansline"><b>30개</b></div>
+    <div class="sol">삼각형 n개 = <b>2n + 1</b> 개비
+   2n + 1 = 61   →   2n = 60   →   <b>n = 30</b>
+[검산] 2 × 30 + 1 = <b>61</b> ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 61 ÷ 2 = 30.5 → 30 (우연히 맞지만 근거가 틀림). <b>맨 앞의 1개</b>를 먼저 빼야 합니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">삼각형 모양 바둑돌 — 10번째</span></div>
+  <div class="bd">
+    <div class="ansline"><b>55개</b></div>
+    <div class="sol">1, 3, 6, 10 … 은 <b>1씩 더 많이</b> 늘어난다 (+2, +3, +4 …)
+   n번째 = 1 + 2 + … + n
+   10번째 = (1 + 10) × 10 ÷ 2 = <b>55</b>개</div>
+    <div class="sec"><span class="lb m">참고</span><b>삼각수</b>입니다. 주제 6의 8번과 <b>완전히 같은 문제</b>이므로 연결해 주세요.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">5 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no B">B 영역</span>
+    <h1>주제 8 도형이 자라는 규칙 · 주제 9 반복되는 규칙 · 주제 10 표로 나타낸 대응</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>6 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 왜 2개만 더 필요한가</span></div>
+  <div class="bd">
+    <div class="ansline"><b>한 변을 함께 쓰기 때문</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“새 삼각형은 <b>앞 삼각형의 한 변을 함께 쓰기</b> 때문에 새로 놓을 성냥개비는 <b>2개</b>뿐입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>한 변을 공유(6) + 그래서 3−1 = 2(2) + 결론(2). <b>그림으로 표시</b>하면 만점 처리.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 9 · 반복되는 규칙 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>빨 / 주</td><td>C</td><td>수요일</td><td>○</td><td>8</td><td>금요일</td><td>25개</td><td>일 / 토</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">빨주노초 100개 중 노란색</span></div>
+  <div class="bd">
+    <div class="ansline"><b>25개</b></div>
+    <div class="sol">100 ÷ 4 = <b>25</b>바퀴, 나머지 0 → 딱 25바퀴를 돌았다.
+   한 바퀴에 노란색이 <b>1개</b>씩이므로   1 × 25 = <b>25개</b>
+[확인] 노란색은 3, 7, 11 … 99 번째 → (99−3)÷4+1 = <b>25</b>개 ✓</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">수요일 200일 뒤 / 200일 전</span></div>
+  <div class="bd">
+    <div class="ansline"><b>뒤 → 일요일, 전 → 토요일</b></div>
+    <div class="sol">7 × 28 = 196 이므로   200 ÷ 7 = 28 … 나머지 <b>4</b>
+[200일 뒤] 수요일에서 <b>4일 앞으로</b>
+   수 → 목 → 금 → 토 → <b>일요일</b>
+[200일 전] 수요일에서 <b>4일 거꾸로</b>
+   수 → 화 → 월 → 일 → <b>토요일</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 나머지를 잘못 구함(200÷7의 나머지는 <b>4</b>). 또 “전”을 <b>거꾸로</b> 세지 않는 실수. 달력을 그려 확인시키세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 100번째가 초록인 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>100 ÷ 4 나머지 0 → 주기의 마지막</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“<b>4개마다 반복</b>되므로 100 ÷ 4 = 25 … 나머지 <b>0</b> 입니다. 나머지 0은 <b>주기의 마지막</b>을 뜻하므로 네 번째 색인 <b>초록</b>입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>주기 4(2) + 나머지 0(3) + <b>0 = 마지막</b> 설명(3) + 결론(2). 나머지 0의 의미를 못 쓰면 <b>5점</b>.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 10 · 표로 나타낸 대응 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>20,25,50<br>△=□×5</td><td>79</td><td>75개</td><td>13 / 25</td><td>△=□×12<br>180개</td><td>20</td><td>9600원</td><td>13그루</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">△가 62일 때 □</span></div>
+  <div class="bd">
+    <div class="ansline"><b>20</b></div>
+    <div class="sol">[관계 찾기] 5, 8, 11, 14 → <b>3씩</b> 늘어남 → △ = □ × 3 + <b>2</b>
+   (확인 : 4 × 3 + 2 = 14 ✓)
+[거꾸로] 62 = □ × 3 + 2  →  □ × 3 = 60  →  <b>□ = 20</b></div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">60m 길에 5m 간격으로 나무 심기 (양 끝에도)</span></div>
+  <div class="bd">
+    <div class="ansline"><b>13그루</b></div>
+    <div class="sol">[표로 확인] 길이 5m → 간격 1개, 나무 <b>2</b>그루
+           길이 10m → 간격 2개, 나무 <b>3</b>그루
+   → <b>나무 = 간격 + 1</b>
+[계산] 간격 = 60 ÷ 5 = <b>12</b>개  →  나무 = 12 + 1 = <b>13</b>그루</div>
+    <div class="misbox"><b>자주 하는 오답</b> 12그루. <b>양 끝</b>에도 심으므로 간격보다 하나 많습니다. 짧은 길로 줄여 직접 그리게 하면 즉시 이해합니다.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">6 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no B">B 영역</span>
+    <h1>주제 10 표로 나타낸 대응 · 주제 11 수 피라미드 · 주제 12 달력 속 규칙</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>7 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 관계를 찾는 두 단계</span></div>
+  <div class="bd">
+    <div class="ansline"><b>① 늘어나는 양 → 곱할 수  ② 남는 차이 → 더할 수</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“먼저 <b>△가 몇씩 늘어나는지</b> 보아 곱할 수를 찾습니다(3, 7, 11 → 4씩 → ×4). 그다음 <b>□ × 4 와 △의 차이</b>를 보아 더할 수를 찾습니다(−1). 그래서 △ = □ × 4 − 1 입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>두 단계로 나눔(4) + 각 단계 설명(4) + 예시 확인(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 11 · 수 피라미드 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>13,15<br>→28</td><td>34</td><td>9</td><td>1,5,10<br>10,5,1</td><td>1,2,4<br>8,16,32</td><td>5,6,7</td><td>24</td><td>1024</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">맨 위 24가 주어진 피라미드</span></div>
+  <div class="bd">
+    <div class="ansline"><b>아래층 5, 6, 7</b></div>
+    <div class="sol">[두 칸이 채워진 줄부터] 11 + □ = 24  →  □ = <b>13</b>
+[아래로] 5 + □ = 11  →  □ = <b>6</b>       6 + □ = 13  →  □ = <b>7</b>
+[검산] 5, 6, 7 → 11, 13 → <b>24</b> ✓</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">1,2,3,4 로 맨 위를 최대로</span></div>
+  <div class="bd">
+    <div class="ansline"><b>24 (큰 수를 가운데 두 자리에)</b></div>
+    <div class="sol">맨 위 = (첫째)×1 + (둘째)×<b>3</b> + (셋째)×<b>3</b> + (넷째)×1
+   → <b>가운데 두 자리에 큰 수</b>를 놓아야 한다.
+[예] 1, 3, 4, 2 → 1 + 9 + 12 + 2 = <b>24</b>
+   (2,3,4,1 / 1,4,3,2 등도 모두 24 — <b>답이 여러 개</b>)</div>
+    <div class="sec"><span class="lb t">지도 팁</span>가중치가 <b>1 : 3 : 3 : 1</b>(파스칼 삼각형!)임을 발견하면 최고입니다. 직접 몇 개 계산해 보게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 각 줄의 합이 2배씩인 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>윗줄의 각 수를 두 번씩 쓰기 때문</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“다음 줄을 만들 때 윗줄의 각 수를 <b>왼쪽 아래와 오른쪽 아래로 한 번씩, 모두 두 번</b> 쓰기 때문에 전체 합이 <b>2배</b>가 됩니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>두 번씩 쓰임(6) + 그래서 합이 2배(2) + 결론(2). “관찰해 보니 2배”만 쓰면 <b>4점</b> — <b>이유</b>를 요구합니다.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 12 · 달력 속 규칙 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>+7 / +8</td><td>48 / 3배</td><td>20일</td><td>28 = 28</td><td>144</td><td>23일</td><td>2일</td><td>일요일</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">3×3 아홉 날짜의 합이 207</span></div>
+  <div class="bd">
+    <div class="ansline"><b>23일</b></div>
+    <div class="sol">3×3 합 = 가운데 × <b>9</b>   (대칭인 여덟 수가 짝을 지어 지워지므로)
+   207 ÷ 9 = <b>23</b>
+[검산] 15+16+17+22+23+24+29+30+31 = <b>207</b> ✓</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">같은 요일 5개의 합이 80</span></div>
+  <div class="bd">
+    <div class="ansline"><b>2일</b></div>
+    <div class="sol">같은 요일은 <b>7씩</b> 커진다. 가장 빠른 날을 □라 하면
+   □ + (□+7) + (□+14) + (□+21) + (□+28) = □ × 5 + <b>70</b> = 80
+   □ × 5 = 10   →   <b>□ = 2</b>
+[검산] 2 + 9 + 16 + 23 + 30 = <b>80</b> ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span>한 달에 같은 요일이 5번 있으려면 <b>29일 이상</b>이고 첫 날짜가 <b>1·2·3일</b> 중 하나여야 합니다. 답 2일은 조건에 맞습니다.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">7 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no B">B 영역</span>
+    <h1>주제 12 달력 속 규칙 · 주제 13 도형의 개수 세기 · 주제 14 쌓기나무</h1>
+    <div class="tag">1단계 · B 규칙과 패턴<br>8 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">13일이 금요일일 때 1일은?</span></div>
+  <div class="bd">
+    <div class="ansline"><b>일요일</b></div>
+    <div class="sol">13일에서 1일까지는 <b>12일 전</b>.
+   12 ÷ 7 = 1 … 나머지 <b>5</b>   →   금요일에서 <b>5일 거꾸로</b>
+   금 → 목 → 수 → 화 → 월 → <b>일요일</b>
+[검산] 1일(일) + 7 = 8일(일), + 5 = 13일(금) ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 앞으로 세어 수요일. <b>“전”은 거꾸로</b>임을 달력에 화살표로 표시하게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 세로 세 날짜의 합이 가운데의 3배</span></div>
+  <div class="bd">
+    <div class="ansline"><b>−7과 +7이 서로 지워지므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“가운데를 □라 하면 위는 <b>□−7</b>, 아래는 <b>□+7</b> 입니다. 셋을 더하면 <b>−7과 +7이 서로 지워져</b> □가 3개만 남으므로 합은 □ × 3 입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>□로 놓음(3) + □±7 표현(3) + <b>지워짐</b> 설명(2) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 13 · 도형의 개수 세기 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>5개</td><td>16,9,4,1<br>=30</td><td>55개</td><td>9개</td><td>36개</td><td>13개</td><td>27개</td><td>70개</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">5</span><span class="t">3 × 3 판의 직사각형</span></div>
+  <div class="bd">
+    <div class="ansline"><b>36개</b></div>
+    <div class="sol">직사각형 하나를 정하려면 <b>세로선 2개</b>와 <b>가로선 2개</b>를 고르면 된다.
+   세로선 4개 중 2개 : <b>6</b>가지     가로선 4개 중 2개 : <b>6</b>가지
+   6 × 6 = <b>36개</b>
+[검산] 크기별로 세도 9+6+6+3+3+4+2+2+1 = <b>36</b> ✓</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">4단 삼각형의 크고 작은 삼각형</span></div>
+  <div class="bd">
+    <div class="ansline"><b>27개</b></div>
+    <div class="sol">[위로 향한 △] 1단 <b>10</b> + 2단 <b>6</b> + 3단 <b>3</b> + 4단 <b>1</b> = 20개
+[아래로 향한 ▽] 1단 <b>6</b> + 2단 <b>1</b> = 7개
+   합계 20 + 7 = <b>27개</b>
+[규칙] 1단 1, 2단 5, 3단 13, 4단 <b>27</b>, 5단 48</div>
+    <div class="misbox"><b>자주 하는 오답</b> 20개(▽ 누락) 또는 24개(2단 ▽ 누락). ▽를 <b>색연필로 따로</b> 표시하며 세게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">4×4 판에서 정사각형이 아닌 직사각형</span></div>
+  <div class="bd">
+    <div class="ansline"><b>70개</b></div>
+    <div class="sol">전체 직사각형 : (1+2+3+4)² = 10² = <b>100</b>개
+   정사각형 : 16 + 9 + 4 + 1 = <b>30</b>개
+   100 − 30 = <b>70개</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>전체에서 빼기</b>는 주제 18(최단거리)에서도 쓰입니다. 같은 도구임을 짚어 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 2×2 정사각형이 4개인 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>왼쪽 위 꼭짓점이 놓일 자리가 2×2</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“2×2 정사각형의 <b>왼쪽 위 꼭짓점</b>이 놓일 수 있는 자리가 가로 <b>2곳</b>, 세로 <b>2곳</b>이므로 2 × 2 = <b>4개</b>입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>기준점을 잡음(5) + 가로·세로 각 2곳(3) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 14 · 쌓기나무 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>10개</td><td>2,2,3</td><td>1개</td><td>8개</td><td>6,3,1</td><td>19개</td><td>8개</td><td>12 / 6</td></tr></table></div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">8 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no C">C 영역</span>
+    <h1>주제 14 쌓기나무 · 주제 15 정육면체의 전개도 · 주제 16 대칭</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>9 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">앞·옆이 모두 2,3,2 일 때 최대</span></div>
+  <div class="bd">
+    <div class="ansline"><b>19개</b></div>
+    <div class="sol">각 칸의 높이는 <b>min(그 줄의 앞, 그 줄의 옆)</b> 을 넘을 수 없다.
+   (넘으면 그 방향에서 더 높게 보여 조건을 어긴다)
+   <b>2 2 2 / 2 3 2 / 2 2 2</b>   →   2×8 + 3 = <b>19개</b>
+[참고] 가장 적을 때는 <b>13개</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span>“왜 min인가”를 물어보세요. <b>둘 중 작은 쪽</b>이 더 강한 제한이기 때문입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7·8</span><span class="t">3×3×3 페인트칠 후 분해</span></div>
+  <div class="bd">
+    <div class="ansline"><b>3면 8개 / 2면 12개 / 1면 6개 / 0면 1개</b></div>
+    <div class="sol">3면 : <b>꼭짓점</b> → 8개          2면 : <b>모서리 가운데</b> → 12개
+1면 : <b>각 면의 가운데</b> → 6개    0면 : <b>속</b> → 1개
+[검산] 8 + 12 + 6 + 1 = <b>27</b> ✓  (전체와 일치)</div>
+    <div class="misbox"><b>자주 하는 오답</b> 합이 27이 안 됨. <b>반드시 합을 확인</b>시키세요. 정육면체의 꼭짓점 8·모서리 12·면 6과 정확히 대응합니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 같은 모양인데 개수가 다른 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>그 줄에서 가장 높은 것만 보이므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“각 방향에서는 <b>그 줄에서 가장 높은 것</b>만 보이므로, <b>뒤에 숨은 낮은 나무</b>는 개수가 달라도 보이는 모양이 같습니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>가장 높은 것만 보임(5) + 숨은 나무(3) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 15 · 정육면체의 전개도 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>6,5,4</td><td>6/12/8</td><td>⑤</td><td>11가지</td><td>안 됨</td><td>㉮=6<br>㉯=5</td><td>2 / 14</td><td>35</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">5</span><span class="t">2 × 3 직사각형 전개도</span></div>
+  <div class="bd">
+    <div class="ansline"><b>정육면체가 되지 않는다</b></div>
+    <div class="sol">2 × 3 으로 붙이면 접었을 때 <b>면이 서로 겹치고</b> 뚫린 곳이 생긴다.
+   정사각형 6개를 붙였다고 <b>모두</b> 정육면체가 되는 것은 아니다.
+   → 실제로 되는 것은 <b>11가지</b>뿐</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>직접 오려 접어 보게</b> 하세요. 한 번 해 본 학생은 다음부터 상상만으로 판별합니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">주사위 2개를 붙였을 때 보이는 면의 합</span></div>
+  <div class="bd">
+    <div class="ansline"><b>35</b></div>
+    <div class="sol">주사위 하나의 여섯 면 합 = 1+2+…+6 = <b>21</b>
+   두 개면 21 × 2 = <b>42</b>
+   붙어서 <b>보이지 않게 된 두 면</b>의 합이 7 이므로
+   42 − 7 = <b>35</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 21 − 7 = 14 (주사위 하나만 계산). <b>“몇 개인가”</b>를 먼저 확인시키세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 한 칸 건너뛴 면이 마주 보는 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>옆면 네 개가 빙 두르기 때문</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“일직선으로 이어진 <b>네 면</b>이 옆면을 빙 두르는데, 그중 <b>1번째와 3번째</b>, <b>2번째와 4번째</b>가 서로 등을 맞대기 때문입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>네 면이 옆면을 두름(5) + 1–3, 2–4가 마주함(3) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 16 · 대칭 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>3,4,2,0</td><td>정사각형<br>직사각형<br>평행사변형</td><td>6개 / O</td><td>A H O</td><td>H N O S</td><td>맞다</td><td>평행사변형</td><td>0, 1, 8</td></tr></table></div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">9 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no C">C 영역</span>
+    <h1>주제 16 대칭 · 주제 17 한붓그리기 · 주제 18 최단 거리</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>10 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">선대칭이 아니면서 점대칭인 도형</span></div>
+  <div class="bd">
+    <div class="ansline"><b>평행사변형 (또는 알파벳 N, S, Z)</b></div>
+    <div class="sol"><b>평행사변형</b> : 어느 쪽으로 접어도 포개지지 않지만(대칭축 0개),
+   반 바퀴 돌리면 처음과 같아진다(점대칭 O).
+[다른 예] 알파벳 <b>N, S, Z</b> / 숫자 <b>2</b>는 아님(돌리면 2가 되지 않음)</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>“축이 있으면 점대칭”이 아니고 “점대칭이면 축이 있다”도 아닙니다.</b> 정삼각형(축O·점X)과 평행사변형(축X·점O)을 나란히 놓으면 확실해집니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">거꾸로 돌려도 같은 숫자</span></div>
+  <div class="bd">
+    <div class="ansline"><b>0, 1, 8</b></div>
+    <div class="sol"><b>0</b> → 0 ✓    <b>1</b> → 1 ✓    <b>8</b> → 8 ✓
+<b>6</b> → 9 ✗ (다른 숫자가 됨)    <b>9</b> → 6 ✗    <b>2</b> → 2가 아님 ✗</div>
+    <div class="misbox"><b>자주 하는 오답</b> 6과 9를 포함. <b>자기 자신</b>이 되어야 한다는 조건을 놓친 것입니다. 종이에 써서 돌려 보게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 정삼각형이 점대칭이 아닌 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>맞은편에 꼭짓점이 아니라 변의 가운데가 있으므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“반 바퀴 돌리면 <b>위 꼭짓점이 아래로</b> 가는데, 아래에는 꼭짓점이 아니라 <b>변의 한가운데</b>가 있어 처음 모양과 겹치지 않습니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>돌리면 맞은편으로 감(3) + <b>맞은편에 변의 가운데</b>(5) + 결론(2). 홀수각형 일반화까지 쓰면 가산점.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 17 · 한붓그리기 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>차수</td><td>출발점<br>(제자리)</td><td>2개<br>가능</td><td>불가능<br>4개</td><td>홀수점</td><td>불가능</td><td>불가능</td><td>아래 참조</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">원 하나에 지름 2개</span></div>
+  <div class="bd">
+    <div class="ansline"><b>불가능 (홀수점 4개)</b></div>
+    <div class="sol">[차수 세기] 원 위의 네 점 : 호 2개 + 지름 1개 = <b>3</b> (홀수)
+             중심 : 지름 2개가 지나므로 <b>4</b> (짝수)
+   홀수점 = <b>4개</b>   →   4개 이상이므로 <b>불가능</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>곡선도 선</b>이라는 점을 짚어 주세요. 호 2개가 각 점에 모입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">선 하나를 더 그어 가능하게 만들기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>홀수점 4개 중 두 점을 잇는다</b></div>
+    <div class="sol">사각형+대각선 2개는 네 꼭짓점이 모두 차수 <b>3</b>(홀수).
+   <b>이웃한 두 꼭짓점을 한 번 더</b> 이으면 그 둘의 차수가 4가 되어
+   홀수점이 <b>2개</b>로 줄어든다 → <b>가능</b>
+   (남은 두 홀수점 중 하나에서 출발한다)</div>
+    <div class="sec"><span class="lb m">채점</span><b>어느 두 점</b>인지 + <b>왜 가능해지는지</b>(홀수점 4→2)를 모두 써야 만점.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 시도와 증명의 차이</span></div>
+  <div class="bd">
+    <div class="ansline"><b>시도하지 않은 방법이 남아 있을 수 있으므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“시도하지 <b>않은 방법이 남아 있을 수</b> 있기 때문에 불가능하다고 단정할 수 없습니다. <b>홀수점의 개수</b>를 세면 시도하지 않고도 확실히 판정할 수 있습니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>남은 방법 가능성(4) + <b>홀수점으로 판정</b>(4) + 결론(2). <b>1단계에서 가장 중요한 서술형</b>이므로 시간을 넉넉히 주세요.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 18 · 최단 거리 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>6가지</td><td>10가지</td><td>20가지</td><td>35가지</td><td>6번<br>(오3위3)</td><td>8가지</td><td>9가지</td><td>17가지</td></tr></table></div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">10 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no C">C 영역</span>
+    <h1>주제 18 최단 거리 · 주제 19 둘레와 넓이</h1>
+    <div class="tag">1단계 · C 도형과 공간<br>11 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">오른쪽1·위1 지점이 막힘</span></div>
+  <div class="bd">
+    <div class="ansline"><b>8가지</b></div>
+    <div class="sol">[방법 1] 막힌 자리에 <b>0</b>을 쓰고 “왼쪽 + 아래”로 채워 나간다 → <b>8</b>
+[방법 2] 전체 <b>20</b> − (막힌 점을 지나는 경로)
+   P → 막힌 점 : <b>2</b>가지,  막힌 점 → Q : <b>6</b>가지  →  2 × 6 = 12
+   20 − 12 = <b>8가지</b> ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>빼는 방법이 훨씬 빠릅니다.</b> 두 방법을 모둠별로 나눠 풀게 하고 걸린 시간을 비교하면 효과적입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">M(오1·위2)을 반드시 지나기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>9가지</b></div>
+    <div class="sol">P → M : 오른쪽 1, 위 2  →  <b>3</b>가지
+M → Q : 오른쪽 2, 위 1  →  <b>3</b>가지
+   연달아 지나므로 <b>곱한다</b>   3 × 3 = <b>9가지</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 3 + 3 = 6 (더함). <b>“먼저 정하고 그다음 정하면 곱셈”</b>(주제 1·22)과 같은 구조임을 연결해 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">4×3 격자에서 (오2·위1) 막힘</span></div>
+  <div class="bd">
+    <div class="ansline"><b>17가지</b></div>
+    <div class="sol">전체 : 오른쪽 4, 위 3 → <b>35</b>가지
+막힌 점을 지나는 경로 : 3 × 6 = <b>18</b>가지
+   35 − 18 = <b>17가지</b></div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 직접 세기 vs 전체에서 빼기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>빼는 쪽이 편하다</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“<b>전체에서 빼는 것</b>이 편합니다. 직접 세려면 <b>여러 갈래로 경우를 나눠야</b> 하지만, 빼는 방법은 <b>곱셈 한 번</b>이면 되기 때문입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>빼는 쪽 선택(2) + <b>이유를 구체적으로</b>(6) + 결론(2).</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 19 · 둘레와 넓이 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>9,16,21<br>24,25</td><td>25cm²</td><td>36cm²</td><td>24cm</td><td>14cm</td><td>11cm²</td><td>18,24,42</td><td>10m<br>200m²</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">색종이 20장으로 만들 수 있는 둘레</span></div>
+  <div class="bd">
+    <div class="ansline"><b>18cm, 24cm, 42cm</b></div>
+    <div class="sol">넓이 20인 직사각형 : <b>1×20, 2×10, 4×5</b>
+   1×20 → 둘레 2×21 = <b>42</b>
+   2×10 → 둘레 2×12 = <b>24</b>
+   4×5  → 둘레 2×9  = <b>18</b>   ← 가장 짧다 (정사각형에 가장 가까움)</div>
+    <div class="misbox"><b>자주 하는 오답</b> 20 = 20×1 과 1×20 을 <b>다른 것</b>으로 세어 6가지라 답함. 돌리면 같은 직사각형입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">담장을 이용한 울타리 40m</span></div>
+  <div class="bd">
+    <div class="ansline"><b>수직인 변 10m, 넓이 200m²</b></div>
+    <div class="sol">담장과 수직인 변을 □라 하면 담장과 평행한 변은 <b>40 − □ × 2</b>
+   □ = 5  → 5 × 30 = 150      □ = <b>10</b> → 10 × 20 = <b>200</b>
+   □ = 12 → 12 × 16 = 192     □ = 15 → 15 × 10 = 150
+   → <b>10m</b> 일 때 최대 <b>200m²</b>  (가로 : 세로 = 20 : 10 = <b>2 : 1</b>)</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>정사각형이 답이 아닙니다!</b> 담장 쪽은 공짜이므로 그 방향으로 더 길게 만드는 것이 이득입니다. “왜 정사각형이 아닐까?”가 좋은 토론거리입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 둘레가 같은데 넓이가 다른 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>합은 같아도 곱은 다르다</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“둘레가 20cm일 때 <b>1×9는 넓이 9</b>, <b>5×5는 넓이 25</b>입니다. 가로와 세로의 <b>합</b>은 같지만 <b>곱</b>은 두 수가 <b>가까울수록 커지기</b> 때문입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>구체적 예 두 개(4) + 합은 같고 곱은 다름(4) + 결론(2). 예를 안 들면 <b>5점</b>.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">11 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no D">D 영역</span>
+    <h1>주제 20 단위와 어림 · 주제 21 물통과 저울</h1>
+    <div class="tag">1단계 · D 측정과 비율<br>12 / 14 쪽</div>
+  </div>
+
+<div class="quick"><span class="lb">주제 20 · 단위와 어림 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>4200m<br>3.4kg<br>2500mL</td><td>75분<br>4500초</td><td>168시간</td><td>86400초</td><td>m / g<br>/ mL</td><td>약 11~12일</td><td>약 56m²</td><td>약 3살</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">100만 초는 약 며칠</span></div>
+  <div class="bd">
+    <div class="ansline"><b>약 11~12일 (정확히는 11.6일)</b></div>
+    <div class="sol">하루 = 24 × 60 × 60 = <b>86400</b>초 ≈ 약 9만 초
+   1,000,000 ÷ 86400 ≈ <b>11.6</b>
+   → 약 <b>11일 반</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>먼저 짐작하게</b> 한 뒤 계산시키세요. 대부분 “한 달”이라 답합니다. 어림과 계산의 차이를 느끼는 것이 목적입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">1억 초를 산 학생은 몇 살쯤</span></div>
+  <div class="bd">
+    <div class="ansline"><b>약 3살</b></div>
+    <div class="sol">1년 ≈ 365 × 24 × 60 × 60 ≈ <b>3천만 초</b> (31,536,000)
+   100,000,000 ÷ 31,536,000 ≈ <b>3.2</b>
+   → 약 <b>3살</b></div>
+    <div class="misbox"><b>자주 하는 오답</b> 100살, 1000살처럼 크게 답함. <b>“1억”이라는 말에 압도된 것</b>입니다. 1년이 3천만 초임을 먼저 구하면 감이 잡힙니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 교실 넓이 어림하기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>걸음을 기준으로 삼는다</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“내 <b>걸음 한 발짝을 50cm</b>로 정하고 가로와 세로를 걸어 걸음 수를 셉니다. 각각 <b>0.5를 곱해</b> 길이를 구한 뒤 <b>서로 곱하면</b> 넓이를 어림할 수 있습니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>기준을 정함(4) + 걸음 수를 셈(2) + 길이 계산(2) + 넓이 계산(2). <b>기준 설정</b>이 핵심입니다.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 21 · 물통과 저울 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>아래 참조</td><td>2회</td><td>3회</td><td>3가지</td><td>불가능</td><td>아래 참조</td><td>4회</td><td>가능</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">1</span><span class="t">5L·3L 로 4L 만들기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>6단계 (아래 표)</b></div>
+    <div class="sol">   단계          5L통  3L통
+   ① 5L 가득      5     0
+   ② 3L로 옮김     2     3
+   ③ 3L 비움       2     0
+   ④ 2L 옮김       0     2
+   ⑤ 5L 가득      5     2
+   ⑥ 3L 마저 채움  <b>4</b>     3   ← 1L만 들어감</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>다른 순서</b>로도 됩니다(3L부터 시작). 학생이 다른 방법을 찾으면 <b>단계 수를 비교</b>하게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">7</span><span class="t">금화 80개</span></div>
+  <div class="bd">
+    <div class="ansline"><b>4회</b></div>
+    <div class="sol">양팔저울은 결과가 <b>세 가지</b>(왼쪽·오른쪽·평형)이므로 한 번에 <b>3배씩</b> 줄인다.
+   3 → 9 → 27 → <b>81</b>
+   80 ≤ 81 이므로 <b>4회</b>면 충분</div>
+    <div class="misbox"><b>자주 하는 오답</b> 반씩 나누어 7회(2⁷=128). <b>“평형”도 정보</b>라는 점을 놓친 것입니다.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">12 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no D">D 영역</span>
+    <h1>주제 21 물통과 저울 · 주제 22 경우의 수 · 주제 23 참말과 거짓말</h1>
+    <div class="tag">1단계 · D 측정과 비율<br>13 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">8L·3L 로 4L 만들기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>가능</b></div>
+    <div class="sol">8과 3의 <b>공약수는 1뿐</b>이므로 1L부터 8L까지 <b>모두</b> 만들 수 있다.
+[예] 3L 가득 → 8L로 옮김(8:3, 3:0) … 반복하면 4L에 도달
+   또는 8L 가득 → 3L 두 번 덜어내면 8 − 3 − 3 = <b>2</b>, 한 번 더 … 로 조합</div>
+    <div class="sec"><span class="lb m">채점</span>“가능”만 쓰면 절반. <b>공약수가 1</b>이라는 근거나 <b>실제 단계</b> 중 하나는 반드시 있어야 만점.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 4L·6L로 3L를 못 만드는 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>둘 다 짝수라 항상 짝수만 나온다</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“4와 6은 <b>모두 짝수</b>이므로 채우거나 옮기거나 비워도 물의 양은 <b>항상 짝수</b>가 됩니다. 3은 홀수라서 만들 수 없습니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>둘 다 짝수(3) + <b>어떤 조작을 해도 짝수 유지</b>(5) + 결론(2). “해 봤는데 안 돼요”는 <b>0점</b>임을 분명히 하세요.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 22 · 경우의 수 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>12가지</td><td>5가지</td><td>8가지</td><td>6가지</td><td>9 / 3</td><td>20가지</td><td>10가지</td><td>6가지</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">1·2</span><span class="t">곱하기와 더하기 비교</span></div>
+  <div class="bd">
+    <div class="ansline"><b>1번 12가지(곱) / 2번 5가지(더함)</b></div>
+    <div class="sol">1번 : 티셔츠 <b>그리고</b> 바지 → 둘 다 골라야 한 벌  →  4 × 3 = <b>12</b>
+2번 : 버스 <b>또는</b> 지하철 → 하나만 타면 됨  →  3 + 2 = <b>5</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span>이 두 문제를 <b>나란히</b> 놓은 것이 의도입니다. “둘 다인가, 하나만인가”를 소리 내어 판단하게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6·7</span><span class="t">대표·부대표 vs 청소 당번</span></div>
+  <div class="bd">
+    <div class="ansline"><b>20가지 / 10가지</b></div>
+    <div class="sol">6번(순서 있음) : 대표 <b>5</b> × 부대표 <b>4</b> = <b>20</b>가지
+7번(순서 없음) : (가,나)와 (나,가)가 <b>같은 경우</b>로 두 번 세어졌으므로
+   20 ÷ <b>2</b> = <b>10</b>가지</div>
+    <div class="misbox"><b>자주 하는 오답</b> 7번도 20가지. <b>“자리가 다른가, 같은가”</b>를 먼저 묻게 하세요. 3명으로 줄여 직접 나열하면 즉시 이해합니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 왜 3+2가 아니라 3×2인가</span></div>
+  <div class="bd">
+    <div class="ansline"><b>둘 다 골라야 한 벌이 완성되므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“티셔츠와 바지를 <b>둘 다 골라야</b> 한 벌이 완성되기 때문입니다. 티셔츠 하나마다 바지가 <b>2가지씩 갈라지므로</b> 3 × 2 = 6가지입니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>둘 다 골라야 함(4) + <b>하나마다 2가지씩 갈라짐</b>(4) + 결론(2). 나뭇가지 그림을 그리면 만점.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 23 · 참말과 거짓말 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>참말만<br>거짓말만</td><td>없다</td><td>거짓/참<br>/거짓</td><td>정할 수<br>없다</td><td>알 수<br>없다</td><td>가</td><td>2개</td><td>알 수<br>없다</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">3</span><span class="t">민수·지혜·현우</span></div>
+  <div class="bd">
+    <div class="ansline"><b>민수 거짓말족 / 지혜 참말족 / 현우 거짓말족</b></div>
+    <div class="sol">[가정] 민수가 <b>참말족</b>이라 하자.
+   → 지혜는 거짓말족 → 지혜의 말은 거짓 → 현우는 참말족
+   → 현우의 말이 참 → “민수와 지혜 둘 다 거짓말족”
+   → 민수를 참말족이라 가정했는데 모순!   <b style="color:#be123c">✗</b>
+[결론] 민수는 <b>거짓말족</b> → 지혜는 <b>참말족</b> → 현우는 <b>거짓말족</b>
+[검산] 현우(거짓말족)의 말은 거짓이어야 하는데 지혜가 참말족이므로 거짓 ✓</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>한 사람만 정하면 줄줄이</b> 정해진다는 감각이 핵심입니다. 지혜부터 가정해도 같은 답이 나오는지 확인시켜 보세요.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">13 / 14</span></div>
+</div>
+
+<div class="page">
+  <div class="head">
+    <span class="no E">E 영역</span>
+    <h1>주제 23 참말과 거짓말 · 주제 24 리그와 토너먼트</h1>
+    <div class="tag">1단계 · E 논리와 문제해결<br>14 / 14 쪽</div>
+  </div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6·7</span><span class="t">범인 찾기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>범인은 가 / 나가 범인이면 참말 2개</b></div>
+    <div class="sol">범인이 <b>가</b> : 가✗ 나○ 다✗ → 참말 <b>1개</b> ✓ 조건에 맞음
+범인이 <b>나</b> : 가○ 나✗ 다○ → 참말 <b>2개</b> ✗
+범인이 <b>다</b> : 가✗ 나○ 다○ → 참말 <b>2개</b> ✗
+   → 범인은 <b>가</b></div>
+    <div class="sec"><span class="lb m">채점</span><b>세 경우를 모두</b> 따져야 만점. 하나만 확인하고 답을 쓰면 <b>절반</b>입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">4·5·8</span><span class="t">답이 정해지지 않는 문제들</span></div>
+  <div class="bd">
+    <div class="ansline"><b>모두 “정할 수 없다 / 알 수 없다”</b></div>
+    <div class="sol">4번 : A·B 서로 “거짓말족”이라 함 → <b>두 경우 모두 모순이 없다</b>
+5번 : “나는 참말족” → 참말족도 거짓말족도 <b>그렇게 말할 수 있다</b>
+8번 : 세 명 모두 “나는 참말족” → 거짓말족도 같은 말을 하므로 <b>구별 불가</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>모든 문제에 유일한 답이 있는 것은 아닙니다.</b> “정할 수 없다”도 훌륭한 답이며, 이때는 <b>왜 정할 수 없는지</b>를 반드시 쓰게 하세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 3번 풀이 과정 쓰기</span></div>
+  <div class="bd">
+    <div class="ansline"><b>가정 → 모순 → 결론 → 검산</b></div>
+    <div class="sec"><span class="lb m">채점</span>민수를 참말족이라 가정(2) + <b>따라가서 모순 발견</b>(4) + 가정을 뒤집어 결론(2) + 검산(2). <b>“모순”이라는 말</b>이 나오면 가산.</div>
+  </div>
+</div>
+
+<div class="quick"><span class="lb">주제 24 · 리그와 토너먼트 — 빠른 정답</span>
+  <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>6경기</td><td>15경기</td><td>7경기</td><td>45번</td><td>15경기</td><td>10명</td><td>120 / 8배</td><td>56경기</td></tr></table></div>
+
+<div class="item">
+  <div class="qh"><span class="n ">3·5</span><span class="t">토너먼트 경기 수</span></div>
+  <div class="bd">
+    <div class="ansline"><b>8팀 → 7경기 / 16팀 → 15경기</b></div>
+    <div class="sol">한 경기마다 <b>정확히 한 팀이 탈락</b>한다.
+   우승팀 1팀을 뺀 나머지가 모두 탈락해야 하므로   <b>경기 수 = 팀 수 − 1</b></div>
+    <div class="sec"><span class="lb t">지도 팁</span>대진표를 그리지 않고 <b>한 문장</b>으로 푸는 발상입니다. “4강·8강을 세어 볼 필요가 없다”는 점을 감탄과 함께 짚어 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">6</span><span class="t">악수 45번 → 인원</span></div>
+  <div class="bd">
+    <div class="ansline"><b>10명</b></div>
+    <div class="sol">n × (n − 1) ÷ 2 = 45   →   n × (n − 1) = <b>90</b>
+   8×9 = 72 ✗    <b>9×10 = 90</b> ✓    10×11 = 110 ✗
+   → <b>n = 10</b>
+[검산] 10 × 9 ÷ 2 = <b>45</b> ✓</div>
+    <div class="misbox"><b>자주 하는 오답</b> 45 ÷ 2 나 45+1 로 접근. <b>이웃한 두 수의 곱</b>을 찾는다는 구조를 짚어 주세요.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n c">8</span><span class="t">8팀이 서로 두 번씩</span></div>
+  <div class="bd">
+    <div class="ansline"><b>56경기</b></div>
+    <div class="sol">한 번씩 : 8 × 7 ÷ 2 = <b>28</b>경기
+   두 번씩(홈·원정) : 28 × 2 = <b>56</b>경기
+[다른 방법] 8 × 7 = <b>56</b>   ← 나누지 않는다!
+   홈경기와 원정경기가 <b>서로 다른 경기</b>이므로 중복이 아니다</div>
+    <div class="sec"><span class="lb t">지도 팁</span><b>“왜 이번엔 2로 안 나누나?”</b>가 좋은 질문입니다. 가↔나 홈경기와 나↔가 홈경기는 다른 경기이기 때문입니다.</div>
+  </div>
+</div>
+
+<div class="item">
+  <div class="qh"><span class="n w">9</span><span class="t">서술형 — 6×5 = 30 이 틀린 이유</span></div>
+  <div class="bd">
+    <div class="ansline"><b>한 경기를 두 번 세었으므로</b></div>
+    <div class="sec"><span class="lb">모범 답안</span>“‘가와 나의 경기’를 <b>가 쪽에서 한 번, 나 쪽에서 한 번</b> 모두 두 번 세었기 때문입니다. 그래서 <b>2로 나누어</b> 15경기가 됩니다.”</div>
+    <div class="sec"><span class="lb m">채점</span>두 번 세었음(6) + 2로 나눔(2) + 답 15(2). <b>4팀으로 줄여 직접 그려</b> 확인하면 만점.</div>
+  </div>
+</div>
+
+  <div class="foot"><span>사고력수학 1단계 해설집 (교사용)</span><span class="r">14 / 14</span></div>
+</div>
+
+</body>
+</html>
