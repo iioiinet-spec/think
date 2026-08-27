@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>입출력 필수예제 30 · C / 파이썬 병렬 학습지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --surface:#f2f6f7;
+  --ink:#16242e;
+  --ink-soft:#4d626f;
+  --ink-faint:#8496a1;
+  --rule:#d8e2e7;
+  --rule-soft:#e9eff2;
+  --c-accent:#0e6b7a;
+  --c-tint:#e3f1f3;
+  --py-accent:#8a3d6b;
+  --py-tint:#f6e7ef;
+  --out-accent:#3f5d2f;
+  --out-tint:#eef4e8;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --serif:"Gowun Batang","Nanum Myeongjo",serif;
+  --mono:"IBM Plex Mono","D2Coding","Consolas",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font-family:var(--sans);font-weight:400;line-height:1.7;
+  font-size:15px;letter-spacing:-.01em;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px 80px}
+
+/* ===== masthead ===== */
+.masthead{
+  background:var(--paper);border-bottom:3px solid var(--ink);
+  padding:34px 0 26px;margin-bottom:0;
+}
+.masthead .wrap{padding-bottom:0}
+.brandline{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--c-accent);text-transform:uppercase;margin-bottom:14px;
+}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,6vw,46px);line-height:1.18;margin:0 0 6px;
+  letter-spacing:-.02em;
+}
+.masthead h1 em{font-style:normal;color:var(--c-accent)}
+.subtitle{color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:62ch}
+.metarow{
+  display:flex;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:11.5px;
+}
+.metarow span{
+  border:1px solid var(--rule);border-radius:2px;
+  padding:4px 9px;color:var(--ink-soft);background:#fbfdfd;
+}
+.metarow span.verified{border-color:var(--out-accent);color:var(--out-accent);background:var(--out-tint)}
+
+/* ===== toolbar ===== */
+.toolbar{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+  padding:9px 0;margin-bottom:26px;
+}
+.toolbar .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding-bottom:0}
+.tgroup{display:flex;align-items:center;gap:6px}
+.tlabel{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--ink-faint);margin-right:2px;
+}
+.seg{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.seg button{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;
+  border:0;background:var(--paper);color:var(--ink-soft);
+  padding:6px 12px;cursor:pointer;border-right:1px solid var(--rule);
+  transition:background .12s,color .12s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tool-btn{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;
+  padding:7px 15px;border-radius:3px;
+}
+.tool-btn.ghost{background:var(--paper);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);cursor:pointer}
+.chk input{accent-color:var(--c-accent);width:14px;height:14px}
+
+
+/* ===== cheat sheet ===== */
+.cheat{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--py-accent);
+  border-radius:4px;padding:20px 22px;margin-bottom:22px}
+.cheat h2{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--py-accent);
+  margin:0 0 14px;font-weight:500;text-transform:uppercase}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.2px}
+table.cmp th{text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.06em;color:var(--ink-faint);
+  border-bottom:1px solid var(--rule);padding:6px 10px 6px 0}
+table.cmp td{padding:7px 10px 7px 0;border-bottom:1px dotted var(--rule-soft);vertical-align:top}
+table.cmp td:first-child{color:var(--ink-soft);white-space:nowrap}
+table.cmp code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 5px;border-radius:2px}
+.cheatnote{font-size:13px;color:var(--ink-soft);margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule-soft)}
+.cheatnote code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 4px;border-radius:2px}
+@media (max-width:560px){table.cmp{font-size:12.2px}table.cmp td:first-child{white-space:normal}}
+
+/* ===== toc ===== */
+.toc{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:20px 22px;margin-bottom:34px;
+}
+.toc h2{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--ink-faint);margin:0 0 14px;font-weight:500;text-transform:uppercase;
+}
+.tocgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:2px 18px}
+.tocitem{
+  display:flex;gap:9px;align-items:baseline;padding:4px 0;
+  border-bottom:1px dotted var(--rule-soft);text-decoration:none;color:var(--ink);
+  font-size:13px;
+}
+.tocitem:hover{color:var(--c-accent)}
+.tocitem b{font-family:var(--mono);font-weight:500;color:var(--ink-faint);font-size:11.5px;min-width:18px}
+
+/* ===== part heading ===== */
+.part{margin:0 0 26px;padding-top:8px}
+.part-head{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:24px}
+.part-head h2{font-family:var(--serif);font-size:26px;font-weight:700;margin:0;letter-spacing:-.02em}
+.part-head .pnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);padding-bottom:5px}
+
+/* ===== card ===== */
+.card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 24px 24px;margin-bottom:16px;position:relative;
+  scroll-margin-top:70px;
+}
+.card::before{
+  content:"";position:absolute;left:-1px;top:20px;width:3px;height:46px;
+  background:var(--c-accent);border-radius:0 3px 3px 0;
+}
+.card.sol::before{background:var(--py-accent)}
+.chead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.loopmark{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--c-accent);background:var(--c-tint);padding:3px 8px;border-radius:2px;
+}
+.card.sol .loopmark{color:var(--py-accent);background:var(--py-tint)}
+.tagchip{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:99px;padding:2px 10px;
+}
+.card h3{font-size:18.5px;font-weight:600;margin:2px 0 12px;letter-spacing:-.02em;line-height:1.4}
+.prompt{color:var(--ink);font-size:14.5px;margin:0 0 14px}
+.prompt code{
+  font-family:var(--mono);font-size:12.5px;background:var(--surface);
+  padding:1px 5px;border-radius:2px;display:inline-block;line-height:1.55;
+}
+.hint{border-top:1px dashed var(--rule);padding-top:10px;margin-top:12px}
+.hint summary{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);
+  cursor:pointer;list-style:none;
+}
+.hint summary::before{content:"▸ ";color:var(--c-accent)}
+.hint[open] summary::before{content:"▾ "}
+.hint p{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft)}
+
+/* answer space */
+.answerspace{
+  margin-top:14px;border:1px solid var(--rule);border-radius:3px;
+  background:repeating-linear-gradient(to bottom,transparent 0 27px,var(--rule-soft) 27px 28px);
+  height:112px;position:relative;
+}
+.answerspace::after{
+  content:"작성란";position:absolute;top:5px;right:9px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-faint);background:var(--paper);padding:0 4px;
+}
+body.no-space .answerspace{display:none}
+
+/* ===== code ===== */
+.codegrid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:6px 0 16px;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.codegrid.single{grid-template-columns:1fr}
+.pane{border-right:1px solid var(--rule);min-width:0}
+.pane:last-child{border-right:0}
+.panehead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  padding:7px 12px;border-bottom:1px solid var(--rule);
+}
+.pane.c .panehead{color:var(--c-accent);background:var(--c-tint)}
+.pane.py .panehead{color:var(--py-accent);background:var(--py-tint)}
+pre.code{
+  margin:0;padding:12px 12px 14px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.3px;line-height:1.62;
+  counter-reset:ln;background:var(--paper);
+}
+pre.code .line{display:block;white-space:pre;padding-left:30px;position:relative;min-height:1.62em}
+pre.code .line::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:22px;text-align:right;
+  color:var(--ink-faint);font-size:10.5px;opacity:.7;
+}
+.tk{font:inherit}
+.tk.k{color:#0b5f9e;font-weight:500}
+.tk.s{color:#8a3d6b}
+.tk.n{color:#a35c00}
+.tk.c{color:#6f8090;font-style:italic}
+.tk.p{color:#0e6b7a;font-weight:500}
+
+
+/* input sample */
+.inwrap{border:1px solid var(--rule);border-left:3px solid var(--c-accent);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.inhead{font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  color:var(--c-accent);background:var(--c-tint);padding:7px 12px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between}
+.inhead em{font-style:normal;opacity:.75;letter-spacing:0}
+pre.instream{margin:0;padding:12px;font-family:var(--mono);font-size:12.3px;line-height:1.6;
+  white-space:pre;overflow-x:auto;background:var(--paper)}
+
+/* output */
+.outwrap{border:1px solid var(--rule);border-left:3px solid var(--out-accent);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.outhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  color:var(--out-accent);background:var(--out-tint);padding:7px 12px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;
+}
+.outhead em{font-style:normal;opacity:.75;letter-spacing:0}
+pre.out{
+  margin:0;padding:12px;font-family:var(--mono);font-size:12.3px;line-height:1.6;
+  white-space:pre;overflow-x:auto;background:var(--paper);
+}
+
+/* explain */
+.exhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-faint);
+  margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule-soft);
+}
+.explain{font-size:14.3px;color:var(--ink);margin:0 0 4px}
+.explain code,.points code{
+  font-family:var(--mono);font-size:12.2px;background:var(--surface);padding:1px 5px;border-radius:2px;
+}
+.explain b{font-weight:600;background:linear-gradient(transparent 62%,var(--c-tint) 62%)}
+.points{list-style:none;margin:12px 0 0;padding:14px 16px;background:var(--surface);border-radius:3px}
+.points li{position:relative;padding-left:20px;font-size:13.6px;color:var(--ink);margin-bottom:5px}
+.points li:last-child{margin-bottom:0}
+.points li::before{
+  content:"✓";position:absolute;left:0;top:0;color:var(--c-accent);font-weight:700;font-size:12px;
+}
+.solq{
+  font-size:13.4px;color:var(--ink-soft);background:var(--surface);
+  border-radius:3px;padding:10px 14px;margin:0 0 16px;
+}
+.solq code{font-family:var(--mono);font-size:12px}
+
+/* footer */
+.foot{
+  border-top:2px solid var(--ink);margin-top:44px;padding-top:18px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+}
+
+/* view state */
+body.view-q #part-sol,body.view-s #part-q{display:none}
+body.lang-c .pane.py,body.lang-py .pane.c{display:none}
+
+@media (max-width:720px){
+  .codegrid{grid-template-columns:1fr}
+  .pane{border-right:0;border-bottom:1px solid var(--rule)}
+  .pane:last-child{border-bottom:0}
+  .card{padding:18px 15px 20px}
+  .toolbar .wrap{gap:9px}
+  .masthead{padding:24px 0 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px}
+
+/* ===== print ===== */
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff;font-size:10.5pt;line-height:1.55}
+  .toolbar,.toc,.no-print{display:none!important}
+  .cheat{border:1px solid #bbb;border-left:2px solid #000;padding:10px 12px;break-inside:avoid;page-break-inside:avoid}
+  table.cmp{font-size:9pt}
+  .cheatnote{font-size:9pt}
+  body.view-s .cheat{display:none}
+  .wrap{max-width:none;padding:0}
+  .masthead{padding:0 0 12px;border-bottom:2.5px solid #000;margin-bottom:14px}
+  .masthead h1{font-size:22pt}
+  .subtitle{font-size:9.5pt;margin-bottom:8px}
+  .card{
+    border:1px solid #bbb;border-radius:0;padding:12px 13px;margin-bottom:9px;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .card h3{font-size:12.5pt}
+  .prompt,.explain{font-size:10pt}
+  pre.code,pre.out{font-size:8.6pt;line-height:1.45;background:#fff}
+  .points li{font-size:9.5pt}
+  .tk.k,.tk.p{color:#000;font-weight:700}
+  .tk.s{color:#333}
+  .tk.n{color:#333}
+  .tk.c{color:#666}
+  .panehead,.outhead,.inhead{background:#f0f0f0!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .loopmark{background:#eee!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .points{background:#f6f6f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .explain b{background:none;text-decoration:underline}
+  .hint{display:block}
+  .hint summary{color:#666}
+  #part-sol{break-before:page;page-break-before:always}
+  .foot{border-top:1.5px solid #000}
+}
+</style>
+</head>
+<body class="view-all">
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandline">세영코딩연구소 · Ph.D KIM &nbsp;|&nbsp; C &amp; Python 병렬 커리큘럼 &nbsp;·&nbsp; VOL.1 입출력</div>
+    <h1>입출력 <em>필수예제 30</em></h1>
+    <p class="subtitle">서식 지정과 정렬 출력부터 표준 입력 처리 · EOF · 입력 검증 · 빠른 입출력 · 파일 입출력까지, 프로그램의 <b>안과 밖을 잇는</b> 30가지 유형을 다룹니다. C의 <code>scanf</code>/<code>printf</code>와 파이썬의 <code>input</code>/<code>print</code>를 나란히 놓고, <b>주소를 넘기는가</b>와 <b>문자열을 변환하는가</b>라는 두 언어의 핵심 차이에 초점을 맞췄습니다. 모든 코드는 <b>실제 표준 입력을 넣어</b> gcc와 파이썬에서 실행하고 출력이 완전히 일치함을 확인.</p>
+    <div class="metarow">
+      <span>문항 30</span>
+      <span>C11 · Python 3</span>
+      <span>문제지 + 정답·해설지</span>
+      <span>표준입력 실행 검증</span>
+      <span class="verified">gcc / python3 실행 검증 완료</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar no-print" aria-label="학습지 보기 설정">
+  <div class="wrap">
+    <div class="tgroup">
+      <span class="tlabel">보기</span>
+      <div class="seg" id="segView" role="group">
+        <button type="button" data-view="all" aria-pressed="true">전체</button>
+        <button type="button" data-view="q" aria-pressed="false">문제지</button>
+        <button type="button" data-view="s" aria-pressed="false">정답·해설지</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="tlabel">언어</span>
+      <div class="seg" id="segLang" role="group">
+        <button type="button" data-lang="both" aria-pressed="true">C + 파이썬</button>
+        <button type="button" data-lang="c" aria-pressed="false">C만</button>
+        <button type="button" data-lang="py" aria-pressed="false">파이썬만</button>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="chkSpace" checked> 답안 작성란</label>
+    <label class="chk"><input type="checkbox" id="chkHint" checked> 힌트</label>
+    <button type="button" class="tool-btn" id="btnPrint">인쇄 / PDF 저장</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="cheat">
+    <h2>입출력 — C ↔ 파이썬 한눈에 보기</h2>
+    <table class="cmp">
+      <thead><tr><th>기능</th><th>C</th><th>파이썬</th></tr></thead>
+      <tbody>
+        <tr><td>출력 · 줄바꿈</td><td><code>printf</code> — <b>직접</b> <code>\n</code></td><td><code>print</code> — <b>자동</b> 줄바꿈</td></tr>
+        <tr><td>서식</td><td><code>%d %f %c %s</code></td><td>f-string <code>{x}</code>, <code>{x:.2f}</code></td></tr>
+        <tr><td>자릿수 · 정렬</td><td><code>%5d</code> <code>%-5d</code> <code>%05d</code></td><td><code>{x:5d}</code> <code>{x:&lt;5d}</code> <code>{x:05d}</code></td></tr>
+        <tr><td>정수 입력</td><td><code>scanf("%d", &amp;n)</code> — <b>&amp; 필수</b></td><td><code>int(input())</code> — <b>변환 필수</b></td></tr>
+        <tr><td>실수 입력</td><td><code>%lf</code> (출력은 <code>%f</code>)</td><td><code>float(input())</code></td></tr>
+        <tr><td>한 줄 여러 값</td><td><code>scanf("%d %d", &amp;a, &amp;b)</code></td><td><code>map(int, input().split())</code></td></tr>
+        <tr><td>문자 한 개</td><td><code>scanf(" %c", &amp;c)</code> — 앞 공백</td><td><code>input()</code></td></tr>
+        <tr><td>공백 포함 한 줄</td><td><code>fgets</code> + 줄바꿈 제거</td><td><code>input()</code> (자동 제거)</td></tr>
+        <tr><td>EOF까지</td><td><code>while (scanf(...) == 1)</code></td><td><code>for line in sys.stdin:</code></td></tr>
+        <tr><td>빠른 입출력</td><td><code>getchar</code> 직접 구현</td><td><code>sys.stdin.read().split()</code></td></tr>
+        <tr><td>파일</td><td><code>fopen</code>/<code>fprintf</code>/<code>fscanf</code>/<code>fclose</code></td><td><code>open</code>/<code>write</code>/<code>for row in f</code></td></tr>
+      </tbody>
+    </table>
+    <p class="cheatnote">입출력 오답의 대부분은 <b>C의 <code>&amp;</code> 누락</b>(프로그램이 죽는다), <b>파이썬의 형 변환 누락</b>(조용히 문자열 연산이 된다), <b>출력 형식 불일치</b>(공백·줄바꿈 하나로 오답 처리)에서 나옵니다. 한글 라벨에 폭을 지정하면 C는 <b>바이트</b>, 파이썬은 <b>글자</b> 기준이라 결과가 달라지니 표의 라벨은 영문을 권장합니다.</p>
+  </section>
+
+  <nav class="toc no-print" aria-label="문제 목차">
+    <h2>수록 문제</h2>
+    <div class="tocgrid" id="toc"></div>
+  </nav>
+
+  <section class="part" id="part-q">
+    <div class="part-head">
+      <h2>제1부 · 문제지</h2>
+      <span class="pnote">30문항 / 이름 __________ 점수 ______</span>
+    </div>
+    <div id="qlist"></div>
+  </section>
+
+  <section class="part" id="part-sol">
+    <div class="part-head">
+      <h2>제2부 · 정답 및 해설지</h2>
+      <span class="pnote">모범답안 · 실행결과 · 개념 해설</span>
+    </div>
+    <div id="slist"></div>
+  </section>
+
+  <div class="foot">
+    <span>세영코딩연구소 / 세영AI코딩학원 · 바이브코딩 특강</span>
+    <span>입출력 필수예제 30 · C &amp; Python</span>
+  </div>
+</main>
+
+<script>
+const DATA = [{"no": 1, "title": "화면에 출력하기와 줄바꿈", "tag": "출력 기본", "stdin": "", "desc": "다음 세 줄을 출력하시오. 단, 두 번째와 세 번째 줄은 <b>한 번의 출력문</b>으로 처리하시오.<br><code>세영코딩연구소<br>C와 파이썬<br>병렬 학습</code>", "hint": "C는 줄바꿈을 직접 넣어야 하고, 파이썬은 자동으로 붙는다.", "c": "#include <stdio.h>\n\nint main(void) {\n    printf(\"세영코딩연구소\\n\");\n    printf(\"C와 파이썬\\n병렬 학습\\n\");\n    return 0;\n}", "py": "print(\"세영코딩연구소\")\nprint(\"C와 파이썬\\n병렬 학습\")", "explain": "C의 <code>printf</code>는 <b>줄바꿈을 자동으로 붙이지 않는다</b>. 줄을 바꾸려면 문자열 안에 <b><code>\\n</code></b>을 직접 넣어야 한다. 반대로 파이썬의 <code>print</code>는 <b>끝에 줄바꿈을 자동으로 붙인다</b>. 이 정반대의 기본 동작이 두 언어를 오갈 때 가장 먼저 부딪히는 차이다. 문자열 하나 안에 <code>\\n</code>을 여러 개 넣으면 <b>한 번의 출력문으로 여러 줄</b>을 만들 수 있고, 이는 두 언어 모두 동일하다. 참고로 대부분의 채점 시스템은 <b>마지막 줄의 줄바꿈 유무</b>를 문제 삼지 않지만, 줄 중간의 공백이나 줄바꿈이 빠지면 <b>틀린 답으로 처리</b>되므로 출력 형식을 문제와 정확히 맞춰야 한다.", "points": ["C <code>printf</code>는 줄바꿈을 <b>직접</b> 넣어야 한다 (<code>\\n</code>)", "파이썬 <code>print</code>는 줄바꿈을 <b>자동</b>으로 붙인다", "<code>\\n</code>을 여러 개 넣어 한 번에 여러 줄 출력 가능"], "out": "세영코딩연구소\nC와 파이썬\n병렬 학습\n"}, {"no": 2, "title": "서식 지정자로 값 출력하기", "tag": "서식 · f-string", "stdin": "", "desc": "정수 42, 실수 3.14, 문자 'A', 문자열 \"Coding\"을 각각 <code>정수 : 42</code> 형식으로 출력하시오.", "hint": "C는 값의 종류마다 서식 지정자가 다르다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int   n = 42;\n    double d = 3.14;\n    char  c = 'A';\n    char  s[] = \"Coding\";\n\n    printf(\"정수   : %d\\n\", n);\n    printf(\"실수   : %f\\n\", d);\n    printf(\"문자   : %c\\n\", c);\n    printf(\"문자열 : %s\\n\", s);\n    return 0;\n}", "py": "n = 42\nd = 3.14\nc = \"A\"\ns = \"Coding\"\n\nprint(f\"정수   : {n}\")\nprint(f\"실수   : {d:f}\")\nprint(f\"문자   : {c}\")\nprint(f\"문자열 : {s}\")", "explain": "C는 <b>값의 종류에 맞는 서식 지정자</b>를 반드시 써야 한다. <code>%d</code>(정수), <code>%f</code>(실수), <code>%c</code>(문자), <code>%s</code>(문자열)가 기본이고, <code>%lf</code>(double 입력), <code>%lld</code>(long long)도 자주 쓴다. <b>서식과 실제 값의 종류가 어긋나면</b> 컴파일 오류가 아니라 <b>엉뚱한 값이 출력되거나 프로그램이 죽는다</b>. 예를 들어 정수를 <code>%f</code>로 출력하면 의미 없는 값이 나온다. 서식의 <b>개수와 인자의 개수</b>도 정확히 맞아야 한다. 파이썬의 <b>f-string</b>은 중괄호 안에 변수 이름을 그대로 쓰면 되고 <b>종류를 신경 쓸 필요가 없다</b>. 필요할 때만 <code>{d:f}</code>처럼 서식을 덧붙인다. <code>%f</code>는 기본이 소수점 <b>여섯 자리</b>라는 점도 기억해 두자.", "points": ["C: <code>%d %f %c %s</code> — 값의 종류와 <b>반드시</b> 일치", "서식이 어긋나면 오류가 아니라 <b>잘못된 출력</b>", "<code>%f</code> 기본은 소수점 6자리 / 파이썬은 f-string으로 종류 무관"], "out": "정수   : 42\n실수   : 3.140000\n문자   : A\n문자열 : Coding\n"}, {"no": 3, "title": "소수점 자릿수 지정하기", "tag": "실수 서식", "stdin": "", "desc": "원주율 3.14159265를 소수점 <b>0자리·2자리·4자리·6자리</b>로 각각 출력하고, 10÷3의 결과도 소수 셋째 자리까지 출력하시오.", "hint": "C는 %.Nf, 파이썬은 {값:.Nf}를 쓴다.", "c": "#include <stdio.h>\n\nint main(void) {\n    double pi = 3.14159265;\n\n    printf(\"0자리 : %.0f\\n\", pi);\n    printf(\"2자리 : %.2f\\n\", pi);\n    printf(\"4자리 : %.4f\\n\", pi);\n    printf(\"6자리 : %.6f\\n\", pi);\n    printf(\"10/3  : %.3f\\n\", 10.0 / 3.0);\n    return 0;\n}", "py": "pi = 3.14159265\n\nprint(f\"0자리 : {pi:.0f}\")\nprint(f\"2자리 : {pi:.2f}\")\nprint(f\"4자리 : {pi:.4f}\")\nprint(f\"6자리 : {pi:.6f}\")\nprint(f\"10/3  : {10.0 / 3.0:.3f}\")", "explain": "소수점 자릿수 지정은 <b>C의 <code>%.Nf</code>와 파이썬의 <code>{값:.Nf}</code></b>가 정확히 대응된다. 점 뒤의 숫자가 <b>표시할 소수 자릿수</b>다. 두 가지를 기억하자. ① <b>반올림</b>이 적용된다. 값이 잘려 나가는 것이 아니라 반올림된 결과가 보인다. 다만 부동소수점 특성상 <code>2.675</code>가 <code>2.67</code>로 나오는 경우가 있는데, 실제 저장된 값이 2.675보다 아주 조금 작기 때문이다. ② <b>원본 변수는 바뀌지 않는다</b>. 출력 형태만 달라질 뿐 계산에는 원래 정밀도가 그대로 쓰인다. C에서 <code>10 / 3</code>이라고 쓰면 <b>정수 나눗셈</b>이 되어 3이 나오므로, 반드시 <code>10.0 / 3.0</code>처럼 실수로 계산해야 한다는 점도 함께 확인하자.", "points": ["<code>%.2f</code> ↔ <code>{x:.2f}</code> — 점 뒤 숫자가 소수 자릿수", "잘라내기가 아니라 <b>반올림</b>, 원본 값은 그대로", "C에서 <code>10 / 3</code>은 정수 나눗셈 → <code>10.0 / 3.0</code>"], "out": "0자리 : 3\n2자리 : 3.14\n4자리 : 3.1416\n6자리 : 3.141593\n10/3  : 3.333\n"}, {"no": 4, "title": "자릿수 맞추기 — 폭·정렬·0 채움", "tag": "출력 정렬", "stdin": "", "desc": "정수 7, 42, 358을 ① 폭 5로 오른쪽 정렬 ② 폭 5로 왼쪽 정렬 ③ 폭 5에 <b>0 채움</b>으로 각각 출력하시오.", "hint": "폭 지정 앞에 -를 붙이면 왼쪽 정렬, 0을 붙이면 0으로 채운다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[3] = {7, 42, 358};\n\n    printf(\"오른쪽 정렬\\n\");\n    for (int i = 0; i < 3; i++) printf(\"[%5d]\\n\", a[i]);\n    printf(\"왼쪽 정렬\\n\");\n    for (int i = 0; i < 3; i++) printf(\"[%-5d]\\n\", a[i]);\n    printf(\"0 채움\\n\");\n    for (int i = 0; i < 3; i++) printf(\"[%05d]\\n\", a[i]);\n    return 0;\n}", "py": "a = [7, 42, 358]\n\nprint(\"오른쪽 정렬\")\nfor x in a:\n    print(f\"[{x:5d}]\")\nprint(\"왼쪽 정렬\")\nfor x in a:\n    print(f\"[{x:<5d}]\")\nprint(\"0 채움\")\nfor x in a:\n    print(f\"[{x:05d}]\")", "explain": "폭 지정은 <b>표를 만들 때 필수</b>다. 값이 폭보다 짧으면 공백으로 채워지고, <b>폭보다 길면 잘리지 않고 그대로</b> 출력된다는 점이 중요하다. 폭은 최소 너비일 뿐이다. C에서는 <code>%5d</code>가 오른쪽 정렬(기본), <code>%-5d</code>가 왼쪽 정렬, <code>%05d</code>가 0 채움이다. 파이썬은 <code>{x:5d}</code>, <code>{x:&lt;5d}</code>, <code>{x:05d}</code>로 대응되며 <b>파이썬은 <code>&lt;</code>·<code>&gt;</code>·<code>^</code>로 왼쪽·오른쪽·가운데 정렬</b>을 명시할 수 있다. 여기서 두 언어의 <b>중요한 차이</b>가 하나 있다. C의 폭은 <b>바이트</b> 단위이고 파이썬은 <b>글자</b> 단위다. 그래서 한글처럼 여러 바이트를 쓰는 문자에 폭을 지정하면 <b>두 언어의 정렬 결과가 달라진다</b>. 표를 만들 때 한글 라벨에는 폭 지정을 피하는 것이 안전하다.", "points": ["폭은 <b>최소 너비</b> — 넘치면 잘리지 않는다", "C <code>%-5d</code> ↔ 파이썬 <code>{x:&lt;5d}</code> (왼쪽 정렬)", "C는 <b>바이트</b>, 파이썬은 <b>글자</b> 기준 → 한글 폭 지정 주의"], "out": "오른쪽 정렬\n[    7]\n[   42]\n[  358]\n왼쪽 정렬\n[7    ]\n[42   ]\n[358  ]\n0 채움\n[00007]\n[00042]\n[00358]\n"}, {"no": 5, "title": "한 줄에 여러 값 출력하기", "tag": "end · sep", "stdin": "", "desc": "1부터 10까지를 ① 공백으로 구분해 한 줄에 ② 쉼표로 구분해 한 줄에 출력하시오.", "hint": "파이썬은 print의 end와 sep 옵션으로 조절한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 10; i++) printf(\"%d \", i);\n    printf(\"\\n\");\n\n    for (int i = 1; i <= 10; i++) {\n        printf(\"%d\", i);\n        if (i < 10) printf(\", \");\n    }\n    printf(\"\\n\");\n    return 0;\n}", "py": "for i in range(1, 11):\n    print(i, end=\" \")\nprint()\n\nfor i in range(1, 11):\n    print(i, end=\"\")\n    if i < 10:\n        print(\", \", end=\"\")\nprint()", "explain": "파이썬 <code>print</code>의 기본 동작은 <b>끝에 줄바꿈을 붙이는 것</b>인데, <code>end</code> 옵션으로 이를 바꿀 수 있다. <code>end=\" \"</code>면 줄바꿈 대신 공백이 붙어 <b>한 줄에 이어서</b> 출력된다. 반복이 끝난 뒤 <code>print()</code>로 줄을 마무리하는 것을 잊으면 다음 출력이 같은 줄에 붙는다. C는 <code>printf</code>가 원래 줄바꿈을 안 붙이므로 이런 옵션 자체가 필요 없다. 두 번째 형식에서 <b>마지막 값 뒤에 쉼표가 붙지 않게</b> 하는 처리도 중요하다. <code>if (i &lt; 10)</code>로 <b>마지막이 아닐 때만</b> 구분자를 출력한다. 이런 '<b>구분자를 값 사이에만</b>' 넣는 처리는 출력 형식 문제에서 자주 요구된다. 파이썬에서는 <code>print(*리스트, sep=\", \")</code>로 한 번에 처리할 수도 있다.", "points": ["파이썬 <code>end</code>로 줄바꿈 대신 다른 문자 지정", "반복 후 <code>print()</code>로 줄 마무리를 잊지 말 것", "구분자는 <b>마지막이 아닐 때만</b> 출력"], "out": "1 2 3 4 5 6 7 8 9 10 \n1, 2, 3, 4, 5, 6, 7, 8, 9, 10\n"}, {"no": 6, "title": "특수문자 출력하기", "tag": "이스케이프", "stdin": "", "desc": "탭·따옴표·역슬래시·퍼센트 기호가 포함된 다음 내용을 출력하시오.<br><code>이름\\t점수<br>\"큰따옴표\"와 '작은따옴표'<br>경로 : C:\\Users\\temp<br>정답률 : 95%</code>", "hint": "역슬래시와 퍼센트는 특별한 처리가 필요하다.", "c": "#include <stdio.h>\n\nint main(void) {\n    printf(\"이름\\t점수\\n\");\n    printf(\"\\\"큰따옴표\\\"와 '작은따옴표'\\n\");\n    printf(\"경로 : C:\\\\Users\\\\temp\\n\");\n    printf(\"정답률 : 95%%\\n\");\n    return 0;\n}", "py": "print(\"이름\\t점수\")\nprint(\"\\\"큰따옴표\\\"와 '작은따옴표'\")\nprint(\"경로 : C:\\\\Users\\\\temp\")\nprint(\"정답률 : 95%\")", "explain": "문자열 안에서 특별한 뜻을 가진 문자를 그대로 출력하려면 <b>이스케이프</b>가 필요하다. <code>\\n</code>(줄바꿈), <code>\\t</code>(탭), <code>\\\\</code>(역슬래시 하나), <code>\\\"</code>(큰따옴표)는 두 언어가 <b>완전히 같다</b>. 결정적인 차이는 <b>퍼센트 기호</b>다. C의 <code>printf</code>는 <code>%</code>를 서식의 시작으로 해석하므로, 퍼센트를 출력하려면 <b><code>%%</code></b>라고 두 번 써야 한다. 한 번만 쓰면 뒤 문자를 서식으로 오해해 엉뚱한 값이 나온다. 파이썬 <code>print</code>는 서식 해석을 하지 않으므로 <code>%</code>를 그냥 쓰면 된다(단, f-string의 <b>중괄호</b>는 <code>{{</code>로 두 번 써야 한다). 파이썬에서는 <code>r\"C:\\Users\"</code>처럼 <b>raw 문자열</b>을 쓰면 역슬래시를 그대로 다룰 수 있다.", "points": ["<code>\\n \\t \\\\ \\\"</code>는 두 언어 공통", "C에서 퍼센트 출력은 <b><code>%%</code></b> (한 번만 쓰면 오작동)", "파이썬 f-string의 중괄호는 <code>{{ }}</code>로 이스케이프"], "out": "이름\t점수\n\"큰따옴표\"와 '작은따옴표'\n경로 : C:\\Users\\temp\n정답률 : 95%\n"}, {"no": 7, "title": "진법 바꿔 출력하기", "tag": "8진 · 16진", "stdin": "", "desc": "정수 255와 1000을 <b>10진수·8진수·16진수(소문자/대문자)</b>로 출력하고, 2진수도 함께 출력하시오.", "hint": "C는 %o, %x, %X를 쓰고 2진수는 직접 구현한다.", "c": "#include <stdio.h>\n\nvoid printBinary(int n) {\n    int bit[32], k = 0;\n    if (n == 0) { printf(\"0\"); return; }\n    while (n > 0) { bit[k++] = n % 2; n /= 2; }\n    for (int i = k - 1; i >= 0; i--) printf(\"%d\", bit[i]);\n}\n\nint main(void) {\n    int a[2] = {255, 1000};\n    for (int i = 0; i < 2; i++) {\n        printf(\"%d -> 8진 %o, 16진 %x, 16진 대문자 %X, 2진 \",\n               a[i], a[i], a[i], a[i]);\n        printBinary(a[i]);\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "def print_binary(n):\n    if n == 0:\n        print(\"0\", end=\"\")\n        return\n    bit = []\n    while n > 0:\n        bit.append(n % 2)\n        n //= 2\n    for i in range(len(bit) - 1, -1, -1):\n        print(bit[i], end=\"\")\n\na = [255, 1000]\nfor x in a:\n    print(f\"{x} -> 8진 {x:o}, 16진 {x:x}, 16진 대문자 {x:X}, 2진 \", end=\"\")\n    print_binary(x)\n    print()", "explain": "진법 출력은 서식 하나로 끝난다. <b><code>%o</code>(8진), <code>%x</code>(16진 소문자), <code>%X</code>(16진 대문자)</b>이고 파이썬은 <code>{x:o}</code>, <code>{x:x}</code>, <code>{x:X}</code>로 같은 문자를 쓴다. C에는 <b>2진수 서식이 없어</b> 직접 구현해야 한다는 점이 함정이다. 2로 나눈 나머지를 배열에 모았다가 <b>역순으로 출력</b>하는 것이 정석이며(배열 편 27번), <b>0인 경우를 별도 처리</b>하는 것을 잊으면 아무것도 출력되지 않는다. 파이썬은 <code>{x:b}</code>나 <code>bin(x)</code>로 2진수를 바로 얻을 수 있지만, 여기서는 C와 같은 원리를 익히기 위해 직접 구현했다. 접두어를 붙이려면 C는 <code>%#x</code>(0xff), 파이썬은 <code>{x:#x}</code>를 쓴다.", "points": ["<code>%o %x %X</code> ↔ <code>{x:o} {x:x} {x:X}</code>", "C에는 <b>2진수 서식이 없다</b> → 직접 구현 (0 처리 주의)", "파이썬은 <code>{x:b}</code>, <code>bin(x)</code>로 2진수 가능"], "out": "255 -> 8진 377, 16진 ff, 16진 대문자 FF, 2진 11111111\n1000 -> 8진 1750, 16진 3e8, 16진 대문자 3E8, 2진 1111101000\n"}, {"no": 8, "title": "표 형태로 정렬해 출력하기", "tag": "서식 조합", "stdin": "", "desc": "과목별 점수를 <b>열이 맞는 표</b>로 출력하시오. 이름은 왼쪽 정렬, 점수는 오른쪽 정렬, 평균은 소수 첫째 자리까지 표시하시오.", "hint": "폭 지정과 소수점 지정을 함께 쓴다.", "c": "#include <stdio.h>\n\nint main(void) {\n    const char *name[4] = {\"Minjun\", \"Seoyeon\", \"Jiho\", \"Yujin\"};\n    int kor[4] = {85, 92, 70, 88};\n    int eng[4] = {90, 88, 65, 94};\n    int mat[4] = {78, 95, 80, 91};\n\n    printf(\"%-10s %4s %4s %4s %6s %7s\\n\", \"NAME\", \"KOR\", \"ENG\", \"MAT\", \"TOTAL\", \"AVG\");\n    printf(\"---------------------------------------\\n\");\n    for (int i = 0; i < 4; i++) {\n        int total = kor[i] + eng[i] + mat[i];\n        printf(\"%-10s %4d %4d %4d %6d %7.1f\\n\",\n               name[i], kor[i], eng[i], mat[i], total, total / 3.0);\n    }\n    return 0;\n}", "py": "name = [\"Minjun\", \"Seoyeon\", \"Jiho\", \"Yujin\"]\nkor = [85, 92, 70, 88]\neng = [90, 88, 65, 94]\nmat = [78, 95, 80, 91]\n\nprint(f\"{'NAME':<10s} {'KOR':>4s} {'ENG':>4s} {'MAT':>4s} {'TOTAL':>6s} {'AVG':>7s}\")\nprint(\"---------------------------------------\")\nfor i in range(4):\n    total = kor[i] + eng[i] + mat[i]\n    print(f\"{name[i]:<10s} {kor[i]:4d} {eng[i]:4d} {mat[i]:4d} \"\n          f\"{total:6d} {total / 3.0:7.1f}\")", "explain": "표 출력은 <b>폭 지정과 정렬 방향을 조합</b>하는 연습이다. 규칙은 간단하다. <b>문자는 왼쪽 정렬, 숫자는 오른쪽 정렬</b>이 읽기 좋다. 숫자를 오른쪽으로 맞춰야 자릿수가 세로로 정렬되어 크기 비교가 쉽기 때문이다. <code>%7.1f</code>처럼 <b>폭과 소수 자릿수를 함께</b> 쓸 수 있다는 점도 중요하다. 이때 <b>7은 소수점과 소수 부분까지 포함한 전체 너비</b>다. 헤더와 데이터에 <b>같은 폭을 쓰는 것</b>이 열을 맞추는 핵심이다. C에서 문자열 헤더에 <code>%4s</code>를 쓰면 오른쪽 정렬이 되고, 파이썬은 문자열이 기본 왼쪽 정렬이라 <code>{'KOR':&gt;4s}</code>처럼 <b><code>&gt;</code>를 명시</b>해야 한다. 이 기본 정렬 방향의 차이를 놓치면 표가 어긋난다.", "points": ["문자는 왼쪽, 숫자는 오른쪽 정렬이 읽기 좋다", "<code>%7.1f</code>의 7은 <b>소수점 포함 전체 너비</b>", "파이썬 문자열은 <b>기본 왼쪽 정렬</b> → 오른쪽은 <code>&gt;</code> 명시"], "out": "NAME        KOR  ENG  MAT  TOTAL     AVG\n---------------------------------------\nMinjun       85   90   78    253    84.3\nSeoyeon      92   88   95    275    91.7\nJiho         70   65   80    215    71.7\nYujin        88   94   91    273    91.0\n"}, {"no": 9, "title": "정수 하나 입력받기", "tag": "입력 기본", "stdin": "42\n", "desc": "정수 하나를 입력받아 그 값과 2배, 제곱을 출력하시오.", "hint": "C는 변수의 주소를 넘겨야 한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);          /* 주소를 넘긴다 */\n\n    printf(\"입력값 = %d\\n\", n);\n    printf(\"2배    = %d\\n\", n * 2);\n    printf(\"제곱   = %d\\n\", n * n);\n    return 0;\n}", "py": "n = int(input())          # 입력은 항상 문자열 -> 정수로 변환\n\nprint(f\"입력값 = {n}\")\nprint(f\"2배    = {n * 2}\")\nprint(f\"제곱   = {n * n}\")", "explain": "입력에서 두 언어의 실수 포인트가 정확히 하나씩 있다. C의 <code>scanf</code>는 <b>값을 저장할 위치를 알아야</b> 하므로 반드시 <b><code>&amp;n</code>처럼 주소를 넘겨야</b> 한다. <code>&amp;</code>를 빼면 컴파일 경고가 나고 실행 시 <b>프로그램이 죽는다</b>. 초보자가 가장 자주 겪는 오류다(단, 배열·문자열은 이름 자체가 주소라 <code>&amp;</code>를 붙이지 않는다). 파이썬의 <code>input()</code>은 <b>무엇을 입력하든 문자열로</b> 돌려준다. 숫자로 쓰려면 <b><code>int()</code>로 변환</b>해야 하며, 이를 빼먹으면 <code>n * 2</code>가 곱셈이 아니라 <b>문자열 반복</b>이 되어 \"4242\"가 나온다. 오류도 나지 않고 조용히 틀리므로 더 위험하다.", "points": ["C <code>scanf</code>는 <b>주소</b>를 넘긴다 — <code>&amp;n</code> (배열은 예외)", "파이썬 <code>input()</code>은 항상 <b>문자열</b> → <code>int()</code> 변환 필수", "변환을 빼먹으면 <code>n*2</code>가 문자열 반복이 된다"], "out": "입력값 = 42\n2배    = 84\n제곱   = 1764\n"}, {"no": 10, "title": "한 줄에 여러 정수 입력받기", "tag": "공백 구분 입력", "stdin": "10 20 30\n", "desc": "한 줄에 공백으로 구분된 정수 세 개를 입력받아 합계와 평균을 출력하시오.", "hint": "C는 서식을 나열하고, 파이썬은 split과 map을 쓴다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a, b, c;\n    scanf(\"%d %d %d\", &a, &b, &c);\n\n    int sum = a + b + c;\n    printf(\"입력 : %d %d %d\\n\", a, b, c);\n    printf(\"합계 = %d\\n\", sum);\n    printf(\"평균 = %.2f\\n\", sum / 3.0);\n    return 0;\n}", "py": "a, b, c = map(int, input().split())\n\ntotal = a + b + c\nprint(f\"입력 : {a} {b} {c}\")\nprint(f\"합계 = {total}\")\nprint(f\"평균 = {total / 3.0:.2f}\")", "explain": "C의 <code>scanf(\"%d %d %d\", ...)</code>는 <b>공백과 줄바꿈을 모두 건너뛰며</b> 정수를 읽는다. 그래서 세 값이 한 줄에 있든 세 줄에 나뉘어 있든 <b>똑같이 동작</b>한다. 서식의 공백은 사실 없어도 되며, <code>%d</code> 자체가 앞의 공백을 무시하기 때문이다. 파이썬은 접근이 다르다. <code>input()</code>으로 <b>한 줄 전체를 문자열로</b> 받고, <code>split()</code>으로 <b>공백 기준으로 쪼갠 뒤</b>, <code>map(int, ...)</code>로 <b>각 조각을 정수로 변환</b>한다. 이 세 단계가 파이썬 입력의 표준 관용구이니 통째로 익혀 두자. 값의 개수만큼 왼쪽에 변수를 나열하면 되고, 개수가 많으면 <code>a = list(map(int, input().split()))</code>로 리스트에 담는다.", "points": ["C <code>%d</code>는 공백·줄바꿈을 <b>자동으로 건너뛴다</b>", "파이썬 관용구: <code>map(int, input().split())</code>", "개수가 많으면 <code>list(map(int, input().split()))</code>"], "out": "입력 : 10 20 30\n합계 = 60\n평균 = 20.00\n"}, {"no": 11, "title": "여러 줄에 걸친 입력 받기", "tag": "반복 입력", "stdin": "5\n3\n1\n4\n1\n5\n", "desc": "첫 줄에 개수 N, 이어지는 N개의 줄에 정수가 하나씩 주어진다. 모든 값과 합계를 출력하시오.", "hint": "먼저 개수를 읽고, 그 횟수만큼 반복해서 읽는다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    int sum = 0;\n    printf(\"입력값 : \");\n    for (int i = 0; i < n; i++) {\n        int x;\n        scanf(\"%d\", &x);\n        printf(\"%d \", x);\n        sum += x;\n    }\n    printf(\"\\n개수 %d개, 합계 %d\\n\", n, sum);\n    return 0;\n}", "py": "n = int(input())\n\ntotal = 0\nprint(\"입력값 : \", end=\"\")\nfor i in range(n):\n    x = int(input())\n    print(x, end=\" \")\n    total += x\nprint(f\"\\n개수 {n}개, 합계 {total}\")", "explain": "<b>첫 줄에 개수, 다음 줄들에 데이터</b>는 알고리즘 문제의 <b>가장 흔한 입력 형식</b>이다. 처리 순서는 언제나 같다. ① 개수 N을 먼저 읽고 ② N번 반복하며 값을 읽는다. C는 <code>scanf(\"%d\")</code>가 줄바꿈을 알아서 건너뛰므로 <b>한 줄에 하나든 여러 개든 코드가 같다</b>. 이것이 C 입력의 큰 장점이다. 파이썬은 <code>input()</code>이 <b>정확히 한 줄</b>을 읽으므로, 한 줄에 하나씩 있을 때는 이 코드가 맞지만 <b>한 줄에 여러 개가 있으면 <code>split()</code>을 써야</b> 한다. 즉 파이썬은 <b>입력이 어떻게 줄바꿈되어 있는지</b>를 반드시 확인해야 한다. 문제의 입력 형식 설명을 정확히 읽는 습관이 여기서 필요하다.", "points": ["'개수 N + N개의 데이터'는 가장 흔한 입력 형식", "C는 줄 구분과 무관하게 <code>%d</code>가 알아서 읽는다", "파이썬은 <b>줄 구조에 맞춰</b> input() 또는 split()을 선택"], "out": "입력값 : 3 1 4 1 5 \n개수 5개, 합계 14\n"}, {"no": 12, "title": "실수 입력받기", "tag": "%lf · float", "stdin": "3.14 2.86\n", "desc": "실수 두 개를 입력받아 합·차·곱·몫을 각각 소수 넷째 자리까지 출력하시오.", "hint": "C에서 double을 입력받을 때의 서식에 주의한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    double a, b;\n    scanf(\"%lf %lf\", &a, &b);      /* 입력은 %lf */\n\n    printf(\"입력 : %.2f %.2f\\n\", a, b);\n    printf(\"합 = %.4f\\n\", a + b);\n    printf(\"차 = %.4f\\n\", a - b);\n    printf(\"곱 = %.4f\\n\", a * b);\n    printf(\"몫 = %.4f\\n\", a / b);\n    return 0;\n}", "py": "a, b = map(float, input().split())\n\nprint(f\"입력 : {a:.2f} {b:.2f}\")\nprint(f\"합 = {a + b:.4f}\")\nprint(f\"차 = {a - b:.4f}\")\nprint(f\"곱 = {a * b:.4f}\")\nprint(f\"몫 = {a / b:.4f}\")", "explain": "C에서 실수 입출력은 <b>서식이 서로 다르다</b>는 함정이 있다. <b>출력은 <code>%f</code>, 입력은 <code>%lf</code></b>다. <code>double</code> 변수를 <code>scanf(\"%f\", &amp;a)</code>로 읽으면 4바이트만 채워져 <b>완전히 엉뚱한 값</b>이 들어간다. 컴파일러가 경고를 주기는 하지만 실행은 되므로 원인을 찾기 어려운 버그가 된다. 정리하면 <b>scanf는 float에 <code>%f</code>, double에 <code>%lf</code></b>를 쓰고, printf는 둘 다 <code>%f</code>로 출력한다(float이 자동으로 double로 승격되기 때문이다). 파이썬은 <code>float()</code> 하나로 통일되어 이런 구분이 없다. 실수를 다룰 때는 <b>0으로 나누는 경우</b>도 항상 검사해야 한다는 점도 잊지 말자.", "points": ["C 입력은 <code>%lf</code>(double), 출력은 <code>%f</code> — <b>서로 다르다</b>", "<code>%f</code>로 double을 읽으면 값이 깨진다", "파이썬은 <code>float()</code> 하나로 통일"], "out": "입력 : 3.14 2.86\n합 = 6.0000\n차 = 0.2800\n곱 = 8.9804\n몫 = 1.0979\n"}, {"no": 13, "title": "문자와 문자열 입력받기", "tag": "%c · %s", "stdin": "A\nCoding\n", "desc": "첫 줄에 문자 하나, 둘째 줄에 공백 없는 문자열을 입력받아 각각의 정보를 출력하시오.", "hint": "C에서 %c 앞에 공백을 넣는 이유를 생각해 보자.", "c": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char c;\n    char s[100];\n\n    scanf(\" %c\", &c);        /* 앞의 공백이 줄바꿈을 건너뛴다 */\n    scanf(\"%s\", s);          /* 배열 이름은 이미 주소 */\n\n    printf(\"문자   : %c (아스키 %d)\\n\", c, c);\n    printf(\"문자열 : %s (%d글자)\\n\", s, (int)strlen(s));\n    printf(\"첫 글자: %c, 끝 글자: %c\\n\", s[0], s[strlen(s) - 1]);\n    return 0;\n}", "py": "c = input()\ns = input()\n\nprint(f\"문자   : {c} (아스키 {ord(c)})\")\nprint(f\"문자열 : {s} ({len(s)}글자)\")\nprint(f\"첫 글자: {s[0]}, 끝 글자: {s[-1]}\")", "explain": "C에서 문자 입력에는 <b>악명 높은 함정</b>이 있다. <code>scanf(\"%c\", &amp;c)</code>는 공백이나 줄바꿈도 <b>하나의 문자로 읽어 버린다</b>. 앞에서 숫자를 읽었다면 그때 남은 <b>줄바꿈 문자</b>가 그대로 들어온다. 그래서 서식 앞에 <b>공백 하나</b>를 넣어 <code>\" %c\"</code>라고 쓴다. 이 공백은 '<b>앞의 공백류 문자를 모두 건너뛰라</b>'는 뜻이다. 반면 <code>%d</code>나 <code>%s</code>는 원래 공백을 자동으로 건너뛰므로 이 처리가 필요 없다. 또 하나, <code>scanf(\"%s\", s)</code>에서는 <b><code>&amp;</code>를 붙이지 않는다</b>. 배열 이름이 이미 주소이기 때문이다. 마지막으로 <code>%s</code>는 <b>공백에서 멈춘다</b>. 공백이 포함된 한 줄을 통째로 받으려면 다음 문제의 <code>fgets</code>를 써야 한다.", "points": ["<code>scanf(\" %c\")</code> — 앞 공백으로 남은 <b>줄바꿈 제거</b>", "<code>%s</code>는 배열 이름을 그대로 (<code>&amp;</code> 금지)", "<code>%s</code>는 <b>공백에서 멈춘다</b> — 한 줄 전체는 fgets"], "out": "문자   : A (아스키 65)\n문자열 : Coding (6글자)\n첫 글자: C, 끝 글자: g\n"}, {"no": 14, "title": "공백이 포함된 한 줄 입력받기", "tag": "fgets · input", "stdin": "Hello World from SeYoung\n", "desc": "공백이 포함된 한 줄을 통째로 입력받아, 원문과 글자 수, 단어 수를 출력하시오.", "hint": "C는 fgets를 쓰고, 끝에 붙은 줄바꿈을 제거해야 한다.", "c": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char line[200];\n    fgets(line, sizeof(line), stdin);\n\n    int len = (int)strlen(line);\n    if (len > 0 && line[len - 1] == '\\n') {   /* 줄바꿈 제거 */\n        line[len - 1] = '\\0';\n        len--;\n    }\n\n    int words = 0, inWord = 0;\n    for (int i = 0; i < len; i++) {\n        if (line[i] != ' ') { if (!inWord) { words++; inWord = 1; } }\n        else inWord = 0;\n    }\n    printf(\"원문   : [%s]\\n\", line);\n    printf(\"글자 수 : %d\\n\", len);\n    printf(\"단어 수 : %d\\n\", words);\n    return 0;\n}", "py": "line = input()\n\nwords = 0\nin_word = False\nfor ch in line:\n    if ch != \" \":\n        if not in_word:\n            words += 1\n            in_word = True\n    else:\n        in_word = False\n\nprint(f\"원문   : [{line}]\")\nprint(f\"글자 수 : {len(line)}\")\nprint(f\"단어 수 : {words}\")", "explain": "<code>scanf(\"%s\")</code>는 <b>공백에서 멈추므로</b> 한 줄 전체를 받을 수 없다. C에서는 <b><code>fgets(버퍼, 크기, stdin)</code></b>를 쓴다. 여기에 반드시 챙겨야 할 두 가지가 있다. ① <b>줄바꿈 문자가 함께 들어온다</b>. 사용자가 누른 Enter까지 저장되므로, 문자열 끝의 <code>'\\n'</code>을 <code>'\\0'</code>으로 바꿔 제거해야 한다. 이를 빼먹으면 길이가 1 크게 나오고 출력이 이상해진다. ② <b>버퍼 크기를 넘기면 잘린다</b>. 대신 <code>gets</code>와 달리 <b>버퍼 오버플로가 없어 안전</b>하므로, <code>gets</code>는 절대 쓰지 말고 항상 <code>fgets</code>를 쓴다. 파이썬의 <code>input()</code>은 원래 한 줄을 받고 <b>줄바꿈을 자동으로 떼어 준다</b>. 출력에 <code>[ ]</code>를 씌운 것은 <b>앞뒤 공백을 눈으로 확인</b>하기 위한 디버깅 습관이다.", "points": ["공백 포함 한 줄은 <b><code>fgets</code></b> (<code>gets</code>는 절대 금지)", "fgets는 <b>줄바꿈까지 저장</b> → 직접 제거해야 한다", "파이썬 <code>input()</code>은 줄바꿈을 자동 제거"], "out": "원문   : [Hello World from SeYoung]\n글자 수 : 24\n단어 수 : 4\n"}, {"no": 15, "title": "개수 N과 N개의 값 한 줄 입력", "tag": "표준 입력 형식", "stdin": "7\n5 2 9 1 7 3 8\n", "desc": "첫 줄에 N, 둘째 줄에 N개의 정수가 <b>공백으로</b> 주어진다. 최댓값·최솟값·합계·평균을 출력하시오.", "hint": "파이썬은 둘째 줄을 통째로 읽어 split한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    int a[100];\n    for (int i = 0; i < n; i++) scanf(\"%d\", &a[i]);\n\n    int mx = a[0], mn = a[0], sum = 0;\n    for (int i = 0; i < n; i++) {\n        if (a[i] > mx) mx = a[i];\n        if (a[i] < mn) mn = a[i];\n        sum += a[i];\n    }\n    printf(\"N = %d\\n\", n);\n    printf(\"최댓값 = %d, 최솟값 = %d\\n\", mx, mn);\n    printf(\"합계 = %d, 평균 = %.2f\\n\", sum, (double)sum / n);\n    return 0;\n}", "py": "n = int(input())\na = list(map(int, input().split()))\n\nmx = mn = a[0]\ntotal = 0\nfor x in a:\n    if x > mx:\n        mx = x\n    if x < mn:\n        mn = x\n    total += x\n\nprint(f\"N = {n}\")\nprint(f\"최댓값 = {mx}, 최솟값 = {mn}\")\nprint(f\"합계 = {total}, 평균 = {total / n:.2f}\")", "explain": "알고리즘 문제에서 <b>가장 자주 만나는 입력 형식</b>이다. C는 <code>%d</code>가 공백과 줄바꿈을 모두 건너뛰므로 <b>둘째 줄의 값이 몇 줄에 걸쳐 있든</b> 반복문 하나로 읽힌다. 대신 배열 크기를 <b>충분히 크게</b> 미리 잡아야 하며, N의 최대값을 문제에서 확인해 <code>int a[100001]</code>처럼 여유 있게 선언하는 것이 안전하다. 파이썬은 <code>list(map(int, input().split()))</code> 한 줄로 리스트가 완성된다. 여기서 <b>주의할 점</b>은 파이썬이 <b>한 줄만</b> 읽는다는 것이다. 값이 여러 줄에 흩어져 있으면 이 코드는 실패하므로, 그럴 때는 <code>sys.stdin.read().split()</code>으로 <b>전체를 한꺼번에</b> 읽는 방법을 쓴다(문제 22).", "points": ["C는 배열 크기를 <b>N의 최대값 이상</b>으로 여유 있게 선언", "파이썬 관용구: <code>list(map(int, input().split()))</code>", "값이 여러 줄이면 파이썬은 <code>sys.stdin.read().split()</code>"], "out": "N = 7\n최댓값 = 9, 최솟값 = 1\n합계 = 35, 평균 = 5.00\n"}, {"no": 16, "title": "두 값을 받아 격자 출력하기", "tag": "N M 입력", "stdin": "3 5\n", "desc": "한 줄에 행 수 N과 열 수 M이 주어진다. N행 M열의 별(*) 격자를 출력하고 총 개수도 표시하시오.", "hint": "두 값을 한 번에 읽고 이중 반복문을 돈다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) printf(\"*\");\n        printf(\"\\n\");\n    }\n    printf(\"%d행 %d열, 총 %d개\\n\", n, m, n * m);\n    return 0;\n}", "py": "n, m = map(int, input().split())\n\nfor i in range(n):\n    for j in range(m):\n        print(\"*\", end=\"\")\n    print()\nprint(f\"{n}행 {m}열, 총 {n * m}개\")", "explain": "한 줄에 여러 값이 오는 <b>가장 기본적인 형식</b>이다. C는 <code>scanf(\"%d %d\", &amp;n, &amp;m)</code>로 두 값을 한 번에 읽고, 파이썬은 <code>n, m = map(int, input().split())</code>로 <b>왼쪽 변수 개수만큼</b> 풀어 받는다. 파이썬에서 주의할 점은 <b>변수 개수와 입력값 개수가 정확히 같아야</b> 한다는 것이다. 다르면 <code>ValueError</code>가 난다. 값이 세 개인데 두 개만 받으려 하면 오류이므로, 문제의 입력 설명을 정확히 읽어야 한다. 이 문제처럼 <b>크기를 먼저 받고 그만큼 반복</b>하는 구조는 격자·행렬 문제의 출발점이며, 다음 문제에서 실제 데이터를 채우는 형태로 확장된다.", "points": ["<code>scanf(\"%d %d\")</code> ↔ <code>n, m = map(int, input().split())</code>", "파이썬은 변수 개수와 값 개수가 <b>정확히 일치</b>해야 한다", "크기 입력 → 그만큼 반복이 격자 문제의 기본 골격"], "out": "*****\n*****\n*****\n3행 5열, 총 15개\n"}, {"no": 17, "title": "입력이 끝날 때까지 받기 (EOF)", "tag": "EOF 처리", "stdin": "3\n7\n11\n15\n2\n", "desc": "개수를 알려 주지 않고 정수가 계속 주어진다. <b>입력이 끝날 때까지</b> 읽어 개수·합계·최댓값을 출력하시오.", "hint": "C는 scanf의 반환값을, 파이썬은 표준 입력 반복을 이용한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int x, count = 0, sum = 0, mx = 0, first = 1;\n\n    while (scanf(\"%d\", &x) == 1) {       /* 읽기 성공한 개수 */\n        if (first) { mx = x; first = 0; }\n        else if (x > mx) mx = x;\n        count++;\n        sum += x;\n    }\n    printf(\"개수 = %d\\n\", count);\n    printf(\"합계 = %d\\n\", sum);\n    printf(\"최댓값 = %d\\n\", mx);\n    return 0;\n}", "py": "import sys\n\ncount = total = 0\nmx = 0\nfirst = True\n\nfor line in sys.stdin:\n    for tok in line.split():\n        x = int(tok)\n        if first:\n            mx = x\n            first = False\n        elif x > mx:\n            mx = x\n        count += 1\n        total += x\n\nprint(f\"개수 = {count}\")\nprint(f\"합계 = {total}\")\nprint(f\"최댓값 = {mx}\")", "explain": "개수를 알려 주지 않는 입력은 <b>EOF(입력 끝)</b>를 감지해야 한다. C의 <code>scanf</code>는 <b>성공적으로 읽은 항목의 개수</b>를 반환하므로, <code>while (scanf(\"%d\", &amp;x) == 1)</code>이 표준 관용구다. 입력이 끝나면 <code>EOF</code>(−1)를 반환해 반복이 끝난다. <code>!= EOF</code>로 써도 되지만, <b><code>== 1</code>이 더 안전</b>하다. 형식이 맞지 않는 경우(0 반환)도 함께 걸러 주기 때문이다. 파이썬은 <code>for line in sys.stdin:</code>이 <b>입력이 끝나면 자동으로 종료</b>된다. 한 줄에 여러 값이 있을 수 있으므로 안쪽에서 <code>split()</code>을 한 번 더 도는 것이 안전하다. 최댓값의 초기값을 0으로 두지 않고 <b>첫 값으로 잡는</b> 처리도 중요하다. 모든 입력이 음수일 때 0으로 시작하면 틀리기 때문이다.", "points": ["C 관용구: <code>while (scanf(\"%d\", &amp;x) == 1)</code>", "파이썬: <code>for line in sys.stdin:</code> — EOF에서 자동 종료", "최댓값 초기값은 <b>첫 입력값</b>으로 (음수 대비)"], "out": "개수 = 5\n합계 = 38\n최댓값 = 15\n"}, {"no": 18, "title": "문자열과 숫자가 섞인 입력", "tag": "혼합 입력", "stdin": "3\nMinjun 85\nSeoyeon 92\nJiho 78\n", "desc": "첫 줄에 N, 이어지는 N줄에 <b>이름과 점수</b>가 공백으로 주어진다. 목록과 평균을 출력하시오.", "hint": "C는 한 번의 scanf로 두 종류를 함께 읽을 수 있다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    int sum = 0;\n    for (int i = 0; i < n; i++) {\n        char name[50];\n        int score;\n        scanf(\"%s %d\", name, &score);        /* name은 & 없음 */\n        printf(\"%-10s %3d점\\n\", name, score);\n        sum += score;\n    }\n    printf(\"평균 = %.2f\\n\", (double)sum / n);\n    return 0;\n}", "py": "n = int(input())\n\ntotal = 0\nfor i in range(n):\n    parts = input().split()\n    name = parts[0]\n    score = int(parts[1])\n    print(f\"{name:<10s} {score:3d}점\")\n    total += score\n\nprint(f\"평균 = {total / n:.2f}\")", "explain": "C의 <code>scanf</code>는 <b>서식을 나열해 여러 종류를 한 번에</b> 읽을 수 있다. <code>scanf(\"%s %d\", name, &amp;score)</code>에서 <b><code>name</code>에는 <code>&amp;</code>가 없고 <code>score</code>에는 있다</b>는 점이 핵심이다. 배열 이름은 이미 주소이기 때문이다. 이 비대칭이 헷갈리기 쉬우니 <b>'배열·문자열은 &amp; 없이, 나머지는 &amp;와 함께'</b>로 외워 두자. 파이썬은 <b>한 줄을 통째로 읽어 <code>split()</code>으로 쪼갠 뒤 필요한 것만 변환</b>하는 방식이다. 이름은 문자열 그대로, 점수는 <code>int()</code>로 바꾼다. <code>name, score = input().split()</code>처럼 바로 풀어 받은 뒤 <code>score = int(score)</code>를 해도 되지만, <b>이름에 공백이 있을 수 있다면</b> 이 방법은 실패하므로 문제 조건을 확인해야 한다.", "points": ["C: <code>scanf(\"%s %d\", name, &amp;score)</code> — 배열은 <code>&amp;</code> 없이", "파이썬: 한 줄 읽고 <code>split()</code> 후 필요한 것만 형 변환", "이름에 공백이 포함될 수 있는지 문제 조건 확인"], "out": "Minjun      85점\nSeoyeon     92점\nJiho        78점\n평균 = 85.00\n"}, {"no": 19, "title": "2차원 배열 입력받기", "tag": "행렬 입력", "stdin": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n", "desc": "첫 줄에 행 수 N과 열 수 M, 이어지는 N줄에 행렬이 주어진다. 행렬을 표로 출력하고 <b>행별 합과 열별 합</b>을 구하시오.", "hint": "이중 반복문으로 한 칸씩 읽는다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n, m;\n    scanf(\"%d %d\", &n, &m);\n\n    int a[20][20];\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            scanf(\"%d\", &a[i][j]);\n\n    printf(\"행렬\\n\");\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) printf(\"%4d\", a[i][j]);\n        printf(\"\\n\");\n    }\n    for (int i = 0; i < n; i++) {\n        int s = 0;\n        for (int j = 0; j < m; j++) s += a[i][j];\n        printf(\"%d행 합 = %d\\n\", i + 1, s);\n    }\n    for (int j = 0; j < m; j++) {\n        int s = 0;\n        for (int i = 0; i < n; i++) s += a[i][j];\n        printf(\"%d열 합 = %d\\n\", j + 1, s);\n    }\n    return 0;\n}", "py": "n, m = map(int, input().split())\n\na = []\nfor i in range(n):\n    row = list(map(int, input().split()))\n    a.append(row)\n\nprint(\"행렬\")\nfor i in range(n):\n    for j in range(m):\n        print(f\"{a[i][j]:4d}\", end=\"\")\n    print()\nfor i in range(n):\n    s = 0\n    for j in range(m):\n        s += a[i][j]\n    print(f\"{i + 1}행 합 = {s}\")\nfor j in range(m):\n    s = 0\n    for i in range(n):\n        s += a[i][j]\n    print(f\"{j + 1}열 합 = {s}\")", "explain": "2차원 입력에서 두 언어의 접근이 다르다. C는 <code>scanf(\"%d\")</code>가 줄 구분을 신경 쓰지 않으므로 <b>이중 반복문으로 한 칸씩</b> 읽으면 끝이다. 입력이 한 줄에 다 있든 여러 줄이든 동일하게 동작한다. 파이썬은 <code>input()</code>이 <b>한 줄 단위</b>이므로, <b>한 행씩 읽어 리스트로 만들어 쌓는</b> 방식이 자연스럽다. <code>a.append(list(map(int, input().split())))</code>가 표준 관용구다. 여기서 중요한 것은 <b>문제의 입력이 행 단위로 줄바꿈되어 있는지</b> 확인하는 일이다. 아니라면 <code>sys.stdin.read().split()</code>으로 전체를 읽어 인덱스로 잘라 써야 한다. C에서는 배열 크기를 <b>최대 크기 이상</b>으로 미리 선언해야 하며, <code>a[20][20]</code>처럼 여유를 둔다.", "points": ["C는 이중 반복 + <code>scanf(\"%d\")</code>로 줄 구분 무관", "파이썬은 <b>한 행씩</b> 읽어 리스트에 append", "행 단위 줄바꿈이 아니면 <code>sys.stdin.read().split()</code>"], "out": "행렬\n   1   2   3   4\n   5   6   7   8\n   9  10  11  12\n1행 합 = 10\n2행 합 = 26\n3행 합 = 42\n1열 합 = 15\n2열 합 = 18\n3열 합 = 21\n4열 합 = 24\n"}, {"no": 20, "title": "문자열 여러 개 입력받기", "tag": "문자열 배열 입력", "stdin": "5\napple\nbanana\nkiwi\ncherry\nfig\n", "desc": "첫 줄에 N, 이어지는 N줄에 단어가 하나씩 주어진다. <b>가장 긴 단어·가장 짧은 단어·사전순 첫 단어</b>를 출력하시오.", "hint": "문자열 비교는 strcmp를 쓴다.", "c": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    char word[50][50];\n    for (int i = 0; i < n; i++) scanf(\"%s\", word[i]);\n\n    int longest = 0, shortest = 0, firstAlpha = 0;\n    for (int i = 1; i < n; i++) {\n        if (strlen(word[i]) > strlen(word[longest]))  longest = i;\n        if (strlen(word[i]) < strlen(word[shortest])) shortest = i;\n        if (strcmp(word[i], word[firstAlpha]) < 0)    firstAlpha = i;\n    }\n    printf(\"입력 단어 %d개\\n\", n);\n    for (int i = 0; i < n; i++) printf(\"  %s (%d글자)\\n\", word[i], (int)strlen(word[i]));\n    printf(\"가장 긴 단어   : %s\\n\", word[longest]);\n    printf(\"가장 짧은 단어 : %s\\n\", word[shortest]);\n    printf(\"사전순 첫 단어 : %s\\n\", word[firstAlpha]);\n    return 0;\n}", "py": "n = int(input())\n\nword = []\nfor i in range(n):\n    word.append(input())\n\nlongest = shortest = first_alpha = 0\nfor i in range(1, n):\n    if len(word[i]) > len(word[longest]):\n        longest = i\n    if len(word[i]) < len(word[shortest]):\n        shortest = i\n    if word[i] < word[first_alpha]:\n        first_alpha = i\n\nprint(f\"입력 단어 {n}개\")\nfor w in word:\n    print(f\"  {w} ({len(w)}글자)\")\nprint(f\"가장 긴 단어   : {word[longest]}\")\nprint(f\"가장 짧은 단어 : {word[shortest]}\")\nprint(f\"사전순 첫 단어 : {word[first_alpha]}\")", "explain": "C에서 문자열 여러 개를 받으려면 <b>2차원 char 배열</b> <code>char word[50][50]</code>을 쓴다. 첫 번째 크기는 <b>단어 개수</b>, 두 번째는 <b>단어 하나의 최대 길이 + 1</b>이다. <code>scanf(\"%s\", word[i])</code>에서 <code>word[i]</code>는 i번째 행의 <b>시작 주소</b>이므로 <code>&amp;</code>를 붙이지 않는다. 비교할 때는 <b>길이는 <code>strlen</code>, 사전순은 <code>strcmp</code></b>를 쓴다. <code>word[i] &lt; word[j]</code>처럼 쓰면 <b>주소를 비교</b>해 엉뚱한 결과가 나온다. 파이썬은 리스트에 문자열을 담고 <code>len()</code>과 <code>&lt;</code>로 자연스럽게 비교된다. 값이 아니라 <b>인덱스를 기억</b>하는 패턴도 다시 확인하자. 인덱스를 들고 있으면 나중에 다른 정보에도 접근할 수 있다.", "points": ["C: <code>char word[개수][길이+1]</code>, <code>scanf(\"%s\", word[i])</code>", "길이는 <code>strlen</code>, 사전순은 <b><code>strcmp</code></b> (<code>&lt;</code>는 주소 비교)", "최댓값은 값이 아니라 <b>인덱스</b>로 기억"], "out": "입력 단어 5개\n  apple (5글자)\n  banana (6글자)\n  kiwi (4글자)\n  cherry (6글자)\n  fig (3글자)\n가장 긴 단어   : banana\n가장 짧은 단어 : fig\n사전순 첫 단어 : apple\n"}, {"no": 21, "title": "잘못된 입력 처리하기", "tag": "입력 검증", "stdin": "10\n20\nabc\n30\n", "desc": "정수를 계속 읽되, <b>정수가 아닌 값</b>을 만나면 그 값을 알리고 중단하시오. 그때까지의 개수와 합계를 출력하시오.", "hint": "C는 scanf의 반환값을, 파이썬은 예외 처리를 이용한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int x, count = 0, sum = 0;\n\n    while (scanf(\"%d\", &x) == 1) {\n        count++;\n        sum += x;\n    }\n    char bad[100];\n    if (scanf(\"%s\", bad) == 1) {\n        printf(\"  '%s' -> 정수가 아님, 입력 중단\\n\", bad);\n    }\n    printf(\"정상 입력 %d개, 합 %d\\n\", count, sum);\n    return 0;\n}", "py": "import sys\n\ndata = sys.stdin.read().split()\ncount = total = 0\n\nfor tok in data:\n    try:\n        x = int(tok)\n    except ValueError:\n        print(f\"  '{tok}' -> 정수가 아님, 입력 중단\")\n        break\n    count += 1\n    total += x\n\nprint(f\"정상 입력 {count}개, 합 {total}\")", "explain": "입력이 항상 올바르다고 믿으면 안 된다. C의 <code>scanf</code>는 <b>읽기에 성공한 항목 수</b>를 반환하므로, <code>%d</code>를 읽으려는데 문자가 오면 <b>0을 반환</b>한다. 중요한 것은 <b>실패해도 그 문자가 입력에서 사라지지 않는다</b>는 점이다. 그래서 조건 없이 다시 <code>scanf(\"%d\")</code>를 호출하면 <b>같은 문자에서 계속 실패하는 무한 루프</b>에 빠진다. 위 코드처럼 <code>%s</code>로 <b>문제의 토큰을 걷어내야</b> 한다. 이것이 C 입력 검증의 핵심 함정이다. 파이썬은 <code>int()</code>가 실패하면 <b><code>ValueError</code> 예외</b>를 던지므로 <code>try / except</code>로 잡는다. 예외 처리는 '<b>정상 흐름과 오류 처리를 분리</b>'해 코드를 읽기 쉽게 만드는 파이썬의 표준 방식이다.", "points": ["C: <code>scanf</code> 반환값으로 성공 여부 확인", "실패한 문자는 <b>버퍼에 남는다</b> → 걷어내지 않으면 무한 루프", "파이썬: <code>try / except ValueError</code>로 처리"], "out": "  'abc' -> 정수가 아님, 입력 중단\n정상 입력 2개, 합 30\n"}, {"no": 22, "title": "빠른 입출력", "tag": "성능 최적화", "stdin": "10\n1 2 3 4 5 6 7 8 9 10\n", "desc": "직접 만든 <b>빠른 입력 함수</b>로 N과 N개의 정수를 읽어 합계와 최댓값을 구하시오.", "hint": "getchar로 한 글자씩 읽으면 scanf보다 빠르다.", "c": "#include <stdio.h>\n\nint readInt(void) {\n    int n = 0, sign = 1, c = getchar();\n    while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = getchar();\n    if (c == '-') { sign = -1; c = getchar(); }\n    while (c >= '0' && c <= '9') {\n        n = n * 10 + (c - '0');\n        c = getchar();\n    }\n    return sign * n;\n}\n\nint main(void) {\n    int n = readInt();\n    int sum = 0, mx = 0;\n    for (int i = 0; i < n; i++) {\n        int x = readInt();\n        sum += x;\n        if (i == 0 || x > mx) mx = x;\n    }\n    printf(\"N = %d\\n\", n);\n    printf(\"합계 = %d\\n\", sum);\n    printf(\"최댓값 = %d\\n\", mx);\n    return 0;\n}", "py": "import sys\n\ndata = sys.stdin.read().split()      # 전체를 한 번에 읽는다\nidx = 0\nn = int(data[idx]); idx += 1\n\ntotal = 0\nmx = 0\nfor i in range(n):\n    x = int(data[idx]); idx += 1\n    total += x\n    if i == 0 or x > mx:\n        mx = x\n\nprint(f\"N = {n}\")\nprint(f\"합계 = {total}\")\nprint(f\"최댓값 = {mx}\")", "explain": "입력이 <b>수십만 줄</b>이 되면 입력 자체가 시간 초과의 원인이 된다. <code>scanf</code>는 호출할 때마다 <b>서식 문자열을 해석</b>하므로 느리다. <code>getchar</code>로 한 글자씩 읽어 직접 숫자를 만드는 <b>빠른 입력 함수</b>는 이 해석 비용을 없애 수 배 빠르다. 구조는 세 단계다. ① <b>공백류 건너뛰기</b> ② <b>부호 처리</b> ③ <code>n = n*10 + (c - '0')</code>으로 <b>자릿수 누적</b>(문자열 편 21번). 파이썬은 <code>input()</code>이 매우 느려서, 반드시 <b><code>sys.stdin</code></b>을 써야 한다. 가장 빠른 방법은 <code>sys.stdin.read().split()</code>으로 <b>전체를 한 번에 읽어</b> 리스트로 만든 뒤 인덱스로 꺼내 쓰는 것이다. 줄 단위로 읽어야 한다면 <code>sys.stdin.readline()</code>을 쓰되, <b>끝의 줄바꿈이 포함</b>되므로 <code>.strip()</code>이 필요하다는 점에 주의한다.", "points": ["대량 입력에서는 <code>scanf</code>/<code>input()</code>이 <b>시간 초과의 원인</b>", "C: <code>getchar</code> 기반 빠른 입력 함수", "파이썬: <code>sys.stdin.read().split()</code>이 가장 빠름"], "out": "N = 10\n합계 = 55\n최댓값 = 10\n"}, {"no": 23, "title": "출력을 모아서 한 번에 내보내기", "tag": "출력 최적화", "stdin": "", "desc": "1부터 10까지의 제곱을 <b>매번 출력하지 않고 문자열에 모았다가 한 번에</b> 출력하시오.", "hint": "출력 함수 호출 자체가 비용이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    char out[2000];\n    int pos = 0, lines = 0;\n\n    for (int i = 1; i <= 10; i++) {\n        pos += sprintf(out + pos, \"%2d의 제곱 = %3d\\n\", i, i * i);\n        lines++;\n    }\n    fputs(out, stdout);              /* 한 번에 출력 */\n    printf(\"총 %d줄을 출력 함수 1회로 처리\\n\", lines);\n    return 0;\n}", "py": "import sys\n\nparts = []\nfor i in range(1, 11):\n    parts.append(f\"{i:2d}의 제곱 = {i * i:3d}\\n\")\n\nout = \"\".join(parts)\nsys.stdout.write(out)                # 한 번에 출력\nprint(f\"총 {len(parts)}줄을 출력 함수 1회로 처리\")", "explain": "출력 함수를 부르는 것 자체가 <b>비용</b>이다. 수십만 줄을 <code>printf</code>나 <code>print</code>로 하나씩 내보내면 그것만으로 시간 초과가 날 수 있다. 해결책은 <b>결과를 문자열에 모았다가 마지막에 한 번만</b> 내보내는 것이다. C에서는 <code>sprintf</code>가 <b>화면 대신 문자열에</b> 서식 출력을 해 주고, <b>기록한 글자 수를 반환</b>한다. 그래서 <code>pos += sprintf(out + pos, ...)</code>로 <b>이어 쓸 위치를 계속 갱신</b>하는 것이 관용구다. 버퍼 크기를 넉넉히 잡지 않으면 <b>오버플로</b>가 나므로 최대 출력량을 계산해 두어야 한다. 파이썬은 문자열이 불변이라 <code>+=</code>로 이어 붙이면 매번 새 문자열이 만들어져 느리다. 반드시 <b>리스트에 모아 <code>\"\".join()</code></b>으로 합치는 방식을 써야 한다.", "points": ["출력 호출 횟수를 줄이면 대량 출력이 빨라진다", "C: <code>sprintf</code>는 문자열에 쓰고 <b>글자 수를 반환</b> → 위치 갱신", "파이썬: <code>+=</code> 대신 <b>리스트 + join</b>"], "out": " 1의 제곱 =   1\n 2의 제곱 =   4\n 3의 제곱 =   9\n 4의 제곱 =  16\n 5의 제곱 =  25\n 6의 제곱 =  36\n 7의 제곱 =  49\n 8의 제곱 =  64\n 9의 제곱 =  81\n10의 제곱 = 100\n총 10줄을 출력 함수 1회로 처리\n"}, {"no": 24, "title": "파일에 쓰기", "tag": "파일 출력", "stdin": "", "desc": "학생 4명의 이름과 점수를 파일 <code>score.txt</code>에 저장하고, 저장한 내용을 화면에도 출력하시오.", "hint": "파일을 열고, 쓰고, 반드시 닫는다.", "c": "#include <stdio.h>\n\nint main(void) {\n    const char *name[4] = {\"Minjun\", \"Seoyeon\", \"Jiho\", \"Yujin\"};\n    int score[4] = {85, 92, 78, 90};\n\n    FILE *fp = fopen(\"score.txt\", \"w\");\n    if (fp == NULL) {\n        printf(\"파일을 열 수 없습니다\\n\");\n        return 1;\n    }\n    printf(\"저장할 내용\\n\");\n    for (int i = 0; i < 4; i++) {\n        fprintf(fp, \"%s %d\\n\", name[i], score[i]);\n        printf(\"  %s %d\\n\", name[i], score[i]);\n    }\n    fclose(fp);\n    printf(\"score.txt 에 4줄 저장 완료\\n\");\n    return 0;\n}", "py": "name = [\"Minjun\", \"Seoyeon\", \"Jiho\", \"Yujin\"]\nscore = [85, 92, 78, 90]\n\nfp = open(\"score.txt\", \"w\")\nprint(\"저장할 내용\")\nfor i in range(4):\n    fp.write(f\"{name[i]} {score[i]}\\n\")\n    print(f\"  {name[i]} {score[i]}\")\nfp.close()\nprint(\"score.txt 에 4줄 저장 완료\")", "explain": "파일 출력은 <b>화면 출력과 거의 같다</b>. <code>printf</code> 대신 <code>fprintf(fp, ...)</code>를 쓰고 <b>첫 인자로 파일 포인터</b>를 넘기면 끝이다. 순서는 언제나 <b>열기 → 쓰기 → 닫기</b>다. 세 가지를 반드시 지키자. ① <b>모드</b> — <code>\"w\"</code>는 새로 쓰기(기존 내용이 <b>모두 지워진다</b>), <code>\"a\"</code>는 이어 쓰기, <code>\"r\"</code>은 읽기다. 실수로 <code>\"w\"</code>를 쓰면 데이터가 날아간다. ② <b>NULL 검사</b> — 경로가 잘못되었거나 권한이 없으면 <code>fopen</code>이 NULL을 반환하고, 검사 없이 쓰면 프로그램이 죽는다. ③ <b><code>fclose</code></b> — 닫지 않으면 버퍼에 남은 내용이 <b>파일에 기록되지 않을 수 있다</b>. 파이썬은 <code>with open(...) as f:</code>를 쓰면 닫기를 자동으로 해 주며, 실무에서는 이 형태를 권장한다.", "points": ["<code>fprintf(fp, ...)</code>는 첫 인자만 다를 뿐 printf와 같다", "모드 <code>\"w\"</code>는 <b>기존 내용을 지운다</b> / 이어쓰기는 <code>\"a\"</code>", "<code>fopen</code> NULL 검사와 <code>fclose</code>는 필수"], "out": "저장할 내용\n  Minjun 85\n  Seoyeon 92\n  Jiho 78\n  Yujin 90\nscore.txt 에 4줄 저장 완료\n"}, {"no": 25, "title": "파일에서 읽기", "tag": "파일 입력", "stdin": "", "desc": "파일을 만들어 저장한 뒤, 다시 열어 <b>줄 번호와 함께</b> 내용을 출력하고 점수의 합계와 평균을 구하시오.", "hint": "쓰기로 만든 뒤 읽기 모드로 다시 연다.", "c": "#include <stdio.h>\n\nint main(void) {\n    FILE *fp = fopen(\"score2.txt\", \"w\");\n    fprintf(fp, \"Minjun 85\\nSeoyeon 92\\nJiho 78\\nYujin 90\\n\");\n    fclose(fp);\n\n    fp = fopen(\"score2.txt\", \"r\");\n    if (fp == NULL) { printf(\"파일 없음\\n\"); return 1; }\n\n    char name[50];\n    int score, line = 0, sum = 0;\n    while (fscanf(fp, \"%s %d\", name, &score) == 2) {\n        line++;\n        printf(\"%d줄 : %-10s %3d\\n\", line, name, score);\n        sum += score;\n    }\n    fclose(fp);\n\n    printf(\"총 %d줄\\n\", line);\n    printf(\"합계 %d, 평균 %.2f\\n\", sum, (double)sum / line);\n    return 0;\n}", "py": "fp = open(\"score2.txt\", \"w\")\nfp.write(\"Minjun 85\\nSeoyeon 92\\nJiho 78\\nYujin 90\\n\")\nfp.close()\n\nfp = open(\"score2.txt\", \"r\")\nline = 0\ntotal = 0\nfor row in fp:\n    parts = row.split()\n    if len(parts) < 2:\n        continue\n    name, score = parts[0], int(parts[1])\n    line += 1\n    print(f\"{line}줄 : {name:<10s} {score:3d}\")\n    total += score\nfp.close()\n\nprint(f\"총 {line}줄\")\nprint(f\"합계 {total}, 평균 {total / line:.2f}\")", "explain": "파일 읽기도 표준 입력과 구조가 같다. <code>scanf</code> 대신 <b><code>fscanf(fp, ...)</code></b>를 쓰고, 반환값으로 <b>읽기 성공 여부</b>를 확인한다. <code>while (fscanf(fp, \"%s %d\", ...) == 2)</code>는 '<b>두 항목을 모두 읽는 데 성공하는 동안</b>'이라는 뜻으로, 파일 끝에 도달하면 자동으로 끝난다. 표준 입력의 EOF 처리(문제 17)와 완전히 같은 원리다. 파이썬은 <code>for row in fp:</code>로 <b>파일을 한 줄씩 순회</b>할 수 있어 가장 간결하다. 이때 각 줄에는 <b>끝의 줄바꿈이 포함</b>되지만 <code>split()</code>이 알아서 처리해 준다. <b>빈 줄</b>이 섞여 있을 수 있으므로 <code>len(parts) &lt; 2</code>면 건너뛰는 방어 코드를 넣었다. 실제 파일에는 빈 줄이나 형식이 어긋난 줄이 흔하므로 이런 검사가 중요하다.", "points": ["<code>fscanf</code> 반환값으로 파일 끝을 감지 (표준 입력과 동일)", "파이썬 <code>for row in fp:</code>가 가장 간결", "실제 파일에는 <b>빈 줄·형식 오류</b>가 있을 수 있으니 방어 코드"], "out": "1줄 : Minjun      85\n2줄 : Seoyeon     92\n3줄 : Jiho        78\n4줄 : Yujin       90\n총 4줄\n합계 345, 평균 86.25\n"}, {"no": 26, "title": "파일 처리 — 읽어서 가공해 다시 저장", "tag": "파일 종합", "stdin": "", "desc": "숫자가 든 파일을 만들고, 그 내용을 읽어 <b>각 값의 제곱</b>을 구해 새 파일에 저장한 뒤 결과 파일을 출력하시오.", "hint": "읽기용 파일과 쓰기용 파일을 동시에 열 수 있다.", "c": "#include <stdio.h>\n\nint main(void) {\n    FILE *fp = fopen(\"nums.txt\", \"w\");\n    fprintf(fp, \"3 7 2 8 5\\n\");\n    fclose(fp);\n\n    FILE *in  = fopen(\"nums.txt\", \"r\");\n    FILE *out = fopen(\"squares.txt\", \"w\");\n    if (in == NULL || out == NULL) { printf(\"파일 오류\\n\"); return 1; }\n\n    int x, count = 0;\n    while (fscanf(in, \"%d\", &x) == 1) {\n        fprintf(out, \"%d %d\\n\", x, x * x);\n        count++;\n    }\n    fclose(in);\n    fclose(out);\n    printf(\"%d개 값을 처리해 squares.txt 에 저장\\n\", count);\n\n    FILE *chk = fopen(\"squares.txt\", \"r\");\n    int a, b;\n    printf(\"결과 파일 내용\\n\");\n    while (fscanf(chk, \"%d %d\", &a, &b) == 2) printf(\"  %d -> %d\\n\", a, b);\n    fclose(chk);\n    return 0;\n}", "py": "fp = open(\"nums.txt\", \"w\")\nfp.write(\"3 7 2 8 5\\n\")\nfp.close()\n\nfin = open(\"nums.txt\", \"r\")\nfout = open(\"squares.txt\", \"w\")\n\ncount = 0\nfor row in fin:\n    for tok in row.split():\n        x = int(tok)\n        fout.write(f\"{x} {x * x}\\n\")\n        count += 1\nfin.close()\nfout.close()\nprint(f\"{count}개 값을 처리해 squares.txt 에 저장\")\n\nchk = open(\"squares.txt\", \"r\")\nprint(\"결과 파일 내용\")\nfor row in chk:\n    parts = row.split()\n    print(f\"  {parts[0]} -> {parts[1]}\")\nchk.close()", "explain": "실제 프로그램의 전형적인 흐름인 <b>읽기 → 가공 → 쓰기</b>를 담았다. 파일은 <b>여러 개를 동시에 열 수 있다</b>. 읽기용 <code>in</code>과 쓰기용 <code>out</code>을 각각 열어 한 값을 읽을 때마다 바로 가공해 내보내면, <b>전체를 메모리에 올리지 않아도</b> 아무리 큰 파일도 처리할 수 있다. 이를 <b>스트림 처리</b>라 한다. 주의할 점은 <b>같은 파일을 읽기와 쓰기로 동시에 열지 않는 것</b>이다. 원본을 읽는 도중에 덮어쓰면 데이터가 깨진다. 반드시 <b>다른 이름의 새 파일</b>에 쓰고, 필요하면 나중에 이름을 바꾼다. 마지막에 결과 파일을 <b>다시 열어 확인</b>하는 것도 좋은 습관이다. 파일 작업은 눈에 보이지 않으므로 검증 단계를 넣어야 실수를 잡을 수 있다.", "points": ["읽기용·쓰기용 파일을 <b>동시에</b> 열어 스트림 처리", "같은 파일을 읽으며 덮어쓰지 말 것 → 새 파일에 쓰기", "작업 후 <b>결과 파일을 다시 열어 검증</b>"], "out": "5개 값을 처리해 squares.txt 에 저장\n결과 파일 내용\n  3 -> 9\n  7 -> 49\n  2 -> 4\n  8 -> 64\n  5 -> 25\n"}, {"no": 27, "title": "입력받아 정렬해 출력하기", "tag": "입력 + 처리 + 출력", "stdin": "7\n5 2 9 1 7 3 8\n", "desc": "N개의 정수를 입력받아 <b>오름차순과 내림차순</b>으로 각각 한 줄에 출력하시오.", "hint": "정렬은 배열을 복사해 두 번 수행한다.", "c": "#include <stdio.h>\n\nvoid sortArr(int a[], int n, int desc) {\n    for (int i = 0; i < n - 1; i++)\n        for (int j = 0; j < n - 1 - i; j++) {\n            int need = desc ? (a[j] < a[j+1]) : (a[j] > a[j+1]);\n            if (need) { int t = a[j]; a[j] = a[j+1]; a[j+1] = t; }\n        }\n}\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n    int a[100], b[100];\n    for (int i = 0; i < n; i++) { scanf(\"%d\", &a[i]); b[i] = a[i]; }\n\n    sortArr(a, n, 0);\n    sortArr(b, n, 1);\n\n    printf(\"오름차순 : \");\n    for (int i = 0; i < n; i++) printf(\"%d \", a[i]);\n    printf(\"\\n내림차순 : \");\n    for (int i = 0; i < n; i++) printf(\"%d \", b[i]);\n    printf(\"\\n중앙값 = %d\\n\", a[n / 2]);\n    return 0;\n}", "py": "def sort_arr(a, desc):\n    n = len(a)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            need = (a[j] < a[j+1]) if desc else (a[j] > a[j+1])\n            if need:\n                a[j], a[j+1] = a[j+1], a[j]\n\nn = int(input())\na = list(map(int, input().split()))\nb = a.copy()\n\nsort_arr(a, False)\nsort_arr(b, True)\n\nprint(\"오름차순 : \", end=\"\")\nfor x in a:\n    print(x, end=\" \")\nprint(\"\\n내림차순 : \", end=\"\")\nfor x in b:\n    print(x, end=\" \")\nprint(f\"\\n중앙값 = {a[n // 2]}\")", "explain": "실제 문제 풀이의 표준 흐름인 <b>입력 → 처리 → 출력</b>을 담았다. 세 단계를 <b>섞지 않고 분리</b>하는 것이 중요하다. 입력을 받으면서 동시에 계산하면 코드가 꼬이고 디버깅이 어려워진다. 정렬 함수에 <code>desc</code> 플래그를 넘겨 <b>하나의 함수로 두 방향</b>을 처리한 것도 눈여겨보자. 비교 조건만 뒤집으면 오름차순이 내림차순이 된다. 무엇보다 중요한 것은 <b>원본을 복사해 두는 것</b>이다. 정렬은 배열을 바꾸므로, 복사 없이 두 번 정렬하면 두 번째는 <b>이미 정렬된 데이터</b>를 받게 된다. 이 문제에서는 결과가 우연히 맞지만, 원본이 필요한 상황에서는 치명적인 실수가 된다. 중앙값을 <code>a[n/2]</code>로 구할 때 <b>n이 짝수인 경우</b>의 정의도 문제마다 확인해야 한다.", "points": ["<b>입력 · 처리 · 출력을 분리</b>하면 디버깅이 쉬워진다", "플래그 하나로 정렬 방향을 바꿀 수 있다", "정렬은 원본을 바꾼다 → <b>복사</b> 후 사용"], "out": "오름차순 : 1 2 3 5 7 8 9 \n내림차순 : 9 8 7 5 3 2 1 \n중앙값 = 5\n"}, {"no": 28, "title": "테스트케이스 여러 개 처리하기", "tag": "T개 반복", "stdin": "3\n1 2\n10 20\n100 200\n", "desc": "첫 줄에 테스트케이스 수 T, 이어지는 T줄에 두 정수가 주어진다. 각 결과를 <code>Case #1: 3</code> 형식으로 출력하시오.", "hint": "T를 먼저 읽고 그 횟수만큼 전체 과정을 반복한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int T;\n    scanf(\"%d\", &T);\n\n    for (int t = 1; t <= T; t++) {\n        int a, b;\n        scanf(\"%d %d\", &a, &b);\n        printf(\"Case #%d: %d\\n\", t, a + b);\n    }\n    printf(\"테스트케이스 %d개 처리 완료\\n\", T);\n    return 0;\n}", "py": "T = int(input())\n\nfor t in range(1, T + 1):\n    a, b = map(int, input().split())\n    print(f\"Case #{t}: {a + b}\")\n\nprint(f\"테스트케이스 {T}개 처리 완료\")", "explain": "<b>테스트케이스 형식</b>은 대회 문제의 대표적인 입력 구조다. 처리 방법은 단순하다. <b>T를 먼저 읽고, 문제 풀이 전체를 T번 반복</b>한다. 두 가지를 조심해야 한다. ① <b>케이스 번호는 1부터</b> 시작한다. 반복 변수를 0부터 돌리면서 출력에 <code>t+1</code>을 쓰거나, 위 코드처럼 <b>1부터 T까지</b> 돌리면 된다. 출력 형식의 <b>콜론과 공백까지</b> 문제와 정확히 일치해야 채점을 통과한다. ② <b>케이스마다 변수를 초기화</b>해야 한다. 이전 케이스의 합계나 배열이 남아 있으면 다음 케이스가 오염된다. 이것이 테스트케이스 문제에서 가장 흔한 오답 원인이다. 특히 전역 배열을 쓸 때는 <b>매 케이스 시작 시 초기화</b>를 반드시 확인하자.", "points": ["T를 읽고 <b>풀이 전체를 T번</b> 반복", "케이스 번호는 1부터, 출력 형식을 <b>문자 단위로</b> 일치", "<b>케이스마다 변수·배열 초기화</b> — 오답 1위 원인"], "out": "Case #1: 3\nCase #2: 30\nCase #3: 300\n테스트케이스 3개 처리 완료\n"}, {"no": 29, "title": "여러 종류가 섞인 입력 형식", "tag": "복합 형식", "stdin": "3\nMinjun 16 85.5\nSeoyeon 17 92.25\nJiho 16 78.0\n", "desc": "첫 줄에 N, 이어지는 N줄에 <b>이름(문자열) 나이(정수) 점수(실수)</b>가 주어진다. 표로 출력하고 평균 나이와 평균 점수를 구하시오.", "hint": "서식을 순서대로 나열하면 한 번에 읽을 수 있다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    int ageSum = 0;\n    double scoreSum = 0;\n    printf(\"%-10s %4s %8s\\n\", \"NAME\", \"AGE\", \"SCORE\");\n    for (int i = 0; i < n; i++) {\n        char name[50];\n        int age;\n        double score;\n        scanf(\"%s %d %lf\", name, &age, &score);\n        printf(\"%-10s %4d %8.2f\\n\", name, age, score);\n        ageSum += age;\n        scoreSum += score;\n    }\n    printf(\"평균 나이 = %.1f\\n\", (double)ageSum / n);\n    printf(\"평균 점수 = %.2f\\n\", scoreSum / n);\n    return 0;\n}", "py": "n = int(input())\n\nage_sum = 0\nscore_sum = 0.0\nprint(f\"{'NAME':<10s} {'AGE':>4s} {'SCORE':>8s}\")\nfor i in range(n):\n    parts = input().split()\n    name = parts[0]\n    age = int(parts[1])\n    score = float(parts[2])\n    print(f\"{name:<10s} {age:4d} {score:8.2f}\")\n    age_sum += age\n    score_sum += score\n\nprint(f\"평균 나이 = {age_sum / n:.1f}\")\nprint(f\"평균 점수 = {score_sum / n:.2f}\")", "explain": "C의 <code>scanf</code>는 <b>서식을 순서대로 나열</b>해 여러 종류를 한 번에 읽을 수 있다는 것이 큰 장점이다. <code>scanf(\"%s %d %lf\", name, &amp;age, &amp;score)</code> 한 줄이면 문자열·정수·실수가 모두 읽힌다. 여기서 <b>세 가지를 동시에</b> 지켜야 한다. ① 문자열은 <code>&amp;</code> 없이, 나머지는 <code>&amp;</code>와 함께 ② double은 <code>%lf</code>(입력) ③ 서식 개수와 인자 개수 일치. 하나라도 어긋나면 값이 깨진다. 파이썬은 <b>한 줄을 <code>split()</code>으로 쪼갠 뒤 위치별로 변환</b>한다. <code>parts[0]</code>은 문자열 그대로, <code>parts[1]</code>은 <code>int()</code>, <code>parts[2]</code>는 <code>float()</code>다. 위치와 자료형의 대응을 <b>문제의 입력 설명과 대조</b>해 확인하는 것이 중요하다. 정수 합을 실수 평균으로 낼 때 C에서 <code>(double)</code> 형변환이 필요하다는 점도 다시 확인하자.", "points": ["C: 서식을 나열해 <b>여러 종류를 한 번에</b> 읽는다", "문자열은 <code>&amp;</code> 없이 / double 입력은 <code>%lf</code>", "파이썬: <code>split()</code> 후 <b>위치별로</b> int·float 변환"], "out": "NAME        AGE    SCORE\nMinjun       16    85.50\nSeoyeon      17    92.25\nJiho         16    78.00\n평균 나이 = 16.3\n평균 점수 = 85.25\n"}, {"no": 30, "title": "성적 처리 프로그램 (입출력 종합)", "tag": "종합", "stdin": "4\nMinjun 85 90 78\nSeoyeon 92 88 95\nJiho 70 65 80\nYujin 88 94 91\n", "desc": "N명의 <b>이름과 세 과목 점수</b>를 입력받아 ① 총점·평균·등급이 포함된 표 ② 과목별 평균 ③ 1등 학생을 출력하시오.", "hint": "입력 → 계산 → 출력 세 단계로 나누어 작성한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n;\n    scanf(\"%d\", &n);\n\n    char name[50][50];\n    int s[50][3], total[50];\n    for (int i = 0; i < n; i++) {\n        scanf(\"%s %d %d %d\", name[i], &s[i][0], &s[i][1], &s[i][2]);\n        total[i] = s[i][0] + s[i][1] + s[i][2];\n    }\n\n    printf(\"%-10s %4s %4s %4s %6s %7s %3s\\n\",\n           \"NAME\", \"KOR\", \"ENG\", \"MAT\", \"TOTAL\", \"AVG\", \"GR\");\n    printf(\"------------------------------------------\\n\");\n    int best = 0;\n    for (int i = 0; i < n; i++) {\n        double avg = total[i] / 3.0;\n        char g;\n        if (avg >= 90) g = 'A';\n        else if (avg >= 80) g = 'B';\n        else if (avg >= 70) g = 'C';\n        else g = 'D';\n        printf(\"%-10s %4d %4d %4d %6d %7.2f %3c\\n\",\n               name[i], s[i][0], s[i][1], s[i][2], total[i], avg, g);\n        if (total[i] > total[best]) best = i;\n    }\n\n    const char *sub[3] = {\"KOR\", \"ENG\", \"MAT\"};\n    for (int j = 0; j < 3; j++) {\n        int sum = 0;\n        for (int i = 0; i < n; i++) sum += s[i][j];\n        printf(\"%s 평균 = %.2f\\n\", sub[j], (double)sum / n);\n    }\n    printf(\"1등 : %s (%d점)\\n\", name[best], total[best]);\n    return 0;\n}", "py": "n = int(input())\n\nname = []\ns = []\ntotal = []\nfor i in range(n):\n    parts = input().split()\n    name.append(parts[0])\n    row = [int(parts[1]), int(parts[2]), int(parts[3])]\n    s.append(row)\n    total.append(row[0] + row[1] + row[2])\n\nprint(f\"{'NAME':<10s} {'KOR':>4s} {'ENG':>4s} {'MAT':>4s} \"\n      f\"{'TOTAL':>6s} {'AVG':>7s} {'GR':>3s}\")\nprint(\"------------------------------------------\")\nbest = 0\nfor i in range(n):\n    avg = total[i] / 3.0\n    if avg >= 90:\n        g = \"A\"\n    elif avg >= 80:\n        g = \"B\"\n    elif avg >= 70:\n        g = \"C\"\n    else:\n        g = \"D\"\n    print(f\"{name[i]:<10s} {s[i][0]:4d} {s[i][1]:4d} {s[i][2]:4d} \"\n          f\"{total[i]:6d} {avg:7.2f} {g:>3s}\")\n    if total[i] > total[best]:\n        best = i\n\nsub = [\"KOR\", \"ENG\", \"MAT\"]\nfor j in range(3):\n    ssum = 0\n    for i in range(n):\n        ssum += s[i][j]\n    print(f\"{sub[j]} 평균 = {ssum / n:.2f}\")\nprint(f\"1등 : {name[best]} ({total[best]}점)\")", "explain": "입출력 단원의 결론이다. 실제 프로그램의 <b>세 단계 구조</b>가 그대로 드러난다. ① <b>입력</b> — 모든 데이터를 배열에 먼저 담는다. 읽으면서 동시에 출력하면 나중에 1등을 찾거나 과목 평균을 낼 수 없다. <b>데이터를 저장해 두는 것</b>이 핵심이다. ② <b>계산</b> — 총점·평균·등급을 구하고 최고 득점자를 찾는다. ③ <b>출력</b> — 폭 지정으로 열을 맞춘 표를 만든다. 여기서 <b>헤더와 데이터에 같은 폭</b>을 쓰는 것이 표를 맞추는 요령이다(문제 8). 과목별 평균은 <b>열 방향 순회</b>가 필요해 데이터를 저장해 두지 않으면 불가능하다. 마지막으로 <b>한글 라벨에 폭 지정을 피한 것</b>도 의도적이다. C는 바이트, 파이썬은 글자 기준이라 한글에 폭을 쓰면 두 언어의 표가 어긋난다(문제 4).", "points": ["입력을 <b>먼저 모두 저장</b>해야 이후 통계·정렬이 가능", "헤더와 데이터에 <b>같은 폭</b>을 써야 열이 맞는다", "표의 라벨은 <b>영문</b>으로 — 한글 폭 지정은 두 언어에서 결과가 다르다"], "out": "NAME        KOR  ENG  MAT  TOTAL     AVG  GR\n------------------------------------------\nMinjun       85   90   78    253   84.33   B\nSeoyeon      92   88   95    275   91.67   A\nJiho         70   65   80    215   71.67   C\nYujin        88   94   91    273   91.00   A\nKOR 평균 = 83.75\nENG 평균 = 84.25\nMAT 평균 = 86.00\n1등 : Seoyeon (275점)\n"}];
+
+/* ---------- 간단 구문 강조 ---------- */
+const C_KW = ["int","char","long","short","double","float","void","unsigned","const","return","for","while","do","if","else","break","continue","switch","case","default","sizeof","struct","main","putchar","printf","static","double","va_list","va_start","va_arg","va_end","strlen","strcpy","strcat","strcmp","unsigned","typedef","malloc","free","realloc","NULL","sizeof","struct","enum","union","const","float","FILE","fopen","fclose","fprintf","fscanf","fgets","scanf","getchar","sprintf","fputs","stdout","stdin"];
+const PY_KW = ["for","while","if","else","elif","break","continue","in","not","and","or","def","return","True","False","None","import","range","len","print","append","str","join","chr","ord","int","input","match","case","def","global","import","math","sqrt","end","split","join","replace","class","self","is","None","del","copy","import","math","sys","input","map","float","open","write","try","except","ValueError"];
+
+function tokenize(code, lang){
+  const kws = lang === "c" ? C_KW : PY_KW;
+  const parts = [];
+  const re = lang === "c"
+    ? /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(^[ \t]*#[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm
+    : /(#[^\n]*)|((?:f|r)?"(?:\\.|[^"\\])*"|(?:f|r)?'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm;
+  let last = 0, m;
+  while ((m = re.exec(code)) !== null){
+    if (m.index > last) parts.push([null, code.slice(last, m.index)]);
+    let cls = null;
+    if (lang === "c"){
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "p";
+      else if (m[3]) cls = "s";
+      else if (m[4]) cls = "n";
+      else if (m[5]) cls = kws.includes(m[5]) ? "k" : null;
+    } else {
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "s";
+      else if (m[3]) cls = "n";
+      else if (m[4]) cls = kws.includes(m[4]) ? "k" : null;
+    }
+    parts.push([cls, m[0]]);
+    last = m.index + m[0].length;
+  }
+  if (last < code.length) parts.push([null, code.slice(last)]);
+  return parts;
+}
+
+function renderCode(code, lang){
+  const pre = document.createElement("pre");
+  pre.className = "code";
+  const toks = tokenize(code, lang);
+  let line = document.createElement("span");
+  line.className = "line";
+  const pushLine = () => { pre.appendChild(line); line = document.createElement("span"); line.className = "line"; };
+  toks.forEach(([cls, text]) => {
+    const segs = text.split("\n");
+    segs.forEach((seg, i) => {
+      if (i > 0) pushLine();
+      if (seg === "") return;
+      if (cls){
+        const sp = document.createElement("span");
+        sp.className = "tk " + cls;
+        sp.textContent = seg;
+        line.appendChild(sp);
+      } else {
+        line.appendChild(document.createTextNode(seg));
+      }
+    });
+  });
+  pre.appendChild(line);
+  return pre;
+}
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function pad(n){ return String(n).padStart(2, "0"); }
+
+/* ---------- 카드 생성 ---------- */
+function head(p, isSol){
+  const h = el("div", "chead");
+  const mark = el("span", "loopmark", (isSol ? "해설 " : "문제 ") + pad(p.no) + " / 30");
+  h.appendChild(mark);
+  h.appendChild(el("span", "tagchip", p.tag));
+  return h;
+}
+
+function codeGrid(p){
+  const g = el("div", "codegrid");
+  const cp = el("div", "pane c");
+  cp.appendChild(el("div", "panehead", "C 언어"));
+  cp.appendChild(renderCode(p.c, "c"));
+  const pp = el("div", "pane py");
+  pp.appendChild(el("div", "panehead", "PYTHON"));
+  pp.appendChild(renderCode(p.py, "py"));
+  g.appendChild(cp); g.appendChild(pp);
+  return g;
+}
+
+function inputBox(p){
+  if (!p.stdin) return null;
+  const w = el("div", "inwrap");
+  const h = el("div", "inhead");
+  h.appendChild(el("span", null, "표준 입력 예시"));
+  h.appendChild(el("em", null, "stdin"));
+  w.appendChild(h);
+  const pre = el("pre", "instream");
+  pre.textContent = p.stdin.replace(/\n$/, "");
+  w.appendChild(pre);
+  return w;
+}
+
+function buildQuestion(p){
+  const card = el("article", "card");
+  card.id = "q" + p.no;
+  card.appendChild(head(p, false));
+  card.appendChild(el("h3", null, p.title));
+  const pr = el("div", "prompt");
+  pr.innerHTML = p.desc;
+  card.appendChild(pr);
+  const d = el("details", "hint");
+  d.appendChild(el("summary", null, "힌트 보기"));
+  const hp = el("p"); hp.innerHTML = p.hint;
+  d.appendChild(hp);
+  const ib = inputBox(p);
+  if (ib) card.appendChild(ib);
+  card.appendChild(d);
+  card.appendChild(el("div", "answerspace"));
+  return card;
+}
+
+function buildSolution(p){
+  const card = el("article", "card sol");
+  card.id = "s" + p.no;
+  card.appendChild(head(p, true));
+  card.appendChild(el("h3", null, p.title));
+  const q = el("div", "solq");
+  q.innerHTML = p.desc;
+  card.appendChild(q);
+
+  card.appendChild(el("div", "exhead", "모범 답안 — C / PYTHON"));
+  card.appendChild(codeGrid(p));
+
+  const ib2 = inputBox(p);
+  if (ib2) card.appendChild(ib2);
+
+  const ow = el("div", "outwrap");
+  const oh = el("div", "outhead");
+  oh.appendChild(el("span", null, "실행 결과"));
+  oh.appendChild(el("em", null, "gcc · python3 동일 확인"));
+  ow.appendChild(oh);
+  const pre = el("pre", "out");
+  pre.textContent = p.out.replace(/\n$/, "");
+  ow.appendChild(pre);
+  card.appendChild(ow);
+
+  card.appendChild(el("div", "exhead", "해설"));
+  const ex = el("p", "explain");
+  ex.innerHTML = p.explain;
+  card.appendChild(ex);
+
+  const ul = el("ul", "points");
+  p.points.forEach(t => { const li = el("li"); li.innerHTML = t; ul.appendChild(li); });
+  card.appendChild(ul);
+  return card;
+}
+
+/* ---------- 렌더 ---------- */
+const qlist = document.getElementById("qlist");
+const slist = document.getElementById("slist");
+const toc = document.getElementById("toc");
+DATA.forEach(p => {
+  qlist.appendChild(buildQuestion(p));
+  slist.appendChild(buildSolution(p));
+  const a = el("a", "tocitem");
+  a.href = "#q" + p.no;
+  a.appendChild(el("b", null, pad(p.no)));
+  a.appendChild(el("span", null, p.title));
+  toc.appendChild(a);
+});
+
+/* ---------- 컨트롤 ---------- */
+function setSeg(group, attr, value, cls){
+  group.querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset[attr] === value));
+  });
+  document.body.classList.remove(...cls);
+}
+document.getElementById("segView").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "view", b.dataset.view, ["view-all","view-q","view-s"]);
+  document.body.classList.add("view-" + b.dataset.view);
+});
+document.getElementById("segLang").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "lang", b.dataset.lang, ["lang-both","lang-c","lang-py"]);
+  document.body.classList.add("lang-" + b.dataset.lang);
+  document.querySelectorAll(".codegrid").forEach(g => {
+    g.classList.toggle("single", b.dataset.lang !== "both");
+  });
+});
+document.getElementById("chkSpace").addEventListener("change", e => {
+  document.body.classList.toggle("no-space", !e.target.checked);
+});
+document.getElementById("chkHint").addEventListener("change", e => {
+  document.querySelectorAll(".hint").forEach(h => { h.style.display = e.target.checked ? "" : "none"; });
+});
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+document.body.classList.add("view-all","lang-both");
+</script>
+</body>
+</html>
