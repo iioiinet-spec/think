@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반복문 필수예제 30 · C / 파이썬 병렬 학습지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --surface:#f2f6f7;
+  --ink:#16242e;
+  --ink-soft:#4d626f;
+  --ink-faint:#8496a1;
+  --rule:#d8e2e7;
+  --rule-soft:#e9eff2;
+  --c-accent:#0e6b7a;
+  --c-tint:#e3f1f3;
+  --py-accent:#8a3d6b;
+  --py-tint:#f6e7ef;
+  --out-accent:#3f5d2f;
+  --out-tint:#eef4e8;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --serif:"Gowun Batang","Nanum Myeongjo",serif;
+  --mono:"IBM Plex Mono","D2Coding","Consolas",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font-family:var(--sans);font-weight:400;line-height:1.7;
+  font-size:15px;letter-spacing:-.01em;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px 80px}
+
+/* ===== masthead ===== */
+.masthead{
+  background:var(--paper);border-bottom:3px solid var(--ink);
+  padding:34px 0 26px;margin-bottom:0;
+}
+.masthead .wrap{padding-bottom:0}
+.brandline{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--c-accent);text-transform:uppercase;margin-bottom:14px;
+}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,6vw,46px);line-height:1.18;margin:0 0 6px;
+  letter-spacing:-.02em;
+}
+.masthead h1 em{font-style:normal;color:var(--c-accent)}
+.subtitle{color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:62ch}
+.metarow{
+  display:flex;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:11.5px;
+}
+.metarow span{
+  border:1px solid var(--rule);border-radius:2px;
+  padding:4px 9px;color:var(--ink-soft);background:#fbfdfd;
+}
+.metarow span.verified{border-color:var(--out-accent);color:var(--out-accent);background:var(--out-tint)}
+
+/* ===== toolbar ===== */
+.toolbar{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+  padding:9px 0;margin-bottom:26px;
+}
+.toolbar .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding-bottom:0}
+.tgroup{display:flex;align-items:center;gap:6px}
+.tlabel{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--ink-faint);margin-right:2px;
+}
+.seg{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.seg button{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;
+  border:0;background:var(--paper);color:var(--ink-soft);
+  padding:6px 12px;cursor:pointer;border-right:1px solid var(--rule);
+  transition:background .12s,color .12s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tool-btn{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;
+  padding:7px 15px;border-radius:3px;
+}
+.tool-btn.ghost{background:var(--paper);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);cursor:pointer}
+.chk input{accent-color:var(--c-accent);width:14px;height:14px}
+
+/* ===== toc ===== */
+.toc{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:20px 22px;margin-bottom:34px;
+}
+.toc h2{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--ink-faint);margin:0 0 14px;font-weight:500;text-transform:uppercase;
+}
+.tocgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:2px 18px}
+.tocitem{
+  display:flex;gap:9px;align-items:baseline;padding:4px 0;
+  border-bottom:1px dotted var(--rule-soft);text-decoration:none;color:var(--ink);
+  font-size:13px;
+}
+.tocitem:hover{color:var(--c-accent)}
+.tocitem b{font-family:var(--mono);font-weight:500;color:var(--ink-faint);font-size:11.5px;min-width:18px}
+
+/* ===== part heading ===== */
+.part{margin:0 0 26px;padding-top:8px}
+.part-head{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:24px}
+.part-head h2{font-family:var(--serif);font-size:26px;font-weight:700;margin:0;letter-spacing:-.02em}
+.part-head .pnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);padding-bottom:5px}
+
+/* ===== card ===== */
+.card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 24px 24px;margin-bottom:16px;position:relative;
+  scroll-margin-top:70px;
+}
+.card::before{
+  content:"";position:absolute;left:-1px;top:20px;width:3px;height:46px;
+  background:var(--c-accent);border-radius:0 3px 3px 0;
+}
+.card.sol::before{background:var(--py-accent)}
+.chead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.loopmark{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--c-accent);background:var(--c-tint);padding:3px 8px;border-radius:2px;
+}
+.card.sol .loopmark{color:var(--py-accent);background:var(--py-tint)}
+.tagchip{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:99px;padding:2px 10px;
+}
+.card h3{font-size:18.5px;font-weight:600;margin:2px 0 12px;letter-spacing:-.02em;line-height:1.4}
+.prompt{color:var(--ink);font-size:14.5px;margin:0 0 14px}
+.prompt code{
+  font-family:var(--mono);font-size:12.5px;background:var(--surface);
+  padding:1px 5px;border-radius:2px;display:inline-block;line-height:1.55;
+}
+.hint{border-top:1px dashed var(--rule);padding-top:10px;margin-top:12px}
+.hint summary{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);
+  cursor:pointer;list-style:none;
+}
+.hint summary::before{content:"▸ ";color:var(--c-accent)}
+.hint[open] summary::before{content:"▾ "}
+.hint p{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft)}
+
+/* answer space */
+.answerspace{
+  margin-top:14px;border:1px solid var(--rule);border-radius:3px;
+  background:repeating-linear-gradient(to bottom,transparent 0 27px,var(--rule-soft) 27px 28px);
+  height:112px;position:relative;
+}
+.answerspace::after{
+  content:"작성란";position:absolute;top:5px;right:9px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-faint);background:var(--paper);padding:0 4px;
+}
+body.no-space .answerspace{display:none}
+
+/* ===== code ===== */
+.codegrid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:6px 0 16px;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.codegrid.single{grid-template-columns:1fr}
+.pane{border-right:1px solid var(--rule);min-width:0}
+.pane:last-child{border-right:0}
+.panehead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  padding:7px 12px;border-bottom:1px solid var(--rule);
+}
+.pane.c .panehead{color:var(--c-accent);background:var(--c-tint)}
+.pane.py .panehead{color:var(--py-accent);background:var(--py-tint)}
+pre.code{
+  margin:0;padding:12px 12px 14px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.3px;line-height:1.62;
+  counter-reset:ln;background:var(--paper);
+}
+pre.code .line{display:block;white-space:pre;padding-left:30px;position:relative;min-height:1.62em}
+pre.code .line::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:22px;text-align:right;
+  color:var(--ink-faint);font-size:10.5px;opacity:.7;
+}
+.tk{font:inherit}
+.tk.k{color:#0b5f9e;font-weight:500}
+.tk.s{color:#8a3d6b}
+.tk.n{color:#a35c00}
+.tk.c{color:#6f8090;font-style:italic}
+.tk.p{color:#0e6b7a;font-weight:500}
+
+/* output */
+.outwrap{border:1px solid var(--rule);border-left:3px solid var(--out-accent);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.outhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  color:var(--out-accent);background:var(--out-tint);padding:7px 12px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;
+}
+.outhead em{font-style:normal;opacity:.75;letter-spacing:0}
+pre.out{
+  margin:0;padding:12px;font-family:var(--mono);font-size:12.3px;line-height:1.6;
+  white-space:pre;overflow-x:auto;background:var(--paper);
+}
+
+/* explain */
+.exhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-faint);
+  margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule-soft);
+}
+.explain{font-size:14.3px;color:var(--ink);margin:0 0 4px}
+.explain code,.points code{
+  font-family:var(--mono);font-size:12.2px;background:var(--surface);padding:1px 5px;border-radius:2px;
+}
+.explain b{font-weight:600;background:linear-gradient(transparent 62%,var(--c-tint) 62%)}
+.points{list-style:none;margin:12px 0 0;padding:14px 16px;background:var(--surface);border-radius:3px}
+.points li{position:relative;padding-left:20px;font-size:13.6px;color:var(--ink);margin-bottom:5px}
+.points li:last-child{margin-bottom:0}
+.points li::before{
+  content:"✓";position:absolute;left:0;top:0;color:var(--c-accent);font-weight:700;font-size:12px;
+}
+.solq{
+  font-size:13.4px;color:var(--ink-soft);background:var(--surface);
+  border-radius:3px;padding:10px 14px;margin:0 0 16px;
+}
+.solq code{font-family:var(--mono);font-size:12px}
+
+/* footer */
+.foot{
+  border-top:2px solid var(--ink);margin-top:44px;padding-top:18px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+}
+
+/* view state */
+body.view-q #part-sol,body.view-s #part-q{display:none}
+body.lang-c .pane.py,body.lang-py .pane.c{display:none}
+
+@media (max-width:720px){
+  .codegrid{grid-template-columns:1fr}
+  .pane{border-right:0;border-bottom:1px solid var(--rule)}
+  .pane:last-child{border-bottom:0}
+  .card{padding:18px 15px 20px}
+  .toolbar .wrap{gap:9px}
+  .masthead{padding:24px 0 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px}
+
+/* ===== print ===== */
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff;font-size:10.5pt;line-height:1.55}
+  .toolbar,.toc,.no-print{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .masthead{padding:0 0 12px;border-bottom:2.5px solid #000;margin-bottom:14px}
+  .masthead h1{font-size:22pt}
+  .subtitle{font-size:9.5pt;margin-bottom:8px}
+  .card{
+    border:1px solid #bbb;border-radius:0;padding:12px 13px;margin-bottom:9px;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .card h3{font-size:12.5pt}
+  .prompt,.explain{font-size:10pt}
+  pre.code,pre.out{font-size:8.6pt;line-height:1.45;background:#fff}
+  .points li{font-size:9.5pt}
+  .tk.k,.tk.p{color:#000;font-weight:700}
+  .tk.s{color:#333}
+  .tk.n{color:#333}
+  .tk.c{color:#666}
+  .panehead,.outhead{background:#f0f0f0!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .loopmark{background:#eee!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .points{background:#f6f6f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .explain b{background:none;text-decoration:underline}
+  .hint{display:block}
+  .hint summary{color:#666}
+  #part-sol{break-before:page;page-break-before:always}
+  .foot{border-top:1.5px solid #000}
+}
+</style>
+</head>
+<body class="view-all">
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandline">세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; C &amp; Python 병렬 커리큘럼</div>
+    <h1>반복문 <em>필수예제 30</em></h1>
+    <p class="subtitle">for · while · do-while · 이중 반복문 · break/continue까지, 반복문 하나로 풀 수 있는 문제 유형 30가지를 C와 파이썬으로 나란히 익힙니다. 모든 예제 코드는 gcc와 파이썬에서 직접 실행해 두 언어의 출력이 완전히 일치함을 확인했습니다.</p>
+    <div class="metarow">
+      <span>문항 30</span>
+      <span>C11 · Python 3</span>
+      <span>문제지 + 정답·해설지</span>
+      <span class="verified">gcc / python3 실행 검증 완료</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar no-print" aria-label="학습지 보기 설정">
+  <div class="wrap">
+    <div class="tgroup">
+      <span class="tlabel">보기</span>
+      <div class="seg" id="segView" role="group">
+        <button type="button" data-view="all" aria-pressed="true">전체</button>
+        <button type="button" data-view="q" aria-pressed="false">문제지</button>
+        <button type="button" data-view="s" aria-pressed="false">정답·해설지</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="tlabel">언어</span>
+      <div class="seg" id="segLang" role="group">
+        <button type="button" data-lang="both" aria-pressed="true">C + 파이썬</button>
+        <button type="button" data-lang="c" aria-pressed="false">C만</button>
+        <button type="button" data-lang="py" aria-pressed="false">파이썬만</button>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="chkSpace" checked> 답안 작성란</label>
+    <label class="chk"><input type="checkbox" id="chkHint" checked> 힌트</label>
+    <button type="button" class="tool-btn" id="btnPrint">인쇄 / PDF 저장</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <nav class="toc no-print" aria-label="문제 목차">
+    <h2>수록 문제</h2>
+    <div class="tocgrid" id="toc"></div>
+  </nav>
+
+  <section class="part" id="part-q">
+    <div class="part-head">
+      <h2>제1부 · 문제지</h2>
+      <span class="pnote">30문항 / 이름 __________ 점수 ______</span>
+    </div>
+    <div id="qlist"></div>
+  </section>
+
+  <section class="part" id="part-sol">
+    <div class="part-head">
+      <h2>제2부 · 정답 및 해설지</h2>
+      <span class="pnote">모범답안 · 실행결과 · 개념 해설</span>
+    </div>
+    <div id="slist"></div>
+  </section>
+
+  <div class="foot">
+    <span>세영코딩연구소 / 세영AI코딩학원 · 바이브코딩 특강</span>
+    <span>반복문 필수예제 30 · C &amp; Python</span>
+  </div>
+</main>
+
+<script>
+const DATA = [{"no": 1, "title": "1부터 10까지 차례로 출력하기", "tag": "for 기본", "desc": "for 반복문을 사용하여 1부터 10까지의 정수를 한 줄에 공백으로 구분하여 출력하는 프로그램을 작성하시오.", "hint": "반복 변수 i를 1에서 시작해 10 이하일 동안 1씩 증가시킨다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 10; i++) {\n        printf(\"%d \", i);\n    }\n    printf(\"\\n\");\n    return 0;\n}", "py": "for i in range(1, 11):\n    print(i, end=\" \")\nprint()", "explain": "반복문의 세 요소는 <b>시작값 · 조건 · 증감</b>이다. C의 <code>for (int i = 1; i &lt;= 10; i++)</code>는 이 세 가지를 괄호 안에 한꺼번에 적는 형태이고, 파이썬의 <code>range(1, 11)</code>은 <b>시작값 1, 끝값 11 미만</b>을 뜻한다. 파이썬 range는 끝값을 <b>포함하지 않으므로</b> 10까지 출력하려면 11을 써야 한다는 점이 가장 흔한 실수다.", "points": ["C: <code>i &lt;= 10</code> ↔ 파이썬: <code>range(1, 11)</code>", "파이썬 <code>print</code>는 기본으로 줄바꿈하므로 <code>end=\" \"</code>로 바꿔 준다", "반복이 끝난 뒤 <code>print()</code> / <code>printf(\"\\n\")</code>으로 줄을 마무리한다"], "out": "1 2 3 4 5 6 7 8 9 10 \n"}, {"no": 2, "title": "10부터 1까지 거꾸로 출력하기", "tag": "while · 감소", "desc": "while 반복문을 사용하여 10부터 1까지 거꾸로 출력하시오.", "hint": "감소하는 반복은 조건을 '크거나 같다'로 쓰고 증감을 --로 한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int i = 10;\n    while (i >= 1) {\n        printf(\"%d \", i);\n        i--;\n    }\n    printf(\"\\n\");\n    return 0;\n}", "py": "i = 10\nwhile i >= 1:\n    print(i, end=\" \")\n    i -= 1\nprint()", "explain": "while문은 <b>초기화 · 조건 · 증감</b>이 서로 다른 자리에 흩어져 있다. 특히 <code>i--</code>(파이썬은 <code>i -= 1</code>)를 빠뜨리면 조건이 영원히 참이 되어 <b>무한 루프</b>에 빠진다. while문을 쓸 때는 '조건을 거짓으로 만드는 문장이 반복 블록 안에 반드시 있는가'를 항상 확인해야 한다.", "points": ["while문에서 증감식 누락 = 무한 루프", "파이썬에는 <code>i--</code>가 없다. <code>i -= 1</code>을 쓴다", "반복 횟수가 정해져 있으면 for가, 조건에 따라 달라지면 while이 자연스럽다"], "out": "10 9 8 7 6 5 4 3 2 1 \n"}, {"no": 3, "title": "최소 한 번은 실행되는 반복 (do-while)", "tag": "do-while", "desc": "1부터 5까지 출력하되, 조건 검사를 반복 블록의 <b>뒤</b>에서 하는 구조로 작성하시오. (C는 do-while, 파이썬은 while True + break)", "hint": "파이썬에는 do-while이 없다. 무한 루프 뒤쪽에서 break로 흉내 낸다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int i = 1;\n    do {\n        printf(\"%d \", i);\n        i++;\n    } while (i <= 5);\n    printf(\"\\n\");\n    return 0;\n}", "py": "i = 1\nwhile True:\n    print(i, end=\" \")\n    i += 1\n    if i > 5:\n        break\nprint()", "explain": "do-while은 조건을 <b>나중에</b> 검사하므로 조건이 처음부터 거짓이어도 <b>본문이 최소 1회는 실행</b>된다. 메뉴 출력, 입력 재시도처럼 '일단 한 번은 해 봐야 하는' 상황에 쓴다. 파이썬에는 do-while 문법이 없으므로 <code>while True:</code>로 무한 루프를 만들고 블록 끝에서 <code>if 조건: break</code>로 빠져나오는 방식이 표준 대체 패턴이다. C의 do-while 끝에 붙는 <b>세미콜론</b>을 잊지 않도록 주의한다.", "points": ["while: 조건 → 실행 / do-while: 실행 → 조건", "do-while은 최소 1회 실행이 보장된다", "<code>} while (조건);</code> 의 세미콜론 필수"], "out": "1 2 3 4 5 \n"}, {"no": 4, "title": "1부터 100까지의 합", "tag": "누적 합", "desc": "1부터 100까지의 합을 반복문으로 구하여 출력하시오.", "hint": "합을 담을 변수를 0으로 초기화한 뒤 반복할 때마다 더한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int sum = 0;\n    for (int i = 1; i <= 100; i++) {\n        sum += i;\n    }\n    printf(\"1부터 100까지의 합 = %d\\n\", sum);\n    return 0;\n}", "py": "total = 0\nfor i in range(1, 101):\n    total += i\nprint(f\"1부터 100까지의 합 = {total}\")", "explain": "반복문의 가장 기본 패턴인 <b>누적(accumulator)</b>이다. 핵심은 누적 변수를 <b>반복문 밖에서 0으로 초기화</b>하는 것. 안에서 초기화하면 매번 0으로 되돌아가 마지막 값만 남는다. 참고로 가우스 공식 <code>n(n+1)/2 = 100×101/2 = 5050</code>으로 검산할 수 있다.", "points": ["누적 변수 초기화 위치가 반복문 <b>밖</b>인지 확인", "<code>sum += i</code>는 <code>sum = sum + i</code>와 같다", "검산: 1~n 합 = n(n+1)/2"], "out": "1부터 100까지의 합 = 5050\n"}, {"no": 5, "title": "짝수의 합과 홀수의 합", "tag": "조건 + 누적", "desc": "1부터 100까지의 수 중 짝수의 합과 홀수의 합을 각각 구하여 출력하시오.", "hint": "2로 나눈 나머지가 0이면 짝수다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int even = 0, odd = 0;\n    for (int i = 1; i <= 100; i++) {\n        if (i % 2 == 0) {\n            even += i;\n        } else {\n            odd += i;\n        }\n    }\n    printf(\"짝수의 합 = %d\\n\", even);\n    printf(\"홀수의 합 = %d\\n\", odd);\n    return 0;\n}", "py": "even = 0\nodd = 0\nfor i in range(1, 101):\n    if i % 2 == 0:\n        even += i\n    else:\n        odd += i\nprint(f\"짝수의 합 = {even}\")\nprint(f\"홀수의 합 = {odd}\")", "explain": "반복문 안에 조건문을 넣어 <b>두 개의 누적 변수</b>를 나누어 관리하는 문제다. <code>%</code>(나머지 연산자)는 반복문에서 '배수 판별'에 가장 많이 쓰이는 도구다. 같은 결과를 <code>for (int i = 2; i &lt;= 100; i += 2)</code>처럼 <b>증감폭을 2로 바꿔</b> 조건문 없이 얻을 수도 있으며, 이 방식이 더 빠르다.", "points": ["짝수 판별: <code>i % 2 == 0</code>", "증감폭을 2로 두면 조건문 자체가 필요 없다", "짝수합 2550 + 홀수합 2500 = 5050 (문제 4와 일치)"], "out": "짝수의 합 = 2550\n홀수의 합 = 2500\n"}, {"no": 6, "title": "팩토리얼 10! 구하기", "tag": "누적 곱", "desc": "10! (1×2×3×…×10)의 값을 반복문으로 구하여 출력하시오.", "hint": "곱셈 누적 변수는 0이 아니라 1로 초기화한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    long long fact = 1;\n    for (int i = 1; i <= 10; i++) {\n        fact *= i;\n    }\n    printf(\"10! = %lld\\n\", fact);\n    return 0;\n}", "py": "fact = 1\nfor i in range(1, 11):\n    fact *= i\nprint(f\"10! = {fact}\")", "explain": "덧셈 누적은 0에서, <b>곱셈 누적은 1에서</b> 시작한다. 0으로 초기화하면 결과가 항상 0이 되는 것이 초보자의 대표적 실수다. 또 하나 중요한 점은 <b>자료형 범위</b>다. 팩토리얼은 폭발적으로 커져서 13!부터는 int(약 21억)를 넘으므로 C에서는 <code>long long</code>을 써야 한다. 파이썬은 정수 크기 제한이 없어 100!도 그대로 계산된다.", "points": ["곱셈 누적 변수의 초기값은 <b>1</b>", "C: 13! 이상은 int 오버플로 → <code>long long</code> 사용", "파이썬 정수는 자동 다중 정밀도라 오버플로가 없다"], "out": "10! = 3628800\n"}, {"no": 7, "title": "3의 배수 개수와 합 세기", "tag": "카운팅", "desc": "1부터 100까지의 수 중 3의 배수의 <b>개수</b>와 <b>합</b>을 구하여 출력하시오.", "hint": "조건을 만족할 때마다 count를 1 증가시킨다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int count = 0, sum = 0;\n    for (int i = 1; i <= 100; i++) {\n        if (i % 3 == 0) {\n            count++;\n            sum += i;\n        }\n    }\n    printf(\"3의 배수 개수 = %d\\n\", count);\n    printf(\"3의 배수 합 = %d\\n\", sum);\n    return 0;\n}", "py": "count = 0\ntotal = 0\nfor i in range(1, 101):\n    if i % 3 == 0:\n        count += 1\n        total += i\nprint(f\"3의 배수 개수 = {count}\")\nprint(f\"3의 배수 합 = {total}\")", "explain": "<b>카운팅</b>은 누적과 형태가 같지만 더하는 값이 항상 1이라는 점만 다르다. 조건이 참일 때 실행할 문장이 두 개 이상이면 <b>중괄호로 묶어야</b> 한다. C에서 중괄호를 빼면 <code>count++;</code>만 조건에 걸리고 <code>sum += i;</code>는 매번 실행되어 결과가 틀어진다. 파이썬은 들여쓰기가 곧 블록이므로 들여쓰기 깊이가 같은지 확인해야 한다.", "points": ["카운팅 = 값 1을 더하는 누적", "조건부 실행 문장이 2개 이상이면 <code>{ }</code> 필수", "검산: 3,6,…,99 → 33개, 합 3×(1+…+33)=1683"], "out": "3의 배수 개수 = 33\n3의 배수 합 = 1683\n"}, {"no": 8, "title": "배열(리스트) 원소의 합과 평균", "tag": "배열 순회", "desc": "정수 8개 {17, 42, 8, 93, 55, 31, 76, 24}의 합과 평균을 구하여 평균은 소수 둘째 자리까지 출력하시오.", "hint": "인덱스는 0부터 시작한다. 평균 계산 시 정수 나눗셈에 주의한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[8] = {17, 42, 8, 93, 55, 31, 76, 24};\n    int sum = 0;\n    for (int i = 0; i < 8; i++) {\n        sum += a[i];\n    }\n    printf(\"합 = %d\\n\", sum);\n    printf(\"평균 = %.2f\\n\", (double)sum / 8);\n    return 0;\n}", "py": "a = [17, 42, 8, 93, 55, 31, 76, 24]\ntotal = 0\nfor x in a:\n    total += x\nprint(f\"합 = {total}\")\nprint(f\"평균 = {total / len(a):.2f}\")", "explain": "배열 순회는 <b>인덱스가 0부터 n-1까지</b>라는 점이 핵심이다. 조건을 <code>i &lt;= 8</code>로 쓰면 없는 칸 a[8]을 읽어 <b>범위 밖 접근</b>이 일어난다. 평균에서는 C의 <code>sum / 8</code>이 <b>정수 나눗셈</b>이 되어 소수점이 잘리므로 <code>(double)</code> 형 변환이 필요하다. 파이썬의 <code>/</code>는 항상 실수 나눗셈이고, 정수 나눗셈은 <code>//</code>다.", "points": ["배열 순회 조건은 <code>i &lt; 크기</code> (등호 없음)", "C: 정수 ÷ 정수 = 정수 → <code>(double)</code> 캐스팅", "파이썬은 <code>for x in a</code>로 값을 바로 꺼내 쓸 수 있다"], "out": "합 = 346\n평균 = 43.25\n"}, {"no": 9, "title": "최댓값과 최솟값 찾기", "tag": "비교 갱신", "desc": "정수 8개 {17, 42, 8, 93, 55, 31, 76, 24} 중 최댓값과 최솟값을 반복문으로 찾아 출력하시오.", "hint": "첫 번째 원소를 최댓값·최솟값의 초기값으로 삼는다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[8] = {17, 42, 8, 93, 55, 31, 76, 24};\n    int max = a[0], min = a[0];\n    for (int i = 1; i < 8; i++) {\n        if (a[i] > max) max = a[i];\n        if (a[i] < min) min = a[i];\n    }\n    printf(\"최댓값 = %d\\n\", max);\n    printf(\"최솟값 = %d\\n\", min);\n    return 0;\n}", "py": "a = [17, 42, 8, 93, 55, 31, 76, 24]\nmx = a[0]\nmn = a[0]\nfor i in range(1, len(a)):\n    if a[i] > mx:\n        mx = a[i]\n    if a[i] < mn:\n        mn = a[i]\nprint(f\"최댓값 = {mx}\")\nprint(f\"최솟값 = {mn}\")", "explain": "최댓값 찾기의 정석은 <b>첫 원소를 초기값으로 삼고 두 번째부터 비교</b>하는 것이다. 초기값을 0으로 두면 모든 값이 음수인 배열에서 답이 0이 되어 틀린다. 굳이 상수를 쓰려면 최댓값 초기값은 <b>아주 작은 수</b>, 최솟값 초기값은 <b>아주 큰 수</b>여야 한다는 점을 기억하자. 이 '비교 후 갱신' 패턴은 정렬·탐색 알고리즘의 기초가 된다.", "points": ["초기값은 <code>a[0]</code>, 반복은 인덱스 1부터", "0을 초기값으로 쓰면 음수 데이터에서 오답", "최댓값·최솟값을 한 반복문에서 동시에 갱신할 수 있다"], "out": "최댓값 = 93\n최솟값 = 8\n"}, {"no": 10, "title": "100부터 0까지 5씩 감소", "tag": "증감폭 조절", "desc": "100부터 0까지 5씩 줄여 가며 출력하고, 출력한 개수도 함께 표시하시오.", "hint": "감소 폭이 1이 아닐 때는 마지막 값이 조건에 걸리는지 확인한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int count = 0;\n    for (int i = 100; i >= 0; i -= 5) {\n        printf(\"%d \", i);\n        count++;\n    }\n    printf(\"\\n출력 개수 = %d\\n\", count);\n    return 0;\n}", "py": "count = 0\nfor i in range(100, -1, -5):\n    print(i, end=\" \")\n    count += 1\nprint()\nprint(f\"출력 개수 = {count}\")", "explain": "파이썬 <code>range(시작, 끝, 증감)</code>에서 감소 반복을 만들 때는 증감을 <b>음수</b>로 준다. 이때도 끝값은 포함되지 않으므로 0까지 출력하려면 끝값을 <code>-1</code>로 써야 한다. <code>range(100, 0, -5)</code>로 쓰면 0이 빠져 20개만 출력된다. C에서도 <code>i &gt;= 0</code>과 <code>i &gt; 0</code>의 차이로 같은 실수가 생긴다.", "points": ["파이썬 감소 반복: <code>range(100, -1, -5)</code>", "끝값 미포함 규칙은 증감이 음수일 때도 똑같이 적용", "100,95,…,0 → 21개 (개수 = (100-0)/5 + 1)"], "out": "100 95 90 85 80 75 70 65 60 55 50 45 40 35 30 25 20 15 10 5 0 \n출력 개수 = 21\n"}, {"no": 11, "title": "누적합이 처음 500을 넘는 순간 (break)", "tag": "break", "desc": "1부터 차례로 더해 나갈 때, 누적합이 처음으로 500을 넘는 순간의 <b>더한 마지막 수</b>와 그때의 <b>합</b>을 출력하시오.", "hint": "조건이 만족되면 break로 반복을 즉시 끝낸다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int sum = 0, last = 0;\n    for (int i = 1; i <= 1000; i++) {\n        sum += i;\n        if (sum > 500) {\n            last = i;\n            break;\n        }\n    }\n    printf(\"마지막에 더한 수 = %d\\n\", last);\n    printf(\"그때의 합 = %d\\n\", sum);\n    return 0;\n}", "py": "total = 0\nlast = 0\nfor i in range(1, 1001):\n    total += i\n    if total > 500:\n        last = i\n        break\nprint(f\"마지막에 더한 수 = {last}\")\nprint(f\"그때의 합 = {total}\")", "explain": "<code>break</code>는 반복 조건과 상관없이 <b>반복문 전체를 즉시 탈출</b>한다. '조건을 처음 만족하는 값 찾기' 유형에서 필수다. break를 쓰지 않고 끝까지 돌면 답이 마지막 값으로 덮어써지므로 결과가 달라진다. 이중 반복문에서 break는 <b>자신을 감싼 가장 안쪽 반복문 하나만</b> 빠져나온다는 점도 반드시 기억해야 한다.", "points": ["break = 반복문 즉시 종료", "이중 반복문에서는 안쪽 한 겹만 탈출", "검산: 1~31 합 496, +32 → 528 (첫 500 초과)"], "out": "마지막에 더한 수 = 32\n그때의 합 = 528\n"}, {"no": 12, "title": "4의 배수는 건너뛰고 출력 (continue)", "tag": "continue", "desc": "1부터 20까지 출력하되 4의 배수는 건너뛰고, 실제로 출력한 수들의 합도 구하시오.", "hint": "continue는 이번 회차만 건너뛰고 다음 반복으로 넘어간다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int sum = 0;\n    for (int i = 1; i <= 20; i++) {\n        if (i % 4 == 0) continue;\n        printf(\"%d \", i);\n        sum += i;\n    }\n    printf(\"\\n출력한 수의 합 = %d\\n\", sum);\n    return 0;\n}", "py": "total = 0\nfor i in range(1, 21):\n    if i % 4 == 0:\n        continue\n    print(i, end=\" \")\n    total += i\nprint()\nprint(f\"출력한 수의 합 = {total}\")", "explain": "<code>continue</code>는 반복을 끝내지 않고 <b>이번 회차의 남은 문장만 건너뛴다</b>. break와의 차이를 정확히 구분해야 한다. 주의할 점은 <b>while문에서의 continue</b>다. 증감식이 continue 아래에 있으면 영원히 건너뛰기만 하는 무한 루프가 되므로, while문에서는 증감식을 continue보다 <b>위</b>에 두거나 for문을 쓰는 것이 안전하다.", "points": ["break: 반복 종료 / continue: 이번 회차만 생략", "while문 + continue 조합은 무한 루프 위험", "검산: 1~20 합 210 − (4+8+12+16+20=60) = 150"], "out": "1 2 3 5 6 7 9 10 11 13 14 15 17 18 19 \n출력한 수의 합 = 150\n"}, {"no": 13, "title": "2를 계속 곱해 1000을 처음 넘기기", "tag": "무한 루프 + break", "desc": "1에서 시작해 2를 계속 곱할 때, 값이 처음으로 1000을 넘는 값과 곱한 횟수를 출력하시오.", "hint": "반복 횟수를 모를 때는 무한 루프를 만들고 조건으로 탈출한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int value = 1, count = 0;\n    while (1) {\n        value *= 2;\n        count++;\n        if (value > 1000) break;\n    }\n    printf(\"처음 1000을 넘는 값 = %d\\n\", value);\n    printf(\"2를 곱한 횟수 = %d\\n\", count);\n    return 0;\n}", "py": "value = 1\ncount = 0\nwhile True:\n    value *= 2\n    count += 1\n    if value > 1000:\n        break\nprint(f\"처음 1000을 넘는 값 = {value}\")\nprint(f\"2를 곱한 횟수 = {count}\")", "explain": "반복 횟수를 <b>미리 알 수 없을 때</b> 쓰는 패턴이다. C는 <code>while (1)</code> 또는 <code>for (;;)</code>, 파이썬은 <code>while True:</code>로 무한 루프를 만들고 안에서 <code>break</code>로 빠져나온다. 이 구조를 쓸 때는 <b>탈출 조건이 반드시 언젠가 참이 되는가</b>를 검토해야 한다. 여기서는 값이 계속 커지므로 종료가 보장된다. 결과 1024는 2¹⁰이다.", "points": ["C: <code>while (1)</code> / 파이썬: <code>while True:</code>", "무한 루프에는 반드시 도달 가능한 탈출 조건이 있어야 한다", "2¹⁰ = 1024 → 컴퓨터에서 1K가 1024인 이유"], "out": "처음 1000을 넘는 값 = 1024\n2를 곱한 횟수 = 10\n"}, {"no": 14, "title": "구구단 7단 출력", "tag": "단일 반복", "desc": "구구단 7단을 <code>7 x 1 = 7</code> 형식으로 한 줄에 하나씩 출력하시오.", "hint": "곱하는 수만 1부터 9까지 변한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int dan = 7;\n    for (int i = 1; i <= 9; i++) {\n        printf(\"%d x %d = %d\\n\", dan, i, dan * i);\n    }\n    return 0;\n}", "py": "dan = 7\nfor i in range(1, 10):\n    print(f\"{dan} x {i} = {dan * i}\")", "explain": "반복문에서 <b>변하는 값과 변하지 않는 값</b>을 구분하는 연습이다. 단(7)은 고정, 곱하는 수(i)만 1~9로 변한다. 고정값을 변수 <code>dan</code>으로 빼 두면 다른 단으로 바꿀 때 한 곳만 수정하면 되므로 확장에 유리하다. 다음 문제에서 이 <code>dan</code>이 바깥 반복문의 변수로 바뀌면서 이중 반복문이 된다.", "points": ["고정값은 변수로 분리해 두면 확장이 쉽다", "출력 형식의 공백·기호까지 문제와 정확히 맞춘다", "이 문제의 <code>dan</code>이 변수화되면 이중 반복문이 된다"], "out": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n"}, {"no": 15, "title": "구구단 2~9단 전체 (가로 배열)", "tag": "이중 반복문", "desc": "구구단 2단부터 9단까지를 이중 반복문으로 출력하시오. 단, <b>같은 줄에 2단~9단의 같은 곱셈이 나란히</b> 오도록 9줄로 출력하시오.", "hint": "바깥 반복문이 '줄', 안쪽 반복문이 '한 줄 안의 항목'을 담당한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int j = 1; j <= 9; j++) {\n        for (int i = 2; i <= 9; i++) {\n            printf(\"%d*%d=%2d  \", i, j, i * j);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for j in range(1, 10):\n    for i in range(2, 10):\n        print(f\"{i}*{j}={i*j:2d}\", end=\"  \")\n    print()", "explain": "이중 반복문의 핵심 원리는 <b>바깥이 한 번 돌 때 안쪽은 끝까지 돈다</b>는 것이다. 여기서는 바깥 <code>j</code>가 줄(곱하는 수), 안쪽 <code>i</code>가 단을 맡는다. 줄바꿈 <code>printf(\"\\n\")</code>의 위치가 결정적이다. <b>안쪽 반복문이 끝난 뒤, 바깥 반복문 안</b>에 있어야 한 줄이 완성된다. 안쪽에 넣으면 항목마다 줄이 바뀌고, 바깥 밖에 두면 전부 한 줄로 붙는다. <code>%2d</code>는 오른쪽 정렬 폭 2칸으로 열을 맞추는 서식이다.", "points": ["총 실행 횟수 = 바깥 횟수 × 안쪽 횟수 = 9 × 8 = 72", "줄바꿈은 안쪽 반복문 <b>바깥</b>, 바깥 반복문 <b>안</b>", "C <code>%2d</code> ↔ 파이썬 <code>{값:2d}</code> 로 자릿수 정렬"], "out": "2*1= 2  3*1= 3  4*1= 4  5*1= 5  6*1= 6  7*1= 7  8*1= 8  9*1= 9  \n2*2= 4  3*2= 6  4*2= 8  5*2=10  6*2=12  7*2=14  8*2=16  9*2=18  \n2*3= 6  3*3= 9  4*3=12  5*3=15  6*3=18  7*3=21  8*3=24  9*3=27  \n2*4= 8  3*4=12  4*4=16  5*4=20  6*4=24  7*4=28  8*4=32  9*4=36  \n2*5=10  3*5=15  4*5=20  5*5=25  6*5=30  7*5=35  8*5=40  9*5=45  \n2*6=12  3*6=18  4*6=24  5*6=30  6*6=36  7*6=42  8*6=48  9*6=54  \n2*7=14  3*7=21  4*7=28  5*7=35  6*7=42  7*7=49  8*7=56  9*7=63  \n2*8=16  3*8=24  4*8=32  5*8=40  6*8=48  7*8=56  8*8=64  9*8=72  \n2*9=18  3*9=27  4*9=36  5*9=45  6*9=54  7*9=63  8*9=72  9*9=81  \n"}, {"no": 16, "title": "직각 별 삼각형", "tag": "별 찍기 · 기본", "desc": "다음과 같이 5줄짜리 직각삼각형 모양으로 별(*)을 출력하시오.<br><code>*<br>**<br>***<br>****<br>*****</code>", "hint": "i번째 줄에는 별이 i개 있다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        for (int j = 1; j <= i; j++) {\n            printf(\"*\");\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for i in range(1, 6):\n    for j in range(1, i + 1):\n        print(\"*\", end=\"\")\n    print()", "explain": "별 찍기 문제의 출발점은 <b>줄 번호(i)와 별 개수의 관계를 식으로 세우는 것</b>이다. 여기서는 '별 개수 = i'이므로 안쪽 반복문의 조건이 <code>j &lt;= i</code>가 된다. 이렇게 <b>안쪽 반복 횟수가 바깥 변수에 의해 달라지는</b> 구조가 별 찍기의 본질이다. 파이썬에서는 <code>print(\"*\" * i)</code>로 한 줄에 끝낼 수도 있지만, 이중 반복문 연습이 목적이므로 위 형태를 익혀 두어야 한다.", "points": ["안쪽 반복 조건에 바깥 변수 i가 들어간다", "총 별 개수 = 1+2+3+4+5 = 15", "파이썬 축약형: <code>print(\"*\" * i)</code>"], "out": "*\n**\n***\n****\n*****\n"}, {"no": 17, "title": "역직각 별 삼각형", "tag": "별 찍기 · 감소", "desc": "다음과 같이 별 개수가 줄어드는 5줄 삼각형을 출력하시오.<br><code>*****<br>****<br>***<br>**<br>*</code>", "hint": "i번째 줄의 별 개수를 i로 나타내는 식을 세운다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        for (int j = 1; j <= 6 - i; j++) {\n            printf(\"*\");\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for i in range(1, 6):\n    for j in range(6 - i):\n        print(\"*\", end=\"\")\n    print()", "explain": "줄 번호가 커질수록 별이 줄어드는 관계를 식으로 옮기면 <b>별 개수 = 6 − i</b>가 된다 (i=1일 때 5, i=5일 때 1). 이렇게 <b>(전체 줄 수 + 1) − i</b> 꼴은 별 찍기에서 가장 자주 쓰이는 공식이다. 바깥 반복을 <code>for (int i = 5; i &gt;= 1; i--)</code>로 거꾸로 돌려 안쪽을 <code>j &lt;= i</code>로 두는 방법도 완전히 같은 결과를 낸다.", "points": ["감소 패턴: 별 개수 = (줄 수 + 1) − i", "바깥 반복을 역방향으로 돌리는 풀이도 가능", "파이썬 <code>range(6 - i)</code>는 0부터 5-i까지 → 개수 6-i"], "out": "*****\n****\n***\n**\n*\n"}, {"no": 18, "title": "가운데 정렬 피라미드", "tag": "공백 + 별", "desc": "다음과 같이 가운데가 맞춰진 5줄 피라미드를 출력하시오.<br><code>&nbsp;&nbsp;&nbsp;&nbsp;*<br>&nbsp;&nbsp;&nbsp;***<br>&nbsp;&nbsp;*****<br>&nbsp;*******<br>*********</code>", "hint": "공백 반복문과 별 반복문을 따로 만든다. 공백은 5-i개, 별은 2i-1개.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        for (int s = 1; s <= 5 - i; s++) {\n            printf(\" \");\n        }\n        for (int j = 1; j <= 2 * i - 1; j++) {\n            printf(\"*\");\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for i in range(1, 6):\n    for s in range(5 - i):\n        print(\" \", end=\"\")\n    for j in range(2 * i - 1):\n        print(\"*\", end=\"\")\n    print()", "explain": "피라미드는 <b>공백부와 별부를 분리</b>해서 각각의 개수 식을 세우는 것이 요령이다. 공백은 <b>5 − i</b>개(위가 많고 아래로 갈수록 줄어듦), 별은 <b>2i − 1</b>개(1, 3, 5, 7, 9 — 홀수 수열)다. 이 두 반복문은 <b>형제 관계</b>로 나란히 놓이며, 줄바꿈은 둘 다 끝난 뒤에 온다. 공백 반복문을 별 반복문 안에 넣는 실수를 하지 않도록 주의한다.", "points": ["공백 개수 = 전체 줄 수 − i", "별 개수 = 2i − 1 (홀수 수열)", "두 안쪽 반복문은 중첩이 아니라 <b>나란히</b> 배치"], "out": "    *\n   ***\n  *****\n *******\n*********\n"}, {"no": 19, "title": "마름모 출력", "tag": "별 찍기 · 응용", "desc": "가운데 줄의 별이 9개인 마름모(9줄)를 출력하시오.", "hint": "위쪽 피라미드와 아래쪽 역피라미드를 이어 붙인다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        for (int s = 1; s <= 5 - i; s++) printf(\" \");\n        for (int j = 1; j <= 2 * i - 1; j++) printf(\"*\");\n        printf(\"\\n\");\n    }\n    for (int i = 4; i >= 1; i--) {\n        for (int s = 1; s <= 5 - i; s++) printf(\" \");\n        for (int j = 1; j <= 2 * i - 1; j++) printf(\"*\");\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for i in range(1, 6):\n    print(\" \" * (5 - i) + \"*\" * (2 * i - 1))\nfor i in range(4, 0, -1):\n    print(\" \" * (5 - i) + \"*\" * (2 * i - 1))", "explain": "복잡한 모양은 <b>이미 아는 모양으로 쪼개는 것</b>이 정석이다. 마름모 = 피라미드(5줄) + 역피라미드(4줄). 아래쪽에서 i를 4부터 1까지 <b>거꾸로</b> 돌리면 공백·별 개수 식을 위쪽과 <b>똑같이</b> 재사용할 수 있다는 것이 핵심 아이디어다. 가운데 줄을 두 번 찍지 않도록 아래쪽은 4부터 시작해야 한다. 파이썬 풀이는 문자열 반복 연산자 <code>*</code>와 이어붙이기 <code>+</code>를 활용한 간결한 형태다.", "points": ["복잡한 도형 = 아는 도형의 조합으로 분해", "아래쪽은 i를 역방향으로 돌려 식을 재사용", "가운데 줄 중복 출력 주의 (4부터 시작)"], "out": "    *\n   ***\n  *****\n *******\n*********\n *******\n  *****\n   ***\n    *\n"}, {"no": 20, "title": "숫자 삼각형", "tag": "이중 반복 · 숫자", "desc": "다음과 같은 숫자 삼각형을 출력하시오.<br><code>1<br>12<br>123<br>1234<br>12345</code>", "hint": "별 대신 안쪽 반복 변수 j를 그대로 출력한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        for (int j = 1; j <= i; j++) {\n            printf(\"%d\", j);\n        }\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "for i in range(1, 6):\n    for j in range(1, i + 1):\n        print(j, end=\"\")\n    print()", "explain": "문제 16의 직각삼각형에서 출력만 <code>*</code>에서 <code>j</code>로 바꾼 것이다. 이처럼 <b>도형의 뼈대(반복 구조)와 채우는 내용(출력)은 서로 독립</b>이다. 안쪽 변수 <code>j</code>를 출력하면 1,2,3…, 바깥 변수 <code>i</code>를 출력하면 각 줄이 같은 숫자로 채워지고(11 / 222 …), <code>(char)('A' + j - 1)</code>을 출력하면 알파벳 삼각형이 된다. 이 대응 관계를 이해하면 변형 문제를 모두 풀 수 있다.", "points": ["구조는 그대로, 출력 내용만 바꾸면 변형 완성", "안쪽 변수 j 출력 → 1,2,3… / 바깥 변수 i 출력 → 같은 숫자 반복", "알파벳 삼각형: C는 <code>'A' + j - 1</code>, 파이썬은 <code>chr(64 + j)</code>"], "out": "1\n12\n123\n1234\n12345\n"}, {"no": 21, "title": "파스칼의 삼각형 6줄", "tag": "2차원 배열 · 점화식", "desc": "파스칼의 삼각형을 6줄까지 가운데 정렬로 출력하시오. (각 수는 바로 위 두 수의 합)", "hint": "각 줄의 양 끝은 1이고, 가운데는 위 줄의 두 수를 더한 값이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int t[6][6] = {0};\n    for (int i = 0; i < 6; i++) {\n        t[i][0] = 1;\n        t[i][i] = 1;\n        for (int j = 1; j < i; j++) {\n            t[i][j] = t[i-1][j-1] + t[i-1][j];\n        }\n    }\n    for (int i = 0; i < 6; i++) {\n        for (int s = 0; s < 2 * (5 - i); s++) printf(\" \");\n        for (int j = 0; j <= i; j++) printf(\"%4d\", t[i][j]);\n        printf(\"\\n\");\n    }\n    return 0;\n}", "py": "t = [[0] * 6 for _ in range(6)]\nfor i in range(6):\n    t[i][0] = 1\n    t[i][i] = 1\n    for j in range(1, i):\n        t[i][j] = t[i-1][j-1] + t[i-1][j]\n\nfor i in range(6):\n    print(\" \" * (2 * (5 - i)), end=\"\")\n    for j in range(i + 1):\n        print(f\"{t[i][j]:4d}\", end=\"\")\n    print()", "explain": "반복문으로 <b>점화식</b>을 구현하는 대표 문제다. 규칙은 <code>t[i][j] = t[i-1][j-1] + t[i-1][j]</code>이며, 양 끝(j=0, j=i)은 항상 1로 먼저 정해 준다. 위 줄의 값을 참조하므로 <b>반드시 i가 작은 줄부터 계산</b>해야 한다는 순서 조건이 있다. 파이썬에서 2차원 리스트를 만들 때 <code>[[0]*6]*6</code>이라고 쓰면 같은 리스트 6개를 참조해 한 줄을 고치면 전부 바뀌므로, 반드시 <code>[[0]*6 for _ in range(6)]</code> 형태를 써야 한다.", "points": ["점화식: 위 줄 두 수의 합", "계산 순서(위 줄 → 아래 줄)가 정확성을 좌우", "파이썬 2차원 리스트는 <code>[[0]*n for _ in range(n)]</code>로 생성"], "out": "             1\n           1   1\n         1   2   1\n       1   3   3   1\n     1   4   6   4   1\n   1   5  10  10   5   1\n"}, {"no": 22, "title": "약수 구하기", "tag": "나머지 · 탐색", "desc": "36의 모든 약수를 작은 것부터 출력하고, 약수의 개수와 합도 함께 출력하시오.", "hint": "1부터 36까지 나누어떨어지는지 확인한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n = 36, count = 0, sum = 0;\n    for (int i = 1; i <= n; i++) {\n        if (n % i == 0) {\n            printf(\"%d \", i);\n            count++;\n            sum += i;\n        }\n    }\n    printf(\"\\n약수의 개수 = %d\\n\", count);\n    printf(\"약수의 합 = %d\\n\", sum);\n    return 0;\n}", "py": "n = 36\ncount = 0\ntotal = 0\nfor i in range(1, n + 1):\n    if n % i == 0:\n        print(i, end=\" \")\n        count += 1\n        total += i\nprint()\nprint(f\"약수의 개수 = {count}\")\nprint(f\"약수의 합 = {total}\")", "explain": "약수 판정은 <code>n % i == 0</code> 한 줄로 끝난다. 여기서 중요한 것은 <b>효율</b>이다. 위 코드는 n번 반복하지만, 약수는 항상 짝을 이루므로(36 = 4×9) <b>√n까지만 검사</b>하면 O(√n)으로 줄일 수 있다. 이 아이디어는 정보올림피아드 문제에서 매우 자주 쓰이므로, 기본형을 익힌 뒤 반드시 √n 최적화까지 연습해야 한다.", "points": ["약수 판정: <code>n % i == 0</code>", "약수는 짝을 이룬다 → √n까지만 검사 가능 (O(√n))", "36의 약수 9개, 합 91"], "out": "1 2 3 4 6 9 12 18 36 \n약수의 개수 = 9\n약수의 합 = 91\n"}, {"no": 23, "title": "소수 판별 (플래그 활용)", "tag": "플래그 변수", "desc": "97이 소수인지 판별하여 \"97은 소수입니다.\" 또는 \"97은 소수가 아닙니다.\"를 출력하시오.", "hint": "나누어떨어지는 수를 하나라도 찾으면 소수가 아니다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n = 97;\n    int is_prime = 1;\n    if (n < 2) is_prime = 0;\n    for (int i = 2; i * i <= n; i++) {\n        if (n % i == 0) {\n            is_prime = 0;\n            break;\n        }\n    }\n    if (is_prime) printf(\"%d은(는) 소수입니다.\\n\", n);\n    else          printf(\"%d은(는) 소수가 아닙니다.\\n\", n);\n    return 0;\n}", "py": "n = 97\nis_prime = True\nif n < 2:\n    is_prime = False\ni = 2\nwhile i * i <= n:\n    if n % i == 0:\n        is_prime = False\n        break\n    i += 1\nif is_prime:\n    print(f\"{n}은(는) 소수입니다.\")\nelse:\n    print(f\"{n}은(는) 소수가 아닙니다.\")", "explain": "<b>플래그(flag) 변수</b>는 '반복 도중 어떤 사건이 일어났는가'를 기억하는 변수다. 참으로 시작해 반례를 만나면 거짓으로 바꾸고 <code>break</code>로 탈출하는 것이 표준 패턴이다. 판정 출력은 <b>반복문이 완전히 끝난 뒤</b>에 해야 한다. 반복문 안에서 출력하면 나누어떨어지지 않을 때마다 \"소수입니다\"가 여러 번 찍힌다. 조건 <code>i * i &lt;= n</code>은 √n까지만 검사한다는 뜻으로, <code>i &lt;= n/2</code>보다 훨씬 빠르다.", "points": ["플래그: 참으로 시작 → 반례 발견 시 거짓 + break", "판정 출력은 반복문이 <b>끝난 뒤</b> 한 번만", "<code>i * i &lt;= n</code>은 √n 검사 (제곱근 함수 없이 처리)"], "out": "97은(는) 소수입니다.\n"}, {"no": 24, "title": "1부터 50까지의 소수 모두 출력", "tag": "이중 반복 + 플래그", "desc": "1부터 50까지의 수 중 소수를 모두 출력하고 개수도 함께 출력하시오.", "hint": "문제 23의 판별 과정을 바깥 반복문으로 감싼다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int count = 0;\n    for (int n = 2; n <= 50; n++) {\n        int is_prime = 1;\n        for (int i = 2; i * i <= n; i++) {\n            if (n % i == 0) {\n                is_prime = 0;\n                break;\n            }\n        }\n        if (is_prime) {\n            printf(\"%d \", n);\n            count++;\n        }\n    }\n    printf(\"\\n소수의 개수 = %d\\n\", count);\n    return 0;\n}", "py": "count = 0\nfor n in range(2, 51):\n    is_prime = True\n    i = 2\n    while i * i <= n:\n        if n % i == 0:\n            is_prime = False\n            break\n        i += 1\n    if is_prime:\n        print(n, end=\" \")\n        count += 1\nprint()\nprint(f\"소수의 개수 = {count}\")", "explain": "문제 23을 바깥 반복문으로 감싼 <b>전형적인 이중 반복문 + 플래그</b> 구조다. 가장 중요한 것은 <code>is_prime</code>을 <b>바깥 반복문 안, 안쪽 반복문 밖</b>에서 초기화하는 위치다. 바깥 반복문 밖에서 한 번만 초기화하면 처음 합성수를 만난 뒤로 계속 거짓으로 남아 이후 소수가 하나도 출력되지 않는다. 여기서 <code>break</code>는 안쪽 반복문만 빠져나오고 바깥 반복은 계속된다는 점도 다시 확인하자.", "points": ["플래그 초기화 위치 = 바깥 반복문 안 (매 n마다 새로)", "break는 안쪽 반복문만 탈출", "1은 소수가 아니므로 n=2부터 시작"], "out": "2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 \n소수의 개수 = 15\n"}, {"no": 25, "title": "최대공약수와 최소공배수", "tag": "유클리드 호제법", "desc": "48과 180의 최대공약수(GCD)와 최소공배수(LCM)를 유클리드 호제법으로 구하시오.", "hint": "큰 수를 작은 수로 나눈 나머지로 계속 바꿔 나간다. 나머지가 0이면 끝.", "c": "#include <stdio.h>\n\nint main(void) {\n    int x = 48, y = 180;\n    int a = x, b = y;\n    while (b != 0) {\n        int r = a % b;\n        a = b;\n        b = r;\n    }\n    int gcd = a;\n    printf(\"최대공약수 = %d\\n\", gcd);\n    printf(\"최소공배수 = %d\\n\", x / gcd * y);\n    return 0;\n}", "py": "x, y = 48, 180\na, b = x, y\nwhile b != 0:\n    a, b = b, a % b\ngcd = a\nprint(f\"최대공약수 = {gcd}\")\nprint(f\"최소공배수 = {x // gcd * y}\")", "explain": "<b>유클리드 호제법</b>은 <code>gcd(a, b) = gcd(b, a % b)</code>라는 성질을 나머지가 0이 될 때까지 반복하는 알고리즘이다. 48과 180이면 (48,180) → (180,48) → (48,36) → (36,12) → (12,0)으로 <b>단 4번</b>이면 끝난다. 1부터 하나씩 확인하는 방법보다 압도적으로 빠르다. 파이썬의 <code>a, b = b, a % b</code>는 <b>오른쪽을 먼저 모두 계산한 뒤 대입</b>하므로 임시 변수가 필요 없다. LCM은 <code>a × b ÷ gcd</code>이지만, 오버플로를 피하려면 <b>먼저 나눈 뒤 곱하는</b> 순서가 안전하다.", "points": ["gcd(a,b) = gcd(b, a%b), 나머지 0이면 종료", "파이썬 동시 대입 <code>a, b = b, a % b</code>로 임시 변수 불필요", "LCM은 <code>a / gcd * b</code> 순서로 계산해 오버플로 방지"], "out": "최대공약수 = 12\n최소공배수 = 720\n"}, {"no": 26, "title": "자릿수의 합과 숫자 뒤집기", "tag": "10으로 나누기", "desc": "12345의 각 자릿수의 합을 구하고, 숫자를 뒤집은 값(54321)도 출력하시오.", "hint": "10으로 나눈 나머지가 마지막 자릿수, 10으로 나눈 몫이 나머지 부분이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n = 12345;\n    int sum = 0, rev = 0;\n    int t = n;\n    while (t > 0) {\n        int d = t % 10;\n        sum += d;\n        rev = rev * 10 + d;\n        t /= 10;\n    }\n    printf(\"%d의 자릿수 합 = %d\\n\", n, sum);\n    printf(\"%d을 뒤집으면 = %d\\n\", n, rev);\n    return 0;\n}", "py": "n = 12345\ntotal = 0\nrev = 0\nt = n\nwhile t > 0:\n    d = t % 10\n    total += d\n    rev = rev * 10 + d\n    t //= 10\nprint(f\"{n}의 자릿수 합 = {total}\")\nprint(f\"{n}을 뒤집으면 = {rev}\")", "explain": "자릿수를 다루는 <b>만능 패턴</b>이다. <code>t % 10</code>으로 <b>맨 뒤 자릿수를 떼어 내고</b>, <code>t / 10</code>으로 <b>그 자리를 버린다</b>. 뒤집기는 <code>rev = rev * 10 + d</code>로, 기존 값을 한 칸 왼쪽으로 밀고 새 자릿수를 오른쪽 끝에 붙이는 방식이다. C의 <code>/</code>는 정수끼리면 몫이 되지만, 파이썬의 <code>/</code>는 실수를 만들므로 반드시 <b><code>//</code>(정수 나눗셈)</b>를 써야 한다. 이 한 글자 차이가 파이썬 초보자의 가장 흔한 오류다.", "points": ["마지막 자리 = <code>n % 10</code>, 자리 버리기 = <code>n // 10</code>", "뒤집기 공식: <code>rev = rev * 10 + d</code>", "파이썬은 <code>//</code>를 써야 정수 몫 (<code>/</code>는 실수)"], "out": "12345의 자릿수 합 = 15\n12345을 뒤집으면 = 54321\n"}, {"no": 27, "title": "10진수를 2진수로 변환", "tag": "진법 변환", "desc": "10진수 25를 2진수로 변환하여 출력하시오. (11001)", "hint": "2로 나눈 나머지를 거꾸로 읽으면 2진수가 된다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n = 25;\n    int bit[32];\n    int idx = 0;\n    int t = n;\n    while (t > 0) {\n        bit[idx] = t % 2;\n        t /= 2;\n        idx++;\n    }\n    printf(\"%d의 2진수 = \", n);\n    for (int i = idx - 1; i >= 0; i--) {\n        printf(\"%d\", bit[i]);\n    }\n    printf(\"\\n\");\n    return 0;\n}", "py": "n = 25\nbits = []\nt = n\nwhile t > 0:\n    bits.append(t % 2)\n    t //= 2\nprint(f\"{n}의 2진수 = \", end=\"\")\nfor i in range(len(bits) - 1, -1, -1):\n    print(bits[i], end=\"\")\nprint()", "explain": "진법 변환은 문제 26의 자릿수 패턴에서 <b>10을 2로 바꾼 것</b>이다. 다만 나머지가 <b>거꾸로 나온다</b>는 점이 핵심이다. 25 → 1,0,0,1,1 순서로 나오지만 정답은 11001이므로, 배열(리스트)에 저장했다가 <b>역순으로 출력</b>해야 한다. 저장 없이 바로 출력하면 10011이 되어 틀린다. 2 대신 8이나 16을 쓰면 8진수·16진수 변환이 되고, 16진수는 10~15를 A~F로 바꾸는 처리만 추가하면 된다.", "points": ["2로 나눈 나머지를 <b>역순</b>으로 읽는다", "배열에 모았다가 거꾸로 출력하는 것이 정석", "나눗셈 밑만 바꾸면 8진수·16진수도 동일 원리"], "out": "25의 2진수 = 11001\n"}, {"no": 28, "title": "피보나치 수열 15항", "tag": "값 갱신", "desc": "피보나치 수열(1, 1, 2, 3, 5, …)의 15번째 항까지 출력하시오.", "hint": "앞의 두 항을 변수 두 개에 담아 두고 계속 갱신한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a = 1, b = 1;\n    printf(\"%d %d \", a, b);\n    for (int i = 3; i <= 15; i++) {\n        int c = a + b;\n        printf(\"%d \", c);\n        a = b;\n        b = c;\n    }\n    printf(\"\\n\");\n    return 0;\n}", "py": "a, b = 1, 1\nprint(a, b, end=\" \")\nfor i in range(3, 16):\n    c = a + b\n    print(c, end=\" \")\n    a, b = b, c\nprint()", "explain": "배열 없이 <b>변수 두 개만으로</b> 수열을 만드는 대표 패턴이다. 갱신 순서가 결정적으로 중요하다. <code>a = b; b = c;</code>를 반대로 쓰면 a의 값이 망가진다. C에서는 새 값 <code>c</code>를 임시 변수로 반드시 확보해 두어야 하고, 파이썬은 <code>a, b = b, a + b</code>처럼 <b>동시 대입</b>으로 임시 변수 없이 한 줄에 처리할 수 있다. 이 문제는 나중에 재귀·동적계획법(DP)을 배울 때 '반복문 버전 DP'의 원형이 된다.", "points": ["변수 두 개 + 갱신 순서가 핵심", "C는 임시 변수 필요, 파이썬은 동시 대입으로 대체", "15항 = 610, 배열을 쓰면 메모리 O(n) → 변수 2개면 O(1)"], "out": "1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 \n"}, {"no": 29, "title": "콜라츠 추측 (우박수)", "tag": "조건 분기 반복", "desc": "7에서 시작하여, 짝수면 2로 나누고 홀수면 3배한 뒤 1을 더하는 과정을 1이 될 때까지 반복하며 모든 수를 출력하고 단계 수도 출력하시오.", "hint": "반복 횟수를 미리 알 수 없으므로 while문을 쓴다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int n = 7, step = 0;\n    printf(\"%d \", n);\n    while (n != 1) {\n        if (n % 2 == 0) n = n / 2;\n        else            n = n * 3 + 1;\n        printf(\"%d \", n);\n        step++;\n    }\n    printf(\"\\n단계 수 = %d\\n\", step);\n    return 0;\n}", "py": "n = 7\nstep = 0\nprint(n, end=\" \")\nwhile n != 1:\n    if n % 2 == 0:\n        n = n // 2\n    else:\n        n = n * 3 + 1\n    print(n, end=\" \")\n    step += 1\nprint()\nprint(f\"단계 수 = {step}\")", "explain": "반복 <b>횟수를 예측할 수 없고 조건으로만 끝나는</b> 전형적인 while문 문제다. 7은 1까지 16단계가 걸리며 도중에 52까지 올라갔다 내려오기 때문에 <b>우박수</b>라 부른다. 값이 오르내려도 결국 1에 도달한다는 것이 콜라츠 추측인데, 아직 증명되지 않은 미해결 문제다. 여기서도 파이썬은 <code>n = n / 2</code>가 아니라 <b><code>n // 2</code></b>를 써야 한다. <code>/</code>를 쓰면 7.0 같은 실수가 되어 이후 나머지 연산 결과가 달라진다.", "points": ["종료 조건이 값에 따라 달라지는 while문의 대표 예", "짝수 → ÷2, 홀수 → ×3+1", "파이썬 정수 나눗셈 <code>//</code> 필수"], "out": "7 22 11 34 17 52 26 13 40 20 10 5 16 8 4 2 1 \n단계 수 = 16\n"}, {"no": 30, "title": "1부터 1000까지의 완전수", "tag": "이중 반복 종합", "desc": "1부터 1000까지의 수 중 <b>완전수</b>(자기 자신을 제외한 약수의 합이 자기 자신과 같은 수)를 모두 찾아 약수와 함께 출력하시오.", "hint": "바깥 반복문으로 수를 하나씩 검사하고, 안쪽 반복문으로 약수의 합을 구한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    for (int n = 2; n <= 1000; n++) {\n        int sum = 0;\n        for (int i = 1; i < n; i++) {\n            if (n % i == 0) sum += i;\n        }\n        if (sum == n) {\n            printf(\"%d = \", n);\n            for (int i = 1; i < n; i++) {\n                if (n % i == 0) printf(\"%d \", i);\n            }\n            printf(\"\\n\");\n        }\n    }\n    return 0;\n}", "py": "for n in range(2, 1001):\n    total = 0\n    for i in range(1, n):\n        if n % i == 0:\n            total += i\n    if total == n:\n        print(f\"{n} = \", end=\"\")\n        for i in range(1, n):\n            if n % i == 0:\n                print(i, end=\" \")\n        print()", "explain": "이 문제에는 반복문의 핵심이 모두 들어 있다. <b>바깥 반복문</b>이 후보를 하나씩 검사하고, <b>안쪽 반복문</b>이 각 후보의 진약수 합을 구하며, 누적 변수 <code>sum</code>은 <b>바깥 반복문 안에서 매번 0으로 초기화</b>되어야 한다. 안쪽 조건이 <code>i &lt; n</code>인 이유는 자기 자신을 제외해야 하기 때문이다. <code>i &lt;= n</code>으로 쓰면 완전수가 하나도 나오지 않는다. 총 연산량은 약 50만 번으로, 이런 <b>이중 반복문의 비용 감각</b>을 익히는 것이 알고리즘 학습의 출발점이다.", "points": ["누적 변수는 바깥 반복문 안에서 매번 초기화", "진약수 = 자기 자신 제외 → 조건은 <code>i &lt; n</code>", "1000 이하 완전수는 6, 28, 496 세 개뿐"], "out": "6 = 1 2 3 \n28 = 1 2 4 7 14 \n496 = 1 2 4 8 16 31 62 124 248 \n"}];
+
+/* ---------- 간단 구문 강조 ---------- */
+const C_KW = ["int","char","long","short","double","float","void","unsigned","const","return","for","while","do","if","else","break","continue","switch","case","sizeof","struct","main"];
+const PY_KW = ["for","while","if","else","elif","break","continue","in","not","and","or","def","return","True","False","None","import","range","len","print","append","str","join","chr","int","input"];
+
+function tokenize(code, lang){
+  const kws = lang === "c" ? C_KW : PY_KW;
+  const parts = [];
+  const re = lang === "c"
+    ? /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(^[ \t]*#[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm
+    : /(#[^\n]*)|((?:f|r)?"(?:\\.|[^"\\])*"|(?:f|r)?'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm;
+  let last = 0, m;
+  while ((m = re.exec(code)) !== null){
+    if (m.index > last) parts.push([null, code.slice(last, m.index)]);
+    let cls = null;
+    if (lang === "c"){
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "p";
+      else if (m[3]) cls = "s";
+      else if (m[4]) cls = "n";
+      else if (m[5]) cls = kws.includes(m[5]) ? "k" : null;
+    } else {
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "s";
+      else if (m[3]) cls = "n";
+      else if (m[4]) cls = kws.includes(m[4]) ? "k" : null;
+    }
+    parts.push([cls, m[0]]);
+    last = m.index + m[0].length;
+  }
+  if (last < code.length) parts.push([null, code.slice(last)]);
+  return parts;
+}
+
+function renderCode(code, lang){
+  const pre = document.createElement("pre");
+  pre.className = "code";
+  const toks = tokenize(code, lang);
+  let line = document.createElement("span");
+  line.className = "line";
+  const pushLine = () => { pre.appendChild(line); line = document.createElement("span"); line.className = "line"; };
+  toks.forEach(([cls, text]) => {
+    const segs = text.split("\n");
+    segs.forEach((seg, i) => {
+      if (i > 0) pushLine();
+      if (seg === "") return;
+      if (cls){
+        const sp = document.createElement("span");
+        sp.className = "tk " + cls;
+        sp.textContent = seg;
+        line.appendChild(sp);
+      } else {
+        line.appendChild(document.createTextNode(seg));
+      }
+    });
+  });
+  pre.appendChild(line);
+  return pre;
+}
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function pad(n){ return String(n).padStart(2, "0"); }
+
+/* ---------- 카드 생성 ---------- */
+function head(p, isSol){
+  const h = el("div", "chead");
+  const mark = el("span", "loopmark", (isSol ? "해설 " : "문제 ") + pad(p.no) + " / 30");
+  h.appendChild(mark);
+  h.appendChild(el("span", "tagchip", p.tag));
+  return h;
+}
+
+function codeGrid(p){
+  const g = el("div", "codegrid");
+  const cp = el("div", "pane c");
+  cp.appendChild(el("div", "panehead", "C 언어"));
+  cp.appendChild(renderCode(p.c, "c"));
+  const pp = el("div", "pane py");
+  pp.appendChild(el("div", "panehead", "PYTHON"));
+  pp.appendChild(renderCode(p.py, "py"));
+  g.appendChild(cp); g.appendChild(pp);
+  return g;
+}
+
+function buildQuestion(p){
+  const card = el("article", "card");
+  card.id = "q" + p.no;
+  card.appendChild(head(p, false));
+  card.appendChild(el("h3", null, p.title));
+  const pr = el("div", "prompt");
+  pr.innerHTML = p.desc;
+  card.appendChild(pr);
+  const d = el("details", "hint");
+  d.appendChild(el("summary", null, "힌트 보기"));
+  const hp = el("p"); hp.innerHTML = p.hint;
+  d.appendChild(hp);
+  card.appendChild(d);
+  card.appendChild(el("div", "answerspace"));
+  return card;
+}
+
+function buildSolution(p){
+  const card = el("article", "card sol");
+  card.id = "s" + p.no;
+  card.appendChild(head(p, true));
+  card.appendChild(el("h3", null, p.title));
+  const q = el("div", "solq");
+  q.innerHTML = p.desc;
+  card.appendChild(q);
+
+  card.appendChild(el("div", "exhead", "모범 답안 — C / PYTHON"));
+  card.appendChild(codeGrid(p));
+
+  const ow = el("div", "outwrap");
+  const oh = el("div", "outhead");
+  oh.appendChild(el("span", null, "실행 결과"));
+  oh.appendChild(el("em", null, "gcc · python3 동일 확인"));
+  ow.appendChild(oh);
+  const pre = el("pre", "out");
+  pre.textContent = p.out.replace(/\n$/, "");
+  ow.appendChild(pre);
+  card.appendChild(ow);
+
+  card.appendChild(el("div", "exhead", "해설"));
+  const ex = el("p", "explain");
+  ex.innerHTML = p.explain;
+  card.appendChild(ex);
+
+  const ul = el("ul", "points");
+  p.points.forEach(t => { const li = el("li"); li.innerHTML = t; ul.appendChild(li); });
+  card.appendChild(ul);
+  return card;
+}
+
+/* ---------- 렌더 ---------- */
+const qlist = document.getElementById("qlist");
+const slist = document.getElementById("slist");
+const toc = document.getElementById("toc");
+DATA.forEach(p => {
+  qlist.appendChild(buildQuestion(p));
+  slist.appendChild(buildSolution(p));
+  const a = el("a", "tocitem");
+  a.href = "#q" + p.no;
+  a.appendChild(el("b", null, pad(p.no)));
+  a.appendChild(el("span", null, p.title));
+  toc.appendChild(a);
+});
+
+/* ---------- 컨트롤 ---------- */
+function setSeg(group, attr, value, cls){
+  group.querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset[attr] === value));
+  });
+  document.body.classList.remove(...cls);
+}
+document.getElementById("segView").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "view", b.dataset.view, ["view-all","view-q","view-s"]);
+  document.body.classList.add("view-" + b.dataset.view);
+});
+document.getElementById("segLang").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "lang", b.dataset.lang, ["lang-both","lang-c","lang-py"]);
+  document.body.classList.add("lang-" + b.dataset.lang);
+  document.querySelectorAll(".codegrid").forEach(g => {
+    g.classList.toggle("single", b.dataset.lang !== "both");
+  });
+});
+document.getElementById("chkSpace").addEventListener("change", e => {
+  document.body.classList.toggle("no-space", !e.target.checked);
+});
+document.getElementById("chkHint").addEventListener("change", e => {
+  document.querySelectorAll(".hint").forEach(h => { h.style.display = e.target.checked ? "" : "none"; });
+});
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+document.body.classList.add("view-all","lang-both");
+</script>
+</body>
+</html>

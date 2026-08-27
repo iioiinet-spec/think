@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>함수 필수예제 30 · C / 파이썬 병렬 학습지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --surface:#f2f6f7;
+  --ink:#16242e;
+  --ink-soft:#4d626f;
+  --ink-faint:#8496a1;
+  --rule:#d8e2e7;
+  --rule-soft:#e9eff2;
+  --c-accent:#0e6b7a;
+  --c-tint:#e3f1f3;
+  --py-accent:#8a3d6b;
+  --py-tint:#f6e7ef;
+  --out-accent:#3f5d2f;
+  --out-tint:#eef4e8;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --serif:"Gowun Batang","Nanum Myeongjo",serif;
+  --mono:"IBM Plex Mono","D2Coding","Consolas",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font-family:var(--sans);font-weight:400;line-height:1.7;
+  font-size:15px;letter-spacing:-.01em;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px 80px}
+
+/* ===== masthead ===== */
+.masthead{
+  background:var(--paper);border-bottom:3px solid var(--ink);
+  padding:34px 0 26px;margin-bottom:0;
+}
+.masthead .wrap{padding-bottom:0}
+.brandline{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--c-accent);text-transform:uppercase;margin-bottom:14px;
+}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,6vw,46px);line-height:1.18;margin:0 0 6px;
+  letter-spacing:-.02em;
+}
+.masthead h1 em{font-style:normal;color:var(--c-accent)}
+.subtitle{color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:62ch}
+.metarow{
+  display:flex;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:11.5px;
+}
+.metarow span{
+  border:1px solid var(--rule);border-radius:2px;
+  padding:4px 9px;color:var(--ink-soft);background:#fbfdfd;
+}
+.metarow span.verified{border-color:var(--out-accent);color:var(--out-accent);background:var(--out-tint)}
+
+/* ===== toolbar ===== */
+.toolbar{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+  padding:9px 0;margin-bottom:26px;
+}
+.toolbar .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding-bottom:0}
+.tgroup{display:flex;align-items:center;gap:6px}
+.tlabel{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--ink-faint);margin-right:2px;
+}
+.seg{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.seg button{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;
+  border:0;background:var(--paper);color:var(--ink-soft);
+  padding:6px 12px;cursor:pointer;border-right:1px solid var(--rule);
+  transition:background .12s,color .12s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tool-btn{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;
+  padding:7px 15px;border-radius:3px;
+}
+.tool-btn.ghost{background:var(--paper);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);cursor:pointer}
+.chk input{accent-color:var(--c-accent);width:14px;height:14px}
+
+
+/* ===== cheat sheet ===== */
+.cheat{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--py-accent);
+  border-radius:4px;padding:20px 22px;margin-bottom:22px}
+.cheat h2{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--py-accent);
+  margin:0 0 14px;font-weight:500;text-transform:uppercase}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.2px}
+table.cmp th{text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.06em;color:var(--ink-faint);
+  border-bottom:1px solid var(--rule);padding:6px 10px 6px 0}
+table.cmp td{padding:7px 10px 7px 0;border-bottom:1px dotted var(--rule-soft);vertical-align:top}
+table.cmp td:first-child{color:var(--ink-soft);white-space:nowrap}
+table.cmp code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 5px;border-radius:2px}
+.cheatnote{font-size:13px;color:var(--ink-soft);margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule-soft)}
+.cheatnote code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 4px;border-radius:2px}
+@media (max-width:560px){table.cmp{font-size:12.2px}table.cmp td:first-child{white-space:normal}}
+
+/* ===== toc ===== */
+.toc{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:20px 22px;margin-bottom:34px;
+}
+.toc h2{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--ink-faint);margin:0 0 14px;font-weight:500;text-transform:uppercase;
+}
+.tocgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:2px 18px}
+.tocitem{
+  display:flex;gap:9px;align-items:baseline;padding:4px 0;
+  border-bottom:1px dotted var(--rule-soft);text-decoration:none;color:var(--ink);
+  font-size:13px;
+}
+.tocitem:hover{color:var(--c-accent)}
+.tocitem b{font-family:var(--mono);font-weight:500;color:var(--ink-faint);font-size:11.5px;min-width:18px}
+
+/* ===== part heading ===== */
+.part{margin:0 0 26px;padding-top:8px}
+.part-head{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:24px}
+.part-head h2{font-family:var(--serif);font-size:26px;font-weight:700;margin:0;letter-spacing:-.02em}
+.part-head .pnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);padding-bottom:5px}
+
+/* ===== card ===== */
+.card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 24px 24px;margin-bottom:16px;position:relative;
+  scroll-margin-top:70px;
+}
+.card::before{
+  content:"";position:absolute;left:-1px;top:20px;width:3px;height:46px;
+  background:var(--c-accent);border-radius:0 3px 3px 0;
+}
+.card.sol::before{background:var(--py-accent)}
+.chead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.loopmark{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--c-accent);background:var(--c-tint);padding:3px 8px;border-radius:2px;
+}
+.card.sol .loopmark{color:var(--py-accent);background:var(--py-tint)}
+.tagchip{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:99px;padding:2px 10px;
+}
+.card h3{font-size:18.5px;font-weight:600;margin:2px 0 12px;letter-spacing:-.02em;line-height:1.4}
+.prompt{color:var(--ink);font-size:14.5px;margin:0 0 14px}
+.prompt code{
+  font-family:var(--mono);font-size:12.5px;background:var(--surface);
+  padding:1px 5px;border-radius:2px;display:inline-block;line-height:1.55;
+}
+.hint{border-top:1px dashed var(--rule);padding-top:10px;margin-top:12px}
+.hint summary{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);
+  cursor:pointer;list-style:none;
+}
+.hint summary::before{content:"▸ ";color:var(--c-accent)}
+.hint[open] summary::before{content:"▾ "}
+.hint p{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft)}
+
+/* answer space */
+.answerspace{
+  margin-top:14px;border:1px solid var(--rule);border-radius:3px;
+  background:repeating-linear-gradient(to bottom,transparent 0 27px,var(--rule-soft) 27px 28px);
+  height:112px;position:relative;
+}
+.answerspace::after{
+  content:"작성란";position:absolute;top:5px;right:9px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-faint);background:var(--paper);padding:0 4px;
+}
+body.no-space .answerspace{display:none}
+
+/* ===== code ===== */
+.codegrid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:6px 0 16px;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.codegrid.single{grid-template-columns:1fr}
+.pane{border-right:1px solid var(--rule);min-width:0}
+.pane:last-child{border-right:0}
+.panehead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  padding:7px 12px;border-bottom:1px solid var(--rule);
+}
+.pane.c .panehead{color:var(--c-accent);background:var(--c-tint)}
+.pane.py .panehead{color:var(--py-accent);background:var(--py-tint)}
+pre.code{
+  margin:0;padding:12px 12px 14px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.3px;line-height:1.62;
+  counter-reset:ln;background:var(--paper);
+}
+pre.code .line{display:block;white-space:pre;padding-left:30px;position:relative;min-height:1.62em}
+pre.code .line::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:22px;text-align:right;
+  color:var(--ink-faint);font-size:10.5px;opacity:.7;
+}
+.tk{font:inherit}
+.tk.k{color:#0b5f9e;font-weight:500}
+.tk.s{color:#8a3d6b}
+.tk.n{color:#a35c00}
+.tk.c{color:#6f8090;font-style:italic}
+.tk.p{color:#0e6b7a;font-weight:500}
+
+/* output */
+.outwrap{border:1px solid var(--rule);border-left:3px solid var(--out-accent);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.outhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  color:var(--out-accent);background:var(--out-tint);padding:7px 12px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;
+}
+.outhead em{font-style:normal;opacity:.75;letter-spacing:0}
+pre.out{
+  margin:0;padding:12px;font-family:var(--mono);font-size:12.3px;line-height:1.6;
+  white-space:pre;overflow-x:auto;background:var(--paper);
+}
+
+/* explain */
+.exhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-faint);
+  margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule-soft);
+}
+.explain{font-size:14.3px;color:var(--ink);margin:0 0 4px}
+.explain code,.points code{
+  font-family:var(--mono);font-size:12.2px;background:var(--surface);padding:1px 5px;border-radius:2px;
+}
+.explain b{font-weight:600;background:linear-gradient(transparent 62%,var(--c-tint) 62%)}
+.points{list-style:none;margin:12px 0 0;padding:14px 16px;background:var(--surface);border-radius:3px}
+.points li{position:relative;padding-left:20px;font-size:13.6px;color:var(--ink);margin-bottom:5px}
+.points li:last-child{margin-bottom:0}
+.points li::before{
+  content:"✓";position:absolute;left:0;top:0;color:var(--c-accent);font-weight:700;font-size:12px;
+}
+.solq{
+  font-size:13.4px;color:var(--ink-soft);background:var(--surface);
+  border-radius:3px;padding:10px 14px;margin:0 0 16px;
+}
+.solq code{font-family:var(--mono);font-size:12px}
+
+/* footer */
+.foot{
+  border-top:2px solid var(--ink);margin-top:44px;padding-top:18px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+}
+
+/* view state */
+body.view-q #part-sol,body.view-s #part-q{display:none}
+body.lang-c .pane.py,body.lang-py .pane.c{display:none}
+
+@media (max-width:720px){
+  .codegrid{grid-template-columns:1fr}
+  .pane{border-right:0;border-bottom:1px solid var(--rule)}
+  .pane:last-child{border-bottom:0}
+  .card{padding:18px 15px 20px}
+  .toolbar .wrap{gap:9px}
+  .masthead{padding:24px 0 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px}
+
+/* ===== print ===== */
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff;font-size:10.5pt;line-height:1.55}
+  .toolbar,.toc,.no-print{display:none!important}
+  .cheat{border:1px solid #bbb;border-left:2px solid #000;padding:10px 12px;break-inside:avoid;page-break-inside:avoid}
+  table.cmp{font-size:9pt}
+  .cheatnote{font-size:9pt}
+  body.view-s .cheat{display:none}
+  .wrap{max-width:none;padding:0}
+  .masthead{padding:0 0 12px;border-bottom:2.5px solid #000;margin-bottom:14px}
+  .masthead h1{font-size:22pt}
+  .subtitle{font-size:9.5pt;margin-bottom:8px}
+  .card{
+    border:1px solid #bbb;border-radius:0;padding:12px 13px;margin-bottom:9px;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .card h3{font-size:12.5pt}
+  .prompt,.explain{font-size:10pt}
+  pre.code,pre.out{font-size:8.6pt;line-height:1.45;background:#fff}
+  .points li{font-size:9.5pt}
+  .tk.k,.tk.p{color:#000;font-weight:700}
+  .tk.s{color:#333}
+  .tk.n{color:#333}
+  .tk.c{color:#666}
+  .panehead,.outhead{background:#f0f0f0!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .loopmark{background:#eee!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .points{background:#f6f6f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .explain b{background:none;text-decoration:underline}
+  .hint{display:block}
+  .hint summary{color:#666}
+  #part-sol{break-before:page;page-break-before:always}
+  .foot{border-top:1.5px solid #000}
+}
+</style>
+</head>
+<body class="view-all">
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandline">세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; C &amp; Python 병렬 커리큘럼 &nbsp;·&nbsp; VOL.4 함수</div>
+    <h1>함수 <em>필수예제 30</em></h1>
+    <p class="subtitle">정의와 호출부터 매개변수 전달 방식 · 스코프 · 재귀 · 함수 포인터까지, 코드를 부품으로 나누는 30가지 유형을 C와 파이썬으로 나란히 익힙니다. <b>값이 전달되는 방식</b>(원본이 바뀌는가)과 <b>재귀의 종료 조건</b>에 초점을 맞췄습니다. 모든 예제 코드는 gcc와 파이썬에서 직접 실행해 두 언어의 출력이 완전히 일치함을 확인했습니다.</p>
+    <div class="metarow">
+      <span>문항 30</span>
+      <span>C11 · Python 3</span>
+      <span>문제지 + 정답·해설지</span>
+      <span class="verified">gcc / python3 실행 검증 완료</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar no-print" aria-label="학습지 보기 설정">
+  <div class="wrap">
+    <div class="tgroup">
+      <span class="tlabel">보기</span>
+      <div class="seg" id="segView" role="group">
+        <button type="button" data-view="all" aria-pressed="true">전체</button>
+        <button type="button" data-view="q" aria-pressed="false">문제지</button>
+        <button type="button" data-view="s" aria-pressed="false">정답·해설지</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="tlabel">언어</span>
+      <div class="seg" id="segLang" role="group">
+        <button type="button" data-lang="both" aria-pressed="true">C + 파이썬</button>
+        <button type="button" data-lang="c" aria-pressed="false">C만</button>
+        <button type="button" data-lang="py" aria-pressed="false">파이썬만</button>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="chkSpace" checked> 답안 작성란</label>
+    <label class="chk"><input type="checkbox" id="chkHint" checked> 힌트</label>
+    <button type="button" class="tool-btn" id="btnPrint">인쇄 / PDF 저장</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="cheat">
+    <h2>함수 — C ↔ 파이썬 한눈에 보기</h2>
+    <table class="cmp">
+      <thead><tr><th>기능</th><th>C</th><th>파이썬</th></tr></thead>
+      <tbody>
+        <tr><td>정의</td><td><code>int add(int a, int b) { }</code></td><td><code>def add(a, b):</code></td></tr>
+        <tr><td>반환형</td><td>이름 앞에 명시 (없으면 <code>void</code>)</td><td>명시하지 않음</td></tr>
+        <tr><td>사용 순서</td><td>프로토타입 선언 필요</td><td>호출 시점에 정의되어 있으면 됨</td></tr>
+        <tr><td>원본 수정</td><td>주소 전달 <code>&amp;a</code> / <code>int *p</code></td><td>리스트 등 mutable만 반영</td></tr>
+        <tr><td>여러 값 반환</td><td>포인터 출력 매개변수</td><td><code>return a, b</code> → <code>x, y = f()</code></td></tr>
+        <tr><td>전역 변수 수정</td><td>선언 없이 가능</td><td><code>global</code> 선언 필요</td></tr>
+        <tr><td>값 유지</td><td><code>static</code> 지역 변수</td><td>함수 속성 / <code>global</code></td></tr>
+        <tr><td>기본 인자</td><td>없음 (래퍼 함수로 대체)</td><td><code>def f(a, b=기본값)</code></td></tr>
+        <tr><td>가변 인자</td><td><code>stdarg.h</code> + 개수 전달</td><td><code>def f(*args)</code></td></tr>
+        <tr><td>함수 전달</td><td>함수 포인터 <code>int (*f)(int)</code></td><td>함수 이름을 그대로 전달</td></tr>
+      </tbody>
+    </table>
+    <p class="cheatnote">함수 문제의 오답은 대부분 <b>전달 방식</b>(정수는 원본이 안 바뀌고 배열·리스트는 바뀐다), <b>return과 print의 혼동</b>, <b>재귀 종료 조건 누락</b> 세 곳에서 나옵니다. 각 해설의 체크 항목을 함께 확인하세요.</p>
+  </section>
+
+  <nav class="toc no-print" aria-label="문제 목차">
+    <h2>수록 문제</h2>
+    <div class="tocgrid" id="toc"></div>
+  </nav>
+
+  <section class="part" id="part-q">
+    <div class="part-head">
+      <h2>제1부 · 문제지</h2>
+      <span class="pnote">30문항 / 이름 __________ 점수 ______</span>
+    </div>
+    <div id="qlist"></div>
+  </section>
+
+  <section class="part" id="part-sol">
+    <div class="part-head">
+      <h2>제2부 · 정답 및 해설지</h2>
+      <span class="pnote">모범답안 · 실행결과 · 개념 해설</span>
+    </div>
+    <div id="slist"></div>
+  </section>
+
+  <div class="foot">
+    <span>세영코딩연구소 / 세영AI코딩학원 · 바이브코딩 특강</span>
+    <span>함수 필수예제 30 · C &amp; Python</span>
+  </div>
+</main>
+
+<script>
+const DATA = [{"no": 1, "title": "함수 정의하고 호출하기", "tag": "함수 기본", "desc": "\"세영코딩연구소에 오신 것을 환영합니다!\"를 출력하는 함수 <code>greet</code>를 만들고, main에서 <b>3번</b> 호출하시오.", "hint": "반환값이 없는 함수는 C에서 void로 선언한다.", "c": "#include <stdio.h>\n\nvoid greet(void) {\n    printf(\"세영코딩연구소에 오신 것을 환영합니다!\\n\");\n}\n\nint main(void) {\n    for (int i = 1; i <= 3; i++) {\n        printf(\"%d번째 : \", i);\n        greet();\n    }\n    return 0;\n}", "py": "def greet():\n    print(\"세영코딩연구소에 오신 것을 환영합니다!\")\n\nfor i in range(1, 4):\n    print(f\"{i}번째 : \", end=\"\")\n    greet()", "explain": "함수는 <b>이름 붙인 코드 묶음</b>이다. 한 번 정의해 두면 <code>greet()</code>처럼 이름만 불러 몇 번이든 재사용할 수 있다. 같은 문장을 세 번 쓰는 대신 함수로 만들면, 문구를 바꿀 때 <b>한 곳만 고치면 된다</b>. 이것이 함수의 첫 번째 존재 이유다. C에서 반환값이 없으면 <code>void</code>로 선언하고, 매개변수가 없으면 괄호 안에 <code>void</code>를 쓰거나 비워 둔다. 파이썬은 <code>def 이름():</code>으로 정의하고 반환값이 없으면 아무것도 안 쓴다. 두 언어 모두 <b>정의만 해서는 실행되지 않고, 호출해야 실행</b>된다는 점이 가장 중요하다.", "points": ["정의는 실행이 아니다 — <b>호출</b>해야 실행된다", "C: <code>void 이름(void) { }</code> / 파이썬: <code>def 이름():</code>", "반복되는 코드를 함수로 묶으면 수정할 곳이 한 곳으로 줄어든다"], "out": "1번째 : 세영코딩연구소에 오신 것을 환영합니다!\n2번째 : 세영코딩연구소에 오신 것을 환영합니다!\n3번째 : 세영코딩연구소에 오신 것을 환영합니다!\n"}, {"no": 2, "title": "값을 돌려주는 함수", "tag": "return", "desc": "두 정수를 받아 합을 <b>반환</b>하는 함수 <code>add</code>를 만들고, (3,5), (10,-4), (0,0)에 대해 결과를 출력하시오.", "hint": "반환값의 자료형을 함수 이름 앞에 적는다.", "c": "#include <stdio.h>\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint main(void) {\n    int x[3] = {3, 10, 0};\n    int y[3] = {5, -4, 0};\n    for (int i = 0; i < 3; i++) {\n        int result = add(x[i], y[i]);\n        printf(\"add(%d, %d) = %d\\n\", x[i], y[i], result);\n    }\n    return 0;\n}", "py": "def add(a, b):\n    return a + b\n\nx = [3, 10, 0]\ny = [5, -4, 0]\nfor i in range(3):\n    result = add(x[i], y[i])\n    print(f\"add({x[i]}, {y[i]}) = {result}\")", "explain": "<code>return</code>은 두 가지 일을 동시에 한다. ① <b>값을 돌려주고</b> ② <b>함수를 즉시 끝낸다</b>. return 아래에 쓴 문장은 절대 실행되지 않는다. 반환값이 있는 함수는 <b>값처럼 취급</b>되므로 <code>result = add(3,5)</code>처럼 대입하거나 <code>add(1,2) + add(3,4)</code>처럼 식 안에 바로 쓸 수 있다. C는 반환 자료형을 함수 이름 앞에 반드시 적어야 하며(<code>int add(...)</code>), 파이썬은 적지 않는다. 초보자가 자주 하는 실수는 함수 안에서 <code>printf</code>만 하고 <code>return</code>을 빠뜨린 뒤 밖에서 결과를 쓰려는 것이다. <b>출력과 반환은 전혀 다른 일</b>이다.", "points": ["return = 값 돌려주기 + 함수 즉시 종료", "출력(print)과 반환(return)은 다른 일이다", "C는 반환 자료형 명시, 파이썬은 불필요"], "out": "add(3, 5) = 8\nadd(10, -4) = 6\nadd(0, 0) = 0\n"}, {"no": 3, "title": "매개변수가 여러 개인 함수", "tag": "매개변수", "desc": "가로·세로를 받아 넓이를 반환하는 <code>area</code>와 둘레를 반환하는 <code>perimeter</code>를 만들어 (5,3), (7,7), (10,2)에 대해 출력하시오.", "hint": "함수 하나가 한 가지 일만 하도록 나눈다.", "c": "#include <stdio.h>\n\nint area(int w, int h) {\n    return w * h;\n}\n\nint perimeter(int w, int h) {\n    return 2 * (w + h);\n}\n\nint main(void) {\n    int W[3] = {5, 7, 10};\n    int H[3] = {3, 7, 2};\n    for (int i = 0; i < 3; i++) {\n        printf(\"가로 %2d 세로 %2d -> 넓이 %3d, 둘레 %3d\\n\",\n               W[i], H[i], area(W[i], H[i]), perimeter(W[i], H[i]));\n    }\n    return 0;\n}", "py": "def area(w, h):\n    return w * h\n\ndef perimeter(w, h):\n    return 2 * (w + h)\n\nW = [5, 7, 10]\nH = [3, 7, 2]\nfor i in range(3):\n    print(f\"가로 {W[i]:2d} 세로 {H[i]:2d} -> \"\n          f\"넓이 {area(W[i], H[i]):3d}, 둘레 {perimeter(W[i], H[i]):3d}\")", "explain": "매개변수는 <b>순서대로</b> 전달된다. <code>area(5, 3)</code>은 w=5, h=3이 되므로 <b>순서를 바꾸면 의미가 달라진다</b>(넓이는 같아도 다른 함수에서는 치명적이다). 이 문제의 진짜 교훈은 <b>함수 하나는 한 가지 일만</b> 해야 한다는 원칙이다. 넓이와 둘레를 한 함수에 몰아넣으면 이름 짓기도 어렵고 재사용도 안 된다. 나누어 두면 필요한 것만 골라 쓸 수 있고, 함수 이름 자체가 <b>주석 역할</b>을 해서 코드가 저절로 읽힌다. 파이썬은 <code>area(h=3, w=5)</code>처럼 <b>이름으로 지정</b>할 수도 있지만 C에는 그 기능이 없다.", "points": ["인자는 <b>순서대로</b> 짝지어진다", "함수 하나 = 한 가지 일 (이름이 곧 설명이 되도록)", "파이썬은 <code>함수(이름=값)</code> 형태의 키워드 인자 지원"], "out": "가로  5 세로  3 -> 넓이  15, 둘레  16\n가로  7 세로  7 -> 넓이  49, 둘레  28\n가로 10 세로  2 -> 넓이  20, 둘레  24\n"}, {"no": 4, "title": "함수 선언(프로토타입)과 정의 순서", "tag": "프로토타입", "desc": "main 함수를 <b>맨 위에</b> 두고, 그 아래에 <code>square</code> 함수를 정의하여 1~5의 제곱을 출력하시오.", "hint": "C는 사용하기 전에 함수의 존재를 미리 알려 주어야 한다.", "c": "#include <stdio.h>\n\nint square(int n);   /* 함수 프로토타입 선언 */\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        printf(\"%d^2 = %2d\\n\", i, square(i));\n    }\n    return 0;\n}\n\nint square(int n) {  /* 실제 정의는 아래에 */\n    return n * n;\n}", "py": "def main():\n    for i in range(1, 6):\n        print(f\"{i}^2 = {square(i):2d}\")\n\ndef square(n):\n    return n * n\n\nmain()", "explain": "C 컴파일러는 소스를 <b>위에서 아래로</b> 읽으므로, 아직 만나지 않은 함수를 호출하면 오류가 난다. 그래서 <b>프로토타입</b>(선언)을 위쪽에 미리 적어 '이런 이름·매개변수·반환형의 함수가 뒤에 있다'고 알려 준다. 프로토타입 끝의 <b>세미콜론</b>을 빠뜨리지 않도록 주의하자. 파이썬은 조금 다르다. <code>def</code>는 실행 시점에 함수를 등록하므로, <b>호출이 실제로 일어나는 시점</b>에만 정의되어 있으면 된다. 위 코드에서 <code>main()</code> 호출이 맨 아래에 있기 때문에 그때는 <code>square</code>도 이미 등록되어 정상 동작한다. 만약 <code>main()</code>을 <code>def square</code> 위에서 호출하면 오류가 난다.", "points": ["C: 사용 전에 <b>프로토타입 선언</b> 필요 (세미콜론 필수)", "파이썬: 호출되는 <b>시점</b>에 정의되어 있으면 된다", "헤더 파일(.h)이 하는 일이 바로 프로토타입 모음"], "out": "1^2 =  1\n2^2 =  4\n3^2 =  9\n4^2 = 16\n5^2 = 25\n"}, {"no": 5, "title": "지역 변수의 유효 범위", "tag": "스코프", "desc": "함수 안에서 만든 변수 <code>x</code>와 main의 <code>x</code>가 <b>서로 다른 변수</b>임을 출력으로 확인하시오.", "hint": "같은 이름이어도 만들어진 곳이 다르면 다른 변수다.", "c": "#include <stdio.h>\n\nvoid func(void) {\n    int x = 100;\n    x = x + 1;\n    printf(\"  func 안의 x = %d\\n\", x);\n}\n\nint main(void) {\n    int x = 10;\n    printf(\"호출 전 main의 x = %d\\n\", x);\n    func();\n    printf(\"호출 후 main의 x = %d\\n\", x);\n    return 0;\n}", "py": "def func():\n    x = 100\n    x = x + 1\n    print(f\"  func 안의 x = {x}\")\n\nx = 10\nprint(f\"호출 전 main의 x = {x}\")\nfunc()\nprint(f\"호출 후 main의 x = {x}\")", "explain": "함수 안에서 만든 변수는 <b>지역 변수</b>로, 그 함수가 실행되는 동안에만 존재하고 끝나면 사라진다. 이름이 같아도 <b>사는 곳이 다르면 완전히 다른 변수</b>다. 그래서 func의 x를 101로 바꿔도 main의 x는 그대로 10이다. 이 성질 덕분에 여러 사람이 함수를 나눠 만들어도 변수 이름 충돌을 걱정하지 않아도 된다. 이것을 <b>스코프(유효 범위)</b>라 하며, 함수가 독립적인 부품이 될 수 있는 근본 이유다. C에서는 중괄호 블록 하나하나가 스코프를 만들고, 파이썬은 함수 단위로 스코프가 나뉜다.", "points": ["지역 변수는 함수 안에서만 살아 있다", "이름이 같아도 스코프가 다르면 다른 변수", "스코프가 있어서 함수를 독립 부품처럼 쓸 수 있다"], "out": "호출 전 main의 x = 10\n  func 안의 x = 101\n호출 후 main의 x = 10\n"}, {"no": 6, "title": "전역 변수 사용하기", "tag": "전역 변수 · global", "desc": "전역 변수 <code>count</code>를 두고, 함수를 호출할 때마다 1씩 증가시켜 총 호출 횟수를 출력하시오.", "hint": "파이썬은 함수 안에서 전역 변수를 고칠 때 global 선언이 필요하다.", "c": "#include <stdio.h>\n\nint count = 0;   /* 전역 변수 */\n\nvoid hello(void) {\n    count++;\n    printf(\"hello 호출 (%d번째)\\n\", count);\n}\n\nint main(void) {\n    hello();\n    hello();\n    hello();\n    printf(\"총 호출 횟수 = %d\\n\", count);\n    return 0;\n}", "py": "count = 0   # 전역 변수\n\ndef hello():\n    global count\n    count += 1\n    print(f\"hello 호출 ({count}번째)\")\n\nhello()\nhello()\nhello()\nprint(f\"총 호출 횟수 = {count}\")", "explain": "전역 변수는 모든 함수가 함께 쓰는 변수다. 파이썬에서 반드시 알아야 할 규칙이 있다. 함수 안에서 전역 변수를 <b>읽기만</b> 할 때는 그냥 쓰면 되지만, <b>값을 바꾸려면 <code>global</code> 선언이 필요</b>하다. 선언 없이 <code>count += 1</code>을 쓰면 파이썬은 이를 <b>새 지역 변수</b>로 보고 <code>UnboundLocalError</code>를 낸다. C는 이런 선언 없이 바로 수정된다. 다만 전역 변수는 <b>어디서 바뀌었는지 추적하기 어려워</b> 버그의 원인이 되기 쉽다. 되도록 매개변수와 반환값으로 값을 주고받고, 전역 변수는 꼭 필요할 때만 쓰는 것이 좋다.", "points": ["파이썬: 전역 변수를 <b>수정</b>하려면 <code>global</code> 선언 필수", "읽기만 할 때는 선언 없이 가능", "전역 변수는 추적이 어려워 최소한으로 사용"], "out": "hello 호출 (1번째)\nhello 호출 (2번째)\nhello 호출 (3번째)\n총 호출 횟수 = 3\n"}, {"no": 7, "title": "값 전달 — 원본은 바뀌지 않는다", "tag": "call by value", "desc": "정수를 받아 함수 안에서 10배로 만드는 함수를 호출한 뒤, <b>원본 변수가 그대로인지</b> 확인하시오.", "hint": "함수에 넘어가는 것은 값의 '복사본'이다.", "c": "#include <stdio.h>\n\nvoid tenTimes(int n) {\n    n = n * 10;\n    printf(\"  함수 안 n = %d\\n\", n);\n}\n\nint main(void) {\n    int a = 7;\n    printf(\"호출 전 a = %d\\n\", a);\n    tenTimes(a);\n    printf(\"호출 후 a = %d\\n\", a);\n    return 0;\n}", "py": "def ten_times(n):\n    n = n * 10\n    print(f\"  함수 안 n = {n}\")\n\na = 7\nprint(f\"호출 전 a = {a}\")\nten_times(a)\nprint(f\"호출 후 a = {a}\")", "explain": "함수에 정수를 넘기면 <b>값의 복사본</b>이 전달된다. 함수 안의 <code>n</code>은 원본 <code>a</code>와 <b>다른 상자</b>이므로, n을 아무리 고쳐도 a는 변하지 않는다. 이것을 <b>값에 의한 호출(call by value)</b>이라 한다. C의 기본 전달 방식이고, 파이썬도 정수·실수·문자열 같은 <b>바꿀 수 없는(immutable) 값</b>에 대해서는 결과가 같다. 그래서 함수가 계산 결과를 밖으로 전하는 정상적인 방법은 <b><code>return</code></b>이다. 다음 문제 8·10에서 보듯, 원본을 직접 바꾸려면 주소(포인터)를 넘기거나 리스트처럼 바꿀 수 있는 자료를 넘겨야 한다.", "points": ["기본 전달은 <b>값의 복사</b> — 원본은 안전하다", "결과를 밖으로 전하는 정상 경로는 <code>return</code>", "파이썬도 정수·문자열은 같은 결과 (immutable)"], "out": "호출 전 a = 7\n  함수 안 n = 70\n호출 후 a = 7\n"}, {"no": 8, "title": "두 값 교환하기 (원본까지 바꾸기)", "tag": "포인터 · 다중 반환", "desc": "a=10, b=20을 서로 바꾸시오. ① 값만 넘긴 경우와 ② 주소를 넘긴(또는 결과를 반환한) 경우의 차이를 함께 출력하시오.", "hint": "C는 주소를 넘겨 원본을 바꾸고, 파이썬은 두 값을 튜플로 반환한다.", "c": "#include <stdio.h>\n\nvoid swapValue(int x, int y) {\n    int t = x; x = y; y = t;\n}\n\nvoid swapPointer(int *x, int *y) {\n    int t = *x; *x = *y; *y = t;\n}\n\nint main(void) {\n    int a = 10, b = 20;\n    printf(\"처음      : a=%d b=%d\\n\", a, b);\n    swapValue(a, b);\n    printf(\"값 전달 후 : a=%d b=%d (변화 없음)\\n\", a, b);\n    swapPointer(&a, &b);\n    printf(\"주소 전달 후: a=%d b=%d (교환됨)\\n\", a, b);\n    return 0;\n}", "py": "def swap_value(x, y):\n    x, y = y, x\n\ndef swap_return(x, y):\n    return y, x\n\na, b = 10, 20\nprint(f\"처음      : a={a} b={b}\")\nswap_value(a, b)\nprint(f\"값 전달 후 : a={a} b={b} (변화 없음)\")\na, b = swap_return(a, b)\nprint(f\"주소 전달 후: a={a} b={b} (교환됨)\")", "explain": "값만 넘기면 함수 안에서 아무리 바꿔도 원본은 그대로다(문제 7). C에서 원본을 바꾸려면 <b>주소를 넘겨야</b> 한다. <code>&amp;a</code>는 'a의 주소', 매개변수 <code>int *x</code>는 '주소를 담는 변수', <code>*x</code>는 '그 주소에 있는 값'을 뜻한다. 이 세 기호의 역할을 구분하는 것이 포인터 학습의 첫 관문이다. 파이썬에는 포인터가 없으므로 <b>두 값을 함께 반환</b>하고 호출한 쪽에서 <code>a, b = swap_return(a, b)</code>로 다시 받는 방식을 쓴다. 목적은 같지만 수단이 다르다는 점을 대조해서 익혀 두자.", "points": ["C: <code>&amp;a</code>(주소) / <code>int *x</code>(주소 변수) / <code>*x</code>(그 값)", "파이썬: 포인터 대신 <b>여러 값 반환</b>으로 해결", "결과를 반드시 <code>a, b = ...</code>로 다시 받아야 반영된다"], "out": "처음      : a=10 b=20\n값 전달 후 : a=10 b=20 (변화 없음)\n주소 전달 후: a=20 b=10 (교환됨)\n"}, {"no": 9, "title": "배열을 함수에 넘기기", "tag": "배열 전달", "desc": "정수 배열과 크기를 받아 <b>합계</b>를 반환하는 함수와 <b>평균</b>을 반환하는 함수를 만들어 {17, 42, 8, 93, 55, 31}에 적용하시오.", "hint": "C는 배열의 크기 정보가 함께 넘어가지 않으므로 크기를 인자로 받아야 한다.", "c": "#include <stdio.h>\n\nint arraySum(int a[], int n) {\n    int s = 0;\n    for (int i = 0; i < n; i++) s += a[i];\n    return s;\n}\n\ndouble arrayAvg(int a[], int n) {\n    return (double)arraySum(a, n) / n;\n}\n\nint main(void) {\n    int a[6] = {17, 42, 8, 93, 55, 31};\n    int n = 6;\n    printf(\"합계 = %d\\n\", arraySum(a, n));\n    printf(\"평균 = %.2f\\n\", arrayAvg(a, n));\n    return 0;\n}", "py": "def array_sum(a):\n    s = 0\n    for x in a:\n        s += x\n    return s\n\ndef array_avg(a):\n    return array_sum(a) / len(a)\n\na = [17, 42, 8, 93, 55, 31]\nprint(f\"합계 = {array_sum(a)}\")\nprint(f\"평균 = {array_avg(a):.2f}\")", "explain": "C에서 배열을 함수에 넘기면 <b>첫 원소의 주소만</b> 전달된다. 그래서 함수 안에서는 <code>sizeof</code>로 크기를 알 수 없고, 반드시 <b>크기 <code>n</code>을 인자로 함께 넘겨야</b> 한다. 이것이 C 함수 원형에서 <code>(int a[], int n)</code> 형태가 항상 짝으로 등장하는 이유다. 파이썬 리스트는 자기 길이를 알고 있어 <code>len(a)</code>로 언제든 확인할 수 있으므로 인자가 하나면 된다. 또 하나 눈여겨볼 점은 <code>arrayAvg</code>가 <code>arraySum</code>을 <b>호출해서 재사용</b>한다는 것이다. 함수는 이렇게 다른 함수를 부품처럼 쓸 수 있다.", "points": ["C는 배열 크기가 함께 넘어가지 않는다 → <code>n</code>을 같이 전달", "파이썬 리스트는 <code>len()</code>으로 길이를 안다", "함수 안에서 다른 함수를 호출해 재사용한다"], "out": "합계 = 246\n평균 = 41.00\n"}, {"no": 10, "title": "함수 안에서 배열 수정하기", "tag": "참조 전달", "desc": "배열의 모든 원소를 2배로 만드는 함수 <code>doubleAll</code>을 만들고, 호출 후 <b>원본 배열이 실제로 바뀌었는지</b> 확인하시오.", "hint": "정수와 달리 배열은 함수 안에서 고치면 원본이 바뀐다.", "c": "#include <stdio.h>\n\nvoid doubleAll(int a[], int n) {\n    for (int i = 0; i < n; i++) a[i] = a[i] * 2;\n}\n\nvoid show(int a[], int n) {\n    for (int i = 0; i < n; i++) printf(\"%d \", a[i]);\n    printf(\"\\n\");\n}\n\nint main(void) {\n    int a[5] = {1, 2, 3, 4, 5};\n    printf(\"호출 전 : \"); show(a, 5);\n    doubleAll(a, 5);\n    printf(\"호출 후 : \"); show(a, 5);\n    return 0;\n}", "py": "def double_all(a):\n    for i in range(len(a)):\n        a[i] = a[i] * 2\n\ndef show(a):\n    for x in a:\n        print(x, end=\" \")\n    print()\n\na = [1, 2, 3, 4, 5]\nprint(\"호출 전 : \", end=\"\"); show(a)\ndouble_all(a)\nprint(\"호출 후 : \", end=\"\"); show(a)", "explain": "문제 7에서는 정수를 넘겼더니 원본이 안 바뀌었는데, 여기서는 <b>배열은 바뀐다</b>. 이유는 명확하다. C에서 배열 이름은 <b>주소</b>이므로 함수는 원본 메모리를 직접 건드린다. 파이썬 리스트도 <b>바꿀 수 있는(mutable) 객체</b>라 함수 안의 수정이 원본에 반영된다. 이 차이를 모르면 '왜 어떤 건 바뀌고 어떤 건 안 바뀌지?' 하고 혼란에 빠진다. 정리하면 <b>정수·실수·문자열은 안 바뀌고, 배열·리스트는 바뀐다</b>. 원본을 지키고 싶다면 함수 안에서 <b>복사본을 만들어</b> 작업해야 한다(배열 편 9번 참고). 반대로 <code>a = [x*2 for x in a]</code>처럼 <b>새 리스트를 대입</b>하면 원본은 바뀌지 않는다는 함정도 있다.", "points": ["정수는 안 바뀌고 <b>배열·리스트는 바뀐다</b>", "원본 보호가 필요하면 함수 안에서 복사본을 만든다", "파이썬에서 <code>a = 새리스트</code> 대입은 원본에 반영되지 않는다"], "out": "호출 전 : 1 2 3 4 5 \n호출 후 : 2 4 6 8 10 \n"}, {"no": 11, "title": "여러 값을 한 번에 반환하기", "tag": "다중 반환", "desc": "배열의 <b>최댓값과 최솟값을 동시에</b> 구해 돌려주는 함수를 만들어 {17, 42, 8, 93, 55, 31}에 적용하시오.", "hint": "C는 return이 하나뿐이므로 포인터로 결과를 내보낸다.", "c": "#include <stdio.h>\n\nvoid minMax(int a[], int n, int *mn, int *mx) {\n    *mn = a[0];\n    *mx = a[0];\n    for (int i = 1; i < n; i++) {\n        if (a[i] < *mn) *mn = a[i];\n        if (a[i] > *mx) *mx = a[i];\n    }\n}\n\nint main(void) {\n    int a[6] = {17, 42, 8, 93, 55, 31};\n    int lo, hi;\n    minMax(a, 6, &lo, &hi);\n    printf(\"최솟값 = %d\\n\", lo);\n    printf(\"최댓값 = %d\\n\", hi);\n    printf(\"차이   = %d\\n\", hi - lo);\n    return 0;\n}", "py": "def min_max(a):\n    mn = mx = a[0]\n    for x in a[1:]:\n        if x < mn:\n            mn = x\n        if x > mx:\n            mx = x\n    return mn, mx\n\na = [17, 42, 8, 93, 55, 31]\nlo, hi = min_max(a)\nprint(f\"최솟값 = {lo}\")\nprint(f\"최댓값 = {hi}\")\nprint(f\"차이   = {hi - lo}\")", "explain": "C의 <code>return</code>은 <b>값을 하나만</b> 돌려줄 수 있다. 그래서 결과가 여러 개면 <b>결과를 담을 변수의 주소를 인자로 받아</b> 그 안에 써 주는 방식(출력 매개변수)을 쓴다. 함수 안에서 <code>*mn = ...</code>이라고 쓰는 것이 바로 '그 주소가 가리키는 곳에 값을 넣어라'는 뜻이다. 파이썬은 <code>return mn, mx</code>로 <b>여러 값을 튜플로 묶어</b> 돌려주고, 받는 쪽에서 <code>lo, hi = ...</code>로 풀어 받는다. 훨씬 직관적이다. 참고로 최솟값과 최댓값을 <b>한 번의 순회에서 동시에</b> 구하면 배열을 두 번 도는 것보다 효율적이다.", "points": ["C: return은 하나 → <b>포인터 출력 매개변수</b>로 여러 결과 전달", "파이썬: <code>return a, b</code> → <code>x, y = 함수()</code>", "한 번의 순회에서 두 통계를 동시에 구하면 효율적"], "out": "최솟값 = 8\n최댓값 = 93\n차이   = 85\n"}, {"no": 12, "title": "최대공약수·최소공배수 함수", "tag": "함수 재사용", "desc": "최대공약수를 구하는 함수 <code>gcd</code>를 만들고, 이를 <b>이용해</b> 최소공배수 함수 <code>lcm</code>을 만들어 (48,180), (7,13), (100,75)에 적용하시오.", "hint": "lcm은 gcd를 호출해서 만든다. 같은 계산을 두 번 쓰지 않는다.", "c": "#include <stdio.h>\n\nint gcd(int a, int b) {\n    while (b != 0) {\n        int r = a % b;\n        a = b;\n        b = r;\n    }\n    return a;\n}\n\nint lcm(int a, int b) {\n    return a / gcd(a, b) * b;\n}\n\nint main(void) {\n    int X[3] = {48, 7, 100};\n    int Y[3] = {180, 13, 75};\n    for (int i = 0; i < 3; i++) {\n        printf(\"(%3d, %3d) gcd=%3d lcm=%5d\\n\",\n               X[i], Y[i], gcd(X[i], Y[i]), lcm(X[i], Y[i]));\n    }\n    return 0;\n}", "py": "def gcd(a, b):\n    while b != 0:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    return a // gcd(a, b) * b\n\nX = [48, 7, 100]\nY = [180, 13, 75]\nfor i in range(3):\n    print(f\"({X[i]:3d}, {Y[i]:3d}) gcd={gcd(X[i], Y[i]):3d} lcm={lcm(X[i], Y[i]):5d}\")", "explain": "함수의 진짜 힘은 <b>다른 함수를 부품으로 쓰는 것</b>에서 나온다. <code>lcm</code>은 유클리드 호제법을 다시 구현하지 않고 <code>gcd</code>를 호출한다. 나중에 gcd를 더 빠른 방식으로 고쳐도 lcm은 손댈 필요가 없다. 이것이 함수로 나누는 이유다. 계산 순서도 중요하다. <code>a * b / gcd</code>가 아니라 <b><code>a / gcd * b</code></b>로 <b>먼저 나눈 뒤 곱해야</b> 중간값이 커져 오버플로하는 것을 막는다. 파이썬은 정수 크기 제한이 없어 순서가 결과에 영향을 주지 않지만, C에서는 실제로 문제가 되므로 습관을 들여 두는 것이 좋다.", "points": ["함수가 다른 함수를 호출해 <b>중복 구현을 없앤다</b>", "LCM은 <code>a / gcd * b</code> 순서로 오버플로 방지", "부품 함수를 고치면 그것을 쓰는 함수는 자동으로 개선된다"], "out": "( 48, 180) gcd= 12 lcm=  720\n(  7,  13) gcd=  1 lcm=   91\n(100,  75) gcd= 25 lcm=  300\n"}, {"no": 13, "title": "소수 판별 함수와 활용", "tag": "판별 함수", "desc": "정수를 받아 소수면 1(True), 아니면 0(False)을 반환하는 함수 <code>isPrime</code>을 만들고, 이를 이용해 1~50의 소수를 모두 출력하고 개수도 세시오.", "hint": "판별과 출력을 분리한다. 함수는 판별만, main은 출력만.", "c": "#include <stdio.h>\n\nint isPrime(int n) {\n    if (n < 2) return 0;\n    for (int i = 2; i * i <= n; i++) {\n        if (n % i == 0) return 0;\n    }\n    return 1;\n}\n\nint main(void) {\n    int count = 0;\n    for (int n = 1; n <= 50; n++) {\n        if (isPrime(n)) {\n            printf(\"%d \", n);\n            count++;\n        }\n    }\n    printf(\"\\n1~50 소수 개수 = %d\\n\", count);\n    return 0;\n}", "py": "def is_prime(n):\n    if n < 2:\n        return False\n    i = 2\n    while i * i <= n:\n        if n % i == 0:\n            return False\n        i += 1\n    return True\n\ncount = 0\nfor n in range(1, 51):\n    if is_prime(n):\n        print(n, end=\" \")\n        count += 1\nprint(f\"\\n1~50 소수 개수 = {count}\")", "explain": "<b>판별 함수(predicate)</b>는 참/거짓을 돌려주는 함수로, 이름을 <code>is~</code>로 짓는 것이 관례다. 그러면 <code>if (isPrime(n))</code>이 영어 문장처럼 읽힌다. 이 문제의 핵심 기법은 <b>조건을 만족하지 않는 순간 즉시 <code>return 0</code></b>하는 것이다. 플래그 변수와 break를 쓰지 않아도 되어 코드가 훨씬 짧아진다. return이 함수를 곧바로 끝내기 때문이다(문제 2). 또한 판별 로직이 함수로 분리되어 있어서, 소수 개수 세기·소수 목록 만들기·쌍둥이 소수 찾기 등 <b>어떤 문제에도 그대로 재사용</b>할 수 있다. C는 참/거짓을 1/0으로, 파이썬은 True/False로 표현한다.", "points": ["판별 함수 이름은 <code>is~</code>로 (조건문이 문장처럼 읽힌다)", "조건 불만족 시 <b>즉시 return</b> → 플래그·break 불필요", "C는 1/0, 파이썬은 True/False"], "out": "2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 \n1~50 소수 개수 = 15\n"}, {"no": 14, "title": "팩토리얼 — 반복문 버전", "tag": "반복 함수", "desc": "n!을 반복문으로 계산하는 함수 <code>factIter</code>를 만들어 0!, 1!, 5!, 10!을 출력하시오.", "hint": "0! = 1이라는 약속을 처리해야 한다.", "c": "#include <stdio.h>\n\nlong long factIter(int n) {\n    long long result = 1;\n    for (int i = 1; i <= n; i++) {\n        result *= i;\n    }\n    return result;\n}\n\nint main(void) {\n    int t[4] = {0, 1, 5, 10};\n    for (int i = 0; i < 4; i++) {\n        printf(\"%2d! = %lld\\n\", t[i], factIter(t[i]));\n    }\n    return 0;\n}", "py": "def fact_iter(n):\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result\n\nfor t in [0, 1, 5, 10]:\n    print(f\"{t:2d}! = {fact_iter(t)}\")", "explain": "반복문 버전의 좋은 점은 <b>0!이 저절로 처리된다</b>는 것이다. n=0이면 반복문이 <b>한 번도 실행되지 않으므로</b> 초기값 1이 그대로 반환된다. 별도의 if문이 필요 없다. 곱셈 누적이므로 초기값은 반드시 <b>1</b>이어야 하고(0이면 결과가 항상 0), C에서는 13!부터 int 범위를 넘으므로 <code>long long</code>을 써야 한다. 다음 문제 15에서 같은 계산을 재귀로 구현해 비교할 텐데, 결과는 같아도 <b>동작 방식과 메모리 사용</b>이 전혀 다르다는 점을 미리 염두에 두자.", "points": ["n=0이면 반복이 0회 → 초기값 1이 그대로 정답", "곱셈 누적 초기값은 1", "C는 13! 이상 오버플로 → <code>long long</code>"], "out": " 0! = 1\n 1! = 1\n 5! = 120\n10! = 3628800\n"}, {"no": 15, "title": "팩토리얼 — 재귀 버전", "tag": "재귀 기초", "desc": "n!을 <b>재귀 호출</b>로 계산하는 함수 <code>factRec</code>를 만들어 0!, 1!, 5!, 10!을 출력하시오.", "hint": "n! = n × (n-1)! 이고, 0! = 1에서 멈춘다.", "c": "#include <stdio.h>\n\nlong long factRec(int n) {\n    if (n <= 1) return 1;          /* 종료 조건 */\n    return (long long)n * factRec(n - 1);\n}\n\nint main(void) {\n    int t[4] = {0, 1, 5, 10};\n    for (int i = 0; i < 4; i++) {\n        printf(\"%2d! = %lld\\n\", t[i], factRec(t[i]));\n    }\n    return 0;\n}", "py": "def fact_rec(n):\n    if n <= 1:\n        return 1          # 종료 조건\n    return n * fact_rec(n - 1)\n\nfor t in [0, 1, 5, 10]:\n    print(f\"{t:2d}! = {fact_rec(t)}\")", "explain": "<b>재귀</b>는 함수가 자기 자신을 호출하는 것이다. 재귀 함수를 만들 때는 항상 두 가지를 먼저 정한다. ① <b>종료 조건(base case)</b> — 여기서는 n이 1 이하일 때 1을 반환. ② <b>더 작은 문제로 줄이기</b> — <code>n * factRec(n-1)</code>. 종료 조건을 빠뜨리면 호출이 끝없이 쌓여 <b>스택 오버플로</b>로 프로그램이 죽는다. 재귀는 수식 <code>n! = n × (n-1)!</code>을 <b>거의 그대로 코드로 옮길 수 있어</b> 읽기 쉽다는 것이 최대 장점이다. 대신 호출마다 메모리가 쌓이므로 반복문보다 느리고 메모리를 더 쓴다. 파이썬은 기본 재귀 깊이 제한이 약 1000이라 그보다 깊어지면 오류가 난다.", "points": ["재귀 필수 요소: <b>종료 조건</b> + <b>더 작은 문제로 축소</b>", "종료 조건 누락 = 스택 오버플로", "수식을 그대로 옮길 수 있어 읽기 쉽지만 반복문보다 비용이 크다"], "out": " 0! = 1\n 1! = 1\n 5! = 120\n10! = 3628800\n"}, {"no": 16, "title": "재귀 호출 과정 추적하기", "tag": "재귀 · 호출 스택", "desc": "4!을 재귀로 계산하되, <b>호출될 때와 값을 반환할 때</b>를 들여쓰기로 표시하여 재귀가 어떻게 쌓이고 풀리는지 눈으로 확인하시오.", "hint": "호출 깊이를 매개변수로 함께 넘겨 들여쓰기 칸수를 조절한다.", "c": "#include <stdio.h>\n\nvoid indent(int depth) {\n    for (int i = 0; i < depth; i++) printf(\"  \");\n}\n\nlong long factTrace(int n, int depth) {\n    indent(depth);\n    printf(\"fact(%d) 호출\\n\", n);\n    if (n <= 1) {\n        indent(depth);\n        printf(\"<- 1 반환 (종료 조건)\\n\");\n        return 1;\n    }\n    long long r = n * factTrace(n - 1, depth + 1);\n    indent(depth);\n    printf(\"<- %d * %lld = %lld 반환\\n\", n, r / n, r);\n    return r;\n}\n\nint main(void) {\n    printf(\"결과 = %lld\\n\", factTrace(4, 0));\n    return 0;\n}", "py": "def indent(depth):\n    for i in range(depth):\n        print(\"  \", end=\"\")\n\ndef fact_trace(n, depth):\n    indent(depth)\n    print(f\"fact({n}) 호출\")\n    if n <= 1:\n        indent(depth)\n        print(\"<- 1 반환 (종료 조건)\")\n        return 1\n    r = n * fact_trace(n - 1, depth + 1)\n    indent(depth)\n    print(f\"<- {n} * {r // n} = {r} 반환\")\n    return r\n\nprint(f\"결과 = {fact_trace(4, 0)}\")", "explain": "재귀는 <b>먼저 끝까지 파고 들어갔다가(호출), 되돌아 나오면서 계산한다(반환)</b>. 출력을 보면 factTrace(4) → (3) → (2) → (1)까지 <b>모두 호출된 뒤에야</b> 비로소 1이 반환되고, 그때부터 2×1, 3×2, 4×6이 <b>역순으로</b> 계산되는 것이 보인다. 이 쌓였다 풀리는 구조를 <b>호출 스택</b>이라 한다. 각 호출은 자기만의 지역 변수 <code>n</code>을 갖고 있어 서로 섞이지 않는다(문제 5의 스코프). 재귀가 이해되지 않을 때는 이렇게 <b>들여쓰기로 찍어 보는 것</b>이 가장 확실한 학습 방법이다. 깊이(depth)를 매개변수로 넘기는 기법도 함께 익혀 두자.", "points": ["재귀는 <b>내려가며 호출, 올라오며 계산</b>", "각 호출은 독립된 지역 변수를 갖는다 (호출 스택)", "재귀가 헷갈리면 깊이를 넘겨 들여쓰기로 추적해 본다"], "out": "fact(4) 호출\n  fact(3) 호출\n    fact(2) 호출\n      fact(1) 호출\n      <- 1 반환 (종료 조건)\n    <- 2 * 1 = 2 반환\n  <- 3 * 2 = 6 반환\n<- 4 * 6 = 24 반환\n결과 = 24\n"}, {"no": 17, "title": "피보나치 — 재귀 vs 반복", "tag": "재귀 비용", "desc": "피보나치 수를 재귀와 반복 두 가지로 구현하고, n = 10, 15, 20, 25일 때 값과 <b>재귀 호출 횟수</b>를 비교하시오.", "hint": "전역 변수로 호출 횟수를 센다.", "c": "#include <stdio.h>\n\nlong long callCount = 0;\n\nlong long fibRec(int n) {\n    callCount++;\n    if (n <= 2) return 1;\n    return fibRec(n - 1) + fibRec(n - 2);\n}\n\nlong long fibIter(int n) {\n    long long a = 1, b = 1;\n    if (n <= 2) return 1;\n    for (int i = 3; i <= n; i++) {\n        long long c = a + b;\n        a = b;\n        b = c;\n    }\n    return b;\n}\n\nint main(void) {\n    int t[4] = {10, 15, 20, 25};\n    for (int i = 0; i < 4; i++) {\n        callCount = 0;\n        long long r = fibRec(t[i]);\n        printf(\"fib(%2d) = %6lld | 재귀 호출 %7lld회 | 반복 %2d회\\n\",\n               t[i], r, callCount, t[i] <= 2 ? 1 : t[i] - 2);\n        if (r != fibIter(t[i])) printf(\"불일치!\\n\");\n    }\n    return 0;\n}", "py": "call_count = 0\n\ndef fib_rec(n):\n    global call_count\n    call_count += 1\n    if n <= 2:\n        return 1\n    return fib_rec(n - 1) + fib_rec(n - 2)\n\ndef fib_iter(n):\n    a, b = 1, 1\n    if n <= 2:\n        return 1\n    for i in range(3, n + 1):\n        a, b = b, a + b\n    return b\n\nfor t in [10, 15, 20, 25]:\n    call_count = 0\n    r = fib_rec(t)\n    loops = 1 if t <= 2 else t - 2\n    print(f\"fib({t:2d}) = {r:6d} | 재귀 호출 {call_count:7d}회 | 반복 {loops:2d}회\")\n    if r != fib_iter(t):\n        print(\"불일치!\")", "explain": "결과는 같지만 <b>비용이 하늘과 땅 차이</b>다. n=25일 때 반복은 23번이면 끝나는데 재귀는 <b>15만 번 넘게</b> 호출된다. 이유는 <code>fibRec(n-1)</code>과 <code>fibRec(n-2)</code>가 <b>같은 값을 계속 중복 계산</b>하기 때문이다. 재귀 호출 횟수는 대략 <b>2ⁿ에 비례</b>해 폭발하고, n=50이면 사실상 계산이 끝나지 않는다. 그렇다고 재귀가 나쁜 것은 아니다. 여기서 배울 교훈은 <b>재귀 구조가 중복 계산을 낳는지 살펴야 한다</b>는 것이다. 이미 구한 값을 배열에 저장해 두는 <b>메모이제이션</b>을 더하면 재귀도 O(n)이 되며, 이것이 동적계획법(DP)의 출발점이다.", "points": ["같은 답이라도 <b>계산 비용</b>은 전혀 다를 수 있다", "재귀 피보나치는 중복 계산 때문에 O(2ⁿ)", "메모이제이션을 더하면 O(n) — 동적계획법의 시작"], "out": "fib(10) =     55 | 재귀 호출     109회 | 반복  8회\nfib(15) =    610 | 재귀 호출    1219회 | 반복 13회\nfib(20) =   6765 | 재귀 호출   13529회 | 반복 18회\nfib(25) =  75025 | 재귀 호출  150049회 | 반복 23회\n"}, {"no": 18, "title": "빠른 거듭제곱 (분할 정복)", "tag": "재귀 · 분할 정복", "desc": "aⁿ을 <b>절반씩 나누는 재귀</b>로 계산하는 함수를 만들고, 곱셈 횟수를 단순 반복(n번)과 비교하시오. (2¹⁰, 3⁵, 2²⁰, 7⁰)", "hint": "aⁿ = (a^(n/2))² 이고, n이 홀수면 a를 한 번 더 곱한다.", "c": "#include <stdio.h>\n\nlong long mulCount = 0;\n\nlong long powFast(long long a, int n) {\n    if (n == 0) return 1;\n    long long half = powFast(a, n / 2);\n    mulCount++;\n    long long r = half * half;\n    if (n % 2 == 1) {\n        mulCount++;\n        r = r * a;\n    }\n    return r;\n}\n\nint main(void) {\n    long long A[4] = {2, 3, 2, 7};\n    int N[4] = {10, 5, 20, 0};\n    for (int i = 0; i < 4; i++) {\n        mulCount = 0;\n        long long r = powFast(A[i], N[i]);\n        printf(\"%lld^%-2d = %8lld | 분할정복 곱셈 %2lld회 vs 단순반복 %2d회\\n\",\n               A[i], N[i], r, mulCount, N[i]);\n    }\n    return 0;\n}", "py": "mul_count = 0\n\ndef pow_fast(a, n):\n    global mul_count\n    if n == 0:\n        return 1\n    half = pow_fast(a, n // 2)\n    mul_count += 1\n    r = half * half\n    if n % 2 == 1:\n        mul_count += 1\n        r = r * a\n    return r\n\nA = [2, 3, 2, 7]\nN = [10, 5, 20, 0]\nfor i in range(4):\n    mul_count = 0\n    r = pow_fast(A[i], N[i])\n    print(f\"{A[i]}^{N[i]:<2d} = {r:8d} | 분할정복 곱셈 {mul_count:2d}회 vs 단순반복 {N[i]:2d}회\")", "explain": "<b>분할 정복</b>은 문제를 절반으로 쪼개어 푸는 전략이다. a²⁰을 구할 때 a를 20번 곱하는 대신, a¹⁰을 구해 <b>제곱 한 번</b>이면 된다. 그리고 a¹⁰은 다시 a⁵으로… 이렇게 지수가 매번 반으로 줄어드니 곱셈 횟수는 <b>O(log n)</b>이 된다. n이 홀수일 때 a를 한 번 더 곱하는 처리만 잊지 않으면 된다. 종료 조건은 <code>n == 0</code>일 때 1을 반환하는 것으로, 어떤 수의 0제곱은 1이라는 약속과 정확히 맞아떨어진다. 이 기법은 큰 수의 거듭제곱 나머지 연산(모듈러 거듭제곱)에 그대로 쓰여 암호학과 정보올림피아드의 필수 도구가 된다.", "points": ["지수를 절반씩 줄여 O(n) → <b>O(log n)</b>", "홀수 지수일 때 a를 한 번 더 곱하는 처리 필수", "종료 조건 <code>n == 0 → 1</code>"], "out": "2^10 =     1024 | 분할정복 곱셈  6회 vs 단순반복 10회\n3^5  =      243 | 분할정복 곱셈  5회 vs 단순반복  5회\n2^20 =  1048576 | 분할정복 곱셈  7회 vs 단순반복 20회\n7^0  =        1 | 분할정복 곱셈  0회 vs 단순반복  0회\n"}, {"no": 19, "title": "하노이탑", "tag": "재귀 응용", "desc": "원반 3개짜리 하노이탑의 이동 과정을 모두 출력하고, 원반이 1~5개일 때의 <b>최소 이동 횟수</b>도 함께 출력하시오.", "hint": "n개를 옮기려면 (n-1)개를 보조 기둥으로 옮기고, 가장 큰 것을 옮긴 뒤, (n-1)개를 다시 올린다.", "c": "#include <stdio.h>\n\nvoid hanoi(int n, char from, char to, char via) {\n    if (n == 1) {\n        printf(\"원반 1 : %c -> %c\\n\", from, to);\n        return;\n    }\n    hanoi(n - 1, from, via, to);\n    printf(\"원반 %d : %c -> %c\\n\", n, from, to);\n    hanoi(n - 1, via, to, from);\n}\n\nint hanoiCount(int n) {\n    if (n == 0) return 0;\n    return hanoiCount(n - 1) * 2 + 1;\n}\n\nint main(void) {\n    printf(\"[원반 3개 이동 과정]\\n\");\n    hanoi(3, 'A', 'C', 'B');\n    printf(\"[원반 개수별 최소 이동 횟수]\\n\");\n    for (int n = 1; n <= 5; n++) {\n        printf(\"n=%d -> %2d회\\n\", n, hanoiCount(n));\n    }\n    return 0;\n}", "py": "def hanoi(n, frm, to, via):\n    if n == 1:\n        print(f\"원반 1 : {frm} -> {to}\")\n        return\n    hanoi(n - 1, frm, via, to)\n    print(f\"원반 {n} : {frm} -> {to}\")\n    hanoi(n - 1, via, to, frm)\n\ndef hanoi_count(n):\n    if n == 0:\n        return 0\n    return hanoi_count(n - 1) * 2 + 1\n\nprint(\"[원반 3개 이동 과정]\")\nhanoi(3, \"A\", \"C\", \"B\")\nprint(\"[원반 개수별 최소 이동 횟수]\")\nfor n in range(1, 6):\n    print(f\"n={n} -> {hanoi_count(n):2d}회\")", "explain": "하노이탑은 <b>재귀로만 우아하게 풀리는</b> 대표 문제다. 핵심은 '전부 어떻게 옮기지?'를 고민하지 않고, <b>세 문장으로 줄이는 것</b>이다. ① 위의 n−1개를 보조 기둥으로 옮긴다 ② 가장 큰 원반을 목표 기둥으로 옮긴다 ③ n−1개를 목표 기둥으로 옮긴다. 이때 <b>세 기둥의 역할이 매 호출마다 바뀐다</b>는 점이 가장 중요하다. 첫 호출에서는 목표였던 기둥이 다음 호출에서는 보조가 된다. 인자 순서 <code>(from, to, via)</code>를 정확히 지켜야 한다. 이동 횟수는 <code>T(n) = 2T(n-1) + 1 = 2ⁿ − 1</code>이며, 원반이 하나 늘 때마다 <b>두 배 이상</b>이 된다.", "points": ["재귀 3단계: n−1개 이동 → 큰 원반 이동 → n−1개 이동", "기둥의 역할(출발·목표·보조)이 매 호출마다 뒤바뀐다", "최소 이동 횟수 = 2ⁿ − 1"], "out": "[원반 3개 이동 과정]\n원반 1 : A -> C\n원반 2 : A -> B\n원반 1 : C -> B\n원반 3 : A -> C\n원반 1 : B -> A\n원반 2 : B -> C\n원반 1 : A -> C\n[원반 개수별 최소 이동 횟수]\nn=1 ->  1회\nn=2 ->  3회\nn=3 ->  7회\nn=4 -> 15회\nn=5 -> 31회\n"}, {"no": 20, "title": "재귀로 배열의 합과 최댓값", "tag": "재귀 · 배열", "desc": "배열 {17, 42, 8, 93, 55, 31}의 합과 최댓값을 <b>반복문 없이 재귀로만</b> 구하시오.", "hint": "마지막 원소를 떼어 내고 나머지에 대해 같은 함수를 부른다.", "c": "#include <stdio.h>\n\nint sumRec(int a[], int n) {\n    if (n == 0) return 0;\n    return a[n - 1] + sumRec(a, n - 1);\n}\n\nint maxRec(int a[], int n) {\n    if (n == 1) return a[0];\n    int rest = maxRec(a, n - 1);\n    return (a[n - 1] > rest) ? a[n - 1] : rest;\n}\n\nint main(void) {\n    int a[6] = {17, 42, 8, 93, 55, 31};\n    printf(\"합계   = %d\\n\", sumRec(a, 6));\n    printf(\"최댓값 = %d\\n\", maxRec(a, 6));\n    return 0;\n}", "py": "def sum_rec(a, n):\n    if n == 0:\n        return 0\n    return a[n - 1] + sum_rec(a, n - 1)\n\ndef max_rec(a, n):\n    if n == 1:\n        return a[0]\n    rest = max_rec(a, n - 1)\n    return a[n - 1] if a[n - 1] > rest else rest\n\na = [17, 42, 8, 93, 55, 31]\nprint(f\"합계   = {sum_rec(a, 6)}\")\nprint(f\"최댓값 = {max_rec(a, 6)}\")", "explain": "반복문으로 하던 일을 재귀로 바꾸는 훈련이다. 발상은 언제나 같다. <b>'맨 뒤 하나 + 나머지 전체'</b>로 쪼개는 것. 합은 <code>a[n-1] + sumRec(a, n-1)</code>, 최댓값은 <code>a[n-1]</code>과 <code>maxRec(a, n-1)</code> 중 큰 값이다. 종료 조건이 서로 다르다는 점을 눈여겨보자. 합은 <b>원소가 0개면 0</b>이 자연스럽지만, 최댓값은 <b>0개면 정의할 수 없어</b> 원소가 1개일 때를 종료 조건으로 삼는다. 종료 조건은 문제의 성격에 따라 정해야 하며, 기계적으로 0을 쓰면 안 된다. 이런 문제에서는 반복문이 더 효율적이지만, 재귀적 사고 자체가 트리·그래프 탐색의 기초가 된다.", "points": ["재귀 발상: <b>맨 뒤 하나 + 나머지 전체</b>로 분해", "종료 조건은 문제에 맞게 (합은 n=0, 최댓값은 n=1)", "재귀적 사고는 트리·그래프 탐색으로 이어진다"], "out": "합계   = 246\n최댓값 = 93\n"}, {"no": 21, "title": "도형 출력 함수 만들기", "tag": "함수 분해", "desc": "문자를 원하는 개수만큼 출력하는 <code>printChar</code>를 만들고, 이를 <b>재사용해서</b> 직각삼각형과 피라미드를 그리는 함수를 각각 만드시오. (5줄)", "hint": "가장 작은 기능을 먼저 함수로 만들고, 그것을 조합한다.", "c": "#include <stdio.h>\n\nvoid printChar(char ch, int count) {\n    for (int i = 0; i < count; i++) putchar(ch);\n}\n\nvoid triangle(int n) {\n    for (int i = 1; i <= n; i++) {\n        printChar('*', i);\n        printf(\"\\n\");\n    }\n}\n\nvoid pyramid(int n) {\n    for (int i = 1; i <= n; i++) {\n        printChar(' ', n - i);\n        printChar('*', 2 * i - 1);\n        printf(\"\\n\");\n    }\n}\n\nint main(void) {\n    printf(\"[직각삼각형]\\n\");\n    triangle(5);\n    printf(\"[피라미드]\\n\");\n    pyramid(5);\n    return 0;\n}", "py": "def print_char(ch, count):\n    for i in range(count):\n        print(ch, end=\"\")\n\ndef triangle(n):\n    for i in range(1, n + 1):\n        print_char(\"*\", i)\n        print()\n\ndef pyramid(n):\n    for i in range(1, n + 1):\n        print_char(\" \", n - i)\n        print_char(\"*\", 2 * i - 1)\n        print()\n\nprint(\"[직각삼각형]\")\ntriangle(5)\nprint(\"[피라미드]\")\npyramid(5)", "explain": "<b>함수 분해</b>의 좋은 예다. '문자를 여러 개 출력한다'는 가장 작은 기능을 <code>printChar</code>로 먼저 만들면, 삼각형도 피라미드도 그 위에 <b>조립</b>하기만 하면 된다. 안쪽 반복문이 사라져 각 도형 함수가 <b>한 줄의 규칙</b>만 표현하게 되고, 그 덕분에 '공백 n−i개, 별 2i−1개'라는 <b>핵심 아이디어가 코드에 그대로 드러난다</b>. 별을 다른 문자로 바꾸고 싶다면 <code>triangle</code>에 문자 매개변수를 추가하면 되고, 마름모를 만들고 싶다면 pyramid를 두 번 부르면 된다. 이렇게 <b>작은 함수는 조합의 재료</b>가 된다.", "points": ["가장 작은 기능부터 함수로 만들고 <b>조합</b>한다", "중첩 반복이 함수 호출로 바뀌어 의도가 드러난다", "매개변수를 늘리면 그대로 변형 도형에 재사용된다"], "out": "[직각삼각형]\n*\n**\n***\n****\n*****\n[피라미드]\n    *\n   ***\n  *****\n *******\n*********\n"}, {"no": 22, "title": "함수로 만든 계산기", "tag": "함수 분업", "desc": "덧셈·뺄셈·곱셈·나눗셈 함수를 각각 만들고, 연산자에 따라 알맞은 함수를 호출하는 <code>calculate</code>를 작성하시오. 0으로 나누는 경우도 처리하시오.", "hint": "계산 함수는 계산만, 판단과 출력은 calculate가 담당한다.", "c": "#include <stdio.h>\n\ndouble add(double a, double b) { return a + b; }\ndouble sub(double a, double b) { return a - b; }\ndouble mul(double a, double b) { return a * b; }\ndouble divi(double a, double b) { return a / b; }\n\nvoid calculate(double a, char op, double b) {\n    printf(\"%.1f %c %.1f = \", a, op, b);\n    if (op == '+')      printf(\"%.2f\\n\", add(a, b));\n    else if (op == '-') printf(\"%.2f\\n\", sub(a, b));\n    else if (op == '*') printf(\"%.2f\\n\", mul(a, b));\n    else if (op == '/') {\n        if (b == 0) printf(\"0으로 나눌 수 없습니다\\n\");\n        else        printf(\"%.2f\\n\", divi(a, b));\n    }\n    else printf(\"지원하지 않는 연산\\n\");\n}\n\nint main(void) {\n    calculate(12, '+', 5);\n    calculate(12, '-', 5);\n    calculate(12, '*', 5);\n    calculate(12, '/', 5);\n    calculate(12, '/', 0);\n    calculate(12, '^', 5);\n    return 0;\n}", "py": "def add(a, b): return a + b\ndef sub(a, b): return a - b\ndef mul(a, b): return a * b\ndef divi(a, b): return a / b\n\ndef calculate(a, op, b):\n    print(f\"{a:.1f} {op} {b:.1f} = \", end=\"\")\n    if op == \"+\":\n        print(f\"{add(a, b):.2f}\")\n    elif op == \"-\":\n        print(f\"{sub(a, b):.2f}\")\n    elif op == \"*\":\n        print(f\"{mul(a, b):.2f}\")\n    elif op == \"/\":\n        if b == 0:\n            print(\"0으로 나눌 수 없습니다\")\n        else:\n            print(f\"{divi(a, b):.2f}\")\n    else:\n        print(\"지원하지 않는 연산\")\n\ncalculate(12, \"+\", 5)\ncalculate(12, \"-\", 5)\ncalculate(12, \"*\", 5)\ncalculate(12, \"/\", 5)\ncalculate(12, \"/\", 0)\ncalculate(12, \"^\", 5)", "explain": "<b>역할 분담</b>이 이 문제의 주제다. <code>add</code> 같은 계산 함수는 <b>계산만</b> 하고 출력하지 않는다. 그래야 결과를 다른 계산에 이어 쓸 수 있다. 판단(어떤 연산인가, 0으로 나누는가)과 출력은 <code>calculate</code>가 맡는다. 이렇게 <b>계산 · 판단 · 출력</b>을 분리해 두면 나중에 화면 대신 파일에 저장하도록 바꿔도 계산 함수는 손댈 필요가 없다. 0으로 나누는 검사를 <b>나눗셈 함수 안이 아니라 호출 전에</b> 두는 것도 의도적이다. 계산 함수는 '올바른 입력이 온다'고 가정하고 순수하게 계산만 하게 두는 편이 재사용에 유리하다.", "points": ["계산 함수는 <b>계산만</b>, 출력은 호출한 쪽이 담당", "역할이 분리되면 출력 방식이 바뀌어도 계산 함수는 그대로", "다음 단계는 함수 포인터로 분기 자체를 없애는 것 (문제 27)"], "out": "12.0 + 5.0 = 17.00\n12.0 - 5.0 = 7.00\n12.0 * 5.0 = 60.00\n12.0 / 5.0 = 2.40\n12.0 / 0.0 = 0으로 나눌 수 없습니다\n12.0 ^ 5.0 = 지원하지 않는 연산\n"}, {"no": 23, "title": "정렬 프로그램을 함수로 나누기", "tag": "모듈화", "desc": "배열 출력 함수 <code>printArray</code>, 버블 정렬 함수 <code>bubbleSort</code>, 정렬 여부 확인 함수 <code>isSorted</code>를 만들어 {5, 2, 9, 1, 7, 3}을 처리하시오.", "hint": "정렬 전후에 같은 출력 함수를 재사용한다.", "c": "#include <stdio.h>\n\nvoid printArray(const char *tag, int a[], int n) {\n    printf(\"%s\", tag);\n    for (int i = 0; i < n; i++) printf(\"%d \", a[i]);\n    printf(\"\\n\");\n}\n\nint isSorted(int a[], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        if (a[i] > a[i + 1]) return 0;\n    }\n    return 1;\n}\n\nvoid bubbleSort(int a[], int n) {\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - 1 - i; j++) {\n            if (a[j] > a[j + 1]) {\n                int t = a[j]; a[j] = a[j + 1]; a[j + 1] = t;\n            }\n        }\n    }\n}\n\nint main(void) {\n    int a[6] = {5, 2, 9, 1, 7, 3};\n    printArray(\"정렬 전 : \", a, 6);\n    printf(\"정렬 여부 : %s\\n\", isSorted(a, 6) ? \"정렬됨\" : \"정렬 안 됨\");\n    bubbleSort(a, 6);\n    printArray(\"정렬 후 : \", a, 6);\n    printf(\"정렬 여부 : %s\\n\", isSorted(a, 6) ? \"정렬됨\" : \"정렬 안 됨\");\n    return 0;\n}", "py": "def print_array(tag, a):\n    print(tag, end=\"\")\n    for x in a:\n        print(x, end=\" \")\n    print()\n\ndef is_sorted(a):\n    for i in range(len(a) - 1):\n        if a[i] > a[i + 1]:\n            return False\n    return True\n\ndef bubble_sort(a):\n    n = len(a)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            if a[j] > a[j + 1]:\n                a[j], a[j + 1] = a[j + 1], a[j]\n\na = [5, 2, 9, 1, 7, 3]\nprint_array(\"정렬 전 : \", a)\nprint(\"정렬 여부 : \" + (\"정렬됨\" if is_sorted(a) else \"정렬 안 됨\"))\nbubble_sort(a)\nprint_array(\"정렬 후 : \", a)\nprint(\"정렬 여부 : \" + (\"정렬됨\" if is_sorted(a) else \"정렬 안 됨\"))", "explain": "프로그램을 <b>기능 단위로 나누는(모듈화)</b> 연습이다. 출력 함수 하나를 만들어 두니 정렬 전후에 <b>같은 함수를 재사용</b>할 수 있고, 출력 형식을 바꾸려면 그 함수 한 곳만 고치면 된다. <code>bubbleSort</code>가 <b>원본 배열을 직접 바꾼다</b>는 점도 확인하자(문제 10). 그래서 반환값이 없다. <code>isSorted</code>는 검증용 함수로, 정렬 결과가 맞는지 <b>스스로 확인</b>하는 습관을 길러 준다. 실제 개발에서는 이런 검증 함수를 만들어 두고 자동으로 테스트한다. 참고로 C의 <code>const char *tag</code>는 '이 문자열은 함수 안에서 바꾸지 않겠다'는 <b>약속</b>이다.", "points": ["기능별로 함수를 나누면 <b>재사용과 수정</b>이 쉬워진다", "정렬 함수는 원본을 바꾸므로 반환값이 필요 없다", "결과를 검증하는 함수를 함께 만드는 습관"], "out": "정렬 전 : 5 2 9 1 7 3 \n정렬 여부 : 정렬 안 됨\n정렬 후 : 1 2 3 5 7 9 \n정렬 여부 : 정렬됨\n"}, {"no": 24, "title": "이진 탐색 함수", "tag": "탐색 함수", "desc": "정렬된 배열에서 값을 찾아 인덱스를 반환하고, 없으면 −1을 반환하는 함수 <code>binarySearch</code>를 만들어 {5,12,19,23,37,45,58,66,79,88}에서 37, 5, 88, 50을 찾으시오.", "hint": "'찾지 못했다'를 반환값으로 어떻게 표현할지 정한다.", "c": "#include <stdio.h>\n\nint binarySearch(int a[], int n, int target) {\n    int low = 0, high = n - 1;\n    while (low <= high) {\n        int mid = (low + high) / 2;\n        if (a[mid] == target) return mid;\n        else if (a[mid] < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}\n\nint main(void) {\n    int a[10] = {5, 12, 19, 23, 37, 45, 58, 66, 79, 88};\n    int t[4] = {37, 5, 88, 50};\n    for (int i = 0; i < 4; i++) {\n        int pos = binarySearch(a, 10, t[i]);\n        if (pos >= 0) printf(\"%2d -> 인덱스 %d\\n\", t[i], pos);\n        else          printf(\"%2d -> 없음\\n\", t[i]);\n    }\n    return 0;\n}", "py": "def binary_search(a, target):\n    low, high = 0, len(a) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if a[mid] == target:\n            return mid\n        elif a[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1\n\na = [5, 12, 19, 23, 37, 45, 58, 66, 79, 88]\nfor t in [37, 5, 88, 50]:\n    pos = binary_search(a, t)\n    if pos >= 0:\n        print(f\"{t:2d} -> 인덱스 {pos}\")\n    else:\n        print(f\"{t:2d} -> 없음\")", "explain": "탐색 알고리즘을 <b>함수로 감싸면</b> 호출하는 쪽은 내부 구현을 전혀 몰라도 된다. 나중에 이진 탐색을 다른 방식으로 바꿔도 <code>binarySearch(a, n, x)</code>라는 <b>사용법(인터페이스)</b>만 같으면 호출 코드는 그대로다. 이것이 함수의 핵심 가치인 <b>추상화</b>다. 설계에서 중요한 결정은 <b>'없음'을 어떻게 알릴 것인가</b>이다. 인덱스는 0부터 시작하므로 0을 쓸 수 없고, 유효하지 않은 <b>−1</b>을 관례적으로 쓴다. 값을 찾으면 <code>return mid</code>로 <b>즉시 함수를 끝내는</b> 것도 눈여겨보자. break와 플래그 변수가 필요 없어진다(문제 13과 같은 기법).", "points": ["함수는 <b>사용법만 알면 되는</b> 추상화 도구", "'없음'은 관례적으로 −1로 반환", "찾는 즉시 <code>return</code> → 플래그·break 불필요"], "out": "37 -> 인덱스 4\n 5 -> 인덱스 0\n88 -> 인덱스 9\n50 -> 없음\n"}, {"no": 25, "title": "통계 함수 (평균·분산·표준편차)", "tag": "수학 함수 · 조합", "desc": "배열 {2, 4, 4, 4, 5, 5, 7, 9}에 대해 평균·분산·표준편차를 각각 함수로 구현하고, 표준편차는 분산 함수를 <b>재사용</b>하여 구하시오.", "hint": "분산 = (각 값 − 평균)²의 평균. 제곱근 함수가 필요하다.", "c": "#include <stdio.h>\n#include <math.h>\n\ndouble mean(int a[], int n) {\n    double s = 0;\n    for (int i = 0; i < n; i++) s += a[i];\n    return s / n;\n}\n\ndouble variance(int a[], int n) {\n    double m = mean(a, n);\n    double s = 0;\n    for (int i = 0; i < n; i++) {\n        double d = a[i] - m;\n        s += d * d;\n    }\n    return s / n;\n}\n\ndouble stddev(int a[], int n) {\n    return sqrt(variance(a, n));\n}\n\nint main(void) {\n    int a[8] = {2, 4, 4, 4, 5, 5, 7, 9};\n    int n = 8;\n    printf(\"평균     = %.4f\\n\", mean(a, n));\n    printf(\"분산     = %.4f\\n\", variance(a, n));\n    printf(\"표준편차 = %.4f\\n\", stddev(a, n));\n    return 0;\n}", "py": "import math\n\ndef mean(a):\n    s = 0\n    for x in a:\n        s += x\n    return s / len(a)\n\ndef variance(a):\n    m = mean(a)\n    s = 0\n    for x in a:\n        d = x - m\n        s += d * d\n    return s / len(a)\n\ndef stddev(a):\n    return math.sqrt(variance(a))\n\na = [2, 4, 4, 4, 5, 5, 7, 9]\nprint(f\"평균     = {mean(a):.4f}\")\nprint(f\"분산     = {variance(a):.4f}\")\nprint(f\"표준편차 = {stddev(a):.4f}\")", "explain": "함수가 <b>계단처럼 쌓이는</b> 구조를 보여 준다. <code>stddev</code>는 <code>variance</code>를 부르고, <code>variance</code>는 다시 <code>mean</code>을 부른다. 각 함수는 자기 일 하나만 하고 아래층에 맡긴다. 이렇게 만들면 분산 공식을 표본분산(n−1로 나눔)으로 바꿀 때 <b><code>variance</code> 한 곳만</b> 고치면 표준편차까지 자동으로 반영된다. C에서 <code>sqrt</code>를 쓰려면 <code>#include &lt;math.h&gt;</code>가 필요하고, 컴파일할 때 <b><code>-lm</code> 옵션</b>으로 수학 라이브러리를 연결해야 한다(<code>gcc a.c -o a -lm</code>). 파이썬은 <code>import math</code> 한 줄이면 된다. 실수 계산이므로 반환형은 <code>double</code>이어야 한다.", "points": ["함수가 함수를 부르는 <b>계층 구조</b> — 수정은 한 곳만", "C: <code>math.h</code> + 컴파일 시 <code>-lm</code> 옵션 필요", "정수 배열이어도 통계 함수의 반환형은 실수"], "out": "평균     = 5.0000\n분산     = 4.0000\n표준편차 = 2.0000\n"}, {"no": 26, "title": "호출 횟수를 기억하는 함수", "tag": "static · 함수 속성", "desc": "자신이 몇 번 호출되었는지 <b>스스로 기억하는</b> 함수 <code>counter</code>를 만들어 5번 호출하고, 일반 지역 변수를 쓴 함수와 결과를 비교하시오.", "hint": "C는 static 지역 변수, 파이썬은 함수에 붙인 속성을 이용한다.", "c": "#include <stdio.h>\n\nint counter(void) {\n    static int c = 0;   /* 함수가 끝나도 사라지지 않는다 */\n    c++;\n    return c;\n}\n\nint normalCounter(void) {\n    int c = 0;          /* 호출할 때마다 새로 만들어진다 */\n    c++;\n    return c;\n}\n\nint main(void) {\n    for (int i = 1; i <= 5; i++) {\n        printf(\"%d번째 호출 : static = %d, 일반 = %d\\n\",\n               i, counter(), normalCounter());\n    }\n    return 0;\n}", "py": "def counter():\n    counter.c += 1      # 함수에 붙여 둔 값은 사라지지 않는다\n    return counter.c\ncounter.c = 0\n\ndef normal_counter():\n    c = 0               # 호출할 때마다 새로 만들어진다\n    c += 1\n    return c\n\nfor i in range(1, 6):\n    print(f\"{i}번째 호출 : static = {counter()}, 일반 = {normal_counter()}\")", "explain": "보통 지역 변수는 함수가 끝나면 사라지므로 <code>normalCounter</code>는 언제 불러도 1만 돌려준다. C의 <b><code>static</code> 지역 변수</b>는 다르다. <b>초기화는 딱 한 번</b>만 되고, 함수가 끝나도 값이 그대로 남아 다음 호출에서 이어진다. 전역 변수처럼 값은 유지되지만 <b>이름은 그 함수 안에서만 보이므로</b>, 전역 변수보다 안전하다. 파이썬에는 static이 없어 함수도 객체라는 성질을 이용해 <code>counter.c</code>처럼 <b>함수에 값을 붙여</b> 쓰거나 전역 변수(문제 6)를 쓴다. 이 기법은 호출 횟수 세기, 캐시 저장, 초기화 1회 실행 등에 유용하다.", "points": ["<code>static</code> 지역 변수는 초기화 1회 + 값 유지", "전역 변수와 달리 <b>이름은 함수 안에만</b> 보여 더 안전", "파이썬은 함수 속성(<code>함수.변수</code>)이나 global로 대체"], "out": "1번째 호출 : static = 1, 일반 = 1\n2번째 호출 : static = 2, 일반 = 1\n3번째 호출 : static = 3, 일반 = 1\n4번째 호출 : static = 4, 일반 = 1\n5번째 호출 : static = 5, 일반 = 1\n"}, {"no": 27, "title": "함수를 인자로 넘기기", "tag": "함수 포인터 · 고차 함수", "desc": "두 수와 <b>연산 함수 자체</b>를 받아 실행하는 <code>apply</code>를 만들고, 배열의 모든 원소에 주어진 함수를 적용하는 <code>applyAll</code>도 만드시오.", "hint": "C는 함수 포인터, 파이썬은 함수 이름을 그대로 넘긴다.", "c": "#include <stdio.h>\n\nint add(int a, int b) { return a + b; }\nint mul(int a, int b) { return a * b; }\nint square(int x) { return x * x; }\nint twice(int x) { return x * 2; }\n\nint apply(int (*f)(int, int), int a, int b) {\n    return f(a, b);\n}\n\nvoid applyAll(int (*f)(int), int a[], int n) {\n    printf(\"결과 : \");\n    for (int i = 0; i < n; i++) printf(\"%d \", f(a[i]));\n    printf(\"\\n\");\n}\n\nint main(void) {\n    printf(\"apply(add, 3, 4) = %d\\n\", apply(add, 3, 4));\n    printf(\"apply(mul, 3, 4) = %d\\n\", apply(mul, 3, 4));\n    int a[5] = {1, 2, 3, 4, 5};\n    printf(\"[제곱] \"); applyAll(square, a, 5);\n    printf(\"[2배 ] \"); applyAll(twice, a, 5);\n    return 0;\n}", "py": "def add(a, b): return a + b\ndef mul(a, b): return a * b\ndef square(x): return x * x\ndef twice(x): return x * 2\n\ndef apply(f, a, b):\n    return f(a, b)\n\ndef apply_all(f, a):\n    print(\"결과 : \", end=\"\")\n    for x in a:\n        print(f(x), end=\" \")\n    print()\n\nprint(f\"apply(add, 3, 4) = {apply(add, 3, 4)}\")\nprint(f\"apply(mul, 3, 4) = {apply(mul, 3, 4)}\")\na = [1, 2, 3, 4, 5]\nprint(\"[제곱] \", end=\"\"); apply_all(square, a)\nprint(\"[2배 ] \", end=\"\"); apply_all(twice, a)", "explain": "함수도 <b>값처럼 주고받을 수 있다</b>. 파이썬은 함수 이름을 <b>괄호 없이</b> 넘기면 된다. <code>square</code>는 함수 자체, <code>square(3)</code>은 호출 결과라는 차이가 결정적이다. C는 <b>함수 포인터</b> 문법 <code>int (*f)(int, int)</code>를 쓴다. '<code>int</code> 두 개를 받아 <code>int</code>를 반환하는 함수를 가리키는 포인터 f'라는 뜻으로, <b>괄호 위치</b>가 중요하다. 이 기법 덕분에 <code>applyAll</code>은 <b>무슨 계산을 할지 몰라도</b> '배열을 돌며 함수를 적용한다'는 뼈대만 담을 수 있다. 새 연산이 필요하면 함수만 하나 더 만들면 되고 applyAll은 손댈 필요가 없다. 정렬 함수에 비교 기준을 넘기는 <code>qsort</code>, 파이썬의 <code>map</code>·<code>sorted(key=...)</code>가 모두 이 원리다.", "points": ["함수 이름만 쓰면 <b>함수 자체</b>, 괄호를 붙이면 호출", "C 함수 포인터: <code>반환형 (*이름)(매개변수형)</code>", "뼈대와 세부 동작을 분리 → <code>qsort</code>, <code>map</code>, <code>sorted(key=)</code>의 원리"], "out": "apply(add, 3, 4) = 7\napply(mul, 3, 4) = 12\n[제곱] 결과 : 1 4 9 16 25 \n[2배 ] 결과 : 2 4 6 8 10 \n"}, {"no": 28, "title": "기본값이 있는 매개변수", "tag": "기본 인자", "desc": "이름과 인사말을 받아 인사하는 함수를 만들되, 인사말을 생략하면 \"안녕하세요\"가 되도록 하시오. (파이썬은 기본 인자, C는 대안 방식)", "hint": "C에는 기본값 문법이 없다. 인자를 다 받는 함수와, 그것을 부르는 짧은 함수를 만든다.", "c": "#include <stdio.h>\n\nvoid greetFull(const char *name, const char *word) {\n    printf(\"%s님, %s!\\n\", name, word);\n}\n\nvoid greet(const char *name) {          /* 기본값 역할 */\n    greetFull(name, \"안녕하세요\");\n}\n\nint main(void) {\n    greet(\"김민준\");\n    greet(\"이서연\");\n    greetFull(\"박지호\", \"반갑습니다\");\n    greetFull(\"최유진\", \"환영합니다\");\n    return 0;\n}", "py": "def greet(name, word=\"안녕하세요\"):\n    print(f\"{name}님, {word}!\")\n\ngreet(\"김민준\")\ngreet(\"이서연\")\ngreet(\"박지호\", \"반갑습니다\")\ngreet(\"최유진\", \"환영합니다\")", "explain": "파이썬은 매개변수에 <b>기본값</b>을 줄 수 있어, 생략하면 그 값이 자동으로 쓰인다. 규칙이 하나 있는데, <b>기본값이 있는 매개변수는 반드시 뒤쪽에</b> 와야 한다. <code>def f(a=1, b)</code>는 문법 오류다. C에는 기본 인자도 함수 오버로딩도 없으므로, <b>인자를 모두 받는 함수</b>를 만들고 <b>짧은 이름의 함수가 기본값을 채워 호출</b>하는 방식으로 흉내 낸다. 실제 C 라이브러리에서 자주 보이는 설계다. 주의할 점 하나. 파이썬에서 기본값으로 <b>리스트 같은 바꿀 수 있는 값</b>을 주면(<code>def f(a=[])</code>) 호출 사이에 값이 공유되어 예상 밖의 버그가 생긴다.", "points": ["파이썬: 기본값 매개변수는 <b>뒤쪽에</b> 배치", "C: 전체 인자 함수 + 기본값을 채워 넘기는 함수로 대체", "파이썬에서 기본값에 리스트를 쓰면 호출 간 공유 버그 발생"], "out": "김민준님, 안녕하세요!\n이서연님, 안녕하세요!\n박지호님, 반갑습니다!\n최유진님, 환영합니다!\n"}, {"no": 29, "title": "인자 개수가 정해지지 않은 함수", "tag": "가변 인자", "desc": "인자를 몇 개 받든 모두 더해 반환하는 함수 <code>sumAll</code>을 만들어 (1,2,3), (10,20,30,40,50), 인자 없음의 경우를 각각 출력하시오.", "hint": "C는 stdarg.h를 쓰며 개수를 먼저 받아야 한다. 파이썬은 *args를 쓴다.", "c": "#include <stdio.h>\n#include <stdarg.h>\n\nint sumAll(int count, ...) {\n    va_list ap;\n    va_start(ap, count);\n    int s = 0;\n    for (int i = 0; i < count; i++) {\n        s += va_arg(ap, int);\n    }\n    va_end(ap);\n    return s;\n}\n\nint main(void) {\n    printf(\"sumAll(1, 2, 3) = %d\\n\", sumAll(3, 1, 2, 3));\n    printf(\"sumAll(10, 20, 30, 40, 50) = %d\\n\", sumAll(5, 10, 20, 30, 40, 50));\n    printf(\"sumAll() = %d\\n\", sumAll(0));\n    return 0;\n}", "py": "def sum_all(*nums):\n    s = 0\n    for x in nums:\n        s += x\n    return s\n\nprint(f\"sumAll(1, 2, 3) = {sum_all(1, 2, 3)}\")\nprint(f\"sumAll(10, 20, 30, 40, 50) = {sum_all(10, 20, 30, 40, 50)}\")\nprint(f\"sumAll() = {sum_all()}\")", "explain": "우리가 늘 쓰는 <code>printf</code>가 바로 가변 인자 함수다. 그래서 인자를 몇 개 넘겨도 동작한다. C에서는 <code>&lt;stdarg.h&gt;</code>의 세 도구를 쓴다. <code>va_start</code>로 시작하고, <code>va_arg</code>로 하나씩 꺼내고, <code>va_end</code>로 마무리한다. 결정적인 제약은 <b>C는 인자가 몇 개인지 스스로 알 수 없다</b>는 것이다. 그래서 개수를 <b>첫 인자로 직접 알려 줘야</b> 하고, 이 숫자가 틀리면 엉뚱한 메모리를 읽는다(printf에서 서식 개수와 인자 개수가 안 맞을 때 이상한 값이 나오는 이유다). 파이썬의 <code>*nums</code>는 넘어온 인자를 <b>튜플로 묶어</b> 주므로 개수를 알려 줄 필요도, 오류 위험도 없다.", "points": ["<code>printf</code>가 대표적인 가변 인자 함수", "C: <code>va_start</code> → <code>va_arg</code> → <code>va_end</code>, <b>개수를 직접 넘겨야</b> 안전", "파이썬 <code>*args</code>는 인자를 튜플로 묶어 준다"], "out": "sumAll(1, 2, 3) = 6\nsumAll(10, 20, 30, 40, 50) = 150\nsumAll() = 0\n"}, {"no": 30, "title": "성적 처리 프로그램 (함수로 완성)", "tag": "종합", "desc": "학생 4명의 국·영·수 점수를 함수로 나누어 처리하시오. ① 총점 ② 평균 ③ 등급 판정 ④ 학생 한 명 출력 ⑤ 과목별 평균 — 각각을 <b>독립 함수</b>로 만들고 조합하시오.<br>김민준(85,90,78) 이서연(92,88,95) 박지호(70,65,80) 최유진(88,94,91)", "hint": "함수 하나가 한 가지 일만 하도록 나누고, main은 조합만 담당하게 한다.", "c": "#include <stdio.h>\n\nint total(int s[], int n) {\n    int t = 0;\n    for (int i = 0; i < n; i++) t += s[i];\n    return t;\n}\n\ndouble average(int s[], int n) {\n    return (double)total(s, n) / n;\n}\n\nchar grade(double avg) {\n    if (avg >= 90) return 'A';\n    if (avg >= 80) return 'B';\n    if (avg >= 70) return 'C';\n    if (avg >= 60) return 'D';\n    return 'F';\n}\n\nvoid printStudent(const char *name, int s[], int n) {\n    double avg = average(s, n);\n    printf(\"%s 총점 %3d 평균 %5.1f 등급 %c\\n\",\n           name, total(s, n), avg, grade(avg));\n}\n\ndouble subjectAvg(int s[][3], int rows, int col) {\n    int sum = 0;\n    for (int i = 0; i < rows; i++) sum += s[i][col];\n    return (double)sum / rows;\n}\n\nint main(void) {\n    const char *name[4] = {\"김민준\", \"이서연\", \"박지호\", \"최유진\"};\n    int s[4][3] = {{85,90,78},{92,88,95},{70,65,80},{88,94,91}};\n    const char *sub[3] = {\"국어\", \"영어\", \"수학\"};\n\n    for (int i = 0; i < 4; i++) printStudent(name[i], s[i], 3);\n    for (int j = 0; j < 3; j++) {\n        printf(\"%s 평균 = %.2f\\n\", sub[j], subjectAvg(s, 4, j));\n    }\n    return 0;\n}", "py": "def total(s):\n    t = 0\n    for x in s:\n        t += x\n    return t\n\ndef average(s):\n    return total(s) / len(s)\n\ndef grade(avg):\n    if avg >= 90: return \"A\"\n    if avg >= 80: return \"B\"\n    if avg >= 70: return \"C\"\n    if avg >= 60: return \"D\"\n    return \"F\"\n\ndef print_student(name, s):\n    avg = average(s)\n    print(f\"{name} 총점 {total(s):3d} 평균 {avg:5.1f} 등급 {grade(avg)}\")\n\ndef subject_avg(s, col):\n    total_sum = 0\n    for row in s:\n        total_sum += row[col]\n    return total_sum / len(s)\n\nname = [\"김민준\", \"이서연\", \"박지호\", \"최유진\"]\ns = [[85,90,78],[92,88,95],[70,65,80],[88,94,91]]\nsub = [\"국어\", \"영어\", \"수학\"]\n\nfor i in range(4):\n    print_student(name[i], s[i])\nfor j in range(3):\n    print(f\"{sub[j]} 평균 = {subject_avg(s, j):.2f}\")", "explain": "함수 단원의 결론이다. 같은 프로그램을 함수 없이 쓰면 main이 수십 줄로 길어지지만, 함수로 나누면 <b>main은 '무엇을 할지'만 말하고 '어떻게'는 각 함수가 맡는다</b>. 함수들이 층을 이루는 구조도 확인하자. <code>printStudent</code> → <code>average</code> → <code>total</code>, 그리고 <code>printStudent</code> → <code>grade</code>. 등급 기준이 바뀌면 <code>grade</code> 한 곳만 고치면 되고, 학생이 100명으로 늘어도 반복문만 늘어날 뿐 함수는 그대로다. C에서 2차원 배열을 함수에 넘길 때 <code>int s[][3]</code>처럼 <b>열 크기를 반드시 명시</b>해야 한다는 문법도 기억해 두자. 반면 <code>s[i]</code>를 넘기면 그 행이 1차원 배열로 전달된다.", "points": ["main은 <b>조합</b>만, 세부 구현은 각 함수가 담당", "함수가 층을 이루면 수정 지점이 한 곳으로 모인다", "C: 2차원 배열 전달 시 <code>int s[][열크기]</code>로 열 크기 명시 필수"], "out": "김민준 총점 253 평균  84.3 등급 B\n이서연 총점 275 평균  91.7 등급 A\n박지호 총점 215 평균  71.7 등급 C\n최유진 총점 273 평균  91.0 등급 A\n국어 평균 = 83.75\n영어 평균 = 84.25\n수학 평균 = 86.00\n"}];
+
+/* ---------- 간단 구문 강조 ---------- */
+const C_KW = ["int","char","long","short","double","float","void","unsigned","const","return","for","while","do","if","else","break","continue","switch","case","default","sizeof","struct","main","putchar","printf","static","double","va_list","va_start","va_arg","va_end"];
+const PY_KW = ["for","while","if","else","elif","break","continue","in","not","and","or","def","return","True","False","None","import","range","len","print","append","str","join","chr","ord","int","input","match","case","def","global","import","math","sqrt"];
+
+function tokenize(code, lang){
+  const kws = lang === "c" ? C_KW : PY_KW;
+  const parts = [];
+  const re = lang === "c"
+    ? /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(^[ \t]*#[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm
+    : /(#[^\n]*)|((?:f|r)?"(?:\\.|[^"\\])*"|(?:f|r)?'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm;
+  let last = 0, m;
+  while ((m = re.exec(code)) !== null){
+    if (m.index > last) parts.push([null, code.slice(last, m.index)]);
+    let cls = null;
+    if (lang === "c"){
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "p";
+      else if (m[3]) cls = "s";
+      else if (m[4]) cls = "n";
+      else if (m[5]) cls = kws.includes(m[5]) ? "k" : null;
+    } else {
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "s";
+      else if (m[3]) cls = "n";
+      else if (m[4]) cls = kws.includes(m[4]) ? "k" : null;
+    }
+    parts.push([cls, m[0]]);
+    last = m.index + m[0].length;
+  }
+  if (last < code.length) parts.push([null, code.slice(last)]);
+  return parts;
+}
+
+function renderCode(code, lang){
+  const pre = document.createElement("pre");
+  pre.className = "code";
+  const toks = tokenize(code, lang);
+  let line = document.createElement("span");
+  line.className = "line";
+  const pushLine = () => { pre.appendChild(line); line = document.createElement("span"); line.className = "line"; };
+  toks.forEach(([cls, text]) => {
+    const segs = text.split("\n");
+    segs.forEach((seg, i) => {
+      if (i > 0) pushLine();
+      if (seg === "") return;
+      if (cls){
+        const sp = document.createElement("span");
+        sp.className = "tk " + cls;
+        sp.textContent = seg;
+        line.appendChild(sp);
+      } else {
+        line.appendChild(document.createTextNode(seg));
+      }
+    });
+  });
+  pre.appendChild(line);
+  return pre;
+}
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function pad(n){ return String(n).padStart(2, "0"); }
+
+/* ---------- 카드 생성 ---------- */
+function head(p, isSol){
+  const h = el("div", "chead");
+  const mark = el("span", "loopmark", (isSol ? "해설 " : "문제 ") + pad(p.no) + " / 30");
+  h.appendChild(mark);
+  h.appendChild(el("span", "tagchip", p.tag));
+  return h;
+}
+
+function codeGrid(p){
+  const g = el("div", "codegrid");
+  const cp = el("div", "pane c");
+  cp.appendChild(el("div", "panehead", "C 언어"));
+  cp.appendChild(renderCode(p.c, "c"));
+  const pp = el("div", "pane py");
+  pp.appendChild(el("div", "panehead", "PYTHON"));
+  pp.appendChild(renderCode(p.py, "py"));
+  g.appendChild(cp); g.appendChild(pp);
+  return g;
+}
+
+function buildQuestion(p){
+  const card = el("article", "card");
+  card.id = "q" + p.no;
+  card.appendChild(head(p, false));
+  card.appendChild(el("h3", null, p.title));
+  const pr = el("div", "prompt");
+  pr.innerHTML = p.desc;
+  card.appendChild(pr);
+  const d = el("details", "hint");
+  d.appendChild(el("summary", null, "힌트 보기"));
+  const hp = el("p"); hp.innerHTML = p.hint;
+  d.appendChild(hp);
+  card.appendChild(d);
+  card.appendChild(el("div", "answerspace"));
+  return card;
+}
+
+function buildSolution(p){
+  const card = el("article", "card sol");
+  card.id = "s" + p.no;
+  card.appendChild(head(p, true));
+  card.appendChild(el("h3", null, p.title));
+  const q = el("div", "solq");
+  q.innerHTML = p.desc;
+  card.appendChild(q);
+
+  card.appendChild(el("div", "exhead", "모범 답안 — C / PYTHON"));
+  card.appendChild(codeGrid(p));
+
+  const ow = el("div", "outwrap");
+  const oh = el("div", "outhead");
+  oh.appendChild(el("span", null, "실행 결과"));
+  oh.appendChild(el("em", null, "gcc · python3 동일 확인"));
+  ow.appendChild(oh);
+  const pre = el("pre", "out");
+  pre.textContent = p.out.replace(/\n$/, "");
+  ow.appendChild(pre);
+  card.appendChild(ow);
+
+  card.appendChild(el("div", "exhead", "해설"));
+  const ex = el("p", "explain");
+  ex.innerHTML = p.explain;
+  card.appendChild(ex);
+
+  const ul = el("ul", "points");
+  p.points.forEach(t => { const li = el("li"); li.innerHTML = t; ul.appendChild(li); });
+  card.appendChild(ul);
+  return card;
+}
+
+/* ---------- 렌더 ---------- */
+const qlist = document.getElementById("qlist");
+const slist = document.getElementById("slist");
+const toc = document.getElementById("toc");
+DATA.forEach(p => {
+  qlist.appendChild(buildQuestion(p));
+  slist.appendChild(buildSolution(p));
+  const a = el("a", "tocitem");
+  a.href = "#q" + p.no;
+  a.appendChild(el("b", null, pad(p.no)));
+  a.appendChild(el("span", null, p.title));
+  toc.appendChild(a);
+});
+
+/* ---------- 컨트롤 ---------- */
+function setSeg(group, attr, value, cls){
+  group.querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset[attr] === value));
+  });
+  document.body.classList.remove(...cls);
+}
+document.getElementById("segView").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "view", b.dataset.view, ["view-all","view-q","view-s"]);
+  document.body.classList.add("view-" + b.dataset.view);
+});
+document.getElementById("segLang").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "lang", b.dataset.lang, ["lang-both","lang-c","lang-py"]);
+  document.body.classList.add("lang-" + b.dataset.lang);
+  document.querySelectorAll(".codegrid").forEach(g => {
+    g.classList.toggle("single", b.dataset.lang !== "both");
+  });
+});
+document.getElementById("chkSpace").addEventListener("change", e => {
+  document.body.classList.toggle("no-space", !e.target.checked);
+});
+document.getElementById("chkHint").addEventListener("change", e => {
+  document.querySelectorAll(".hint").forEach(h => { h.style.display = e.target.checked ? "" : "none"; });
+});
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+document.body.classList.add("view-all","lang-both");
+</script>
+</body>
+</html>
