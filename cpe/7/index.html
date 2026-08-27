@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포인터 필수예제 30 · C / 파이썬 병렬 학습지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --surface:#f2f6f7;
+  --ink:#16242e;
+  --ink-soft:#4d626f;
+  --ink-faint:#8496a1;
+  --rule:#d8e2e7;
+  --rule-soft:#e9eff2;
+  --c-accent:#0e6b7a;
+  --c-tint:#e3f1f3;
+  --py-accent:#8a3d6b;
+  --py-tint:#f6e7ef;
+  --out-accent:#3f5d2f;
+  --out-tint:#eef4e8;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --serif:"Gowun Batang","Nanum Myeongjo",serif;
+  --mono:"IBM Plex Mono","D2Coding","Consolas",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--surface);color:var(--ink);
+  font-family:var(--sans);font-weight:400;line-height:1.7;
+  font-size:15px;letter-spacing:-.01em;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px 80px}
+
+/* ===== masthead ===== */
+.masthead{
+  background:var(--paper);border-bottom:3px solid var(--ink);
+  padding:34px 0 26px;margin-bottom:0;
+}
+.masthead .wrap{padding-bottom:0}
+.brandline{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--c-accent);text-transform:uppercase;margin-bottom:14px;
+}
+.masthead h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(28px,6vw,46px);line-height:1.18;margin:0 0 6px;
+  letter-spacing:-.02em;
+}
+.masthead h1 em{font-style:normal;color:var(--c-accent)}
+.subtitle{color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;max-width:62ch}
+.metarow{
+  display:flex;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:11.5px;
+}
+.metarow span{
+  border:1px solid var(--rule);border-radius:2px;
+  padding:4px 9px;color:var(--ink-soft);background:#fbfdfd;
+}
+.metarow span.verified{border-color:var(--out-accent);color:var(--out-accent);background:var(--out-tint)}
+
+/* ===== toolbar ===== */
+.toolbar{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+  padding:9px 0;margin-bottom:26px;
+}
+.toolbar .wrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding-bottom:0}
+.tgroup{display:flex;align-items:center;gap:6px}
+.tlabel{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--ink-faint);margin-right:2px;
+}
+.seg{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.seg button{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;
+  border:0;background:var(--paper);color:var(--ink-soft);
+  padding:6px 12px;cursor:pointer;border-right:1px solid var(--rule);
+  transition:background .12s,color .12s;
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tool-btn{
+  font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;
+  padding:7px 15px;border-radius:3px;
+}
+.tool-btn.ghost{background:var(--paper);color:var(--ink)}
+.chk{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);cursor:pointer}
+.chk input{accent-color:var(--c-accent);width:14px;height:14px}
+
+
+/* ===== cheat sheet ===== */
+.cheat{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--py-accent);
+  border-radius:4px;padding:20px 22px;margin-bottom:22px}
+.cheat h2{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--py-accent);
+  margin:0 0 14px;font-weight:500;text-transform:uppercase}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.2px}
+table.cmp th{text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.06em;color:var(--ink-faint);
+  border-bottom:1px solid var(--rule);padding:6px 10px 6px 0}
+table.cmp td{padding:7px 10px 7px 0;border-bottom:1px dotted var(--rule-soft);vertical-align:top}
+table.cmp td:first-child{color:var(--ink-soft);white-space:nowrap}
+table.cmp code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 5px;border-radius:2px}
+.cheatnote{font-size:13px;color:var(--ink-soft);margin:14px 0 0;padding-top:12px;border-top:1px solid var(--rule-soft)}
+.cheatnote code{font-family:var(--mono);font-size:12px;background:var(--surface);padding:1px 4px;border-radius:2px}
+@media (max-width:560px){table.cmp{font-size:12.2px}table.cmp td:first-child{white-space:normal}}
+
+/* ===== toc ===== */
+.toc{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:20px 22px;margin-bottom:34px;
+}
+.toc h2{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--ink-faint);margin:0 0 14px;font-weight:500;text-transform:uppercase;
+}
+.tocgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:2px 18px}
+.tocitem{
+  display:flex;gap:9px;align-items:baseline;padding:4px 0;
+  border-bottom:1px dotted var(--rule-soft);text-decoration:none;color:var(--ink);
+  font-size:13px;
+}
+.tocitem:hover{color:var(--c-accent)}
+.tocitem b{font-family:var(--mono);font-weight:500;color:var(--ink-faint);font-size:11.5px;min-width:18px}
+
+/* ===== part heading ===== */
+.part{margin:0 0 26px;padding-top:8px}
+.part-head{display:flex;align-items:flex-end;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:24px}
+.part-head h2{font-family:var(--serif);font-size:26px;font-weight:700;margin:0;letter-spacing:-.02em}
+.part-head .pnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);padding-bottom:5px}
+
+/* ===== card ===== */
+.card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:4px;
+  padding:22px 24px 24px;margin-bottom:16px;position:relative;
+  scroll-margin-top:70px;
+}
+.card::before{
+  content:"";position:absolute;left:-1px;top:20px;width:3px;height:46px;
+  background:var(--c-accent);border-radius:0 3px 3px 0;
+}
+.card.sol::before{background:var(--py-accent)}
+.chead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.loopmark{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--c-accent);background:var(--c-tint);padding:3px 8px;border-radius:2px;
+}
+.card.sol .loopmark{color:var(--py-accent);background:var(--py-tint)}
+.tagchip{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:99px;padding:2px 10px;
+}
+.card h3{font-size:18.5px;font-weight:600;margin:2px 0 12px;letter-spacing:-.02em;line-height:1.4}
+.prompt{color:var(--ink);font-size:14.5px;margin:0 0 14px}
+.prompt code{
+  font-family:var(--mono);font-size:12.5px;background:var(--surface);
+  padding:1px 5px;border-radius:2px;display:inline-block;line-height:1.55;
+}
+.hint{border-top:1px dashed var(--rule);padding-top:10px;margin-top:12px}
+.hint summary{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);
+  cursor:pointer;list-style:none;
+}
+.hint summary::before{content:"▸ ";color:var(--c-accent)}
+.hint[open] summary::before{content:"▾ "}
+.hint p{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft)}
+
+/* answer space */
+.answerspace{
+  margin-top:14px;border:1px solid var(--rule);border-radius:3px;
+  background:repeating-linear-gradient(to bottom,transparent 0 27px,var(--rule-soft) 27px 28px);
+  height:112px;position:relative;
+}
+.answerspace::after{
+  content:"작성란";position:absolute;top:5px;right:9px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-faint);background:var(--paper);padding:0 4px;
+}
+body.no-space .answerspace{display:none}
+
+/* ===== code ===== */
+.codegrid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:6px 0 16px;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.codegrid.single{grid-template-columns:1fr}
+.pane{border-right:1px solid var(--rule);min-width:0}
+.pane:last-child{border-right:0}
+.panehead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  padding:7px 12px;border-bottom:1px solid var(--rule);
+}
+.pane.c .panehead{color:var(--c-accent);background:var(--c-tint)}
+.pane.py .panehead{color:var(--py-accent);background:var(--py-tint)}
+pre.code{
+  margin:0;padding:12px 12px 14px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.3px;line-height:1.62;
+  counter-reset:ln;background:var(--paper);
+}
+pre.code .line{display:block;white-space:pre;padding-left:30px;position:relative;min-height:1.62em}
+pre.code .line::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:22px;text-align:right;
+  color:var(--ink-faint);font-size:10.5px;opacity:.7;
+}
+.tk{font:inherit}
+.tk.k{color:#0b5f9e;font-weight:500}
+.tk.s{color:#8a3d6b}
+.tk.n{color:#a35c00}
+.tk.c{color:#6f8090;font-style:italic}
+.tk.p{color:#0e6b7a;font-weight:500}
+
+/* output */
+.outwrap{border:1px solid var(--rule);border-left:3px solid var(--out-accent);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.outhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-weight:500;
+  color:var(--out-accent);background:var(--out-tint);padding:7px 12px;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;
+}
+.outhead em{font-style:normal;opacity:.75;letter-spacing:0}
+pre.out{
+  margin:0;padding:12px;font-family:var(--mono);font-size:12.3px;line-height:1.6;
+  white-space:pre;overflow-x:auto;background:var(--paper);
+}
+
+/* explain */
+.exhead{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-faint);
+  margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule-soft);
+}
+.explain{font-size:14.3px;color:var(--ink);margin:0 0 4px}
+.explain code,.points code{
+  font-family:var(--mono);font-size:12.2px;background:var(--surface);padding:1px 5px;border-radius:2px;
+}
+.explain b{font-weight:600;background:linear-gradient(transparent 62%,var(--c-tint) 62%)}
+.points{list-style:none;margin:12px 0 0;padding:14px 16px;background:var(--surface);border-radius:3px}
+.points li{position:relative;padding-left:20px;font-size:13.6px;color:var(--ink);margin-bottom:5px}
+.points li:last-child{margin-bottom:0}
+.points li::before{
+  content:"✓";position:absolute;left:0;top:0;color:var(--c-accent);font-weight:700;font-size:12px;
+}
+.solq{
+  font-size:13.4px;color:var(--ink-soft);background:var(--surface);
+  border-radius:3px;padding:10px 14px;margin:0 0 16px;
+}
+.solq code{font-family:var(--mono);font-size:12px}
+
+/* footer */
+.foot{
+  border-top:2px solid var(--ink);margin-top:44px;padding-top:18px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+}
+
+/* view state */
+body.view-q #part-sol,body.view-s #part-q{display:none}
+body.lang-c .pane.py,body.lang-py .pane.c{display:none}
+
+@media (max-width:720px){
+  .codegrid{grid-template-columns:1fr}
+  .pane{border-right:0;border-bottom:1px solid var(--rule)}
+  .pane:last-child{border-bottom:0}
+  .card{padding:18px 15px 20px}
+  .toolbar .wrap{gap:9px}
+  .masthead{padding:24px 0 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px}
+
+/* ===== print ===== */
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff;font-size:10.5pt;line-height:1.55}
+  .toolbar,.toc,.no-print{display:none!important}
+  .cheat{border:1px solid #bbb;border-left:2px solid #000;padding:10px 12px;break-inside:avoid;page-break-inside:avoid}
+  table.cmp{font-size:9pt}
+  .cheatnote{font-size:9pt}
+  body.view-s .cheat{display:none}
+  .wrap{max-width:none;padding:0}
+  .masthead{padding:0 0 12px;border-bottom:2.5px solid #000;margin-bottom:14px}
+  .masthead h1{font-size:22pt}
+  .subtitle{font-size:9.5pt;margin-bottom:8px}
+  .card{
+    border:1px solid #bbb;border-radius:0;padding:12px 13px;margin-bottom:9px;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .card h3{font-size:12.5pt}
+  .prompt,.explain{font-size:10pt}
+  pre.code,pre.out{font-size:8.6pt;line-height:1.45;background:#fff}
+  .points li{font-size:9.5pt}
+  .tk.k,.tk.p{color:#000;font-weight:700}
+  .tk.s{color:#333}
+  .tk.n{color:#333}
+  .tk.c{color:#666}
+  .panehead,.outhead{background:#f0f0f0!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .loopmark{background:#eee!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .points{background:#f6f6f6!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .explain b{background:none;text-decoration:underline}
+  .hint{display:block}
+  .hint summary{color:#666}
+  #part-sol{break-before:page;page-break-before:always}
+  .foot{border-top:1.5px solid #000}
+}
+</style>
+</head>
+<body class="view-all">
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandline">세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; C &amp; Python 병렬 커리큘럼 &nbsp;·&nbsp; VOL.6 포인터</div>
+    <h1>포인터 <em>필수예제 30</em></h1>
+    <p class="subtitle">주소와 역참조부터 포인터 산술 · 동적 할당 · 구조체 포인터 · 함수 포인터 · 연결 리스트까지, C의 핵심 30가지 유형을 다룹니다. <b>파이썬에는 포인터가 없으므로</b>, 각 문제의 파이썬 코드는 같은 일을 파이썬의 <b>참조(reference) 모델</b>로 어떻게 표현하는지를 보여 줍니다. 두 언어의 실행 결과는 동일하며, 모든 코드는 gcc와 파이썬에서 직접 실행해 확인했습니다.</p>
+    <div class="metarow">
+      <span>문항 30</span>
+      <span>C11 · Python 3</span>
+      <span>문제지 + 정답·해설지</span>
+      <span>C 중심 · 파이썬 대응</span>
+      <span class="verified">gcc / python3 실행 검증 완료</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar no-print" aria-label="학습지 보기 설정">
+  <div class="wrap">
+    <div class="tgroup">
+      <span class="tlabel">보기</span>
+      <div class="seg" id="segView" role="group">
+        <button type="button" data-view="all" aria-pressed="true">전체</button>
+        <button type="button" data-view="q" aria-pressed="false">문제지</button>
+        <button type="button" data-view="s" aria-pressed="false">정답·해설지</button>
+      </div>
+    </div>
+    <div class="tgroup">
+      <span class="tlabel">언어</span>
+      <div class="seg" id="segLang" role="group">
+        <button type="button" data-lang="both" aria-pressed="true">C + 파이썬</button>
+        <button type="button" data-lang="c" aria-pressed="false">C만</button>
+        <button type="button" data-lang="py" aria-pressed="false">파이썬만</button>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="chkSpace" checked> 답안 작성란</label>
+    <label class="chk"><input type="checkbox" id="chkHint" checked> 힌트</label>
+    <button type="button" class="tool-btn" id="btnPrint">인쇄 / PDF 저장</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="cheat">
+    <h2>포인터 — C의 개념 ↔ 파이썬의 대응</h2>
+    <table class="cmp">
+      <thead><tr><th>개념</th><th>C</th><th>파이썬에서는</th></tr></thead>
+      <tbody>
+        <tr><td>주소 얻기</td><td><code>&amp;a</code></td><td>모든 이름이 이미 참조 (<code>id(a)</code>로 확인)</td></tr>
+        <tr><td>역참조</td><td><code>*p</code></td><td>이름을 그냥 쓰면 된다</td></tr>
+        <tr><td>같은 곳인가</td><td><code>p == &amp;a</code></td><td><code>p is a</code></td></tr>
+        <tr><td>없음 표시</td><td><code>NULL</code></td><td><code>None</code></td></tr>
+        <tr><td>원본 수정</td><td>주소를 넘긴다</td><td>가변 객체(리스트·클래스)를 넘긴다</td></tr>
+        <tr><td>포인터 산술</td><td><code>p + 1</code> = 한 칸 이동</td><td>인덱스 변수로 대체</td></tr>
+        <tr><td>동적 할당</td><td><code>malloc</code> / <code>free</code></td><td>자동 (가비지 컬렉터)</td></tr>
+        <tr><td>구조체</td><td><code>struct</code> + <code>-&gt;</code></td><td><code>class</code> + <code>.</code></td></tr>
+        <tr><td>함수 포인터</td><td><code>int (*f)(int,int)</code></td><td>함수 이름을 그대로 전달</td></tr>
+        <tr><td>연결 리스트</td><td><code>struct Node *next</code></td><td><code>self.next</code> (Node 클래스)</td></tr>
+      </tbody>
+    </table>
+    <p class="cheatnote">포인터 문제의 오답은 대부분 <b>NULL 역참조</b>(프로그램이 즉시 죽는다), <b><code>free</code> 누락 또는 이중 해제</b>, <b>링크 조작 순서</b>(다음 주소를 저장하기 전에 끊는다) 세 곳에서 나옵니다. 각 해설의 체크 항목을 함께 확인하세요.</p>
+  </section>
+
+  <nav class="toc no-print" aria-label="문제 목차">
+    <h2>수록 문제</h2>
+    <div class="tocgrid" id="toc"></div>
+  </nav>
+
+  <section class="part" id="part-q">
+    <div class="part-head">
+      <h2>제1부 · 문제지</h2>
+      <span class="pnote">30문항 / 이름 __________ 점수 ______</span>
+    </div>
+    <div id="qlist"></div>
+  </section>
+
+  <section class="part" id="part-sol">
+    <div class="part-head">
+      <h2>제2부 · 정답 및 해설지</h2>
+      <span class="pnote">모범답안 · 실행결과 · 개념 해설</span>
+    </div>
+    <div id="slist"></div>
+  </section>
+
+  <div class="foot">
+    <span>세영코딩연구소 / 세영AI코딩학원 · 바이브코딩 특강</span>
+    <span>포인터 필수예제 30 · C &amp; Python</span>
+  </div>
+</main>
+
+<script>
+const DATA = [{"no": 1, "title": "주소 연산자 &와 역참조 연산자 *", "tag": "포인터 기본", "desc": "정수 변수 a를 가리키는 포인터 p를 만들고, ① p가 a를 가리키는지 확인한 뒤 ② p를 통해 a의 값을 99로 바꾸시오.", "hint": "&a는 'a의 주소', *p는 '그 주소에 있는 값'이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a = 10;\n    int *p = &a;            /* p는 a의 주소를 담는다 */\n\n    printf(\"a  = %d\\n\", a);\n    printf(\"*p = %d\\n\", *p);\n    printf(\"p가 a를 가리키는가? %s\\n\", (p == &a) ? \"예\" : \"아니오\");\n\n    *p = 99;                /* p가 가리키는 곳의 값을 바꾼다 */\n    printf(\"*p = 99 실행 후 a = %d\\n\", a);\n    return 0;\n}", "py": "a = [10]                # 파이썬에는 포인터가 없어 리스트로 '상자'를 만든다\np = a                   # p는 같은 객체를 참조한다\n\nprint(f\"a  = {a[0]}\")\nprint(f\"*p = {p[0]}\")\nprint(\"p가 a를 가리키는가? \" + (\"예\" if p is a else \"아니오\"))\n\np[0] = 99               # 같은 객체이므로 a도 바뀐다\nprint(f\"*p = 99 실행 후 a = {a[0]}\")", "explain": "포인터는 <b>값이 아니라 값이 있는 위치(주소)를 담는 변수</b>다. 세 기호의 역할을 정확히 구분해야 한다. <code>&amp;a</code>는 <b>a의 주소</b>, <code>int *p</code>는 <b>주소를 담는 변수 선언</b>, <code>*p</code>는 <b>그 주소에 있는 값</b>이다. 특히 <code>*</code>는 선언할 때와 사용할 때 의미가 다르다. 선언에서는 '이건 포인터다'라는 표시이고, 사용할 때는 '가리키는 곳으로 가라'는 <b>역참조 연산</b>이다. 파이썬에는 포인터가 없지만 <b>모든 변수가 객체를 참조</b>하는 구조라 개념은 통한다. 다만 정수는 불변이라 <code>p = a</code> 후 <code>p = 99</code>를 해도 원본이 안 바뀌므로, 여기서는 <b>리스트로 감싸</b> C의 '상자'를 흉내 냈다. <code>is</code>는 같은 객체인지 확인하는 연산자로 C의 <code>p == &amp;a</code>에 해당한다.", "points": ["<code>&amp;a</code>=주소 / <code>int *p</code>=주소 변수 / <code>*p</code>=그 값", "선언의 <code>*</code>와 역참조의 <code>*</code>는 다른 의미", "파이썬 <code>is</code> = 같은 객체인가 (C의 주소 비교)"], "out": "a  = 10\n*p = 10\np가 a를 가리키는가? 예\n*p = 99 실행 후 a = 99\n"}, {"no": 2, "title": "여러 자료형의 포인터", "tag": "자료형별 포인터", "desc": "int, double, char 변수를 각각 포인터로 가리켜 값을 읽고, 포인터를 통해 모두 값을 변경한 뒤 결과를 출력하시오.", "hint": "포인터의 자료형은 가리키는 대상의 자료형과 일치해야 한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int    n = 42;\n    double d = 3.14;\n    char   c = 'A';\n\n    int    *pn = &n;\n    double *pd = &d;\n    char   *pc = &c;\n\n    printf(\"변경 전 : %d, %.2f, %c\\n\", *pn, *pd, *pc);\n    *pn = 100;\n    *pd = 2.71;\n    *pc = 'Z';\n    printf(\"변경 후 : %d, %.2f, %c\\n\", n, d, c);\n    return 0;\n}", "py": "n = [42]\nd = [3.14]\nc = [\"A\"]\n\npn = n\npd = d\npc = c\n\nprint(f\"변경 전 : {pn[0]}, {pd[0]:.2f}, {pc[0]}\")\npn[0] = 100\npd[0] = 2.71\npc[0] = \"Z\"\nprint(f\"변경 후 : {n[0]}, {d[0]:.2f}, {c[0]}\")", "explain": "C에서 포인터는 <b>자료형이 반드시 일치</b>해야 한다. <code>double</code> 변수를 <code>int *</code>로 가리키면 8바이트짜리 값을 4바이트로 잘못 해석해 쓰레기 값이 나온다. 컴파일러가 경고를 주지만 강제 형변환으로 무시할 수 있어 위험하다. 포인터의 자료형이 중요한 이유는 두 가지다. ① <b>역참조할 때 몇 바이트를 읽을지</b> 결정하고 ② <b>포인터 산술에서 한 칸이 몇 바이트인지</b> 결정한다(문제 4). 흥미롭게도 <b>포인터 변수 자체의 크기는 자료형과 무관하게 모두 같다</b>(64비트 환경에서 8바이트). 주소를 담는 그릇이기 때문이다. 파이썬은 자료형 선언 자체가 없고 어떤 객체든 참조할 수 있다.", "points": ["포인터의 자료형은 대상과 <b>반드시 일치</b>", "자료형이 역참조 바이트 수와 산술 단위를 결정한다", "포인터 변수 자체의 크기는 자료형과 무관하게 동일"], "out": "변경 전 : 42, 3.14, A\n변경 후 : 100, 2.71, Z\n"}, {"no": 3, "title": "배열 이름은 주소다", "tag": "배열 ↔ 포인터", "desc": "배열 {10,20,30,40,50}에 대해 <code>a[i]</code>, <code>*(a+i)</code>, <code>p[i]</code>, <code>*(p+i)</code> 네 가지 표기가 모두 같은 값을 주는지 확인하시오.", "hint": "배열 이름 a는 &a[0]과 같다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[5] = {10, 20, 30, 40, 50};\n    int *p = a;             /* p = &a[0] 과 같다 */\n\n    printf(\"a와 &a[0]이 같은가? %s\\n\", (a == &a[0]) ? \"예\" : \"아니오\");\n    for (int i = 0; i < 5; i++) {\n        printf(\"i=%d : a[i]=%d *(a+i)=%d p[i]=%d *(p+i)=%d\\n\",\n               i, a[i], *(a + i), p[i], *(p + i));\n    }\n    return 0;\n}", "py": "a = [10, 20, 30, 40, 50]\np = a                    # 같은 리스트를 참조 (C의 p = a 와 같은 역할)\n\nprint(\"a와 &a[0]이 같은가? \" + (\"예\" if p is a else \"아니오\"))\nfor i in range(5):\n    print(f\"i={i} : a[i]={a[i]} *(a+i)={a[i]} p[i]={p[i]} *(p+i)={p[i]}\")", "explain": "C에서 <b>배열 이름은 첫 원소의 주소</b>다. 즉 <code>a</code>와 <code>&amp;a[0]</code>은 완전히 같다. 그래서 <code>int *p = a;</code>라고 쓸 수 있고, 그 순간부터 <b>배열과 포인터는 거의 같은 방식으로</b> 쓸 수 있다. <code>a[i]</code>는 사실 컴파일러가 <code>*(a + i)</code>로 바꿔 처리하는 <b>문법 설탕</b>일 뿐이다. 이것이 배열 인덱스가 <b>0부터 시작하는 진짜 이유</b>이기도 하다. <code>a[0]</code>은 '시작 주소에서 0칸 이동'이라는 뜻이니 자연스럽다. 다만 배열과 포인터가 완전히 같지는 않다. <code>sizeof(a)</code>는 배열 전체 크기(20바이트)지만 <code>sizeof(p)</code>는 포인터 크기(8바이트)이고, <code>a++</code>는 불가능하지만 <code>p++</code>는 가능하다.", "points": ["배열 이름 = 첫 원소의 주소 (<code>a</code> ≡ <code>&amp;a[0]</code>)", "<code>a[i]</code>는 <code>*(a + i)</code>의 축약 표기", "차이: <code>sizeof</code> 결과가 다르고 배열 이름은 증가시킬 수 없다"], "out": "a와 &a[0]이 같은가? 예\ni=0 : a[i]=10 *(a+i)=10 p[i]=10 *(p+i)=10\ni=1 : a[i]=20 *(a+i)=20 p[i]=20 *(p+i)=20\ni=2 : a[i]=30 *(a+i)=30 p[i]=30 *(p+i)=30\ni=3 : a[i]=40 *(a+i)=40 p[i]=40 *(p+i)=40\ni=4 : a[i]=50 *(a+i)=50 p[i]=50 *(p+i)=50\n"}, {"no": 4, "title": "포인터 산술 — 한 칸의 의미", "tag": "포인터 연산", "desc": "배열 {10,20,30,40,50}에서 포인터에 1, 2, 4를 더했을 때 각각 어떤 원소를 가리키는지 확인하시오.", "hint": "포인터에 1을 더하면 1바이트가 아니라 '원소 하나'만큼 이동한다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[5] = {10, 20, 30, 40, 50};\n    int *p = a;\n\n    printf(\"*p       = %d\\n\", *p);\n    printf(\"*(p + 1) = %d\\n\", *(p + 1));\n    printf(\"*(p + 2) = %d\\n\", *(p + 2));\n    printf(\"*(p + 4) = %d\\n\", *(p + 4));\n\n    p = p + 3;\n    printf(\"p = p + 3 후 *p = %d\\n\", *p);\n    p--;\n    printf(\"p-- 후 *p = %d\\n\", *p);\n    return 0;\n}", "py": "a = [10, 20, 30, 40, 50]\np = 0                    # 파이썬에서는 '인덱스'가 포인터 역할을 한다\n\nprint(f\"*p       = {a[p]}\")\nprint(f\"*(p + 1) = {a[p + 1]}\")\nprint(f\"*(p + 2) = {a[p + 2]}\")\nprint(f\"*(p + 4) = {a[p + 4]}\")\n\np = p + 3\nprint(f\"p = p + 3 후 *p = {a[p]}\")\np -= 1\nprint(f\"p-- 후 *p = {a[p]}\")", "explain": "포인터 산술의 핵심은 <b><code>p + 1</code>이 1바이트가 아니라 '원소 하나'만큼 이동한다</b>는 것이다. <code>int</code> 포인터라면 실제로는 <b>4바이트</b>, <code>double</code> 포인터라면 <b>8바이트</b>가 움직인다. 컴파일러가 자료형 크기를 자동으로 곱해 주기 때문에, 프로그래머는 <b>바이트가 아니라 칸 단위로</b> 생각하면 된다. 이 규칙 덕분에 <code>*(p + i)</code>가 <code>a[i]</code>와 정확히 같아진다. 만약 자료형을 잘못 지정하면 이동 폭이 틀려 엉뚱한 위치를 읽는다. 파이썬에는 포인터 산술이 없지만, <b>인덱스 변수를 포인터처럼</b> 쓰면 같은 사고를 그대로 옮길 수 있다.", "points": ["<code>p + 1</code> = 1바이트가 아니라 <b>원소 하나</b>만큼 이동", "실제 이동 바이트 = 1 × 자료형 크기 (컴파일러가 계산)", "그래서 <code>*(p + i)</code> ≡ <code>a[i]</code>"], "out": "*p       = 10\n*(p + 1) = 20\n*(p + 2) = 30\n*(p + 4) = 50\np = p + 3 후 *p = 40\np-- 후 *p = 30\n"}, {"no": 5, "title": "포인터로 배열 순회하기", "tag": "p++ 순회", "desc": "배열 {3, 7, 2, 8, 5}를 ① 인덱스 방식과 ② <b>포인터를 증가시키는 방식</b> 두 가지로 순회하며 합계를 구하시오.", "hint": "포인터를 끝 주소와 비교하며 하나씩 옮긴다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[5] = {3, 7, 2, 8, 5};\n    int n = 5;\n\n    int sum1 = 0;\n    printf(\"인덱스 방식 : \");\n    for (int i = 0; i < n; i++) {\n        printf(\"%d \", a[i]);\n        sum1 += a[i];\n    }\n    printf(\"합 = %d\\n\", sum1);\n\n    int sum2 = 0;\n    printf(\"포인터 방식 : \");\n    for (int *p = a; p < a + n; p++) {\n        printf(\"%d \", *p);\n        sum2 += *p;\n    }\n    printf(\"합 = %d\\n\", sum2);\n    return 0;\n}", "py": "a = [3, 7, 2, 8, 5]\nn = len(a)\n\nsum1 = 0\nprint(\"인덱스 방식 : \", end=\"\")\nfor i in range(n):\n    print(a[i], end=\" \")\n    sum1 += a[i]\nprint(f\"합 = {sum1}\")\n\nsum2 = 0\nprint(\"포인터 방식 : \", end=\"\")\nfor x in a:                  # 파이썬은 '원소 자체'를 꺼내 순회한다\n    print(x, end=\" \")\n    sum2 += x\nprint(f\"합 = {sum2}\")", "explain": "포인터 순회의 관용구는 <code>for (int *p = a; p &lt; a + n; p++)</code>이다. 여기서 <code>a + n</code>은 <b>마지막 원소의 다음 칸</b>을 가리키는 주소다. 실제로 그 칸을 읽으면 안 되지만, <b>비교 대상으로 쓰는 것은 표준이 보장</b>한다. 조건을 <code>&lt;=</code>로 쓰면 없는 칸을 읽으니 반드시 <code>&lt;</code>여야 한다. 예전에는 포인터 순회가 인덱스 방식보다 빨랐지만, 요즘 컴파일러는 최적화를 잘해서 <b>속도 차이가 거의 없다</b>. 그래도 이 표기를 알아야 하는 이유는 C 라이브러리와 실무 코드에 흔하기 때문이다. 파이썬의 <code>for x in a</code>는 인덱스를 아예 감추고 <b>원소를 직접</b> 꺼내 주므로 범위 초과 사고가 원천적으로 없다.", "points": ["관용구: <code>for (p = a; p &lt; a + n; p++)</code>", "<code>a + n</code>은 '끝 다음 칸' — 비교에만 쓰고 읽으면 안 된다", "파이썬 <code>for x in a</code>는 인덱스를 감춰 범위 사고가 없다"], "out": "인덱스 방식 : 3 7 2 8 5 합 = 25\n포인터 방식 : 3 7 2 8 5 합 = 25\n"}, {"no": 6, "title": "두 포인터의 거리와 비교", "tag": "포인터 뺄셈", "desc": "배열 {10,20,30,40,50,60}에서 a[1]과 a[4]를 가리키는 두 포인터의 거리를 구하고, 대소를 비교하시오.", "hint": "같은 배열 안의 포인터끼리는 빼면 '몇 칸 떨어졌는가'가 나온다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a[6] = {10, 20, 30, 40, 50, 60};\n    int *p = &a[1];\n    int *q = &a[4];\n\n    printf(\"*p = %d, *q = %d\\n\", *p, *q);\n    printf(\"q - p = %d칸\\n\", (int)(q - p));\n    printf(\"p < q 인가? %s\\n\", (p < q) ? \"예\" : \"아니오\");\n    printf(\"p와 q 사이의 값 : \");\n    for (int *r = p; r <= q; r++) printf(\"%d \", *r);\n    printf(\"\\n\");\n    return 0;\n}", "py": "a = [10, 20, 30, 40, 50, 60]\np = 1                    # 인덱스를 포인터처럼 사용\nq = 4\n\nprint(f\"*p = {a[p]}, *q = {a[q]}\")\nprint(f\"q - p = {q - p}칸\")\nprint(\"p < q 인가? \" + (\"예\" if p < q else \"아니오\"))\nprint(\"p와 q 사이의 값 : \", end=\"\")\nfor r in range(p, q + 1):\n    print(a[r], end=\" \")\nprint()", "explain": "<b>같은 배열 안의 포인터끼리는 뺄 수 있고</b>, 결과는 바이트 차이가 아니라 <b>몇 칸 떨어졌는가</b>다. <code>q - p</code>가 3인 것은 인덱스 4와 1의 차이다. 내부적으로는 주소 차이를 자료형 크기로 나눈 값이다. 포인터끼리 <b>더하는 것은 의미가 없어 허용되지 않는다</b>. 뺄셈은 '거리'라는 의미가 있지만 덧셈은 그렇지 않기 때문이다. 대소 비교 <code>p &lt; q</code>는 '메모리상 앞쪽인가'를 뜻하며, 배열 안에서는 곧 <b>인덱스가 작은가</b>와 같다. 두 포인터로 구간을 표현하는 이 방식은 C++ 표준 라이브러리의 <code>begin()</code>, <code>end()</code> 설계로 이어진다.", "points": ["포인터 뺄셈 결과 = <b>칸 수</b> (바이트 아님)", "포인터끼리 <b>덧셈은 불가</b> — 의미가 없다", "두 포인터로 구간을 표현하는 것이 C++ iterator의 원형"], "out": "*p = 20, *q = 50\nq - p = 3칸\np < q 인가? 예\np와 q 사이의 값 : 20 30 40 50 \n"}, {"no": 7, "title": "함수에 주소를 넘겨 값 바꾸기", "tag": "call by reference", "desc": "두 정수를 교환하는 함수를 ① 값으로 넘긴 경우와 ② 주소로 넘긴 경우로 각각 만들어 차이를 확인하시오.", "hint": "함수 안에서 원본을 바꾸려면 주소가 필요하다.", "c": "#include <stdio.h>\n\nvoid swapValue(int x, int y) {\n    int t = x; x = y; y = t;\n}\n\nvoid swapPointer(int *x, int *y) {\n    int t = *x; *x = *y; *y = t;\n}\n\nint main(void) {\n    int a = 10, b = 20;\n    printf(\"처음        : a=%d b=%d\\n\", a, b);\n    swapValue(a, b);\n    printf(\"값 전달 후   : a=%d b=%d\\n\", a, b);\n    swapPointer(&a, &b);\n    printf(\"주소 전달 후 : a=%d b=%d\\n\", a, b);\n    return 0;\n}", "py": "def swap_value(x, y):\n    x, y = y, x                  # 지역 이름만 바뀐다\n\ndef swap_box(box):\n    box[0], box[1] = box[1], box[0]   # 객체 내부를 바꾼다\n\na, b = 10, 20\nprint(f\"처음        : a={a} b={b}\")\nswap_value(a, b)\nprint(f\"값 전달 후   : a={a} b={b}\")\n\nbox = [a, b]\nswap_box(box)\na, b = box[0], box[1]\nprint(f\"주소 전달 후 : a={a} b={b}\")", "explain": "C의 인자 전달은 <b>언제나 값 복사</b>다. <code>swapValue(a, b)</code>는 a, b의 <b>복사본</b>을 받으므로 아무리 바꿔도 원본은 그대로다. 원본을 바꾸려면 <b>주소라는 값</b>을 복사해 넘겨야 한다. 그러면 함수는 그 주소를 따라가 <b>원본 자체</b>를 건드릴 수 있다. 이것이 흔히 말하는 call by reference의 C식 구현이다(엄밀히는 '주소를 값으로 전달'하는 것이다). 파이썬도 원리가 같다. 인자로 넘어가는 것은 <b>객체에 대한 참조</b>이므로, 정수처럼 <b>불변</b> 객체는 바꿀 수 없고 리스트처럼 <b>가변</b> 객체는 함수 안에서 내용을 바꾸면 밖에도 반영된다. 그래서 파이썬에서는 리스트로 감싸거나 값을 <b>반환</b>하는 방식을 쓴다.", "points": ["C의 전달은 항상 값 복사 — 주소를 넘겨야 원본 수정 가능", "파이썬: 불변 객체는 수정 불가, 가변 객체는 내용 수정 가능", "파이썬의 정석은 <b>반환값</b>으로 결과를 돌려주는 것"], "out": "처음        : a=10 b=20\n값 전달 후   : a=10 b=20\n주소 전달 후 : a=20 b=10\n"}, {"no": 8, "title": "함수에서 배열 수정하기", "tag": "배열 전달", "desc": "배열의 모든 원소를 제곱으로 바꾸는 함수를 만들어, 호출 후 <b>원본이 실제로 바뀌었는지</b> 확인하시오.", "hint": "배열을 넘기면 사실은 첫 원소의 주소가 넘어간다.", "c": "#include <stdio.h>\n\nvoid squareAll(int *a, int n) {\n    for (int i = 0; i < n; i++) {\n        a[i] = a[i] * a[i];\n    }\n}\n\nvoid show(const char *tag, const int *a, int n) {\n    printf(\"%s\", tag);\n    for (int i = 0; i < n; i++) printf(\"%d \", a[i]);\n    printf(\"\\n\");\n}\n\nint main(void) {\n    int a[5] = {1, 2, 3, 4, 5};\n    show(\"호출 전 : \", a, 5);\n    squareAll(a, 5);\n    show(\"호출 후 : \", a, 5);\n    return 0;\n}", "py": "def square_all(a):\n    for i in range(len(a)):\n        a[i] = a[i] * a[i]\n\ndef show(tag, a):\n    print(tag, end=\"\")\n    for x in a:\n        print(x, end=\" \")\n    print()\n\na = [1, 2, 3, 4, 5]\nshow(\"호출 전 : \", a)\nsquare_all(a)\nshow(\"호출 후 : \", a)", "explain": "배열을 함수에 넘기면 <b>전체가 복사되는 것이 아니라 첫 원소의 주소만</b> 넘어간다. 그래서 함수 안의 수정이 <b>원본에 그대로 반영</b>된다. 매개변수를 <code>int a[]</code>로 쓰든 <code>int *a</code>로 쓰든 <b>완전히 같은 뜻</b>이며, 컴파일러는 둘 다 포인터로 처리한다. 이 때문에 함수 안에서는 <code>sizeof</code>로 배열 크기를 알 수 없어 <b>크기 n을 반드시 함께 넘겨야</b> 한다. 원본을 지키고 싶다면 <b><code>const</code>를 붙여</b> 수정을 막을 수 있다(문제 15). 위 <code>show</code> 함수가 <code>const int *a</code>인 이유가 그것이다. 파이썬 리스트도 <b>가변 객체</b>라 동일하게 원본이 바뀐다.", "points": ["배열 전달 = <b>첫 원소 주소</b> 전달 (복사되지 않는다)", "<code>int a[]</code>와 <code>int *a</code>는 매개변수에서 같은 뜻", "원본 보호는 <code>const</code>로, 크기는 인자로 함께 전달"], "out": "호출 전 : 1 2 3 4 5 \n호출 후 : 1 4 9 16 25 \n"}, {"no": 9, "title": "출력 매개변수로 여러 값 반환", "tag": "다중 반환", "desc": "배열의 <b>최솟값·최댓값·합계</b>를 한 번의 호출로 모두 돌려주는 함수를 만드시오. (배열 {17, 42, 8, 93, 55})", "hint": "return은 하나뿐이므로 결과를 담을 변수의 주소를 받는다.", "c": "#include <stdio.h>\n\nvoid analyze(const int *a, int n, int *mn, int *mx, int *sum) {\n    *mn = a[0];\n    *mx = a[0];\n    *sum = 0;\n    for (int i = 0; i < n; i++) {\n        if (a[i] < *mn) *mn = a[i];\n        if (a[i] > *mx) *mx = a[i];\n        *sum += a[i];\n    }\n}\n\nint main(void) {\n    int a[5] = {17, 42, 8, 93, 55};\n    int lo, hi, total;\n    analyze(a, 5, &lo, &hi, &total);\n    printf(\"최솟값 = %d\\n\", lo);\n    printf(\"최댓값 = %d\\n\", hi);\n    printf(\"합계   = %d\\n\", total);\n    return 0;\n}", "py": "def analyze(a):\n    mn = mx = a[0]\n    total = 0\n    for x in a:\n        if x < mn:\n            mn = x\n        if x > mx:\n            mx = x\n        total += x\n    return mn, mx, total          # 여러 값을 튜플로 반환\n\na = [17, 42, 8, 93, 55]\nlo, hi, total = analyze(a)\nprint(f\"최솟값 = {lo}\")\nprint(f\"최댓값 = {hi}\")\nprint(f\"합계   = {total}\")", "explain": "C의 <code>return</code>은 값을 <b>하나만</b> 돌려준다. 그래서 결과가 여러 개면 <b>결과를 담을 변수의 주소</b>를 인자로 받아 그 안에 써 주는 <b>출력 매개변수</b> 방식을 쓴다. 호출하는 쪽은 <code>int lo;</code>처럼 <b>빈 변수를 미리 만들어</b> <code>&amp;lo</code>로 주소를 넘긴다. 함수 안에서 <code>*mn = ...</code>은 '그 주소가 가리키는 곳에 값을 넣어라'는 뜻이다. 흔한 실수는 <code>mn = ...</code>처럼 <b><code>*</code>를 빠뜨리는 것</b>으로, 그러면 지역 포인터 변수만 바뀌고 원본에는 아무 영향이 없다. 파이썬은 <code>return mn, mx, total</code>로 <b>튜플</b>을 돌려주고 받는 쪽에서 풀어 받으면 되어 훨씬 간결하다.", "points": ["C: 여러 결과는 <b>주소를 받아</b> 그 안에 쓴다", "<code>*mn = ...</code>에서 <code>*</code>를 빠뜨리면 원본이 안 바뀐다", "파이썬: <code>return a, b, c</code> → <code>x, y, z = f()</code>"], "out": "최솟값 = 8\n최댓값 = 93\n합계   = 215\n"}, {"no": 10, "title": "NULL 포인터와 안전 검사", "tag": "NULL", "desc": "값을 찾으면 그 원소의 <b>주소</b>를, 못 찾으면 NULL을 반환하는 함수를 만들어 55와 77을 각각 찾으시오.", "hint": "포인터를 쓰기 전에는 항상 NULL인지 확인한다.", "c": "#include <stdio.h>\n\nint *findValue(int *a, int n, int target) {\n    for (int i = 0; i < n; i++) {\n        if (a[i] == target) return &a[i];\n    }\n    return NULL;                     /* 못 찾음 */\n}\n\nint main(void) {\n    int a[5] = {17, 42, 8, 93, 55};\n    int t[2] = {55, 77};\n\n    for (int i = 0; i < 2; i++) {\n        int *p = findValue(a, 5, t[i]);\n        if (p == NULL) {\n            printf(\"%d -> 찾을 수 없음\\n\", t[i]);\n        } else {\n            printf(\"%d -> 발견, 값 확인 = %d\\n\", t[i], *p);\n            *p = *p * 2;\n            printf(\"     2배로 변경 후 배열 = \");\n            for (int k = 0; k < 5; k++) printf(\"%d \", a[k]);\n            printf(\"\\n\");\n        }\n    }\n    return 0;\n}", "py": "def find_value(a, target):\n    for i in range(len(a)):\n        if a[i] == target:\n            return i                 # 위치를 돌려준다\n    return None                      # 못 찾음\n\na = [17, 42, 8, 93, 55]\n\nfor t in [55, 77]:\n    p = find_value(a, t)\n    if p is None:\n        print(f\"{t} -> 찾을 수 없음\")\n    else:\n        print(f\"{t} -> 발견, 값 확인 = {a[p]}\")\n        a[p] = a[p] * 2\n        print(\"     2배로 변경 후 배열 = \", end=\"\")\n        for x in a:\n            print(x, end=\" \")\n        print()", "explain": "<b>NULL</b>은 '아무것도 가리키지 않는다'를 뜻하는 특별한 주소값(0)이다. 함수가 포인터를 돌려줄 때 <b>실패를 알리는 표준 방법</b>이다. 가장 중요한 규칙은 <b>역참조하기 전에 반드시 NULL인지 검사</b>하는 것이다. NULL을 <code>*p</code>로 읽으면 프로그램이 즉시 죽는다(세그멘테이션 폴트). C 프로그램이 갑자기 종료되는 원인 중 가장 흔한 것이 바로 이 <b>NULL 역참조</b>다. 포인터를 반환하면 <b>그 자리를 직접 수정할 수 있다</b>는 강력함도 얻는다. 위 코드에서 <code>*p = *p * 2</code>만으로 배열 원본이 바뀌는 것을 보라. 파이썬은 <code>None</code>이 같은 역할을 하며, <code>is None</code>으로 검사한다.", "points": ["NULL = 아무 곳도 가리키지 않음 (실패를 알리는 표준)", "<b>역참조 전 NULL 검사</b> 필수 — 안 하면 프로그램이 죽는다", "파이썬은 <code>None</code> + <code>is None</code>으로 검사"], "out": "55 -> 발견, 값 확인 = 55\n     2배로 변경 후 배열 = 17 42 8 93 110 \n77 -> 찾을 수 없음\n"}, {"no": 11, "title": "포인터의 포인터 (이중 포인터)", "tag": "이중 포인터", "desc": "변수 a → 포인터 p → 이중 포인터 pp로 이어지는 관계를 만들고, <b>pp를 통해</b> a의 값을 바꾸시오.", "hint": "*pp는 p, **pp는 a이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    int a = 10;\n    int *p = &a;\n    int **pp = &p;\n\n    printf(\"a     = %d\\n\", a);\n    printf(\"*p    = %d\\n\", *p);\n    printf(\"**pp  = %d\\n\", **pp);\n    printf(\"*pp가 p와 같은가? %s\\n\", (*pp == p) ? \"예\" : \"아니오\");\n\n    **pp = 77;\n    printf(\"**pp = 77 실행 후 a = %d\\n\", a);\n    return 0;\n}", "py": "a = [10]                 # 값 상자\np = a                    # p -> a\npp = [p]                 # pp -> p\n\nprint(f\"a     = {a[0]}\")\nprint(f\"*p    = {p[0]}\")\nprint(f\"**pp  = {pp[0][0]}\")\nprint(\"*pp가 p와 같은가? \" + (\"예\" if pp[0] is p else \"아니오\"))\n\npp[0][0] = 77\nprint(f\"**pp = 77 실행 후 a = {a[0]}\")", "explain": "이중 포인터는 <b>포인터를 담는 포인터</b>다. 별을 하나 벗길 때마다 한 단계씩 따라간다고 생각하면 쉽다. <code>pp</code>는 p의 주소, <code>*pp</code>는 p 자신(즉 a의 주소), <code>**pp</code>는 a의 값이다. 언제 필요할까? <b>포인터 자체를 함수 안에서 바꿔야 할 때</b>다. 예를 들어 함수 안에서 <code>malloc</code>으로 메모리를 잡아 호출한 쪽 포인터에 대입하려면, 포인터의 주소인 <b>이중 포인터</b>를 넘겨야 한다. 문제 7에서 int 값을 바꾸려고 <code>int *</code>가 필요했던 것과 정확히 같은 논리가 한 단계 올라간 것이다. 또한 <code>char **argv</code>처럼 <b>문자열 배열</b>을 다룰 때도 자연스럽게 등장한다.", "points": ["<code>pp</code> → <code>*pp</code>(=p) → <code>**pp</code>(=a) 로 한 단계씩", "함수 안에서 <b>포인터 자체</b>를 바꾸려면 이중 포인터가 필요", "<code>char **argv</code>처럼 문자열 배열에도 등장"], "out": "a     = 10\n*p    = 10\n**pp  = 10\n*pp가 p와 같은가? 예\n**pp = 77 실행 후 a = 77\n"}, {"no": 12, "title": "문자열과 포인터", "tag": "char 배열 vs char*", "desc": "<code>char arr[] = \"Hello\"</code>와 <code>const char *ptr = \"World\"</code>의 차이를 확인하시오. 어느 쪽이 수정 가능한가?", "hint": "배열은 복사본을 갖지만, 포인터는 문자열 상수를 가리킬 뿐이다.", "c": "#include <stdio.h>\n\nint main(void) {\n    char arr[] = \"Hello\";           /* 배열: 복사본을 갖는다 */\n    const char *ptr = \"World\";      /* 포인터: 상수를 가리킨다 */\n\n    printf(\"arr = %s\\n\", arr);\n    printf(\"ptr = %s\\n\", ptr);\n\n    arr[0] = 'J';                   /* 배열은 수정 가능 */\n    printf(\"arr[0]='J' 후 arr = %s\\n\", arr);\n    printf(\"ptr은 상수를 가리켜 수정할 수 없다\\n\");\n\n    ptr = \"Python\";                 /* 가리키는 대상은 바꿀 수 있다 */\n    printf(\"ptr이 가리키는 곳 변경 후 ptr = %s\\n\", ptr);\n    return 0;\n}", "py": "arr = \"Hello\"                   # 파이썬 문자열은 모두 불변\nptr = \"World\"\n\nprint(f\"arr = {arr}\")\nprint(f\"ptr = {ptr}\")\n\narr = \"J\" + arr[1:]             # 수정이 아니라 새 문자열을 만든다\nprint(f\"arr[0]='J' 후 arr = {arr}\")\nprint(\"ptr은 상수를 가리켜 수정할 수 없다\")\n\nptr = \"Python\"                  # 이름이 가리키는 대상은 바꿀 수 있다\nprint(f\"ptr이 가리키는 곳 변경 후 ptr = {ptr}\")", "explain": "겉보기에 비슷하지만 <b>메모리 구조가 완전히 다르다</b>. <code>char arr[] = \"Hello\";</code>는 문자열을 <b>배열에 복사</b>하므로 arr는 자기만의 6바이트를 갖고 <b>수정할 수 있다</b>. 반면 <code>char *ptr = \"World\";</code>는 <b>읽기 전용 영역의 문자열 상수</b>를 가리킬 뿐이다. <code>ptr[0] = 'J'</code>를 시도하면 대부분의 환경에서 <b>프로그램이 죽는다</b>. 그래서 문자열 상수를 가리킬 때는 <code>const char *</code>로 선언해 실수를 컴파일 단계에서 막는 것이 좋다. 반대로 <b>가리키는 대상 자체를 바꾸는 것</b>(<code>ptr = \"Python\"</code>)은 포인터만 가능하고 배열은 불가능하다. 파이썬 문자열은 모두 불변이라 항상 후자와 비슷하게 동작한다.", "points": ["<code>char arr[]</code>는 복사본 → <b>수정 가능</b>", "<code>char *ptr</code>는 상수를 가리킴 → <b>수정 시 프로그램 종료</b>", "가리키는 대상 변경은 포인터만 가능 (배열 이름은 불가)"], "out": "arr = Hello\nptr = World\narr[0]='J' 후 arr = Jello\nptr은 상수를 가리켜 수정할 수 없다\nptr이 가리키는 곳 변경 후 ptr = Python\n"}, {"no": 13, "title": "문자열 포인터 배열", "tag": "char* 배열", "desc": "이름 5개를 포인터 배열로 관리하며 번호·이름·글자 수를 출력하고, <b>주소만 교환</b>해 첫 번째와 마지막을 맞바꾸시오.", "hint": "문자열을 복사하지 않고 포인터만 바꾸면 된다.", "c": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    const char *names[5] = {\"Alice\", \"Bob\", \"Charlie\", \"David\", \"Eve\"};\n    int n = 5;\n\n    for (int i = 0; i < n; i++) {\n        printf(\"%d. %-8s (%d글자)\\n\", i + 1, names[i], (int)strlen(names[i]));\n    }\n\n    const char *t = names[0];\n    names[0] = names[n - 1];\n    names[n - 1] = t;\n\n    printf(\"주소 교환 후 : \");\n    for (int i = 0; i < n; i++) printf(\"%s \", names[i]);\n    printf(\"\\n\");\n    return 0;\n}", "py": "names = [\"Alice\", \"Bob\", \"Charlie\", \"David\", \"Eve\"]\nn = len(names)\n\nfor i in range(n):\n    print(f\"{i + 1}. {names[i]:<8s} ({len(names[i])}글자)\")\n\nnames[0], names[n - 1] = names[n - 1], names[0]\n\nprint(\"주소 교환 후 : \", end=\"\")\nfor x in names:\n    print(x, end=\" \")\nprint()", "explain": "<code>const char *names[5]</code>는 <b>문자열 5개의 주소를 담은 배열</b>이다. 문자열 자체는 다른 곳에 있고 배열에는 <b>주소만</b> 들어 있다. 이 구조의 장점은 두 가지다. ① 문자열 길이가 제각각이어도 <b>메모리 낭비가 없다</b>(<code>char names[5][20]</code>은 짧은 이름도 20바이트를 쓴다). ② 순서를 바꿀 때 <b>주소만 교환</b>하면 되어 문자열 복사 비용이 <b>0</b>이다. 5글자든 1000글자든 교환 비용이 같다. 정렬처럼 교환이 잦은 작업에서 결정적인 차이를 만든다. 단점은 문자열 상수를 가리키므로 <b>내용을 수정할 수 없다</b>는 것이다(문제 12). 파이썬 리스트도 내부적으로 <b>객체 참조를 담고</b> 있어 원리가 동일하다.", "points": ["포인터 배열 = <b>주소만</b> 담는다 → 길이 제한·메모리 낭비 없음", "순서 교환 시 문자열 복사가 없어 비용이 일정", "파이썬 리스트도 내부적으로 참조를 담는 같은 구조"], "out": "1. Alice    (5글자)\n2. Bob      (3글자)\n3. Charlie  (7글자)\n4. David    (5글자)\n5. Eve      (3글자)\n주소 교환 후 : Eve Bob Charlie David Alice \n"}, {"no": 14, "title": "포인터로 문자열 함수 구현", "tag": "strlen · strcpy", "desc": "포인터 산술만 사용해 <code>strlen</code>과 <code>strcpy</code>를 직접 구현하고 \"Pointer\"에 적용하시오.", "hint": "포인터를 끝까지 옮긴 뒤 시작 주소를 빼면 길이가 된다.", "c": "#include <stdio.h>\n\nint myStrlen(const char *s) {\n    const char *start = s;\n    while (*s != '\\0') s++;\n    return (int)(s - start);        /* 끝 주소 - 시작 주소 = 길이 */\n}\n\nvoid myStrcpy(char *dest, const char *src) {\n    while (*src != '\\0') {\n        *dest = *src;\n        dest++;\n        src++;\n    }\n    *dest = '\\0';\n}\n\nint main(void) {\n    const char *s = \"Pointer\";\n    char buf[20];\n\n    printf(\"원본   : %s\\n\", s);\n    printf(\"길이   : %d\\n\", myStrlen(s));\n    myStrcpy(buf, s);\n    printf(\"복사본 : %s\\n\", buf);\n    buf[0] = 'J';\n    printf(\"복사본 수정 후 : 원본=%s 복사본=%s\\n\", s, buf);\n    return 0;\n}", "py": "def my_strlen(s):\n    i = 0\n    while i < len(s):\n        i += 1\n    return i\n\ndef my_strcpy(src):\n    dest = \"\"\n    i = 0\n    while i < len(src):\n        dest += src[i]\n        i += 1\n    return dest\n\ns = \"Pointer\"\nprint(f\"원본   : {s}\")\nprint(f\"길이   : {my_strlen(s)}\")\nbuf = my_strcpy(s)\nprint(f\"복사본 : {buf}\")\nbuf = \"J\" + buf[1:]\nprint(f\"복사본 수정 후 : 원본={s} 복사본={buf}\")", "explain": "포인터 산술이 가장 빛나는 예다. <code>myStrlen</code>은 시작 주소를 기억해 두고 <b>널 문자까지 포인터를 옮긴 뒤 두 주소를 빼서</b> 길이를 구한다(문제 6의 포인터 뺄셈). 카운터 변수가 필요 없다. <code>myStrcpy</code>는 <b>두 포인터를 나란히 전진</b>시키며 한 글자씩 옮기고, 마지막에 <b>널 문자를 반드시 찍는다</b>. 실제 C 표준 라이브러리는 이보다 더 압축된 <code>while (*dest++ = *src++);</code> 한 줄로 구현되기도 한다(대입 결과가 0, 즉 널이 되면 반복이 끝난다). 이런 표기는 C 코드에서 자주 보이므로 읽을 줄은 알아야 한다. 파이썬은 문자열이 불변이라 <b>복사본을 만들어 반환</b>하는 구조가 될 수밖에 없다.", "points": ["길이 = <b>끝 주소 − 시작 주소</b> (카운터 불필요)", "두 포인터를 나란히 전진시키며 복사, 마지막에 <code>'\\0'</code>", "관용구 <code>while (*dest++ = *src++);</code>도 읽을 줄 알아야 한다"], "out": "원본   : Pointer\n길이   : 7\n복사본 : Pointer\n복사본 수정 후 : 원본=Pointer 복사본=Jointer\n"}, {"no": 15, "title": "const 포인터로 원본 보호하기", "tag": "const", "desc": "배열을 읽기만 하는 함수에 <code>const</code>를 붙여 원본을 보호하고, 합계를 구해 원본이 그대로인지 확인하시오.", "hint": "const를 붙이면 함수 안에서 수정하는 코드가 컴파일 오류가 된다.", "c": "#include <stdio.h>\n\nint sumReadOnly(const int *a, int n) {\n    int s = 0;\n    for (int i = 0; i < n; i++) {\n        s += a[i];\n        /* a[i] = 0;  <- const 때문에 컴파일 오류가 난다 */\n    }\n    return s;\n}\n\nint main(void) {\n    int a[5] = {10, 20, 30, 40, 50};\n    printf(\"합계 = %d\\n\", sumReadOnly(a, 5));\n    printf(\"호출 후 원본 : \");\n    for (int i = 0; i < 5; i++) printf(\"%d \", a[i]);\n    printf(\"\\n원본이 보존되었다\\n\");\n    return 0;\n}", "py": "def sum_read_only(a):\n    s = 0\n    for x in a:\n        s += x\n        # a[0] = 0  <- 튜플이면 TypeError가 난다\n    return s\n\na = (10, 20, 30, 40, 50)      # 튜플: 수정 불가능한 묶음\nprint(f\"합계 = {sum_read_only(a)}\")\nprint(\"호출 후 원본 : \", end=\"\")\nfor x in a:\n    print(x, end=\" \")\nprint(\"\\n원본이 보존되었다\")", "explain": "<code>const int *a</code>는 '<b>a가 가리키는 값을 바꾸지 않겠다</b>'는 약속이다. 함수 안에서 <code>a[i] = 0;</code>을 쓰면 <b>컴파일 단계에서 오류</b>가 나서 실수를 실행 전에 잡아 준다. 이것이 const의 진짜 가치다. 또한 함수 원형만 봐도 '이 함수는 읽기만 한다'는 <b>의도가 드러나</b> 문서 역할도 한다. 헷갈리기 쉬운 두 가지를 구분하자. <code>const int *p</code>는 <b>가리키는 값</b>이 상수라 <code>*p = 5</code>가 불가하고, <code>int * const p</code>는 <b>포인터 자체</b>가 상수라 <code>p++</code>가 불가하다. 별표를 기준으로 왼쪽이면 값이, 오른쪽이면 포인터가 고정된다고 기억하면 된다. 파이썬에는 const가 없지만 <b>튜플</b>을 쓰면 비슷하게 수정을 막을 수 있다.", "points": ["<code>const</code>는 실수를 <b>컴파일 단계</b>에서 잡아 준다", "<code>const int *p</code>(값 고정) vs <code>int * const p</code>(포인터 고정)", "파이썬은 튜플로 비슷한 보호 효과"], "out": "합계 = 150\n호출 후 원본 : 10 20 30 40 50 \n원본이 보존되었다\n"}, {"no": 16, "title": "동적 메모리 할당 (malloc / free)", "tag": "동적 할당", "desc": "실행 중에 정수 5칸을 할당해 i²를 채우고, 합계를 구한 뒤 <b>반드시 해제</b>하시오.", "hint": "필요한 바이트 수는 개수 × 자료형 크기다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int n = 5;\n    int *arr = (int *)malloc(n * sizeof(int));\n    if (arr == NULL) {\n        printf(\"메모리 할당 실패\\n\");\n        return 1;\n    }\n    printf(\"%d개 공간 할당\\n\", n);\n\n    int sum = 0;\n    for (int i = 0; i < n; i++) {\n        arr[i] = i * i;\n        sum += arr[i];\n    }\n    printf(\"할당된 배열 : \");\n    for (int i = 0; i < n; i++) printf(\"%d \", arr[i]);\n    printf(\"\\n합계 = %d\\n\", sum);\n\n    free(arr);\n    arr = NULL;\n    printf(\"메모리 해제 완료\\n\");\n    return 0;\n}", "py": "n = 5\narr = [0] * n                 # 파이썬은 필요할 때 알아서 메모리를 잡는다\nprint(f\"{n}개 공간 할당\")\n\ntotal = 0\nfor i in range(n):\n    arr[i] = i * i\n    total += arr[i]\nprint(\"할당된 배열 : \", end=\"\")\nfor x in arr:\n    print(x, end=\" \")\nprint(f\"\\n합계 = {total}\")\n\ndel arr                       # 참조가 사라지면 자동으로 회수된다\nprint(\"메모리 해제 완료\")", "explain": "배열 크기를 <b>실행 중에</b> 정해야 할 때 <code>malloc</code>을 쓴다. 필요한 바이트 수는 <b>개수 × <code>sizeof</code></b>로 계산하며, <code>sizeof(int)</code>를 직접 4로 쓰지 않는 것이 중요하다. 환경에 따라 크기가 다를 수 있기 때문이다. 반드시 지켜야 할 두 가지가 있다. ① <b>할당 실패(NULL) 검사</b> — 메모리가 부족하면 <code>malloc</code>은 NULL을 돌려주고, 검사 없이 쓰면 프로그램이 죽는다. ② <b><code>free</code>로 해제</b> — 해제하지 않으면 <b>메모리 누수</b>가 쌓여 오래 도는 프로그램이 결국 멈춘다. 해제 후 <code>arr = NULL;</code>을 넣는 것은 <b>이미 해제한 메모리를 다시 쓰는 사고</b>를 막는 습관이다. 파이썬은 <b>가비지 컬렉터</b>가 자동으로 회수하므로 free가 없다.", "points": ["크기 계산은 <code>n * sizeof(자료형)</code> (숫자를 직접 쓰지 않기)", "NULL 검사 + <code>free</code> 해제는 <b>의무</b>", "해제 후 <code>= NULL</code>로 재사용 사고 방지 / 파이썬은 자동 회수"], "out": "5개 공간 할당\n할당된 배열 : 0 1 4 9 16 \n합계 = 30\n메모리 해제 완료\n"}, {"no": 17, "title": "동적 배열 확장하기 (realloc)", "tag": "재할당", "desc": "3칸으로 시작해 {1,2,3}을 담은 뒤, 6칸으로 늘려 {4,5,6}을 추가하고 전체를 출력하시오.", "hint": "realloc은 기존 값을 유지한 채 크기를 바꿔 준다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int size = 3;\n    int *arr = (int *)malloc(size * sizeof(int));\n    for (int i = 0; i < size; i++) arr[i] = i + 1;\n\n    printf(\"확장 전 (%d칸) : \", size);\n    for (int i = 0; i < size; i++) printf(\"%d \", arr[i]);\n    printf(\"\\n\");\n\n    int newSize = 6;\n    int *tmp = (int *)realloc(arr, newSize * sizeof(int));\n    if (tmp == NULL) {\n        free(arr);\n        printf(\"재할당 실패\\n\");\n        return 1;\n    }\n    arr = tmp;\n    for (int i = size; i < newSize; i++) arr[i] = i + 1;\n\n    printf(\"확장 후 (%d칸) : \", newSize);\n    for (int i = 0; i < newSize; i++) printf(\"%d \", arr[i]);\n    printf(\"\\n\");\n\n    free(arr);\n    return 0;\n}", "py": "size = 3\narr = [0] * size\nfor i in range(size):\n    arr[i] = i + 1\n\nprint(f\"확장 전 ({size}칸) : \", end=\"\")\nfor x in arr:\n    print(x, end=\" \")\nprint()\n\nnew_size = 6\nfor i in range(size, new_size):\n    arr.append(i + 1)         # 리스트는 알아서 늘어난다\n\nprint(f\"확장 후 ({new_size}칸) : \", end=\"\")\nfor x in arr:\n    print(x, end=\" \")\nprint()", "explain": "<code>realloc</code>은 기존 내용을 <b>유지한 채</b> 크기를 바꿔 준다. 자리가 모자라면 <b>새 위치로 통째로 옮기고 예전 자리를 해제</b>하므로, 반환된 주소가 <b>이전과 다를 수 있다</b>. 그래서 예전 포인터를 계속 쓰면 안 된다. 여기서 흔한 치명적 실수가 <code>arr = realloc(arr, ...)</code>다. 실패해서 NULL이 돌아오면 <b>원래 주소를 잃어버려</b> 기존 메모리를 영영 해제할 수 없다. 그래서 <b>임시 포인터에 먼저 받아</b> 성공을 확인한 뒤 대입하는 것이 안전한 표준 패턴이다. 파이썬 리스트의 <code>append</code>가 내부적으로 하는 일이 정확히 이것이며, 공간이 부족하면 <b>더 큰 공간을 잡아 옮긴다</b>. 다만 파이썬은 여유분을 미리 확보해 두어 매번 옮기지는 않는다.", "points": ["realloc은 주소가 <b>바뀔 수 있다</b> — 반환값을 반드시 사용", "<code>arr = realloc(arr, ...)</code>는 실패 시 원본 주소 분실 → 임시 포인터 사용", "파이썬 <code>append</code>가 내부적으로 하는 일과 동일"], "out": "확장 전 (3칸) : 1 2 3 \n확장 후 (6칸) : 1 2 3 4 5 6 \n"}, {"no": 18, "title": "2차원 동적 배열", "tag": "이중 포인터 할당", "desc": "3행 4열의 2차원 배열을 동적으로 만들어 <code>(i+1)×(j+1)</code>을 채우고 표로 출력한 뒤 해제하시오.", "hint": "행 포인터들의 배열을 먼저 만들고, 각 행을 따로 할당한다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int rows = 3, cols = 4;\n\n    int **m = (int **)malloc(rows * sizeof(int *));\n    for (int i = 0; i < rows; i++) {\n        m[i] = (int *)malloc(cols * sizeof(int));\n    }\n\n    for (int i = 0; i < rows; i++)\n        for (int j = 0; j < cols; j++)\n            m[i][j] = (i + 1) * (j + 1);\n\n    for (int i = 0; i < rows; i++) {\n        for (int j = 0; j < cols; j++) printf(\"%3d\", m[i][j]);\n        printf(\"\\n\");\n    }\n\n    for (int i = 0; i < rows; i++) free(m[i]);\n    free(m);\n    printf(\"해제 완료\\n\");\n    return 0;\n}", "py": "rows, cols = 3, 4\n\nm = [[0] * cols for _ in range(rows)]\n\nfor i in range(rows):\n    for j in range(cols):\n        m[i][j] = (i + 1) * (j + 1)\n\nfor i in range(rows):\n    for j in range(cols):\n        print(f\"{m[i][j]:3d}\", end=\"\")\n    print()\n\ndel m\nprint(\"해제 완료\")", "explain": "C의 2차원 동적 배열은 <b>2단계 할당</b>이다. ① 행의 개수만큼 <b>포인터를 담을 배열</b>을 잡고 ② 각 행마다 <b>열 개수만큼</b> 다시 잡는다. 그래서 타입이 <code>int **</code>가 된다. 해제는 <b>반드시 역순</b>이다. 각 행을 먼저 해제하고 <b>마지막에</b> 행 포인터 배열을 해제해야 한다. 순서를 바꾸면 각 행의 주소를 잃어버려 해제할 수 없게 된다. 이 구조는 <b>행마다 길이를 다르게</b> 잡을 수 있다는 장점이 있지만, 메모리가 흩어져 있어 <code>int m[3][4]</code>처럼 연속으로 잡힌 배열보다 접근이 느릴 수 있다. 파이썬의 중첩 리스트도 사실 <b>행 객체들의 참조를 담은 리스트</b>라 구조가 똑같다. 그래서 <code>[[0]*4]*3</code>이 위험한 이유도 같은 행을 세 번 참조하기 때문이다.", "points": ["2단계 할당: 행 포인터 배열 → 각 행 배열", "해제는 <b>역순</b> (각 행 먼저, 포인터 배열 나중)", "파이썬 중첩 리스트도 같은 구조 → <code>[[0]*n]*m</code>이 위험한 이유"], "out": "  1  2  3  4\n  2  4  6  8\n  3  6  9 12\n해제 완료\n"}, {"no": 19, "title": "구조체와 화살표 연산자", "tag": "struct · ->", "desc": "이름과 점수를 담는 구조체를 만들고, ① 변수로 직접 ② 포인터로(<code>-&gt;</code>) 접근해 값을 읽고 수정하시오.", "hint": "p->score는 (*p).score의 축약이다.", "c": "#include <stdio.h>\n#include <string.h>\n\ntypedef struct {\n    char name[20];\n    int  score;\n} Student;\n\nint main(void) {\n    Student s;\n    strcpy(s.name, \"Minjun\");\n    s.score = 85;\n\n    Student *p = &s;\n\n    printf(\"직접 접근    : %s %d\\n\", s.name, s.score);\n    printf(\"포인터 접근  : %s %d\\n\", p->name, p->score);\n\n    p->score = 95;\n    printf(\"점수 변경 후 : %s %d\\n\", s.name, s.score);\n    printf(\"(*p).score 표기도 같은 뜻 : %d\\n\", (*p).score);\n    return 0;\n}", "py": "class Student:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\ns = Student(\"Minjun\", 85)\np = s                          # 같은 객체를 참조\n\nprint(f\"직접 접근    : {s.name} {s.score}\")\nprint(f\"포인터 접근  : {p.name} {p.score}\")\n\np.score = 95\nprint(f\"점수 변경 후 : {s.name} {s.score}\")\nprint(f\"(*p).score 표기도 같은 뜻 : {p.score}\")", "explain": "구조체는 <b>서로 다른 자료형을 하나로 묶는</b> 도구다. 배열이 같은 자료형만 담는 것과 대비된다. 접근 방법이 두 가지인데 <b>변수면 점(<code>.</code>), 포인터면 화살표(<code>-&gt;</code>)</b>다. <code>p-&gt;score</code>는 <code>(*p).score</code>의 축약이며, 괄호가 꼭 필요한 이유는 <code>.</code>이 <code>*</code>보다 우선순위가 높아 <code>*p.score</code>는 전혀 다른 뜻이 되기 때문이다. 이 불편함 때문에 <code>-&gt;</code>가 만들어졌다. 구조체는 특히 <b>포인터와 함께 쓸 때</b> 강력하다. 구조체가 커도 <b>주소 하나만</b> 넘기면 되기 때문이다(문제 21). 파이썬에는 구조체 대신 <b>클래스</b>가 있고, 객체 이름은 언제나 참조라서 점 하나로 통일된다.", "points": ["변수는 <code>.</code>, 포인터는 <code>-&gt;</code>", "<code>p-&gt;x</code> ≡ <code>(*p).x</code> — 괄호 없으면 뜻이 달라진다", "파이썬은 클래스로 대체, 항상 참조라 점 하나로 통일"], "out": "직접 접근    : Minjun 85\n포인터 접근  : Minjun 85\n점수 변경 후 : Minjun 95\n(*p).score 표기도 같은 뜻 : 95\n"}, {"no": 20, "title": "구조체 배열과 포인터 순회", "tag": "구조체 배열", "desc": "학생 4명의 구조체 배열을 만들어 목록을 출력하고, <b>최고점 학생</b>을 포인터로 찾아 출력하시오.", "hint": "최고점 학생을 값이 아니라 '주소'로 기억한다.", "c": "#include <stdio.h>\n\ntypedef struct {\n    const char *name;\n    int score;\n} Student;\n\nint main(void) {\n    Student list[4] = {\n        {\"Minjun\", 85}, {\"Seoyeon\", 92},\n        {\"Jiho\", 78},   {\"Yujin\", 90}\n    };\n    int n = 4;\n\n    for (Student *p = list; p < list + n; p++) {\n        printf(\"%-8s %3d점\\n\", p->name, p->score);\n    }\n\n    Student *best = &list[0];\n    for (int i = 1; i < n; i++) {\n        if (list[i].score > best->score) best = &list[i];\n    }\n    printf(\"최고점 : %s (%d점)\\n\", best->name, best->score);\n\n    best->score += 5;\n    printf(\"보너스 후 : %s (%d점)\\n\", list[1].name, list[1].score);\n    return 0;\n}", "py": "class Student:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\nlst = [Student(\"Minjun\", 85), Student(\"Seoyeon\", 92),\n       Student(\"Jiho\", 78),   Student(\"Yujin\", 90)]\nn = len(lst)\n\nfor p in lst:\n    print(f\"{p.name:<8s} {p.score:3d}점\")\n\nbest = lst[0]\nfor i in range(1, n):\n    if lst[i].score > best.score:\n        best = lst[i]\nprint(f\"최고점 : {best.name} ({best.score}점)\")\n\nbest.score += 5\nprint(f\"보너스 후 : {lst[1].name} ({lst[1].score}점)\")", "explain": "구조체 배열도 <b>포인터로 순회</b>할 수 있다. <code>for (Student *p = list; p &lt; list + n; p++)</code>에서 <code>p++</code>는 <b>구조체 하나 크기만큼</b> 이동한다(문제 4의 규칙이 구조체에도 그대로 적용된다). 이 문제의 핵심은 최고점 학생을 <b>값이 아니라 주소로 기억</b>했다는 점이다. 구조체 전체를 복사하지 않아 비용이 없고, 더 중요하게는 <b>원본을 직접 수정</b>할 수 있다. <code>best-&gt;score += 5</code> 한 줄로 배열 안의 실제 학생 점수가 바뀌는 것을 보라. 값으로 복사했다면 복사본만 바뀌었을 것이다. 이 '<b>대상을 가리키는 포인터를 들고 다닌다</b>'는 발상이 포인터의 실전 활용에서 가장 자주 쓰인다. 파이썬은 객체 이름이 곧 참조라 자연스럽게 같은 동작을 한다.", "points": ["구조체 포인터 <code>p++</code>는 구조체 하나 크기만큼 이동", "결과를 <b>값이 아니라 주소로</b> 기억하면 원본 수정이 가능", "복사 비용 없이 큰 구조체를 다룰 수 있다"], "out": "Minjun    85점\nSeoyeon   92점\nJiho      78점\nYujin     90점\n최고점 : Seoyeon (92점)\n보너스 후 : Seoyeon (97점)\n"}, {"no": 21, "title": "구조체를 함수에 넘기기 — 값 vs 포인터", "tag": "구조체 전달", "desc": "구조체를 ① 값으로 넘기는 함수와 ② 포인터로 넘기는 함수를 각각 만들어, 점수를 100으로 바꿨을 때의 차이를 확인하시오.", "hint": "값으로 넘기면 구조체 전체가 복사된다.", "c": "#include <stdio.h>\n\ntypedef struct {\n    const char *name;\n    int score;\n} Student;\n\nvoid setByValue(Student s) {\n    s.score = 100;\n}\n\nvoid setByPointer(Student *s) {\n    s->score = 100;\n}\n\nint main(void) {\n    Student a = {\"Minjun\", 85};\n    printf(\"처음         : %s %d\\n\", a.name, a.score);\n\n    setByValue(a);\n    printf(\"값 전달 후    : %s %d\\n\", a.name, a.score);\n\n    setByPointer(&a);\n    printf(\"포인터 전달 후 : %s %d\\n\", a.name, a.score);\n    return 0;\n}", "py": "class Student:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\ndef set_by_value(s):\n    s = Student(s.name, 100)      # 새 객체를 만들면 원본과 무관해진다\n\ndef set_by_reference(s):\n    s.score = 100                 # 객체 내부를 바꾸면 원본에 반영\n\na = Student(\"Minjun\", 85)\nprint(f\"처음         : {a.name} {a.score}\")\n\nset_by_value(a)\nprint(f\"값 전달 후    : {a.name} {a.score}\")\n\nset_by_reference(a)\nprint(f\"포인터 전달 후 : {a.name} {a.score}\")", "explain": "구조체를 <b>값으로 넘기면 통째로 복사</b>된다. 그래서 원본이 바뀌지 않을 뿐 아니라, 구조체가 크면(예: 1KB 배열을 품은 구조체) <b>복사 비용도 크다</b>. 포인터로 넘기면 주소 8바이트만 오가므로 <b>크기와 상관없이 비용이 일정</b>하고 원본 수정도 가능하다. 그래서 C에서 구조체는 <b>포인터로 넘기는 것이 관례</b>다. 수정할 필요가 없다면 <code>const Student *s</code>로 선언해 <b>빠르면서도 안전하게</b> 만드는 것이 가장 좋은 습관이다. 파이썬은 항상 참조를 넘기므로 기본 동작이 C의 포인터 전달과 같다. 다만 함수 안에서 <b>새 객체를 대입</b>하면 지역 이름만 바뀌어 원본과 끊어진다는 점이 C의 값 전달과 비슷한 결과를 낸다.", "points": ["값 전달 = <b>구조체 전체 복사</b> (원본 불변, 비용 큼)", "포인터 전달 = 주소만 (비용 일정, 원본 수정 가능)", "읽기만 하면 <code>const 구조체 *</code>가 최선"], "out": "처음         : Minjun 85\n값 전달 후    : Minjun 85\n포인터 전달 후 : Minjun 100\n"}, {"no": 22, "title": "함수 포인터", "tag": "함수 포인터", "desc": "연산 함수 자체를 인자로 받아 실행하는 <code>apply</code> 함수를 만들어 덧셈·곱셈·최댓값을 각각 적용하시오.", "hint": "함수 이름도 주소다. 괄호 없이 쓰면 함수 자체를 가리킨다.", "c": "#include <stdio.h>\n\nint add(int a, int b) { return a + b; }\nint mul(int a, int b) { return a * b; }\nint maxOf(int a, int b) { return (a > b) ? a : b; }\n\nint apply(int (*f)(int, int), int a, int b) {\n    return f(a, b);\n}\n\nint main(void) {\n    int x = 6, y = 7;\n    printf(\"add : %d\\n\", apply(add, x, y));\n    printf(\"mul : %d\\n\", apply(mul, x, y));\n    printf(\"max : %d\\n\", apply(maxOf, x, y));\n\n    int (*op)(int, int) = mul;      /* 함수 포인터 변수 */\n    printf(\"op에 mul 대입 후 : %d\\n\", op(x, y));\n    op = add;\n    printf(\"op에 add 대입 후 : %d\\n\", op(x, y));\n    return 0;\n}", "py": "def add(a, b): return a + b\ndef mul(a, b): return a * b\ndef max_of(a, b): return a if a > b else b\n\ndef apply(f, a, b):\n    return f(a, b)\n\nx, y = 6, 7\nprint(f\"add : {apply(add, x, y)}\")\nprint(f\"mul : {apply(mul, x, y)}\")\nprint(f\"max : {apply(max_of, x, y)}\")\n\nop = mul                          # 함수도 변수에 담을 수 있다\nprint(f\"op에 mul 대입 후 : {op(x, y)}\")\nop = add\nprint(f\"op에 add 대입 후 : {op(x, y)}\")", "explain": "<b>함수도 메모리에 있고 따라서 주소가 있다</b>. 그 주소를 담는 것이 함수 포인터다. 선언 <code>int (*f)(int, int)</code>는 '<b><code>int</code> 두 개를 받아 <code>int</code>를 반환하는 함수를 가리키는 포인터 f</b>'라는 뜻이며, <b><code>(*f)</code>의 괄호가 필수</b>다. 괄호를 빼고 <code>int *f(int, int)</code>라고 쓰면 'int 포인터를 반환하는 함수'가 되어 완전히 다른 뜻이 된다. 함수 포인터의 가치는 <b>동작을 나중에 결정</b>할 수 있다는 것이다. <code>apply</code>는 무슨 계산인지 모른 채 '받은 함수를 실행한다'는 뼈대만 갖는다. 새 연산이 필요하면 함수를 하나 더 만들 뿐 apply는 손대지 않는다. 파이썬은 함수가 <b>일급 객체</b>라 이름만 쓰면 되고, <code>add</code>는 함수 자체, <code>add(1,2)</code>는 호출 결과라는 차이가 핵심이다.", "points": ["함수 이름 = 함수의 주소", "선언 <code>int (*f)(int,int)</code> — <b><code>(*f)</code> 괄호 필수</b>", "동작을 나중에 결정 → 뼈대와 세부를 분리"], "out": "add : 13\nmul : 42\nmax : 7\nop에 mul 대입 후 : 42\nop에 add 대입 후 : 13\n"}, {"no": 23, "title": "함수 포인터 배열로 만든 계산기", "tag": "함수 포인터 배열", "desc": "덧셈·뺄셈·곱셈·나눗셈 함수를 <b>배열에 담아</b> 인덱스로 골라 실행하는 계산기를 만드시오. (12와 5)", "hint": "if나 switch 없이 인덱스만으로 연산을 고를 수 있다.", "c": "#include <stdio.h>\n\ndouble add(double a, double b) { return a + b; }\ndouble sub(double a, double b) { return a - b; }\ndouble mul(double a, double b) { return a * b; }\ndouble divi(double a, double b) { return a / b; }\n\nint main(void) {\n    double (*ops[4])(double, double) = {add, sub, mul, divi};\n    const char *names[4] = {\"+\", \"-\", \"*\", \"/\"};\n    double a = 12, b = 5;\n\n    for (int i = 0; i < 4; i++) {\n        printf(\"%.0f %s %.0f = %.2f\\n\", a, names[i], b, ops[i](a, b));\n    }\n    return 0;\n}", "py": "def add(a, b): return a + b\ndef sub(a, b): return a - b\ndef mul(a, b): return a * b\ndef divi(a, b): return a / b\n\nops = [add, sub, mul, divi]        # 함수를 리스트에 담는다\nnames = [\"+\", \"-\", \"*\", \"/\"]\na, b = 12, 5\n\nfor i in range(4):\n    print(f\"{a:.0f} {names[i]} {b:.0f} = {ops[i](a, b):.2f}\")", "explain": "함수 포인터를 <b>배열에 담으면</b> 분기문 자체가 사라진다. 조건문 편 16번의 계산기는 <code>if</code>나 <code>switch</code>로 연산자를 판별했지만, 여기서는 <b>인덱스 하나로</b> 원하는 함수를 골라 실행한다. 이런 배열을 <b>디스패치 테이블(dispatch table)</b>이라 부르며, 메뉴 처리·상태 기계·명령어 해석기에서 널리 쓰인다. 연산을 추가하려면 <b>배열에 함수를 하나 더 넣기만</b> 하면 되고 나머지 코드는 그대로다. 선언 <code>double (*ops[4])(double, double)</code>는 복잡해 보이지만 안에서부터 읽으면 된다. <code>ops[4]</code>는 배열, <code>(*...)</code>이므로 포인터의 배열, 그것도 <code>double</code> 두 개를 받아 <code>double</code>을 반환하는 <b>함수 포인터의 배열</b>이다. 실무에서는 <code>typedef</code>로 이름을 붙여 단순하게 만든다.", "points": ["함수 포인터 배열 = <b>디스패치 테이블</b>, 분기문이 사라진다", "기능 추가는 배열에 항목 하나 추가로 끝", "복잡한 선언은 <code>typedef</code>로 이름을 붙여 단순화"], "out": "12 + 5 = 17.00\n12 - 5 = 7.00\n12 * 5 = 60.00\n12 / 5 = 2.40\n"}, {"no": 24, "title": "정렬 기준을 함수로 바꾸기 (콜백)", "tag": "qsort · 콜백", "desc": "{5, 2, 9, 1, 7}을 <b>같은 정렬 함수</b>로 오름차순과 내림차순 두 가지로 정렬하시오. (비교 함수만 교체)", "hint": "비교 방법을 함수로 분리해 넘긴다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\nint cmpAsc(const void *x, const void *y) {\n    return (*(const int *)x) - (*(const int *)y);\n}\n\nint cmpDesc(const void *x, const void *y) {\n    return (*(const int *)y) - (*(const int *)x);\n}\n\nvoid show(const char *tag, int *a, int n) {\n    printf(\"%s\", tag);\n    for (int i = 0; i < n; i++) printf(\"%d \", a[i]);\n    printf(\"\\n\");\n}\n\nint main(void) {\n    int a[5] = {5, 2, 9, 1, 7};\n    int n = 5;\n    show(\"원본       : \", a, n);\n\n    qsort(a, n, sizeof(int), cmpAsc);\n    show(\"오름차순   : \", a, n);\n\n    qsort(a, n, sizeof(int), cmpDesc);\n    show(\"내림차순   : \", a, n);\n    return 0;\n}", "py": "def cmp_asc(x):\n    return x\n\ndef cmp_desc(x):\n    return -x\n\ndef show(tag, a):\n    print(tag, end=\"\")\n    for v in a:\n        print(v, end=\" \")\n    print()\n\na = [5, 2, 9, 1, 7]\nshow(\"원본       : \", a)\n\na = sorted(a, key=cmp_asc)\nshow(\"오름차순   : \", a)\n\na = sorted(a, key=cmp_desc)\nshow(\"내림차순   : \", a)", "explain": "<b>콜백(callback)</b>은 '내가 부를 함수를 네가 정해라'는 방식이다. C 표준 라이브러리의 <code>qsort</code>는 <b>어떤 자료형이든</b> 정렬할 수 있는데, 비교 방법을 <b>함수 포인터로 받기</b> 때문이다. 정렬 알고리즘은 그대로 두고 <b>비교 함수만 바꾸면</b> 오름차순이 내림차순이 된다. 비교 함수의 규칙은 <code>strcmp</code>와 같다. <b>앞이 작으면 음수, 같으면 0, 크면 양수</b>를 반환한다. 매개변수가 <code>const void *</code>인 이유는 <b>모든 자료형을 받기 위해서</b>이며, 안에서 <code>(const int *)</code>로 형변환한 뒤 역참조해야 한다. 그래서 <code>*(const int *)x</code>라는 낯선 표기가 나온다. 파이썬은 <code>sorted(a, key=함수)</code>로 <b>정렬 기준값을 만드는 함수</b>를 넘기는 더 간단한 방식을 쓴다.", "points": ["알고리즘은 고정, <b>비교 함수만 교체</b>해 기준을 바꾼다", "비교 함수 규약: 음수 / 0 / 양수", "<code>void *</code>는 모든 자료형을 받기 위한 것 → 형변환 후 역참조"], "out": "원본       : 5 2 9 1 7 \n오름차순   : 1 2 5 7 9 \n내림차순   : 9 7 5 2 1 \n"}, {"no": 25, "title": "포인터 배열 정렬하기", "tag": "주소 교환 정렬", "desc": "이름 5개 {\"Charlie\",\"Bob\",\"Alexandra\",\"Eve\",\"David\"}를 ① 사전순 ② 글자 수 순으로 정렬하시오. (문자열 복사 없이)", "hint": "문자열은 그대로 두고 포인터(주소)만 교환한다.", "c": "#include <stdio.h>\n#include <string.h>\n\nvoid selectionSort(const char *a[], int n, int byLength) {\n    for (int i = 0; i < n - 1; i++) {\n        int min = i;\n        for (int j = i + 1; j < n; j++) {\n            int better;\n            if (byLength) better = strlen(a[j]) < strlen(a[min]);\n            else          better = strcmp(a[j], a[min]) < 0;\n            if (better) min = j;\n        }\n        const char *t = a[i]; a[i] = a[min]; a[min] = t;\n    }\n}\n\nvoid show(const char *tag, const char *a[], int n) {\n    printf(\"%s\", tag);\n    for (int i = 0; i < n; i++) printf(\"%s \", a[i]);\n    printf(\"\\n\");\n}\n\nint main(void) {\n    const char *a[5] = {\"Charlie\", \"Bob\", \"Alexandra\", \"Eve\", \"David\"};\n    show(\"원본     : \", a, 5);\n    selectionSort(a, 5, 0);\n    show(\"사전순   : \", a, 5);\n    selectionSort(a, 5, 1);\n    show(\"글자수순 : \", a, 5);\n    return 0;\n}", "py": "def selection_sort(a, by_length):\n    n = len(a)\n    for i in range(n - 1):\n        mn = i\n        for j in range(i + 1, n):\n            if by_length:\n                better = len(a[j]) < len(a[mn])\n            else:\n                better = a[j] < a[mn]\n            if better:\n                mn = j\n        a[i], a[mn] = a[mn], a[i]\n\ndef show(tag, a):\n    print(tag, end=\"\")\n    for x in a:\n        print(x, end=\" \")\n    print()\n\na = [\"Charlie\", \"Bob\", \"Alexandra\", \"Eve\", \"David\"]\nshow(\"원본     : \", a)\nselection_sort(a, False)\nshow(\"사전순   : \", a)\nselection_sort(a, True)\nshow(\"글자수순 : \", a)", "explain": "포인터 배열의 진가가 드러나는 문제다. 정렬 과정에서 <b>문자열은 전혀 움직이지 않고 주소만 자리를 바꾼다</b>. 문자열이 1000글자여도 교환 비용은 <b>포인터 하나</b>뿐이다. <code>char names[5][20]</code>처럼 2차원 배열을 썼다면 교환할 때마다 <code>strcpy</code>를 세 번씩 해야 해서 훨씬 느리다. 이 '<b>데이터는 두고 참조만 옮긴다</b>'는 발상은 배열 편 30번의 인덱스 정렬과 같은 원리이며, 큰 데이터를 다룰 때 표준 기법이다. 정렬 기준을 <code>byLength</code> 플래그로 바꾼 것도 눈여겨보자. 문제 24의 콜백을 쓰면 더 깔끔해진다. 글자 수 순 정렬에서 Bob과 Eve처럼 <b>길이가 같은 경우</b>의 순서는 알고리즘에 따라 달라질 수 있다는 점도 알아 두자(안정성 문제).", "points": ["문자열은 두고 <b>주소만 교환</b> → 길이와 무관하게 비용 일정", "데이터는 두고 참조만 옮기는 것이 큰 데이터 처리의 정석", "값이 같을 때의 순서 유지 여부 = 정렬의 <b>안정성</b>"], "out": "원본     : Charlie Bob Alexandra Eve David \n사전순   : Alexandra Bob Charlie David Eve \n글자수순 : Bob Eve David Charlie Alexandra \n"}, {"no": 26, "title": "연결 리스트 만들기", "tag": "자기 참조 구조체", "desc": "노드를 동적으로 만들어 10 → 20 → 30으로 연결하고, 처음부터 끝까지 순회하며 출력한 뒤 모두 해제하시오.", "hint": "각 노드는 다음 노드의 주소를 갖는다. 마지막은 NULL이다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *newNode(int value) {\n    Node *n = (Node *)malloc(sizeof(Node));\n    n->data = value;\n    n->next = NULL;\n    return n;\n}\n\nint main(void) {\n    Node *head = newNode(10);\n    head->next = newNode(20);\n    head->next->next = newNode(30);\n\n    printf(\"연결 리스트 : \");\n    int count = 0;\n    for (Node *p = head; p != NULL; p = p->next) {\n        printf(\"%d -> \", p->data);\n        count++;\n    }\n    printf(\"NULL\\n노드 개수 = %d\\n\", count);\n\n    Node *p = head;\n    while (p != NULL) {\n        Node *next = p->next;\n        free(p);\n        p = next;\n    }\n    printf(\"전체 해제 완료\\n\");\n    return 0;\n}", "py": "class Node:\n    def __init__(self, value):\n        self.data = value\n        self.next = None\n\nhead = Node(10)\nhead.next = Node(20)\nhead.next.next = Node(30)\n\nprint(\"연결 리스트 : \", end=\"\")\ncount = 0\np = head\nwhile p is not None:\n    print(f\"{p.data} -> \", end=\"\")\n    count += 1\n    p = p.next\nprint(f\"NULL\\n노드 개수 = {count}\")\n\nhead = None            # 참조가 끊기면 자동 회수\nprint(\"전체 해제 완료\")", "explain": "<b>연결 리스트</b>는 포인터의 대표 응용이다. 각 노드가 <b>다음 노드의 주소</b>를 들고 있어 사슬처럼 이어진다. 구조체 안에 <b>자기 자신의 포인터</b>가 들어가는 것이 특징이며, 이때 <code>struct Node *next;</code>처럼 <b><code>typedef</code> 이름이 아직 만들어지기 전이라 <code>struct Node</code>로 써야</b> 한다. 순회 관용구 <code>for (p = head; p != NULL; p = p-&gt;next)</code>를 통째로 익혀 두자. 배열과 비교하면 장단점이 뚜렷하다. 연결 리스트는 <b>삽입·삭제가 O(1)</b>로 빠르지만 <b>i번째 원소를 바로 찾을 수 없어</b> 처음부터 따라가야 한다(O(n)). 해제할 때 <b>다음 노드 주소를 미리 저장</b>하는 것이 중요하다. 먼저 free하면 next를 읽을 수 없다.", "points": ["자기 참조 구조체 — 선언 시 <code>struct Node *next;</code>", "순회 관용구: <code>for (p = head; p; p = p-&gt;next)</code>", "해제 전에 <b>다음 주소를 미리 저장</b>해야 한다"], "out": "연결 리스트 : 10 -> 20 -> 30 -> NULL\n노드 개수 = 3\n전체 해제 완료\n"}, {"no": 27, "title": "연결 리스트 삽입과 삭제", "tag": "링크 조작", "desc": "10→20→30 리스트에 ① 맨 앞에 5를 넣고 ② 20 뒤에 25를 넣고 ③ 10을 삭제한 뒤 각 단계의 결과를 출력하시오.", "hint": "연결을 끊기 전에 반드시 이어질 곳을 먼저 잡아 둔다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *newNode(int v) {\n    Node *n = (Node *)malloc(sizeof(Node));\n    n->data = v; n->next = NULL;\n    return n;\n}\n\nvoid show(const char *tag, Node *head) {\n    printf(\"%s\", tag);\n    for (Node *p = head; p != NULL; p = p->next) printf(\"%d -> \", p->data);\n    printf(\"NULL\\n\");\n}\n\nint main(void) {\n    Node *head = newNode(10);\n    head->next = newNode(20);\n    head->next->next = newNode(30);\n    show(\"처음       : \", head);\n\n    Node *first = newNode(5);\n    first->next = head;\n    head = first;\n    show(\"앞에 5 삽입 : \", head);\n\n    for (Node *p = head; p != NULL; p = p->next) {\n        if (p->data == 20) {\n            Node *n = newNode(25);\n            n->next = p->next;\n            p->next = n;\n            break;\n        }\n    }\n    show(\"20 뒤 25 삽입: \", head);\n\n    Node *prev = NULL, *cur = head;\n    while (cur != NULL && cur->data != 10) { prev = cur; cur = cur->next; }\n    if (cur != NULL) {\n        if (prev == NULL) head = cur->next;\n        else prev->next = cur->next;\n        free(cur);\n    }\n    show(\"10 삭제 후  : \", head);\n    return 0;\n}", "py": "class Node:\n    def __init__(self, v):\n        self.data = v\n        self.next = None\n\ndef show(tag, head):\n    print(tag, end=\"\")\n    p = head\n    while p is not None:\n        print(f\"{p.data} -> \", end=\"\")\n        p = p.next\n    print(\"NULL\")\n\nhead = Node(10)\nhead.next = Node(20)\nhead.next.next = Node(30)\nshow(\"처음       : \", head)\n\nfirst = Node(5)\nfirst.next = head\nhead = first\nshow(\"앞에 5 삽입 : \", head)\n\np = head\nwhile p is not None:\n    if p.data == 20:\n        n = Node(25)\n        n.next = p.next\n        p.next = n\n        break\n    p = p.next\nshow(\"20 뒤 25 삽입: \", head)\n\nprev, cur = None, head\nwhile cur is not None and cur.data != 10:\n    prev, cur = cur, cur.next\nif cur is not None:\n    if prev is None:\n        head = cur.next\n    else:\n        prev.next = cur.next\nshow(\"10 삭제 후  : \", head)", "explain": "링크 조작에는 <b>절대 어겨서는 안 될 순서</b>가 있다. 삽입할 때는 <b>새 노드의 next를 먼저 연결</b>한 뒤 앞 노드가 새 노드를 가리키게 해야 한다. 순서를 바꾸면 <b>뒤쪽 리스트 전체를 잃어버린다</b>. 종이에 화살표를 그려 보면 바로 이해된다. 삭제는 <b>앞 노드(prev)</b>가 필요하다. 연결 리스트는 뒤로만 갈 수 있어 삭제할 노드에 도착해서는 앞을 알 수 없기 때문에, 따라가면서 prev를 함께 들고 다녀야 한다. 그리고 <b>맨 앞 노드를 삭제하는 경우</b>는 prev가 NULL이라 <code>head</code> 자체를 바꿔야 하는 <b>특수 케이스</b>다. 이 처리를 빼먹는 것이 가장 흔한 버그다. 삽입·삭제가 <b>값 이동 없이 링크만 바꿔</b> 끝난다는 점이 배열 대비 최대 장점이다.", "points": ["삽입은 <b>새 노드의 next를 먼저</b> 연결 (순서 바뀌면 뒤쪽 유실)", "삭제에는 앞 노드(prev)가 필요 — 함께 들고 다닌다", "맨 앞 삭제는 <code>head</code>를 바꿔야 하는 특수 케이스"], "out": "처음       : 10 -> 20 -> 30 -> NULL\n앞에 5 삽입 : 5 -> 10 -> 20 -> 30 -> NULL\n20 뒤 25 삽입: 5 -> 10 -> 20 -> 25 -> 30 -> NULL\n10 삭제 후  : 5 -> 20 -> 25 -> 30 -> NULL\n"}, {"no": 28, "title": "연결 리스트 뒤집기", "tag": "링크 역전", "desc": "10→20→30→40 리스트의 <b>링크 방향을 뒤집어</b> 40→30→20→10이 되게 하시오. (새 노드를 만들지 말 것)", "hint": "세 개의 포인터(이전·현재·다음)를 들고 한 칸씩 전진한다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *newNode(int v) {\n    Node *n = (Node *)malloc(sizeof(Node));\n    n->data = v; n->next = NULL;\n    return n;\n}\n\nvoid show(const char *tag, Node *head) {\n    printf(\"%s\", tag);\n    for (Node *p = head; p != NULL; p = p->next) printf(\"%d -> \", p->data);\n    printf(\"NULL\\n\");\n}\n\nint main(void) {\n    Node *head = newNode(10);\n    head->next = newNode(20);\n    head->next->next = newNode(30);\n    head->next->next->next = newNode(40);\n    show(\"뒤집기 전 : \", head);\n\n    Node *prev = NULL, *cur = head;\n    while (cur != NULL) {\n        Node *next = cur->next;   /* 다음을 먼저 기억 */\n        cur->next = prev;         /* 화살표를 뒤로 돌린다 */\n        prev = cur;\n        cur = next;\n    }\n    head = prev;\n    show(\"뒤집기 후 : \", head);\n    return 0;\n}", "py": "class Node:\n    def __init__(self, v):\n        self.data = v\n        self.next = None\n\ndef show(tag, head):\n    print(tag, end=\"\")\n    p = head\n    while p is not None:\n        print(f\"{p.data} -> \", end=\"\")\n        p = p.next\n    print(\"NULL\")\n\nhead = Node(10)\nhead.next = Node(20)\nhead.next.next = Node(30)\nhead.next.next.next = Node(40)\nshow(\"뒤집기 전 : \", head)\n\nprev, cur = None, head\nwhile cur is not None:\n    nxt = cur.next        # 다음을 먼저 기억\n    cur.next = prev       # 화살표를 뒤로 돌린다\n    prev = cur\n    cur = nxt\nhead = prev\nshow(\"뒤집기 후 : \", head)", "explain": "연결 리스트 뒤집기는 <b>면접 단골 문제</b>이자 포인터 조작의 정수다. 핵심은 <b>세 개의 포인터</b>를 동시에 관리하는 것이다. <code>prev</code>(뒤로 돌릴 대상), <code>cur</code>(지금 처리 중), <code>next</code>(잃어버리면 안 될 다음). 순서가 결정적이다. <b>반드시 <code>next</code>를 먼저 저장</b>한 뒤 <code>cur-&gt;next</code>를 바꿔야 한다. 먼저 바꾸면 <b>남은 리스트로 가는 길이 끊겨</b> 데이터를 전부 잃는다. 매 회전마다 화살표 하나가 뒤로 돌아가고, 세 포인터가 한 칸씩 전진한다. 반복이 끝나면 <code>cur</code>은 NULL이고 <code>prev</code>가 <b>새로운 head</b>가 되므로 이를 잊지 말고 대입해야 한다. 새 노드를 하나도 만들지 않고 <b>링크만 뒤집어</b> 메모리 추가 사용이 0이라는 점도 중요하다.", "points": ["세 포인터 prev · cur · next를 동시에 관리", "<b>next를 먼저 저장</b>하지 않으면 뒤쪽 전체를 잃는다", "끝나면 <code>prev</code>가 새 head — 대입을 잊지 말 것"], "out": "뒤집기 전 : 10 -> 20 -> 30 -> 40 -> NULL\n뒤집기 후 : 40 -> 30 -> 20 -> 10 -> NULL\n"}, {"no": 29, "title": "동적 배열로 스택 만들기", "tag": "스택 구현", "desc": "정수 스택을 동적 배열로 구현해 1~5를 push하고 3번 pop한 뒤 상태를 출력하시오. (가득 차면 2배로 확장)", "hint": "top 인덱스로 현재 개수를 관리하고, 가득 차면 realloc한다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct {\n    int *data;\n    int top;\n    int capacity;\n} Stack;\n\nvoid init(Stack *s, int cap) {\n    s->data = (int *)malloc(cap * sizeof(int));\n    s->top = 0;\n    s->capacity = cap;\n}\n\nvoid push(Stack *s, int v) {\n    if (s->top == s->capacity) {\n        s->capacity *= 2;\n        s->data = (int *)realloc(s->data, s->capacity * sizeof(int));\n        printf(\"  용량 확장 -> %d\\n\", s->capacity);\n    }\n    s->data[s->top] = v;\n    s->top++;\n}\n\nint pop(Stack *s) {\n    if (s->top == 0) return -1;\n    s->top--;\n    return s->data[s->top];\n}\n\nint main(void) {\n    Stack s;\n    init(&s, 2);\n    for (int i = 1; i <= 5; i++) push(&s, i);\n\n    printf(\"push 후 개수 = %d, 용량 = %d\\n\", s.top, s.capacity);\n    printf(\"pop 3회 : \");\n    for (int i = 0; i < 3; i++) printf(\"%d \", pop(&s));\n    printf(\"\\n남은 개수 = %d, 남은 값 : \", s.top);\n    for (int i = 0; i < s.top; i++) printf(\"%d \", s.data[i]);\n    printf(\"\\n\");\n\n    free(s.data);\n    return 0;\n}", "py": "class Stack:\n    def __init__(self, cap):\n        self.data = [0] * cap\n        self.top = 0\n        self.capacity = cap\n\n    def push(self, v):\n        if self.top == self.capacity:\n            self.capacity *= 2\n            self.data = self.data + [0] * (self.capacity - len(self.data))\n            print(f\"  용량 확장 -> {self.capacity}\")\n        self.data[self.top] = v\n        self.top += 1\n\n    def pop(self):\n        if self.top == 0:\n            return -1\n        self.top -= 1\n        return self.data[self.top]\n\ns = Stack(2)\nfor i in range(1, 6):\n    s.push(i)\n\nprint(f\"push 후 개수 = {s.top}, 용량 = {s.capacity}\")\nprint(\"pop 3회 : \", end=\"\")\nfor i in range(3):\n    print(s.pop(), end=\" \")\nprint(f\"\\n남은 개수 = {s.top}, 남은 값 : \", end=\"\")\nfor i in range(s.top):\n    print(s.data[i], end=\" \")\nprint()", "explain": "<b>구조체 + 동적 배열 + 포인터</b>가 모두 결합된 실전 자료구조다. 스택은 <b>나중에 넣은 것이 먼저 나오는(LIFO)</b> 구조이며, <code>top</code> 하나로 모든 것이 관리된다. top은 <b>다음에 넣을 자리이자 현재 개수</b>라는 두 의미를 동시에 갖는다. 그래서 push는 <b>넣고 나서 증가</b>, pop은 <b>감소하고 나서 읽는다</b>. 이 순서를 헷갈리면 한 칸씩 어긋난다. 용량이 차면 <b>2배로 확장</b>하는 전략이 중요하다. 한 칸씩 늘리면 매번 복사가 일어나 O(n²)이 되지만, 2배씩 늘리면 확장 횟수가 <b>log n번</b>뿐이라 평균 비용이 O(1)이 된다. 파이썬 리스트의 <code>append</code>가 정확히 이 전략을 쓴다. 모든 함수가 <code>Stack *s</code>를 받는 것도 눈여겨보자. 구조체 내용을 <b>수정해야 하므로 포인터가 필수</b>다(문제 21).", "points": ["<code>top</code> = 다음에 넣을 자리 = 현재 개수", "push는 넣고 증가, pop은 감소하고 읽는다", "확장은 <b>2배씩</b> — 한 칸씩 늘리면 O(n²)이 된다"], "out": "  용량 확장 -> 4\n  용량 확장 -> 8\npush 후 개수 = 5, 용량 = 8\npop 3회 : 5 4 3 \n남은 개수 = 2, 남은 값 : 1 2 \n"}, {"no": 30, "title": "학생 관리 프로그램 (종합)", "tag": "종합", "desc": "구조체 배열을 <b>동적으로 할당</b>해 학생 4명을 관리하고, <b>함수 포인터로 정렬 기준</b>을 바꿔 ① 점수 높은 순 ② 이름 사전순으로 각각 출력하시오. 평균도 구하시오.", "hint": "지금까지 배운 동적 할당·구조체 포인터·함수 포인터를 모두 조합한다.", "c": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    const char *name;\n    int score;\n} Student;\n\nint byScoreDesc(const Student *a, const Student *b) {\n    return b->score - a->score;\n}\n\nint byNameAsc(const Student *a, const Student *b) {\n    return strcmp(a->name, b->name);\n}\n\nvoid sortStudents(Student *arr, int n, int (*cmp)(const Student *, const Student *)) {\n    for (int i = 0; i < n - 1; i++) {\n        int min = i;\n        for (int j = i + 1; j < n; j++) {\n            if (cmp(&arr[j], &arr[min]) < 0) min = j;\n        }\n        Student t = arr[i]; arr[i] = arr[min]; arr[min] = t;\n    }\n}\n\nvoid show(const char *tag, const Student *arr, int n) {\n    printf(\"%s\\n\", tag);\n    for (int i = 0; i < n; i++) {\n        printf(\"  %d. %-8s %3d점\\n\", i + 1, arr[i].name, arr[i].score);\n    }\n}\n\nint main(void) {\n    int n = 4;\n    Student *arr = (Student *)malloc(n * sizeof(Student));\n    arr[0] = (Student){\"Minjun\", 85};\n    arr[1] = (Student){\"Seoyeon\", 92};\n    arr[2] = (Student){\"Jiho\", 78};\n    arr[3] = (Student){\"Yujin\", 90};\n\n    int sum = 0;\n    for (int i = 0; i < n; i++) sum += arr[i].score;\n    printf(\"평균 = %.2f\\n\", (double)sum / n);\n\n    sortStudents(arr, n, byScoreDesc);\n    show(\"[점수 높은 순]\", arr, n);\n\n    sortStudents(arr, n, byNameAsc);\n    show(\"[이름 사전순]\", arr, n);\n\n    free(arr);\n    printf(\"메모리 해제 완료\\n\");\n    return 0;\n}", "py": "class Student:\n    def __init__(self, name, score):\n        self.name = name\n        self.score = score\n\ndef by_score_desc(a, b):\n    return b.score - a.score\n\ndef by_name_asc(a, b):\n    if a.name < b.name: return -1\n    if a.name > b.name: return 1\n    return 0\n\ndef sort_students(arr, cmp):\n    n = len(arr)\n    for i in range(n - 1):\n        mn = i\n        for j in range(i + 1, n):\n            if cmp(arr[j], arr[mn]) < 0:\n                mn = j\n        arr[i], arr[mn] = arr[mn], arr[i]\n\ndef show(tag, arr):\n    print(tag)\n    for i in range(len(arr)):\n        print(f\"  {i + 1}. {arr[i].name:<8s} {arr[i].score:3d}점\")\n\narr = [Student(\"Minjun\", 85), Student(\"Seoyeon\", 92),\n       Student(\"Jiho\", 78),   Student(\"Yujin\", 90)]\nn = len(arr)\n\ntotal = 0\nfor s in arr:\n    total += s.score\nprint(f\"평균 = {total / n:.2f}\")\n\nsort_students(arr, by_score_desc)\nshow(\"[점수 높은 순]\", arr)\n\nsort_students(arr, by_name_asc)\nshow(\"[이름 사전순]\", arr)\n\ndel arr\nprint(\"메모리 해제 완료\")", "explain": "포인터 단원의 결론이다. 네 가지가 한 번에 쓰인다. ① <b>동적 할당</b>으로 학생 수를 실행 중에 정하고 ② <b>구조체</b>로 이름과 점수를 묶고 ③ <b>구조체 포인터</b>로 복사 없이 다루고 ④ <b>함수 포인터</b>로 정렬 기준을 갈아 끼운다. 특히 <code>sortStudents</code>는 <b>무엇을 기준으로 정렬하는지 전혀 모른 채</b> 정렬 뼈대만 담고 있다는 점이 핵심이다. 새 기준이 필요하면 비교 함수 하나만 추가하면 되고 정렬 코드는 영원히 그대로다. 비교 함수가 <code>const Student *</code>를 받는 것은 <b>읽기만 한다는 약속</b>이며(문제 15), 구조체를 복사하지 않아 빠르다. 마지막으로 <code>free</code>를 잊지 않는 것까지가 C 프로그램의 완성이다. 파이썬은 이 모든 것을 클래스와 일급 함수로 자연스럽게 표현한다.", "points": ["동적 할당 + 구조체 + 구조체 포인터 + 함수 포인터의 결합", "정렬 뼈대는 기준을 모른 채 동작 → 기준 추가가 자유롭다", "비교 함수는 <code>const 구조체 *</code>로 받아 빠르고 안전하게"], "out": "평균 = 86.25\n[점수 높은 순]\n  1. Seoyeon   92점\n  2. Yujin     90점\n  3. Minjun    85점\n  4. Jiho      78점\n[이름 사전순]\n  1. Jiho      78점\n  2. Minjun    85점\n  3. Seoyeon   92점\n  4. Yujin     90점\n메모리 해제 완료\n"}];
+
+/* ---------- 간단 구문 강조 ---------- */
+const C_KW = ["int","char","long","short","double","float","void","unsigned","const","return","for","while","do","if","else","break","continue","switch","case","default","sizeof","struct","main","putchar","printf","static","double","va_list","va_start","va_arg","va_end","strlen","strcpy","strcat","strcmp","unsigned","typedef","malloc","free","realloc","NULL","sizeof","struct"];
+const PY_KW = ["for","while","if","else","elif","break","continue","in","not","and","or","def","return","True","False","None","import","range","len","print","append","str","join","chr","ord","int","input","match","case","def","global","import","math","sqrt","end","split","join","replace","class","self","is","None","del"];
+
+function tokenize(code, lang){
+  const kws = lang === "c" ? C_KW : PY_KW;
+  const parts = [];
+  const re = lang === "c"
+    ? /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(^[ \t]*#[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm
+    : /(#[^\n]*)|((?:f|r)?"(?:\\.|[^"\\])*"|(?:f|r)?'(?:\\.|[^'\\])*')|(\b\d+\b)|([A-Za-z_][A-Za-z_0-9]*)/gm;
+  let last = 0, m;
+  while ((m = re.exec(code)) !== null){
+    if (m.index > last) parts.push([null, code.slice(last, m.index)]);
+    let cls = null;
+    if (lang === "c"){
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "p";
+      else if (m[3]) cls = "s";
+      else if (m[4]) cls = "n";
+      else if (m[5]) cls = kws.includes(m[5]) ? "k" : null;
+    } else {
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "s";
+      else if (m[3]) cls = "n";
+      else if (m[4]) cls = kws.includes(m[4]) ? "k" : null;
+    }
+    parts.push([cls, m[0]]);
+    last = m.index + m[0].length;
+  }
+  if (last < code.length) parts.push([null, code.slice(last)]);
+  return parts;
+}
+
+function renderCode(code, lang){
+  const pre = document.createElement("pre");
+  pre.className = "code";
+  const toks = tokenize(code, lang);
+  let line = document.createElement("span");
+  line.className = "line";
+  const pushLine = () => { pre.appendChild(line); line = document.createElement("span"); line.className = "line"; };
+  toks.forEach(([cls, text]) => {
+    const segs = text.split("\n");
+    segs.forEach((seg, i) => {
+      if (i > 0) pushLine();
+      if (seg === "") return;
+      if (cls){
+        const sp = document.createElement("span");
+        sp.className = "tk " + cls;
+        sp.textContent = seg;
+        line.appendChild(sp);
+      } else {
+        line.appendChild(document.createTextNode(seg));
+      }
+    });
+  });
+  pre.appendChild(line);
+  return pre;
+}
+
+function el(tag, cls, text){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function pad(n){ return String(n).padStart(2, "0"); }
+
+/* ---------- 카드 생성 ---------- */
+function head(p, isSol){
+  const h = el("div", "chead");
+  const mark = el("span", "loopmark", (isSol ? "해설 " : "문제 ") + pad(p.no) + " / 30");
+  h.appendChild(mark);
+  h.appendChild(el("span", "tagchip", p.tag));
+  return h;
+}
+
+function codeGrid(p){
+  const g = el("div", "codegrid");
+  const cp = el("div", "pane c");
+  cp.appendChild(el("div", "panehead", "C 언어"));
+  cp.appendChild(renderCode(p.c, "c"));
+  const pp = el("div", "pane py");
+  pp.appendChild(el("div", "panehead", "PYTHON"));
+  pp.appendChild(renderCode(p.py, "py"));
+  g.appendChild(cp); g.appendChild(pp);
+  return g;
+}
+
+function buildQuestion(p){
+  const card = el("article", "card");
+  card.id = "q" + p.no;
+  card.appendChild(head(p, false));
+  card.appendChild(el("h3", null, p.title));
+  const pr = el("div", "prompt");
+  pr.innerHTML = p.desc;
+  card.appendChild(pr);
+  const d = el("details", "hint");
+  d.appendChild(el("summary", null, "힌트 보기"));
+  const hp = el("p"); hp.innerHTML = p.hint;
+  d.appendChild(hp);
+  card.appendChild(d);
+  card.appendChild(el("div", "answerspace"));
+  return card;
+}
+
+function buildSolution(p){
+  const card = el("article", "card sol");
+  card.id = "s" + p.no;
+  card.appendChild(head(p, true));
+  card.appendChild(el("h3", null, p.title));
+  const q = el("div", "solq");
+  q.innerHTML = p.desc;
+  card.appendChild(q);
+
+  card.appendChild(el("div", "exhead", "모범 답안 — C / PYTHON"));
+  card.appendChild(codeGrid(p));
+
+  const ow = el("div", "outwrap");
+  const oh = el("div", "outhead");
+  oh.appendChild(el("span", null, "실행 결과"));
+  oh.appendChild(el("em", null, "gcc · python3 동일 확인"));
+  ow.appendChild(oh);
+  const pre = el("pre", "out");
+  pre.textContent = p.out.replace(/\n$/, "");
+  ow.appendChild(pre);
+  card.appendChild(ow);
+
+  card.appendChild(el("div", "exhead", "해설"));
+  const ex = el("p", "explain");
+  ex.innerHTML = p.explain;
+  card.appendChild(ex);
+
+  const ul = el("ul", "points");
+  p.points.forEach(t => { const li = el("li"); li.innerHTML = t; ul.appendChild(li); });
+  card.appendChild(ul);
+  return card;
+}
+
+/* ---------- 렌더 ---------- */
+const qlist = document.getElementById("qlist");
+const slist = document.getElementById("slist");
+const toc = document.getElementById("toc");
+DATA.forEach(p => {
+  qlist.appendChild(buildQuestion(p));
+  slist.appendChild(buildSolution(p));
+  const a = el("a", "tocitem");
+  a.href = "#q" + p.no;
+  a.appendChild(el("b", null, pad(p.no)));
+  a.appendChild(el("span", null, p.title));
+  toc.appendChild(a);
+});
+
+/* ---------- 컨트롤 ---------- */
+function setSeg(group, attr, value, cls){
+  group.querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset[attr] === value));
+  });
+  document.body.classList.remove(...cls);
+}
+document.getElementById("segView").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "view", b.dataset.view, ["view-all","view-q","view-s"]);
+  document.body.classList.add("view-" + b.dataset.view);
+});
+document.getElementById("segLang").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  setSeg(e.currentTarget, "lang", b.dataset.lang, ["lang-both","lang-c","lang-py"]);
+  document.body.classList.add("lang-" + b.dataset.lang);
+  document.querySelectorAll(".codegrid").forEach(g => {
+    g.classList.toggle("single", b.dataset.lang !== "both");
+  });
+});
+document.getElementById("chkSpace").addEventListener("change", e => {
+  document.body.classList.toggle("no-space", !e.target.checked);
+});
+document.getElementById("chkHint").addEventListener("change", e => {
+  document.querySelectorAll(".hint").forEach(h => { h.style.display = e.target.checked ? "" : "none"; });
+});
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+document.body.classList.add("view-all","lang-both");
+</script>
+</body>
+</html>
