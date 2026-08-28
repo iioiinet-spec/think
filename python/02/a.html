@@ -1,0 +1,102 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>파이썬 반복문 핵심 패턴 20제 - 정답과 해설</title><style>body{margin:0;background:#fff8fb;color:#222;font-family:"Malgun Gothic",sans-serif;line-height:1.65}.wrap{max-width:960px;margin:auto;padding:28px 24px 60px}header{background:#fff;border:2px solid #ffd3e4;border-radius:20px;padding:26px;margin-bottom:20px}h1{margin:0;color:#8f245c}.sub{color:#555}.toolbar{position:sticky;top:8px;display:flex;gap:10px;margin:18px 0;z-index:5}button{border:0;border-radius:11px;background:#ff5fa2;color:white;padding:11px 16px;font-weight:700;cursor:pointer}.card{background:white;border:1px solid #e8b7cc;border-radius:16px;padding:20px;margin:16px 0;break-inside:avoid}.card h2{color:#92285f}.badge{display:inline-block;background:#fff0f6;color:#982b62;padding:4px 9px;border-radius:99px;font-size:12px;font-weight:700}pre{white-space:pre-wrap;background:#fffafd;border:1px solid #edd0dd;padding:13px;border-radius:10px;font-family:Consolas,monospace}.label{font-weight:700;color:#7b2a54;margin-top:10px}.space{height:165px;border:1px dashed #d9a5bc;border-radius:10px;background:repeating-linear-gradient(#fff,#fff 31px,#f8e7ef 32px)}.exp{background:#fff5fa;border-left:5px solid #ff5fa2;padding:13px 15px;border-radius:8px}.footer{text-align:center;color:#8f245c;font-weight:700;margin-top:35px}@media print{body{background:white}.wrap{max-width:none;padding:0}.toolbar{display:none}header,.card{border:1px solid #bbb}.card{page-break-inside:avoid}}</style></head><body><div class="wrap"><header><h1>파이썬 반복문 핵심 패턴 20제 - 정답과 해설</h1><p class="sub">교사용 정답 코드와 핵심 패턴 해설</p></header><div class="toolbar"><button onclick="window.print()">인쇄하기</button></div><section class="card"><span class="badge">패턴 01 · for + range</span><h2>1부터 N까지 출력하기</h2><p>정수 N을 입력받아 1부터 N까지의 정수를 한 줄에 하나씩 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(1, n + 1):
+    print(i)</pre><div class="label">출력 예제</div><pre>1
+2
+3
+4
+5</pre><div class="label">해설</div><div class="exp">range(1, n + 1)은 1부터 n까지 값을 차례로 만듭니다. 끝값은 포함되지 않으므로 n+1을 사용합니다.</div></section><section class="card"><span class="badge">패턴 02 · 감소 반복</span><h2>N부터 1까지 거꾸로 출력하기</h2><p>정수 N을 입력받아 N부터 1까지 거꾸로 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(n, 0, -1):
+    print(i)</pre><div class="label">출력 예제</div><pre>5
+4
+3
+2
+1</pre><div class="label">해설</div><div class="exp">range(n, 0, -1)은 n부터 1까지 1씩 감소합니다.</div></section><section class="card"><span class="badge">패턴 03 · 누적합</span><h2>1부터 N까지의 합</h2><p>정수 N을 입력받아 1부터 N까지 모든 정수의 합을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+total = 0
+for i in range(1, n + 1):
+    total += i
+print(total)</pre><div class="label">출력 예제</div><pre>15</pre><div class="label">해설</div><div class="exp">반복하면서 값을 total에 계속 더하는 누적합 패턴입니다.</div></section><section class="card"><span class="badge">패턴 04 · 반복 + 조건</span><h2>1부터 N까지 짝수의 합</h2><p>정수 N을 입력받아 1부터 N까지의 정수 중 짝수만 더한 값을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+total = 0
+for i in range(1, n + 1):
+    if i % 2 == 0:
+        total += i
+print(total)</pre><div class="label">출력 예제</div><pre>30</pre><div class="label">해설</div><div class="exp">반복문 안에서 조건문으로 짝수를 골라 누적합니다.</div></section><section class="card"><span class="badge">패턴 05 · 배수 판정</span><h2>N의 배수 출력하기</h2><p>두 정수 N, M을 입력받아 1부터 M까지의 수 중 N의 배수를 모두 출력하세요.</p><div class="label">정답 코드</div><pre>n, m = map(int, input().split())
+for i in range(1, m + 1):
+    if i % n == 0:
+        print(i, end=&quot; &quot;)</pre><div class="label">출력 예제</div><pre>3 6 9 12 15</pre><div class="label">해설</div><div class="exp">i % n == 0이면 i는 n의 배수입니다.</div></section><section class="card"><span class="badge">패턴 06 · 고정 횟수 반복</span><h2>구구단 한 단 출력하기</h2><p>정수 N을 입력받아 N단의 구구단을 1부터 9까지 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(1, 10):
+    print(n, &quot;x&quot;, i, &quot;=&quot;, n * i)</pre><div class="label">출력 예제</div><pre>3 x 1 = 3
+...
+3 x 9 = 27</pre><div class="label">해설</div><div class="exp">반복 횟수가 정해진 대표적인 for문 사용 예입니다.</div></section><section class="card"><span class="badge">패턴 07 · 리스트 순회</span><h2>숫자 N개 입력받아 합 구하기</h2><p>첫 줄에 N, 다음 줄에 N개의 정수를 입력받아 합을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+nums = list(map(int, input().split()))
+total = 0
+for x in nums:
+    total += x
+print(total)</pre><div class="label">출력 예제</div><pre>150</pre><div class="label">해설</div><div class="exp">리스트의 값을 직접 하나씩 꺼내는 for x in nums 패턴입니다.</div></section><section class="card"><span class="badge">패턴 08 · 카운팅</span><h2>양수의 개수 세기</h2><p>첫 줄에 N, 다음 줄에 N개의 정수를 입력받아 양수의 개수를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+nums = list(map(int, input().split()))
+count = 0
+for x in nums:
+    if x &gt; 0:
+        count += 1
+print(count)</pre><div class="label">출력 예제</div><pre>3</pre><div class="label">해설</div><div class="exp">조건을 만족할 때마다 count를 증가시키는 카운팅 패턴입니다.</div></section><section class="card"><span class="badge">패턴 09 · 최댓값 갱신</span><h2>가장 큰 수 찾기</h2><p>N개의 정수 중 가장 큰 값을 출력하세요. 단, max()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+nums = list(map(int, input().split()))
+maximum = nums[0]
+for x in nums:
+    if x &gt; maximum:
+        maximum = x
+print(maximum)</pre><div class="label">출력 예제</div><pre>13</pre><div class="label">해설</div><div class="exp">첫 값을 후보로 두고 더 큰 값이 나오면 갱신합니다.</div></section><section class="card"><span class="badge">패턴 10 · 최솟값 갱신</span><h2>가장 작은 수 찾기</h2><p>N개의 정수 중 가장 작은 값을 출력하세요. 단, min()은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+nums = list(map(int, input().split()))
+minimum = nums[0]
+for x in nums:
+    if x &lt; minimum:
+        minimum = x
+print(minimum)</pre><div class="label">출력 예제</div><pre>2</pre><div class="label">해설</div><div class="exp">첫 값을 후보로 두고 더 작은 값이 나오면 갱신합니다.</div></section><section class="card"><span class="badge">패턴 11 · while 기본</span><h2>while문으로 1부터 N까지 출력하기</h2><p>정수 N을 입력받아 while문으로 1부터 N까지 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+i = 1
+while i &lt;= n:
+    print(i, end=&quot; &quot;)
+    i += 1</pre><div class="label">출력 예제</div><pre>1 2 3 4</pre><div class="label">해설</div><div class="exp">while문은 시작값, 조건, 변화식이 중요합니다.</div></section><section class="card"><span class="badge">패턴 12 · 무한 반복 + break</span><h2>0이 입력될 때까지 합 구하기</h2><p>정수를 계속 입력받다가 0이 입력되면 종료하고 합을 출력하세요.</p><div class="label">정답 코드</div><pre>total = 0
+while True:
+    n = int(input())
+    if n == 0:
+        break
+    total += n
+print(total)</pre><div class="label">출력 예제</div><pre>16</pre><div class="label">해설</div><div class="exp">반복 횟수를 모를 때 while True와 break를 자주 사용합니다.</div></section><section class="card"><span class="badge">패턴 13 · continue</span><h2>1부터 N까지 3의 배수 제외하기</h2><p>정수 N을 입력받아 1부터 N까지 출력하되 3의 배수는 제외하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(1, n + 1):
+    if i % 3 == 0:
+        continue
+    print(i, end=&quot; &quot;)</pre><div class="label">출력 예제</div><pre>1 2 4 5 7 8 10</pre><div class="label">해설</div><div class="exp">continue는 현재 반복을 건너뛰고 다음 반복으로 이동합니다.</div></section><section class="card"><span class="badge">패턴 14 · 누적곱</span><h2>팩토리얼 구하기</h2><p>정수 N을 입력받아 N!을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+result = 1
+for i in range(1, n + 1):
+    result *= i
+print(result)</pre><div class="label">출력 예제</div><pre>120</pre><div class="label">해설</div><div class="exp">곱의 누적은 1에서 시작하며 result *= i를 사용합니다.</div></section><section class="card"><span class="badge">패턴 15 · 완전탐색 + 조건</span><h2>약수 모두 출력하기</h2><p>정수 N을 입력받아 N의 모든 약수를 작은 수부터 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(1, n + 1):
+    if n % i == 0:
+        print(i, end=&quot; &quot;)</pre><div class="label">출력 예제</div><pre>1 2 3 4 6 12</pre><div class="label">해설</div><div class="exp">n % i == 0이면 i는 n의 약수입니다.</div></section><section class="card"><span class="badge">패턴 16 · 조건 + 카운팅</span><h2>약수의 개수 구하기</h2><p>정수 N을 입력받아 N의 약수의 개수를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+count = 0
+for i in range(1, n + 1):
+    if n % i == 0:
+        count += 1
+print(count)</pre><div class="label">출력 예제</div><pre>6</pre><div class="label">해설</div><div class="exp">약수 판정과 카운팅을 결합한 패턴입니다.</div></section><section class="card"><span class="badge">패턴 17 · 자리수 처리</span><h2>각 자리수의 합</h2><p>양의 정수 N을 입력받아 각 자리 숫자의 합을 while문으로 구하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+total = 0
+while n &gt; 0:
+    total += n % 10
+    n //= 10
+print(total)</pre><div class="label">출력 예제</div><pre>18</pre><div class="label">해설</div><div class="exp">% 10으로 마지막 자리, // 10으로 마지막 자리를 제거합니다.</div></section><section class="card"><span class="badge">패턴 18 · 2중 for문</span><h2>구구단 전체 출력하기</h2><p>2단부터 9단까지 구구단을 모두 출력하세요.</p><div class="label">정답 코드</div><pre>for dan in range(2, 10):
+    for i in range(1, 10):
+        print(dan, &quot;x&quot;, i, &quot;=&quot;, dan * i)
+    print()</pre><div class="label">출력 예제</div><pre>2 x 1 = 2
+...
+9 x 9 = 81</pre><div class="label">해설</div><div class="exp">바깥 반복문은 단, 안쪽 반복문은 곱하는 수를 담당합니다.</div></section><section class="card"><span class="badge">패턴 19 · 행·열 중첩</span><h2>별표 직사각형 출력하기</h2><p>두 정수 N, M을 입력받아 세로 N줄, 가로 M개의 별표 직사각형을 출력하세요.</p><div class="label">정답 코드</div><pre>n, m = map(int, input().split())
+for i in range(n):
+    for j in range(m):
+        print(&quot;*&quot;, end=&quot;&quot;)
+    print()</pre><div class="label">출력 예제</div><pre>*****
+*****
+*****</pre><div class="label">해설</div><div class="exp">바깥 반복은 행, 안쪽 반복은 열을 담당합니다.</div></section><section class="card"><span class="badge">패턴 20 · 가변 중첩 반복</span><h2>계단 모양 별 찍기</h2><p>정수 N을 입력받아 첫 줄 1개, 두 번째 줄 2개, ... N번째 줄 N개의 별을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+for i in range(1, n + 1):
+    for j in range(i):
+        print(&quot;*&quot;, end=&quot;&quot;)
+    print()</pre><div class="label">출력 예제</div><pre>*
+**
+***
+****
+*****</pre><div class="label">해설</div><div class="exp">안쪽 반복 횟수가 현재 줄 번호 i에 따라 달라집니다.</div></section><div class="footer">-세영코딩연구소- &nbsp;&nbsp;&nbsp; ph.D KIM</div></div></body></html>

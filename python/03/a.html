@@ -1,0 +1,295 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>파이썬 리스트 C스타일 반복문 패턴 20제 - 정답과 해설</title><style>
+*{box-sizing:border-box} body{margin:0;background:#fff8fb;color:#272329;font-family:Arial,'Malgun Gothic',sans-serif;line-height:1.6}
+.wrap{max-width:980px;margin:auto;padding:26px 22px 60px}.hero{background:linear-gradient(135deg,#fff,#ffe4f0);border:2px solid #ffc2dc;border-radius:22px;padding:28px;margin-bottom:18px}
+h1{margin:0;color:#8b2558;font-size:30px}.hero p{margin:7px 0 0;color:#66515b}.toolbar{display:flex;gap:10px;position:sticky;top:8px;z-index:5;margin:18px 0}
+button{border:0;border-radius:12px;padding:11px 18px;background:#ec5c9b;color:white;font-weight:bold;cursor:pointer}.alt{background:white;color:#8b2558;border:1px solid #dda2bc}
+.summary,.card{background:white;border:1px solid #e8b8cc;border-radius:17px;padding:20px;margin-bottom:18px}.num{display:inline-block;background:#fff0f6;color:#94295e;font-weight:bold;border-radius:999px;padding:4px 10px;font-size:12px}
+h2{color:#8b2558;font-size:21px;margin:8px 0}.label{font-weight:bold;color:#74314f;margin:12px 0 5px}pre{margin:0;background:#fff8fb;border:1px solid #ead1dc;border-radius:11px;padding:13px;white-space:pre-wrap}
+.answerbox{height:180px;border:1px dashed #d4a1b6;border-radius:11px;background:repeating-linear-gradient(#fff,#fff 31px,#f4dfe8 32px)}.explain{background:#fff2f7;border-left:5px solid #ec5c9b;border-radius:8px;padding:13px}
+.footer{text-align:center;color:#92285d;font-weight:bold;margin-top:35px}.tip{font-size:13px;color:#6c5961}
+@page{size:A4;margin:13mm}@media print{body{background:#fff}.wrap{max-width:none;padding:0}.toolbar{display:none}.hero,.summary,.card{border:1px solid #aaa;background:#fff}.card{break-inside:avoid}.answerbox{height:145px}}
+</style></head><body><div class="wrap"><section class="hero"><h1>파이썬 리스트 C스타일 반복문 패턴 20제</h1><p>교사용 정답·해설지 · C 배열 사고방식으로 이해하는 Python List</p></section><div class="toolbar"><button onclick="window.print()">정답·해설지 인쇄</button></div><div class="summary"><b>핵심 흐름</b><br>인덱스 순회 → 누적 → 카운팅 → 최대·최소 → 위치 탐색 → 인접 비교 → 시프트 → 삽입·삭제 → 카운팅 배열 순으로 구성했습니다.</div><section class="card"><span class="num">문제 01 · for i in range(n), a[i]</span><h2>리스트 원소를 인덱스로 순서대로 출력하기</h2><p>정수 N과 N개의 정수를 입력받아 리스트에 저장한 뒤, 인덱스를 이용해 모든 원소를 순서대로 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">C언어에서 a[i]로 배열을 접근하듯 파이썬 리스트도 a[i]로 접근할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+
+출력
+10 20 30 40 50</pre></section><section class="card"><span class="num">문제 02 · 역방향 인덱스 순회</span><h2>리스트를 거꾸로 출력하기</h2><p>N개의 정수를 리스트에 저장한 뒤 마지막 원소부터 첫 원소까지 거꾸로 출력하세요. reverse()와 reversed()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+for i in range(n - 1, -1, -1):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">마지막 인덱스는 n-1입니다. range(n-1, -1, -1)을 사용하면 뒤에서 앞으로 순회할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+
+출력
+50 40 30 20 10</pre></section><section class="card"><span class="num">문제 03 · 누적합</span><h2>리스트 모든 원소의 합</h2><p>N개의 정수를 입력받아 리스트에 저장하고 모든 원소의 합을 반복문으로 구하세요. sum()은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+total = 0
+for i in range(n):
+    total += a[i]
+
+print(total)</pre><div class="label">해설</div><div class="explain">total을 0으로 초기화한 뒤 a[i]를 하나씩 더하는 가장 기본적인 누적합 패턴입니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+3 7 2 8 10
+
+출력
+30</pre></section><section class="card"><span class="num">문제 04 · 순회 + 조건 + 누적</span><h2>짝수 원소의 합 구하기</h2><p>N개의 정수를 입력받아 리스트 안의 짝수만 더한 값을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+total = 0
+for i in range(n):
+    if a[i] % 2 == 0:
+        total += a[i]
+
+print(total)</pre><div class="label">해설</div><div class="explain">각 원소를 확인하면서 짝수일 때만 누적합니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+3 8 5 12 7 4
+
+출력
+24</pre></section><section class="card"><span class="num">문제 05 · 선형 탐색 + 카운팅</span><h2>특정 값의 개수 세기</h2><p>N개의 정수와 찾을 값 X를 입력받아 리스트에서 X가 몇 번 등장하는지 출력하세요. count()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+x = int(input())
+
+cnt = 0
+for i in range(n):
+    if a[i] == x:
+        cnt += 1
+
+print(cnt)</pre><div class="label">해설</div><div class="explain">찾는 값과 같은 원소를 만날 때마다 cnt를 증가시키는 패턴입니다.</div><div class="label">입출력 확인</div><pre>입력
+7
+2 5 2 8 2 1 5
+2
+
+출력
+3</pre></section><section class="card"><span class="num">문제 06 · 최댓값 갱신</span><h2>최댓값 직접 찾기</h2><p>N개의 정수 중 가장 큰 값을 반복문으로 찾으세요. max()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+mx = a[0]
+for i in range(1, n):
+    if a[i] &gt; mx:
+        mx = a[i]
+
+print(mx)</pre><div class="label">해설</div><div class="explain">첫 원소를 최댓값 후보로 두고 더 큰 값을 발견할 때마다 갱신합니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+4 17 9 21 3 12
+
+출력
+21</pre></section><section class="card"><span class="num">문제 07 · 최솟값 갱신</span><h2>최솟값 직접 찾기</h2><p>N개의 정수 중 가장 작은 값을 반복문으로 찾으세요. min()은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+mn = a[0]
+for i in range(1, n):
+    if a[i] &lt; mn:
+        mn = a[i]
+
+print(mn)</pre><div class="label">해설</div><div class="explain">최댓값 찾기와 같은 구조에서 비교 방향만 바꿉니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+4 17 9 -2 3 12
+
+출력
+-2</pre></section><section class="card"><span class="num">문제 08 · 값 + 인덱스 동시 갱신</span><h2>최댓값과 위치 찾기</h2><p>N개의 정수 중 최댓값과 그 최댓값이 처음 등장하는 인덱스를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+mx = a[0]
+pos = 0
+for i in range(1, n):
+    if a[i] &gt; mx:
+        mx = a[i]
+        pos = i
+
+print(mx, pos)</pre><div class="label">해설</div><div class="explain">최댓값을 바꿀 때 현재 인덱스도 함께 저장하면 위치까지 구할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+4 21 9 21 3 12
+
+출력
+21 1</pre></section><section class="card"><span class="num">문제 09 · 선형 탐색 + break</span><h2>특정 값 처음 위치 찾기</h2><p>N개의 정수와 X가 주어질 때 X가 처음 등장하는 인덱스를 출력하세요. 없으면 -1을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+x = int(input())
+
+pos = -1
+for i in range(n):
+    if a[i] == x:
+        pos = i
+        break
+
+print(pos)</pre><div class="label">해설</div><div class="explain">처음 찾는 순간 break로 종료합니다. 찾지 못했을 때를 위해 -1로 초기화합니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+8 3 7 3 9 1
+3
+
+출력
+1</pre></section><section class="card"><span class="num">문제 10 · 전체 탐색 + 위치 덮어쓰기</span><h2>특정 값 마지막 위치 찾기</h2><p>N개의 정수와 X가 주어질 때 X가 마지막으로 등장하는 인덱스를 출력하세요. 없으면 -1을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+x = int(input())
+
+pos = -1
+for i in range(n):
+    if a[i] == x:
+        pos = i
+
+print(pos)</pre><div class="label">해설</div><div class="explain">끝까지 순회하면서 찾을 때마다 위치를 덮어쓰면 마지막 위치가 남습니다.</div><div class="label">입출력 확인</div><pre>입력
+7
+5 2 8 2 1 2 9
+2
+
+출력
+5</pre></section><section class="card"><span class="num">문제 11 · 다중 카운터</span><h2>양수, 음수, 0의 개수 세기</h2><p>N개의 정수를 입력받아 양수의 개수, 음수의 개수, 0의 개수를 차례대로 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+positive = negative = zero = 0
+
+for i in range(n):
+    if a[i] &gt; 0:
+        positive += 1
+    elif a[i] &lt; 0:
+        negative += 1
+    else:
+        zero += 1
+
+print(positive, negative, zero)</pre><div class="label">해설</div><div class="explain">한 번의 순회로 여러 종류의 개수를 동시에 셀 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+7
+3 -2 0 5 -7 0 8
+
+출력
+3 2 2</pre></section><section class="card"><span class="num">문제 12 · 2회 순회</span><h2>평균보다 큰 원소의 개수</h2><p>N개의 정수를 입력받아 전체 평균보다 큰 원소가 몇 개인지 출력하세요. sum()은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+total = 0
+for i in range(n):
+    total += a[i]
+
+avg = total / n
+cnt = 0
+
+for i in range(n):
+    if a[i] &gt; avg:
+        cnt += 1
+
+print(cnt)</pre><div class="label">해설</div><div class="explain">첫 번째 순회에서 평균을 구하고 두 번째 순회에서 평균보다 큰 값의 개수를 셉니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+
+출력
+2</pre></section><section class="card"><span class="num">문제 13 · a[i]와 a[i+1] 비교</span><h2>인접한 두 원소의 차이 출력하기</h2><p>서로 이웃한 두 원소의 차이 a[i+1]-a[i]를 순서대로 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+for i in range(n - 1):
+    print(a[i + 1] - a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">a[i+1]을 사용하므로 마지막 반복 인덱스는 n-2가 되어야 합니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+3 8 6 11 15
+
+출력
+5 -2 5 4</pre></section><section class="card"><span class="num">문제 14 · 인접 비교 + flag</span><h2>오름차순인지 직접 판별하기</h2><p>N개의 정수가 오름차순인지 판별하세요. 오름차순이면 YES, 아니면 NO를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+ok = True
+for i in range(n - 1):
+    if a[i] &gt; a[i + 1]:
+        ok = False
+        break
+
+print(&quot;YES&quot; if ok else &quot;NO&quot;)</pre><div class="label">해설</div><div class="explain">정렬이 깨지는 지점을 하나라도 발견하면 바로 False로 바꾸고 종료합니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+2 4 4 7 10
+
+출력
+YES</pre></section><section class="card"><span class="num">문제 15 · swap</span><h2>리스트 원소 서로 바꾸기</h2><p>N개의 정수와 두 인덱스 A, B를 입력받아 두 위치의 값을 서로 바꾼 뒤 리스트 전체를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+x, y = map(int, input().split())
+
+temp = a[x]
+a[x] = a[y]
+a[y] = temp
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">C언어 방식처럼 임시 변수 temp를 이용해 두 값을 교환합니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+1 3
+
+출력
+10 40 30 20 50</pre></section><section class="card"><span class="num">문제 16 · 뒤에서 앞으로 시프트</span><h2>리스트를 오른쪽으로 한 칸 이동하기</h2><p>마지막 원소를 첫 위치로 보내고 나머지 원소를 오른쪽으로 한 칸 이동하세요. 슬라이싱은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+last = a[n - 1]
+for i in range(n - 1, 0, -1):
+    a[i] = a[i - 1]
+
+a[0] = last
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">오른쪽 이동은 데이터가 덮이지 않도록 뒤에서 앞으로 복사해야 합니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+
+출력
+50 10 20 30 40</pre></section><section class="card"><span class="num">문제 17 · 앞에서 뒤로 시프트</span><h2>리스트를 왼쪽으로 한 칸 이동하기</h2><p>첫 원소를 마지막 위치로 보내고 나머지 원소를 왼쪽으로 한 칸 이동하세요. 슬라이싱은 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+first = a[0]
+for i in range(n - 1):
+    a[i] = a[i + 1]
+
+a[n - 1] = first
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">왼쪽 이동은 앞에서 뒤로 복사하면 안전합니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+
+출력
+20 30 40 50 10</pre></section><section class="card"><span class="num">문제 18 · 삭제 시프트</span><h2>특정 위치의 원소 삭제하기</h2><p>삭제할 인덱스 K를 입력받아 그 원소를 삭제한 결과를 출력하세요. del(), pop(), remove()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+k = int(input())
+
+for i in range(k, n - 1):
+    a[i] = a[i + 1]
+
+n -= 1
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">삭제 위치 뒤의 원소들을 한 칸씩 왼쪽으로 당기는 C 배열 방식입니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+2
+
+출력
+10 20 40 50</pre></section><section class="card"><span class="num">문제 19 · 삽입 시프트</span><h2>특정 위치에 값 삽입하기</h2><p>삽입 위치 K와 값 X를 입력받아 K번 인덱스에 X를 삽입하세요. insert()는 사용하지 않습니다.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+k, x = map(int, input().split())
+
+a.append(0)
+
+for i in range(n, k, -1):
+    a[i] = a[i - 1]
+
+a[k] = x
+n += 1
+
+for i in range(n):
+    print(a[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">삽입은 뒤쪽부터 오른쪽으로 밀어 공간을 만든 뒤 새 값을 넣습니다.</div><div class="label">입출력 확인</div><pre>입력
+5
+10 20 30 40 50
+2 99
+
+출력
+10 20 99 30 40 50</pre></section><section class="card"><span class="num">문제 20 · 카운팅 배열</span><h2>0~9 숫자의 빈도수 세기</h2><p>N개의 정수가 모두 0 이상 9 이하일 때 각 숫자 0~9가 몇 번 등장했는지 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+a = list(map(int, input().split()))
+
+cnt = [0] * 10
+
+for i in range(n):
+    cnt[a[i]] += 1
+
+for i in range(10):
+    print(cnt[i], end=&#x27; &#x27;)</pre><div class="label">해설</div><div class="explain">값 자체를 보조 리스트 cnt의 인덱스로 사용합니다. 빈도수 계산의 대표 패턴입니다.</div><div class="label">입출력 확인</div><pre>입력
+8
+1 3 1 7 3 3 0 9
+
+출력
+1 2 0 3 0 0 0 1 0 1</pre></section><div class="footer">-세영코딩연구소- &nbsp;&nbsp; ph.D KIM</div></div></body></html>
