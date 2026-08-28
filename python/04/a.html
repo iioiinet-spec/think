@@ -1,0 +1,247 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>파이썬 리스트 메서드 핵심 패턴 20제 - 정답과 해설</title><style>
+*{box-sizing:border-box}body{margin:0;background:#fff9fc;color:#262329;font-family:Arial,'Malgun Gothic',sans-serif;line-height:1.65}
+.wrap{max-width:1000px;margin:auto;padding:28px 24px 70px}
+.hero{background:linear-gradient(135deg,#fff,#ffe2ef);border:2px solid #ffc0da;border-radius:22px;padding:28px;margin-bottom:18px}
+h1{margin:0;color:#8e2459;font-size:30px}.hero p{margin:8px 0 0;color:#6c5661}
+.toolbar{display:flex;gap:10px;position:sticky;top:8px;z-index:5;margin:18px 0 24px}
+button{border:0;border-radius:12px;padding:11px 18px;background:#ed5b9b;color:#fff;font-weight:800;cursor:pointer}
+.summary,.card{background:#fff;border:1px solid #eab9ce;border-radius:17px;padding:20px;margin-bottom:18px}
+.num{display:inline-block;background:#fff0f6;color:#962b61;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:900}
+h2{font-size:21px;color:#8e2459;margin:8px 0}.label{font-weight:900;color:#74334f;margin:12px 0 5px}
+pre{margin:0;background:#fff8fb;border:1px solid #ead2dd;border-radius:11px;padding:13px;white-space:pre-wrap;overflow:auto;font-family:Consolas,monospace}
+.answerbox{height:180px;border:1px dashed #d6a3b9;border-radius:11px;background:repeating-linear-gradient(#fff,#fff 31px,#f5e0e9 32px)}
+.explain{background:#fff2f7;border-left:5px solid #ed5b9b;border-radius:8px;padding:13px}
+.tip{font-size:13px;color:#6d5a62}.footer{text-align:center;color:#93285e;font-weight:900;margin-top:34px}
+.methodmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:12px}.methodmap span{background:#fff3f8;border:1px solid #f1c7d8;padding:8px 10px;border-radius:10px;font-size:13px}
+@page{size:A4;margin:13mm}
+@media print{body{background:#fff}.wrap{max-width:none;padding:0}.toolbar{display:none}.hero,.summary,.card{background:#fff;border:1px solid #aaa}.card{break-inside:avoid}.answerbox{height:145px}}
+</style></head><body><div class="wrap"><section class="hero"><h1>파이썬 리스트 메서드 핵심 패턴 20제</h1><p>교사용 정답·해설지 · 메서드별 사용 목적과 조합 패턴 정리</p></section><div class="toolbar"><button onclick="window.print()">정답·해설지 인쇄</button></div><div class="summary"><b>핵심 메서드 한눈에 보기</b><div class="methodmap">
+<span><b>append(x)</b> : 끝에 추가</span><span><b>insert(i,x)</b> : 위치 삽입</span><span><b>remove(x)</b> : 값 삭제</span><span><b>pop()</b> : 꺼내며 삭제</span><span><b>sort()</b> : 정렬</span><span><b>reverse()</b> : 순서 뒤집기</span><span><b>count(x)</b> : 개수</span><span><b>index(x)</b> : 위치</span><span><b>extend()</b> : 리스트 연결</span><span><b>copy()</b> : 복사</span><span><b>clear()</b> : 전체 삭제</span>
+</div></div><section class="card"><span class="num">문제 01 · append()</span><h2>리스트 끝에 값 추가하기</h2><p>빈 리스트를 만든 뒤 정수 5개를 입력받아 차례대로 append()로 추가하고 최종 리스트를 출력하세요.</p><div class="label">정답 코드</div><pre>a = []
+
+for _ in range(5):
+    x = int(input())
+    a.append(x)
+
+print(a)</pre><div class="label">해설</div><div class="explain">append(x)는 리스트의 맨 뒤에 값 x를 하나 추가합니다. 입력값을 차례로 저장할 때 가장 많이 사용하는 리스트 메서드입니다.</div><div class="label">입출력 확인</div><pre>입력
+10
+20
+30
+40
+50
+
+출력
+[10, 20, 30, 40, 50]</pre></section><section class="card"><span class="num">문제 02 · insert()</span><h2>특정 위치에 값 삽입하기</h2><p>정수 리스트와 위치 K, 값 X가 주어질 때 insert()를 사용해 K번 인덱스에 X를 삽입하고 결과를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+k, x = map(int, input().split())
+
+a.insert(k, x)
+
+print(a)</pre><div class="label">해설</div><div class="explain">insert(인덱스, 값)은 지정한 위치에 새 값을 삽입하고 기존 값들은 뒤로 밀립니다.</div><div class="label">입출력 확인</div><pre>입력
+10 20 30 40
+2 99
+
+출력
+[10, 20, 99, 30, 40]</pre></section><section class="card"><span class="num">문제 03 · remove()</span><h2>특정 값 하나 삭제하기</h2><p>정수 리스트와 삭제할 값 X가 주어질 때 remove()를 사용해 X를 처음 한 번만 삭제하고 결과를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+x = int(input())
+
+a.remove(x)
+
+print(a)</pre><div class="label">해설</div><div class="explain">remove(x)는 리스트에서 값 x가 처음 등장한 한 개만 삭제합니다. 같은 값이 여러 개 있어도 첫 번째만 제거됩니다.</div><div class="label">입출력 확인</div><pre>입력
+3 5 2 5 7
+5
+
+출력
+[3, 2, 5, 7]</pre></section><section class="card"><span class="num">문제 04 · pop()</span><h2>마지막 값 꺼내기</h2><p>정수 리스트에서 마지막 값을 pop()으로 꺼내 출력하고, 남은 리스트도 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+x = a.pop()
+
+print(x)
+print(a)</pre><div class="label">해설</div><div class="explain">pop()은 마지막 원소를 삭제하면서 그 값을 반환합니다. 스택 자료구조를 구현할 때 자주 사용됩니다.</div><div class="label">입출력 확인</div><pre>입력
+10 20 30 40
+
+출력
+40
+[10, 20, 30]</pre></section><section class="card"><span class="num">문제 05 · pop(index)</span><h2>특정 위치 값 꺼내기</h2><p>정수 리스트와 인덱스 K가 주어질 때 K번 원소를 pop(K)로 꺼내 출력하고 남은 리스트를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+k = int(input())
+
+x = a.pop(k)
+
+print(x)
+print(a)</pre><div class="label">해설</div><div class="explain">pop(k)는 k번 인덱스의 원소를 삭제하면서 그 값을 반환합니다.</div><div class="label">입출력 확인</div><pre>입력
+10 20 30 40 50
+2
+
+출력
+30
+[10, 20, 40, 50]</pre></section><section class="card"><span class="num">문제 06 · sort()</span><h2>리스트 오름차순 정렬하기</h2><p>정수 리스트를 sort()를 이용하여 오름차순으로 정렬한 뒤 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+a.sort()
+
+print(a)</pre><div class="label">해설</div><div class="explain">sort()는 원본 리스트 자체를 오름차순으로 정렬합니다.</div><div class="label">입출력 확인</div><pre>입력
+5 2 9 1 7
+
+출력
+[1, 2, 5, 7, 9]</pre></section><section class="card"><span class="num">문제 07 · sort(reverse=True)</span><h2>리스트 내림차순 정렬하기</h2><p>정수 리스트를 sort(reverse=True)를 이용하여 내림차순으로 정렬하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+a.sort(reverse=True)
+
+print(a)</pre><div class="label">해설</div><div class="explain">sort(reverse=True)는 큰 값부터 작은 값 순으로 원본 리스트를 정렬합니다.</div><div class="label">입출력 확인</div><pre>입력
+5 2 9 1 7
+
+출력
+[9, 7, 5, 2, 1]</pre></section><section class="card"><span class="num">문제 08 · reverse()</span><h2>리스트 순서 뒤집기</h2><p>정수 리스트의 원소 순서를 reverse()를 사용하여 뒤집고 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+a.reverse()
+
+print(a)</pre><div class="label">해설</div><div class="explain">reverse()는 정렬이 아니라 현재 원소의 순서를 그대로 반대로 뒤집습니다.</div><div class="label">입출력 확인</div><pre>입력
+10 20 30 40
+
+출력
+[40, 30, 20, 10]</pre></section><section class="card"><span class="num">문제 09 · count()</span><h2>특정 값의 개수 세기</h2><p>정수 리스트와 값 X가 주어질 때 X가 몇 번 등장하는지 count()를 사용하여 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+x = int(input())
+
+print(a.count(x))</pre><div class="label">해설</div><div class="explain">count(x)는 리스트 안에서 값 x가 등장하는 횟수를 반환합니다.</div><div class="label">입출력 확인</div><pre>입력
+1 3 1 5 1 7
+1
+
+출력
+3</pre></section><section class="card"><span class="num">문제 10 · index()</span><h2>특정 값의 첫 위치 찾기</h2><p>정수 리스트와 값 X가 주어질 때 X가 처음 등장하는 인덱스를 index()로 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+x = int(input())
+
+print(a.index(x))</pre><div class="label">해설</div><div class="explain">index(x)는 값 x가 처음 등장하는 인덱스를 반환합니다. 값이 없으면 오류가 발생하므로 존재 여부를 먼저 확인하는 습관이 중요합니다.</div><div class="label">입출력 확인</div><pre>입력
+8 3 7 3 9
+3
+
+출력
+1</pre></section><section class="card"><span class="num">문제 11 · in + remove()</span><h2>값이 있을 때만 삭제하기</h2><p>정수 리스트와 값 X가 주어질 때 X가 리스트에 있으면 한 번 삭제하고, 없으면 그대로 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+x = int(input())
+
+if x in a:
+    a.remove(x)
+
+print(a)</pre><div class="label">해설</div><div class="explain">remove()는 값이 없으면 오류가 나므로 if x in a와 함께 사용하면 안전합니다.</div><div class="label">입출력 확인</div><pre>입력
+2 4 6 8
+5
+
+출력
+[2, 4, 6, 8]</pre></section><section class="card"><span class="num">문제 12 · extend()</span><h2>두 리스트 합치기</h2><p>두 줄에 각각 정수 리스트가 주어질 때 첫 번째 리스트 뒤에 두 번째 리스트를 extend()로 이어 붙이세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+b = list(map(int, input().split()))
+
+a.extend(b)
+
+print(a)</pre><div class="label">해설</div><div class="explain">extend(리스트)는 다른 리스트의 모든 원소를 현재 리스트 뒤에 하나씩 이어 붙입니다.</div><div class="label">입출력 확인</div><pre>입력
+1 2 3
+4 5 6
+
+출력
+[1, 2, 3, 4, 5, 6]</pre></section><section class="card"><span class="num">문제 13 · copy()</span><h2>리스트 복사 후 정렬하기</h2><p>원본 리스트는 그대로 두고 복사본만 오름차순 정렬하여 원본과 복사본을 각각 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+b = a.copy()
+b.sort()
+
+print(a)
+print(b)</pre><div class="label">해설</div><div class="explain">copy()를 사용하면 원본과 독립적인 새 리스트를 만들 수 있습니다. 원본 보존이 필요한 문제에서 자주 사용됩니다.</div><div class="label">입출력 확인</div><pre>입력
+5 1 4 2 3
+
+출력
+[5, 1, 4, 2, 3]
+[1, 2, 3, 4, 5]</pre></section><section class="card"><span class="num">문제 14 · clear()</span><h2>리스트 전체 비우기</h2><p>정수 리스트를 clear()로 모두 비운 뒤 리스트를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+a.clear()
+
+print(a)</pre><div class="label">해설</div><div class="explain">clear()는 리스트 안의 모든 원소를 제거하여 빈 리스트로 만듭니다.</div><div class="label">입출력 확인</div><pre>입력
+1 2 3 4 5
+
+출력
+[]</pre></section><section class="card"><span class="num">문제 15 · min() + remove()</span><h2>가장 작은 값 하나 삭제하기</h2><p>정수 리스트에서 가장 작은 값을 한 번만 삭제하고 결과를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+m = min(a)
+a.remove(m)
+
+print(a)</pre><div class="label">해설</div><div class="explain">min(a)로 최솟값을 찾고 remove()로 그 값의 첫 번째 등장만 삭제할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+4 1 7 1 9
+
+출력
+[4, 7, 1, 9]</pre></section><section class="card"><span class="num">문제 16 · max() + remove()</span><h2>가장 큰 값 꺼내기</h2><p>정수 리스트에서 가장 큰 값을 찾아 삭제하면서 그 값을 출력하고, 남은 리스트도 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+m = max(a)
+a.remove(m)
+
+print(m)
+print(a)</pre><div class="label">해설</div><div class="explain">max()로 최댓값을 찾고 remove()로 한 번 제거하는 조합은 우선순위가 큰 값을 처리할 때 유용합니다.</div><div class="label">입출력 확인</div><pre>입력
+3 9 5 9 1
+
+출력
+9
+[3, 5, 9, 1]</pre></section><section class="card"><span class="num">문제 17 · remove() 반복</span><h2>중복값 모두 제거하기</h2><p>정수 리스트와 값 X가 주어질 때 X를 모두 제거하고 결과를 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+x = int(input())
+
+while x in a:
+    a.remove(x)
+
+print(a)</pre><div class="label">해설</div><div class="explain">while x in a와 remove(x)를 결합하면 같은 값을 모두 제거할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+1 2 1 3 1 4 1
+1
+
+출력
+[2, 3, 4]</pre></section><section class="card"><span class="num">문제 18 · sort() + remove()</span><h2>정렬 후 두 번째로 큰 서로 다른 값 찾기</h2><p>정수 리스트를 내림차순 정렬한 후 가장 큰 값과 같은 값들을 모두 제거하고, 남은 리스트의 첫 값을 출력하세요.</p><div class="label">정답 코드</div><pre>a = list(map(int, input().split()))
+
+a.sort(reverse=True)
+mx = a[0]
+
+while mx in a:
+    a.remove(mx)
+
+print(a[0])</pre><div class="label">해설</div><div class="explain">정렬과 remove() 반복을 결합하면 중복을 고려한 순위 문제를 해결할 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+5 9 3 9 7 7
+
+출력
+7</pre></section><section class="card"><span class="num">문제 19 · append() + pop()</span><h2>리스트를 스택처럼 사용하기</h2><p>명령의 개수 N과 push X 또는 pop 명령이 주어집니다. append()와 pop()으로 스택을 구현하고 pop 할 때마다 값을 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+stack = []
+
+for _ in range(n):
+    cmd = input().split()
+
+    if cmd[0] == &quot;push&quot;:
+        stack.append(int(cmd[1]))
+    else:
+        print(stack.pop())</pre><div class="label">해설</div><div class="explain">append()는 스택의 push, pop()은 스택의 pop 역할을 합니다. 파이썬 리스트로 스택을 구현하는 가장 대표적인 패턴입니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+push 10
+push 20
+pop
+push 30
+pop
+pop
+
+출력
+20
+30
+10</pre></section><section class="card"><span class="num">문제 20 · append() + insert() + remove() + pop()</span><h2>간단한 할 일 목록 관리</h2><p>초기에는 빈 리스트입니다. add X는 끝에 추가, first X는 맨 앞에 삽입, done X는 해당 값을 삭제, last는 마지막 값을 제거합니다. 모든 명령 처리 후 리스트를 출력하세요.</p><div class="label">정답 코드</div><pre>n = int(input())
+todo = []
+
+for _ in range(n):
+    cmd = input().split()
+
+    if cmd[0] == &quot;add&quot;:
+        todo.append(cmd[1])
+    elif cmd[0] == &quot;first&quot;:
+        todo.insert(0, cmd[1])
+    elif cmd[0] == &quot;done&quot;:
+        if cmd[1] in todo:
+            todo.remove(cmd[1])
+    elif cmd[0] == &quot;last&quot;:
+        if todo:
+            todo.pop()
+
+print(todo)</pre><div class="label">해설</div><div class="explain">여러 리스트 메서드를 실제 관리 프로그램처럼 함께 사용하는 종합 패턴입니다. 메서드 각각의 역할과 사용 상황을 익힐 수 있습니다.</div><div class="label">입출력 확인</div><pre>입력
+6
+add study
+add coding
+first breakfast
+done study
+add exercise
+last
+
+출력
+[&#x27;breakfast&#x27;, &#x27;coding&#x27;]</pre></section><div class="footer">-세영코딩연구소- &nbsp;&nbsp; ph.D KIM</div></div></body></html>
