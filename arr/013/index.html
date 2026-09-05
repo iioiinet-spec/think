@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>역행렬 · 가우스 소거법 · 연립방정식 - 인터랙티브 강의자료</title>
+<style>
+:root{
+  --bg:#fff8fb; --card:#fff; --ink:#2d2630; --muted:#756a73;
+  --pink:#e85c9d; --pink2:#ff9bc8; --purple:#8b70d6; --blue:#5e8ee6;
+  --line:#efd9e5; --green:#2d9b72; --yellow:#fff7e5; --red:#d75b72;
+  --shadow:0 12px 28px rgba(105,70,95,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#fff7fb,#fff 42%,#faf7ff);color:var(--ink);line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{background:linear-gradient(135deg,#ffb7d4,#e789ba 46%,#b79de8);color:#fff;padding:54px 20px 40px;position:relative;overflow:hidden}
+header:before,header:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.15)}
+header:before{width:230px;height:230px;right:-60px;top:-90px}
+header:after{width:130px;height:130px;left:8%;bottom:-65px}
+.badge{display:inline-block;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.17);font-size:13px;margin-bottom:12px}
+h1{margin:0 0 12px;font-size:clamp(31px,5vw,52px);letter-spacing:-1.3px}
+.subtitle{font-size:18px;max-width:900px;opacity:.97}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.93);backdrop-filter:blur(11px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+nav a{text-decoration:none;color:#744d65;white-space:nowrap;background:#fff0f6;border:1px solid #f3d7e4;border-radius:999px;padding:7px 11px;font-size:13px}
+main{padding:28px 0 70px}
+section{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;margin:22px 0;box-shadow:var(--shadow)}
+h2{margin:0 0 14px;color:#7e4267;font-size:29px;letter-spacing:-.5px}
+h3{margin:24px 0 10px;color:#59465a;font-size:21px}
+.lead{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{background:#fffafd;border:1px solid #f0dae6;border-radius:18px;padding:18px}
+.card strong{color:#b04679}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf5ff;border-left:5px solid var(--purple);padding:12px 16px;border-radius:10px;margin:12px 0;font-size:18px;overflow:auto}
+.example{background:#fff8e9;border:1px solid #f0dfba;border-radius:16px;padding:16px;margin:14px 0}
+.tip{background:#eef7ff;border:1px solid #cde2f7;border-radius:16px;padding:16px}
+.key{background:#effff7;border:1px solid #c9ebdc;border-radius:16px;padding:16px}
+.warn{background:#fff1f3;border:1px solid #efc8d0;border-radius:16px;padding:16px}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid #eadce4;padding:9px;text-align:center}
+th{background:#fff0f6;color:#7c4667}
+.matrix-stage{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin:18px 0;padding:18px;background:#fffafd;border:1px solid #efdce6;border-radius:18px}
+.matrix-wrap{position:relative;display:inline-grid;gap:7px;padding:10px 17px;vertical-align:middle}
+.matrix-wrap.c2{grid-template-columns:repeat(2,64px)}
+.matrix-wrap.c3{grid-template-columns:repeat(3,64px)}
+.matrix-wrap.c4{grid-template-columns:repeat(4,64px)}
+.matrix-wrap:before,.matrix-wrap:after{content:"";position:absolute;top:0;bottom:0;width:10px;border-top:3px solid #735d6b;border-bottom:3px solid #735d6b}
+.matrix-wrap:before{left:0;border-left:3px solid #735d6b}
+.matrix-wrap:after{right:0;border-right:3px solid #735d6b}
+.matrix-wrap input{width:64px;text-align:center;padding:9px 5px;border:1px solid #dfcbd6;border-radius:9px;background:#fff;font-weight:700}
+.cell{min-width:64px;min-height:40px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #ead9e2;border-radius:9px;padding:7px;font-weight:700}
+.aug{border-left:3px solid #8d6c7f!important}
+.op{font-size:27px;font-weight:800;color:#9a5478}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:10px 0}
+input,select{padding:9px 11px;border:1px solid #ddc8d5;border-radius:10px;font-size:15px}
+.btn{border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-weight:700;cursor:pointer}
+.btn.secondary{background:#fff;border:1px solid #dfbfd0;color:#944a70}
+.btn.good{background:linear-gradient(135deg,#48b58b,#2b8f72)}
+.result{min-height:48px;background:#faf6fb;border:1px dashed #d4bdca;border-radius:12px;padding:12px 14px;margin-top:10px;overflow:auto}
+.stepbox{display:grid;gap:10px;margin-top:12px}
+.step{border:1px solid #e2d6ee;background:#faf7ff;border-radius:13px;padding:12px}
+.step b{color:#7457b1}
+pre{background:#292432;color:#f8f0f7;border-radius:16px;padding:16px;overflow:auto}
+code{font-family:Consolas,"Courier New",monospace}
+.quizQ{border:1px solid #ead9e3;background:#fff;border-radius:16px;padding:16px;margin:12px 0}
+.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.answers button{padding:8px 10px;border:1px solid #dfcad6;background:#fff;border-radius:10px;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+.progress{height:10px;background:#f1e3eb;border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--pink2),var(--purple));transition:.25s}
+footer{text-align:center;color:#887785;padding:30px 0 60px}
+@media(max-width:760px){
+ .grid,.grid3{grid-template-columns:1fr}
+ section{padding:20px;border-radius:18px}
+ h2{font-size:24px}
+ .matrix-wrap.c4{grid-template-columns:repeat(4,52px)}
+ .matrix-wrap input,.cell{width:52px;min-width:52px}
+}
+@media print{
+ nav,.interactive-only{display:none!important}
+ body{background:#fff}
+ header{background:#f6d8e7!important;color:#3d2d38;padding:26px}
+ section{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+  <div class="badge">선형대수 기초 · 이산수학 확장 · 정보올림피아드 사고력</div>
+  <h1>역행렬 · 가우스 소거법 · 연립방정식</h1>
+  <div class="subtitle">행렬을 이용해 연립방정식을 표현하고, 기본 행 연산으로 단순화하며, 역행렬과 가우스-조르당 소거법으로 해를 찾는 과정을 직접 조작하며 이해합니다.</div>
+</div>
+</header>
+
+<nav>
+<div class="wrap">
+ <a href="#s1">1. 역행렬</a><a href="#s2">2. 역행렬 공식</a><a href="#s3">3. 기본 행 연산</a>
+ <a href="#s4">4. 가우스 소거법</a><a href="#s5">5. 가우스-조르당</a><a href="#s6">6. 확대행렬</a>
+ <a href="#s7">7. 연립방정식 풀이</a><a href="#s8">8. 해의 개수</a><a href="#s9">9. 역행렬로 풀기</a>
+ <a href="#s10">10. 알고리즘 관점</a><a href="#quiz">확인문제</a>
+</div>
+</nav>
+
+<main class="wrap">
+
+<section id="s1">
+<h2>1. 역행렬이란?</h2>
+<p class="lead">숫자에서 5의 역수는 1/5이고, 5×(1/5)=1입니다. 행렬에서도 이와 비슷하게 어떤 행렬 A를 곱했을 때 항등행렬 I가 되는 행렬을 생각할 수 있습니다.</p>
+<div class="formula">AA⁻¹ = A⁻¹A = I</div>
+<div class="grid">
+ <div class="card"><h3>숫자</h3><p>5 × 1/5 = 1</p></div>
+ <div class="card"><h3>행렬</h3><p>A × A⁻¹ = I</p></div>
+</div>
+<div class="key"><b>중요:</b> 모든 행렬에 역행렬이 존재하는 것은 아닙니다. 정사각행렬 중에서도 행렬식(det)이 0이 아닌 경우에만 역행렬이 존재합니다.</div>
+</section>
+
+<section id="s2">
+<h2>2. 2×2 행렬의 역행렬 공식</h2>
+<p>A가 다음과 같다고 합시다.</p>
+<div class="formula">
+A = [ a  b ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ c  d ]
+</div>
+<p>행렬식은 다음과 같습니다.</p>
+<div class="formula">det(A) = ad - bc</div>
+<p>det(A) ≠ 0이면 역행렬은</p>
+<div class="formula">
+A⁻¹ = 1/(ad-bc) · [ d  -b ]<br>
+　　　　　　　　　[ -c  a ]
+</div>
+
+<h3>직접 역행렬 계산하기</h3>
+<div class="matrix-stage interactive-only">
+ <div>
+  <div class="matrix-wrap c2">
+   <input id="i11" type="number" value="2"><input id="i12" type="number" value="1">
+   <input id="i21" type="number" value="1"><input id="i22" type="number" value="1">
+  </div>
+  <div class="small" style="text-align:center">A</div>
+ </div>
+ <button class="btn" onclick="inverse2()">역행렬 계산</button>
+</div>
+<div class="result" id="invResult">det(A)를 먼저 계산한 뒤 역행렬 존재 여부를 확인합니다.</div>
+</section>
+
+<section id="s3">
+<h2>3. 기본 행 연산(Elementary Row Operations)</h2>
+<p>가우스 소거법은 행렬의 행을 바꾸면서도 연립방정식의 해를 유지하는 세 가지 연산만 사용합니다.</p>
+<div class="grid3">
+ <div class="card"><strong>① 행 교환</strong><p>R₁ ↔ R₂</p><p>두 행의 위치를 바꿉니다.</p></div>
+ <div class="card"><strong>② 상수배</strong><p>R₁ ← kR₁ (k≠0)</p><p>한 행 전체에 0이 아닌 수를 곱합니다.</p></div>
+ <div class="card"><strong>③ 다른 행의 배수 더하기</strong><p>R₂ ← R₂ + kR₁</p><p>한 행에 다른 행의 배수를 더합니다.</p></div>
+</div>
+<div class="example"><b>왜 가능한가?</b> 연립방정식에서 식의 순서를 바꾸거나, 양변에 같은 수를 곱하거나, 한 식의 배수를 다른 식에 더해도 해는 변하지 않기 때문입니다.</div>
+</section>
+
+<section id="s4">
+<h2>4. 가우스 소거법(Gaussian Elimination)</h2>
+<p>가우스 소거법은 행렬을 <b>행 사다리꼴(Row Echelon Form)</b>로 만들어 아래쪽 원소를 0으로 제거한 뒤, 뒤에서부터 대입하여 해를 구합니다.</p>
+<div class="example">
+연립방정식<br>
+x + y = 5<br>
+2x + 3y = 12
+</div>
+<div class="formula">
+[1 1 | 5]<br>
+[2 3 |12]
+</div>
+<p>R₂ ← R₂ - 2R₁</p>
+<div class="formula">
+[1 1 |5]<br>
+[0 1 |2]
+</div>
+<p>둘째 식에서 y=2, 첫째 식에 대입하면 x=3.</p>
+<div class="key"><b>핵심 전략:</b> 왼쪽 위에서 시작해 피벗(pivot)을 잡고, 그 아래 원소들을 0으로 만들어 삼각형 모양으로 정리합니다.</div>
+</section>
+
+<section id="s5">
+<h2>5. 가우스-조르당 소거법(Gauss-Jordan Elimination)</h2>
+<p>가우스 소거법보다 한 단계 더 진행하여 피벗의 <b>위와 아래를 모두 0</b>으로 만듭니다. 최종적으로 왼쪽 부분을 항등행렬 I로 만듭니다.</p>
+<div class="formula">
+[1 1 |5] → [1 0 |3]<br>
+[0 1 |2] → [0 1 |2]
+</div>
+<p>그러면 해를 바로 읽을 수 있습니다.</p>
+<div class="formula">x=3, y=2</div>
+<div class="tip"><b>연결:</b> 역행렬을 가우스-조르당 소거법으로 구할 때는 [A | I]를 [I | A⁻¹]로 변환합니다.</div>
+</section>
+
+<section id="s6">
+<h2>6. 확대행렬(Augmented Matrix)</h2>
+<p>연립방정식의 계수와 우변 상수를 하나의 행렬로 합친 것을 확대행렬이라고 합니다.</p>
+<div class="example">
+2x + y = 5<br>
+x - y = 1
+</div>
+<div class="formula">
+계수행렬 A = [2  1]　상수벡터 b=[5]<br>
+　　　　　　[1 -1]　　　　　　[1]
+</div>
+<p>이를 확대행렬로 쓰면</p>
+<div class="formula">
+[A | b] = [2  1 | 5]<br>
+　　　　 [1 -1 | 1]
+</div>
+<div class="key"><b>의미:</b> 미지수 x,y의 계수와 등호 오른쪽 숫자를 한 표 안에 넣어 행 연산으로 동시에 처리할 수 있습니다.</div>
+</section>
+
+<section id="s7">
+<h2>7. 연립방정식을 직접 가우스 소거하기</h2>
+<p>아래 2원 연립방정식의 계수와 상수를 입력하고 단계별 소거 과정을 확인하세요.</p>
+<div class="matrix-stage interactive-only">
+ <div class="matrix-wrap c3">
+  <input id="g11" type="number" value="1"><input id="g12" type="number" value="1"><input id="g13" class="aug" type="number" value="5">
+  <input id="g21" type="number" value="2"><input id="g22" type="number" value="3"><input id="g23" class="aug" type="number" value="12">
+ </div>
+ <button class="btn" onclick="solve2()">가우스 소거 단계 보기</button>
+</div>
+<div class="result" id="gaussResult">예: x+y=5, 2x+3y=12</div>
+</section>
+
+<section id="s8">
+<h2>8. 연립방정식은 항상 하나의 해를 가질까?</h2>
+<p>아닙니다. 가우스 소거 결과를 보면 해의 개수를 판단할 수 있습니다.</p>
+<table>
+<tr><th>형태</th><th>의미</th><th>해</th></tr>
+<tr><td>[0 0 | c], c≠0</td><td>0=c라는 모순</td><td>해 없음</td></tr>
+<tr><td>[0 0 | 0]</td><td>한 식이 다른 식과 종속</td><td>무수히 많은 해 가능</td></tr>
+<tr><td>모든 미지수에 피벗 존재</td><td>각 변수 값 결정</td><td>유일해</td></tr>
+</table>
+
+<div class="grid3">
+ <div class="card"><strong>유일해</strong><p>x+y=3<br>x-y=1</p></div>
+ <div class="card"><strong>해 없음</strong><p>x+y=2<br>2x+2y=5</p></div>
+ <div class="card"><strong>무수히 많은 해</strong><p>x+y=2<br>2x+2y=4</p></div>
+</div>
+</section>
+
+<section id="s9">
+<h2>9. 역행렬로 연립방정식 풀기</h2>
+<p>연립방정식을 행렬식으로 표현하면</p>
+<div class="formula">Ax = b</div>
+<p>양변 왼쪽에 A⁻¹을 곱하면</p>
+<div class="formula">A⁻¹Ax = A⁻¹b → Ix = A⁻¹b → x = A⁻¹b</div>
+<div class="example">
+2x+y=5, x-y=1<br>
+A=[[2,1],[1,-1]], b=[[5],[1]]<br>
+A⁻¹을 구한 뒤 A⁻¹b를 계산하면 x=2, y=1.
+</div>
+<div class="warn"><b>주의:</b> 실제 알고리즘에서는 연립방정식을 풀기 위해 역행렬을 직접 계산하는 것보다 가우스 소거법을 사용하는 경우가 더 일반적입니다. 계산량과 수치 오차 측면에서 더 적절하기 때문입니다.</div>
+</section>
+
+<section>
+<h2>10. [A | I]로 역행렬 구하기</h2>
+<p>2×2 또는 더 큰 행렬의 역행렬도 가우스-조르당 소거법으로 구할 수 있습니다.</p>
+<div class="formula">
+[A | I] → 행 연산 → [I | A⁻¹]
+</div>
+<div class="example">
+A = [[2,1],[1,1]]이면<br><br>
+[2 1 | 1 0]<br>
+[1 1 | 0 1]<br><br>
+R₁↔R₂<br>
+[1 1 | 0 1]<br>
+[2 1 | 1 0]<br><br>
+R₂←R₂-2R₁<br>
+[1 1 | 0 1]<br>
+[0 -1 | 1 -2]<br><br>
+R₂←-R₂, R₁←R₁-R₂<br>
+[1 0 | 1 -1]<br>
+[0 1 |-1  2]
+</div>
+<p>따라서 A⁻¹=[[1,-1],[-1,2]].</p>
+</section>
+
+<section id="s10">
+<h2>11. 알고리즘 관점에서 보는 가우스 소거법</h2>
+<p>n개의 미지수를 갖는 n원 연립방정식은 n×(n+1) 확대행렬로 표현할 수 있습니다.</p>
+<pre>for (int col=0, row=0; col&lt;n && row&lt;n; col++) {
+    // 1. pivot 선택
+    int sel = row;
+    for (int i=row; i&lt;n; i++)
+        if (abs(a[i][col]) &gt; abs(a[sel][col]))
+            sel = i;
+
+    // 2. pivot이 0이면 다음 열
+    if (abs(a[sel][col]) &lt; EPS) continue;
+
+    swap(a[sel], a[row]);
+
+    // 3. 아래 행 제거
+    for (int i=row+1; i&lt;n; i++) {
+        double factor = a[i][col] / a[row][col];
+        for (int j=col; j&lt;=n; j++)
+            a[i][j] -= factor * a[row][j];
+    }
+    row++;
+}</pre>
+<div class="grid">
+ <div class="card"><strong>시간복잡도</strong><p>일반적인 가우스 소거법은 O(n³)</p></div>
+ <div class="card"><strong>정보올림피아드 연결</strong><p>선형 방정식, XOR 방정식, GF(2), 확률 DP, 회로/그래프 모델링 등에 응용됩니다.</p></div>
+</div>
+<div class="tip"><b>심화:</b> 비트 연산 문제에서는 실수 대신 0/1만 사용하는 GF(2) 위의 가우스 소거법을 사용하기도 합니다. 이때 덧셈과 뺄셈은 XOR과 같은 역할을 합니다.</div>
+</section>
+
+<section>
+<h2>12. 핵심 예제 6문제</h2>
+<div class="example"><b>예제 1.</b> A=[[3,1],[2,1]]의 역행렬 존재 여부<br>det=3×1-1×2=1≠0 → 역행렬 존재.</div>
+<div class="example"><b>예제 2.</b> A=[[2,4],[1,2]]의 역행렬 존재 여부<br>det=4-4=0 → 역행렬 없음.</div>
+<div class="example"><b>예제 3.</b> x+y=7, x-y=1<br>두 식을 더하면 2x=8 → x=4, y=3. 가우스 소거로도 같은 결과.</div>
+<div class="example"><b>예제 4.</b> x+y=2, 2x+2y=4<br>둘째 행에서 첫째 행의 2배를 빼면 [0 0 | 0] → 무수히 많은 해.</div>
+<div class="example"><b>예제 5.</b> x+y=2, 2x+2y=5<br>둘째 행에서 첫째 행의 2배를 빼면 [0 0 | 1] → 0=1 모순 → 해 없음.</div>
+<div class="example"><b>예제 6.</b> [A|I]를 행 연산하여 왼쪽이 I가 되면 오른쪽은 A⁻¹이 된다.</div>
+</section>
+
+<section id="quiz">
+<h2>13. 확인문제</h2>
+<p class="lead">정답을 선택하면 즉시 해설을 확인할 수 있습니다.</p>
+<div id="quizBox"></div>
+<div class="progress"><div id="prog"></div></div>
+<p id="scoreText" class="small">0 / 10 정답</p>
+</section>
+
+</main>
+<footer>역행렬 · 가우스 소거법 · 연립방정식 인터랙티브 강의자료</footer>
+
+<script>
+function fmt(x){
+ if(Math.abs(x)<1e-10) x=0;
+ if(Number.isInteger(x)) return String(x);
+ return Number(x.toFixed(4)).toString();
+}
+
+function inverse2(){
+ const a=+i11.value,b=+i12.value,c=+i21.value,d=+i22.value;
+ const det=a*d-b*c;
+ if(Math.abs(det)<1e-12){
+   invResult.innerHTML=`det(A) = ${a}×${d} - ${b}×${c} = <b>${fmt(det)}</b><br><span style="color:#d75b72"><b>det(A)=0이므로 역행렬이 존재하지 않습니다.</b></span>`;
+   return;
+ }
+ const r=[[d/det,-b/det],[-c/det,a/det]];
+ invResult.innerHTML=
+   `det(A) = ${a}×${d} - ${b}×${c} = <b>${fmt(det)}</b><br><br>`+
+   `A⁻¹ = 1/${fmt(det)} × [[${d}, ${-b}], [${-c}, ${a}]]<br>`+
+   `= <b>[[${fmt(r[0][0])}, ${fmt(r[0][1])}], [${fmt(r[1][0])}, ${fmt(r[1][1])}]]</b>`;
+}
+
+function solve2(){
+ let a=+g11.value,b=+g12.value,c=+g13.value;
+ let d=+g21.value,e=+g22.value,f=+g23.value;
+ const eps=1e-12;
+ let out=`<div class="stepbox">`;
+ out+=`<div class="step"><b>초기 확대행렬</b><br>[ ${fmt(a)} &nbsp; ${fmt(b)} | ${fmt(c)} ]<br>[ ${fmt(d)} &nbsp; ${fmt(e)} | ${fmt(f)} ]</div>`;
+
+ if(Math.abs(a)<eps && Math.abs(d)>=eps){
+   [a,d]=[d,a]; [b,e]=[e,b]; [c,f]=[f,c];
+   out+=`<div class="step"><b>R₁ ↔ R₂</b><br>[ ${fmt(a)} &nbsp; ${fmt(b)} | ${fmt(c)} ]<br>[ ${fmt(d)} &nbsp; ${fmt(e)} | ${fmt(f)} ]</div>`;
+ }
+
+ if(Math.abs(a)<eps && Math.abs(d)<eps){
+   // x coefficients zero, judge by y equations
+   if(Math.abs(b)<eps && Math.abs(e)<eps){
+     if(Math.abs(c)>eps || Math.abs(f)>eps) out+=`<div class="step">0=상수 형태가 있으므로 <b>해 없음</b></div>`;
+     else out+=`<div class="step">모든 식이 0=0이므로 <b>무수히 많은 해</b></div>`;
+   } else {
+     const vals=[];
+     if(Math.abs(b)>eps) vals.push(c/b);
+     if(Math.abs(e)>eps) vals.push(f/e);
+     if(vals.length===2 && Math.abs(vals[0]-vals[1])>1e-9) out+=`<div class="step">y 값이 서로 모순되어 <b>해 없음</b></div>`;
+     else out+=`<div class="step">x가 자유변수이므로 <b>무수히 많은 해</b></div>`;
+   }
+   gaussResult.innerHTML=out+`</div>`; return;
+ }
+
+ const factor=d/a;
+ d=d-factor*a; e=e-factor*b; f=f-factor*c;
+ out+=`<div class="step"><b>R₂ ← R₂ - (${fmt(factor)})R₁</b><br>[ ${fmt(a)} &nbsp; ${fmt(b)} | ${fmt(c)} ]<br>[ ${fmt(d)} &nbsp; ${fmt(e)} | ${fmt(f)} ]</div>`;
+
+ if(Math.abs(e)<eps){
+   if(Math.abs(f)>eps){
+     out+=`<div class="step">둘째 행이 [0 0 | ${fmt(f)}] → 0=${fmt(f)} 모순 → <b>해 없음</b></div>`;
+   } else {
+     out+=`<div class="step">둘째 행이 [0 0 | 0] → 한 식이 종속 → <b>무수히 많은 해</b></div>`;
+   }
+   gaussResult.innerHTML=out+`</div>`; return;
+ }
+
+ const y=f/e;
+ const x=(c-b*y)/a;
+ out+=`<div class="step"><b>뒤에서부터 대입</b><br>${fmt(e)}y=${fmt(f)} → y=<b>${fmt(y)}</b><br>${fmt(a)}x + ${fmt(b)}×${fmt(y)} = ${fmt(c)} → x=<b>${fmt(x)}</b></div>`;
+ out+=`<div class="step" style="background:#effff7"><b>최종 해: x=${fmt(x)}, y=${fmt(y)}</b></div>`;
+ gaussResult.innerHTML=out+`</div>`;
+}
+
+const quiz=[
+ {q:'1) 역행렬 A⁻¹의 정의로 맞는 것은?',a:['A+A⁻¹=I','AA⁻¹=I','A-A⁻¹=0','A²=I'],c:1,e:'역행렬은 A와 곱했을 때 항등행렬 I가 됩니다.'},
+ {q:'2) 2×2 행렬 [[a,b],[c,d]]의 행렬식은?',a:['ab-cd','ad-bc','ac-bd','a+b+c+d'],c:1,e:'det(A)=ad-bc입니다.'},
+ {q:'3) det(A)=0이면?',a:['항상 I','역행렬 없음','역행렬은 A','항상 유일해'],c:1,e:'행렬식이 0이면 특이행렬이며 역행렬이 존재하지 않습니다.'},
+ {q:'4) 기본 행 연산이 아닌 것은?',a:['두 행 교환','한 행에 0이 아닌 상수 곱','다른 행의 배수 더하기','한 열만 임의 삭제'],c:3,e:'열을 임의로 삭제하는 것은 기본 행 연산이 아닙니다.'},
+ {q:'5) 가우스 소거법의 주 목적은?',a:['행렬을 무조건 0으로','아래 원소를 0으로 만들어 계단형으로','행렬식을 1로','열을 뒤집기'],c:1,e:'피벗 아래 원소를 제거해 행 사다리꼴로 만듭니다.'},
+ {q:'6) [0 0 | 3]이 나타나면?',a:['유일해','해 없음','무수히 많은 해','x=3'],c:1,e:'0=3이라는 모순이므로 해가 없습니다.'},
+ {q:'7) [0 0 | 0] 행이 나타나고 자유변수가 있으면?',a:['무수히 많은 해','해 없음','항상 x=0','역행렬 존재'],c:0,e:'종속된 식이므로 자유변수가 생기면 무수히 많은 해가 가능합니다.'},
+ {q:'8) Ax=b에서 A⁻¹이 존재할 때 x는?',a:['Ab','A+b','A⁻¹b','bA'],c:2,e:'양변 왼쪽에 A⁻¹을 곱하면 x=A⁻¹b입니다.'},
+ {q:'9) [A|I]를 가우스-조르당 소거하여 얻는 것은?',a:['[0|A]','[I|A⁻¹]','[A²|I]','[I|A]'],c:1,e:'왼쪽 A를 I로 만들 때 오른쪽 I가 A⁻¹로 변합니다.'},
+ {q:'10) 일반 n×n 가우스 소거법의 대표 시간복잡도는?',a:['O(n)','O(n log n)','O(n²)','O(n³)'],c:3,e:'세 겹 수준의 반복 구조로 일반적으로 O(n³)입니다.'}
+];
+let score=0,answered=Array(quiz.length).fill(false);
+const qb=document.getElementById('quizBox');
+quiz.forEach((x,i)=>{
+ const d=document.createElement('div'); d.className='quizQ';
+ d.innerHTML=`<b>${x.q}</b><div class="answers">${x.a.map((v,j)=>`<button onclick="ans(${i},${j},this)">${v}</button>`).join('')}</div><div id="ex${i}" class="small"></div>`;
+ qb.appendChild(d);
+});
+function ans(i,j,btn){
+ if(answered[i]) return;
+ answered[i]=true;
+ const ok=j===quiz[i].c;
+ if(ok) score++;
+ btn.style.background=ok?'#e9fff3':'#fff0f3';
+ btn.style.borderColor=ok?'#7fd5ac':'#e89aad';
+ document.getElementById('ex'+i).innerHTML=(ok?'✅ 정답! ':'❌ 오답. ')+quiz[i].e;
+ scoreText.textContent=`${score} / ${quiz.length} 정답`;
+ prog.style.width=(answered.filter(Boolean).length/quiz.length*100)+'%';
+}
+</script>
+</body>
+</html>

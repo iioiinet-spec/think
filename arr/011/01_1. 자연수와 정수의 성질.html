@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>자연수와 정수의 성질 - 정보올림피아드 이산수학</title>
+<style>
+  :root{
+    --bg:#fff8fb; --card:#ffffff; --ink:#2b2430; --muted:#726875;
+    --pink:#e95b9d; --pink2:#ff8fbd; --purple:#8f6bdc; --blue:#5e8ee6;
+    --line:#f0d9e6; --good:#2a9d6f; --warn:#d4872b; --bad:#d9536f;
+    --shadow:0 12px 30px rgba(110,70,100,.10);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#fff7fb 0%,#fff 40%,#faf7ff 100%);color:var(--ink);line-height:1.7}
+  header{background:linear-gradient(135deg,#ffb5d2,#e886b8 45%,#b596e8);color:white;padding:58px 22px 42px;position:relative;overflow:hidden}
+  header:before,header:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.17)}
+  header:before{width:220px;height:220px;right:-50px;top:-80px}
+  header:after{width:120px;height:120px;left:6%;bottom:-55px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  h1{font-size:clamp(30px,5vw,54px);margin:0 0 12px;letter-spacing:-1.5px}
+  .subtitle{font-size:18px;opacity:.96;max-width:850px}
+  .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45);padding:6px 12px;border-radius:999px;font-size:13px;margin-bottom:14px}
+  nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+  nav a{white-space:nowrap;text-decoration:none;color:#67495c;background:#fff0f6;padding:7px 11px;border-radius:999px;font-size:13px;border:1px solid #f5d6e5}
+  main{padding:30px 0 70px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;margin:22px 0;box-shadow:var(--shadow)}
+  h2{font-size:28px;margin:0 0 14px;color:#7d3f66;letter-spacing:-.6px}
+  h3{font-size:21px;margin:24px 0 10px;color:#58465b}
+  .lead{color:var(--muted);font-size:16px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .card{background:#fffafd;border:1px solid #f1dce7;border-radius:18px;padding:18px}
+  .card strong{color:#b14779}
+  .formula{font-family:"Cambria Math","Times New Roman",serif;background:#fbf5ff;border-left:5px solid var(--purple);padding:12px 16px;border-radius:10px;margin:12px 0;font-size:18px}
+  .example{background:#fff8e9;border:1px solid #f3dfb5;border-radius:16px;padding:16px;margin:14px 0}
+  .tip{background:#eef7ff;border:1px solid #cfe4fa;border-radius:16px;padding:16px}
+  .key{background:#f2fff8;border:1px solid #caeedc;border-radius:16px;padding:16px}
+  table{width:100%;border-collapse:collapse;margin:12px 0}
+  th,td{border:1px solid #eadde5;padding:10px;text-align:center}
+  th{background:#fff0f6;color:#7f4768}
+  code,pre{font-family:Consolas,"Courier New",monospace}
+  pre{background:#282433;color:#f8eff8;border-radius:16px;padding:16px;overflow:auto}
+  .btn{border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#fff;border:1px solid #e2bfd1;color:#9d4771}
+  input,select{padding:10px 12px;border:1px solid #dec9d5;border-radius:10px;font-size:15px;max-width:100%}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+  .result{min-height:44px;padding:11px 13px;background:#faf6fb;border:1px dashed #d7bfd0;border-radius:12px;margin-top:10px}
+  .quizQ{padding:16px;border-radius:16px;border:1px solid #ead8e3;margin:12px 0;background:#fff}
+  .answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .answers button{padding:8px 10px;border:1px solid #e0c9d6;background:#fff;border-radius:10px;cursor:pointer}
+  .answers button:hover{background:#fff0f6}
+  .small{font-size:13px;color:var(--muted)}
+  .numberline{position:relative;height:120px;background:linear-gradient(180deg,#fff,#fff8fb);border:1px solid #ead8e3;border-radius:16px;margin:14px 0;overflow:hidden}
+  .axis{position:absolute;left:5%;right:5%;top:58px;height:3px;background:#9b758d}
+  .tick{position:absolute;top:48px;width:2px;height:23px;background:#9b758d}
+  .tick span{position:absolute;top:25px;transform:translateX(-50%);font-size:12px}
+  .marker{position:absolute;top:27px;width:22px;height:22px;border-radius:50%;background:var(--pink);transform:translateX(-50%);box-shadow:0 3px 8px rgba(200,60,130,.25)}
+  .marker:after{content:"";position:absolute;left:9px;top:20px;width:3px;height:31px;background:var(--pink)}
+  .pill{display:inline-block;padding:3px 9px;background:#f7eaf2;border-radius:999px;font-size:13px}
+  .progress{height:10px;background:#f1e4ec;border-radius:999px;overflow:hidden;margin-top:8px}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--pink2),var(--purple));transition:.3s}
+  footer{text-align:center;color:#877785;padding:30px 0 60px}
+  @media(max-width:760px){.grid,.grid3{grid-template-columns:1fr} section{padding:20px;border-radius:18px} h2{font-size:24px}}
+  @media print{
+    nav,.interactive-only{display:none!important}
+    body{background:white}
+    section{box-shadow:none;break-inside:avoid}
+    header{background:#f7d9e7!important;color:#402c39;padding:28px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="badge">정보올림피아드 · 이산수학 기초</div>
+    <h1>자연수와 정수의 성질</h1>
+    <div class="subtitle">수의 구조를 이해하면 반복문, 조건문, 정수론 알고리즘, 비트 연산, 모듈러 연산 문제를 훨씬 쉽게 풀 수 있습니다. 정의 → 성질 → 알고리즘 연결 → 예제 → 실습 순서로 학습합니다.</div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <a href="#s1">1. 수의 체계</a><a href="#s2">2. 연산과 닫힘성</a><a href="#s3">3. 약수·배수</a>
+    <a href="#s4">4. 소수</a><a href="#s5">5. GCD·LCM</a><a href="#s6">6. 나눗셈 정리</a>
+    <a href="#s7">7. 합동식</a><a href="#s8">8. 패리티·불변량</a><a href="#s9">9. 진법</a>
+    <a href="#s10">10. 알고리즘 연결</a><a href="#quiz">확인문제</a>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="s1">
+  <h2>1. 자연수와 정수, 무엇이 다른가?</h2>
+  <p class="lead">정보올림피아드에서는 단순히 “양수/음수”를 구분하는 것보다, 어떤 연산을 했을 때 결과가 어느 집합 안에 남는지 이해하는 것이 중요합니다.</p>
+  <div class="grid">
+    <div class="card"><h3>자연수 ℕ</h3><p>보통 <b>0, 1, 2, 3, …</b> 또는 <b>1, 2, 3, …</b>으로 정의합니다. 문제마다 0 포함 여부를 확인해야 합니다.</p><div class="formula">ℕ = {0, 1, 2, 3, ...}</div></div>
+    <div class="card"><h3>정수 ℤ</h3><p>자연수에 음수를 포함한 집합입니다.</p><div class="formula">ℤ = {..., -3, -2, -1, 0, 1, 2, 3, ...}</div></div>
+  </div>
+  <h3>수직선으로 이해하기</h3>
+  <div class="numberline" id="numberline"><div class="axis"></div></div>
+  <div class="row interactive-only">
+    <label>정수 선택: <input type="range" id="nlineRange" min="-5" max="5" value="2"></label>
+    <span class="pill" id="nlineVal">2</span>
+  </div>
+  <div class="key"><b>올림피아드 핵심:</b> 정수는 순서가 있고, 절댓값과 부호를 가지며, 덧셈·뺄셈·곱셈에 대해 닫혀 있습니다.</div>
+</section>
+
+<section id="s2">
+  <h2>2. 정수 연산의 성질과 닫힘성</h2>
+  <div class="grid3">
+    <div class="card"><strong>교환법칙</strong><div class="formula">a+b=b+a<br>a×b=b×a</div></div>
+    <div class="card"><strong>결합법칙</strong><div class="formula">(a+b)+c=a+(b+c)</div></div>
+    <div class="card"><strong>분배법칙</strong><div class="formula">a(b+c)=ab+ac</div></div>
+  </div>
+  <h3>닫힘성</h3>
+  <table><tr><th>연산</th><th>자연수</th><th>정수</th><th>주의</th></tr>
+  <tr><td>덧셈</td><td>닫힘</td><td>닫힘</td><td>항상 같은 집합 안</td></tr>
+  <tr><td>뺄셈</td><td>보장 안 됨</td><td>닫힘</td><td>3-5=-2</td></tr>
+  <tr><td>곱셈</td><td>닫힘</td><td>닫힘</td><td>항상 정수</td></tr>
+  <tr><td>나눗셈</td><td>보장 안 됨</td><td>보장 안 됨</td><td>1/2는 정수가 아님</td></tr></table>
+  <div class="example"><b>예제:</b> 정수 a,b에 대해 a-b가 항상 정수인 이유는? → 정수는 덧셈과 음수에 대해 닫혀 있으므로 a+(-b)도 정수입니다.</div>
+</section>
+
+<section id="s3">
+  <h2>3. 약수와 배수</h2>
+  <p><b>a가 b의 약수</b>라는 것은 어떤 정수 k가 존재하여 <b>b = ak</b>가 되는 것입니다. 기호로는 <b>a | b</b>라고 씁니다.</p>
+  <div class="formula">a | b ⇔ ∃k ∈ ℤ, b = ak</div>
+  <div class="grid">
+    <div class="card"><h3>중요 성질</h3><p>a|b, a|c 이면 a|(b+c), a|(b-c)</p><p>a|b 이면 모든 정수 m에 대해 a|mb</p></div>
+    <div class="card"><h3>예제</h3><p>6|24, 6|42 이므로 6|(42-24)=18</p><p>따라서 “공통 약수”는 차이에도 그대로 적용됩니다.</p></div>
+  </div>
+  <h3>약수 탐색 실습</h3>
+  <div class="row interactive-only"><input id="divN" type="number" value="60" min="1"><button class="btn" onclick="showDivisors()">약수 찾기</button></div>
+  <div class="result" id="divResult">60의 약수를 찾아보세요.</div>
+  <div class="tip"><b>알고리즘 연결:</b> n의 약수를 1부터 n까지 모두 확인하면 O(n)이지만, √n까지만 확인하면 O(√n)으로 줄일 수 있습니다.</div>
+</section>
+
+<section id="s4">
+  <h2>4. 소수와 합성수</h2>
+  <p><b>소수(prime)</b>는 1보다 큰 자연수 중 양의 약수가 1과 자기 자신뿐인 수입니다. 1은 소수가 아닙니다.</p>
+  <div class="grid">
+    <div class="card"><h3>소수 예</h3><p>2, 3, 5, 7, 11, 13, 17, 19, …</p></div>
+    <div class="card"><h3>합성수 예</h3><p>4=2×2, 6=2×3, 12=2²×3</p></div>
+  </div>
+  <h3>왜 √n까지만 보면 될까?</h3>
+  <div class="example">n=ab일 때 a,b가 모두 √n보다 클 수는 없습니다. 둘 다 √n보다 크면 ab>n이 되기 때문입니다. 따라서 합성수라면 적어도 하나의 약수는 √n 이하에 존재합니다.</div>
+  <div class="row interactive-only"><input id="primeN" type="number" value="97" min="2"><button class="btn" onclick="checkPrime()">소수 판별</button></div>
+  <div class="result" id="primeResult"></div>
+</section>
+
+<section id="s5">
+  <h2>5. 최대공약수(GCD)와 최소공배수(LCM)</h2>
+  <div class="grid">
+    <div class="card"><h3>GCD</h3><p>두 정수의 공통 약수 중 가장 큰 양의 정수</p><div class="formula">gcd(24,18)=6</div></div>
+    <div class="card"><h3>LCM</h3><p>두 양의 정수의 공통 배수 중 가장 작은 양의 정수</p><div class="formula">lcm(24,18)=72</div></div>
+  </div>
+  <div class="formula">a×b = gcd(a,b) × lcm(a,b) &nbsp; (a,b&gt;0)</div>
+  <h3>유클리드 호제법</h3>
+  <p>핵심 성질은 <b>gcd(a,b)=gcd(b,a mod b)</b>입니다.</p>
+  <pre>int gcd(int a, int b){
+    while(b != 0){
+        int r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}</pre>
+  <div class="row interactive-only"><input id="gA" type="number" value="252"><input id="gB" type="number" value="105"><button class="btn" onclick="runGcd()">단계 보기</button></div>
+  <div class="result" id="gcdResult"></div>
+</section>
+
+<section id="s6">
+  <h2>6. 나눗셈 정리와 몫·나머지</h2>
+  <p>정수 a와 양의 정수 m에 대해, a는 항상 다음처럼 유일하게 표현됩니다.</p>
+  <div class="formula">a = qm + r, &nbsp; 0 ≤ r &lt; m</div>
+  <div class="example"><b>예:</b> 23 = 4×5 + 3 → 몫 4, 나머지 3</div>
+  <h3>나머지가 중요한 이유</h3>
+  <p>시간, 요일, 순환 배열, 원형 큐, 반복 패턴처럼 “주기”가 있는 문제는 나머지로 모델링할 수 있습니다.</p>
+  <div class="row interactive-only"><input id="modA" type="number" value="2026"><input id="modM" type="number" value="7" min="1"><button class="btn" onclick="calcMod()">몫·나머지</button></div>
+  <div class="result" id="modResult"></div>
+</section>
+
+<section id="s7">
+  <h2>7. 합동식(modular arithmetic)</h2>
+  <p>두 정수 a,b를 m으로 나눈 나머지가 같으면 <b>mod m에서 합동</b>이라고 합니다.</p>
+  <div class="formula">a ≡ b (mod m) ⇔ m | (a-b)</div>
+  <div class="example">17 ≡ 5 (mod 12), 왜냐하면 17-5=12이고 12|12이기 때문입니다.</div>
+  <h3>연산 성질</h3>
+  <div class="grid3">
+    <div class="card">(a+b) mod m = ((a mod m)+(b mod m)) mod m</div>
+    <div class="card">(a-b) mod m = ((a mod m)-(b mod m)) mod m</div>
+    <div class="card">(ab) mod m = ((a mod m)(b mod m)) mod m</div>
+  </div>
+  <div class="tip"><b>주의:</b> C/C++에서 음수 % 양수의 결과는 음수가 될 수 있습니다. 항상 0 이상 나머지가 필요하면 <code>((x % m) + m) % m</code>을 사용합니다.</div>
+</section>
+
+<section id="s8">
+  <h2>8. 짝수·홀수, 패리티와 불변량</h2>
+  <p>정수를 2로 나눈 나머지는 0 또는 1뿐입니다. 이것이 <b>패리티(parity)</b>입니다.</p>
+  <table><tr><th>연산</th><th>결과</th></tr><tr><td>짝수 + 짝수</td><td>짝수</td></tr><tr><td>짝수 + 홀수</td><td>홀수</td></tr><tr><td>홀수 + 홀수</td><td>짝수</td></tr><tr><td>홀수 × 홀수</td><td>홀수</td></tr></table>
+  <div class="example"><b>불변량 예제:</b> 한 번의 연산으로 두 수에 각각 1을 더한다고 하자. 두 수의 합은 매번 2씩 증가하므로 합의 홀짝은 변하지 않습니다. 따라서 시작 합이 홀수라면 어떤 과정을 거쳐도 짝수가 될 수 없습니다.</div>
+  <div class="key"><b>올림피아드 관점:</b> “계속 변하는 것” 대신 “절대로 변하지 않는 것”을 찾는 것이 불변량 문제의 핵심입니다.</div>
+</section>
+
+<section id="s9">
+  <h2>9. 진법과 정수 표현</h2>
+  <p>정수는 자릿값의 합으로 표현됩니다. 10진수뿐 아니라 2진수, 8진수, 16진수도 같은 원리입니다.</p>
+  <div class="formula">(101101)₂ = 1·2⁵ + 0·2⁴ + 1·2³ + 1·2² + 0·2 + 1 = 45</div>
+  <div class="grid">
+    <div class="card"><h3>2진수</h3><p>컴퓨터 내부 표현의 기본. 비트 연산과 직접 연결됩니다.</p></div>
+    <div class="card"><h3>비트 관점</h3><p>n의 i번째 비트 확인: <code>(n >> i) & 1</code></p></div>
+  </div>
+  <div class="row interactive-only"><input id="baseN" type="number" value="45" min="0"><button class="btn" onclick="convertBase()">2·8·16진수 변환</button></div>
+  <div class="result" id="baseResult"></div>
+</section>
+
+<section id="s10">
+  <h2>10. 정보올림피아드 문제와 연결하기</h2>
+  <div class="grid3">
+    <div class="card"><strong>약수·배수</strong><p>약수 개수, 약수 합, 배수 판정, 공약수 문제</p></div>
+    <div class="card"><strong>소수</strong><p>소수 판정, 에라토스테네스의 체, 소인수분해</p></div>
+    <div class="card"><strong>GCD/LCM</strong><p>주기 일치, 기약분수, 격자 간격, 패턴 동기화</p></div>
+    <div class="card"><strong>나머지</strong><p>큰 수 계산, 원형 배열, 주기성, 시간 계산</p></div>
+    <div class="card"><strong>패리티</strong><p>불변량, 가능/불가능 판정, 체스판 색상 문제</p></div>
+    <div class="card"><strong>진법/비트</strong><p>비트마스크, 부분집합, 상태압축 DP</p></div>
+  </div>
+  <h3>문제 해결 사고 순서</h3>
+  <ol>
+    <li>문제에서 반복되는 수의 규칙이 있는가?</li>
+    <li>약수/배수/나머지/홀짝 중 하나로 바꿔 표현할 수 있는가?</li>
+    <li>큰 수를 직접 계산하지 않고 나머지만 유지할 수 있는가?</li>
+    <li>계속 변하는 과정에서 불변량이 존재하는가?</li>
+    <li>시간복잡도를 O(n)에서 O(√n), O(log n)으로 줄일 수 있는가?</li>
+  </ol>
+</section>
+
+<section>
+  <h2>11. 대표 예제 6문제</h2>
+  <div class="example"><b>예제 1.</b> 84의 양의 약수 개수는?<br><b>풀이:</b> 84=2²×3×7. 약수는 각 소인수의 지수를 0~해당 지수까지 선택하므로 (2+1)(1+1)(1+1)=12개.</div>
+  <div class="example"><b>예제 2.</b> 2¹⁰⁰을 7로 나눈 나머지는?<br><b>풀이:</b> 2³=8≡1 (mod 7), 100=3×33+1 → 2¹⁰⁰≡2.</div>
+  <div class="example"><b>예제 3.</b> 252와 105의 최대공약수는?<br><b>풀이:</b> 252=105×2+42, 105=42×2+21, 42=21×2 → gcd=21.</div>
+  <div class="example"><b>예제 4.</b> 연속한 두 정수의 곱은 항상 짝수임을 보여라.<br><b>풀이:</b> 연속한 두 정수 중 하나는 반드시 짝수이므로 곱에 인수 2가 포함됩니다.</div>
+  <div class="example"><b>예제 5.</b> n을 3으로 나눈 나머지가 2라면 n²의 나머지는?<br><b>풀이:</b> n≡2 (mod 3), n²≡4≡1 (mod 3).</div>
+  <div class="example"><b>예제 6.</b> 1부터 100까지에서 3 또는 5의 배수 개수는?<br><b>풀이:</b> 포함배제: ⌊100/3⌋+⌊100/5⌋-⌊100/15⌋=33+20-6=47.</div>
+</section>
+
+<section id="quiz">
+  <h2>12. 확인문제</h2>
+  <p class="lead">버튼을 눌러 즉시 정답과 해설을 확인하세요.</p>
+  <div id="quizBox"></div>
+  <div class="progress"><div id="prog"></div></div>
+  <p id="scoreText" class="small">0 / 8 정답</p>
+</section>
+</main>
+
+<footer>정보올림피아드 이산수학 강의자료 · 자연수와 정수의 성질</footer>
+
+<script>
+const nl=document.getElementById('numberline');
+for(let i=-5;i<=5;i++){
+  const t=document.createElement('div'); t.className='tick';
+  t.style.left=(5+(i+5)*9)+'%'; const s=document.createElement('span'); s.textContent=i; t.appendChild(s); nl.appendChild(t);
+}
+const marker=document.createElement('div'); marker.className='marker'; marker.id='marker'; nl.appendChild(marker);
+function moveMarker(v){ document.getElementById('marker').style.left=(5+(Number(v)+5)*9)+'%'; document.getElementById('nlineVal').textContent=v; }
+moveMarker(2);
+document.getElementById('nlineRange').addEventListener('input',e=>moveMarker(e.target.value));
+
+function showDivisors(){
+  const n=Number(document.getElementById('divN').value); if(n<1)return;
+  let d=[]; for(let i=1;i*i<=n;i++){ if(n%i===0){d.push(i); if(i*i!==n)d.push(n/i);} }
+  d.sort((a,b)=>a-b);
+  document.getElementById('divResult').innerHTML=`<b>${n}</b>의 약수: ${d.join(', ')}<br>총 <b>${d.length}</b>개 · √n까지만 검사`;
+}
+function checkPrime(){
+  const n=Number(document.getElementById('primeN').value);
+  let prime=n>=2, witness=0;
+  for(let i=2;i*i<=n&&prime;i++) if(n%i===0){prime=false;witness=i;}
+  document.getElementById('primeResult').innerHTML=prime?`<b>${n}</b>은(는) 소수입니다. √${n} 이하의 약수 없음.`:`<b>${n}</b>은(는) 합성수입니다. ${witness} × ${n/witness} = ${n}`;
+}
+function runGcd(){
+  let a=Math.abs(Number(document.getElementById('gA').value)), b=Math.abs(Number(document.getElementById('gB').value));
+  let lines=[]; let x=a,y=b;
+  while(y){let r=x%y; lines.push(`${x} = ${Math.floor(x/y)} × ${y} + ${r}`); x=y;y=r;}
+  document.getElementById('gcdResult').innerHTML=lines.join('<br>')+`<br><b>GCD = ${x}</b>`;
+}
+function calcMod(){
+  const a=Number(document.getElementById('modA').value), m=Number(document.getElementById('modM').value); if(m<=0)return;
+  let q=Math.floor(a/m), r=((a%m)+m)%m; q=(a-r)/m;
+  document.getElementById('modResult').innerHTML=`${a} = <b>${q}</b> × ${m} + <b>${r}</b><br>몫 q=${q}, 나머지 r=${r}`;
+}
+function convertBase(){
+  const n=Number(document.getElementById('baseN').value); if(n<0)return;
+  document.getElementById('baseResult').innerHTML=`2진수: <b>${n.toString(2)}</b><br>8진수: <b>${n.toString(8)}</b><br>16진수: <b>${n.toString(16).toUpperCase()}</b>`;
+}
+const quiz=[
+ {q:'1) 다음 중 소수는?', a:['1','21','29','39'], c:2, e:'29는 1과 29만 약수로 가집니다.'},
+ {q:'2) gcd(48,18)은?', a:['3','6','9','12'], c:1, e:'48=18×2+12, 18=12×1+6, 12=6×2 → 6'},
+ {q:'3) 100을 7로 나눈 나머지는?', a:['1','2','3','4'], c:1, e:'100=14×7+2'},
+ {q:'4) 17 ≡ ? (mod 5)', a:['0','1','2','3'], c:2, e:'17을 5로 나눈 나머지는 2입니다.'},
+ {q:'5) 홀수+홀수의 결과는?', a:['홀수','짝수','항상 소수','알 수 없음'], c:1, e:'(2a+1)+(2b+1)=2(a+b+1)'},
+ {q:'6) 84=2²×3×7일 때 약수 개수는?', a:['8','10','12','14'], c:2, e:'(2+1)(1+1)(1+1)=12'},
+ {q:'7) 합성수 n의 약수 탐색 시 충분한 범위는?', a:['n/2까지','√n까지','log n까지','2까지만'], c:1, e:'약수 쌍 중 하나는 반드시 √n 이하입니다.'},
+ {q:'8) 45의 2진수는?', a:['101011','101101','110101','111001'], c:1, e:'45=32+8+4+1 → 101101₂'}
+];
+let score=0, answered=Array(quiz.length).fill(false);
+const qb=document.getElementById('quizBox');
+quiz.forEach((x,i)=>{
+ const d=document.createElement('div'); d.className='quizQ';
+ d.innerHTML=`<b>${x.q}</b><div class="answers">${x.a.map((v,j)=>`<button onclick="answer(${i},${j},this)">${v}</button>`).join('')}</div><div class="small" id="ex${i}"></div>`;
+ qb.appendChild(d);
+});
+function answer(i,j,btn){
+ if(answered[i]) return; answered[i]=true;
+ const ok=j===quiz[i].c; if(ok) score++;
+ btn.style.background=ok?'#e7fff3':'#fff0f3';
+ btn.style.borderColor=ok?'#80d5ad':'#e89aac';
+ document.getElementById('ex'+i).innerHTML=(ok?'✅ 정답! ':'❌ 오답. ')+quiz[i].e;
+ document.getElementById('scoreText').textContent=`${score} / ${quiz.length} 정답`;
+ document.getElementById('prog').style.width=(answered.filter(Boolean).length/quiz.length*100)+'%';
+}
+</script>
+</body>
+</html>

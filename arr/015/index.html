@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가우스-조르당 소거법 단계별 인터랙티브 강의자료</title>
+<style>
+:root{
+  --ink:#2f2730; --muted:#766b74; --pink:#e95f9f; --purple:#8c72d7;
+  --line:#efd9e5; --green:#2f9e75; --yellow:#fff6d9; --blue:#eef7ff;
+  --shadow:0 12px 28px rgba(105,70,95,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#fff8fb,#fff 45%,#faf7ff);color:var(--ink);line-height:1.72}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{padding:54px 20px 40px;background:linear-gradient(135deg,#ffb8d5,#e988bb 45%,#b79de8);color:white}
+h1{margin:0 0 12px;font-size:clamp(32px,5vw,54px)}
+.subtitle{max-width:900px;font-size:18px}
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+nav a{text-decoration:none;color:#744d65;background:#fff0f6;border:1px solid #f2d7e4;border-radius:999px;padding:7px 11px;white-space:nowrap;font-size:13px}
+main{padding:28px 0 70px}
+section{background:white;border:1px solid var(--line);border-radius:24px;padding:28px;margin:22px 0;box-shadow:var(--shadow)}
+h2{margin:0 0 14px;color:#7e4267;font-size:29px}
+h3{margin:24px 0 10px;color:#5c495d}
+.lead{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{background:#fffafd;border:1px solid #f0dbe6;border-radius:18px;padding:18px}
+.card strong{color:#b1477b}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf5ff;border-left:5px solid var(--purple);padding:12px 16px;border-radius:10px;margin:12px 0;font-size:18px;overflow:auto}
+.example{background:#fff8e9;border:1px solid #f0dfb8;border-radius:16px;padding:16px}
+.tip{background:#eef7ff;border:1px solid #cfe4f8;border-radius:16px;padding:16px}
+.key{background:#effff7;border:1px solid #caebdc;border-radius:16px;padding:16px}
+.warn{background:#fff1f4;border:1px solid #efcad3;border-radius:16px;padding:16px}
+.matrix-stage{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin:18px 0;padding:18px;background:#fffafd;border:1px solid #efdce6;border-radius:18px}
+.matrix-wrap{position:relative;display:inline-grid;gap:7px;padding:10px 17px}
+.matrix-wrap.c3{grid-template-columns:repeat(3,68px)}
+.matrix-wrap.c4{grid-template-columns:repeat(4,68px)}
+.matrix-wrap.c6{grid-template-columns:repeat(6,62px)}
+.matrix-wrap:before,.matrix-wrap:after{content:"";position:absolute;top:0;bottom:0;width:10px;border-top:3px solid #745d6b;border-bottom:3px solid #745d6b}
+.matrix-wrap:before{left:0;border-left:3px solid #745d6b}
+.matrix-wrap:after{right:0;border-right:3px solid #745d6b}
+.cell,.matrix-wrap input{min-width:62px;min-height:42px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid #ead8e2;border-radius:9px;background:#fff;padding:8px;font-weight:700}
+.matrix-wrap input{width:68px}
+.aug{border-left:3px solid #8f7081!important}
+.pivot{background:#e9fff3!important;border-color:#72c9a4!important}
+.target{background:#fff4bf!important;border-color:#e5c95c!important}
+.zero{background:#f2f2f2!important;color:#777}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:10px 0}
+.btn{border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,var(--pink),var(--purple));color:white;font-weight:700;cursor:pointer}
+.btn.secondary{background:#fff;border:1px solid #dfbfd0;color:#954c71}
+.btn.good{background:linear-gradient(135deg,#48b58b,#2d906f)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.stepper{display:grid;grid-template-columns:220px 1fr;gap:18px;margin-top:18px}
+.steps-nav{background:#fffafd;border:1px solid #efdce6;border-radius:18px;padding:14px;align-self:start;position:sticky;top:72px}
+.step-tab{padding:10px 12px;border-radius:11px;margin:6px 0;background:#fff;border:1px solid #ead7e2;font-size:14px}
+.step-tab.active{background:linear-gradient(135deg,#ffe6f2,#eee8ff);border-color:#d8b8ca;font-weight:800;color:#8b456b}
+.panel{border:1px solid #ead7e2;border-radius:18px;background:#fff;padding:20px}
+.calc{background:#f8f5ff;border:1px solid #dfd3f0;border-radius:14px;padding:13px;margin:12px 0}
+.progress{height:12px;background:#f1e3eb;border-radius:999px;overflow:hidden;margin:12px 0}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#ff9bc8,#8b70d6);transition:.25s}
+.result{min-height:50px;background:#faf6fb;border:1px dashed #d5bccb;border-radius:12px;padding:12px 14px;margin-top:10px;overflow:auto}
+input{padding:9px 10px;border:1px solid #ddc8d5;border-radius:10px;font-size:15px}
+.quizQ{border:1px solid #ead9e3;border-radius:16px;padding:16px;margin:12px 0}
+.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.answers button{padding:8px 10px;border:1px solid #dfcad6;background:white;border-radius:10px;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+pre{background:#2b2533;color:#f8f1f7;padding:16px;border-radius:16px;overflow:auto}
+footer{text-align:center;color:#887785;padding:30px 0 60px}
+@media(max-width:820px){
+ .grid,.grid3,.stepper{grid-template-columns:1fr}
+ .steps-nav{position:static}
+ .matrix-wrap.c6{grid-template-columns:repeat(6,48px)}
+ .matrix-wrap.c4{grid-template-columns:repeat(4,52px)}
+ .matrix-wrap.c3{grid-template-columns:repeat(3,52px)}
+ .cell,.matrix-wrap input{min-width:48px;width:52px}
+ section{padding:20px}
+}
+@media print{
+ nav,.interactive-only{display:none!important}
+ body{background:#fff}
+ header{background:#f6d9e6!important;color:#3d2d38}
+ section{box-shadow:none}
+ .stepper{grid-template-columns:1fr}
+ .steps-nav{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<h1>가우스-조르당 소거법</h1>
+<div class="subtitle">피벗을 1로 만들고, 피벗의 위와 아래를 모두 0으로 만들어 왼쪽을 항등행렬로 바꾸는 과정을 단계별로 이해합니다.</div>
+</div>
+</header>
+
+<nav>
+<div class="wrap">
+<a href="#diff">가우스와 차이</a>
+<a href="#steps">단계별 2×2</a>
+<a href="#lab">직접 입력</a>
+<a href="#three">3×3 예제</a>
+<a href="#inverse">역행렬 연결</a>
+<a href="#algorithm">알고리즘</a>
+<a href="#quiz">확인문제</a>
+</div>
+</nav>
+
+<main class="wrap">
+
+<section id="diff">
+<h2>1. 가우스 소거법과 무엇이 다를까?</h2>
+<div class="grid">
+<div class="card">
+<strong>가우스 소거법</strong>
+<p>피벗 아래를 0으로 만들어 행 사다리꼴을 만든 뒤, 뒤에서부터 대입합니다.</p>
+<div class="formula">[1 1 |5]<br>[0 1 |2]</div>
+</div>
+<div class="card">
+<strong>가우스-조르당 소거법</strong>
+<p>피벗 아래뿐 아니라 위도 0으로 만들어 해를 바로 읽을 수 있게 합니다.</p>
+<div class="formula">[1 0 |3]<br>[0 1 |2]</div>
+</div>
+</div>
+<div class="key"><b>핵심:</b> 최종 목표는 왼쪽 계수행렬을 항등행렬 I로 만드는 것입니다.</div>
+</section>
+
+<section id="steps">
+<h2>2. 2×2 예제를 한 단계씩 따라가기</h2>
+<p class="lead">예제: x+y=5, 2x+3y=12</p>
+<div class="progress"><div id="prog"></div></div>
+<div class="stepper">
+<div class="steps-nav">
+<div class="step-tab active" id="t0">0. 시작</div>
+<div class="step-tab" id="t1">1. 확대행렬</div>
+<div class="step-tab" id="t2">2. 첫 피벗</div>
+<div class="step-tab" id="t3">3. 아래 제거</div>
+<div class="step-tab" id="t4">4. 둘째 피벗</div>
+<div class="step-tab" id="t5">5. 위 제거</div>
+<div class="step-tab" id="t6">6. 최종 해</div>
+</div>
+<div class="panel">
+<div id="content"></div>
+<div class="row interactive-only">
+<button class="btn secondary" id="prev" onclick="move(-1)">이전 단계</button>
+<button class="btn" id="next" onclick="move(1)">다음 단계</button>
+<button class="btn good" onclick="resetDemo()">처음부터</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="lab">
+<h2>3. 내가 직접 2원 연립방정식을 입력해 보기</h2>
+<p>아래 확대행렬의 값을 바꾼 뒤 계산 버튼을 누르면 가우스-조르당 과정을 자동으로 설명합니다.</p>
+<div class="matrix-stage interactive-only">
+<div class="matrix-wrap c3">
+<input id="a11" type="number" value="1">
+<input id="a12" type="number" value="1">
+<input id="b1" class="aug" type="number" value="5">
+<input id="a21" type="number" value="2">
+<input id="a22" type="number" value="3">
+<input id="b2" class="aug" type="number" value="12">
+</div>
+<button class="btn" onclick="solveJordan()">단계별 풀이 생성</button>
+</div>
+<div class="result" id="out">값을 입력한 뒤 버튼을 눌러보세요.</div>
+</section>
+
+<section id="three">
+<h2>4. 3×3에서는 어떻게 확장될까?</h2>
+<div class="example">
+x+y+z=6<br>
+2x+3y+z=11<br>
+x-y+2z=5
+</div>
+<div class="formula">
+[1  1  1 | 6]<br>
+[2  3  1 |11]<br>
+[1 -1  2 | 5]
+</div>
+
+<h3>① 첫 열의 아래를 0으로</h3>
+<div class="calc">R₂←R₂-2R₁, R₃←R₃-R₁</div>
+<div class="formula">
+[1  1  1 | 6]<br>
+[0  1 -1 |-1]<br>
+[0 -2  1 |-1]
+</div>
+
+<h3>② 둘째 열의 아래를 0으로</h3>
+<div class="calc">R₃←R₃+2R₂</div>
+<div class="formula">
+[1 1 1 |6]<br>
+[0 1 -1|-1]<br>
+[0 0 -1|-3]
+</div>
+
+<h3>③ 셋째 피벗을 1로</h3>
+<div class="calc">R₃←-R₃</div>
+<div class="formula">
+[1 1 1 |6]<br>
+[0 1 -1|-1]<br>
+[0 0 1 |3]
+</div>
+
+<h3>④ 셋째 열의 위를 0으로</h3>
+<div class="calc">R₁←R₁-R₃, R₂←R₂+R₃</div>
+<div class="formula">
+[1 1 0 |3]<br>
+[0 1 0 |2]<br>
+[0 0 1 |3]
+</div>
+
+<h3>⑤ 둘째 열의 위를 0으로</h3>
+<div class="calc">R₁←R₁-R₂</div>
+<div class="formula">
+[1 0 0 |1]<br>
+[0 1 0 |2]<br>
+[0 0 1 |3]
+</div>
+<div class="key"><b>최종 해:</b> x=1, y=2, z=3</div>
+</section>
+
+<section id="inverse">
+<h2>5. 왜 역행렬과 연결될까?</h2>
+<p>가우스-조르당 소거법은 역행렬을 구할 때도 그대로 사용됩니다.</p>
+<div class="formula">[A | I] → [I | A⁻¹]</div>
+
+<div class="example">
+A = [[2,1],[1,1]]
+</div>
+
+<div class="formula">
+[2 1 |1 0]<br>
+[1 1 |0 1]
+</div>
+
+<p>행 연산을 반복해 왼쪽을 I로 만들면</p>
+
+<div class="formula">
+[1 0 | 1 -1]<br>
+[0 1 |-1  2]
+</div>
+
+<p>따라서</p>
+<div class="formula">A⁻¹ = [[1,-1],[-1,2]]</div>
+
+<div class="tip"><b>연결 포인트:</b> 연립방정식에서는 [A|b]를 [I|x]로 만들고, 역행렬에서는 [A|I]를 [I|A⁻¹]로 만듭니다.</div>
+</section>
+
+<section id="algorithm">
+<h2>6. 알고리즘 관점의 가우스-조르당</h2>
+<pre><code>for (int col = 0; col &lt; n; col++) {
+    // 1. pivot 선택
+    int pivot = col;
+    for (int r = col; r &lt; n; r++)
+        if (abs(a[r][col]) &gt; abs(a[pivot][col]))
+            pivot = r;
+
+    swap(a[pivot], a[col]);
+
+    // 2. pivot을 1로
+    double div = a[col][col];
+    for (int j = 0; j &lt;= n; j++)
+        a[col][j] /= div;
+
+    // 3. pivot 열의 위·아래를 모두 0으로
+    for (int r = 0; r &lt; n; r++) {
+        if (r == col) continue;
+
+        double factor = a[r][col];
+
+        for (int j = 0; j &lt;= n; j++)
+            a[r][j] -= factor * a[col][j];
+    }
+}</code></pre>
+<div class="grid">
+<div class="card"><strong>시간복잡도</strong><p>일반적으로 O(n³)</p></div>
+<div class="card"><strong>최종 형태</strong><p>RREF(Reduced Row Echelon Form), 즉 기약 행 사다리꼴</p></div>
+</div>
+</section>
+
+<section>
+<h2>7. 기억해야 할 4단계</h2>
+<div class="grid3">
+<div class="card"><strong>① 피벗 선택</strong><p>기준 원소를 정합니다.</p></div>
+<div class="card"><strong>② 피벗을 1로</strong><p>그 행 전체를 피벗 값으로 나눕니다.</p></div>
+<div class="card"><strong>③ 위·아래를 0으로</strong><p>다른 모든 행에서 피벗 열을 제거합니다.</p></div>
+<div class="card"><strong>④ 다음 열 반복</strong><p>오른쪽 아래로 이동하며 반복합니다.</p></div>
+<div class="card"><strong>⑤ 항등행렬 완성</strong><p>왼쪽이 I가 됩니다.</p></div>
+<div class="card"><strong>⑥ 결과 읽기</strong><p>오른쪽 열에서 해를 바로 읽습니다.</p></div>
+</div>
+</section>
+
+<section id="quiz">
+<h2>8. 확인문제</h2>
+<div id="quizBox"></div>
+<div class="progress"><div id="qprog"></div></div>
+<p id="scoreText" class="small">0 / 8 정답</p>
+</section>
+
+</main>
+<footer>가우스-조르당 소거법 단계별 인터랙티브 강의자료</footer>
+
+<script>
+const steps=[
+{
+html:`<h3>시작: 목표를 먼저 이해하자</h3>
+<div class="example">x+y=5<br>2x+3y=12</div>
+<p>가우스-조르당 소거법은 최종적으로 계수행렬을 <b>항등행렬</b>로 바꿉니다.</p>
+<div class="formula">[1 0 |x값]<br>[0 1 |y값]</div>`
+},
+{
+html:`<h3>1단계: 확대행렬 만들기</h3>
+<div class="matrix-stage"><div class="matrix-wrap c3">
+<div class="cell">1</div><div class="cell">1</div><div class="cell aug">5</div>
+<div class="cell">2</div><div class="cell">3</div><div class="cell aug">12</div>
+</div></div>
+<p>첫째 열은 x의 계수, 둘째 열은 y의 계수, 마지막 열은 상수항입니다.</p>`
+},
+{
+html:`<h3>2단계: 첫 번째 피벗 선택</h3>
+<div class="matrix-stage"><div class="matrix-wrap c3">
+<div class="cell pivot">1</div><div class="cell">1</div><div class="cell aug">5</div>
+<div class="cell target">2</div><div class="cell">3</div><div class="cell aug">12</div>
+</div></div>
+<p>첫 번째 피벗은 1입니다. 아래의 2를 0으로 만들겠습니다.</p>`
+},
+{
+html:`<h3>3단계: 피벗 아래를 0으로</h3>
+<div class="calc">R₂ ← R₂ - 2R₁</div>
+<div class="calc">
+[2,3|12] - 2×[1,1|5] = [0,1|2]
+</div>
+<div class="matrix-stage"><div class="matrix-wrap c3">
+<div class="cell pivot">1</div><div class="cell">1</div><div class="cell aug">5</div>
+<div class="cell zero">0</div><div class="cell pivot">1</div><div class="cell aug">2</div>
+</div></div>`
+},
+{
+html:`<h3>4단계: 두 번째 피벗 확인</h3>
+<p>둘째 행의 피벗은 이미 1입니다.</p>
+<div class="formula">[1 1 |5]<br>[0 1 |2]</div>
+<div class="tip">가우스 소거법이라면 여기서 역대입을 시작하지만, 가우스-조르당은 한 단계 더 갑니다.</div>`
+},
+{
+html:`<h3>5단계: 두 번째 피벗 위를 0으로</h3>
+<div class="calc">R₁ ← R₁ - R₂</div>
+<div class="calc">
+[1,1|5] - [0,1|2] = [1,0|3]
+</div>
+<div class="matrix-stage"><div class="matrix-wrap c3">
+<div class="cell pivot">1</div><div class="cell zero">0</div><div class="cell aug">3</div>
+<div class="cell zero">0</div><div class="cell pivot">1</div><div class="cell aug">2</div>
+</div></div>`
+},
+{
+html:`<h3>6단계: 해를 바로 읽는다</h3>
+<div class="formula">[1 0 |3]<br>[0 1 |2]</div>
+<p>첫째 행은 x=3, 둘째 행은 y=2입니다.</p>
+<div class="key"><b>최종 해: x=3, y=2</b></div>`
+}
+];
+
+let idx=0;
+function render(){
+ content.innerHTML=steps[idx].html;
+ for(let i=0;i<steps.length;i++) document.getElementById('t'+i).classList.toggle('active',i===idx);
+ prog.style.width=((idx+1)/steps.length*100)+'%';
+ prev.disabled=idx===0;
+ next.disabled=idx===steps.length-1;
+}
+function move(d){idx=Math.max(0,Math.min(steps.length-1,idx+d));render()}
+function resetDemo(){idx=0;render()}
+render();
+
+function ff(x){
+ if(Math.abs(x)<1e-10)x=0;
+ return Number.isInteger(x)?String(x):Number(x.toFixed(4)).toString();
+}
+
+function solveJordan(){
+ let a=+a11.value,b=+a12.value,c=+b1.value;
+ let d=+a21.value,e=+a22.value,f=+b2.value;
+ const eps=1e-12;
+ let s=`<h3>단계별 가우스-조르당 풀이</h3>`;
+
+ if(Math.abs(a)<eps && Math.abs(d)>eps){
+   [a,d]=[d,a];[b,e]=[e,b];[c,f]=[f,c];
+   s+=`<div class="calc"><b>① R₁↔R₂</b><br>[${ff(a)} ${ff(b)}|${ff(c)}]<br>[${ff(d)} ${ff(e)}|${ff(f)}]</div>`;
+ }
+
+ if(Math.abs(a)<eps && Math.abs(d)<eps){
+   out.innerHTML=s+`<div class="warn">첫 열에 피벗을 만들 수 없습니다. 자유변수 또는 해 없음 여부를 추가 판별해야 합니다.</div>`;
+   return;
+ }
+
+ const div1=a;
+ a/=div1;b/=div1;c/=div1;
+ s+=`<div class="calc"><b>① 첫 피벗을 1로</b><br>R₁←R₁/${ff(div1)}<br>[${ff(a)} ${ff(b)}|${ff(c)}]</div>`;
+
+ const k=d;
+ d=d-k*a;e=e-k*b;f=f-k*c;
+ s+=`<div class="calc"><b>② 첫 피벗 아래 제거</b><br>R₂←R₂-(${ff(k)})R₁<br>[${ff(a)} ${ff(b)}|${ff(c)}]<br>[${ff(d)} ${ff(e)}|${ff(f)}]</div>`;
+
+ if(Math.abs(e)<eps){
+   if(Math.abs(f)>eps){
+     out.innerHTML=s+`<div class="warn"><b>해 없음</b><br>[0 0|${ff(f)}] → 0=${ff(f)} 모순</div>`;
+   }else{
+     out.innerHTML=s+`<div class="key"><b>무수히 많은 해</b><br>[0 0|0]이므로 자유변수가 생깁니다.</div>`;
+   }
+   return;
+ }
+
+ const div2=e;
+ e/=div2;f/=div2;d/=div2;
+ s+=`<div class="calc"><b>③ 둘째 피벗을 1로</b><br>R₂←R₂/${ff(div2)}<br>[0 1|${ff(f)}]</div>`;
+
+ const k2=b;
+ b=b-k2*e;c=c-k2*f;a=a-k2*d;
+ s+=`<div class="calc"><b>④ 둘째 피벗 위 제거</b><br>R₁←R₁-(${ff(k2)})R₂<br>[1 0|${ff(c)}]<br>[0 1|${ff(f)}]</div>`;
+
+ s+=`<div class="key"><b>최종 해: x=${ff(c)}, y=${ff(f)}</b></div>`;
+ out.innerHTML=s;
+}
+
+const quiz=[
+{q:'1) 가우스-조르당의 최종 목표는?',a:['아래만 0','왼쪽을 항등행렬로','모든 값을 0','행렬식을 1로'],c:1,e:'왼쪽 계수행렬을 항등행렬 I로 만드는 것이 목표입니다.'},
+{q:'2) 피벗이 2라면 먼저 어떻게 할 수 있는가?',a:['행을 삭제','그 행을 2로 나눔','열을 삭제','2를 더함'],c:1,e:'피벗을 1로 만들기 위해 그 행 전체를 피벗 값으로 나눕니다.'},
+{q:'3) 가우스 소거법과 가장 큰 차이는?',a:['행을 안 바꿈','피벗 위도 0으로 만듦','행렬을 쓰지 않음','역대입만 함'],c:1,e:'가우스-조르당은 피벗의 위와 아래를 모두 0으로 만듭니다.'},
+{q:'4) [1 0|3],[0 1|2]의 해는?',a:['x=2,y=3','x=3,y=2','x=1,y=1','해 없음'],c:1,e:'첫 행에서 x=3, 둘째 행에서 y=2를 바로 읽습니다.'},
+{q:'5) 기약 행 사다리꼴의 영어 약자는?',a:['DFS','RREF','BFS','GCD'],c:1,e:'Reduced Row Echelon Form의 약자가 RREF입니다.'},
+{q:'6) [A|I]를 조르당 소거하면?',a:['[0|A]','[I|A⁻¹]','[A²|I]','[I|A]'],c:1,e:'왼쪽을 I로 만들면 오른쪽이 A의 역행렬이 됩니다.'},
+{q:'7) [0 0|4]가 나오면?',a:['유일해','해 없음','무수히 많은 해','x=4'],c:1,e:'0=4라는 모순이므로 해가 없습니다.'},
+{q:'8) 일반적인 시간복잡도는?',a:['O(n)','O(n²)','O(n³)','O(2ⁿ)'],c:2,e:'일반적인 가우스-조르당 소거법은 O(n³)입니다.'}
+];
+
+let score=0,answered=Array(quiz.length).fill(false);
+quiz.forEach((q,i)=>{
+ const d=document.createElement('div');d.className='quizQ';
+ d.innerHTML=`<b>${q.q}</b><div class="answers">${q.a.map((x,j)=>`<button onclick="ans(${i},${j},this)">${x}</button>`).join('')}</div><div id="e${i}" class="small"></div>`;
+ quizBox.appendChild(d);
+});
+function ans(i,j,b){
+ if(answered[i])return;
+ answered[i]=true;
+ const ok=j===quiz[i].c;
+ if(ok)score++;
+ b.style.background=ok?'#e9fff3':'#fff0f3';
+ document.getElementById('e'+i).innerHTML=(ok?'✅ 정답! ':'❌ 오답. ')+quiz[i].e;
+ scoreText.textContent=`${score} / ${quiz.length} 정답`;
+ qprog.style.width=(answered.filter(Boolean).length/quiz.length*100)+'%';
+}
+</script>
+</body>
+</html>

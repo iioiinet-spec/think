@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>행렬 - 이산수학과 정보올림피아드</title>
+<style>
+:root{
+  --bg:#fff8fb; --card:#fff; --ink:#2d2630; --muted:#766b74;
+  --pink:#e85d9e; --pink2:#ff9bc8; --purple:#8b70d6; --blue:#5f8fe8;
+  --line:#efd9e5; --green:#2b9d73; --yellow:#fff6df; --shadow:0 12px 28px rgba(110,70,100,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#fff8fb 0%,#fff 40%,#faf7ff 100%);color:var(--ink);line-height:1.72}
+header{padding:58px 20px 42px;background:linear-gradient(135deg,#ffb9d5,#e987ba 45%,#b79de8);color:#fff;position:relative;overflow:hidden}
+header:before,header:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.16)}
+header:before{width:230px;height:230px;right:-60px;top:-90px}
+header:after{width:130px;height:130px;left:7%;bottom:-65px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.badge{display:inline-block;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.18);border-radius:999px;padding:6px 12px;font-size:13px;margin-bottom:12px}
+h1{margin:0 0 12px;font-size:clamp(32px,5vw,56px);letter-spacing:-1.5px}
+.subtitle{font-size:18px;max-width:900px;opacity:.97}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+nav a{text-decoration:none;color:#744e65;white-space:nowrap;background:#fff0f6;border:1px solid #f4d7e5;border-radius:999px;padding:7px 11px;font-size:13px}
+main{padding:30px 0 70px}
+section{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;margin:22px 0;box-shadow:var(--shadow)}
+h2{margin:0 0 14px;color:#7e4267;font-size:29px;letter-spacing:-.6px}
+h3{color:#5b485c;font-size:21px;margin:24px 0 10px}
+.lead{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{background:#fffafd;border:1px solid #f0dbe6;border-radius:18px;padding:18px}
+.card strong{color:#b1477b}
+.formula{font-family:"Cambria Math","Times New Roman",serif;background:#faf5ff;border-left:5px solid var(--purple);padding:12px 16px;border-radius:10px;margin:12px 0;font-size:18px;overflow:auto}
+.example{background:#fff8e9;border:1px solid #f1dfb8;border-radius:16px;padding:16px;margin:14px 0}
+.tip{background:#eef7ff;border:1px solid #cfe4f9;border-radius:16px;padding:16px}
+.key{background:#effff7;border:1px solid #caeddd;border-radius:16px;padding:16px}
+table{width:100%;border-collapse:collapse;margin:14px 0}
+th,td{border:1px solid #e9dbe4;padding:9px;text-align:center}
+th{background:#fff0f6;color:#7d4868}
+.matrix{display:inline-grid;gap:6px;padding:8px 16px;position:relative;margin:8px}
+.matrix:before,.matrix:after{content:"";position:absolute;top:0;bottom:0;width:8px;border-top:2px solid #6f5b68;border-bottom:2px solid #6f5b68}
+.matrix:before{left:0;border-left:2px solid #6f5b68}
+.matrix:after{right:0;border-right:2px solid #6f5b68}
+.matrix span{min-width:38px;text-align:center;padding:4px 6px;background:#fff;border-radius:6px}
+.m2{grid-template-columns:repeat(2,1fr)}
+.m3{grid-template-columns:repeat(3,1fr)}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:10px 0}
+input,select{padding:9px 11px;border:1px solid #ddc8d5;border-radius:10px;font-size:15px}
+.btn{border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-weight:700;cursor:pointer}
+.btn.secondary{background:#fff;border:1px solid #dfbfd0;color:#9d4b72}
+.result{min-height:46px;background:#faf6fb;border:1px dashed #d5bccb;border-radius:12px;padding:12px 14px;margin-top:10px;overflow:auto}
+pre{background:#292432;color:#f7eff7;border-radius:16px;padding:16px;overflow:auto}
+code{font-family:Consolas,"Courier New",monospace}
+.quizQ{border:1px solid #ead9e3;background:#fff;border-radius:16px;padding:16px;margin:12px 0}
+.answers{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.answers button{padding:8px 10px;border:1px solid #dfcad6;background:#fff;border-radius:10px;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+.progress{height:10px;background:#f1e3eb;border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--pink2),var(--purple));transition:.25s}
+.canvasBox{border:1px solid #ead7e1;border-radius:16px;background:#fffafd;padding:10px;overflow:auto}
+canvas{max-width:100%}
+.pill{display:inline-block;background:#f8eaf2;padding:4px 9px;border-radius:999px;font-size:13px}
+
+.matrix-stage{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin:18px 0;padding:18px;background:#fffafd;border:1px solid #efdce6;border-radius:18px}
+.matrix-wrap{position:relative;display:inline-grid;gap:7px;padding:10px 17px;vertical-align:middle}
+.matrix-wrap.cols2{grid-template-columns:repeat(2,62px)}
+.matrix-wrap:before,.matrix-wrap:after{content:"";position:absolute;top:0;bottom:0;width:10px;border-top:3px solid #765e6c;border-bottom:3px solid #765e6c}
+.matrix-wrap:before{left:0;border-left:3px solid #765e6c}
+.matrix-wrap:after{right:0;border-right:3px solid #765e6c}
+.matrix-wrap input{width:62px;text-align:center;padding:10px 5px;border:1px solid #dfcbd6;border-radius:9px;background:#fff;font-weight:700}
+.matrix-cell{min-width:62px;min-height:42px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #ead8e2;border-radius:9px;padding:8px;font-weight:700}
+.matrix-op{font-size:28px;font-weight:800;color:#9b5378}
+.scalar-box{display:flex;align-items:center;gap:9px;font-size:22px;font-weight:800}
+.calc-steps{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:10px;margin:14px 0}
+.calc-step{background:#f8f4ff;border:1px solid #ded2f4;border-radius:13px;padding:12px}
+.calc-step b{color:#7354b2}
+.matrix-caption{text-align:center;font-size:13px;color:#766b74;margin-top:5px}
+@media(max-width:760px){.calc-steps{grid-template-columns:1fr}.matrix-stage{gap:10px}.matrix-wrap.cols2{grid-template-columns:repeat(2,54px)}.matrix-wrap input,.matrix-cell{width:54px;min-width:54px}}
+
+footer{text-align:center;color:#887785;padding:30px 0 60px}
+@media(max-width:760px){.grid,.grid3{grid-template-columns:1fr}section{padding:20px;border-radius:18px}h2{font-size:24px}}
+@media print{nav,.interactive-only{display:none!important}body{background:#fff}header{background:#f6d8e7!important;color:#3d2d38}section{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="badge">이산수학 · 정보올림피아드 핵심 개념</div>
+    <h1>행렬(Matrix)</h1>
+    <div class="subtitle">행렬은 단순 계산 도구가 아니라 그래프, 관계, 경로, 상태 전이, 점화식, 빠른 거듭제곱을 하나의 형식으로 표현하는 강력한 이산수학 도구입니다.</div>
+  </div>
+</header>
+
+<nav>
+ <div class="wrap">
+  <a href="#s1">1. 행렬의 의미</a><a href="#s2">2. 종류와 표기</a><a href="#s3">3. 덧셈·스칼라곱</a>
+  <a href="#s4">4. 행렬 곱셈</a><a href="#s5">5. 항등·전치행렬</a><a href="#s6">6. 그래프와 인접행렬</a>
+  <a href="#s7">7. 경로 개수</a><a href="#s8">8. 관계와 행렬</a><a href="#s9">9. 점화식</a>
+  <a href="#s10">10. 빠른 거듭제곱</a><a href="#quiz">확인문제</a>
+ </div>
+</nav>
+
+<main class="wrap">
+<section id="s1">
+<h2>1. 행렬은 무엇인가?</h2>
+<p class="lead">행렬은 숫자를 직사각형 표 형태로 배열한 것입니다. 이산수학에서는 “여러 상태 사이의 관계”를 한 번에 표현하는 데 매우 자주 사용합니다.</p>
+<div class="grid">
+ <div class="card"><h3>기본 형태</h3>
+  <div class="formula">A = [aᵢⱼ], &nbsp; i=행(row), j=열(column)</div>
+  <div class="matrix m3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+  <p>위 행렬은 2행 3열, 즉 <b>2×3 행렬</b>입니다.</p>
+ </div>
+ <div class="card"><h3>정보올림피아드에서의 의미</h3>
+  <p>행과 열에 정점, 상태, 시간, 변수 등을 배치하면 복잡한 구조를 하나의 표로 표현할 수 있습니다.</p>
+  <p><span class="pill">그래프</span> <span class="pill">DP</span> <span class="pill">점화식</span> <span class="pill">경로</span></p>
+ </div>
+</div>
+<div class="key"><b>핵심 관점:</b> 행렬은 “수를 담는 표”가 아니라 <b>변환과 관계를 표현하는 언어</b>입니다.</div>
+</section>
+
+<section id="s2">
+<h2>2. 행렬의 종류와 표기</h2>
+<table>
+<tr><th>이름</th><th>의미</th><th>예</th></tr>
+<tr><td>행행렬</td><td>1개의 행</td><td>[1 2 3]</td></tr>
+<tr><td>열행렬</td><td>1개의 열</td><td>[1;2;3]</td></tr>
+<tr><td>정사각행렬</td><td>행과 열의 개수가 같음</td><td>2×2, 3×3</td></tr>
+<tr><td>영행렬</td><td>모든 원소가 0</td><td>O</td></tr>
+<tr><td>대각행렬</td><td>주대각선 밖 원소가 0</td><td>diag(2,3,4)</td></tr>
+<tr><td>항등행렬</td><td>대각선 1, 나머지 0</td><td>I</td></tr>
+</table>
+<div class="example"><b>예제:</b> A가 3×4 행렬이라면 원소 a₂₃은 <b>2번째 행, 3번째 열</b>의 값입니다.</div>
+</section>
+
+
+<section id="s3">
+<h2>3. 행렬의 덧셈과 스칼라 곱</h2>
+<p>행렬의 덧셈은 <b>같은 위치의 원소끼리</b> 더합니다. 따라서 두 행렬의 크기가 반드시 같아야 합니다.</p>
+<div class="formula">C = A+B ⇒ cᵢⱼ = aᵢⱼ + bᵢⱼ</div>
+
+<h3>① 행렬 덧셈을 직접 계산해 보기</h3>
+<div class="matrix-stage interactive-only">
+  <div>
+    <div class="matrix-wrap cols2">
+      <input id="addA11" type="number" value="1"><input id="addA12" type="number" value="2">
+      <input id="addA21" type="number" value="3"><input id="addA22" type="number" value="4">
+    </div>
+    <div class="matrix-caption">행렬 A</div>
+  </div>
+  <div class="matrix-op">+</div>
+  <div>
+    <div class="matrix-wrap cols2">
+      <input id="addB11" type="number" value="5"><input id="addB12" type="number" value="6">
+      <input id="addB21" type="number" value="7"><input id="addB22" type="number" value="8">
+    </div>
+    <div class="matrix-caption">행렬 B</div>
+  </div>
+  <div class="matrix-op">=</div>
+  <div>
+    <div class="matrix-wrap cols2" id="addMatrixResult">
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+    </div>
+    <div class="matrix-caption">A+B</div>
+  </div>
+</div>
+<div class="row interactive-only" style="justify-content:center">
+  <button class="btn" onclick="matrixAdd()">A+B 계산</button>
+</div>
+<div class="result" id="addExplain">예: 왼쪽 위 원소는 1+5처럼 같은 위치끼리 더합니다.</div>
+
+<h3>② 스칼라 곱을 직접 계산해 보기</h3>
+<p>스칼라 곱은 하나의 수 <b>k</b>를 행렬의 모든 원소에 각각 곱합니다.</p>
+<div class="formula">kA = [k·aᵢⱼ]</div>
+<div class="matrix-stage interactive-only">
+  <div class="scalar-box">
+    <input id="sk" type="number" value="3" style="width:70px;text-align:center">
+    <span>×</span>
+  </div>
+  <div>
+    <div class="matrix-wrap cols2">
+      <input id="sa11" type="number" value="1"><input id="sa12" type="number" value="2">
+      <input id="sa21" type="number" value="3"><input id="sa22" type="number" value="4">
+    </div>
+    <div class="matrix-caption">행렬 A</div>
+  </div>
+  <div class="matrix-op">=</div>
+  <div>
+    <div class="matrix-wrap cols2" id="scalarMatrixResult">
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+    </div>
+    <div class="matrix-caption">kA</div>
+  </div>
+</div>
+<div class="row interactive-only" style="justify-content:center">
+  <button class="btn" onclick="scalarCalc()">kA 계산</button>
+</div>
+<div class="result" id="scalarResult">각 원소마다 k를 곱하는 과정을 확인해 보세요.</div>
+</section>
+
+
+
+<section id="s4">
+<h2>4. 가장 중요한 행렬 곱셈</h2>
+<p>행렬 곱셈은 같은 위치끼리 곱하는 것이 아닙니다. <b>앞 행렬의 한 행(row)과 뒤 행렬의 한 열(column)을 짝지어 곱한 뒤 모두 더합니다.</b></p>
+<div class="formula">C = AB, &nbsp; cᵢⱼ = Σₖ aᵢₖbₖⱼ</div>
+<div class="tip"><b>곱셈 가능 조건:</b> A가 m×n, B가 n×p라면 AB는 m×p입니다. 즉 <b>앞 행렬의 열 개수 = 뒤 행렬의 행 개수</b>여야 합니다.</div>
+
+<h3>2×2 행렬 곱셈을 시각적으로 계산해 보기</h3>
+<div class="matrix-stage interactive-only">
+  <div>
+    <div class="matrix-wrap cols2">
+      <input id="a11" type="number" value="1"><input id="a12" type="number" value="2">
+      <input id="a21" type="number" value="3"><input id="a22" type="number" value="4">
+    </div>
+    <div class="matrix-caption">행렬 A</div>
+  </div>
+  <div class="matrix-op">×</div>
+  <div>
+    <div class="matrix-wrap cols2">
+      <input id="b11" type="number" value="5"><input id="b12" type="number" value="6">
+      <input id="b21" type="number" value="7"><input id="b22" type="number" value="8">
+    </div>
+    <div class="matrix-caption">행렬 B</div>
+  </div>
+  <div class="matrix-op">=</div>
+  <div>
+    <div class="matrix-wrap cols2" id="mulMatrixResult">
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+      <div class="matrix-cell">?</div><div class="matrix-cell">?</div>
+    </div>
+    <div class="matrix-caption">AB</div>
+  </div>
+</div>
+
+<div class="row interactive-only" style="justify-content:center">
+  <button class="btn" onclick="showMulFormula()">1단계: 계산식 보기</button>
+  <button class="btn secondary" onclick="mul2()">2단계: 결과 계산</button>
+</div>
+
+<div id="mulFormulaBox" class="result">
+  먼저 <b>1단계: 계산식 보기</b>를 누르세요. 각 결과 원소가 어느 행과 어느 열을 이용하는지 식으로 나타납니다.
+</div>
+<div id="mulResult" class="result" style="margin-top:10px">
+  계산식을 확인한 뒤 결과를 계산해 보세요.
+</div>
+
+<div class="key"><b>기억법:</b> 결과의 (i,j) 원소를 구하려면 <b>A의 i번째 행 × B의 j번째 열</b>을 계산합니다. 일반적으로 AB ≠ BA이므로 순서도 중요합니다.</div>
+</section>
+
+
+<section id="s5">
+<h2>5. 항등행렬과 전치행렬</h2>
+<div class="grid">
+ <div class="card">
+  <h3>항등행렬 I</h3>
+  <p>숫자의 1과 같은 역할을 합니다.</p>
+  <div class="formula">AI = IA = A</div>
+  <div class="matrix m3"><span>1</span><span>0</span><span>0</span><span>0</span><span>1</span><span>0</span><span>0</span><span>0</span><span>1</span></div>
+ </div>
+ <div class="card">
+  <h3>전치행렬 Aᵀ</h3>
+  <p>행과 열을 서로 바꿉니다.</p>
+  <div class="formula">(Aᵀ)ᵢⱼ = Aⱼᵢ</div>
+  <p>그래프에서 무방향 그래프의 인접행렬은 대칭행렬이 됩니다.</p>
+ </div>
+</div>
+</section>
+
+<section id="s6">
+<h2>6. 그래프를 행렬로 표현하기: 인접행렬</h2>
+<p>정점 i에서 j로 간선이 있으면 1, 없으면 0을 기록합니다.</p>
+<div class="grid">
+ <div class="canvasBox"><canvas id="graph" width="460" height="280"></canvas></div>
+ <div class="card">
+  <h3>인접행렬 A</h3>
+  <div class="matrix m4" id="adjMatrix" style="grid-template-columns:repeat(4,1fr)"></div>
+  <p class="small">그래프는 A→B, A→C, B→C, C→D, D→A로 구성됩니다.</p>
+ </div>
+</div>
+<div class="tip"><b>장점:</b> 두 정점 사이에 간선이 있는지 O(1)에 확인할 수 있습니다. <b>단점:</b> 정점이 많고 간선이 적은 희소 그래프에서는 메모리를 많이 사용합니다.</div>
+</section>
+
+<section id="s7">
+<h2>7. 행렬의 거듭제곱과 경로 개수</h2>
+<p>그래프의 인접행렬 A에 대해 <b>A²의 (i,j) 원소는 i에서 j로 길이 2인 경로의 개수</b>를 뜻합니다.</p>
+<div class="formula">(A²)ᵢⱼ = Σₖ AᵢₖAₖⱼ</div>
+<p>왜냐하면 i→k와 k→j가 모두 존재하는 중간 정점 k의 개수를 세기 때문입니다.</p>
+<div class="example"><b>확장:</b> Aᵏ의 (i,j) 원소는 i에서 j로 정확히 k개의 간선을 사용해 이동하는 경로의 개수입니다.</div>
+<div class="row interactive-only">
+<select id="pathPow"><option value="1">A¹</option><option value="2">A²</option><option value="3">A³</option><option value="4">A⁴</option></select>
+<button class="btn" onclick="showPower()">행렬 보기</button>
+</div>
+<div class="result" id="powerResult"></div>
+</section>
+
+<section id="s8">
+<h2>8. 이산수학의 관계(Relation)와 행렬</h2>
+<p>집합 X={1,2,3} 위의 관계 R을 0과 1로 표현할 수 있습니다.</p>
+<div class="example">
+R={(1,1),(1,2),(2,3),(3,1)}라면<br>
+M<sub>R</sub> =
+[[1,1,0],
+ [0,0,1],
+ [1,0,0]]
+</div>
+<div class="grid3">
+ <div class="card"><strong>반사적</strong><p>모든 i에 대해 (i,i)∈R → 대각선이 모두 1</p></div>
+ <div class="card"><strong>대칭적</strong><p>(i,j)∈R이면 (j,i)∈R → 행렬이 대칭</p></div>
+ <div class="card"><strong>추이적</strong><p>i→j, j→k이면 i→k도 존재</p></div>
+</div>
+<div class="key"><b>연결:</b> 관계의 성질을 그래프와 행렬로 동시에 해석할 수 있다는 점이 이산수학의 중요한 통합 관점입니다.</div>
+</section>
+
+<section id="s9">
+<h2>9. 점화식을 행렬로 바꾸기</h2>
+<p>행렬은 점화식을 빠르게 계산하는 데 매우 중요합니다. 대표적으로 피보나치 수열이 있습니다.</p>
+<div class="formula">
+Fₙ₊₁ = Fₙ + Fₙ₋₁<br><br>
+[ Fₙ₊₁ ] = [1 1] [ Fₙ ]<br>
+[ Fₙ   ]   [1 0] [ Fₙ₋₁ ]
+</div>
+<p>따라서</p>
+<div class="formula">
+[ Fₙ₊₁ ] = [1 1]ⁿ [F₁]<br>
+[ Fₙ   ]   [1 0]   [F₀]
+</div>
+<div class="example"><b>의미:</b> O(n) 반복 대신 행렬 빠른 거듭제곱을 사용하면 O(log n)에 Fₙ을 구할 수 있습니다.</div>
+<div class="row interactive-only"><input id="fibN" type="number" min="0" max="1000000" value="20"><button class="btn" onclick="fibFast()">Fₙ 계산</button></div>
+<div class="result" id="fibResult"></div>
+</section>
+
+<section id="s10">
+<h2>10. 행렬 빠른 거듭제곱</h2>
+<p>거듭제곱을 n번 곱하지 않고, 지수를 절반씩 줄이면 O(log n)에 계산할 수 있습니다.</p>
+<div class="formula">
+A⁸ = ((A²)²)²<br>
+A¹³ = A⁸·A⁴·A
+</div>
+<pre>Matrix power(Matrix A, long long n){
+    Matrix R = identity();
+    while(n > 0){
+        if(n % 2 == 1) R = R * A;
+        A = A * A;
+        n /= 2;
+    }
+    return R;
+}</pre>
+<div class="grid">
+ <div class="card"><strong>시간복잡도</strong><p>k×k 행렬의 일반 곱셈은 O(k³), 거듭제곱은 O(k³ log n)</p></div>
+ <div class="card"><strong>출제 연결</strong><p>큰 n의 점화식, 경로 개수, 상태 전이, 문자열 패턴, DP 최적화</p></div>
+</div>
+</section>
+
+<section>
+<h2>11. 정보올림피아드에서 자주 나오는 연결 예제</h2>
+<div class="example"><b>예제 1. 그래프 경로</b><br>인접행렬 A에서 (A³)₂₄=5라면, 정점 2에서 4까지 정확히 3개의 간선을 사용하는 경로가 5개 있다는 뜻입니다.</div>
+<div class="example"><b>예제 2. 상태 전이</b><br>상태가 3개이고 한 단계 후 가능한 이동을 행렬 T로 표현하면, 초기 상태 벡터 v에 대해 k단계 후 상태는 Tᵏv로 계산할 수 있습니다.</div>
+<div class="example"><b>예제 3. 피보나치</b><br>F₁₀=55. 반복문은 10번 가까이 계산하지만 행렬 거듭제곱은 지수를 절반씩 줄여 계산합니다.</div>
+<div class="example"><b>예제 4. 관계</b><br>무방향 그래프의 인접행렬은 Aᵀ=A이므로 대칭행렬입니다.</div>
+<div class="example"><b>예제 5. 행렬 곱</b><br>A가 2×3, B가 3×4이면 AB는 2×4. 반대로 BA는 3×3이 아니라 애초에 곱셈이 불가능합니다(4와 2가 맞지 않음).</div>
+<div class="example"><b>예제 6. 모듈러 행렬</b><br>경로 개수가 매우 커지면 각 행렬 곱셈마다 mod 1,000,000,007을 적용해 오버플로와 큰 수를 관리합니다.</div>
+</section>
+
+<section id="quiz">
+<h2>12. 확인문제</h2>
+<p class="lead">정답을 선택하면 즉시 해설을 볼 수 있습니다.</p>
+<div id="quizBox"></div>
+<div class="progress"><div id="prog"></div></div>
+<p id="scoreText" class="small">0 / 10 정답</p>
+</section>
+</main>
+
+<footer>행렬 · 이산수학과 정보올림피아드 강의자료</footer>
+
+<script>
+function matrixAdd(){
+ const A=[[+addA11.value,+addA12.value],[+addA21.value,+addA22.value]];
+ const B=[[+addB11.value,+addB12.value],[+addB21.value,+addB22.value]];
+ const C=[[A[0][0]+B[0][0],A[0][1]+B[0][1]],[A[1][0]+B[1][0],A[1][1]+B[1][1]]];
+ const cells=document.querySelectorAll('#addMatrixResult .matrix-cell');
+ C.flat().forEach((v,i)=>cells[i].textContent=v);
+ addExplain.innerHTML=
+   `<b>계산 과정</b><br>`+
+   `c₁₁ = ${A[0][0]} + ${B[0][0]} = <b>${C[0][0]}</b><br>`+
+   `c₁₂ = ${A[0][1]} + ${B[0][1]} = <b>${C[0][1]}</b><br>`+
+   `c₂₁ = ${A[1][0]} + ${B[1][0]} = <b>${C[1][0]}</b><br>`+
+   `c₂₂ = ${A[1][1]} + ${B[1][1]} = <b>${C[1][1]}</b>`;
+}
+function scalarCalc(){
+ const A=[[+sa11.value,+sa12.value],[+sa21.value,+sa22.value]], k=+sk.value;
+ const C=A.map(row=>row.map(x=>k*x));
+ const cells=document.querySelectorAll('#scalarMatrixResult .matrix-cell');
+ C.flat().forEach((v,i)=>cells[i].textContent=v);
+ scalarResult.innerHTML=
+   `<b>계산 과정</b><br>`+
+   `${k}×${A[0][0]}=${C[0][0]}, &nbsp; ${k}×${A[0][1]}=${C[0][1]}<br>`+
+   `${k}×${A[1][0]}=${C[1][0]}, &nbsp; ${k}×${A[1][1]}=${C[1][1]}`;
+}
+function getMulMatrices(){
+ return {
+  A:[[+a11.value,+a12.value],[+a21.value,+a22.value]],
+  B:[[+b11.value,+b12.value],[+b21.value,+b22.value]]
+ };
+}
+function showMulFormula(){
+ const {A,B}=getMulMatrices();
+ mulFormulaBox.innerHTML=
+ `<b>각 원소의 계산식</b><div class="calc-steps">`+
+ `<div class="calc-step"><b>c₁₁</b> = A의 1행 · B의 1열<br>${A[0][0]}×${B[0][0]} + ${A[0][1]}×${B[1][0]}</div>`+
+ `<div class="calc-step"><b>c₁₂</b> = A의 1행 · B의 2열<br>${A[0][0]}×${B[0][1]} + ${A[0][1]}×${B[1][1]}</div>`+
+ `<div class="calc-step"><b>c₂₁</b> = A의 2행 · B의 1열<br>${A[1][0]}×${B[0][0]} + ${A[1][1]}×${B[1][0]}</div>`+
+ `<div class="calc-step"><b>c₂₂</b> = A의 2행 · B의 2열<br>${A[1][0]}×${B[0][1]} + ${A[1][1]}×${B[1][1]}</div>`+
+ `</div><div class="small">이제 각 식의 곱을 계산하고 더하면 결과 행렬의 원소가 됩니다.</div>`;
+ mulResult.innerHTML='계산식을 확인했습니다. 이제 <b>2단계: 결과 계산</b>을 눌러보세요.';
+}
+function mul2(){
+ const {A,B}=getMulMatrices();
+ const C=[
+  [A[0][0]*B[0][0]+A[0][1]*B[1][0],A[0][0]*B[0][1]+A[0][1]*B[1][1]],
+  [A[1][0]*B[0][0]+A[1][1]*B[1][0],A[1][0]*B[0][1]+A[1][1]*B[1][1]]
+ ];
+ const cells=document.querySelectorAll('#mulMatrixResult .matrix-cell');
+ C.flat().forEach((v,i)=>cells[i].textContent=v);
+ mulResult.innerHTML=
+ `<b>계산 결과</b><br>`+
+ `c₁₁ = ${A[0][0]}×${B[0][0]} + ${A[0][1]}×${B[1][0]} = <b>${C[0][0]}</b><br>`+
+ `c₁₂ = ${A[0][0]}×${B[0][1]} + ${A[0][1]}×${B[1][1]} = <b>${C[0][1]}</b><br>`+
+ `c₂₁ = ${A[1][0]}×${B[0][0]} + ${A[1][1]}×${B[1][0]} = <b>${C[1][0]}</b><br>`+
+ `c₂₂ = ${A[1][0]}×${B[0][1]} + ${A[1][1]}×${B[1][1]} = <b>${C[1][1]}</b>`;
+}
+
+const A=[
+ [0,1,1,0],
+ [0,0,1,0],
+ [0,0,0,1],
+ [1,0,0,0]
+];
+const adj=document.getElementById('adjMatrix');
+A.flat().forEach(v=>{const s=document.createElement('span');s.textContent=v;adj.appendChild(s);});
+
+const cv=document.getElementById('graph'),ctx=cv.getContext('2d');
+const P={A:[80,70],B:[240,50],C:[210,185],D:[365,170]};
+const edges=[['A','B'],['A','C'],['B','C'],['C','D'],['D','A']];
+function arrow(x1,y1,x2,y2){
+ const ang=Math.atan2(y2-y1,x2-x1),r=22;
+ const sx=x1+Math.cos(ang)*r, sy=y1+Math.sin(ang)*r;
+ const ex=x2-Math.cos(ang)*r, ey=y2-Math.sin(ang)*r;
+ ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.strokeStyle='#a86b8b';ctx.lineWidth=2;ctx.stroke();
+ ctx.beginPath();ctx.moveTo(ex,ey);
+ ctx.lineTo(ex-10*Math.cos(ang-Math.PI/6),ey-10*Math.sin(ang-Math.PI/6));
+ ctx.lineTo(ex-10*Math.cos(ang+Math.PI/6),ey-10*Math.sin(ang+Math.PI/6));
+ ctx.closePath();ctx.fillStyle='#a86b8b';ctx.fill();
+}
+edges.forEach(e=>arrow(...P[e[0]],...P[e[1]]));
+Object.entries(P).forEach(([k,[x,y]])=>{
+ ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);ctx.fillStyle='#ef8fbd';ctx.fill();
+ ctx.fillStyle='#fff';ctx.font='bold 16px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(k,x,y);
+});
+
+function mmul(X,Y){
+ const n=X.length,m=Y[0].length,p=Y.length;
+ return Array.from({length:n},(_,i)=>Array.from({length:m},(_,j)=>{
+  let s=0; for(let k=0;k<p;k++) s+=X[i][k]*Y[k][j]; return s;
+ }));
+}
+function ident(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:0));}
+function mpow(M,e){
+ let R=ident(M.length),B=M;
+ while(e){if(e&1)R=mmul(R,B);B=mmul(B,B);e>>=1;} return R;
+}
+function showPower(){
+ const p=+pathPow.value,R=mpow(A,p);
+ powerResult.innerHTML=`A<sup>${p}</sup> =<br>`+R.map(row=>'[ '+row.join(' &nbsp; ')+' ]').join('<br>');
+}
+showPower();
+
+function mul2mod(X,Y,mod){
+ return [
+  [(X[0][0]*Y[0][0]+X[0][1]*Y[1][0])%mod,(X[0][0]*Y[0][1]+X[0][1]*Y[1][1])%mod],
+  [(X[1][0]*Y[0][0]+X[1][1]*Y[1][0])%mod,(X[1][0]*Y[0][1]+X[1][1]*Y[1][1])%mod]
+ ];
+}
+function fibFast(){
+ const n=BigInt(fibN.value);
+ function mul(X,Y){
+  return [
+   [X[0][0]*Y[0][0]+X[0][1]*Y[1][0],X[0][0]*Y[0][1]+X[0][1]*Y[1][1]],
+   [X[1][0]*Y[0][0]+X[1][1]*Y[1][0],X[1][0]*Y[0][1]+X[1][1]*Y[1][1]]
+  ];
+ }
+ let e=n,R=[[1n,0n],[0n,1n]],B=[[1n,1n],[1n,0n]];
+ while(e>0n){if(e&1n)R=mul(R,B);B=mul(B,B);e>>=1n;}
+ fibResult.innerHTML=`F<sub>${n}</sub> = <b>${R[0][1].toString()}</b>`;
+}
+
+const quiz=[
+{q:'1) 2×3 행렬 A와 3×4 행렬 B의 곱 AB 크기는?',a:['2×3','3×4','2×4','4×2'],c:2,e:'안쪽 크기 3이 같고 바깥 크기 2×4가 결과입니다.'},
+{q:'2) 행렬 곱셈에서 일반적으로 성립하지 않는 것은?',a:['결합법칙','분배법칙','교환법칙','항등행렬'],c:2,e:'일반적으로 AB≠BA입니다.'},
+{q:'3) 인접행렬 A의 A²(i,j)는 무엇을 뜻하는가?',a:['간선 가중치','길이 2 경로 수','정점 차수','최단거리'],c:1,e:'중간 정점 k를 거치는 i→k→j 경로의 수를 셉니다.'},
+{q:'4) 무방향 그래프 인접행렬의 특징은?',a:['대각행렬','영행렬','대칭행렬','항등행렬'],c:2,e:'i-j 간선이 있으면 j-i도 있으므로 Aᵀ=A입니다.'},
+{q:'5) 항등행렬 I에 대해 맞는 것은?',a:['AI=I','AI=A','A+I=A','I=0'],c:1,e:'숫자의 1처럼 AI=IA=A입니다.'},
+{q:'6) 전치행렬은 무엇을 바꾸는가?',a:['부호','행과 열','대각선 값','행렬 크기를 2배'],c:1,e:'행과 열을 서로 교환합니다.'},
+{q:'7) 행렬 빠른 거듭제곱의 지수 처리 시간은?',a:['O(n)','O(n²)','O(log n)','O(1)'],c:2,e:'지수를 매번 절반으로 줄입니다.'},
+{q:'8) 피보나치 행렬의 대표 전이행렬은?',a:['[[1,1],[1,0]]','[[1,0],[0,1]]','[[0,1],[0,1]]','[[2,0],[0,2]]'],c:0,e:'[F(n+1),F(n)]ᵀ=[[1,1],[1,0]][F(n),F(n-1)]ᵀ 입니다.'},
+{q:'9) 관계가 대칭적이면 관계 행렬은?',a:['대칭행렬','영행렬','상삼각행렬','항등행렬'],c:0,e:'(i,j)가 있으면 (j,i)도 있으므로 행렬이 대칭입니다.'},
+{q:'10) A가 3×2, B가 4×3이면 AB는?',a:['3×3','3×4','계산 불가','4×2'],c:2,e:'A의 열 2와 B의 행 4가 같지 않아 곱셈 불가입니다.'}
+];
+let score=0,answered=Array(quiz.length).fill(false);
+const qb=document.getElementById('quizBox');
+quiz.forEach((x,i)=>{
+ const d=document.createElement('div');d.className='quizQ';
+ d.innerHTML=`<b>${x.q}</b><div class="answers">${x.a.map((v,j)=>`<button onclick="ans(${i},${j},this)">${v}</button>`).join('')}</div><div id="ex${i}" class="small"></div>`;
+ qb.appendChild(d);
+});
+function ans(i,j,btn){
+ if(answered[i])return; answered[i]=true;
+ const ok=j===quiz[i].c;if(ok)score++;
+ btn.style.background=ok?'#e9fff3':'#fff0f3';
+ btn.style.borderColor=ok?'#7fd5ac':'#e89aad';
+ document.getElementById('ex'+i).innerHTML=(ok?'✅ 정답! ':'❌ 오답. ')+quiz[i].e;
+ scoreText.textContent=`${score} / ${quiz.length} 정답`;
+ prog.style.width=(answered.filter(Boolean).length/quiz.length*100)+'%';
+}
+</script>
+</body>
+</html>

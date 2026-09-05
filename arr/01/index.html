@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>행렬의 덧셈과 곱셈 20문제</title>
+<style>
+:root{
+  --bg:#fff8fb; --card:#fff; --ink:#2e2730; --muted:#756a73;
+  --pink:#e85c9d; --pink2:#ff9bc8; --purple:#8b70d6;
+  --line:#efd9e5; --yellow:#fff7e6; --green:#eefcf5;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#fff7fb,#fff 45%,#faf7ff);color:var(--ink);line-height:1.65}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header{background:linear-gradient(135deg,#ffb8d4,#e788ba 45%,#b59be8);color:#fff;padding:48px 20px 34px}
+h1{margin:0 0 10px;font-size:clamp(30px,5vw,48px)}
+header p{margin:0;max-width:850px}
+.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.toolbar .wrap{display:flex;flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px}
+button{border:none;border-radius:11px;padding:9px 13px;font-weight:700;cursor:pointer}
+.primary{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff}
+.secondary{background:#fff;border:1px solid #dfbfd0;color:#93486f}
+main{padding:24px 0 60px}
+.section-title{margin:28px 0 14px;color:#7f4468}
+.problem,.answer{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 8px 22px rgba(100,70,90,.08);break-inside:avoid}
+.num{display:inline-flex;width:32px;height:32px;border-radius:50%;align-items:center;justify-content:center;background:#ffe6f1;color:#a24472;font-weight:800;margin-right:7px}
+.problem-title{font-weight:800}
+.matrix-line{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:14px 0}
+.matrix{position:relative;display:inline-grid;gap:6px;padding:9px 16px;vertical-align:middle}
+.matrix.cols2{grid-template-columns:repeat(2,54px)}
+.matrix.cols3{grid-template-columns:repeat(3,48px)}
+.matrix.rows3cols2{grid-template-columns:repeat(2,54px)}
+.matrix:before,.matrix:after{content:"";position:absolute;top:0;bottom:0;width:8px;border-top:2px solid #6f5b68;border-bottom:2px solid #6f5b68}
+.matrix:before{left:0;border-left:2px solid #6f5b68}
+.matrix:after{right:0;border-right:2px solid #6f5b68}
+.matrix span{min-width:44px;text-align:center;padding:4px}
+.op{font-size:24px;font-weight:800;color:#8b5873}
+.blank{display:inline-block;min-width:180px;border-bottom:2px solid #cbaebe;height:28px}
+.answer{background:#fffdf7;border-color:#eedfb8}
+.answer h3{margin:0 0 10px;color:#7e5064}
+.explain{background:#f8f5ff;border-left:4px solid var(--purple);padding:12px 14px;border-radius:10px;margin-top:10px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#f7e8f1;color:#8c4e6e;font-size:13px}
+.hidden{display:none}
+.note{background:#eef8ff;border:1px solid #cfe4f7;border-radius:14px;padding:14px;margin:14px 0}
+.scorebox{background:#fff0f6;border:1px solid #f2d4e3;padding:14px;border-radius:14px}
+@media print{
+  .toolbar{display:none!important}
+  body{background:#fff}
+  header{background:#f6d9e6!important;color:#3d2d38;padding:24px}
+  .problem,.answer{box-shadow:none}
+  .no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+  <h1>행렬의 덧셈과 곱셈 20문제</h1>
+  <p>이산수학·정보올림피아드 기초 연습용 문제집입니다. 행렬의 덧셈, 스칼라 곱, 행렬 곱셈, 곱셈 가능 여부와 결과 행렬의 크기까지 단계적으로 연습합니다.</p>
+</div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <button class="primary" onclick="showProblems()">문제지만 보기</button>
+    <button class="secondary" onclick="showAnswers()">정답·해설 보기</button>
+    <button class="secondary" onclick="showAll()">전체 보기</button>
+    <button class="primary" onclick="printProblems()">문제지 인쇄</button>
+    <button class="primary" onclick="printAnswers()">정답·해설 인쇄</button>
+  </div>
+</div>
+
+<main class="wrap">
+<div class="note">
+  <b>학습 목표</b> · 같은 크기 행렬의 덧셈 · 스칼라 곱 · 행×열 방식의 행렬 곱셈 · 곱셈 가능한 크기 판단 · 결과 행렬의 크기 계산
+</div>
+
+<div id="problems">
+<h2 class="section-title">학생용 문제지</h2>
+
+<div class="problem"><span class="num">1</span><span class="problem-title">다음 두 행렬을 더하시오.</span>
+<div class="matrix-line"><div class="matrix cols2"><span>1</span><span>3</span><span>2</span><span>4</span></div><span class="op">+</span><div class="matrix cols2"><span>5</span><span>2</span><span>1</span><span>6</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">2</span><span class="problem-title">다음 두 행렬을 더하시오.</span>
+<div class="matrix-line"><div class="matrix cols2"><span>-2</span><span>5</span><span>3</span><span>0</span></div><span class="op">+</span><div class="matrix cols2"><span>4</span><span>-1</span><span>2</span><span>7</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">3</span><span class="problem-title">다음 두 2×3 행렬을 더하시오.</span>
+<div class="matrix-line"><div class="matrix cols3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><span class="op">+</span><div class="matrix cols3"><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">4</span><span class="problem-title">A+B를 구하시오.</span>
+<p>A = [[7, -3], [2, 5]], B = [[-4, 6], [8, -1]]</p><span class="blank"></span></div>
+
+<div class="problem"><span class="num">5</span><span class="problem-title">3A를 구하시오.</span>
+<div class="matrix-line"><span class="op">3 ×</span><div class="matrix cols2"><span>2</span><span>-1</span><span>4</span><span>3</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">6</span><span class="problem-title">-2A를 구하시오.</span>
+<div class="matrix-line"><span class="op">-2 ×</span><div class="matrix cols2"><span>1</span><span>5</span><span>-3</span><span>2</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">7</span><span class="problem-title">2A+B를 구하시오.</span>
+<p>A = [[1,2],[3,4]], B = [[4,3],[2,1]]</p><span class="blank"></span></div>
+
+<div class="problem"><span class="num">8</span><span class="problem-title">A-B를 구하시오.</span>
+<p>A = [[9,7],[5,3]], B = [[1,2],[3,4]]</p><span class="blank"></span></div>
+
+<div class="problem"><span class="num">9</span><span class="problem-title">다음 행렬 곱 AB를 구하시오.</span>
+<div class="matrix-line"><div class="matrix cols2"><span>1</span><span>2</span><span>3</span><span>4</span></div><span class="op">×</span><div class="matrix cols2"><span>5</span><span>6</span><span>7</span><span>8</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">10</span><span class="problem-title">다음 행렬 곱 AB를 구하시오.</span>
+<div class="matrix-line"><div class="matrix cols2"><span>2</span><span>0</span><span>1</span><span>3</span></div><span class="op">×</span><div class="matrix cols2"><span>4</span><span>1</span><span>2</span><span>5</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">11</span><span class="problem-title">다음 행렬 곱 AB를 구하시오.</span>
+<p>A = [[1,-1],[2,3]], B = [[4,2],[1,5]]</p><span class="blank"></span></div>
+
+<div class="problem"><span class="num">12</span><span class="problem-title">A가 2×3 행렬, B가 3×4 행렬일 때 AB의 크기는?</span>
+<p>① 2×3　② 3×4　③ 2×4　④ 4×2</p></div>
+
+<div class="problem"><span class="num">13</span><span class="problem-title">A가 3×2 행렬, B가 4×3 행렬일 때 AB를 계산할 수 있는가?</span>
+<p>① 가능　② 불가능</p></div>
+
+<div class="problem"><span class="num">14</span><span class="problem-title">다음 행렬 곱을 구하시오.</span>
+<div class="matrix-line"><div class="matrix cols3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><span class="op">×</span><div class="matrix rows3cols2"><span>1</span><span>0</span><span>0</span><span>1</span><span>1</span><span>1</span></div><span class="op">=</span><span class="blank"></span></div></div>
+
+<div class="problem"><span class="num">15</span><span class="problem-title">A=[[1,2],[0,1]], B=[[3,1],[2,4]]일 때 AB와 BA를 각각 구하고 같은지 비교하시오.</span><span class="blank"></span></div>
+
+<div class="problem"><span class="num">16</span><span class="problem-title">다음 중 행렬 곱셈에 대해 항상 참인 것은?</span>
+<p>① AB=BA　② A(B+C)=AB+AC　③ A+B=AB　④ A²=A</p></div>
+
+<div class="problem"><span class="num">17</span><span class="problem-title">A=[[2,1],[1,0]]일 때 A²을 구하시오.</span><span class="blank"></span></div>
+
+<div class="problem"><span class="num">18</span><span class="problem-title">인접행렬 A의 A²의 (i,j) 원소가 의미하는 것은?</span>
+<p>① i와 j의 번호 차이　② i에서 j로 길이 2인 경로의 수　③ i의 차수　④ 최단거리</p></div>
+
+<div class="problem"><span class="num">19</span><span class="problem-title">A=[[1,0],[0,1]]일 때 A×B의 결과를 설명하시오.</span>
+<p>B는 임의의 2×2 행렬이다.</p><span class="blank"></span></div>
+
+<div class="problem"><span class="num">20</span><span class="problem-title">A=[[1,1],[1,0]]일 때 A³을 구하시오.</span><span class="blank"></span></div>
+</div>
+
+<div id="answers" class="hidden">
+<h2 class="section-title">정답 및 해설</h2>
+
+<div class="answer"><h3>1번 정답</h3><p>[[6,5],[3,10]]</p><div class="explain">같은 위치의 원소끼리 더합니다. 1+5=6, 3+2=5, 2+1=3, 4+6=10.</div></div>
+
+<div class="answer"><h3>2번 정답</h3><p>[[2,4],[5,7]]</p><div class="explain">-2+4=2, 5+(-1)=4, 3+2=5, 0+7=7.</div></div>
+
+<div class="answer"><h3>3번 정답</h3><p>[[7,7,7],[7,7,7]]</p><div class="explain">2×3 행렬도 같은 위치끼리 더합니다.</div></div>
+
+<div class="answer"><h3>4번 정답</h3><p>[[3,3],[10,4]]</p><div class="explain">7+(-4)=3, -3+6=3, 2+8=10, 5+(-1)=4.</div></div>
+
+<div class="answer"><h3>5번 정답</h3><p>[[6,-3],[12,9]]</p><div class="explain">스칼라 3을 모든 원소에 곱합니다.</div></div>
+
+<div class="answer"><h3>6번 정답</h3><p>[[-2,-10],[6,-4]]</p><div class="explain">-2×1=-2, -2×5=-10, -2×(-3)=6, -2×2=-4.</div></div>
+
+<div class="answer"><h3>7번 정답</h3><p>[[6,7],[8,9]]</p><div class="explain">2A=[[2,4],[6,8]], 여기에 B를 더하면 [[6,7],[8,9]].</div></div>
+
+<div class="answer"><h3>8번 정답</h3><p>[[8,5],[2,-1]]</p><div class="explain">같은 위치끼리 뺍니다.</div></div>
+
+<div class="answer"><h3>9번 정답</h3><p>[[19,22],[43,50]]</p><div class="explain">c₁₁=1×5+2×7=19, c₁₂=1×6+2×8=22, c₂₁=3×5+4×7=43, c₂₂=3×6+4×8=50.</div></div>
+
+<div class="answer"><h3>10번 정답</h3><p>[[8,2],[10,16]]</p><div class="explain">c₁₁=2×4+0×2=8, c₁₂=2×1+0×5=2, c₂₁=1×4+3×2=10, c₂₂=1×1+3×5=16.</div></div>
+
+<div class="answer"><h3>11번 정답</h3><p>[[3,-3],[11,19]]</p><div class="explain">1행×1열: 1×4+(-1)×1=3, 1행×2열: 1×2+(-1)×5=-3, 2행×1열: 2×4+3×1=11, 2행×2열: 2×2+3×5=19.</div></div>
+
+<div class="answer"><h3>12번 정답</h3><p>③ 2×4</p><div class="explain">(2×3)(3×4)에서 가운데 3이 같으므로 곱셈 가능, 바깥 크기 2×4가 결과입니다.</div></div>
+
+<div class="answer"><h3>13번 정답</h3><p>② 불가능</p><div class="explain">(3×2)(4×3)에서 앞 행렬의 열 2와 뒤 행렬의 행 4가 다르므로 곱셈할 수 없습니다.</div></div>
+
+<div class="answer"><h3>14번 정답</h3><p>[[4,5],[10,11]]</p><div class="explain">첫째 행: [1,2,3]과 각 열을 곱해 1+0+3=4, 0+2+3=5. 둘째 행도 같은 방식으로 4+0+6=10, 0+5+6=11.</div></div>
+
+<div class="answer"><h3>15번 정답</h3><p>AB=[[7,9],[2,4]], BA=[[3,7],[2,6]], 따라서 AB≠BA</p><div class="explain">행렬 곱셈은 일반적으로 교환법칙이 성립하지 않습니다.</div></div>
+
+<div class="answer"><h3>16번 정답</h3><p>② A(B+C)=AB+AC</p><div class="explain">행렬 곱셈은 덧셈에 대해 분배법칙이 성립하지만 일반적으로 AB=BA는 성립하지 않습니다.</div></div>
+
+<div class="answer"><h3>17번 정답</h3><p>[[5,2],[2,1]]</p><div class="explain">A²=A×A. 2×2+1×1=5, 2×1+1×0=2, 1×2+0×1=2, 1×1+0×0=1.</div></div>
+
+<div class="answer"><h3>18번 정답</h3><p>② i에서 j로 길이 2인 경로의 수</p><div class="explain">인접행렬 A의 제곱 A²은 한 개의 중간 정점을 거치는 2단계 경로 수를 셉니다.</div></div>
+
+<div class="answer"><h3>19번 정답</h3><p>A×B=B</p><div class="explain">A는 2×2 항등행렬 I이므로 IB=B입니다. 숫자에서 1을 곱하는 것과 같은 역할입니다.</div></div>
+
+<div class="answer"><h3>20번 정답</h3><p>A²=[[2,1],[1,1]], A³=[[3,2],[2,1]]</p><div class="explain">A³=A²×A. 이 행렬은 피보나치 수열을 표현하는 대표적인 전이행렬입니다.</div></div>
+
+<div class="scorebox"><b>교사용 활용 팁</b><br>1~8번은 덧셈·스칼라곱, 9~17번은 행렬 곱셈, 18~20번은 이산수학 응용 문제입니다.</div>
+</div>
+</main>
+
+<script>
+function showProblems(){
+ document.getElementById('problems').classList.remove('hidden');
+ document.getElementById('answers').classList.add('hidden');
+}
+function showAnswers(){
+ document.getElementById('problems').classList.add('hidden');
+ document.getElementById('answers').classList.remove('hidden');
+}
+function showAll(){
+ document.getElementById('problems').classList.remove('hidden');
+ document.getElementById('answers').classList.remove('hidden');
+}
+function printProblems(){
+ const a=document.getElementById('answers'), p=document.getElementById('problems');
+ const ah=a.classList.contains('hidden'), ph=p.classList.contains('hidden');
+ p.classList.remove('hidden'); a.classList.add('hidden');
+ window.print();
+ if(!ah)a.classList.remove('hidden'); else a.classList.add('hidden');
+ if(ph)p.classList.add('hidden'); else p.classList.remove('hidden');
+}
+function printAnswers(){
+ const a=document.getElementById('answers'), p=document.getElementById('problems');
+ const ah=a.classList.contains('hidden'), ph=p.classList.contains('hidden');
+ a.classList.remove('hidden'); p.classList.add('hidden');
+ window.print();
+ if(ah)a.classList.add('hidden'); else a.classList.remove('hidden');
+ if(!ph)p.classList.remove('hidden'); else p.classList.add('hidden');
+}
+</script>
+</body>
+</html>
