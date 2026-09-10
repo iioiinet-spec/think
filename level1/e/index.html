@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>사고력수학 1단계 · E. 논리와 문제해결 — 이론 강의자료</title>
+<style>
+@page { size:A4; margin:0; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e4da;font-family:"Pretendard","Apple SD Gothic Neo","맑은 고딕",
+     "Malgun Gothic",sans-serif;color:#2a2724;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:210mm;height:297mm;padding:9mm 12mm 10mm;background:#fffdf7;
+      margin:0 auto 6mm;overflow:hidden;font-size:9.6pt;line-height:1.5}
+@media print{ body{background:#fff} .page{margin:0;box-shadow:none;page-break-after:always} }
+
+.page{--ac:#b45309;--bg:#fdf3e3}
+.t1{--ac:#b45309;--bg:#fdf2e0} .t2{--ac:#0f766e;--bg:#e6f2f0}
+.t3{--ac:#6d28d9;--bg:#efe9fb} .t4{--ac:#be123c;--bg:#fce8ed}
+.t5{--ac:#1d4ed8;--bg:#e6edfc} .t6{--ac:#15803d;--bg:#e7f3e9}
+
+.head{display:flex;align-items:flex-start;gap:8px;border-bottom:2.5px solid var(--ac);
+      padding-bottom:5px;margin-bottom:7px}
+.head .no{flex:none;background:var(--ac);color:#fff;font-weight:800;font-size:8.6pt;
+      padding:3px 8px;border-radius:3px;letter-spacing:.3px;margin-top:2px}
+.head h1{flex:1;font-size:15pt;font-weight:800;letter-spacing:-.4px;color:#1c1a17;line-height:1.25}
+.head h1 small{display:block;font-size:8.8pt;font-weight:600;color:#6b635a;margin-top:2px;letter-spacing:0}
+.head .tag{flex:none;text-align:right;font-size:7.8pt;color:#8a8177;line-height:1.35;margin-top:2px}
+
+h2{font-size:11pt;font-weight:800;color:var(--ac);margin:8px 0 4px;display:flex;
+   align-items:center;gap:6px;letter-spacing:-.3px}
+h2 .n{flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;
+      font-size:8.4pt;display:flex;align-items:center;justify-content:center;font-weight:800}
+h3{font-size:9.8pt;font-weight:700;color:#3d3830;margin:6px 0 3px}
+p{margin:2.5px 0}
+b{font-weight:700;color:#141210}
+.k{color:var(--ac);font-weight:800}
+.small{font-size:8.2pt;color:#6b635a;line-height:1.45}
+
+.open{background:var(--bg);border-left:4px solid var(--ac);padding:6px 9px;border-radius:0 4px 4px 0}
+.open .lb{font-size:8pt;font-weight:800;color:var(--ac);margin-bottom:2px}
+.strat{border:1.6px solid var(--ac);border-radius:5px;padding:6px 9px;margin:7px 0;background:#fffefb}
+.strat .lb{display:inline-block;background:var(--ac);color:#fff;font-size:7.6pt;font-weight:800;
+      padding:1.5px 6px;border-radius:3px;margin-right:6px}
+.strat .nm{font-weight:800;font-size:10pt;color:#1c1a17}
+.warn{background:#fdf0ee;border-left:4px solid #c2410c;padding:6px 9px;margin:6px 0;
+      border-radius:0 4px 4px 0;font-size:9.1pt}
+.note{background:#f6f3ea;border-radius:4px;padding:6px 9px;margin:6px 0}
+.sol{background:#f7f4ec;border:1px solid #e0d9c8;border-radius:4px;padding:6px 9px;margin:5px 0;
+     white-space:pre-wrap;font-family:"D2Coding","Consolas","Menlo",monospace;font-size:8.8pt;line-height:1.55}
+.write{border:1.4px dashed var(--ac);border-radius:5px;padding:6px 9px;margin:6px 0;background:#fffefb}
+.write .lb{font-size:7.8pt;font-weight:800;color:var(--ac);margin-bottom:3px}
+.frame{background:#fff;border:1px solid #e2dccf;border-radius:3px;padding:5px 7px;font-size:9.1pt}
+.link{background:#1c1a17;color:#f5f1e6;border-radius:5px;padding:6px 9px;margin:6px 0;font-size:8.8pt}
+.link .lb{font-weight:800;color:#ffd89b;margin-right:6px}
+.link b{color:#fff}
+
+ul.li{margin:3px 0 3px 15px} ul.li li{margin:1.5px 0}
+ol.li{margin:3px 0 3px 17px} ol.li li{margin:1.5px 0}
+
+table{width:100%;border-collapse:collapse;margin:5px 0;font-size:8.9pt}
+th,td{border:1px solid #d8d0be;padding:3px 5px;text-align:center}
+th{background:var(--bg);font-weight:700;color:#2a2724}
+td.l{text-align:left} td.m{font-weight:700}
+td.x{background:#e6e0d2;color:#9a9186}
+td.g{background:#f0ece0;color:#a9a094}
+
+.wrap{display:flex;gap:10px;align-items:flex-start}
+.fig{flex:none} .txt{flex:1}
+.row{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.col{flex:1}
+.figs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:4px 0}
+.cap{font-size:8pt;color:#6b635a;text-align:center;margin-top:1px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:4mm;display:flex;justify-content:space-between;
+      border-top:1px solid #ded7c7;padding-top:3px;font-size:7.4pt;color:#9a9186}
+</style></head>
+<body>
+<div class="page t1">
+<div class="head"><span class="no">안내</span><h1>논리는 “빠짐없이 · 모순 없이”의 기술이다<small>경우를 <b>남김없이 나누고</b>, 나눈 것마다 <b>말이 되는지</b> 따진다. 그것이 전부다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>이론 강의자료<br>전 12쪽</div></div>
+
+<div class="open">
+  <div class="lb">이 자료의 쓰임</div>
+  <p><b>E영역 25문항 문제지</b>와 짝을 이룹니다. 주제마다 <b>두 쪽</b>이며,
+  앞쪽에서 <b>이론과 대표 예제</b>를, 뒤쪽에서 <b>흔한 실수와 서술형 답안 틀</b>을 다룹니다.
+  각 주제 끝의 <b>“이 이론으로 풀리는 문항”</b> 칸이 문제지와 이어 줍니다.</p>
+</div>
+
+<h2><span class="n">1</span>다섯 주제가 하는 일</h2>
+<table>
+<tr><th style="width:7%">주제</th><th style="width:20%">이름</th><th style="width:34%">핵심 이론</th><th>손에 넣는 도구</th></tr>
+<tr><td class="m">20</td><td class="m">경우의 수 기초</td><td class="l">나뭇가지 그림, 곱의 법칙과 합의 법칙</td><td class="l"><b>나뭇가지 그리기</b> · ×와 ＋의 구분</td></tr>
+<tr><td class="m">21</td><td class="m">참말과 거짓말</td><td class="l">가정하고 모순 찾기</td><td class="l"><b>한쪽으로 가정</b> · 모순 지목</td></tr>
+<tr><td class="m">22</td><td class="m">순서 정하기</td><td class="l">표로 대진 정리, 악수 문제</td><td class="l"><b>표 채우기</b> · 중복 설명</td></tr>
+<tr><td class="m">23</td><td class="m">최단 거리</td><td class="l">격자 위 길 세기</td><td class="l"><b>교차점에 수 적기</b></td></tr>
+<tr><td class="m">24</td><td class="m">단순하게 만들기</td><td class="l">작은 경우 → 규칙 → 일반화</td><td class="l"><b>작게 줄이기</b> · 근거 대기</td></tr>
+</table>
+
+<h2><span class="n">2</span>이 영역이 A~D의 마무리인 이유</h2>
+<div class="note">
+<p>E영역은 <b>새로운 도구를 배우는 곳이 아니라</b>, 앞의 네 영역에서 익힌 것을
+<b>하나로 묶는 곳</b>입니다.</p>
+<ul class="li">
+<li><b>주제 20</b>은 A영역 <b>주제 1(수 세기)</b>을 나뭇가지와 두 법칙으로 다시 정리합니다.</li>
+<li><b>주제 22 · 23</b>은 C영역의 <b>세는 기술</b>과 B영역의 <b>파스칼 삼각형</b>이 만나는 자리입니다.</li>
+<li><b>주제 21 · 24</b>는 앞의 모든 영역에서 요구했던 <b>“왜 그런가”</b> 를 정면으로 다룹니다.</li>
+</ul>
+</div>
+
+<h2><span class="n">3</span>이 영역의 서술형은 무엇을 채점하는가</h2>
+<table>
+<tr><th style="width:24%">채점 항목</th><th style="width:38%">답안에 반드시 있어야 할 말</th><th>없으면</th></tr>
+<tr><td class="m">① 경우를 나눈 기준</td><td class="l">“<b>A가 참말이라고 가정하면</b>”</td><td class="l">빠짐없이 따졌다는 근거가 없음</td></tr>
+<tr><td class="m">② 모순의 지목</td><td class="l">“그러면 <b>B와 C가 모두 참말</b>이 되어 조건에 어긋난다”</td><td class="l">가장 큰 배점을 놓침</td></tr>
+<tr><td class="m">③ 남은 하나</td><td class="l">“<b>나머지 경우는 모두 모순이므로</b> 답은 하나뿐”</td><td class="l">“찾았다”에서 그침</td></tr>
+</table>
+<div class="warn"><b>이 영역에서 가장 큰 차이를 만드는 한 문장.</b>
+“<b>다른 경우는 모두 모순이므로 이것이 유일한 답입니다.</b>”
+답을 찾는 것은 절반이고, <b>다른 답이 없음을 보이는 것</b>이 나머지 절반입니다.
+A영역 복면산에서 “찾았다가 아니라 이것 말고는 없다”라고 했던 것이 여기서 완성됩니다.</div>
+
+<h2><span class="n">4</span>논리 문제에서 조심할 말</h2>
+<table>
+<tr><th style="width:20%">이 말이 나오면</th><th style="width:36%">뜻</th><th>이 말의 반대</th></tr>
+<tr><td class="m">그리고</td><td class="l">둘 다 일어난다 → <b>곱한다</b></td><td class="l">적어도 하나는 아니다</td></tr>
+<tr><td class="m">또는</td><td class="l">둘 중 하나면 된다 → <b>더한다</b></td><td class="l">둘 다 아니다</td></tr>
+<tr><td class="m">모두</td><td class="l">하나도 빠짐없이</td><td class="l"><b>적어도 하나는</b> 아니다</td></tr>
+<tr><td class="m">적어도 하나</td><td class="l">하나 이상, 전부여도 된다</td><td class="l">하나도 없다</td></tr>
+</table>
+<p class="small">오른쪽 칸이 중요합니다. 어떤 진술이 <b>거짓</b>이라는 것은 그 말의 <b>반대가 참</b>이라는 뜻이므로,
+반대를 잘못 만들면 <b>그 뒤가 전부 틀립니다.</b></p>
+
+<h2><span class="n">5</span>진도 안내</h2>
+<table>
+<tr><th style="width:8%">주제</th><th style="width:18%">강의 자료</th><th style="width:16%">문제지</th><th style="width:20%">권장 시간</th><th>먼저 확인할 것</th></tr>
+<tr><td class="m">20</td><td>2 ~ 3쪽</td><td>20-1 ~ 20-5</td><td>강의 40분 · 문제 50분</td><td class="l">A영역 주제 1을 마쳤는가</td></tr>
+<tr><td class="m">21</td><td>4 ~ 5쪽</td><td>21-1 ~ 21-5</td><td>강의 45분 · 문제 55분</td><td class="l">“가정한다”는 말을 이해하는가</td></tr>
+<tr><td class="m">22</td><td>6 ~ 7쪽</td><td>22-1 ~ 22-5</td><td>강의 40분 · 문제 45분</td><td class="l">표를 그릴 줄 아는가</td></tr>
+<tr><td class="m">23</td><td>8 ~ 9쪽</td><td>23-1 ~ 23-5</td><td>강의 40분 · 문제 50분</td><td class="l">B영역 파스칼 삼각형을 마쳤는가</td></tr>
+<tr><td class="m">24</td><td>10 ~ 11쪽</td><td>24-1 ~ 24-5</td><td>강의 45분 · 문제 55분</td><td class="l">B영역 주제 7(규칙 찾기)</td></tr>
+</table>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 1 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 20</span><h1>경우의 수 기초 — 곱할 때와 더할 때<small>“<b>그리고</b>”면 곱하고 “<b>이거나</b>”면 더한다. 소리 내어 읽으면 틀리지 않는다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>2 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>윗옷이 <b>3벌</b>(티셔츠·셔츠·니트), 아래옷이 <b>4벌</b>(청바지·반바지·치마·면바지) 있습니다.
+  옷을 입는 방법은 모두 몇 가지일까요?</p>
+  <p><b>잠깐!</b> 3 ＋ 4 ＝ 7 이 아닙니다.
+  <b>윗옷을 고르고 그다음 아래옷을 고르는</b> 것이므로 <b>곱해야</b> 합니다.</p>
+</div>
+
+<h2><span class="n">1</span>나뭇가지 그림으로 보면 곱셈이 보인다</h2>
+<div class="wrap"><div class="fig"><svg width="190" height="224" viewBox="0 0 190 224"><line x1="12" y1="14" x2="12" y2="203" stroke="#0f766e" stroke-width="1.2" opacity="0.4"/><text x="26" y="45.0" font-size="10.5" font-weight="700" fill="#0f766e">티셔츠</text><path d="M42 41.5 C 62 41.5 62 16.0 82 16.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="19.5" font-size="10" fill="#2a2724">청바지</text><path d="M42 41.5 C 62 41.5 62 33.0 82 33.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="36.5" font-size="10" fill="#2a2724">반바지</text><path d="M42 41.5 C 62 41.5 62 50.0 82 50.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="53.5" font-size="10" fill="#2a2724">치마</text><path d="M42 41.5 C 62 41.5 62 67.0 82 67.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="70.5" font-size="10" fill="#2a2724">면바지</text><text x="26" y="113.0" font-size="10.5" font-weight="700" fill="#0f766e">셔츠</text><path d="M42 109.5 C 62 109.5 62 84.0 82 84.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="87.5" font-size="10" fill="#2a2724">청바지</text><path d="M42 109.5 C 62 109.5 62 101.0 82 101.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="104.5" font-size="10" fill="#2a2724">반바지</text><path d="M42 109.5 C 62 109.5 62 118.0 82 118.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="121.5" font-size="10" fill="#2a2724">치마</text><path d="M42 109.5 C 62 109.5 62 135.0 82 135.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="138.5" font-size="10" fill="#2a2724">면바지</text><text x="26" y="181.0" font-size="10.5" font-weight="700" fill="#0f766e">니트</text><path d="M42 177.5 C 62 177.5 62 152.0 82 152.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="155.5" font-size="10" fill="#2a2724">청바지</text><path d="M42 177.5 C 62 177.5 62 169.0 82 169.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="172.5" font-size="10" fill="#2a2724">반바지</text><path d="M42 177.5 C 62 177.5 62 186.0 82 186.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="189.5" font-size="10" fill="#2a2724">치마</text><path d="M42 177.5 C 62 177.5 62 203.0 82 203.0" fill="none" stroke="#0f766e" stroke-width="1.1" opacity="0.7"/><text x="88" y="206.5" font-size="10" fill="#2a2724">면바지</text></svg><div class="cap">가지가 3 × 4 ＝ 12개</div></div><div class="txt">
+<p>윗옷 하나마다 아래옷 <b>4가지</b>가 갈라져 나옵니다.
+윗옷이 <b>3가지</b>이므로 끝의 가지는 <b>4 ＋ 4 ＋ 4 ＝ 4 × 3 ＝ 12개</b> 입니다.</p>
+<div class="sol"><b>곱의 법칙</b>
+ “A를 하고 <b>그다음</b> B를 한다”
+   → A의 가짓수 <b>×</b> B의 가짓수
+
+<b>합의 법칙</b>
+ “A를 하거나 <b>또는</b> B를 한다”
+   → A의 가짓수 <b>＋</b> B의 가짓수</div>
+
+</div></div>
+
+<h2><span class="n">2</span>소리 내어 읽어 보는 법</h2>
+<table>
+<tr><th style="width:44%">문제의 말</th><th style="width:16%">읽으면</th><th>식</th></tr>
+<tr><td class="l">윗옷을 고르고 아래옷을 고른다</td><td class="m">그리고</td><td class="m">3 × 4 ＝ 12</td></tr>
+<tr><td class="l">버스를 타거나 지하철을 탄다</td><td class="m">이거나</td><td class="m">2 ＋ 3 ＝ 5</td></tr>
+<tr><td class="l">A에서 B로 가고 B에서 C로 간다</td><td class="m">그리고</td><td class="m">2 × 3 ＝ 6</td></tr>
+<tr><td class="l">두 자리 수 또는 세 자리 수</td><td class="m">이거나</td><td class="m">각각 세어 더한다</td></tr>
+</table>
+<div class="warn"><b>가장 흔한 실수.</b> 문제에 “<b>그리고</b>”와 “<b>또는</b>”이 섞여 있을 때입니다.
+“버스나 지하철로 학교에 가고, 걸어서 집에 온다”면
+<b>(2 ＋ 3) × 1</b> 처럼 <b>더한 뒤에 곱해야</b> 합니다.
+어느 것이 단계이고 어느 것이 갈래인지 <b>먼저 나누어 적으십시오.</b></div>
+
+<h2><span class="n">3</span>제한이 붙은 자리를 먼저</h2>
+<div class="sol">1, 2, 3, 4, 5 에서 서로 다른 <b>세 장</b>으로 세 자리 수 만들기
+
+ 백 5가지 <b>그리고</b> 십 4가지 <b>그리고</b> 일 3가지  →  5 × 4 × 3 ＝ <b>60개</b>
+
+ 그중 <b>짝수</b>는? <b>일의 자리를 먼저</b> 정한다 (2 또는 4 → 2가지)
+   2 × 4 × 3 ＝ <b>24개</b></div>
+<p class="small"><b>조건이 붙은 자리부터 정하는 것</b>은 A영역 주제 1·2에서 배운 그대로입니다.
+경우의 수는 새로운 내용이 아니라 <b>그때의 세기를 식으로 정리한 것</b>입니다.</p>
+
+<h3>나뭇가지로 검산하기 — 동전 세 개</h3>
+<div class="sol">동전 세 개를 던질 때 : 앞앞앞 / 앞앞뒤 / 앞뒤앞 / 앞뒤뒤 / 뒤앞앞 / 뒤앞뒤 / 뒤뒤앞 / 뒤뒤뒤
+ 곱의 법칙 2 × 2 × 2 ＝ <b>8가지</b>  →  직접 세어도 <b>8가지</b> ○</div>
+<p class="small"><b>작은 경우는 반드시 직접 세어 확인하십시오.</b> 이 습관이 주제 24의
+<b>“작게 줄이기”</b> 로 이어집니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">나뭇가지 그리기 · ×와 ＋ 구분하기</span></div>
+  <p><b>① 무엇을 순서대로 정하는지 적는다</b> → <b>② 단계면 ×, 갈래면 ＋</b>
+  → <b>③ 제한이 있는 자리를 먼저 정한다</b> → <b>④ 작은 경우를 나뭇가지로 그려 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 2 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 20</span><h1>경우의 수 기초 — 순서가 있는가 없는가<small>“<b>뽑아서 줄 세우기</b>”와 “<b>그냥 뽑기</b>”는 다른 문제다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>3 / 12 쪽</div></div>
+
+<h2><span class="n">4</span>순서를 따지는가, 따지지 않는가</h2>
+<table>
+<tr><th style="width:22%">구분</th><th style="width:34%">이런 문제</th><th>세는 법</th></tr>
+<tr><td class="m">순서 있음</td><td class="l">회장과 부회장 뽑기<br>세 자리 수 만들기</td>
+<td class="l">그대로 곱한다 &nbsp; 5 × 4 ＝ <b>20</b></td></tr>
+<tr><td class="m">순서 없음</td><td class="l">대표 <b>두 명</b> 뽑기<br>두 사람이 악수하기</td>
+<td class="l">곱한 뒤 <b>2로 나눈다</b> &nbsp; 5 × 4 ÷ 2 ＝ <b>10</b></td></tr>
+</table>
+<div class="sol"><b>왜 2로 나누는가.</b> (가,나)와 (나,가)는 <b>회장·부회장</b>으로는 다르지만
+<b>대표 두 명</b>으로는 같다 — 두 번 세었으므로 2로 나눈다.
+ 세 명을 뽑는다면 (가,나,다)를 줄 세우는 방법이 6가지이므로 <b>6으로 나눈다.</b>
+   5명 중 3명 ＝ 5 × 4 × 3 ÷ 6 ＝ <b>10가지</b></div>
+<p class="small"><b>“대표 · 조 · 짝 · 악수”</b> 는 순서가 없고, <b>“회장과 부회장 · 1등과 2등 · 자리 배치”</b> 는 순서가 있습니다.</p>
+
+<h2><span class="n">5</span>겹치는 것을 빼는 셈</h2>
+<div class="sol">1부터 30까지 중 <b>2의 배수이거나 3의 배수</b>인 수는?
+
+ 2의 배수 15개 <b>＋</b> 3의 배수 10개 ＝ 25개
+ 그런데 <b>6의 배수 5개</b>는 양쪽에 다 들어 있어 <b>두 번</b> 세었다.
+
+   15 ＋ 10 − 5 ＝ <b>20개</b></div>
+<p class="small">합의 법칙은 <b>겹치는 것이 없을 때만</b> 그대로 더할 수 있습니다 — 겹치면 <b>더한 뒤 뺍니다.</b></p>
+
+<h2><span class="n">6</span>거꾸로 세기 — 전체에서 빼기</h2>
+<div class="sol">동전 3개를 던질 때 <b>적어도 하나는 앞면</b>이 나오는 경우는?
+
+ 전체 : 2 × 2 × 2 ＝ 8가지
+ <b>앞면이 하나도 없는</b> 경우 : 모두 뒷면 → <b>1가지</b>
+
+   8 − 1 ＝ <b>7가지</b></div>
+<p class="small"><b>“적어도 ~”</b> 가 나오면 <b>전체에서 반대 경우를 빼는 것</b>이 거의 언제나 빠릅니다.
+직접 세면 “하나만 앞면 · 둘만 앞면 · 셋 다 앞면”으로 나누어야 해서 번거롭습니다.</p>
+
+<h2><span class="n">7</span>같은 것이 섞여 있을 때</h2>
+<div class="sol"><b>ㄱ, ㄱ, ㄴ</b> 세 장을 한 줄로 늘어놓는 방법은?
+
+ 모두 다르다면 3 × 2 × 1 ＝ 6가지
+ 그런데 <b>ㄱ 두 장이 서로 같으므로</b> 자리를 바꿔도 같은 줄이다 → <b>2로 나눈다</b>
+
+   6 ÷ 2 ＝ <b>3가지</b>   (ㄱㄱㄴ / ㄱㄴㄱ / ㄴㄱㄱ)</div>
+<p class="small"><b>“같은 것을 두 번 세었으면 나눈다”</b> 는 원리가 또 나왔습니다.
+순서 없는 뽑기에서 ÷2 를 했던 것과 <b>완전히 같은 이유</b>입니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“이 문제에서 <b>곱해야 하는지 더해야 하는지</b> 판단한 근거를 쓰시오.”<br>
+  <span class="small">→ “윗옷을 고른 <u>다음에</u> 아래옷을 고르므로, 두 가지를 <u>모두 거쳐야 한 벌이 완성됩니다.</u>
+  윗옷 하나마다 아래옷 <u>4가지</u>가 각각 가능하고 윗옷이 <u>3가지</u>이므로
+  4를 3번 더한 것과 같아 <u>3 × 4 ＝ 12가지</u> 입니다.
+  만약 ‘윗옷 <u>또는</u> 아래옷 하나만 산다’였다면 두 경우가 <u>겹치지 않으므로</u> 3 ＋ 4 ＝ 7가지가 됩니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>20-1 ~ 20-5</b> &nbsp;·&nbsp; 20-1은 <b>나뭇가지로 세기</b>, 20-2는 <b>곱의 법칙</b>,
+20-3은 <b>순서 있음·없음 구분</b>, 20-4는 <b>“적어도”와 겹침 처리</b>,
+20-5는 <b>×인지 ＋인지의 근거</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 3 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 21</span><h1>참말과 거짓말 — 가정하고 모순을 찾는다<small>풀 수 없어 보이면 <b>한쪽이라고 우선 정해 놓고</b> 끝까지 따라가 본다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>4 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>세 사람 중 <b>한 명만 참말</b>을 하고 나머지 둘은 거짓말을 합니다. 범인은 한 명입니다.</p>
+  <div class="sol"> <b>민수</b> : “나는 범인이 아니다.”
+ <b>지호</b> : “서연이가 범인이다.”
+ <b>서연</b> : “지호는 거짓말을 하고 있다.”</div>
+  <p><b>잠깐!</b> 세 말이 서로 얽혀 있어 그냥 읽으면 풀리지 않습니다.
+  <b>“누가 범인인가”를 하나씩 가정해</b> 보면 됩니다.</p>
+</div>
+
+<h2><span class="n">1</span>가정하고 끝까지 따라가기</h2>
+<div class="sol"><b>가정 ①  민수가 범인이라면</b>
+   민수 : “나는 범인이 아니다”      → <b>거짓</b>
+   지호 : “서연이가 범인이다”        → <b>거짓</b>
+   서연 : “지호는 거짓말을 하고 있다” → 지호가 실제로 거짓말했으므로 <b>참</b>
+   → 참말한 사람 <b>1명</b>  ○  조건에 맞는다
+
+<b>가정 ②  지호가 범인이라면</b>
+   민수 <b>참</b> ,  지호 <b>거짓</b> ,  서연 <b>참</b>  →  참말 <b>2명</b>  ✕  어긋난다
+
+<b>가정 ③  서연이가 범인이라면</b>
+   민수 <b>참</b> ,  지호 <b>참</b> ,  서연 <b>거짓</b>  →  참말 <b>2명</b>  ✕  어긋난다
+
+ → 조건에 맞는 것은 <b>가정 ① 뿐</b>. 범인은 <b>민수</b>, 참말한 사람은 <b>서연</b>.</div>
+<div class="note"><b>이 방법의 이름은 “모순 찾기”입니다.</b>
+가능한 경우를 <b>빠짐없이 나누어</b> 하나씩 가정해 보고,
+<b>말이 안 되는 것을 지워 나가면</b> 남는 하나가 답입니다.
+중·고등학교에서 <b>귀류법</b>이라 부르는 방법의 씨앗이 바로 이것입니다.</div>
+
+<h2><span class="n">2</span>무엇을 가정할지 고르는 요령</h2>
+<table>
+<tr><th style="width:30%">가정할 것</th><th style="width:22%">경우의 수</th><th>언제 쓰나</th></tr>
+<tr><td class="l"><b>범인이 누구인가</b></td><td class="m">3가지</td><td class="l">범인이 <b>한 명</b>이라고 정해져 있을 때</td></tr>
+<tr><td class="l"><b>누가 참말인가</b></td><td class="m">3가지</td><td class="l">참말한 사람 수가 정해져 있을 때</td></tr>
+<tr><td class="l">각자 참·거짓을 모두</td><td class="m">8가지</td><td class="l">조건이 적어 다른 방법이 없을 때</td></tr>
+</table>
+<p class="small"><b>경우가 가장 적게 갈라지는 것</b>을 가정하십시오.
+위 문제에서 “각자 참인가 거짓인가”를 모두 따지면 2 × 2 × 2 ＝ 8가지지만,
+“범인이 누구인가”로 가정하면 <b>3가지</b>면 끝납니다. D영역의 <b>“기준을 내가 정한다”</b> 가 여기서도 통합니다.</p>
+
+<h2><span class="n">3</span>표로 정리하면 실수가 줄어든다</h2>
+<table>
+<tr><th style="width:24%">가정한 범인</th><th style="width:19%">민수의 말</th><th style="width:19%">지호의 말</th><th style="width:19%">서연의 말</th><th>참말 수</th></tr>
+<tr><td class="m">민수</td><td class="m">거짓</td><td class="m">거짓</td><td class="m">참</td><td class="m">1 ○</td></tr>
+<tr><td class="m">지호</td><td class="m">참</td><td class="m">거짓</td><td class="m">참</td><td class="m">2 ✕</td></tr>
+<tr><td class="m">서연</td><td class="m">참</td><td class="m">참</td><td class="m">거짓</td><td class="m">2 ✕</td></tr>
+</table>
+<p class="small">머릿속으로 따지면 <b>한 칸을 반드시 놓칩니다.</b> 가정을 <b>세로</b>에, 사람을 <b>가로</b>에 놓고
+칸을 모두 채우십시오. 표를 다 채웠다는 것 자체가 <b>빠짐없이 따졌다는 증거</b>가 되어 점수가 됩니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">한쪽으로 가정하고 모순 찾기</span></div>
+  <p><b>① 가정할 것을 고른다</b>(가장 적게 갈라지는 것) → <b>② 경우를 빠짐없이 나눈다</b>
+  → <b>③ 각 경우에서 모든 진술의 참·거짓을 적는다</b> → <b>④ 조건과 어긋나는 것을 지운다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 4 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 21</span><h1>참말과 거짓말 — 모순을 정확히 지목하기<small>“안 맞는 것 같다”가 아니라 <b>“어느 조건과 어긋나는지”</b> 를 짚어야 한다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>5 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>참말족과 거짓말족</h2>
+<p>어떤 섬에는 <b>언제나 참말만 하는 사람</b>과 <b>언제나 거짓말만 하는 사람</b>이 삽니다.
+두 사람을 만났는데 <b>준서</b>가 이렇게 말했습니다. <b>“우리 둘은 모두 거짓말족입니다.”</b></p>
+<div class="sol"><b>가정 ①  준서가 참말족이라면</b>
+   준서의 말이 참이어야 하므로 “준서는 거짓말족”이 참이 된다.
+   → 준서는 참말족이면서 거짓말족  ✕  <b>스스로 모순</b>
+
+<b>가정 ②  준서가 거짓말족이라면</b>
+   준서의 말은 거짓 → “둘 다 거짓말족”이 거짓 → <b>적어도 한 명은 참말족</b>
+   준서는 거짓말족이므로 참말족은 <b>하영</b> 이다.  ○ 모순 없음
+
+ → <b>준서는 거짓말족, 하영은 참말족.</b></div>
+<div class="warn"><b>“둘 다 거짓말족이다”의 반대는 “둘 다 참말족이다”가 아닙니다.</b>
+반대는 <b>“적어도 한 명은 참말족이다”</b> 입니다.
+<b>“모두 ~이다”의 반대는 “적어도 하나는 아니다”</b> — 이 한 줄을 놓치면 이 유형은 풀 수 없습니다.</div>
+
+<h2><span class="n">4</span>말의 반대를 정확히 만들기</h2>
+<table>
+<tr><th style="width:44%">원래 말</th><th>그 말이 거짓이면</th></tr>
+<tr><td class="l">모두 거짓말쟁이다</td><td class="l"><b>적어도 한 명은</b> 거짓말쟁이가 아니다</td></tr>
+<tr><td class="l">아무도 범인이 아니다</td><td class="l"><b>적어도 한 명은</b> 범인이다</td></tr>
+<tr><td class="l">나는 범인이 아니다</td><td class="l">나는 범인<b>이다</b></td></tr>
+<tr><td class="l">가 또는 나가 범인이다</td><td class="l">가도 나도 <b>범인이 아니다</b></td></tr>
+</table>
+<p class="small"><b>“모두”의 반대는 “적어도 하나”</b>, <b>“또는”의 반대는 “둘 다 아니다”</b> 입니다.
+거짓말 문제의 절반은 이 변환에서 갈립니다.</p>
+
+<h2><span class="n">5</span>자기를 가리키는 말</h2>
+<div class="sol">“<b>나는 지금 거짓말을 하고 있다</b>” — 참말족도 거짓말족도 할 수 없는 말이다.
+ 참이라면 거짓말을 하고 있다는 뜻이 되어 <b>모순</b>,
+ 거짓이라면 거짓말을 하고 있지 않다는 뜻이 되어 <b>또 모순</b>.
+
+ → 이런 말이 나오면 <b>“그 사람은 이 섬 사람이 아니다”</b> 같은 결론이 나온다.</div>
+<p class="small">이것을 <b>거짓말쟁이의 역설</b>이라 합니다. 논리 문제의 재미있는 한 귀퉁이이지만,
+시험에서는 <b>모순이 났다는 사실 자체가 답의 근거</b>가 되는 형태로 나옵니다.</p>
+
+<div class="warn"><b>흔한 실수 셋</b>
+<ul class="li">
+<li>경우를 <b>빠짐없이</b> 나누지 않고 하나만 맞춰 보고 끝냄</li>
+<li>모순이 났는데 <b>어느 조건과 어긋났는지</b> 쓰지 않음</li>
+<li>“모두 ~이다”의 반대를 <b>“모두 ~이 아니다”</b> 로 잘못 만듦</li>
+</ul></div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“왜 그 사람이 범인이라고 <b>확신</b>할 수 있습니까?”<br>
+  <span class="small">→ “범인이 될 수 있는 사람은 <u>세 명뿐</u>이므로 세 경우를 모두 따져 보았습니다.
+  <u>지호가 범인이라고 가정하면</u> 민수와 서연이 모두 참말이 되어
+  <u>‘참말은 한 명’이라는 조건에 어긋나고</u>, <u>서연이가 범인이어도</u> 같은 이유로 어긋납니다.
+  <u>민수가 범인일 때만</u> 참말한 사람이 서연 한 명이 되어 조건과 맞습니다.
+  <u>다른 경우가 모두 모순이므로</u> 범인은 민수입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>21-1 ~ 21-5</b> &nbsp;·&nbsp; 21-1은 <b>가정하고 따라가기</b>, 21-2는 <b>참말족·거짓말족</b>,
+21-3은 <b>말의 반대 만들기</b>, 21-4는 <b>자기를 가리키는 말</b>,
+21-5는 <b>모순이 난 지점을 지목</b>하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 5 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 22</span><h1>순서 정하기 — 표를 채우면 보인다<small>리그는 <b>표의 절반</b>, 토너먼트는 <b>탈락한 사람 수</b>. 세는 자리가 다르다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>6 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>여섯 팀</b>이 서로 <b>한 번씩</b> 경기를 합니다(리그). 경기는 모두 몇 번 열릴까요?
+  같은 여섯 팀이 <b>토너먼트</b>로 우승을 가린다면요?</p>
+  <p><b>잠깐!</b> 두 답은 <b>15경기</b>와 <b>5경기</b>로 크게 다릅니다.
+  세는 방법 자체가 다르기 때문입니다.</p>
+</div>
+
+<h2><span class="n">1</span>리그 — 표를 만들어 절반만 센다</h2>
+<div class="wrap"><div class="txt">
+<table>
+<tr><th style="width:16%"></th><th>가</th><th>나</th><th>다</th><th>라</th></tr>
+<tr><th>가</th><td class="x">—</td><td class="m">○</td><td class="m">○</td><td class="m">○</td></tr>
+<tr><th>나</th><td class="g">·</td><td class="x">—</td><td class="m">○</td><td class="m">○</td></tr>
+<tr><th>다</th><td class="g">·</td><td class="g">·</td><td class="x">—</td><td class="m">○</td></tr>
+<tr><th>라</th><td class="g">·</td><td class="g">·</td><td class="g">·</td><td class="x">—</td></tr>
+</table>
+</div><div class="txt">
+<div class="sol">칸은 모두 4 × 4 ＝ 16개
+ <b>자기 자신</b>과의 칸 <b>4개</b>는 경기가 아니다 → 12개
+ ‘가－나’와 ‘나－가’는 <b>같은 경기</b>를 두 번 센 것 → <b>2로 나눈다</b>
+
+   4 × 3 ÷ 2 ＝ <b>6경기</b>
+   6팀이면  6 × 5 ÷ 2 ＝ <b>15경기</b></div>
+</div></div>
+<p class="small">표의 <b>대각선 위쪽만</b> 세면 됩니다. 이것이 A영역 주제 1의
+<b>“순서 없이 두 개 고르기”</b> 이며, C영역에서 선분·각을 세던 방법과도 같습니다.
+<b>악수 문제</b>도 완전히 같은 문제입니다 — 6명이 서로 한 번씩 악수하면 <b>15번</b>입니다.</p>
+
+<h2><span class="n">2</span>토너먼트 — 탈락한 사람을 센다</h2>
+<div class="wrap"><div class="fig"><svg width="180" height="104" viewBox="0 0 180 104"><text x="4" y="17.5" font-size="9.5" font-weight="700" fill="#2a2724">가</text><line x1="30" y1="14" x2="60" y2="14" stroke="#15803d" stroke-width="1.5"/><text x="4" y="43.5" font-size="9.5" font-weight="700" fill="#2a2724">나</text><line x1="30" y1="40" x2="60" y2="40" stroke="#15803d" stroke-width="1.5"/><text x="4" y="69.5" font-size="9.5" font-weight="700" fill="#2a2724">다</text><line x1="30" y1="66" x2="60" y2="66" stroke="#15803d" stroke-width="1.5"/><text x="4" y="95.5" font-size="9.5" font-weight="700" fill="#2a2724">라</text><line x1="30" y1="92" x2="60" y2="92" stroke="#15803d" stroke-width="1.5"/><line x1="60" y1="14" x2="60" y2="40" stroke="#15803d" stroke-width="1.5"/><line x1="60" y1="27.0" x2="100" y2="27.0" stroke="#15803d" stroke-width="1.5"/><line x1="60" y1="66" x2="60" y2="92" stroke="#15803d" stroke-width="1.5"/><line x1="60" y1="79.0" x2="100" y2="79.0" stroke="#15803d" stroke-width="1.5"/><line x1="100" y1="27" x2="100" y2="79" stroke="#15803d" stroke-width="1.5"/><line x1="100" y1="53" x2="140" y2="53" stroke="#15803d" stroke-width="1.5"/><text x="144" y="49" font-size="9" font-weight="700" fill="#15803d">우승</text><text x="66" y="24" font-size="7.6" fill="#6b635a">1경기</text><text x="66" y="90" font-size="7.6" fill="#6b635a">2경기</text><text x="106" y="49" font-size="7.6" fill="#6b635a">3경기</text></svg><div class="cap">4팀 토너먼트 — 3경기</div></div><div class="txt">
+<div class="sol">경기를 한 번 할 때마다 <b>정확히 한 팀이 탈락</b>한다.
+우승팀 하나만 남으려면 <b>나머지 전부</b>가 탈락해야 한다.
+
+   경기 수 ＝ 참가 팀 − 1
+
+ 4팀 → <b>3경기</b>   6팀 → <b>5경기</b>   100팀 → <b>99경기</b></div>
+<p class="small">대진표를 그릴 필요조차 없습니다. <b>“한 경기에 한 팀이 진다”</b> 는 사실 하나로
+부전승이 있든 없든 답이 같습니다. C영역의 <b>불변량</b> 논법 그대로입니다.</p>
+</div></div>
+
+<table>
+<tr><th style="width:20%">팀 수</th><td class="m">4</td><td class="m">5</td><td class="m">6</td><td class="m">8</td></tr>
+<tr><th>리그 경기 수</th><td class="m">6</td><td class="m">10</td><td class="m">15</td><td class="m">28</td></tr>
+<tr><th>토너먼트 경기 수</th><td class="m">3</td><td class="m">4</td><td class="m">5</td><td class="m">7</td></tr>
+</table>
+<p class="small">팀이 늘 때 리그는 <b>훨씬 빠르게</b> 늘어납니다. 리그는 <b>두 팀을 고르는</b> 문제이고
+토너먼트는 <b>한 팀씩 떨어뜨리는</b> 문제이기 때문입니다.</p>
+<div class="note"><b>부전승이 있어도 답은 같습니다.</b> 참가 팀이 5팀이면 대진표가 반듯하게 짜이지 않아
+한 팀이 <b>부전승</b>으로 올라가지만, 그래도 경기 수는 <b>4경기</b> 입니다.
+부전승은 <b>경기 없이 올라가는 것</b>이라 탈락자가 생기지 않기 때문입니다.
+<b>“한 경기에 한 팀이 탈락한다”</b> 는 사실만 붙들면 대진표 모양은 상관이 없습니다.</div>
+
+<h2><span class="n">3</span>한 팀이 치르는 경기 수부터 세는 방법</h2>
+<div class="sol"><b>다른 방법으로도 세어 보자.</b>
+ 여섯 팀이 리그를 하면 <b>한 팀당 다섯 경기</b>씩 치른다.
+   6팀 × 5경기 ＝ 30
+ 그런데 한 경기에는 <b>두 팀</b>이 나오므로 <b>모든 경기를 두 번</b> 센 셈이다.
+   30 ÷ 2 ＝ <b>15경기</b>   ← 표로 센 답과 같다</div>
+<p class="small">C영역 한붓그리기에서 <b>“차수를 모두 더하면 선의 개수의 2배”</b> 라고 했던 것과
+<b>완전히 같은 계산</b>입니다. 팀이 점, 경기가 선입니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">표 채우기 · 중복을 어떻게 처리했는지 말하기</span></div>
+  <p><b>① 표를 그린다</b>(가로세로에 같은 이름) → <b>② 자기 자신 칸을 지운다</b>
+  → <b>③ 두 번 센 만큼 나눈다</b> → <b>④ 작은 경우(3팀·4팀)로 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 6 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 22</span><h1>순서 정하기 — 같은 문제의 여러 얼굴<small>악수 · 대각선 · 전화 연결 — 겉모습만 다르고 <b>세는 구조는 하나</b>다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>7 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>모두 같은 문제다</h2>
+<table>
+<tr><th style="width:30%">문제</th><th style="width:26%">무엇을 세는가</th><th>6이면</th></tr>
+<tr><td class="l">6팀이 서로 한 번씩 경기</td><td class="l">두 팀을 고르는 방법</td><td class="m">15경기</td></tr>
+<tr><td class="l">6명이 서로 한 번씩 악수</td><td class="l">두 사람을 고르는 방법</td><td class="m">15번</td></tr>
+<tr><td class="l">6명이 서로 전화번호 교환</td><td class="l">두 사람을 고르는 방법</td><td class="m">15쌍</td></tr>
+<tr><td class="l">점 6개를 <b>모두</b> 선으로 잇기</td><td class="l">두 점을 고르는 방법</td><td class="m">선분 15개</td></tr>
+</table>
+<div class="sol">모두 <b>6 × 5 ÷ 2 ＝ 15</b> 이다.
+겉모습이 달라도 “<b>여섯 중 둘을 순서 없이 고른다</b>”는 구조가 같기 때문이다.</div>
+
+<h2><span class="n">4</span>조금 다른 얼굴 — 다각형의 대각선</h2>
+<div class="sol">육각형의 <b>대각선</b>은 몇 개인가?
+
+ 두 꼭짓점을 잇는 선분 : 6 × 5 ÷ 2 ＝ <b>15개</b>
+ 그중 <b>변</b> 6개는 대각선이 아니다.
+
+   15 − 6 ＝ <b>9개</b>       ( n각형이면 n(n−3) ÷ 2 )</div>
+<table>
+<tr><th style="width:24%">n각형</th><td class="m">사각형</td><td class="m">오각형</td><td class="m">육각형</td><td class="m">칠각형</td></tr>
+<tr><th>대각선 수</th><td class="m">2</td><td class="m">5</td><td class="m">9</td><td class="m">14</td></tr>
+</table>
+<p class="small"><b>전부 세고 필요 없는 것을 빼기</b> — 공식을 외우기보다 <b>“전체 − 변”</b> 으로 기억하십시오.</p>
+
+<h2><span class="n">5</span>순서가 있으면 나누지 않는다</h2>
+<table>
+<tr><th style="width:34%">문제</th><th style="width:26%">순서</th><th>식</th></tr>
+<tr><td class="l">6팀이 서로 한 번씩 경기</td><td class="m">없음</td><td class="m">6 × 5 ÷ 2 ＝ 15</td></tr>
+<tr><td class="l">6팀이 <b>홈·원정으로 두 번씩</b></td><td class="m">있음</td><td class="m">6 × 5 ＝ <b>30</b></td></tr>
+<tr><td class="l">6명 중 <b>회장·부회장</b> 뽑기</td><td class="m">있음</td><td class="m">6 × 5 ＝ <b>30</b></td></tr>
+</table>
+<p class="small">“홈경기와 원정경기를 각각 한 번씩”이라면 <b>가－나</b>와 <b>나－가</b>가 <b>다른 경기</b>이므로
+나누지 않습니다. 문제의 <b>한 문장</b>이 ÷2 를 넣을지 뺄지를 결정합니다.</p>
+
+<h2><span class="n">6</span>승패 표에서 순위 읽기</h2>
+<div class="wrap"><div class="txt">
+<table>
+<tr><th style="width:16%"></th><th>가</th><th>나</th><th>다</th><th>라</th><th>승</th></tr>
+<tr><th>가</th><td class="x">—</td><td class="m">승</td><td class="m">패</td><td class="m">승</td><td class="m">2</td></tr>
+<tr><th>나</th><td class="m">패</td><td class="x">—</td><td class="m">승</td><td class="m">승</td><td class="m">2</td></tr>
+<tr><th>다</th><td class="m">승</td><td class="m">패</td><td class="x">—</td><td class="m">패</td><td class="m">1</td></tr>
+<tr><th>라</th><td class="m">패</td><td class="m">패</td><td class="m">승</td><td class="x">—</td><td class="m">1</td></tr>
+</table>
+</div><div class="txt">
+<div class="sol"><b>검산 요령</b>
+ · 전체 경기 수 ＝ 4 × 3 ÷ 2 ＝ <b>6경기</b>
+ · <b>승의 합</b> ＝ 2＋2＋1＋1 ＝ <b>6</b>  ○
+   (경기마다 이긴 팀이 <b>정확히 하나</b>)
+ · 표는 <b>대각선 기준으로 뒤집힌 관계</b>
+   가－나가 ‘승’이면 나－가는 반드시 ‘패’</div>
+</div></div>
+<p class="small"><b>승의 합이 경기 수와 같아야 합니다.</b> 이 검산만으로 표를 잘못 읽은 것을 바로 잡을 수 있습니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“경기 수를 셀 때 <b>중복해서 센 부분</b>을 어떻게 처리했는지 설명하시오.”<br>
+  <span class="small">→ “여섯 팀을 가로와 세로에 놓은 <u>표를 만들었습니다.</u>
+  자기 자신과는 경기하지 않으므로 <u>대각선 6칸을 지우면</u> 30칸이 남습니다.
+  그런데 ‘가－나’ 칸과 ‘나－가’ 칸은 <u>같은 경기를 두 번 센 것</u>이므로
+  <u>2로 나누어</u> 6 × 5 ÷ 2 ＝ <u>15경기</u> 입니다.
+  네 팀으로 줄여 세어 보면 6경기가 나와 <u>이 방법이 맞음을 확인</u>했습니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>22-1 ~ 22-5</b> &nbsp;·&nbsp; 22-1은 <b>리그 경기 수</b>, 22-2는 <b>토너먼트 경기 수</b>,
+22-3은 <b>악수·전화 연결</b>, 22-4는 <b>대각선 세기</b>,
+22-5는 <b>중복 처리</b>를 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 7 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 23</span><h1>최단 거리 — 교차점마다 수를 적는다<small>길을 하나씩 그리지 마라. <b>여기까지 오는 길의 수</b>를 점마다 적어 나가면 된다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>8 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div class="wrap"><div class="fig"><svg width="118" height="114" viewBox="0 0 118 114"><line x1="15" y1="15" x2="43" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="15" x2="15" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="15" x2="71" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="15" x2="43" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="99" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="71" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="15" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="43" x2="43" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="43" x2="15" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="43" x2="71" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="43" x2="43" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="43" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="43" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="15" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="71" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="99" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="99" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="99" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><circle cx="15" cy="15" r="3" fill="#1d4ed8"/><circle cx="43" cy="15" r="3" fill="#1d4ed8"/><circle cx="71" cy="15" r="3" fill="#1d4ed8"/><circle cx="99" cy="15" r="3" fill="#1d4ed8"/><circle cx="15" cy="43" r="3" fill="#1d4ed8"/><circle cx="43" cy="43" r="3" fill="#1d4ed8"/><circle cx="71" cy="43" r="3" fill="#1d4ed8"/><circle cx="99" cy="43" r="3" fill="#1d4ed8"/><circle cx="15" cy="71" r="3" fill="#1d4ed8"/><circle cx="43" cy="71" r="3" fill="#1d4ed8"/><circle cx="71" cy="71" r="3" fill="#1d4ed8"/><circle cx="99" cy="71" r="3" fill="#1d4ed8"/><circle cx="15" cy="99" r="3" fill="#1d4ed8"/><circle cx="43" cy="99" r="3" fill="#1d4ed8"/><circle cx="71" cy="99" r="3" fill="#1d4ed8"/><circle cx="99" cy="99" r="3" fill="#1d4ed8"/></svg><div class="cap">왼쪽 위 → 오른쪽 아래</div></div><div class="txt">
+  <p>격자 모양 길에서 <b>오른쪽과 아래쪽으로만</b> 갈 때,
+  왼쪽 위에서 오른쪽 아래까지 가는 <b>가장 짧은 길</b>은 모두 몇 가지일까요?</p>
+  <p><b>잠깐!</b> 하나씩 그리면 스무 번을 그려야 하고, 중간에 빠뜨립니다.
+  <b>각 교차점에 “여기까지 오는 길의 수”를 적으면</b> 덧셈만으로 끝납니다.</p>
+  </div></div>
+</div>
+
+<h2><span class="n">1</span>교차점에 수를 적는 규칙</h2>
+<div class="wrap"><div class="fig"><svg width="118" height="114" viewBox="0 0 118 114"><line x1="15" y1="15" x2="43" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="15" x2="15" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="15" x2="71" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="15" x2="43" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="99" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="71" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="15" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="43" x2="43" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="43" x2="15" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="43" x2="71" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="43" x2="43" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="43" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="43" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="15" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="71" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="99" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="99" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="99" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><circle cx="15" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="71" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="99" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="15" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">2</text><circle cx="71" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">3</text><circle cx="99" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">4</text><circle cx="15" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">3</text><circle cx="71" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">6</text><circle cx="99" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">10</text><circle cx="15" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">4</text><circle cx="71" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">10</text><circle cx="99" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">20</text></svg><div class="cap">각 점에 적힌 “여기까지 오는 길의 수”</div></div><div class="txt">
+<div class="sol"><b>규칙</b>  어떤 점에 오는 길은
+ <b>위에서 내려오거나</b> <b>왼쪽에서 오거나</b> 둘 중 하나다.
+
+   (그 점의 수) ＝ (위쪽 수) ＋ (왼쪽 수)
+
+ · 출발점은 <b>1</b>
+ · 맨 윗줄과 맨 왼쪽 줄은 길이 하나뿐이므로 모두 <b>1</b>
+ · 나머지는 <b>위 ＋ 왼쪽</b>
+
+   → 오른쪽 아래 : <b>20가지</b></div>
+</div></div>
+<div class="note"><b>이 표를 어디서 보았습니까.</b> 1 / 1 1 / 1 2 1 / 1 3 3 1 ⋯
+격자를 <b>비스듬히</b> 놓고 보면 <b>파스칼 삼각형</b> 그대로입니다.
+B영역 주제 11에서 “위 두 수를 더한다”고 했던 규칙이, 여기서는
+“위에서 오거나 왼쪽에서 온다”는 <b>길의 이야기</b>로 나타난 것입니다.
+<b>겉모습이 달라도 구조가 같으면 답도 같습니다.</b></div>
+
+<h2><span class="n">2</span>왜 “최단”이면 오른쪽과 아래로만 가는가</h2>
+<div class="sol">가로로 <b>3칸</b>, 세로로 <b>3칸</b>을 가야 하므로 어떤 길이든 <b>6칸</b>을 지난다.
+왼쪽이나 위로 한 번이라도 되돌아가면 그만큼 <b>더 가야 하므로</b> 최단이 아니다.
+
+ → 최단 거리 문제에서 길이는 <b>모두 같다.</b> 다른 것은 <b>순서</b>뿐이다.
+   (오른쪽 3번, 아래 3번을 <b>어떤 순서로</b> 섞느냐)</div>
+<p class="small">그래서 이 문제는 “<b>오오오아아아를 늘어놓는 방법의 수</b>”와 같습니다.
+방법이 하나가 아니라는 것, 그리고 <b>어느 방법으로 세든 답이 같다</b>는 것을 확인하십시오.</p>
+
+<h3>크기가 달라져도 방법은 같다</h3>
+<div class="sol">가로 <b>4칸</b>, 세로 <b>3칸</b> 격자라면?
+
+  1  1  1  1  1
+  1  2  3  4  5
+  1  3  6 10 15
+  1  4 10 20 <b>35</b>       →  <b>35가지</b>
+
+ 각 줄을 <b>왼쪽부터 더해 나가기만</b> 하면 된다.</div>
+<p class="small">칸이 커져도 하는 일은 <b>덧셈</b>뿐입니다. 이것이 “길을 하나씩 그리기”보다
+압도적으로 빠른 이유이고, 컴퓨터가 문제를 푸는 방식과도 같습니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">교차점에 수 적기</span></div>
+  <p><b>① 출발점에 1을 적는다</b> → <b>② 위쪽 줄과 왼쪽 줄을 모두 1로 채운다</b>
+  → <b>③ 나머지는 위 ＋ 왼쪽</b> → <b>④ 도착점의 수가 답이다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 8 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 23</span><h1>최단 거리 — 막힌 길과 꼭 지나야 하는 점<small>막히면 <b>0을 적고</b>, 꼭 지나야 하면 <b>둘로 잘라 곱한다</b></small></h1><div class="tag">1단계 · E 논리와 문제해결<br>9 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>길이 막혔을 때</h2>
+<div class="wrap"><div class="fig"><svg width="118" height="114" viewBox="0 0 118 114"><line x1="15" y1="15" x2="43" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="15" x2="15" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="15" x2="71" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="99" y2="15" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="15" x2="71" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="15" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="43" x2="15" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="99" y2="43" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="43" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="43" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="43" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="71" x2="15" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="71" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="71" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="99" y2="71" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="71" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="99" y1="71" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="15" y1="99" x2="43" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="43" y1="99" x2="71" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><line x1="71" y1="99" x2="99" y2="99" stroke="#1d4ed8" stroke-width="1" opacity="0.45"/><circle cx="15" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="71" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="99" cy="15" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="15" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><line x1="38" y1="38" x2="48" y2="48" stroke="#c2410c" stroke-width="2"/><line x1="48" y1="38" x2="38" y2="48" stroke="#c2410c" stroke-width="2"/><circle cx="71" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="99" cy="43" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="46.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">2</text><circle cx="15" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="71" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">2</text><circle cx="99" cy="71" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="74.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">4</text><circle cx="15" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="15" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">1</text><circle cx="43" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="43" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">2</text><circle cx="71" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="71" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">4</text><circle cx="99" cy="99" r="10" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.2"/><text x="99" y="102.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a2724">8</text></svg><div class="cap">× 표시된 교차점을 지날 수 없을 때</div></div><div class="txt">
+<div class="sol"><b>방법 A · 0을 적는다</b>
+ 막힌 점에는 <b>0</b>을 적고(또는 아예 비우고) 나머지는 그대로
+ <b>위 ＋ 왼쪽</b> 으로 채워 나간다.
+   → 도착점 <b>8가지</b>
+
+<b>방법 B · 전체에서 뺀다</b>
+ 전체 20가지 −  <b>막힌 점을 지나는</b> 길의 수
+ 막힌 점까지 오는 길 2가지 <b>그리고</b> 거기서 도착점까지 6가지
+   20 − 2 × 6 ＝ 20 − 12 ＝ <b>8가지</b>  ← 같은 답</div>
+</div></div>
+<p class="small"><b>두 방법의 답이 같으면 옳게 센 것</b>입니다.
+방법 B에서 <b>2 × 6</b> 으로 곱한 것에 주의하십시오 — “거기까지 가고 <b>그다음</b> 거기서 간다”이므로
+주제 20의 <b>곱의 법칙</b>입니다.</p>
+
+<h2><span class="n">4</span>어떤 점을 반드시 지나야 할 때</h2>
+<div class="sol"><b>둘로 잘라서 곱한다.</b>
+
+ 출발 → 그 점 까지 가는 길의 수  <b>×</b>  그 점 → 도착 까지 가는 길의 수
+
+ “가운데 P를 반드시 지나는 최단 경로” 라면
+   (출발 → P) 3가지 × (P → 도착) 3가지 ＝ <b>9가지</b></div>
+<div class="warn"><b>막힘과 필수 통과는 정반대입니다.</b>
+<b>막힌 점</b>은 그 점을 지나는 길을 <b>빼고</b>,
+<b>반드시 지나는 점</b>은 그 점을 지나는 길만 <b>남깁니다.</b>
+문제를 읽을 때 <b>“지날 수 없다”인지 “반드시 지난다”인지</b> 밑줄을 그으십시오.</div>
+
+<h2><span class="n">5</span>격자가 아닐 때도 방법은 같다</h2>
+<div class="sol">지하철 노선도, 학교에서 집까지 가는 골목길처럼 <b>반듯하지 않은 그림</b>에서도
+같은 방법을 쓴다.
+
+ <b>출발점에 1을 적고</b>, 각 갈림길마다 <b>들어오는 길의 수를 모두 더해</b> 적어 나간다.
+ (단, <b>되돌아가지 않는다</b>는 조건이 있어야 한다)</div>
+<p class="small">C영역 한붓그리기에서 그림을 <b>점과 선</b>으로 바꾸었던 것처럼,
+최단 거리도 <b>점에 수를 적는 문제</b>로 바꾸면 어떤 그림이든 같은 방법으로 풀립니다.</p>
+
+<h2><span class="n">6</span>세 가지 방법이 모두 같은 답을 준다</h2>
+<table>
+<tr><th style="width:30%">방법</th><th style="width:34%">어떻게</th><th>3 × 3 격자에서</th></tr>
+<tr><td class="l">교차점에 수 적기</td><td class="l">위 ＋ 왼쪽</td><td class="m">20</td></tr>
+<tr><td class="l">순서를 세기</td><td class="l">오3 · 아3 을 늘어놓는 방법</td><td class="m">20</td></tr>
+<tr><td class="l">파스칼 삼각형</td><td class="l">일곱 번째 줄 가운데 수</td><td class="m">20</td></tr>
+</table>
+<p class="small">한 문제를 <b>세 가지 방법</b>으로 풀 수 있다는 것은 그만큼 <b>구조가 튼튼하다</b>는 뜻입니다.
+시험에서는 <b>가장 빠른 한 가지</b>로 풀고, 시간이 남으면 <b>다른 방법으로 검산</b>하십시오.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“지날 수 없는 지점이 있을 때 <b>어떻게 처리했는지</b> 설명하시오.”<br>
+  <span class="small">→ “막힌 교차점에는 <u>0을 적었습니다.</u> 그 점을 지나서는 올 수 없으므로
+  그 점을 거쳐 가는 길이 <u>하나도 없다는 뜻</u>이기 때문입니다.
+  나머지 점은 그대로 <u>위와 왼쪽의 수를 더해</u> 채워 도착점에서 <u>8가지</u>를 얻었습니다.
+  다시 <u>전체 20가지에서 그 점을 지나는 2 × 6 ＝ 12가지를 뺀</u> 방법으로도
+  같은 <u>8가지</u>가 나와 답을 확인했습니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>23-1 ~ 23-5</b> &nbsp;·&nbsp; 23-1은 <b>교차점에 수 적기</b>, 23-2는 <b>막힌 길</b>,
+23-3은 <b>반드시 지나는 점</b>, 23-4는 <b>격자가 아닌 그림</b>,
+23-5는 <b>막힌 길을 처리한 방법</b>을 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 9 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 24</span><h1>단순하게 만들어 보기 — 작게 줄여서 규칙을 찾는다<small>100개를 못 풀겠거든 <b>1개, 2개, 3개</b>를 풀어라. 거기에 답이 들어 있다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>10 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>원반 <b>5개</b>짜리 하노이탑을 옮기려면 최소 몇 번을 움직여야 할까요?
+  (한 번에 하나씩, 큰 원반을 작은 원반 위에 올릴 수 없습니다.)</p>
+  <p><b>잠깐!</b> 5개를 바로 해 보면 헷갈립니다. <b>1개부터</b> 해 보십시오.
+  1개는 1번, 2개는 3번, 3개는 7번 — 규칙이 보이기 시작합니다.</p>
+</div>
+
+<h2><span class="n">1</span>작게 줄여서 표로 만든다</h2>
+<table>
+<tr><th style="width:26%">원반 수</th><td class="m">1</td><td class="m">2</td><td class="m">3</td><td class="m">4</td><td class="m">5</td></tr>
+<tr><th>최소 이동 횟수</th><td class="m">1</td><td class="m">3</td><td class="m">7</td><td class="m">15</td><td class="m">31</td></tr>
+<tr><th>앞의 수와의 관계</th><td>—</td><td class="m">×2＋1</td><td class="m">×2＋1</td><td class="m">×2＋1</td><td class="m">×2＋1</td></tr>
+</table>
+<div class="sol">규칙이 보인다 — <b>앞의 것을 두 배 하고 1을 더한다.</b>
+
+ <b>왜 그런가</b> (이것이 서술형의 핵심)
+  ① 위의 n−1개를 옆 기둥으로 옮긴다      → <b>(n−1개의 횟수)</b>
+  ② 가장 큰 원반 하나를 목표 기둥으로     → <b>1번</b>
+  ③ 옆에 둔 n−1개를 다시 위로 옮긴다      → <b>(n−1개의 횟수)</b>
+
+   (n개) ＝ (n−1개) × 2 ＋ 1</div>
+<p class="small">1, 3, 7, 15, 31 은 <b>2 · 4 · 8 · 16 · 32 보다 1 작은 수</b>입니다.
+B영역 파스칼 삼각형의 <b>줄의 합</b>에서 본 그 2배씩 늘어나는 수입니다.</p>
+
+<h2><span class="n">2</span>단순하게 만드는 네 가지 방법</h2>
+<table>
+<tr><th style="width:24%">방법</th><th style="width:32%">어떻게</th><th>보기</th></tr>
+<tr><td class="m">수를 줄인다</td><td class="l">100 대신 <b>1, 2, 3</b>부터</td><td class="l">하노이탑, 악수 문제</td></tr>
+<tr><td class="m">크기를 줄인다</td><td class="l">10 × 10 대신 <b>2 × 2</b></td><td class="l">격자 경로, 도형 세기</td></tr>
+<tr><td class="m">조건을 뺀다</td><td class="l">까다로운 조건을 <b>하나 지우고</b></td><td class="l">막힌 길이 없다면 몇 가지인가</td></tr>
+<tr><td class="m">그림으로</td><td class="l">말로 된 것을 <b>그림·표</b>로</td><td class="l">거짓말 문제, 대진표</td></tr>
+</table>
+<h2><span class="n">3</span>다른 문제도 작게 줄여 보자</h2>
+<table>
+<tr><th style="width:34%">문제</th><th style="width:11%">1</th><th style="width:11%">2</th><th style="width:11%">3</th><th style="width:11%">4</th><th>규칙</th></tr>
+<tr><td class="l">n명이 서로 악수</td><td class="m">0</td><td class="m">1</td><td class="m">3</td><td class="m">6</td><td class="l">＋1, ＋2, ＋3 ⋯</td></tr>
+<tr><td class="l">n각형의 대각선</td><td class="m">—</td><td class="m">—</td><td class="m">0</td><td class="m">2</td><td class="l">＋3, ＋4 ⋯</td></tr>
+<tr><td class="l">종이를 n번 접으면 층</td><td class="m">2</td><td class="m">4</td><td class="m">8</td><td class="m">16</td><td class="l"><b>×2</b></td></tr>
+</table>
+<p class="small"><b>차를 적어 보는 것</b>(B영역 주제 7)이 여기서 다시 쓰입니다.
+차가 1씩 늘면 <b>삼각수</b>, 몫이 일정하면 <b>2배씩</b> — 작게 줄인 표에서 정체가 드러납니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">작게 줄이기 → 규칙 찾기 → 이유 대기</span></div>
+  <p><b>① 가장 작은 경우부터 직접 해 본다</b> → <b>② 표로 적어 규칙을 찾는다</b>
+  → <b>③ 왜 그 규칙이 생기는지 설명한다</b> → <b>④ 다음 경우로 확인한 뒤 큰 수에 적용한다.</b></p>
+</div>
+<div class="note"><b>단순화는 포기가 아니라 전략입니다.</b> 큰 문제를 작게 만드는 것은
+문제를 <b>피하는 일</b>처럼 보이지만, 실제로는 <b>규칙을 찾아내는 가장 빠른 길</b>입니다.
+수학자들도 새로운 문제를 만나면 가장 먼저 <b>가장 작은 경우</b>를 계산해 봅니다.
+막혔을 때 <b>“더 작게 만들 수 없을까”</b> 를 떠올리는 것이 이 주제에서 얻어 갈 습관입니다.</div>
+<p class="small"><b>③이 없으면 절반입니다.</b> 규칙을 <b>발견</b>한 것과 그 규칙이 <b>왜 성립하는지 아는 것</b>은
+다른 일이며, 서술형의 배점은 대부분 뒤쪽에 있습니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 10 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 24</span><h1>단순하게 만들어 보기 — 규칙이 맞다는 근거<small>“작은 경우에서 맞았으니 큰 경우에도 맞다”는 <b>그 자체로는 근거가 아니다</b></small></h1><div class="tag">1단계 · E 논리와 문제해결<br>11 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>작은 경우만 맞고 큰 경우는 틀린 규칙</h2>
+<div class="sol">원 위에 점을 찍고 <b>모든 점을 선으로 이어</b> 원이 몇 조각으로 나뉘는지 세면
+
+  점 1개 → <b>1</b>   2개 → <b>2</b>   3개 → <b>4</b>   4개 → <b>8</b>   5개 → <b>16</b>
+  “두 배씩 늘어나는구나!” → 6개는 32일까?
+
+  실제로는 <b>31조각</b>이다.  ✕</div>
+<p><b>다섯 번 맞았어도 규칙이 아닐 수 있습니다.</b> 그래서 <b>이유를 대는 일</b>이 필요합니다.
+B영역 안내에서 미리 경고했던 그 함정이 여기서 정면으로 다뤄집니다.</p>
+<div class="warn"><b>“해 보니 맞았다”와 “맞을 수밖에 없다”는 다릅니다.</b>
+하노이탑에서 <b>×2 ＋ 1</b> 이 옳은 이유는 표에서 그렇게 보였기 때문이 아니라
+<b>“위의 것을 옮기고 · 큰 것을 옮기고 · 다시 올린다”</b> 는 <b>과정 자체</b>가
+그런 모양이기 때문입니다. <b>과정에서 나온 규칙</b>만이 큰 수에서도 안전합니다.</div>
+
+<h2><span class="n">4</span>근거를 대는 두 가지 방법</h2>
+<table>
+<tr><th style="width:26%">방법</th><th style="width:30%">어떻게 쓰나</th><th>보기</th></tr>
+<tr><td class="m">과정으로 설명</td><td class="l">그 수가 <b>어떻게 만들어지는지</b></td>
+<td class="l">“원반이 늘면 위의 것 전부를 <b>두 번</b> 옮기므로”</td></tr>
+<tr><td class="m">앞것에서 이어 가기</td><td class="l">“n−1이 맞으면 <b>n도 맞다</b>”</td>
+<td class="l">파스칼 삼각형의 대칭(B영역 11)</td></tr>
+</table>
+<p class="small">두 번째가 중·고등학교의 <b>수학적 귀납법</b>입니다.</p>
+
+<h2><span class="n">5</span>연습 — 선 n개로 평면을 몇 조각으로 나눌까</h2>
+<table>
+<tr><th style="width:26%">선의 수</th><td class="m">0</td><td class="m">1</td><td class="m">2</td><td class="m">3</td><td class="m">4</td><td class="m">5</td></tr>
+<tr><th>최대 조각 수</th><td class="m">1</td><td class="m">2</td><td class="m">4</td><td class="m">7</td><td class="m">11</td><td class="m">16</td></tr>
+<tr><th>늘어난 수</th><td>—</td><td class="m">＋1</td><td class="m">＋2</td><td class="m">＋3</td><td class="m">＋4</td><td class="m">＋5</td></tr>
+</table>
+<div class="sol"><b>왜 n번째 선을 그으면 n조각이 늘어나는가</b>
+ 새 선은 앞의 <b>n−1개 선과 각각 한 번씩</b> 만나 <b>n−1개의 점</b>으로 잘린다.
+ 점 n−1개로 잘린 선은 <b>n도막</b>이 되고, 각 도막이 지나는 조각을 <b>둘로 가르므로</b>
+ 조각이 <b>n개</b> 늘어난다.
+
+  1, 2, 4, 7, 11, 16 ⋯  ←  <b>1 ＋ (1＋2＋⋯＋n)</b>  (A영역 주제 6의 그 합)</div>
+<p class="small">여기서도 처음 세 개만 보면 1, 2, 4 로 <b>두 배씩</b>인 것처럼 보입니다.</p>
+
+<h2><span class="n">6</span>확인은 어디까지 해야 하나</h2>
+<table>
+<tr><th style="width:30%">상황</th><th style="width:26%">해야 할 일</th><th>이유</th></tr>
+<tr><td class="l">규칙을 <b>과정으로 설명</b>했다</td><td class="m">한 경우로 확인</td><td class="l">이유가 있으므로 확인은 <b>실수 점검</b>용</td></tr>
+<tr><td class="l">표에서 <b>눈으로 찾았다</b></td><td class="m">가능한 한 여러 경우</td><td class="l">우연히 맞은 것일 수 있다</td></tr>
+<tr><td class="l">앞의 <b>서너 개만</b> 보았다</td><td class="m">더 계산해 본다</td><td class="l">1·2·4·8 → 16이 아닐 수 있다</td></tr>
+</table>
+<p class="small">확인 횟수보다 <b>이유를 댈 수 있느냐</b>가 중요합니다 —
+이유가 없으면 백 번을 확인해도 <b>증명은 아닙니다.</b></p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“작게 줄여서 알아낸 규칙이 <b>큰 경우에도 맞다는 근거</b>를 쓰시오.”<br>
+  <span class="small">→ “원반이 <u>하나 늘어날 때 무슨 일이 일어나는지</u> 살펴보았습니다.
+  가장 큰 원반을 옮기려면 <u>그 위의 원반 전부를 먼저 옆으로 옮기고</u>,
+  큰 원반을 <u>한 번</u> 옮긴 뒤, <u>옆에 둔 것을 다시 위로 옮겨야</u> 합니다.
+  즉 <u>앞 단계의 횟수를 두 번 하고 1을 더하는 것</u>이며, 이는 원반이 몇 개이든 <u>똑같이 일어나는 과정</u>입니다.
+  따라서 <u>×2 ＋ 1 은 큰 수에서도 성립</u>하고, 4개일 때 15번으로 <u>확인</u>했습니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>24-1 ~ 24-5</b> &nbsp;·&nbsp; 24-1은 <b>작은 경우부터 표 만들기</b>, 24-2는 <b>하노이탑</b>,
+24-3은 <b>조건을 하나 빼고 풀기</b>, 24-4는 <b>작은 경우만 맞는 규칙(함정)</b>,
+24-5는 <b>규칙이 맞다는 근거</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 11 / 12</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">총정리</span><h1>다섯 도구를 한 장으로 — 그리고 1단계의 끝<small>스물네 개의 주제가 결국 하나로 모인다</small></h1><div class="tag">1단계 · E 논리와 문제해결<br>12 / 12 쪽</div></div>
+
+<h2><span class="n">1</span>신호와 도구</h2>
+<table>
+<tr><th style="width:36%">문제에 이런 말이 나오면</th><th style="width:20%">꺼낼 도구</th><th>첫 손동작</th></tr>
+<tr><td class="l">“모두 몇 가지 방법”</td><td class="m">경우의 수(20)</td><td class="l">단계면 <b>×</b>, 갈래면 <b>＋</b></td></tr>
+<tr><td class="l">“한 명만 참말을 한다”</td><td class="m">참말·거짓말(21)</td><td class="l">한쪽으로 <b>가정</b>하고 따라가기</td></tr>
+<tr><td class="l">“서로 한 번씩”, “우승을 가린다”</td><td class="m">순서 정하기(22)</td><td class="l"><b>표</b> 그리고 절반만 세기</td></tr>
+<tr><td class="l">“가장 짧은 길”, “몇 가지 길”</td><td class="m">최단 거리(23)</td><td class="l">교차점에 <b>수 적기</b></td></tr>
+<tr><td class="l">수가 너무 커서 손을 못 대겠을 때</td><td class="m">단순화(24)</td><td class="l"><b>1개, 2개, 3개</b>부터</td></tr>
+</table>
+
+<h2><span class="n">2</span>가져갈 다섯 문장</h2>
+<div class="note">
+<p><b>① 경우의 수 —</b> “<b>그리고</b>”면 곱하고 “<b>이거나</b>”면 더한다.
+순서가 없으면 <b>나누고</b>, 겹치면 <b>뺀다</b>.</p>
+<p><b>② 참말과 거짓말 —</b> 풀리지 않으면 <b>가장 적게 갈라지는 것을 가정</b>하고 끝까지 따라간다.
+모순이 난 <b>지점을 지목</b>해야 점수가 된다.</p>
+<p><b>③ 순서 정하기 —</b> 리그는 <b>두 팀을 고르는</b> 문제, 토너먼트는 <b>한 팀씩 떨어뜨리는</b> 문제.
+악수·대각선·전화 연결은 <b>모두 같은 문제</b>다.</p>
+<p><b>④ 최단 거리 —</b> 교차점마다 <b>위 ＋ 왼쪽</b>. 막히면 <b>0</b>, 반드시 지나면 <b>둘로 잘라 곱한다</b>.</p>
+<p><b>⑤ 단순화 —</b> 작게 줄여 규칙을 찾되, <b>과정으로 이유를 대야</b> 큰 수에서도 안전하다.</p>
+</div>
+
+<h2><span class="n">3</span>1단계 스물네 주제가 말한 것 하나</h2>
+<div class="note" style="border-left:4px solid #b45309">
+<table style="margin:2px 0 6px">
+<tr><th style="width:14%">영역</th><th style="width:32%">배운 것</th><th>한 문장</th></tr>
+<tr><td class="m">A 수와 연산</td><td class="l">세기 · 조건 · 복면산 · 마방진 · 역연산 · 합</td>
+<td class="l">구조를 보아 <b>한 번에 처리</b>한다</td></tr>
+<tr><td class="m">B 규칙과 패턴</td><td class="l">수 배열 · 도형 · 주기 · 대응 · 파스칼</td>
+<td class="l">그 구조에 <b>식</b>을 붙인다</td></tr>
+<tr><td class="m">C 도형과 공간</td><td class="l">개수 · 쌓기나무 · 전개도 · 대칭 · 한붓그리기</td>
+<td class="l">해 보기 전에 <b>판정</b>한다</td></tr>
+<tr><td class="m">D 측정과 비율</td><td class="l">둘레와 넓이 · 단위 · 물통과 저울</td>
+<td class="l"><b>기준</b>을 내가 정한다</td></tr>
+<tr><td class="m">E 논리와 문제해결</td><td class="l">경우의 수 · 참거짓 · 대진 · 최단 · 단순화</td>
+<td class="l">빠짐없이 나누고 <b>모순 없이</b> 잇는다</td></tr>
+</table>
+<p style="font-size:10.5pt"><b>“답을 찾는 것이 절반, 다른 답이 없음을 보이는 것이 나머지 절반이다.”</b></p>
+<p style="margin-top:4px">복면산에서 “이것 말고는 없다”, 한붓그리기에서 “어떻게 해도 안 된다”,
+물통에서 “짝수만 만들 수 있다”, 그리고 여기서 “다른 경우는 모두 모순이다” —
+스물네 주제가 계속 같은 것을 요구했습니다.
+<b>근거를 대는 힘</b>, 그것이 1단계에서 가져가는 전부입니다.</p>
+</div>
+
+<h2><span class="n">4</span>스스로 확인하는 다섯 질문</h2>
+<div class="note">
+<ol class="li">
+<li>“윗옷 3벌, 아래옷 4벌”은 왜 <b>7이 아니라 12</b>인가?</li>
+<li>거짓말 문제에서 <b>무엇을 가정</b>하는 것이 가장 유리한가?</li>
+<li>6팀 리그가 <b>15경기</b>인 이유를 표로 설명할 수 있는가?</li>
+<li>격자에서 <b>막힌 점</b>은 어떻게 처리하는가?</li>
+<li>“작은 경우에서 맞았다”가 <b>왜 근거가 되지 못하는지</b> 예를 들 수 있는가?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">마무리</span>
+문제지 <b>E영역 25문항</b>을 끝내면 1단계 전 과정이 마무리됩니다.
+마지막으로 A영역 문제지를 다시 펼쳐 보십시오. <b>같은 문제가 다르게 보인다면</b> 제대로 온 것입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 12 / 12</span></div>
+</div>
+</body>
+</html>

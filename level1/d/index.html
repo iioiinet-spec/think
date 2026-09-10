@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>사고력수학 1단계 · D. 측정과 비율 — 이론 강의자료</title>
+<style>
+@page { size:A4; margin:0; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e4da;font-family:"Pretendard","Apple SD Gothic Neo","맑은 고딕",
+     "Malgun Gothic",sans-serif;color:#2a2724;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:210mm;height:297mm;padding:9mm 12mm 10mm;background:#fffdf7;
+      margin:0 auto 6mm;overflow:hidden;font-size:9.6pt;line-height:1.5}
+@media print{ body{background:#fff} .page{margin:0;box-shadow:none;page-break-after:always} }
+
+.page{--ac:#b45309;--bg:#fdf3e3}
+.t1{--ac:#b45309;--bg:#fdf2e0} .t2{--ac:#0f766e;--bg:#e6f2f0}
+.t3{--ac:#6d28d9;--bg:#efe9fb} .t4{--ac:#be123c;--bg:#fce8ed}
+.t5{--ac:#1d4ed8;--bg:#e6edfc} .t6{--ac:#15803d;--bg:#e7f3e9}
+
+.head{display:flex;align-items:flex-start;gap:8px;border-bottom:2.5px solid var(--ac);
+      padding-bottom:5px;margin-bottom:7px}
+.head .no{flex:none;background:var(--ac);color:#fff;font-weight:800;font-size:8.6pt;
+      padding:3px 8px;border-radius:3px;letter-spacing:.3px;margin-top:2px}
+.head h1{flex:1;font-size:15pt;font-weight:800;letter-spacing:-.4px;color:#1c1a17;line-height:1.25}
+.head h1 small{display:block;font-size:8.8pt;font-weight:600;color:#6b635a;margin-top:2px;letter-spacing:0}
+.head .tag{flex:none;text-align:right;font-size:7.8pt;color:#8a8177;line-height:1.35;margin-top:2px}
+
+h2{font-size:11pt;font-weight:800;color:var(--ac);margin:8px 0 4px;display:flex;
+   align-items:center;gap:6px;letter-spacing:-.3px}
+h2 .n{flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;
+      font-size:8.4pt;display:flex;align-items:center;justify-content:center;font-weight:800}
+h3{font-size:9.8pt;font-weight:700;color:#3d3830;margin:6px 0 3px}
+p{margin:2.5px 0}
+b{font-weight:700;color:#141210}
+.k{color:var(--ac);font-weight:800}
+.small{font-size:8.2pt;color:#6b635a;line-height:1.45}
+
+.open{background:var(--bg);border-left:4px solid var(--ac);padding:6px 9px;border-radius:0 4px 4px 0}
+.open .lb{font-size:8pt;font-weight:800;color:var(--ac);margin-bottom:2px}
+.strat{border:1.6px solid var(--ac);border-radius:5px;padding:6px 9px;margin:7px 0;background:#fffefb}
+.strat .lb{display:inline-block;background:var(--ac);color:#fff;font-size:7.6pt;font-weight:800;
+      padding:1.5px 6px;border-radius:3px;margin-right:6px}
+.strat .nm{font-weight:800;font-size:10pt;color:#1c1a17}
+.warn{background:#fdf0ee;border-left:4px solid #c2410c;padding:6px 9px;margin:6px 0;
+      border-radius:0 4px 4px 0;font-size:9.1pt}
+.note{background:#f6f3ea;border-radius:4px;padding:6px 9px;margin:6px 0}
+.sol{background:#f7f4ec;border:1px solid #e0d9c8;border-radius:4px;padding:6px 9px;margin:5px 0;
+     white-space:pre-wrap;font-family:"D2Coding","Consolas","Menlo",monospace;font-size:8.8pt;line-height:1.55}
+.write{border:1.4px dashed var(--ac);border-radius:5px;padding:6px 9px;margin:6px 0;background:#fffefb}
+.write .lb{font-size:7.8pt;font-weight:800;color:var(--ac);margin-bottom:3px}
+.frame{background:#fff;border:1px solid #e2dccf;border-radius:3px;padding:5px 7px;font-size:9.1pt}
+.link{background:#1c1a17;color:#f5f1e6;border-radius:5px;padding:6px 9px;margin:6px 0;font-size:8.8pt}
+.link .lb{font-weight:800;color:#ffd89b;margin-right:6px}
+.link b{color:#fff}
+
+ul.li{margin:3px 0 3px 15px} ul.li li{margin:1.5px 0}
+ol.li{margin:3px 0 3px 17px} ol.li li{margin:1.5px 0}
+
+table{width:100%;border-collapse:collapse;margin:5px 0;font-size:8.9pt}
+th,td{border:1px solid #d8d0be;padding:3px 5px;text-align:center}
+th{background:var(--bg);font-weight:700;color:#2a2724}
+td.l{text-align:left} td.m{font-weight:700}
+
+.wrap{display:flex;gap:10px;align-items:flex-start}
+.fig{flex:none} .txt{flex:1}
+.row{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.col{flex:1}
+.figs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:4px 0}
+.cap{font-size:8pt;color:#6b635a;text-align:center;margin-top:1px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:4mm;display:flex;justify-content:space-between;
+      border-top:1px solid #ded7c7;padding-top:3px;font-size:7.4pt;color:#9a9186}
+</style></head>
+<body>
+<div class="page t1">
+<div class="head"><span class="no">안내</span><h1>재는 것은 비교하는 것이다<small>측정 문제는 계산이 아니라 <b>무엇을 기준으로 삼을지</b>를 정하는 문제다</small></h1><div class="tag">1단계 · D 측정과 비율<br>이론 강의자료<br>전 8쪽</div></div>
+
+<div class="open">
+  <div class="lb">이 자료의 쓰임</div>
+  <p><b>D영역 15문항 문제지</b>와 짝을 이룹니다. 주제마다 <b>두 쪽</b>이며,
+  앞쪽에서 <b>이론과 대표 예제</b>를, 뒤쪽에서 <b>흔한 실수와 서술형 답안 틀</b>을 다룹니다.
+  각 주제 끝의 <b>“이 이론으로 풀리는 문항”</b> 칸이 문제지와 이어 줍니다.</p>
+</div>
+
+<h2><span class="n">1</span>세 주제가 하는 일</h2>
+<table>
+<tr><th style="width:7%">주제</th><th style="width:20%">이름</th><th style="width:34%">핵심 이론</th><th>손에 넣는 도구</th></tr>
+<tr><td class="m">17</td><td class="m">둘레와 넓이</td><td class="l">둘레가 같아도 넓이는 다르다</td><td class="l"><b>표로 비교</b> · 한쪽을 고정하고 살피기</td></tr>
+<tr><td class="m">18</td><td class="m">단위의 이해</td><td class="l">길이·무게·시간 단위 바꾸기, 어림</td><td class="l"><b>기준 정하기</b> · 어림의 근거 대기</td></tr>
+<tr><td class="m">19</td><td class="m">물통과 저울</td><td class="l">양 옮기기, 양팔저울로 비교</td><td class="l"><b>단계 적기</b> · 최소임을 설명하기</td></tr>
+</table>
+
+<h2><span class="n">2</span>측정 문제를 푸는 세 걸음</h2>
+<div class="note">
+<p><b>① 기준을 정한다 —</b> “크다·작다”는 <b>무엇과 견주어</b> 하는 말입니다.
+단위를 정하는 일도, 어림의 기준을 잡는 일도, 저울의 한쪽에 무엇을 올릴지 정하는 일도 모두 같은 일입니다.</p>
+<p><b>② 하나를 고정한다 —</b> 둘레와 넓이처럼 <b>두 값이 함께 변할 때</b>는
+<b>한쪽을 붙들어 놓고</b> 다른 쪽이 어떻게 변하는지 봅니다. 그래야 비교가 됩니다.</p>
+<p><b>③ 단계를 적는다 —</b> 물 옮기기나 저울 달기는 <b>순서가 곧 답</b>입니다.
+머릿속에서 하지 말고 <b>표로 한 줄씩</b> 적어야 최소 횟수를 따질 수 있습니다.</p>
+</div>
+
+<h2><span class="n">3</span>이 영역의 서술형은 무엇을 채점하는가</h2>
+<table>
+<tr><th style="width:24%">채점 항목</th><th style="width:38%">답안에 반드시 있어야 할 말</th><th>없으면</th></tr>
+<tr><td class="m">① 비교의 근거</td><td class="l">“표를 만들어 보면 <b>가로와 세로가 가까울수록</b>”</td><td class="l">“해 보니 그렇다”가 됨</td></tr>
+<tr><td class="m">② 단위의 명시</td><td class="l">답에 <b>단위를 붙였는가</b> (cm² 인가 cm 인가)</td><td class="l">답이 맞아도 감점</td></tr>
+<tr><td class="m">③ 최소·최대의 이유</td><td class="l">“<b>5번으로는 안 되는 까닭</b>은 ~”</td><td class="l">가장 큰 배점을 놓침</td></tr>
+</table>
+<div class="warn"><b>이 영역에서 가장 많이 잃는 점수.</b> <b>단위를 빠뜨리는 것</b>입니다.
+넓이를 묻는데 “24”라고만 쓰면 24 cm 인지 24 cm² 인지 알 수 없습니다.
+<b>수를 쓰면 곧바로 단위를 쓰는 습관</b>을 들이십시오. 이것만으로도 여러 문항의 점수가 달라집니다.</div>
+
+<h2><span class="n">4</span>세는 것과 재는 것은 다르다</h2>
+<table>
+<tr><th style="width:20%"></th><th style="width:34%">세는 것 (개수)</th><th>재는 것 (길이·무게·시간)</th></tr>
+<tr><td class="m">답의 성질</td><td class="l"><b>정확한 값</b>이 있다</td><td class="l">언제나 <b>어림값</b>이다</td></tr>
+<tr><td class="m">보기</td><td class="l">사탕 7개, 삼각형 13개</td><td class="l">키 138cm, 몸무게 32kg</td></tr>
+<tr><td class="m">더 정밀하게</td><td class="l">불가능(7은 7이다)</td><td class="l">가능(138cm → 138.4cm → ⋯)</td></tr>
+<tr><td class="m">답에 붙는 것</td><td class="l">개 · 명 · 마리</td><td class="l"><b>단위</b>와 때로는 <b>‘약’</b></td></tr>
+</table>
+<p class="small">A~C영역은 <b>세는</b> 문제였고 D영역은 <b>재는</b> 문제입니다.
+“정확히 138cm”라는 말은 사실 <b>“137.5와 138.5 사이”</b> 라는 뜻입니다.
+그래서 이 영역에서는 <b>어림과 범위</b>가 오답이 아니라 <b>정답의 한 형태</b>입니다.</p>
+
+<h2><span class="n">5</span>진도 안내</h2>
+<table>
+<tr><th style="width:8%">주제</th><th style="width:18%">강의 자료</th><th style="width:16%">문제지</th><th style="width:22%">권장 시간</th><th>준비물</th></tr>
+<tr><td class="m">17</td><td>2 ~ 3쪽</td><td>17-1 ~ 17-5</td><td>강의 40분 · 문제 50분</td><td class="l">모눈종이</td></tr>
+<tr><td class="m">18</td><td>4 ~ 5쪽</td><td>18-1 ~ 18-5</td><td>강의 35분 · 문제 45분</td><td class="l">자 · 저울 · 500mL 병</td></tr>
+<tr><td class="m">19</td><td>6 ~ 7쪽</td><td>19-1 ~ 19-5</td><td>강의 45분 · 문제 55분</td><td class="l">컵 두 개(크기 다른 것)</td></tr>
+</table>
+<p class="small">주제 18과 19는 <b>실제로 재고 부어 보는 시간</b>이 있어야 감각이 생깁니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 1 / 8</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 17</span><h1>둘레와 넓이 — 같은 둘레, 다른 넓이<small>둘레와 넓이는 <b>따로 노는 값</b>이다. 하나가 같다고 다른 하나가 같지 않다</small></h1><div class="tag">1단계 · D 측정과 비율<br>2 / 8 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>철사 <b>20cm</b> 를 구부려 직사각형을 만들려 합니다.
+  <b>넓이가 가장 크게</b> 하려면 어떤 모양으로 만들어야 할까요?</p>
+  <p><b>잠깐!</b> “둘레가 같으니 넓이도 같겠지”라고 생각하기 쉽습니다.
+  <b>표를 만들어 보면</b> 전혀 그렇지 않다는 것이 한눈에 보입니다.</p>
+</div>
+
+<h2><span class="n">1</span>표로 비교한다</h2>
+<p>둘레가 20cm 이면 <b>가로 ＋ 세로 ＝ 10cm</b> 입니다. 둘레는 <b>(가로＋세로) × 2</b> 이기 때문입니다.</p>
+<div class="figs">
+<div class="fig"><svg width="102" height="27" viewBox="0 0 102 27"><rect x="1.5" y="1.5" width="99" height="11" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/><line x1="12.5" y1="1.5" x2="12.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="23.5" y1="1.5" x2="23.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="34.5" y1="1.5" x2="34.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="45.5" y1="1.5" x2="45.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="56.5" y1="1.5" x2="56.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="67.5" y1="1.5" x2="67.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="78.5" y1="1.5" x2="78.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="89.5" y1="1.5" x2="89.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><text x="51.0" y="24" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">9 × 1 → 9</text></svg></div><div class="fig"><svg width="91" height="38" viewBox="0 0 91 38"><rect x="1.5" y="1.5" width="88" height="22" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/><line x1="12.5" y1="1.5" x2="12.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="23.5" y1="1.5" x2="23.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="34.5" y1="1.5" x2="34.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="45.5" y1="1.5" x2="45.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="56.5" y1="1.5" x2="56.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="67.5" y1="1.5" x2="67.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="78.5" y1="1.5" x2="78.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="12.5" x2="89.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><text x="45.5" y="35" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">8 × 2 → 16</text></svg></div><div class="fig"><svg width="80" height="49" viewBox="0 0 80 49"><rect x="1.5" y="1.5" width="77" height="33" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/><line x1="12.5" y1="1.5" x2="12.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="23.5" y1="1.5" x2="23.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="34.5" y1="1.5" x2="34.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="45.5" y1="1.5" x2="45.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="56.5" y1="1.5" x2="56.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="67.5" y1="1.5" x2="67.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="12.5" x2="78.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="23.5" x2="78.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><text x="40.0" y="46" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">7 × 3 → 21</text></svg></div>
+<div class="fig"><svg width="69" height="60" viewBox="0 0 69 60"><rect x="1.5" y="1.5" width="66" height="44" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/><line x1="12.5" y1="1.5" x2="12.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="23.5" y1="1.5" x2="23.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="34.5" y1="1.5" x2="34.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="45.5" y1="1.5" x2="45.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="56.5" y1="1.5" x2="56.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="12.5" x2="67.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="23.5" x2="67.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="34.5" x2="67.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><text x="34.5" y="57" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">6 × 4 → 24</text></svg></div><div class="fig"><svg width="58" height="71" viewBox="0 0 58 71"><rect x="1.5" y="1.5" width="55" height="55" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/><line x1="12.5" y1="1.5" x2="12.5" y2="56.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="23.5" y1="1.5" x2="23.5" y2="56.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="34.5" y1="1.5" x2="34.5" y2="56.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="45.5" y1="1.5" x2="45.5" y2="56.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="12.5" x2="56.5" y2="12.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="23.5" x2="56.5" y2="23.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="34.5" x2="56.5" y2="34.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><line x1="1.5" y1="45.5" x2="56.5" y2="45.5" stroke="#0f766e" stroke-width="0.5" opacity="0.5"/><text x="29.0" y="68" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">5 × 5 → 25</text></svg></div>
+</div>
+<table>
+<tr><th style="width:24%">가로 (cm)</th><td class="m">1</td><td class="m">2</td><td class="m">3</td><td class="m">4</td><td class="m">5</td></tr>
+<tr><th>세로 (cm)</th><td class="m">9</td><td class="m">8</td><td class="m">7</td><td class="m">6</td><td class="m">5</td></tr>
+<tr><th>넓이 (cm²)</th><td class="m">9</td><td class="m">16</td><td class="m">21</td><td class="m">24</td><td class="m">25</td></tr>
+</table>
+<div class="sol">둘레는 모두 <b>20cm 로 같은데</b> 넓이는 9 부터 25 까지 <b>크게 다르다.</b>
+가장 클 때는 <b>5 × 5 의 정사각형</b>, 넓이 <b>25cm²</b>.</div>
+<div class="note"><b>왜 가로와 세로가 가까울수록 넓이가 큰가.</b>
+합이 10으로 고정된 두 수의 곱은 <b>두 수가 가까울수록 커집니다.</b>
+1 × 9 는 길쭉해서 <b>거의 선</b>에 가깝고, 5 × 5 는 <b>가장 통통한</b> 모양입니다.
+한쪽을 1 늘리면 다른 쪽이 1 줄어드는데, <b>짧은 쪽이 늘어나는 이득</b>이 <b>긴 쪽이 줄어드는 손해</b>보다
+클 때까지 넓이가 커집니다. 둘이 같아지는 순간 이득과 손해가 맞먹어 <b>거기가 꼭대기</b>입니다.</div>
+
+<h2><span class="n">2</span>거꾸로 — 넓이를 고정하면</h2>
+<table>
+<tr><th style="width:24%">가로 × 세로</th><td class="m">1 × 36</td><td class="m">2 × 18</td><td class="m">3 × 12</td><td class="m">4 × 9</td><td class="m">6 × 6</td></tr>
+<tr><th>넓이 (cm²)</th><td class="m">36</td><td class="m">36</td><td class="m">36</td><td class="m">36</td><td class="m">36</td></tr>
+<tr><th>둘레 (cm)</th><td class="m">74</td><td class="m">40</td><td class="m">30</td><td class="m">26</td><td class="m">24</td></tr>
+</table>
+<p><b>넓이가 같아도 둘레는 다릅니다.</b> 그리고 이번에는 정사각형일 때 둘레가 <b>가장 작습니다.</b></p>
+<p class="small">“둘레가 같으면 <b>정사각형이 가장 넓다</b>”와 “넓이가 같으면 <b>정사각형의 둘레가 가장 짧다</b>” —
+같은 사실을 앞뒤로 뒤집어 말한 것입니다. 문제가 어느 쪽을 고정했는지 먼저 확인하십시오.</p>
+
+<h3>한 번 더 — 둘레가 24cm 라면</h3>
+<table>
+<tr><th style="width:24%">가로 (cm)</th><td class="m">1</td><td class="m">2</td><td class="m">3</td><td class="m">4</td><td class="m">5</td><td class="m">6</td></tr>
+<tr><th>세로 (cm)</th><td class="m">11</td><td class="m">10</td><td class="m">9</td><td class="m">8</td><td class="m">7</td><td class="m">6</td></tr>
+<tr><th>넓이 (cm²)</th><td class="m">11</td><td class="m">20</td><td class="m">27</td><td class="m">32</td><td class="m">35</td><td class="m">36</td></tr>
+</table>
+<p class="small">역시 <b>정사각형(6 × 6)</b>일 때 넓이가 가장 큽니다. 둘레가 얼마이든 결론은 같습니다.
+넓이가 커지는 폭이 9, 7, 5, 3, 1 로 <b>홀수씩 줄어드는 것</b>도 눈여겨보십시오 — B영역에서 본 그 홀수입니다.</p>
+<div class="note"><b>정수가 아니어도 될까.</b> 가로를 4.5cm 로 하면 넓이는 24.75cm²,
+4.9cm 로 하면 24.99cm² 입니다. <b>5에 가까울수록 25에 가까워지지만 넘지는 못합니다.</b>
+정수만 따져도 답이 같지만, <b>“모든 경우에서 최대”</b> 임을 말하려면 이 확인이 필요합니다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">한쪽을 고정하고 표로 비교하기</span></div>
+  <p><b>① 무엇이 고정되어 있는지 찾는다</b>(둘레인가 넓이인가) → <b>② 가능한 경우를 작은 것부터 표에 적는다</b>
+  → <b>③ 값이 커지다 작아지는 자리를 찾는다</b> → <b>④ 왜 거기가 꼭대기인지 말로 설명한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 2 / 8</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 17</span><h1>둘레와 넓이 — 반듯하지 않은 도형<small>들쭉날쭉한 도형의 둘레는 <b>옮겨 붙여서</b> 잰다</small></h1><div class="tag">1단계 · D 측정과 비율<br>3 / 8 쪽</div></div>
+
+<h2><span class="n">3</span>계단 모양의 둘레</h2>
+<div class="wrap"><div class="fig"><svg width="81" height="66" viewBox="0 0 81 66"><rect x="3" y="3" width="75" height="60" fill="none" stroke="#b9b0a0" stroke-width="1" stroke-dasharray="3 3"/><polygon points="3,63 3,3 33,3 33,18 48,18 48,33 78,33 78,63" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.8"/></svg><div class="cap">계단 모양과 둘러싼 직사각형</div></div><div class="txt">
+<p>계단처럼 들쭉날쭉한 도형의 둘레는 어떻게 잴까요? <b>변을 하나씩 더하지 말고</b>
+<b>바깥으로 밀어내어</b> 직사각형으로 만들어 봅니다.</p>
+<div class="sol">튀어나온 변을 <b>바깥으로 밀면</b> 가로 변은 <b>위쪽</b>으로,
+세로 변은 <b>오른쪽</b>으로 모인다.
+
+ 계단 도형의 <b>둘레</b> ＝ 둘러싼 직사각형의 둘레
+   (가로 5 ＋ 세로 4) × 2 ＝ <b>18</b>
+ 그러나 <b>넓이는 계단 쪽이 더 작다.</b></div>
+</div></div>
+<div class="warn"><b>“둘레가 같으면 넓이도 같다”가 틀렸다는 것을 가장 잘 보여 주는 예입니다.</b>
+계단 도형과 직사각형은 <b>둘레가 정확히 같은데</b> 넓이는 계단 쪽이 잘려 나간 만큼 작습니다.
+단, <b>안쪽으로 파인(오목한) 부분만</b> 있을 때만 이 방법이 통합니다.
+<b>바깥으로 튀어나온 부분</b>이 있으면 그만큼 둘레가 더 길어집니다.</div>
+
+<h2><span class="n">4</span>모눈에서 넓이 재기</h2>
+<div class="sol"><b>온전한 칸</b>을 먼저 세고 <b>반쯤 걸친 칸</b>은 따로 센다.
+ 온전한 칸 12칸, 반쯤 걸친 칸 8칸 → 12 ＋ 8 ÷ 2 ＝ <b>약 16칸</b>
+ “<b>12칸보다 크고 20칸보다 작다</b>”라고 <b>범위로</b> 답해도 좋다.</div>
+<p class="small">곡선으로 둘러싸인 도형은 넓이를 정확히 구할 수 없습니다.
+그럴 때 <b>범위로 답하고 근거를 대는 것</b>이 올바른 답안입니다.</p>
+
+<h2><span class="n">5</span>넓이가 같아도 모양은 여러 가지</h2>
+<div class="sol">모눈 <b>4칸</b>으로 만들 수 있는 도형은 여러 가지이고 <b>넓이는 모두 4칸으로 같지만</b>
+둘레는 다르다.
+
+  <b>2 × 2 정사각형</b>  → 둘레 <b>8</b>
+  <b>1 × 4 막대</b>      → 둘레 <b>10</b>
+  <b>ㄴ 자 모양</b>       → 둘레 <b>10</b>
+
+ → <b>뭉쳐 있을수록 둘레가 짧다.</b> 칸을 붙일 때마다 맞닿은 변이 사라지기 때문이다.</div>
+<p class="small">C영역 쌓기나무 겉넓이의 “두 개를 붙이면 2면이 사라진다”와 같은 이야기입니다 —
+평면에서는 <b>맞닿은 변 하나당 둘레가 2 줄어듭니다.</b></p>
+
+<h2><span class="n">6</span>단위를 붙이는 규칙</h2>
+<table>
+<tr><th style="width:24%">재는 것</th><th style="width:26%">단위</th><th>왜 그런가</th></tr>
+<tr><td class="l"><b>길이 · 둘레</b></td><td class="m">cm, m, km</td><td class="l">한 방향으로만 잰다</td></tr>
+<tr><td class="l"><b>넓이</b></td><td class="m">cm², m², km²</td><td class="l">가로 × 세로 — <b>두 방향</b>을 곱했다</td></tr>
+<tr><td class="l"><b>부피</b></td><td class="m">cm³, m³, L</td><td class="l">가로 × 세로 × 높이 — <b>세 방향</b></td></tr>
+</table>
+<p class="small">작은 <b>2</b>와 <b>3</b>은 장식이 아니라 <b>몇 방향을 곱했는지</b>를 나타냅니다.
+이것을 알아 두면 주제 18의 단위 바꾸기에서 실수하지 않습니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“둘레가 같은 직사각형 중 <b>넓이가 가장 클 때</b>의 모양과 그 이유를 쓰시오.”<br>
+  <span class="small">→ “둘레가 20cm 이면 <u>가로와 세로의 합이 10cm 로 일정합니다.</u>
+  가로를 1cm 부터 늘려 가며 표를 만들면 넓이가 9, 16, 21, 24, <u>25</u> 로 커지다가
+  가로가 세로보다 커지면 다시 <u>줄어듭니다.</u>
+  합이 같은 두 수의 곱은 <u>두 수가 서로 가까울수록 크기 때문</u>이며,
+  두 수가 같아지는 <u>5 × 5 의 정사각형</u>일 때 넓이가 <u>25cm²</u> 로 가장 큽니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>17-1 ~ 17-5</b> &nbsp;·&nbsp; 17-1은 <b>둘레 고정, 넓이 비교</b>, 17-2는 <b>넓이 고정, 둘레 비교</b>,
+17-3은 <b>계단 도형의 둘레</b>, 17-4는 <b>모눈에서 넓이 어림</b>,
+17-5는 <b>넓이가 가장 클 때의 이유</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 3 / 8</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 18</span><h1>단위의 이해 — 큰 단위로 갈수록 수는 작아진다<small>단위를 바꾸는 것은 <b>같은 양을 다른 자로 재는 것</b>이다. 양은 그대로다</small></h1><div class="tag">1단계 · D 측정과 비율<br>4 / 8 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>2.5km 는 몇 m</b> 일까요? 또 <b>1m² 는 몇 cm²</b> 일까요?</p>
+  <p><b>잠깐!</b> 앞의 답은 2500m 로 쉽게 나오지만,
+  뒤의 답을 <b>100cm²</b> 라고 하면 <b>틀립니다.</b> 정답은 <b>10000cm²</b> 입니다.
+  왜 그럴까요? 이 한 가지가 이 주제의 전부입니다.</p>
+</div>
+
+<h2><span class="n">1</span>단위를 바꾸는 방향</h2>
+<div class="sol"><b>작은 단위 → 큰 단위</b> :  수가 <b>작아진다</b>  (나누기)
+<b>큰 단위 → 작은 단위</b> :  수가 <b>커진다</b>    (곱하기)
+
+ 2500m → km : 더 <b>큰</b> 자로 재므로 수가 작아진다 → 2500 ÷ 1000 ＝ <b>2.5km</b>
+ 2.5km → m  : 더 <b>작은</b> 자로 재므로 수가 커진다 → 2.5 × 1000 ＝ <b>2500m</b></div>
+<p class="small">헷갈리면 <b>“큰 자로 재면 몇 번 안 되니까 수가 작다”</b> 라고 생각하십시오.</p>
+
+<h2><span class="n">2</span>외워 둘 관계</h2>
+<div class="row"><div class="col">
+<table>
+<tr><th style="width:34%">길이</th><th>관계</th></tr>
+<tr><td class="m">1 cm</td><td class="l">＝ 10 mm</td></tr>
+<tr><td class="m">1 m</td><td class="l">＝ 100 cm</td></tr>
+<tr><td class="m">1 km</td><td class="l">＝ 1000 m</td></tr>
+</table>
+<table>
+<tr><th style="width:34%">무게</th><th>관계</th></tr>
+<tr><td class="m">1 kg</td><td class="l">＝ 1000 g</td></tr>
+<tr><td class="m">1 t</td><td class="l">＝ 1000 kg</td></tr>
+</table>
+</div><div class="col">
+<table>
+<tr><th style="width:34%">시간</th><th>관계</th></tr>
+<tr><td class="m">1 분</td><td class="l">＝ 60 초</td></tr>
+<tr><td class="m">1 시간</td><td class="l">＝ 60 분 ＝ 3600 초</td></tr>
+<tr><td class="m">1 일</td><td class="l">＝ 24 시간 ＝ 86400 초</td></tr>
+</table>
+<table>
+<tr><th style="width:34%">들이</th><th>관계</th></tr>
+<tr><td class="m">1 L</td><td class="l">＝ 1000 mL ＝ 1000 cm³</td></tr>
+<tr><td class="m">1 m³</td><td class="l">＝ 1000 L</td></tr>
+</table>
+</div></div>
+<div class="warn"><b>시간만 60씩입니다.</b> 길이·무게·들이는 모두 10, 100, 1000 으로 묶이는데
+시간만 <b>60분 · 60초</b> 입니다. 그래서 “90분은 1.5시간”이지 “0.9시간”이 아닙니다.
+시간 문제에서 <b>소수점을 그대로 옮기는 실수</b>가 가장 많습니다.</div>
+
+<h2><span class="n">3</span>넓이와 부피는 왜 다른가</h2>
+<div class="sol"><b>1 m ＝ 100 cm</b> 이므로
+
+ <b>넓이</b> 1 m² ＝ (100cm) × (100cm) ＝ <b>10000 cm²</b>   ← 100을 <b>두 번</b> 곱한다
+ <b>부피</b> 1 m³ ＝ 100 × 100 × 100 ＝ <b>1000000 cm³</b>   ← 100을 <b>세 번</b>
+
+ 같은 이유로  1 km² ＝ 1000 × 1000 ＝ <b>1000000 m²</b></div>
+<p class="small"><b>작은 2와 3이 “몇 번 곱하는가”를 알려 줍니다</b> —
+주제 17에서 넓이는 두 방향, 부피는 세 방향을 곱한 것이라 한 그대로입니다.</p>
+
+<h3>바꿔 보기</h3>
+<table>
+<tr><th style="width:30%">주어진 것</th><th style="width:22%">바꾼 값</th><th>어떻게</th></tr>
+<tr><td class="l">2.5 km</td><td class="m">2500 m</td><td class="l">작은 단위로 → <b>× 1000</b></td></tr>
+<tr><td class="l">3400 g</td><td class="m">3.4 kg</td><td class="l">큰 단위로 → <b>÷ 1000</b></td></tr>
+<tr><td class="l">90 분</td><td class="m">1.5 시간</td><td class="l"><b>÷ 60</b> (÷100 이 아니다)</td></tr>
+<tr><td class="l">1 m ＋ 50 cm</td><td class="m">150 cm</td><td class="l">먼저 <b>단위를 맞추고</b> 더한다</td></tr>
+<tr><td class="l">2 m²</td><td class="m">20000 cm²</td><td class="l">100을 <b>두 번</b> 곱한다</td></tr>
+</table>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">기준 단위를 하나로 맞추기</span></div>
+  <p><b>① 문제에 나온 단위를 모두 적는다</b> → <b>② 가장 작은 단위로 통일한다</b>
+  → <b>③ 계산한다</b> → <b>④ 답을 문제가 요구한 단위로 되돌린다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 4 / 8</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 18</span><h1>단위의 이해 — 어림에도 근거가 있다<small>어림은 아무렇게나 찍는 것이 아니다. <b>아는 것 하나를 기준으로</b> 재는 것이다</small></h1><div class="tag">1단계 · D 측정과 비율<br>5 / 8 쪽</div></div>
+
+<h2><span class="n">4</span>몸으로 아는 기준 만들기</h2>
+<table>
+<tr><th style="width:26%">기준</th><th style="width:24%">대략</th><th>이것으로 잴 수 있는 것</th></tr>
+<tr><td class="l">손톱 너비</td><td class="m">약 1 cm</td><td class="l">지우개, 동전, 작은 물건</td></tr>
+<tr><td class="l">한 뼘</td><td class="m">약 15 ~ 20 cm</td><td class="l">책, 책상 폭</td></tr>
+<tr><td class="l">한 걸음</td><td class="m">약 50 ~ 60 cm</td><td class="l">교실 길이, 복도</td></tr>
+<tr><td class="l">우유 한 팩</td><td class="m">약 200 mL</td><td class="l">컵, 물병의 들이</td></tr>
+<tr><td class="l">1 L 물병</td><td class="m">약 1 kg</td><td class="l">가벼운 물건의 무게</td></tr>
+</table>
+<p class="small"><b>기준 하나만 몸에 익혀도</b> 대부분을 어림할 수 있습니다.
+“교실 가로가 30걸음쯤이니 30 × 60cm ＝ <b>약 18m</b>” — 이것이 근거 있는 어림입니다.</p>
+
+<h2><span class="n">5</span>어림값이 타당하다고 말하는 법</h2>
+<div class="sol"><b>나쁜 답안</b>  “교실 넓이는 대략 60m² 정도인 것 같습니다.”
+       → 왜 60인지 알 수 없다. 점수를 받지 못한다.
+
+<b>좋은 답안</b>  “한 걸음이 약 60cm 인데 가로가 <b>12걸음</b>, 세로가 <b>8걸음</b> 이었습니다.
+       가로 약 7m, 세로 약 5m 이므로 넓이는 <b>약 35m²</b> 입니다.
+       교실 한 칸이 대략 이 정도이므로 <b>타당한 값</b>입니다.”</div>
+<div class="note"><b>어림 답안의 세 부분</b>
+<ul class="li">
+<li><b>무엇을 기준으로</b> 삼았는가 — “한 걸음 약 60cm”</li>
+<li><b>어떻게 셈했는가</b> — “12걸음 × 60cm ＝ 약 7m”</li>
+<li><b>말이 되는 값인가</b> — “교실 크기로 그럴듯하다”</li>
+</ul>
+</div>
+
+<h2><span class="n">6</span>어림하는 두 가지 방법과 그 쓰임</h2>
+<table>
+<tr><th style="width:20%">방법</th><th style="width:30%">어떻게 하나</th><th>보기</th></tr>
+<tr><td class="m">반올림해서</td><td class="l">계산하기 좋은 수로 고친다</td>
+<td class="l">297 ＋ 402 → 300 ＋ 400 ＝ <b>약 700</b></td></tr>
+<tr><td class="m">범위로</td><td class="l">최솟값과 최댓값 사이로</td>
+<td class="l">“<b>600보다 크고 800보다 작다</b>”</td></tr>
+</table>
+<div class="note"><b>어림의 가장 큰 쓸모는 검산입니다.</b> 교실 넓이를 계산했더니 <b>3500m²</b> 가 나왔다면
+운동장보다 넓으므로 <b>어딘가 틀린 것</b>이고, 대개는 <b>단위를 잘못 바꾼</b> 경우입니다.
+계산 실수는 잡기 어렵지만 <b>“말이 안 되는 크기”</b> 는 금방 눈에 띕니다.
+어림한 값에는 <b>‘약’</b> 을 붙이는 것도 잊지 마십시오.</div>
+
+<div class="warn"><b>흔한 실수 셋</b>
+<ul class="li">
+<li><b>1m² ＝ 100cm²</b> 라고 씀 — 100을 <b>두 번</b> 곱해 10000cm² 입니다.</li>
+<li><b>90분 ＝ 0.9시간</b> 이라고 씀 — 60으로 나누어 <b>1.5시간</b> 입니다.</li>
+<li>단위가 <b>섞인 채로</b> 더함 — 1m ＋ 50cm 는 먼저 <b>150cm</b> 로 맞추고 더합니다.</li>
+</ul></div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“교실의 넓이를 <b>어림</b>하고, 그 값이 <b>타당한 이유</b>를 설명하시오.”<br>
+  <span class="small">→ “제 <u>한 걸음이 약 60cm</u> 입니다. 교실 가로가 <u>12걸음</u>, 세로가 <u>8걸음</u> 이었으므로
+  가로는 약 <u>7m</u>, 세로는 약 <u>5m</u> 입니다. 따라서 넓이는 <u>약 35m²</u> 입니다.
+  걸음의 길이가 사람마다 조금 달라 <u>30m² 에서 40m² 사이</u>로 보는 것이 안전하며,
+  보통 교실이 이 정도 크기이므로 <u>타당한 어림</u>이라고 생각합니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>18-1 ~ 18-5</b> &nbsp;·&nbsp; 18-1은 <b>길이·무게 단위 바꾸기</b>, 18-2는 <b>시간 단위(60진법)</b>,
+18-3은 <b>넓이·부피 단위</b>, 18-4는 <b>단위가 섞인 계산</b>,
+18-5는 <b>어림의 근거</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 5 / 8</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 19</span><h1>물통과 저울 — 단계를 표로 적는다<small>머릿속으로 부으면 반드시 꼬인다. <b>한 줄에 한 단계씩</b> 적어라</small></h1><div class="tag">1단계 · D 측정과 비율<br>6 / 8 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div class="wrap"><div class="fig"><svg width="128" height="101" viewBox="0 0 128 101"><rect x="6" y="39.1" width="51" height="45.9" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><text x="31.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">0 / 3L</text><rect x="71" y="8.5" width="51" height="76.5" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><text x="96.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">0 / 5L</text></svg><div class="cap">3L 통과 5L 통</div></div><div class="txt">
+  <p>눈금이 없는 <b>3L 통</b>과 <b>5L 통</b>만으로 <b>정확히 4L</b> 를 만들 수 있을까요?</p>
+  <p><b>잠깐!</b> 통에는 눈금이 없으므로 <b>절반</b>을 잴 수 없습니다.
+  할 수 있는 일은 <b>가득 채우기 · 모두 비우기 · 옮겨 붓기</b> 세 가지뿐입니다.</p>
+  </div></div>
+</div>
+
+<h2><span class="n">1</span>할 수 있는 일이 세 가지뿐이다</h2>
+<table>
+<tr><th style="width:24%">할 수 있는 일</th><th style="width:30%">언제 멈추나</th><th>결과</th></tr>
+<tr><td class="m">가득 채우기</td><td class="l">통이 꽉 찰 때</td><td class="l">그 통이 <b>정확히 제 용량</b>이 된다</td></tr>
+<tr><td class="m">모두 비우기</td><td class="l">다 쏟을 때</td><td class="l">그 통이 <b>0</b>이 된다</td></tr>
+<tr><td class="m">옮겨 붓기</td><td class="l">받는 통이 <b>차거나</b> 주는 통이 <b>빌 때</b></td>
+<td class="l">둘 중 <b>먼저 일어나는 쪽</b>에서 멈춘다</td></tr>
+</table>
+<p class="small">세 번째가 핵심입니다. <b>받는 통이 가득 차서 멈추면</b> 주는 통에 남는 양이 생기고,
+그것이 <b>우리가 만들려는 새로운 수</b>가 됩니다.</p>
+
+<h2><span class="n">2</span>표로 한 단계씩 적는다</h2>
+<div class="wrap"><div class="txt">
+<table>
+<tr><th style="width:14%">단계</th><th style="width:36%">한 일</th><th style="width:25%">3L 통</th><th>5L 통</th></tr>
+<tr><td class="m">시작</td><td class="l">—</td><td class="m">0</td><td class="m">0</td></tr>
+<tr><td class="m">1</td><td class="l">5L 통을 가득 채운다</td><td class="m">0</td><td class="m">5</td></tr>
+<tr><td class="m">2</td><td class="l">5L → 3L 로 옮긴다</td><td class="m">3</td><td class="m">2</td></tr>
+<tr><td class="m">3</td><td class="l">3L 통을 비운다</td><td class="m">0</td><td class="m">2</td></tr>
+<tr><td class="m">4</td><td class="l">5L 의 2L 를 3L 로 옮긴다</td><td class="m">2</td><td class="m">0</td></tr>
+<tr><td class="m">5</td><td class="l">5L 통을 가득 채운다</td><td class="m">2</td><td class="m">5</td></tr>
+<tr><td class="m">6</td><td class="l">5L → 3L 로 옮긴다 (1L만 들어감)</td><td class="m">3</td><td class="m"><b>4</b></td></tr>
+</table>
+</div><div class="fig"><svg width="128" height="101" viewBox="0 0 128 101"><rect x="6" y="39.1" width="51" height="45.9" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><rect x="7.5" y="39.1" width="48" height="45.9" fill="#a9c6f2"/><text x="31.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">3 / 3L</text><rect x="71" y="8.5" width="51" height="76.5" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><rect x="72.5" y="54.4" width="48" height="30.6" fill="#a9c6f2"/><text x="96.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">2 / 5L</text></svg><div class="cap">2단계</div><svg width="128" height="101" viewBox="0 0 128 101"><rect x="6" y="39.1" width="51" height="45.9" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><rect x="7.5" y="39.1" width="48" height="45.9" fill="#a9c6f2"/><text x="31.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">3 / 3L</text><rect x="71" y="8.5" width="51" height="76.5" fill="#fffdf7" stroke="#1d4ed8" stroke-width="1.6"/><rect x="72.5" y="23.8" width="48" height="61.2" fill="#a9c6f2"/><text x="96.5" y="99" text-anchor="middle" font-size="8.4" font-weight="700" fill="#3d3830">4 / 5L</text></svg><div class="cap">6단계 — 완성</div></div></div>
+<div class="sol">마지막에 3L 통에는 이미 2L 가 있어 <b>1L 만 더 들어간다.</b>
+그래서 5L 통에 <b>정확히 4L</b> 가 남는다.  → <b>모두 6단계</b></div>
+
+<h2><span class="n">3</span>어떤 양을 만들 수 있나 — 만들 수 없는 경우</h2>
+<div class="sol"><b>3L 통과 5L 통</b>으로 만들 수 있는 양 :  1, 2, 3, 4, 5 <b>전부</b>
+<b>4L 통과 6L 통</b>으로 만들 수 있는 양 :  2, 4, 6  ← <b>짝수만!</b>
+
+ 왜인가? 4와 6은 <b>둘 다 짝수</b>이므로 채우고 비우고 옮겨도
+ 통에 든 물은 <b>언제나 짝수 리터</b>이다. 홀수는 <b>영영 만들 수 없다.</b>
+
+ → 두 통의 용량이 <b>1 말고 다른 공약수</b>를 가지면
+    그 수의 <b>배수만</b> 만들 수 있다.</div>
+<p class="small">“5L 를 만드시오”라는 문제에 4L·6L 통이 주어졌다면 <b>해 보기 전에 불가능</b>하다고 답해야 합니다.
+C영역 한붓그리기의 홀수점처럼, <b>아무리 해도 변하지 않는 성질</b>이 답을 미리 알려 줍니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">표에 한 줄씩 적기</span></div>
+  <p><b>① 두 통의 양을 적는 표를 만든다</b> → <b>② 한 단계에 한 가지 일만 한다</b>
+  → <b>③ 매 줄마다 두 통의 양을 적는다</b> → <b>④ 목표가 나오면 몇 단계였는지 센다.</b></p>
+</div>
+<p class="small"><b>같은 상태가 두 번 나오면 돌고 있는 것</b>입니다 — 다른 선택을 해야 합니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 6 / 8</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 19</span><h1>양팔저울 — 한 번에 세 갈래로 갈린다<small>저울은 <b>무겁다·가볍다</b>만 알려 주지 않는다. <b>같다</b>까지 세 가지를 알려 준다</small></h1><div class="tag">1단계 · D 측정과 비율<br>7 / 8 쪽</div></div>
+
+<h2><span class="n">3</span>가짜 동전 찾기</h2>
+<p>“겉이 똑같은 동전 <b>9개</b> 중 <b>하나만 조금 가볍습니다.</b>
+양팔저울을 <b>몇 번</b> 써야 반드시 찾을 수 있을까요?”</p>
+<div class="figs">
+<div><div class="fig"><svg width="150" height="74" viewBox="0 0 150 74"><line x1="20" y1="26" x2="130" y2="26" stroke="#1d4ed8" stroke-width="2.4"/><line x1="75" y1="26" x2="75" y2="62" stroke="#1d4ed8" stroke-width="2.4"/><polygon points="60,66 90,66 75,50" fill="#1d4ed8" opacity="0.8"/><line x1="20" y1="26" x2="20" y2="38" stroke="#1d4ed8" stroke-width="1.2"/><path d="M1 38 L39 38 L33 50 L7 50 Z" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.4"/><text x="20" y="47" text-anchor="middle" font-size="9" font-weight="700" fill="#2a2724">3개</text><line x1="130" y1="26" x2="130" y2="38" stroke="#1d4ed8" stroke-width="1.2"/><path d="M111 38 L149 38 L143 50 L117 50 Z" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.4"/><text x="130" y="47" text-anchor="middle" font-size="9" font-weight="700" fill="#2a2724">3개</text></svg></div><div class="cap">평형 → 남은 3개 속에</div></div>
+<div><div class="fig"><svg width="150" height="74" viewBox="0 0 150 74"><line x1="20" y1="17" x2="130" y2="35" stroke="#1d4ed8" stroke-width="2.4"/><line x1="75" y1="26" x2="75" y2="62" stroke="#1d4ed8" stroke-width="2.4"/><polygon points="60,66 90,66 75,50" fill="#1d4ed8" opacity="0.8"/><line x1="20" y1="17" x2="20" y2="29" stroke="#1d4ed8" stroke-width="1.2"/><path d="M1 29 L39 29 L33 41 L7 41 Z" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.4"/><text x="20" y="38" text-anchor="middle" font-size="9" font-weight="700" fill="#2a2724">3개</text><line x1="130" y1="35" x2="130" y2="47" stroke="#1d4ed8" stroke-width="1.2"/><path d="M111 47 L149 47 L143 59 L117 59 Z" fill="#e6edfc" stroke="#1d4ed8" stroke-width="1.4"/><text x="130" y="56" text-anchor="middle" font-size="9" font-weight="700" fill="#2a2724">3개</text></svg></div><div class="cap">기울면 → 올라간 쪽에</div></div>
+<div style="flex:1;min-width:180px">
+<div class="sol"><b>1번째</b> 3개씩 나누어 <b>두 무더기</b>를 올린다
+ · 평형 → 가짜는 <b>올리지 않은 3개</b> 속에
+ · 기울면 → <b>올라간 쪽 3개</b> 속에
+   (가벼우므로 위로 올라간다)
+
+<b>2번째</b> 남은 3개 중 <b>1개씩</b> 올린다
+ · 평형 → 남은 1개가 가짜
+ · 기울면 → 올라간 쪽이 가짜
+
+        → <b>2번</b>이면 충분하다</div>
+</div></div>
+<div class="note"><b>왜 세 무더기로 나누는가.</b> 저울을 한 번 쓰면 결과가
+<b>왼쪽이 무겁다 · 오른쪽이 무겁다 · 평형이다</b> 의 <b>세 가지</b>로 갈립니다.
+그러므로 <b>세 무더기</b>로 나누어야 어떤 결과가 나와도 후보가 <b>3분의 1</b>로 줄어듭니다.
+두 무더기로 나누면 절반씩밖에 줄지 않아 손해입니다.</div>
+
+<h2><span class="n">4</span>몇 번이면 되는가 — 3배씩 늘어난다</h2>
+<table>
+<tr><th style="width:34%">저울을 쓰는 횟수</th><td class="m">1번</td><td class="m">2번</td><td class="m">3번</td><td class="m">4번</td></tr>
+<tr><th>찾을 수 있는 최대 개수</th><td class="m">3개</td><td class="m">9개</td><td class="m">27개</td><td class="m">81개</td></tr>
+</table>
+<div class="sol">한 번에 후보가 <b>3분의 1</b>로 줄어드므로 3, 9, 27, 81 ⋯ 로 <b>3배씩</b> 늘어난다.
+
+ <b>8개</b>라면? 9개보다 적으므로 <b>2번</b>이면 된다. (3－3－2 로 나눈다)
+ <b>12개</b>라면? 9보다 크고 27보다 작으므로 <b>3번</b>이 필요하다.</div>
+<p class="small">“1번으로 12개 중에서 찾을 수는 없는가?” — 결과가 <b>세 가지</b>뿐인데 답의 후보가 <b>12가지</b>이므로
+<b>어떻게 나누어도 불가능</b>합니다. C영역 주제 16의 <b>“해 보기 전에 판정하기”</b> 와 같은 방식의 논증입니다.</p>
+
+<h2><span class="n">5</span>추로 무게 재기 — 양쪽 접시를 쓰면</h2>
+<div class="sol">추 <b>1g · 3g · 9g</b> 세 개만으로 <b>1g 부터 13g 까지 모두</b> 잴 수 있다.
+
+ 물건 쪽에도 추를 올릴 수 있기 때문이다.
+   2g ＝ 3 − 1        (반대쪽에 1g 을 얹는다)
+   5g ＝ 9 − 3 − 1    7g ＝ 9 − 3 ＋ 1    13g ＝ 9 ＋ 3 ＋ 1
+
+ 추를 <b>1 · 3 · 9 · 27</b> 로 네 개 쓰면 <b>1g 부터 40g 까지</b> 모두 잴 수 있다.</div>
+<p class="small">한쪽 접시만 쓴다면 <b>1 · 2 · 4 · 8</b> 로 1g ~ 15g 을 잽니다.
+<b>양쪽을 쓸 수 있느냐</b>에 따라 좋은 추의 크기가 달라진다는 점이 이 문제의 묘미입니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“동전 9개에서 가짜를 찾는 데 <b>2번이면 충분한 이유</b>와,
+  <b>1번으로는 안 되는 이유</b>를 함께 쓰시오.”<br>
+  <span class="small">→ “저울을 한 번 쓰면 결과가 <u>왼쪽·오른쪽·평형의 세 가지</u>로 갈립니다.
+  9개를 <u>3개씩 세 무더기</u>로 나누면 어느 결과가 나와도 가짜가 든 무더기가 <u>3개로 줄고</u>,
+  다시 <u>1개씩</u> 올리면 찾을 수 있으므로 <u>2번이면 충분합니다.</u>
+  한 번만 쓰면 알 수 있는 경우가 <u>세 가지뿐</u>인데 가짜일 수 있는 동전은 <u>아홉 가지</u>이므로,
+  <u>어떻게 나누어도</u> 한 번으로는 찾을 수 없습니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>19-1 ~ 19-5</b> &nbsp;·&nbsp; 19-1은 <b>물통 단계 표로 적기</b>, 19-2는 <b>다른 용량으로 만들 수 있는 양</b>,
+19-3은 <b>가짜 동전 찾기</b>, 19-4는 <b>추의 조합</b>,
+19-5는 <b>최소 횟수임을 설명</b>하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 7 / 8</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">총정리</span><h1>세 도구를 한 장으로<small>측정 문제에 어떤 말이 나오면 <b>어떤 도구</b>를 꺼내는가</small></h1><div class="tag">1단계 · D 측정과 비율<br>8 / 8 쪽</div></div>
+
+<h2><span class="n">1</span>신호와 도구</h2>
+<table>
+<tr><th style="width:38%">문제에 이런 말이 나오면</th><th style="width:20%">꺼낼 도구</th><th>첫 손동작</th></tr>
+<tr><td class="l">“둘레가 같은”, “넓이가 가장 큰”</td><td class="m">둘레와 넓이(17)</td><td class="l">고정된 것을 찾고 <b>표 만들기</b></td></tr>
+<tr><td class="l">“몇 cm 인가”, “대략 얼마인가”</td><td class="m">단위(18)</td><td class="l"><b>단위를 하나로</b> 맞추기</td></tr>
+<tr><td class="l">“정확히 ○L 를 만들려면”, “몇 번이면”</td><td class="m">물통·저울(19)</td><td class="l"><b>표에 한 줄씩</b> 적기</td></tr>
+</table>
+
+<h2><span class="n">2</span>가져갈 세 문장</h2>
+<div class="note">
+<p><b>① 둘레와 넓이 —</b> <b>둘레가 같아도 넓이는 다르다.</b>
+합이 일정한 두 수의 곱은 <b>두 수가 가까울수록 크므로</b> 정사각형일 때 넓이가 가장 크다.
+넓이를 고정하면 반대로 정사각형의 둘레가 가장 짧다.</p>
+<p><b>② 단위 —</b> 단위를 바꾸어도 <b>양은 그대로</b>다. 큰 자로 재면 수가 작아진다.
+넓이는 <b>두 번</b>, 부피는 <b>세 번</b> 곱해야 하고, 시간만 <b>60씩</b> 이다.
+어림에는 반드시 <b>기준과 근거</b>를 붙인다.</p>
+<p><b>③ 물통과 저울 —</b> 물통은 <b>채우기·비우기·옮겨 붓기</b> 세 가지뿐이며
+<b>표로 한 줄씩</b> 적는다. 저울은 한 번에 <b>세 갈래</b>로 갈리므로 <b>세 무더기</b>로 나누고,
+가능한 경우의 수가 결과의 가짓수보다 많으면 <b>그 횟수로는 불가능</b>하다.</p>
+</div>
+
+<h2><span class="n">3</span>틀렸을 때 어디를 다시 볼까</h2>
+<table>
+<tr><th style="width:40%">이런 실수를 했다면</th><th style="width:14%">돌아갈 곳</th><th>고칠 습관</th></tr>
+<tr><td class="l">둘레가 같으니 넓이도 같다고 했다</td><td class="m">2쪽</td><td class="l"><b>표</b>로 다섯 경우 적어 보기</td></tr>
+<tr><td class="l">넓이 답에 cm 를 붙였다</td><td class="m">3쪽</td><td class="l">수를 쓰면 <b>곧바로 단위</b></td></tr>
+<tr><td class="l">1m² 를 100cm² 라 했다</td><td class="m">4쪽</td><td class="l">작은 <b>2</b>는 “두 번 곱하라”</td></tr>
+<tr><td class="l">90분을 0.9시간이라 했다</td><td class="m">4쪽</td><td class="l">시간만 <b>60</b>진법</td></tr>
+<tr><td class="l">“대략 60쯤”이라고만 썼다</td><td class="m">5쪽</td><td class="l">기준 · 셈 · 타당성 <b>세 줄</b></td></tr>
+<tr><td class="l">“해 보니 6번이었다”고만 썼다</td><td class="m">7쪽</td><td class="l"><b>더 적게는 안 되는 이유</b>까지</td></tr>
+</table>
+
+<h2><span class="n">4</span>네 영역을 잇는 한 줄</h2>
+<div class="note" style="border-left:4px solid #b45309">
+<p>A는 <b>구조를 보아 한 번에 처리</b>, B는 그 구조에 <b>식</b>을 붙이기, C는 <b>해 보기 전에 판정</b>하기였습니다.
+D가 더한 것은 이것입니다.</p>
+<p style="margin-top:4px;font-size:10.5pt"><b>“무엇을 기준으로 삼을지 내가 정한다.”</b></p>
+<p style="margin-top:4px">단위를 고르는 일, 어림의 기준을 세우는 일, 저울을 세 무더기로 나누는 일 —
+모두 <b>문제가 정해 주지 않은 것을 스스로 정하는</b> 일이었습니다.
+그리고 기준을 잘 정하면 <b>계산이 저절로 줄어듭니다.</b>
+이 감각은 E영역(논리와 문제해결)에서 <b>경우를 어떻게 나눌 것인가</b>로 이어집니다.</p>
+</div>
+
+<h2><span class="n">5</span>스스로 확인하는 다섯 질문</h2>
+<div class="note">
+<p>문제지를 풀기 전에 아래를 <b>보지 않고 말할 수 있는지</b> 확인하십시오.</p>
+<ol class="li">
+<li>둘레가 20cm 인 직사각형 중 넓이가 가장 큰 것은? <b>왜</b> 그런가?</li>
+<li><b>1m²</b> 는 몇 cm² 이고, 왜 100cm² 가 아닌가?</li>
+<li><b>90분</b>은 몇 시간인가?</li>
+<li>3L 통과 5L 통으로 4L 를 만드는 <b>여섯 단계</b>를 말할 수 있는가?</li>
+<li>동전 9개에서 가짜를 찾는 데 <b>1번으로는 안 되는 이유</b>는?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">다음으로</span>
+문제지 <b>D영역 15문항</b>을 주제 순서대로 풀되, 모든 답에 <b>단위를 붙였는지</b> 마지막에 한 번 더 확인하십시오.
+그리고 “몇 번이면 되는가”를 묻는 문항에서는 <b>그보다 적게는 안 되는 이유</b>를 반드시 함께 쓰십시오.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 D. 측정과 비율 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 8 / 8</span></div>
+</div>
+</body>
+</html>

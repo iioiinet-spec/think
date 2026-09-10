@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>사고력수학 1단계 · A. 수와 연산 — 이론 강의자료</title>
+<style>
+@page { size:A4; margin:0; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e4da;font-family:"Pretendard","Apple SD Gothic Neo","맑은 고딕",
+     "Malgun Gothic",sans-serif;color:#2a2724;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:210mm;height:297mm;padding:9mm 12mm 10mm;background:#fffdf7;
+      margin:0 auto 6mm;overflow:hidden;font-size:9.6pt;line-height:1.5}
+@media print{ body{background:#fff} .page{margin:0;box-shadow:none;page-break-after:always} }
+
+.page{--ac:#b45309;--bg:#fdf3e3}
+.t1{--ac:#b45309;--bg:#fdf2e0} .t2{--ac:#0f766e;--bg:#e6f2f0}
+.t3{--ac:#6d28d9;--bg:#efe9fb} .t4{--ac:#be123c;--bg:#fce8ed}
+.t5{--ac:#1d4ed8;--bg:#e6edfc} .t6{--ac:#15803d;--bg:#e7f3e9}
+
+/* 머리 */
+.head{display:flex;align-items:flex-start;gap:8px;border-bottom:2.5px solid var(--ac);
+      padding-bottom:5px;margin-bottom:7px}
+.head .no{flex:none;background:var(--ac);color:#fff;font-weight:800;font-size:8.6pt;
+      padding:3px 8px;border-radius:3px;letter-spacing:.3px;margin-top:2px}
+.head h1{flex:1;font-size:15pt;font-weight:800;letter-spacing:-.4px;color:#1c1a17;line-height:1.25}
+.head h1 small{display:block;font-size:8.8pt;font-weight:600;color:#6b635a;margin-top:2px;letter-spacing:0}
+.head .tag{flex:none;text-align:right;font-size:7.8pt;color:#8a8177;line-height:1.35;margin-top:2px}
+
+h2{font-size:11pt;font-weight:800;color:var(--ac);margin:8px 0 4px;display:flex;
+   align-items:center;gap:6px;letter-spacing:-.3px}
+h2 .n{flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;
+      font-size:8.4pt;display:flex;align-items:center;justify-content:center;font-weight:800}
+h3{font-size:9.8pt;font-weight:700;color:#3d3830;margin:6px 0 3px}
+p{margin:2.5px 0}
+b{font-weight:700;color:#141210}
+.k{color:var(--ac);font-weight:800}
+.small{font-size:8.2pt;color:#6b635a;line-height:1.45}
+
+/* 상자들 */
+.open{background:var(--bg);border-left:4px solid var(--ac);padding:6px 9px;border-radius:0 4px 4px 0}
+.open .lb{font-size:8pt;font-weight:800;color:var(--ac);margin-bottom:2px}
+.strat{border:1.6px solid var(--ac);border-radius:5px;padding:6px 9px;margin:7px 0;background:#fffefb}
+.strat .lb{display:inline-block;background:var(--ac);color:#fff;font-size:7.6pt;font-weight:800;
+      padding:1.5px 6px;border-radius:3px;margin-right:6px}
+.strat .nm{font-weight:800;font-size:10pt;color:#1c1a17}
+.warn{background:#fdf0ee;border-left:4px solid #c2410c;padding:6px 9px;margin:6px 0;
+      border-radius:0 4px 4px 0;font-size:9.1pt}
+.note{background:#f6f3ea;border-radius:4px;padding:6px 9px;margin:6px 0}
+.sol{background:#f7f4ec;border:1px solid #e0d9c8;border-radius:4px;padding:6px 9px;margin:5px 0;
+     white-space:pre-wrap;font-family:"D2Coding","Consolas","Menlo",monospace;font-size:8.8pt;line-height:1.55}
+.write{border:1.4px dashed var(--ac);border-radius:5px;padding:6px 9px;margin:6px 0;background:#fffefb}
+.write .lb{font-size:7.8pt;font-weight:800;color:var(--ac);margin-bottom:3px}
+.frame{background:#fff;border:1px solid #e2dccf;border-radius:3px;padding:5px 7px;font-size:9.1pt}
+.link{background:#1c1a17;color:#f5f1e6;border-radius:5px;padding:6px 9px;margin:6px 0;font-size:8.8pt}
+.link .lb{font-weight:800;color:#ffd89b;margin-right:6px}
+.link b{color:#fff}
+
+ul.li{margin:3px 0 3px 15px} ul.li li{margin:1.5px 0}
+ol.li{margin:3px 0 3px 17px} ol.li li{margin:1.5px 0}
+
+table{width:100%;border-collapse:collapse;margin:5px 0;font-size:8.9pt}
+th,td{border:1px solid #d8d0be;padding:3px 5px;text-align:center}
+th{background:var(--bg);font-weight:700;color:#2a2724}
+td.l{text-align:left} td.m{font-weight:700}
+
+.wrap{display:flex;gap:10px;align-items:flex-start}
+.fig{flex:none} .txt{flex:1}
+.row{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.col{flex:1}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:4mm;display:flex;justify-content:space-between;
+      border-top:1px solid #ded7c7;padding-top:3px;font-size:7.4pt;color:#9a9186}
+</style></head>
+<body>
+<div class="page t1">
+<div class="head"><span class="no">안내</span><h1>여섯 개의 도구를 손에 넣는다<small>수와 연산 영역의 문제는 계산이 아니라 <b>세는 방법 · 거는 방법 · 되돌리는 방법</b>으로 풀린다</small></h1><div class="tag">1단계 · A 수와 연산<br>이론 강의자료<br>전 14쪽</div></div>
+
+<div class="open">
+  <div class="lb">이 자료의 쓰임</div>
+  <p>이 강의자료는 <b>A영역 30문항 문제지</b>와 짝을 이룹니다. 각 주제는 <b>두 쪽</b>이며,
+  앞쪽에서 <b>이론과 대표 예제</b>를, 뒤쪽에서 <b>흔한 실수와 서술형 답안 틀</b>을 다룹니다.
+  각 주제 끝의 <b>“이 이론으로 풀리는 문항”</b> 칸이 문제지의 문항과 이어 줍니다.</p>
+</div>
+
+<h2><span class="n">1</span>여섯 주제가 하는 일</h2>
+<table>
+<tr><th style="width:7%">주제</th><th style="width:20%">이름</th><th style="width:36%">핵심 이론</th><th>손에 넣는 도구</th></tr>
+<tr><td class="m">1</td><td class="m">수 세기의 기술</td><td class="l">빠짐없이·중복없이, 순서대로 나열</td><td class="l"><b>기준을 정해 나열하기</b> · 표와 나뭇가지</td></tr>
+<tr><td class="m">2</td><td class="m">조건에 맞는 수 찾기</td><td class="l">자릿수·대소·배수 조건 걸기</td><td class="l"><b>센 조건부터 걸기</b> · 배수 판정법</td></tr>
+<tr><td class="m">3</td><td class="m">연산 퍼즐(복면산)</td><td class="l">자리올림은 0 아니면 1, 자리 사이의 관계</td><td class="l"><b>확실한 자리부터</b> · 범위로 좁히기</td></tr>
+<tr><td class="m">4</td><td class="m">수의 배열과 마방진</td><td class="l">한 줄의 합, 겹치는 칸의 성질</td><td class="l"><b>합에서 거꾸로</b> · 겹침 세기</td></tr>
+<tr><td class="m">5</td><td class="m">거꾸로 생각하기</td><td class="l">역연산, 처음 수 구하기</td><td class="l"><b>순서까지 뒤집기</b> · 검산</td></tr>
+<tr><td class="m">6</td><td class="m">규칙적으로 더하기</td><td class="l">1+2+⋯+n, 짝지어 더하기</td><td class="l"><b>짝짓기</b> · (처음+끝)×개수÷2</td></tr>
+</table>
+
+<h2><span class="n">2</span>여섯 주제를 잇는 한 줄</h2>
+<div class="note">
+<p>여섯 주제는 따로 노는 것처럼 보이지만 하는 일이 같습니다.
+<b class="k">경우가 너무 많아 하나씩 확인할 수 없을 때, 확인하지 않고 처리하는 방법</b>을 배웁니다.</p>
+<ul class="li">
+<li><b>세기(1)와 조건(2)</b> — 순서를 정하고 조건을 걸어 <b>후보를 미리 줄인다.</b></li>
+<li><b>복면산(3)과 마방진(4)</b> — 자리와 줄 사이의 <b>관계식</b>을 세워 답을 계산으로 뽑는다.</li>
+<li><b>거꾸로(5)와 더하기(6)</b> — 앞에서부터 하나씩 하지 않고 <b>구조를 뒤집거나 짝지어</b> 한 번에 끝낸다.</li>
+</ul>
+</div>
+
+<h2><span class="n">3</span>주관식(서술형)은 무엇을 채점하는가</h2>
+<p>영재원·경시의 서술형은 <b>답이 맞았는가</b>보다 <b>왜 그 답뿐인가</b>를 봅니다. 배점이 붙는 자리는 셋입니다.</p>
+<table>
+<tr><th style="width:22%">채점 항목</th><th style="width:39%">답안에 반드시 있어야 할 말</th><th>없으면</th></tr>
+<tr><td class="m">① 근거</td><td class="l">“왜냐하면 ~이므로”, “~의 배수이므로”</td><td class="l">답만 맞아도 부분 점수</td></tr>
+<tr><td class="m">② 빠짐없음</td><td class="l">“작은 것부터 차례로”, “이 경우가 전부이므로”</td><td class="l">세기 문제는 0점 처리도 있음</td></tr>
+<tr><td class="m">③ 검산</td><td class="l">“넣어서 확인하면 ~”</td><td class="l">실수를 못 잡음</td></tr>
+</table>
+<div class="warn"><b>가장 아까운 감점.</b> 표와 그림을 그려 놓고 <b>지우고 답만 옮겨 쓰는 것</b>입니다.
+표·그림·식은 ②의 증거이므로 <b>절대 지우지 마십시오.</b> 그것이 곧 점수입니다.</div>
+
+<h2><span class="n">4</span>진도 안내</h2>
+<table>
+<tr><th style="width:8%">주제</th><th style="width:20%">강의 자료</th><th style="width:16%">문제지</th><th style="width:18%">권장 시간</th><th>먼저 확인할 것</th></tr>
+<tr><td class="m">1</td><td>2 ~ 3쪽</td><td>1-1 ~ 1-5</td><td>강의 40분 · 문제 50분</td><td class="l">나뭇가지 그림을 그릴 줄 아는가</td></tr>
+<tr><td class="m">2</td><td>4 ~ 5쪽</td><td>2-1 ~ 2-5</td><td>강의 40분 · 문제 50분</td><td class="l">배수 판정법 2·3·4·5·9를 아는가</td></tr>
+<tr><td class="m">3</td><td>6 ~ 7쪽</td><td>3-1 ~ 3-5</td><td>강의 45분 · 문제 60분</td><td class="l">세로셈의 자리올림을 이해하는가</td></tr>
+<tr><td class="m">4</td><td>8 ~ 9쪽</td><td>4-1 ~ 4-5</td><td>강의 40분 · 문제 50분</td><td class="l">1~9의 합 45를 바로 말하는가</td></tr>
+<tr><td class="m">5</td><td>10 ~ 11쪽</td><td>5-1 ~ 5-5</td><td>강의 35분 · 문제 45분</td><td class="l">＋−×÷ 의 반대 연산을 아는가</td></tr>
+<tr><td class="m">6</td><td>12 ~ 13쪽</td><td>6-1 ~ 6-5</td><td>강의 40분 · 문제 50분</td><td class="l">두 자리 × 두 자리 암산이 되는가</td></tr>
+</table>
+<p class="small">한 주에 두 주제씩 3주 과정으로 짜여 있습니다. 강의 → 문제 → <b>서술형 답안 다시 쓰기</b> 순서를 지키십시오.</p>
+
+
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 1 / 14</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">주제 1</span><h1>수 세기의 기술 — 빠짐없이, 중복 없이<small>세는 문제는 <b>세는 재주</b>가 아니라 <b>세는 순서를 정하는 재주</b>다</small></h1><div class="tag">1단계 · A 수와 연산<br>2 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>1, 2, 3, 4</b> 네 개의 숫자 카드가 있습니다. 서로 다른 두 장을 뽑아 <b>두 자리 수</b>를 만들면
+  모두 몇 개일까요?</p>
+  <p><b>잠깐!</b> “12, 13, 21, 34 … 어, 24는 셌던가?” 하고 떠오르는 대로 적으면
+  <b>반드시 빠뜨리거나 두 번 셉니다.</b> 셀 때 필요한 것은 기억력이 아니라 <b>순서</b>입니다.</p>
+</div>
+
+<h2><span class="n">1</span>기준을 하나 정하고, 그 기준으로 줄을 세운다</h2>
+<div class="wrap"><div class="fig"><svg width="150" height="132" viewBox="0 0 150 132">
+<text x="12" y="14" font-size="9.5" font-weight="700" fill="#b45309">십의 자리</text>
+<text x="86" y="14" font-size="9.5" font-weight="700" fill="#b45309">일의 자리</text>
+<text x="24" y="30" font-size="12" font-weight="700" fill="#2a2724">1</text><text x="24" y="60" font-size="12" font-weight="700" fill="#2a2724">2</text><text x="24" y="90" font-size="12" font-weight="700" fill="#2a2724">3</text><text x="24" y="120" font-size="12" font-weight="700" fill="#2a2724">4</text><path d="M34 26 L 92 17.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="20.0" font-size="9" fill="#4a443c">2</text><path d="M34 26 L 92 24.5" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="27.5" font-size="9" fill="#4a443c">3</text><path d="M34 26 L 92 32.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="35.0" font-size="9" fill="#4a443c">4</text><path d="M34 56 L 92 47.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="50.0" font-size="9" fill="#4a443c">1</text><path d="M34 56 L 92 54.5" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="57.5" font-size="9" fill="#4a443c">3</text><path d="M34 56 L 92 62.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="65.0" font-size="9" fill="#4a443c">4</text><path d="M34 86 L 92 77.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="80.0" font-size="9" fill="#4a443c">1</text><path d="M34 86 L 92 84.5" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="87.5" font-size="9" fill="#4a443c">2</text><path d="M34 86 L 92 92.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="95.0" font-size="9" fill="#4a443c">4</text><path d="M34 116 L 92 107.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="110.0" font-size="9" fill="#4a443c">1</text><path d="M34 116 L 92 114.5" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="117.5" font-size="9" fill="#4a443c">2</text><path d="M34 116 L 92 122.0" stroke="#d9c9a8" stroke-width="1"/><text x="98" y="125.0" font-size="9" fill="#4a443c">3</text></svg><div class="small" style="text-align:center;width:150px">나뭇가지 그림</div></div><div class="txt">
+<p>“무엇을 먼저 정할까”를 <b>하나만</b> 고릅니다. 여기서는 <b>십의 자리</b>를 먼저 정합니다.</p>
+<ul class="li">
+<li>십의 자리가 <b>1</b> 일 때 → 일의 자리는 2, 3, 4 → <b>3개</b></li>
+<li>십의 자리가 <b>2</b> 일 때 → 1, 3, 4 → <b>3개</b></li>
+<li>십의 자리가 <b>3</b>, <b>4</b> 일 때도 각각 <b>3개</b></li>
+</ul>
+<p>모두 <b>4 × 3 = 12개</b>. 이렇게 세면 <b>빠뜨릴 수가 없습니다.</b>
+십의 자리가 1인 것을 다 쓰기 전에는 2로 넘어가지 않기 때문입니다.</p>
+<p class="small">이 순서를 <b>사전식</b>이라 합니다. 12, 13, 14, 21, 23, 24, 31, 32, 34, 41, 42, 43.</p>
+</div></div>
+
+<h2><span class="n">2</span>더할 때와 곱할 때</h2>
+<table>
+<tr><th style="width:16%">규칙</th><th style="width:34%">언제 쓰나</th><th>보기</th></tr>
+<tr><td class="m">합의 규칙<br>(＋)</td><td class="l"><b>경우를 나누었을 때</b><br>“A 이거나 B”</td>
+<td class="l">두 자리 수 <b>또는</b> 세 자리 수 → 각각 세어 <b>더한다</b></td></tr>
+<tr><td class="m">곱의 규칙<br>(×)</td><td class="l"><b>차례로 정할 때</b><br>“A 이고 그다음 B”</td>
+<td class="l">십의 자리 4가지 <b>그리고</b> 일의 자리 3가지 → <b>4 × 3</b></td></tr>
+</table>
+<p class="small">헷갈리면 <b>“이거나(＋) / 그리고(×)”</b> 로 소리 내어 읽어 보십시오.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">표 만들기 · 나뭇가지 그리기</span></div>
+  <p><b>① 무엇을 먼저 정할지 하나 고른다</b> → <b>② 그 값을 작은 것부터 차례로</b> 놓는다
+  → <b>③ 각 경우의 개수를 세어 더하거나 곱한다</b> → <b>④ 마지막에 개수를 다시 센다.</b></p>
+</div>
+
+<h3>실제로 해 보기 — 100원 2개, 50원 2개, 10원 3개로 만들 수 있는 금액</h3>
+<div class="sol">기준을 <b>100원 개수</b>로 정한다.
+ 100원 0개 →  50원 0,1,2개 ×  10원 0,1,2,3개
+ 100원 1개, 2개 → (같음)
+ 겉보기 : 3 × 3 × 4 = <b>36가지</b>
+
+ 그러나 <b>금액이 겹친다</b> — 100원 1개 ＝ 50원 2개
+ 0원을 빼고 서로 다른 <b>금액</b>을 세면 → <b>27가지</b></div>
+<div class="warn"><b>세기 문제의 두 얼굴.</b> <b>방법의 수</b>를 묻는지 <b>결과의 가짓수</b>를 묻는지 확인하십시오.
+위에서 내는 <b>방법</b>은 36가지지만 만들어지는 <b>금액</b>은 27가지입니다.</div>
+<h3>한 번 더 — 다섯 장으로 세 자리 수 만들기</h3>
+<div class="sol">1, 2, 3, 4, 5 중 서로 다른 <b>세 장</b>으로 세 자리 수 만들기
+
+ 백의 자리 : 5가지 → 십의 자리 : 남은 <b>4가지</b> → 일의 자리 : 남은 <b>3가지</b>
+   5 × 4 × 3 = <b>60개</b>
+
+ 그중 <b>짝수</b>는? → <b>일의 자리를 먼저</b> 정한다 (2 또는 4 의 2가지)
+   2 × 4 × 3 = <b>24개</b></div>
+<p class="small"><b>제한이 붙은 자리를 먼저</b> 정하는 것이 요령입니다. 짝수 조건은 <b>일의 자리</b>에 붙었으므로 거기부터 잡습니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 2 / 14</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">주제 1</span><h1>수 세기의 기술 — 확인하는 법까지<small>“빠뜨리지 않았다”는 말은 <b>증명</b>이지 느낌이 아니다</small></h1><div class="tag">1단계 · A 수와 연산<br>3 / 14 쪽</div></div>
+
+<h2><span class="n">3</span>중복을 없애는 두 가지 방법</h2>
+<div class="row"><div class="col">
+<h3>방법 A · 순서를 고정한다</h3>
+<p>“세 사람 중 두 사람을 뽑는다”처럼 <b>순서가 상관없을 때</b>는
+<b>항상 작은 번호를 앞에</b> 오도록 정합니다.</p>
+<div class="sol">(1,2) (1,3) (1,4)
+      (2,3) (2,4)
+            (3,4)   → <b>6가지</b></div>
+<p class="small">(2,1)은 (1,2)와 같으므로 <b>아예 쓰지 않습니다.</b> 이렇게 하면 중복이 생길 자리가 없습니다.</p>
+</div><div class="col">
+<h3>방법 B · 다 세고 겹친 만큼 나눈다</h3>
+<p>순서를 따져 먼저 세면 4 × 3 = 12가지. 그런데 (1,2)와 (2,1)이 <b>같은 것을 두 번</b> 센 것이므로
+<b>2로 나눕니다.</b></p>
+<div class="sol">4 × 3 ÷ 2 = <b>6가지</b>
+
+여섯 사람이 서로 한 번씩 악수 :
+   6 × 5 ÷ 2 = <b>15번</b></div>
+<p class="small">A는 어릴 때부터 안전하고, B는 수가 커지면 빠릅니다. <b>둘의 답이 같은지</b> 작은 경우로 확인하는 습관을 들이십시오.</p>
+</div></div>
+
+<h2><span class="n">4</span>0이 들어가면 조심한다</h2>
+<p><b>0, 1, 2, 3</b> 으로 서로 다른 두 자리 수를 만들면 몇 개일까요? 4 × 3 = 12 가 <b>아닙니다.</b></p>
+<div class="sol">십의 자리에 <b>0은 올 수 없다</b> → 십의 자리 : 1, 2, 3 의 <b>3가지</b>
+일의 자리 : 십의 자리에 쓴 것을 뺀 <b>3가지</b> (0을 쓸 수 있음)
+
+  3 × 3 = <b>9개</b>   (10,12,13, 20,21,23, 30,31,32)</div>
+<div class="warn"><b>가장 많이 나오는 함정입니다.</b> <b>제한이 센 자리부터</b> 정하십시오.
+맨 앞자리처럼 <b>“이것만은 안 된다”</b>가 붙은 자리를 먼저 채워야 계산이 어긋나지 않습니다.</div>
+
+<h2><span class="n">5</span>겹치는 것은 한 번만 센다</h2>
+<p>“1부터 30까지 중 <b>2의 배수이거나 3의 배수</b>인 수는 몇 개?”</p>
+<div class="sol">2의 배수 : 15개      3의 배수 : 10개      그냥 더하면 25개
+
+그런데 6, 12, 18, 24, 30 은 <b>양쪽에 다 들어 있다</b> — <b>두 번 세어졌다.</b>
+6의 배수 : <b>5개</b>
+
+   15 + 10 − 5 = <b>20개</b></div>
+<p class="small"><b>더한 뒤 겹친 만큼 뺀다.</b> 이 생각은 중학교의 집합 단원에서 그대로 다시 만납니다.</p>
+
+<h2><span class="n">6</span>서술형에서 만점을 받는 문장</h2>
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“하나도 빠뜨리지 않았다고 <b>어떻게 확신</b>합니까?”<br>
+  <span class="small">→ “<u>십의 자리를 1, 2, 3, 4 의 순서로 고정</u>하고, 각각에 대해 일의 자리를
+  <u>작은 것부터 빠짐없이</u> 적었습니다. 십의 자리가 다르면 서로 다른 수이므로 <u>중복도 없습니다.</u>
+  따라서 이 12개가 전부입니다.”</span></div>
+</div>
+<p class="small">밑줄 친 세 부분이 각각 <b>기준 · 빠짐없음 · 중복없음</b>의 근거입니다. 셋 중 하나만 빠져도 감점됩니다.</p>
+
+<div class="note">
+<b>자기 점검 — 이 세 가지를 답할 수 있으면 넘어가십시오.</b>
+<ol class="li">
+<li>나는 <b>무엇을 기준으로</b> 줄을 세웠는가?</li>
+<li>내가 쓴 것 중 <b>같은 것을 두 번</b> 센 것은 없는가?</li>
+<li>맨 앞자리에 <b>0이나 금지된 것</b>이 들어가지 않았는가?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>1-1 ~ 1-5</b> &nbsp;·&nbsp; 1-1은 <b>기준 정하고 나열</b>, 1-2는 <b>합·곱의 규칙</b>,
+1-3은 <b>0이 맨 앞에 못 오는 처리</b>, 1-4는 <b>순서 고정 vs 나누기</b>,
+1-5는 <b>“빠짐없음”을 문장으로 쓰기</b> 입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 3 / 14</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 2</span><h1>조건에 맞는 수 찾기 — 그물을 여러 번 던진다<small>조건은 <b>후보를 줄이는 그물</b>이다. 어떤 그물을 먼저 던지느냐로 일의 양이 달라진다</small></h1><div class="tag">1단계 · A 수와 연산<br>4 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>세 자리 수</b> 중에서 ① <b>각 자리 숫자가 모두 다르고</b> ② <b>3의 배수</b>이며
+  ③ <b>500보다 크고</b> ④ <b>짝수</b>인 수를 모두 찾으려 합니다.</p>
+  <p><b>잠깐!</b> 100부터 999까지 <b>900개</b>를 하나씩 확인하면 몇 시간이 걸립니다.
+  조건을 <b>순서대로 걸어</b> 후보를 줄이면 몇 분이면 됩니다.</p>
+</div>
+
+<h2><span class="n">1</span>조건을 하나씩 건다</h2>
+<table>
+<tr><th style="width:26%">조건의 종류</th><th style="width:34%">무엇을 정해 주는가</th><th>표현</th></tr>
+<tr><td class="m">자릿수 조건</td><td class="l">각 자리에 올 수 있는 숫자</td><td class="l">“모두 다르다”, “맨 앞은 0이 아니다”</td></tr>
+<tr><td class="m">대소 조건</td><td class="l">수의 <b>범위</b></td><td class="l">“500보다 크다” → 백의 자리가 5 이상</td></tr>
+<tr><td class="m">배수 조건</td><td class="l">숫자들의 <b>합</b>이나 <b>끝자리</b></td><td class="l">“3의 배수” → 각 자리 합이 3의 배수</td></tr>
+</table>
+
+<h2><span class="n">2</span>배수 판정법 — 외워 두면 계산이 사라진다</h2>
+<table>
+<tr><th style="width:9%">2</th><th style="width:15%">3</th><th style="width:15%">4</th><th style="width:9%">5</th>
+<th style="width:15%">8</th><th style="width:15%">9</th><th>11</th></tr>
+<tr><td class="l">끝자리가<br>짝수</td><td class="l">각 자리 합이<br>3의 배수</td><td class="l">끝 <b>두 자리</b>가<br>4의 배수</td>
+<td class="l">끝자리<br>0 또는 5</td><td class="l">끝 <b>세 자리</b>가<br>8의 배수</td><td class="l">각 자리 합이<br>9의 배수</td>
+<td class="l">홀수 자리 합 −<br>짝수 자리 합이<br>11의 배수(0 포함)</td></tr>
+</table>
+<div class="sol"><b>3168</b> 로 모두 확인해 보기
+  2 : 끝자리 8 → ○      3 : 3+1+6+8 = 18 → ○      4 : 끝 두 자리 68 = 4×17 → ○
+  8 : 끝 세 자리 168 = 8×21 → ○   9 : 합 18 = 9×2 → ○   11 : (3+6) − (1+8) = 0 → ○</div>
+<div class="note"><b>왜 각 자리 합으로 3의 배수를 알 수 있는가.</b>
+1000 = 999 ＋ 1, 100 = 99 ＋ 1, 10 = 9 ＋ 1 입니다. 999 · 99 · 9 는 <b>모두 3의 배수</b>이므로,
+어떤 수를 3으로 나눈 나머지는 <b>각 자리 숫자를 그냥 더한 것</b>의 나머지와 같아집니다.
+<span class="small">3168 = 3 × 999 ＋ 1 × 99 ＋ 6 × 9 ＋ (3＋1＋6＋8) — 앞의 세 덩어리는 3의 배수이므로
+남는 것은 <b>각 자리 합 18</b> 뿐입니다.</span></div>
+<p class="small"><b>6의 배수</b>는 따로 없습니다. <b>2의 배수이면서 3의 배수</b>면 6의 배수입니다.
+같은 식으로 12의 배수는 <b>3의 배수이면서 4의 배수</b>입니다.</p>
+
+<h2><span class="n">3</span>어떤 조건을 먼저 걸어야 빠른가</h2>
+<p>답은 <b>후보를 가장 많이 줄이는 조건</b>, 곧 <b>가장 센 그물</b>부터입니다. 세 자리 수 900개로 비교해 봅시다.</p>
+<table>
+<tr><th style="width:34%">먼저 거는 조건</th><th style="width:22%">남는 후보</th><th>다음 조건까지 걸면</th></tr>
+<tr><td class="l"><b>3의 배수</b>를 먼저</td><td class="m">300개</td><td class="l">각 자리 다름 → <b>228개</b></td></tr>
+<tr><td class="l"><b>각 자리 다름</b>을 먼저</td><td class="m">648개</td><td class="l">3의 배수 → <b>228개</b></td></tr>
+</table>
+<p>결과는 같지만 <b>중간에 손으로 확인할 개수</b>가 300개와 648개로 두 배 넘게 차이 납니다.</p>
+<h3>스스로 확인하기</h3>
+<table>
+<tr><th style="width:20%">수</th><th style="width:16%">2</th><th style="width:16%">3</th><th style="width:16%">4</th><th style="width:16%">9</th><th>11</th></tr>
+<tr><td class="m">1452</td><td>○</td><td>○</td><td>○</td><td>×</td><td>○</td></tr>
+<tr><td class="m">2025</td><td>×</td><td>○</td><td>×</td><td>○</td><td>×</td></tr>
+<tr><td class="m">7920</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td></tr>
+</table>
+<p class="small">1452 : 합 12(3○ 9×), 끝 두 자리 52(4○), (1＋5)−(4＋2) ＝ 0(11○).
+2025 : 합 9(3·9 모두 ○), 끝자리 5(2×), 끝 두 자리 25(4×).</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">센 조건부터 걸기</span></div>
+  <p><b>① 조건마다 후보가 몇 개로 줄지 어림한다</b> → <b>② 가장 많이 줄이는 것부터 건다</b>
+  → <b>③ 남은 후보에만 다음 조건을 적용한다</b> → <b>④ 마지막에 모든 조건을 다시 한 번 확인한다.</b></p>
+</div>
+<p class="small">어림하는 요령 — <b>“몇 개 중 하나꼴인가”</b> 로 생각합니다. 3의 배수는 <b>3개 중 1개</b>(약 1/3),
+짝수는 <b>2개 중 1개</b>(1/2), “500보다 큼”은 약 <b>1/2</b>, “각 자리 다름”은 약 <b>3/4</b>. 작은 분수일수록 센 그물입니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 4 / 14</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 2</span><h1>조건에 맞는 수 찾기 — 끝까지 걸어 보기<small>조건을 <b>순서를 바꿔 가며</b> 거는 것까지가 이 주제의 실력이다</small></h1><div class="tag">1단계 · A 수와 연산<br>5 / 14 쪽</div></div>
+
+<h2><span class="n">4</span>생각 열기 문제를 끝까지 풀어 보자</h2>
+<p>세 자리 수 중 ① 각 자리 다름 ② 3의 배수 ③ 500 초과 ④ 짝수.
+<b>가장 센 조건</b>은 ②(1/3)와 ③(1/2), ④(1/2)입니다. 그런데 ③과 ④는 <b>자리를 직접 정해 주므로</b> 먼저 씁니다.</p>
+<div class="sol"><b>1단계</b> ③ 500 초과 → 백의 자리는 <b>5, 6, 7, 8, 9</b>
+<b>2단계</b> ④ 짝수     → 일의 자리는 <b>0, 2, 4, 6, 8</b>
+<b>3단계</b> ② 3의 배수 → (백) + (십) + (일) 이 3의 배수
+<b>4단계</b> ① 각 자리 다름 → 겹치는 것 버리기
+
+  백 5, 일 4 인 경우 : 5 + □ + 4 = 3의 배수 → □ = 0, 3, 6, 9
+      → 504, 534, 564, 594  (모두 각 자리 다름 ○)
+  이런 식으로 백의 자리 5 ~ 9, 일의 자리 0 ~ 8 을 차례로 훑는다.
+
+  전부 세면 <b>62개</b>. (504, 510, 516, 528, 534, 540, ⋯)</div>
+<p class="small">여기서도 <b>주제 1의 기술</b>이 그대로 쓰입니다 — 백의 자리를 <b>기준</b>으로 고정하고
+작은 것부터 훑었기 때문에 빠뜨림이 없습니다. <b>두 주제는 한 몸입니다.</b></p>
+
+<h2><span class="n">5</span>조건을 “범위”로 바꾸는 기술</h2>
+<div class="row"><div class="col">
+<p>말로 된 조건은 <b>자리에 대한 조건</b>으로 바꿔야 손이 움직입니다.</p>
+<table>
+<tr><th style="width:48%">말로 된 조건</th><th>자리 조건으로</th></tr>
+<tr><td class="l">700보다 작다</td><td class="l">백의 자리 ≤ 6</td></tr>
+<tr><td class="l">각 자리 합이 12</td><td class="l">세 수의 합 = 12</td></tr>
+<tr><td class="l">5의 배수</td><td class="l">일의 자리 = 0 또는 5</td></tr>
+<tr><td class="l">가장 큰 수</td><td class="l">앞자리부터 크게</td></tr>
+</table>
+</div><div class="col">
+<div class="warn"><b>흔한 실수 세 가지</b>
+<ul class="li">
+<li>“<b>보다 크다</b>”와 “<b>크거나 같다</b>”를 섞음 — 500 <b>초과</b>에 500은 <b>들어가지 않습니다.</b></li>
+<li>맨 앞자리에 <b>0</b>을 넣음 — 015는 세 자리 수가 아닙니다.</li>
+<li>“각 자리가 다르다”를 <b>중간에 잊음</b> — 마지막에 전 조건을 다시 확인해야 합니다.</li>
+</ul></div>
+</div></div>
+
+<h2><span class="n">6</span>가장 큰 수 · 가장 작은 수 찾기</h2>
+<p>“각 자리 숫자가 <b>모두 다르고 3의 배수</b>인 세 자리 수 중 <b>가장 큰 수</b>와 <b>가장 작은 수</b>는?”</p>
+<div class="sol"><b>가장 큰 수</b> — <b>앞자리부터 크게</b> 잡는다.
+  백 9 → 십 8 → 일 : 9＋8＋□ 가 3의 배수 → □ = 1, 4, 7 → 가장 큰 <b>7</b>
+  → <b>987</b>
+
+<b>가장 작은 수</b> — <b>앞자리부터 작게</b>, 단 백의 자리는 0 불가.
+  백 1 → 십 0 → 일 : 1＋0＋□ 가 3의 배수 → □ = 2, 5, 8 → 가장 작은 <b>2</b>
+  → <b>102</b></div>
+<p class="small"><b>큰 수는 앞자리부터 크게, 작은 수는 앞자리부터 작게.</b>
+앞자리 하나가 뒤의 두 자리 전체보다 힘이 세기 때문입니다. 900은 99보다 큽니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“조건을 거는 <b>순서를 바꾸면</b> 왜 더 빨라집니까?”<br>
+  <span class="small">→ “조건마다 후보가 줄어드는 <u>비율이 다르기</u> 때문입니다.
+  3의 배수 조건은 후보를 <u>900개에서 300개로</u> 줄이지만, 각 자리가 다르다는 조건은
+  <u>648개까지밖에</u> 줄이지 못합니다. <u>더 많이 줄이는 조건을 먼저</u> 걸면
+  뒤 조건을 확인할 대상이 적어져 전체 계산이 줄어듭니다. <u>최종 답은 순서와 관계없이 같습니다.</u>”</span></div>
+</div>
+<p class="small">마지막 밑줄이 중요합니다. <b>순서는 속도만 바꾸고 답은 바꾸지 않는다</b>는 것까지 써야 완전한 답안입니다.</p>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>2-1 ~ 2-5</b> &nbsp;·&nbsp; 2-1은 <b>배수 판정법</b>, 2-2는 <b>조건 차례로 걸기</b>,
+2-3은 <b>대소 조건을 자리 조건으로</b>, 2-4는 <b>조건을 만족하는 가장 큰 수·작은 수</b>,
+2-5는 <b>조건 순서와 계산량</b>을 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 5 / 14</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 3</span><h1>연산 퍼즐(복면산) — 확실한 자리부터<small>복면산은 찍기가 아니다. <b>자리올림은 0 아니면 1</b>이라는 사실 하나로 대부분이 풀린다</small></h1><div class="tag">1단계 · A 수와 연산<br>6 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>같은 글자는 같은 숫자, 다른 글자는 다른 숫자입니다. 각 글자는 무엇일까요?</p>
+  <div class="sol" style="text-align:center;font-size:11pt">가가 ＋ 나나 ＋ 다다 ＝ 가나다</div>
+  <p><b>잠깐!</b> 0부터 9까지 세 글자를 넣어 보면 <b>720가지</b>입니다. 하나씩 넣지 않고
+  <b>자리마다 성립해야 하는 관계</b>를 적으면 답이 저절로 나옵니다.</p>
+</div>
+
+<h2><span class="n">1</span>복면산의 규칙 세 가지</h2>
+<ul class="li">
+<li><b>같은 글자 = 같은 숫자, 다른 글자 = 다른 숫자.</b></li>
+<li><b>맨 앞자리는 0이 될 수 없다.</b> (가나다에서 ‘가’는 0이 아님)</li>
+<li><b>덧셈의 자리올림은 언제나 0 아니면 1</b> 이다. 두 수를 더할 때 올림은 <b>최대 1</b>,
+세 수를 더할 때는 <b>최대 2</b> 입니다.</li>
+</ul>
+<div class="note"><b>왜 올림이 1을 넘지 못하는가.</b> 한 자리에서 가장 큰 합은 9 + 9 = 18 이고
+아래에서 올라온 1을 더해도 19입니다. 19의 십의 자리는 <b>1</b> 이므로 올림은 1을 넘을 수 없습니다.
+세 수를 더하면 9 + 9 + 9 + 2 = 29 이므로 올림은 <b>최대 2</b> 입니다.</div>
+
+<h2><span class="n">2</span>맨 앞자리가 1이 되는 까닭</h2>
+<p>세 자리 수 두 개를 더해 <b>네 자리</b>가 되었다면, 천의 자리는 반드시 <b>1</b> 입니다.</p>
+<div class="sol">가장 큰 세 자리 수 두 개를 더해도  999 ＋ 999 ＝ <b>1998</b>
+→ 네 자리가 되더라도 천의 자리는 <b>1보다 클 수 없다</b>
+→ 그런데 네 자리가 되었으므로 0도 아니다  ⇒ 천의 자리 ＝ <b>1</b></div>
+<p class="small">이것이 유명한 <b>SEND ＋ MORE ＝ MONEY</b> 에서 M = 1 인 이유입니다. (답은 9567 ＋ 1085 ＝ 10652)</p>
+
+<div class="note"><b>왜 복면산을 배우는가.</b> 복면산은 “숫자를 맞히는 놀이”가 아니라
+<b>모르는 값을 글자로 두고 관계식을 세우는 연습</b>입니다.
+중학교에서 <b>x</b> 를 놓고 식을 세우는 일과 정확히 같은 일을 하고 있습니다.</div>
+
+<h2><span class="n">3</span>일의 자리에서 바로 알 수 있는 것</h2>
+<p>맨 앞자리 다음으로 확실한 곳은 <b>일의 자리</b>입니다. 아래로부터 올라오는 올림이 없기 때문입니다.</p>
+<table>
+<tr><th style="width:34%">일의 자리에 보이는 모양</th><th style="width:22%">알 수 있는 것</th><th>이유</th></tr>
+<tr><td class="l">가 ＋ 가 의 끝자리가 <b>가</b></td><td class="m">가 ＝ 0</td><td class="l">2 × 가 의 끝자리가 가가 되려면 가 ＝ 0 뿐</td></tr>
+<tr><td class="l">가 ＋ 나 의 끝자리가 <b>가</b></td><td class="m">나 ＝ 0</td><td class="l">더했는데 그대로면 더한 것이 0</td></tr>
+<tr><td class="l">가 ＋ 가 의 끝자리</td><td class="m">반드시 <b>짝수</b></td><td class="l">같은 수를 두 번 더했으므로</td></tr>
+<tr><td class="l">끝자리가 <b>0</b> 이 되는 두 수</td><td class="m">합이 10 또는 20</td><td class="l">1＋9, 2＋8, ⋯ 로 후보가 적다</td></tr>
+</table>
+<p class="small">이런 자리를 <b>먼저 확정</b>하고 나면 나머지 글자의 후보가 급격히 줄어듭니다. 주제 2의 <b>“센 조건부터”</b> 와 같은 생각입니다.</p>
+
+<h3>올림을 적어 가며 푸는 연습</h3>
+<div class="sol">   가 7            일의 자리 : 7 ＋ 5 ＝ 12
+＋ 나 5            → 끝자리 <b>2</b>, 위로 <b>올림 1</b>
+────────
+   다 2            십의 자리 : 가 ＋ 나 ＋ <b>1</b> ＝ 다   (또는 ＝ 다 ＋ 10)
+
+  → 올림을 <b>숫자로 적어 두는 것</b>이 핵심. 머릿속에 두면 반드시 빠뜨린다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">확실한 자리부터 · 범위로 좁히기</span></div>
+  <p><b>① 반드시 정해지는 자리(맨 앞자리)를 먼저 찾는다</b> →
+  <b>② 자리마다 식을 세운다</b>(올림을 ○ 또는 1로 두고) →
+  <b>③ 값의 범위로 후보를 줄인다</b> → <b>④ 실제로 계산해 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 6 / 14</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 3</span><h1>연산 퍼즐(복면산) — 식으로 바꿔 푼다<small>세로셈을 <b>가로식</b>으로 옮기는 순간, 퍼즐이 계산 문제가 된다</small></h1><div class="tag">1단계 · A 수와 연산<br>7 / 14 쪽</div></div>
+
+<h2><span class="n">3</span>생각 열기 문제 풀이 — 가가 ＋ 나나 ＋ 다다 ＝ 가나다</h2>
+<div class="sol">두 자리 <b>같은 숫자</b> 수는 11의 배수다.  가가 ＝ 11 × 가
+
+  11 × 가 ＋ 11 × 나 ＋ 11 × 다 ＝ 100 × 가 ＋ 10 × 나 ＋ 다
+
+왼쪽에서 <b>가</b> 를 오른쪽으로, 오른쪽에서 <b>나·다</b> 를 왼쪽으로 모으면
+
+  11나 − 10나 ＋ 11다 − 다 ＝ 100가 − 11가
+              <b>나 ＋ 10 × 다 ＝ 89 × 가</b>
+
+왼쪽이 가질 수 있는 <b>가장 큰 값</b>은 9 ＋ 90 ＝ <b>99</b> 이므로  89 × 가 ≤ 99
+→ <b>가 ＝ 1</b> (0은 맨 앞이라 불가)
+
+  나 ＋ 10 × 다 ＝ 89  →  <b>다 ＝ 8, 나 ＝ 9</b>
+
+[검산]  11 ＋ 99 ＋ 88 ＝ <b>198</b> ＝ 가나다 ○   (가1 나9 다8, 모두 다름 ○)</div>
+<p class="small">답이 <b>딱 하나뿐</b>임을 보였다는 점이 중요합니다. “찾았다”가 아니라
+<b>“이것 말고는 없다”</b> 까지 보여야 만점입니다.</p>
+
+<h2><span class="n">4</span>가로식으로 옮기는 요령</h2>
+<table>
+<tr><th style="width:30%">세로셈에서 보이는 것</th><th>가로식으로</th></tr>
+<tr><td class="l">두 자리 수 <b>가나</b></td><td class="l">10 × 가 ＋ 나</td></tr>
+<tr><td class="l">같은 숫자 <b>가가</b></td><td class="l">11 × 가</td></tr>
+<tr><td class="l">세 자리 수 <b>가나다</b></td><td class="l">100 × 가 ＋ 10 × 나 ＋ 다</td></tr>
+<tr><td class="l"><b>가나 ＋ 나가</b></td><td class="l">11 × (가 ＋ 나) — 언제나 <b>11의 배수</b></td></tr>
+</table>
+<p class="small">마지막 줄은 그 자체로 문제입니다. <b>가나 ＋ 나가 ＝ 다다</b> 라면 <b>가 ＋ 나 ＝ 다</b>
+(12＋21＝33, 25＋52＝77 ⋯ 답이 여럿).</p>
+
+<h2><span class="n">5</span>뺄셈 복면산도 같은 방법으로</h2>
+<p>“<b>가나다 − 다나가 ＝ 396</b> 일 때 가와 다의 관계는?”</p>
+<div class="sol">가나다 ＝ 100가 ＋ 10나 ＋ 다      다나가 ＝ 100다 ＋ 10나 ＋ 가
+
+  빼면 <b>가운데 나가 지워진다</b> :  99 × (가 − 다) ＝ 396
+                        <b>가 − 다 ＝ 4</b>
+
+[검산] 501 − 105 ＝ 396 ○ ,  926 − 526 ＝ 400 ×  (가−다 ＝ 4 가 아니면 안 됨)</div>
+<p class="small"><b>같은 것끼리 지워지도록</b> 식을 세우는 것 — 이것이 가로식으로 옮기는 진짜 이유입니다.
+나는 무엇이든 상관없다는 사실까지 알아내면 만점입니다.</p>
+
+<div class="warn"><b>흔한 실수</b> — ① <b>올림을 빠뜨림</b>(일의 자리에서 올라온 1을 안 더함)
+② <b>다른 글자에 같은 숫자</b>를 넣음(끝에 전부 다른지 확인) ③ 답이 여러 개인데 <b>하나만 쓰고</b> 끝냄.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“세 자리 수 두 개를 더해 네 자리가 되었습니다. <b>맨 앞자리가 반드시 1</b> 인 이유를 설명하시오.”<br>
+  <span class="small">→ “세 자리 수 중 가장 큰 것은 999이므로 두 수의 합은 <u>아무리 커도 999 ＋ 999 ＝ 1998</u> 입니다.
+  따라서 천의 자리는 <u>1보다 클 수 없습니다.</u> 한편 합이 <u>네 자리가 되었으므로</u> 천의 자리는 0도 아닙니다.
+  그러므로 천의 자리는 <u>반드시 1</u> 입니다.”</span></div>
+</div>
+<p class="small">‘<b>위로 막고 아래로 막아 하나만 남긴다</b>’ — 범위로 답을 확정하는 이 방식은
+중·고등학교의 부등식 문제에서 그대로 다시 쓰입니다.</p>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>3-1 ~ 3-5</b> &nbsp;·&nbsp; 3-1은 <b>일의 자리부터 확정</b>, 3-2는 <b>올림 0/1로 나누기</b>,
+3-3은 <b>11의 배수 구조</b>, 3-4는 <b>가로식으로 옮겨 범위 좁히기</b>,
+3-5는 <b>맨 앞자리가 1인 이유</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 7 / 14</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 4</span><h1>수의 배열과 마방진 — 합에서 거꾸로<small>칸을 채우려 들지 말고 <b>한 줄의 합</b>부터 구한다. 그러면 칸이 저절로 정해진다</small></h1><div class="tag">1단계 · A 수와 연산<br>8 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div class="wrap"><div class="fig"><svg width="86" height="86" viewBox="0 0 86 86"><rect x="1" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">8</text><rect x="29" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="57" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="71.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">6</text><rect x="1" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="29" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="47.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">5</text><rect x="57" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="1" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">4</text><rect x="29" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">9</text><rect x="57" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/></svg></div><div class="txt">
+  <p><b>1부터 9까지</b>의 수를 한 번씩 써서 가로 · 세로 · 대각선의 합이 모두 같게 만든 것을
+  <b>마방진</b>이라 합니다. 왼쪽 빈칸을 채울 수 있을까요?</p>
+  <p><b>잠깐!</b> 아무 칸이나 넣어 보면 끝없이 고칩니다.
+  <b>한 줄의 합이 얼마인지</b> 부터 구하면 넣을 수가 하나로 정해집니다.</p>
+  </div></div>
+</div>
+
+<h2><span class="n">1</span>한 줄의 합은 계산으로 나온다</h2>
+<div class="sol">1부터 9까지의 <b>전체 합</b> ＝ 1＋2＋⋯＋9 ＝ <b>45</b>
+가로 <b>세 줄</b>이 전체를 한 번씩 나누어 가지므로
+
+        한 줄의 합 ＝ 45 ÷ 3 ＝ <b>15</b></div>
+<p class="small">4 × 4 마방진이라면 1부터 16까지의 합 <b>136</b>을 <b>4</b>줄로 나누어 한 줄의 합은 <b>34</b> 입니다.
+크기가 달라져도 방법은 같습니다.</p>
+<div class="note"><b>45는 어떻게 빨리 구하나.</b> 주제 6의 <b>짝짓기</b>를 그대로 씁니다 —
+1＋9 ＝ 10, 2＋8 ＝ 10, 3＋7 ＝ 10, 4＋6 ＝ 10 의 <b>네 쌍</b>과 가운데 남은 <b>5</b>.
+40 ＋ 5 ＝ <b>45</b>. 마방진과 규칙적 더하기는 이렇게 이어집니다.</div>
+
+<h2><span class="n">2</span>가운데 칸이 반드시 5인 까닭</h2>
+<div class="wrap"><div class="fig"><svg width="80" height="80" viewBox="0 0 80 80"><rect x="1" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="27" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="40.0" y="18.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">7</text><rect x="53" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="1" y="27" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="14.0" y="44.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">9</text><rect x="27" y="27" width="26" height="26" fill="#be123c" stroke="#b9b0a0" stroke-width="1"/><text x="40.0" y="44.5" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">5</text><rect x="53" y="27" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="66.0" y="44.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">1</text><rect x="1" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="27" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="40.0" y="70.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">3</text><rect x="53" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/></svg><div class="small" style="text-align:center">가운데를 지나는 4줄</div></div><div class="txt">
+<p>가운데 칸을 지나는 줄은 <b>가로 1 · 세로 1 · 대각선 2</b> 로 모두 <b>4줄</b> 입니다.</p>
+<div class="sol">네 줄의 합 ＝ 15 × 4 ＝ <b>60</b>
+
+이 네 줄에는 1 ~ 9 가 한 번씩 들어가고(＝45)
+<b>가운데만 4번 세어져</b> 3번 더 더해졌다.
+
+   45 ＋ 3 × (가운데) ＝ 60
+        3 × (가운데) ＝ 15
+             <b>가운데 ＝ 5</b></div>
+</div></div>
+<p class="small"><b>겹치는 칸을 몇 번 세었는가</b> — 이것이 마방진 문제의 핵심 기술입니다.
+같은 방법으로 <b>모서리 네 칸의 합</b>도 구할 수 있습니다.</p>
+
+<div class="warn"><b>먼저 확인할 것.</b> 문제에 나온 수가 <b>1 ~ 9 가 맞는지</b> 봅니다.
+“1부터 9까지”가 아니라 “<b>2부터 10까지</b>”이거나 <b>한 수가 빠져 있으면</b> 합 15도 가운데 5도 쓸 수 없습니다.
+언제나 <b>전체 합 ÷ 줄 수</b> 부터 다시 계산하십시오.</div>
+
+<h2><span class="n">3</span>모서리에는 짝수만 들어간다</h2>
+<div class="wrap"><div class="txt">
+<p>합이 15가 되는 <b>서로 다른 세 수</b>의 조합은 정확히 <b>여덟 가지</b> 입니다.</p>
+<div class="sol">(1,5,9) (1,6,8) (2,4,9) (2,5,8)
+(2,6,7) (3,4,8) (3,5,7) (4,5,6)</div>
+<p>각 수가 <b>몇 개의 조합에 들어가는지</b> 세어 봅니다.</p>
+<table>
+<tr><th style="width:22%">수</th><td class="m">5</td><td class="m">2 · 4 · 6 · 8</td><td class="m">1 · 3 · 7 · 9</td></tr>
+<tr><th>들어간 조합 수</th><td class="m">4개</td><td class="m">3개</td><td class="m">2개</td></tr>
+</table>
+</div><div class="fig"><svg width="80" height="80" viewBox="0 0 80 80"><rect x="1" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="14.0" y="18.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">2</text><rect x="27" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="53" y="1" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="66.0" y="18.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">6</text><rect x="1" y="27" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="27" y="27" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="53" y="27" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="1" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="14.0" y="70.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">4</text><rect x="27" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="53" y="53" width="26" height="26" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="66.0" y="70.5" text-anchor="middle" font-size="13" font-weight="600" fill="#2a2724">8</text></svg><div class="small" style="text-align:center;width:80px">모서리는<br>짝수</div></div></div>
+<p>한편 마방진에서 <b>각 칸이 속한 줄의 수</b>는 — 가운데 <b>4줄</b>, 모서리 <b>3줄</b>(가로·세로·대각선),
+변의 가운데 <b>2줄</b>(가로·세로) 입니다. 두 표를 맞대면 답이 나옵니다.</p>
+<div class="note"><b>4줄짜리 칸</b>에는 4개 조합에 드는 <b>5</b>,
+<b>3줄짜리 모서리</b>에는 3개 조합에 드는 <b>짝수 2·4·6·8</b>,
+<b>2줄짜리 변 가운데</b>에는 <b>홀수 1·3·7·9</b> 가 들어갑니다. 자리마다 들어갈 수가 <b>미리 정해져 있는 것</b>입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 8 / 14</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 4</span><h1>수의 배열과 마방진 — 채우는 순서<small>두 칸이 이미 찬 줄부터 공략한다. 그 줄은 <b>뺄셈 한 번</b>으로 끝난다</small></h1><div class="tag">1단계 · A 수와 연산<br>9 / 14 쪽</div></div>
+
+<h2><span class="n">4</span>생각 열기 문제 풀이</h2>
+<div class="wrap"><div class="fig"><svg width="86" height="86" viewBox="0 0 86 86"><rect x="1" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">8</text><rect x="29" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="57" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="71.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">6</text><rect x="1" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="29" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="47.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">5</text><rect x="57" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><rect x="1" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">4</text><rect x="29" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">9</text><rect x="57" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/></svg><div class="small" style="text-align:center">처음 상태</div></div><div class="txt">
+<div class="sol">한 줄의 합은 <b>15</b>.
+
+① 맨 아랫줄 : 4 ＋ 9 ＋ □ ＝ 15 → □ ＝ <b>2</b>
+② 첫째 줄   : 8 ＋ □ ＋ 6 ＝ 15 → □ ＝ <b>1</b>
+③ 왼쪽 세로 : 8 ＋ □ ＋ 4 ＝ 15 → □ ＝ <b>3</b>
+④ 오른쪽 세로 : 6 ＋ □ ＋ 2 ＝ 15 → □ ＝ <b>7</b>
+
+[검산] 대각선 8＋5＋2 ＝ 15 ○ , 6＋5＋4 ＝ 15 ○
+       1 ~ 9 가 한 번씩 ○</div>
+</div></div>
+<p class="small"><b>채우는 순서가 곧 실력입니다.</b> <b>두 칸이 이미 찬 줄</b>부터 잡으면
+뺄셈 한 번으로 칸이 정해지고, 그러면 <b>또 다른 줄이 두 칸짜리가 됩니다.</b></p>
+
+<h2><span class="n">5</span>알아 두면 좋은 성질</h2>
+<div class="row"><div class="col">
+<div class="wrap"><div class="fig"><svg width="86" height="86" viewBox="0 0 86 86"><rect x="1" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">2</text><rect x="29" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">7</text><rect x="57" y="1" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="71.0" y="19.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">6</text><rect x="1" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="47.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">9</text><rect x="29" y="29" width="28" height="28" fill="#be123c" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="47.5" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">5</text><rect x="57" y="29" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="71.0" y="47.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">1</text><rect x="1" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="15.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">4</text><rect x="29" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="43.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">3</text><rect x="57" y="57" width="28" height="28" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="71.0" y="75.5" text-anchor="middle" font-size="14" font-weight="600" fill="#2a2724">8</text></svg></div><div class="txt">
+<ul class="li">
+<li>가운데를 사이에 둔 <b>마주 보는 두 칸의 합</b>은 언제나 <b>10</b>. (2와 8, 7과 3, 6과 4, 9와 1)</li>
+<li>그래서 <b>마주 보는 두 칸 ＋ 가운데 ＝ 15</b> 가 됩니다.</li>
+<li>1 ~ 9 마방진은 회전 · 뒤집기를 같은 것으로 보면 <b>본질적으로 한 가지</b> 뿐입니다.
+(돌리고 뒤집은 것까지 세면 8가지)</li>
+</ul>
+</div></div>
+</div></div>
+
+<h2><span class="n">6</span>수를 바꿔도 방법은 같다</h2>
+<p>“<b>2부터 10까지</b>로 마방진을 만들면 한 줄의 합은?”</p>
+<div class="sol">전체 합 ＝ 54  →  한 줄 ＝ 54 ÷ 3 ＝ <b>18</b> ,  가운데 ＝ (18×4 − 54) ÷ 3 ＝ <b>6</b>
+원래 마방진의 모든 수에 <b>1씩 더한 것</b>과 같다.</div>
+<div class="warn"><b>흔한 실수</b> — 수의 범위가 바뀌었는데 <b>합 15와 가운데 5를 그대로</b> 쓰는 것입니다.
+15와 5는 <b>1 ~ 9 일 때만</b>의 값입니다. 언제나 <b>전체 합 ÷ 줄 수</b> 부터 다시 구하십시오.</div>
+
+<h2><span class="n">7</span>직접 만들어 보기 — 계단식으로 채우기</h2>
+<div class="wrap"><div class="fig"><svg width="74" height="74" viewBox="0 0 74 74"><rect x="1" y="1" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="13.0" y="17.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">8</text><rect x="25" y="1" width="24" height="24" fill="#be123c" stroke="#b9b0a0" stroke-width="1"/><text x="37.0" y="17.5" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">1</text><rect x="49" y="1" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="61.0" y="17.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">6</text><rect x="1" y="25" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="13.0" y="41.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">3</text><rect x="25" y="25" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="37.0" y="41.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">5</text><rect x="49" y="25" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="61.0" y="41.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">7</text><rect x="1" y="49" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="13.0" y="65.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">4</text><rect x="25" y="49" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="37.0" y="65.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">9</text><rect x="49" y="49" width="24" height="24" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="61.0" y="65.5" text-anchor="middle" font-size="12" font-weight="600" fill="#2a2724">2</text></svg><div class="small" style="text-align:center;width:80px">1을 맨 윗줄<br>가운데에</div></div><div class="txt">
+<p>홀수 크기 마방진은 <b>규칙 세 줄</b>로 만들 수 있습니다.</p>
+<ol class="li">
+<li><b>1</b> 을 맨 윗줄 가운데에 놓는다.</li>
+<li>다음 수는 <b>오른쪽 위 대각선</b> 칸에. 판을 벗어나면 <b>반대쪽 끝</b>으로 돌아간다.</li>
+<li>그 칸이 <b>이미 차 있으면</b> 방금 놓은 칸의 <b>바로 아래</b>에 놓는다.</li>
+</ol>
+<p class="small">8 1 6 / 3 5 7 / 4 9 2 가 나옵니다. 앞에서 <b>계산으로</b> 알아낸
+가운데 5 · 모서리 짝수 · 변 가운데 홀수가 지켜지는지 확인해 보십시오.</p>
+</div></div>
+
+<h2><span class="n">8</span>4 × 4 마방진 — 더 많은 성질이 숨어 있다</h2>
+<div class="wrap"><div class="fig"><svg width="90" height="90" viewBox="0 0 90 90"><rect x="1" y="1" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="12.0" y="16.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">16</text><rect x="23" y="1" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="34.0" y="16.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">3</text><rect x="45" y="1" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="56.0" y="16.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">2</text><rect x="67" y="1" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="78.0" y="16.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">13</text><rect x="1" y="23" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="12.0" y="38.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">5</text><rect x="23" y="23" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="34.0" y="38.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">10</text><rect x="45" y="23" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="56.0" y="38.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">11</text><rect x="67" y="23" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="78.0" y="38.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">8</text><rect x="1" y="45" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="12.0" y="60.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">9</text><rect x="23" y="45" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="34.0" y="60.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">6</text><rect x="45" y="45" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="56.0" y="60.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">7</text><rect x="67" y="45" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="78.0" y="60.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">12</text><rect x="1" y="67" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="12.0" y="82.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">4</text><rect x="23" y="67" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="34.0" y="82.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">15</text><rect x="45" y="67" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="56.0" y="82.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">14</text><rect x="67" y="67" width="22" height="22" fill="#fffdf7" stroke="#b9b0a0" stroke-width="1"/><text x="78.0" y="82.5" text-anchor="middle" font-size="11" font-weight="600" fill="#2a2724">1</text></svg><div class="small" style="text-align:center;width:94px">뒤러의 마방진</div></div><div class="txt">
+<p>1 ~ 16 의 합은 136이므로 한 줄의 합은 <b>136 ÷ 4 ＝ 34</b> 입니다. 이 마방진에서는 34가 여러 곳에서 나타납니다.</p>
+<ul class="li">
+<li>가로 · 세로 · 대각선 : 모두 <b>34</b></li>
+<li><b>네 모서리</b> 16＋13＋4＋1 ＝ <b>34</b> , <b>가운데 네 칸</b> 10＋11＋6＋7 ＝ <b>34</b></li>
+</ul>
+<p class="small">4 × 4 는 가운데 칸이 없어 “가운데 ＝ 5” 같은 성질이 없습니다.
+크기가 바뀌면 <b>성질도 다시 따져야</b> 합니다.</p>
+</div></div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“1 ~ 9 마방진에서 <b>가운데 칸이 반드시 5</b> 인 이유를 설명하시오.”<br>
+  <span class="small">→ “가운데를 지나는 줄은 가로·세로·대각선 두 개로 <u>모두 4줄</u> 이고
+  각 줄의 합이 15이므로 <u>네 줄의 합은 60</u> 입니다. 이 네 줄에는 1부터 9까지가 한 번씩 들어가 <u>45</u> 이고
+  <u>가운데 칸만 4번 세어져</u> 3번 더 더해진 것이므로
+  45 ＋ 3 × (가운데) ＝ 60, 곧 <u>가운데 ＝ 5</u> 입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>4-1 ~ 4-5</b> &nbsp;·&nbsp; 4-1은 <b>한 줄의 합 구하기</b>, 4-2는 <b>두 칸 찬 줄부터 채우기</b>,
+4-3은 <b>모서리·변 가운데의 성질</b>, 4-4는 <b>수의 범위를 바꾼 마방진</b>,
+4-5는 <b>가운데가 5인 이유</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 9 / 14</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 5</span><h1>거꾸로 생각하기 — 결과에서 처음으로<small>앞에서부터 넣어 보지 말고, <b>결과에서 되감는다.</b> 한 번에 끝난다</small></h1><div class="tag">1단계 · A 수와 연산<br>10 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>어떤 수에 <b>3을 곱하고</b>, 그다음 <b>7을 더했더니 34</b> 가 되었습니다. 처음 수는 무엇일까요?</p>
+  <p><b>잠깐!</b> “1을 넣어 볼까? 아니네. 2를 넣어 볼까?” 하면 오래 걸립니다.
+  <b>34에서 되돌아가면</b> 계산 두 번으로 끝납니다.</p>
+</div>
+
+<h2><span class="n">1</span>되돌아갈 때는 반대 연산을 한다</h2>
+<div class="wrap"><div class="txt">
+<table>
+<tr><th style="width:40%">앞으로 갈 때</th><th style="width:12%"></th><th>거꾸로 갈 때</th></tr>
+<tr><td class="m">＋ 7 (더하기)</td><td>→</td><td class="m l"><b>− 7</b> (빼기)</td></tr>
+<tr><td class="m">− 5 (빼기)</td><td>→</td><td class="m l"><b>＋ 5</b> (더하기)</td></tr>
+<tr><td class="m">× 3 (곱하기)</td><td>→</td><td class="m l"><b>÷ 3</b> (나누기)</td></tr>
+<tr><td class="m">÷ 4 (나누기)</td><td>→</td><td class="m l"><b>× 4</b> (곱하기)</td></tr>
+</table>
+</div></div>
+<div style="text-align:center;margin:4px 0"><svg width="330" height="86" viewBox="0 0 330 86">
+<text x="10" y="20" font-size="9.5" font-weight="800" fill="#1d4ed8">앞으로</text>
+<rect x="62" y="8" width="52" height="20" rx="4" fill="#e6edfc" stroke="#1d4ed8"/>
+<text x="88" y="22" text-anchor="middle" font-size="10" font-weight="700">처음 수</text>
+<path d="M118 18 H 168" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#ah)"/>
+<text x="143" y="13" text-anchor="middle" font-size="9" fill="#1d4ed8">× 3</text>
+<path d="M180 18 H 230" stroke="#1d4ed8" stroke-width="1.4" marker-end="url(#ah)"/>
+<text x="205" y="13" text-anchor="middle" font-size="9" fill="#1d4ed8">＋ 7</text>
+<rect x="240" y="8" width="42" height="20" rx="4" fill="#1d4ed8"/>
+<text x="261" y="22" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">34</text>
+
+<text x="10" y="62" font-size="9.5" font-weight="800" fill="#be123c">거꾸로</text>
+<rect x="62" y="50" width="52" height="20" rx="4" fill="#be123c"/>
+<text x="88" y="64" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">9</text>
+<path d="M168 60 H 118" stroke="#be123c" stroke-width="1.4" marker-end="url(#ar)"/>
+<text x="143" y="80" text-anchor="middle" font-size="9" fill="#be123c">÷ 3</text>
+<path d="M230 60 H 180" stroke="#be123c" stroke-width="1.4" marker-end="url(#ar)"/>
+<text x="205" y="80" text-anchor="middle" font-size="9" fill="#be123c">− 7</text>
+<rect x="240" y="50" width="42" height="20" rx="4" fill="#fce8ed" stroke="#be123c"/>
+<text x="261" y="64" text-anchor="middle" font-size="10.5" font-weight="800">34</text>
+<defs>
+<marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+<path d="M0 0 L6 3 L0 6 z" fill="#1d4ed8"/></marker>
+<marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+<path d="M0 0 L6 3 L0 6 z" fill="#be123c"/></marker>
+</defs></svg></div>
+<div class="sol">   34 − 7 ＝ 27
+   27 ÷ 3 ＝ <b>9</b>
+
+[검산]  9 × 3 ＝ 27,  27 ＋ 7 ＝ <b>34</b>  ○</div>
+
+<div class="warn"><b>가장 흔한 실수!</b> <b>순서까지 거꾸로</b> 해야 합니다.
+앞으로 갈 때 「× 3 → ＋ 7」이었다면 거꾸로는 「− 7 → ÷ 3」입니다.
+순서를 지키지 않고 「÷ 3 → − 7」로 하면 34 ÷ 3 이 되어 <b>나누어떨어지지도 않습니다.</b>
+나누어떨어지지 않는다는 것 자체가 <b>순서를 틀렸다는 신호</b>입니다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">거꾸로 풀기 (역연산)</span></div>
+  <p><b>① 한 일을 순서대로 적는다</b> → <b>② 화살표를 거꾸로 돌린다</b>
+  → <b>③ 각 연산을 반대로 바꾼다</b> → <b>④ 결과부터 계산하고, 앞으로 다시 가서 검산한다.</b></p>
+</div>
+
+<h3>한 단계 더 — 세 번 되감기</h3>
+<div class="sol">“어떤 수에서 <b>8을 뺀 뒤 4로 나누고 3을 더했더니 10</b> 이 되었다.”
+
+ 앞으로 : − 8  →  ÷ 4  →  ＋ 3  →  10
+ 거꾸로 : <b>− 3  →  × 4  →  ＋ 8</b>
+
+   10 − 3 = 7 ,  7 × 4 = 28 ,  28 ＋ 8 = <b>36</b>
+[검산] 36 − 8 = 28, 28 ÷ 4 = 7, 7 ＋ 3 = <b>10</b> ○</div>
+
+<h2><span class="n">2</span>어디에 쓰이는가</h2>
+<div class="row"><div class="col">
+<ul class="li">
+<li><b>사탕 문제</b> — “매일 절반을 먹고 <b>1개 더</b> 먹었더니 3일 만에 2개 남았다. 처음에는?”</li>
+<li><b>시각 문제</b> — “지금이 3시인데 <b>5시간 전</b>은?”</li>
+<li><b>이동 문제</b> — “동쪽 3칸, 북쪽 2칸 갔더니 여기다. 출발점은?”</li>
+<li><b>저울 문제</b> — “똑같이 나누고 하나를 덜어 냈더니 ⋯”</li>
+</ul>
+</div><div class="col">
+<div class="sol"><b>시각 되감기</b>
+ 3시 − 5시간 → 0시를 지나 되돌아간다
+ 3 − 5 = −2 → 12를 더해 <b>10시</b>
+
+<b>이동 되감기</b>
+ 앞으로 : 동 3 → 북 2
+ 거꾸로 : 남 2 → 서 3</div>
+</div></div>
+<p class="small">시계처럼 <b>12에서 다시 0으로 돌아가는 것</b>을 되감을 때는 <b>한 바퀴(12)를 더해</b> 줍니다.
+이 생각이 중학교의 <b>나머지(mod)</b> 로 이어집니다.</p>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 10 / 14</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 5</span><h1>거꾸로 생각하기 — 순서가 답을 바꾼다<small>＋ 와 × 는 <b>자리를 바꾸면 다른 계산</b>이 된다. 그 사실이 이 주제의 전부다</small></h1><div class="tag">1단계 · A 수와 연산<br>11 / 14 쪽</div></div>
+
+<h2><span class="n">3</span>사탕 문제를 되감아 보자</h2>
+<p>“매일 <b>절반을 먹고 1개를 더</b> 먹었더니 <b>3일 만에 2개</b>가 남았다. 처음 사탕은 몇 개였을까?”</p>
+<div class="sol">앞으로 : (절반) → (1개 빼기)   ⇒  거꾸로 : (<b>1개 더하기</b>) → (<b>2배</b>)
+
+  3일째 끝  :  2개
+  3일째 시작 : (2 ＋ 1) × 2 ＝  6개
+  2일째 시작 : (6 ＋ 1) × 2 ＝ 14개
+  1일째 시작 : (14 ＋ 1) × 2 ＝ <b>30개</b>
+
+[검산] 30 → 15 → 14 → 7 → 6 → 3 → <b>2</b>  ○</div>
+<p class="small">앞으로 갈 때 <b>마지막에 한 일</b>이 거꾸로 갈 때 <b>맨 처음</b>에 풀립니다.</p>
+
+<h2><span class="n">4</span>순서를 바꾸면 왜 답이 달라지는가</h2>
+<div class="row"><div class="col">
+<div class="sol">처음 수를 <b>5</b> 라 하자.
+ × 3 하고 ＋ 7  →  15 ＋ 7 ＝ <b>22</b>
+ ＋ 7 하고 × 3  →  12 × 3 ＝ <b>36</b></div>
+</div><div class="col">
+<p><b>36 − 22 ＝ 14 ＝ 7 × 2.</b> 나중에 더한 7은 <b>그대로 7</b> 이지만,
+먼저 더한 7은 <b>×3 을 함께 맞아 21</b> 이 되기 때문입니다.</p>
+</div></div>
+<div class="note"><b>＋ 와 × 는 자리를 바꿀 수 없습니다.</b>
+＋ 끼리(3＋5 ＝ 5＋3)나 × 끼리(2×7 ＝ 7×2)는 순서를 바꿔도 되지만,
+<b>＋ 와 × 가 섞이면</b> 순서가 답을 바꿉니다. 그래서 거꾸로 갈 때도 <b>순서를 반드시 뒤집어야</b> 합니다.</div>
+
+<h2><span class="n">5</span>한 번 더 — 세 사람이 나눠 가진 문제</h2>
+<p>“구슬을 형이 <b>절반</b> 가져가고, 동생이 <b>남은 것의 절반</b>을 가져가고,
+막내가 <b>남은 것의 절반보다 1개 적게</b> 가져갔더니 <b>3개</b>가 남았다. 처음 구슬은?”</p>
+<div class="sol">막내 앞 : 남은 것의 절반보다 1개 적게 가져가 3개 남음
+   → 가져간 뒤 남은 3개는 (절반 ＋ 1) 이므로 절반 ＝ 2 → 막내 앞에는 <b>4개</b>
+동생 앞 : 절반을 가져가 4개 남음 → <b>8개</b>
+형 앞   : 절반을 가져가 8개 남음 → <b>16개</b>
+
+[검산] 16 →(형 8) 8 →(동생 4) 4 →(막내 1개) 3  ○</div>
+<p class="small">복잡해 보여도 <b>마지막 줄부터 한 단계씩</b> 되감으면 계산은 뺄셈과 곱셈뿐입니다.
+문제를 다 읽고 <b>한 일을 순서대로 적는 것</b>이 절반입니다.</p>
+
+<h2><span class="n">6</span>거꾸로 풀기가 통하지 않을 때</h2>
+<p>모든 연산에 되돌리는 짝이 있는 것은 아닙니다.</p>
+<table>
+<tr><th style="width:34%">한 일</th><th style="width:22%">되돌릴 수 있나</th><th>이유</th></tr>
+<tr><td class="l">＋, −, ×, ÷</td><td class="m">○</td><td class="l">짝이 되는 반대 연산이 있다</td></tr>
+<tr><td class="l">“버림 · 반올림”</td><td class="m">△</td><td class="l">원래 수가 <b>여러 개</b>일 수 있다 (범위로만 답함)</td></tr>
+<tr><td class="l">“0을 곱함”</td><td class="m">×</td><td class="l">무엇을 곱해도 0 — 되돌릴 수 없다</td></tr>
+</table>
+<p class="small">그래서 거꾸로 풀고 나면 <b>반드시 검산</b>합니다. 답이 하나로 되돌아오는지 확인하는 것까지가 풀이입니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“연산의 <b>순서를 바꾸면 답이 달라지는 까닭</b>을 예를 들어 설명하시오.”<br>
+  <span class="small">→ “처음 수 5에 대해 ×3 뒤 ＋7 은 22, ＋7 뒤 ×3 은 36으로 <u>답이 다릅니다.</u>
+  먼저 더한 7은 <u>뒤의 ×3 을 함께 받아 21이 되지만</u>, 나중에 더한 7은 <u>그대로 7</u> 이기 때문입니다.
+  이처럼 ＋ 와 × 가 섞이면 순서가 결과를 바꾸므로, 거꾸로 풀 때도 <u>연산뿐 아니라 순서까지 뒤집어야</u> 합니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>5-1 ~ 5-5</b> &nbsp;·&nbsp; 5-1은 <b>역연산 두세 번</b>, 5-2는 <b>사탕·시각 되감기</b>,
+5-3은 <b>중간 결과가 주어진 경우</b>, 5-4는 <b>순서를 바꾼 두 계산 비교</b>,
+5-5는 <b>왜 순서까지 뒤집어야 하는지</b> 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 11 / 14</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 6</span><h1>규칙적으로 더하기 — 짝을 지어 한 번에<small>1부터 100까지를 <b>순서대로 더하면 99번</b>, 짝을 지으면 <b>곱셈 한 번</b>이다</small></h1><div class="tag">1단계 · A 수와 연산<br>12 / 14 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>1 ＋ 2 ＋ 3 ＋ ⋯ ＋ 100</b> 을 <b>10초</b> 안에 구할 수 있을까요?</p>
+  <p><b>잠깐!</b> 앞에서부터 더하면 <b>99번</b>의 덧셈이 필요합니다.
+  그런데 <b>양 끝에서 하나씩 짝을 지으면</b> 합이 모두 같아집니다.</p>
+</div>
+
+<h2><span class="n">1</span>가우스의 짝짓기</h2>
+<div class="wrap"><div class="fig"><svg width="290" height="110" viewBox="0 0 290 110"><text x="18" y="14" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">1</text><text x="190" y="14" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">100</text><path d="M28 10 Q 95.0 -2 180 10" fill="none" stroke="#86b795" stroke-width="1.2"/><text x="245" y="14" text-anchor="middle" font-size="10.5" fill="#4a443c">= 101</text><text x="18" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">2</text><text x="190" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">99</text><path d="M28 30 Q 95.0 18 180 30" fill="none" stroke="#86b795" stroke-width="1.2"/><text x="245" y="34" text-anchor="middle" font-size="10.5" fill="#4a443c">= 101</text><text x="18" y="54" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">3</text><text x="190" y="54" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">98</text><path d="M28 50 Q 95.0 38 180 50" fill="none" stroke="#86b795" stroke-width="1.2"/><text x="245" y="54" text-anchor="middle" font-size="10.5" fill="#4a443c">= 101</text><text x="18" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">⋮</text><text x="190" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">⋮</text><path d="M28 70 Q 95.0 58 180 70" fill="none" stroke="#86b795" stroke-width="1.2"/><text x="245" y="74" text-anchor="middle" font-size="10.5" fill="#4a443c">= 101</text><text x="18" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">50</text><text x="190" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">51</text><path d="M28 90 Q 95.0 78 180 90" fill="none" stroke="#86b795" stroke-width="1.2"/><text x="245" y="94" text-anchor="middle" font-size="10.5" fill="#4a443c">= 101</text></svg></div><div class="txt">
+<p>맨 앞과 맨 뒤를 짝지으면 <b>1 ＋ 100 ＝ 101</b>.
+그다음도 <b>2 ＋ 99 ＝ 101</b>. 앞의 수가 1 커질 때 뒤의 수가 1 작아지므로
+<b>합은 언제나 101</b> 입니다.</p>
+<p>100개의 수로 짝을 지으면 <b>50쌍</b> 이 나옵니다.</p>
+<div class="sol">   101 × 50 ＝ <b>5050</b></div>
+<p class="small">이 계산을 초등학생이던 <b>가우스</b>가 몇 초 만에 해냈다는 이야기가 전해집니다.
+빨랐던 이유는 계산이 빨라서가 아니라 <b>구조를 본</b> 것입니다.</p>
+</div></div>
+
+<h2><span class="n">2</span>공식 하나로 정리하기</h2>
+<div class="sol">1 ＋ 2 ＋ ⋯ ＋ n  ＝  <b>n × (n ＋ 1) ÷ 2</b>
+
+  n ＝ 10  →  10 × 11 ÷ 2 ＝ <b>55</b>
+  n ＝ 100 → 100 × 101 ÷ 2 ＝ <b>5050</b>
+  n ＝ 6   →   6 × 7 ÷ 2 ＝ <b>21</b>   (1+2+3+4+5+6 ＝ 21 ○)</div>
+<p><b>왜 2로 나누는가.</b> 1부터 n까지를 <b>두 번</b> 쓰되 한 줄은 거꾸로 놓아 위아래로 더하면
+모든 짝의 합이 <b>n ＋ 1</b> 이 되어 <b>n개</b>가 생깁니다. 그것은 <b>원래 합의 두 배</b> 이므로 2로 나눕니다.</p>
+<div class="sol">    1 ＋  2 ＋  3 ＋ ⋯ ＋ n
+ ＋  n ＋ (n−1) ＋ (n−2) ＋ ⋯ ＋ 1
+ ─────────────────────────────
+  (n＋1) ＋ (n＋1) ＋ ⋯ ＋ (n＋1)   ← <b>n개</b>  ＝ n × (n＋1)   ⇒ 합의 두 배</div>
+
+<h2><span class="n">3</span>짝수 · 홀수 · 배수의 합</h2>
+<table>
+<tr><th style="width:34%">더하는 것</th><th style="width:30%">방법</th><th>보기</th></tr>
+<tr><td class="l"><b>홀수</b> 1＋3＋⋯＋19</td><td class="l">개수를 제곱</td><td class="l">10개 → <b>10 × 10 ＝ 100</b></td></tr>
+<tr><td class="l"><b>짝수</b> 2＋4＋⋯＋100</td><td class="l">2로 묶어 낸다</td><td class="l">2 × (1＋⋯＋50) ＝ 2 × 1275 ＝ <b>2550</b></td></tr>
+<tr><td class="l"><b>3의 배수</b> 3＋6＋⋯＋99</td><td class="l">3으로 묶어 낸다</td><td class="l">3 × (1＋⋯＋33) ＝ 3 × 561 ＝ <b>1683</b></td></tr>
+</table>
+<div class="wrap"><div class="fig"><svg width="196" height="112" viewBox="0 0 196 112"><rect x="6" y="6" width="23" height="23" fill="#bfe3c8" stroke="#fffdf7" stroke-width="1.5"/><rect x="30" y="6" width="23" height="23" fill="#8fcda2" stroke="#fffdf7" stroke-width="1.5"/><rect x="54" y="6" width="23" height="23" fill="#5fb37d" stroke="#fffdf7" stroke-width="1.5"/><rect x="78" y="6" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="6" y="30" width="23" height="23" fill="#8fcda2" stroke="#fffdf7" stroke-width="1.5"/><rect x="30" y="30" width="23" height="23" fill="#8fcda2" stroke="#fffdf7" stroke-width="1.5"/><rect x="54" y="30" width="23" height="23" fill="#5fb37d" stroke="#fffdf7" stroke-width="1.5"/><rect x="78" y="30" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="6" y="54" width="23" height="23" fill="#5fb37d" stroke="#fffdf7" stroke-width="1.5"/><rect x="30" y="54" width="23" height="23" fill="#5fb37d" stroke="#fffdf7" stroke-width="1.5"/><rect x="54" y="54" width="23" height="23" fill="#5fb37d" stroke="#fffdf7" stroke-width="1.5"/><rect x="78" y="54" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="6" y="78" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="30" y="78" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="54" y="78" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><rect x="78" y="78" width="23" height="23" fill="#2f8f57" stroke="#fffdf7" stroke-width="1.5"/><text x="110" y="24" font-size="9.5" fill="#15803d" font-weight="700">1개</text><text x="110" y="48" font-size="9.5" fill="#15803d" font-weight="700">＋3개</text><text x="110" y="72" font-size="9.5" fill="#15803d" font-weight="700">＋5개</text><text x="110" y="96" font-size="9.5" fill="#15803d" font-weight="700">＋7개 ＝ 4×4</text></svg></div><div class="txt">
+<p><b>홀수의 합이 제곱이 되는 까닭</b>을 그림으로 보면 분명합니다.
+1개짜리 정사각형에 <b>ㄱ자 테두리</b>로 3개를 붙이면 2 × 2,
+거기에 5개를 붙이면 3 × 3, 7개를 붙이면 4 × 4 가 됩니다.</p>
+<div class="sol">1 ＋ 3 ＝ 2×2 ＝ 4
+1 ＋ 3 ＋ 5 ＝ 3×3 ＝ 9
+1 ＋ 3 ＋ 5 ＋ 7 ＝ 4×4 ＝ <b>16</b></div>
+<p class="small">한 겹 늘 때마다 <b>가로 한 줄 ＋ 세로 한 줄 ＋ 모서리 한 칸</b> 이 붙으므로
+붙는 개수는 언제나 <b>홀수</b>입니다.</p>
+</div></div>
+
+<div class="note"><b>짝짓기가 통하는 조건.</b> 수들이 <b>일정한 간격으로</b> 늘어날 때만 통합니다.
+1, 2, 3, ⋯ 은 간격 1, 2, 4, 6, ⋯ 은 간격 2로 일정하므로 양 끝의 합이 언제나 같습니다.
+1, 2, 4, 8 처럼 <b>간격이 일정하지 않으면</b> 이 방법을 쓸 수 없습니다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">짝짓기 · (처음＋끝) × 개수 ÷ 2</span></div>
+  <p><b>① 처음 수와 끝 수를 확인한다</b> → <b>② 몇 개인지 센다</b>
+  → <b>③ (처음 ＋ 끝) × 개수 ÷ 2</b> → <b>④ 작은 경우로 공식을 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 12 / 14</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 6</span><h1>규칙적으로 더하기 — 개수 세기가 진짜 함정<small>공식은 쉽다. 틀리는 곳은 언제나 <b>몇 개인가</b>이다</small></h1><div class="tag">1단계 · A 수와 연산<br>13 / 14 쪽</div></div>
+
+<h2><span class="n">4</span>개수를 세는 공식</h2>
+<div class="sol">일정하게 커지는 수들의 <b>개수</b>
+
+     (끝 − 처음) ÷ 사이 간격 ＋ <b>1</b>
+
+  7, 11, 15, ⋯, 99  →  (99 − 7) ÷ 4 ＋ 1 ＝ 23 ＋ 1 ＝ <b>24개</b>
+  합 ＝ (7 ＋ 99) × 24 ÷ 2 ＝ 106 × 12 ＝ <b>1272</b></div>
+<div class="warn"><b>＋1 을 빠뜨리는 실수가 가장 많습니다.</b>
+5부터 8까지는 8 − 5 ＝ 3 이지만 수는 5, 6, 7, 8 로 <b>4개</b> 입니다.
+<b>손가락 사이의 수는 4개인데 손가락은 5개</b> 라고 기억하십시오.</div>
+
+<h2><span class="n">5</span>중간을 빼거나 더할 때</h2>
+<div class="row"><div class="col">
+<h3>일부만 더하기</h3>
+<div class="sol">51 ＋ 52 ＋ ⋯ ＋ 100
+ ＝ (1~100의 합) − (1~50의 합)
+ ＝ 5050 − 1275 ＝ <b>3775</b></div>
+<p class="small">또는 짝짓기로 — (51＋100) × 50 ÷ 2 ＝ 151 × 25 ＝ 3775. 두 방법의 답이 같은지 확인하십시오.</p>
+</div><div class="col">
+<h3>하나를 빠뜨렸을 때</h3>
+<div class="sol">1부터 100까지 더해야 하는데
+<b>어떤 수 하나를 빠뜨려</b> 4950이 되었다.
+
+  5050 − 4950 ＝ <b>100</b>
+  → 빠뜨린 수는 <b>100</b></div>
+<p class="small"><b>전체에서 빼는 방식</b>은 시험에 자주 나옵니다. 먼저 <b>제대로 된 합</b>을 구해 두는 것이 요령입니다.</p>
+</div></div>
+
+<h2><span class="n">6</span>쌓기 문제 — 같은 기술이 그림으로</h2>
+<p>“1층에 1개, 2층에 2개, ⋯ 10층까지 쌓으면 블록은 모두 몇 개?”</p>
+<div class="sol">1 ＋ 2 ＋ ⋯ ＋ 10 ＝ 10 × 11 ÷ 2 ＝ <b>55개</b></div>
+<p class="small">삼각형 모양으로 쌓은 것을 <b>똑같이 하나 더 만들어 뒤집어 붙이면</b> 가로 11 · 세로 10 의 직사각형이 됩니다.
+그래서 55는 <b>110의 절반</b> 입니다. 공식의 ÷ 2 가 그림에서 그대로 보입니다.</p>
+
+<h2><span class="n">7</span>한 번 더 — 조건이 붙은 합</h2>
+<p>“1부터 100까지의 수 중에서 <b>3의 배수를 뺀</b> 나머지 수들의 합은?”</p>
+<div class="sol">전체 합            : 5050
+3의 배수의 합      : 3 ＋ 6 ＋ ⋯ ＋ 99
+                    개수 (99 − 3) ÷ 3 ＋ 1 = <b>33개</b>
+                    합 (3 ＋ 99) × 33 ÷ 2 = 102 × 33 ÷ 2 = <b>1683</b>
+
+  5050 − 1683 = <b>3367</b></div>
+<p class="small"><b>빼야 할 것을 따로 구해 전체에서 뺀다</b> — 주제 2의 조건 걸기와 주제 6의 짝짓기가 함께 쓰인 문제입니다.
+A영역의 문항은 뒤로 갈수록 이렇게 <b>두 도구를 겹쳐</b> 씁니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“1부터 100까지의 합을 <b>10초 안에</b> 구하는 방법을 설명하시오.”<br>
+  <span class="small">→ “<u>양 끝에서부터 짝을 지으면</u> 1＋100, 2＋99, 3＋98 처럼
+  <u>모든 짝의 합이 101로 같아집니다.</u> 앞의 수가 1 커질 때 뒤의 수가 1 작아지기 때문입니다.
+  수가 100개이므로 <u>짝은 50쌍</u> 이고, 합은 <u>101 × 50 ＝ 5050</u> 입니다.”</span></div>
+</div>
+<p class="small">“짝의 합이 <b>왜</b> 같은가”와 “<b>몇 쌍</b>인가”를 함께 써야 만점입니다. 5050만 쓰면 부분 점수입니다.</p>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>6-1 ~ 6-5</b> &nbsp;·&nbsp; 6-1은 <b>짝짓기로 합 구하기</b>, 6-2는 <b>개수 세기(＋1)</b>,
+6-3은 <b>짝수·홀수·배수의 합</b>, 6-4는 <b>전체에서 빼기</b>,
+6-5는 <b>짝짓기가 통하는 이유</b>를 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 13 / 14</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">총정리</span><h1>여섯 도구를 한 장으로<small>문제에 <b>어떤 말</b>이 나오면 <b>어떤 도구</b>를 꺼내는가</small></h1><div class="tag">1단계 · A 수와 연산<br>14 / 14 쪽</div></div>
+
+<h2><span class="n">1</span>신호와 도구</h2>
+<table>
+<tr><th style="width:36%">문제에 이런 말이 나오면</th><th style="width:20%">꺼낼 도구</th><th>첫 손동작</th></tr>
+<tr><td class="l">“모두 몇 가지”, “몇 개 만들 수 있나”</td><td class="m">수 세기(1)</td><td class="l">기준 하나 정해 <b>표·나뭇가지</b></td></tr>
+<tr><td class="l">“~이면서 ~인 수”, “조건을 만족하는”</td><td class="m">조건 걸기(2)</td><td class="l">가장 <b>센 조건</b>부터 걸기</td></tr>
+<tr><td class="l">글자로 된 세로셈, “같은 글자는 같은 수”</td><td class="m">복면산(3)</td><td class="l">맨 앞자리·일의 자리부터</td></tr>
+<tr><td class="l">“합이 모두 같게”, 격자에 수 채우기</td><td class="m">마방진(4)</td><td class="l"><b>한 줄의 합</b>부터 계산</td></tr>
+<tr><td class="l">“처음 수는”, “~하기 전에는”</td><td class="m">거꾸로(5)</td><td class="l">한 일을 <b>순서대로 적고 뒤집기</b></td></tr>
+<tr><td class="l">“1부터 ~까지의 합”, 규칙적으로 늘어남</td><td class="m">규칙 더하기(6)</td><td class="l">처음·끝·<b>개수</b> 확인</td></tr>
+</table>
+
+<h2><span class="n">2</span>가져갈 여섯 문장</h2>
+<div class="note">
+<p><b>① 수 세기 —</b> 셀 때 필요한 것은 기억력이 아니라 <b>순서</b>다.
+기준을 하나 정해 작은 것부터 줄을 세우면 빠뜨릴 수가 없다.</p>
+<p><b>② 조건 걸기 —</b> 조건은 <b>후보를 줄이는 그물</b>이다. 많이 줄이는 그물을 먼저 던진다.
+순서는 <b>속도만 바꾸고 답은 바꾸지 않는다.</b></p>
+<p><b>③ 복면산 —</b> <b>자리올림은 0 아니면 1</b>. 세로셈을 가로식으로 옮기면
+값의 <b>범위</b>가 답을 하나로 확정해 준다.</p>
+<p><b>④ 마방진 —</b> 칸을 채우려 들지 말고 <b>한 줄의 합</b>부터 구한다.
+<b>겹치는 칸을 몇 번 세었는지</b>가 가운데 값을 알려 준다.</p>
+<p><b>⑤ 거꾸로 —</b> 연산만이 아니라 <b>순서까지</b> 뒤집는다.
+＋ 와 × 가 섞이면 자리를 바꿀 수 없기 때문이다.</p>
+<p><b>⑥ 규칙 더하기 —</b> 앞에서부터 더하지 말고 <b>짝을 짓는다</b>.
+공식은 쉽고, 틀리는 곳은 언제나 <b>개수 세기</b>다.</p>
+</div>
+
+<h2><span class="n">3</span>틀렸을 때 어디를 다시 볼까</h2>
+<table>
+<tr><th style="width:38%">이런 실수를 했다면</th><th style="width:14%">돌아갈 곳</th><th>고칠 습관</th></tr>
+<tr><td class="l">빠뜨리거나 두 번 셌다 · 맨 앞에 0을 넣었다</td><td class="m">2 ~ 3쪽</td><td class="l">기준을 정해 <b>작은 것부터</b>, 센 자리부터</td></tr>
+<tr><td class="l">자리올림을 빠뜨렸다</td><td class="m">6 ~ 7쪽</td><td class="l">올림을 <b>0 또는 1</b> 로 적어 두고 계산</td></tr>
+<tr><td class="l">합 15·가운데 5를 그대로 썼다</td><td class="m">9쪽</td><td class="l">언제나 <b>전체 합 ÷ 줄 수</b> 부터</td></tr>
+<tr><td class="l">거꾸로 갈 때 순서를 안 뒤집었다</td><td class="m">11쪽</td><td class="l">화살표를 <b>그려서</b> 되감기</td></tr>
+<tr><td class="l">개수에서 ＋1 을 빠뜨렸다</td><td class="m">13쪽</td><td class="l">작은 경우로 <b>세어서 검산</b></td></tr>
+</table>
+
+<h2><span class="n">4</span>여섯 주제를 관통하는 한 줄</h2>
+<div class="note" style="border-left:4px solid #b45309">
+<p>여섯 주제가 한 일은 결국 하나였습니다.</p>
+<p style="margin-top:4px;font-size:10.5pt"><b>“하나씩 확인하지 않고, 구조를 보고 한 번에 처리하기.”</b></p>
+<p style="margin-top:4px">900개를 훑는 대신 조건으로 <b>300개로 줄이고</b>, 720가지를 넣어 보는 대신
+<b>식 하나로 답을 확정하고</b>, 99번의 덧셈 대신 <b>곱셈 한 번</b>으로 끝냈습니다.
+계산이 빨라서가 아니라 <b>구조를 먼저 본</b> 것입니다. B영역부터 E영역까지 그대로 이어지는 기술입니다.</p>
+</div>
+
+<h2><span class="n">5</span>스스로 확인하는 여섯 질문</h2>
+<div class="note">
+<p>문제지를 풀기 전에, 아래 여섯 가지를 <b>보지 않고 말할 수 있는지</b> 확인하십시오.</p>
+<ol class="li">
+<li>서로 다른 두 자리 수를 만들 때 <b>0을 어떻게 처리</b>하는가?</li>
+<li>3의 배수와 9의 배수는 <b>어떻게 판정</b>하는가?</li>
+<li>세 자리 두 수를 더해 네 자리가 되면 <b>맨 앞자리는 왜 1</b>인가?</li>
+<li>1 ~ 9 마방진에서 <b>한 줄의 합과 가운데 수</b>는 얼마이고 어떻게 구하는가?</li>
+<li>거꾸로 풀 때 <b>순서까지 뒤집어야 하는 까닭</b>은?</li>
+<li>7, 11, 15, ⋯, 99 는 <b>몇 개</b>이고 합은 얼마인가?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">다음으로</span>
+문제지 <b>A영역 30문항</b>을 주제 순서대로 풀되, 한 주제를 끝낼 때마다
+이 자료의 <b>서술형 답안 틀</b>로 돌아와 자신의 문장과 비교해 보십시오.
+답이 맞았는지보다 <b>근거를 썼는지</b>를 확인하는 것이 이 단계의 목표입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 1단계 A. 수와 연산 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 14 / 14</span></div>
+</div>
+</body>
+</html>
