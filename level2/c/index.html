@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>사고력수학 2단계 · C. 도형과 공간 — 이론 강의자료</title>
+<style>
+@page { size:A4; margin:0; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e4da;font-family:"Pretendard","Apple SD Gothic Neo","맑은 고딕",
+     "Malgun Gothic",sans-serif;color:#2a2724;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:210mm;height:297mm;padding:9mm 12mm 10mm;background:#fffdf7;
+      margin:0 auto 6mm;overflow:hidden;font-size:9.6pt;line-height:1.5}
+@media print{ body{background:#fff} .page{margin:0;box-shadow:none;page-break-after:always} }
+
+.page{--ac:#b45309;--bg:#fdf3e3}
+.t1{--ac:#b45309;--bg:#fdf2e0} .t2{--ac:#0f766e;--bg:#e6f2f0}
+.t3{--ac:#6d28d9;--bg:#efe9fb} .t4{--ac:#be123c;--bg:#fce8ed}
+.t5{--ac:#1d4ed8;--bg:#e6edfc} .t6{--ac:#15803d;--bg:#e7f3e9}
+
+.head{display:flex;align-items:flex-start;gap:8px;border-bottom:2.5px solid var(--ac);
+      padding-bottom:5px;margin-bottom:7px}
+.head .no{flex:none;background:var(--ac);color:#fff;font-weight:800;font-size:8.6pt;
+      padding:3px 8px;border-radius:3px;letter-spacing:.3px;margin-top:2px}
+.head h1{flex:1;font-size:15pt;font-weight:800;letter-spacing:-.4px;color:#1c1a17;line-height:1.25}
+.head h1 small{display:block;font-size:8.8pt;font-weight:600;color:#6b635a;margin-top:2px;letter-spacing:0}
+.head .tag{flex:none;text-align:right;font-size:7.8pt;color:#8a8177;line-height:1.35;margin-top:2px}
+
+h2{font-size:11pt;font-weight:800;color:var(--ac);margin:8px 0 4px;display:flex;
+   align-items:center;gap:6px;letter-spacing:-.3px}
+h2 .n{flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;
+      font-size:8.4pt;display:flex;align-items:center;justify-content:center;font-weight:800}
+h3{font-size:9.8pt;font-weight:700;color:#3d3830;margin:6px 0 3px}
+p{margin:2.5px 0}
+b{font-weight:700;color:#141210}
+.k{color:var(--ac);font-weight:800}
+.small{font-size:8.2pt;color:#6b635a;line-height:1.45}
+
+.open{background:var(--bg);border-left:4px solid var(--ac);padding:6px 9px;border-radius:0 4px 4px 0}
+.open .lb{font-size:8pt;font-weight:800;color:var(--ac);margin-bottom:2px}
+.strat{border:1.6px solid var(--ac);border-radius:5px;padding:6px 9px;margin:7px 0;background:#fffefb}
+.strat .lb{display:inline-block;background:var(--ac);color:#fff;font-size:7.6pt;font-weight:800;
+      padding:1.5px 6px;border-radius:3px;margin-right:6px}
+.strat .nm{font-weight:800;font-size:10pt;color:#1c1a17}
+.warn{background:#fdf0ee;border-left:4px solid #c2410c;padding:6px 9px;margin:6px 0;
+      border-radius:0 4px 4px 0;font-size:9.1pt}
+.note{background:#f6f3ea;border-radius:4px;padding:6px 9px;margin:6px 0}
+.sol{background:#f7f4ec;border:1px solid #e0d9c8;border-radius:4px;padding:6px 9px;margin:5px 0;
+     white-space:pre-wrap;font-family:"D2Coding","Consolas","Menlo",monospace;font-size:8.8pt;line-height:1.55}
+.write{border:1.4px dashed var(--ac);border-radius:5px;padding:6px 9px;margin:6px 0;background:#fffefb}
+.write .lb{font-size:7.8pt;font-weight:800;color:var(--ac);margin-bottom:3px}
+.frame{background:#fff;border:1px solid #e2dccf;border-radius:3px;padding:5px 7px;font-size:9.1pt}
+.link{background:#1c1a17;color:#f5f1e6;border-radius:5px;padding:6px 9px;margin:6px 0;font-size:8.8pt}
+.link .lb{font-weight:800;color:#ffd89b;margin-right:6px}
+.link b{color:#fff}
+
+ul.li{margin:3px 0 3px 15px} ul.li li{margin:1.5px 0}
+ol.li{margin:3px 0 3px 17px} ol.li li{margin:1.5px 0}
+
+table{width:100%;border-collapse:collapse;margin:5px 0;font-size:8.9pt}
+th,td{border:1px solid #d8d0be;padding:3px 5px;text-align:center}
+th{background:var(--bg);font-weight:700;color:#2a2724}
+td.l{text-align:left} td.m{font-weight:700}
+
+.wrap{display:flex;gap:10px;align-items:flex-start}
+.fig{flex:none} .txt{flex:1}
+.row{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.col{flex:1}
+.figs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:4px 0}
+.cap{font-size:8pt;color:#6b635a;text-align:center;margin-top:1px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:4mm;display:flex;justify-content:space-between;
+      border-top:1px solid #ded7c7;padding-top:3px;font-size:7.4pt;color:#9a9186}
+</style></head>
+<body>
+<div class="page t1">
+<div class="head"><span class="no">안내</span><h1>보이는 것에서 재는 것으로<small>1단계는 도형을 <b>세고 판정했다.</b> 2단계는 <b>각과 넓이를 계산하고 그 근거를 댄다</b></small></h1><div class="tag">2단계 · C 도형과 공간<br>이론 강의자료<br>전 12쪽</div></div>
+
+<div class="open">
+  <div class="lb">1단계와 무엇이 다른가</div>
+  <p>1단계에서는 <b>삼각형이 몇 개인가 · 접히는가 · 한 붓으로 그려지는가</b>를 물었습니다.
+  세거나 판정하는 문제였습니다.</p>
+  <p>2단계는 <b>얼마인가</b>를 묻습니다. 각은 몇 도이고 넓이는 얼마인가.
+  그런데 여기서도 <b>계산보다 쪼개고 옮기는 솜씨</b>가 앞섭니다.
+  <b>삼각형으로 쪼개고, 넓이를 옮기고, 전체에서 빼는 것</b> — 이 셋이 이 영역의 전부입니다.</p>
+</div>
+
+<h2><span class="n">1</span>다섯 주제가 하는 일</h2>
+<table>
+<tr><th style="width:7%">주제</th><th style="width:22%">이름</th><th style="width:32%">핵심 이론</th><th>손에 넣는 도구</th></tr>
+<tr><td class="m">35</td><td class="m">각의 성질</td><td class="l">삼각형 내각합, 외각, 다각형 내각합</td><td class="l"><b>삼각형으로 쪼개기</b> · 외각 활용</td></tr>
+<tr><td class="m">36</td><td class="m">넓이를 옮기기</td><td class="l">등적변형, 밑변·높이가 같은 삼각형</td><td class="l"><b>평행선 이용</b> · 꼭짓점 옮기기</td></tr>
+<tr><td class="m">37</td><td class="m">색칠된 부분의 넓이</td><td class="l">더하고 빼기, 부채꼴과 삼각형</td><td class="l"><b>전체 − 나머지</b> · 겹침 찾기</td></tr>
+<tr><td class="m">38</td><td class="m">겉넓이와 부피</td><td class="l">쌓기나무의 겉면, 잘라 낸 입체</td><td class="l"><b>면별로 세기</b> · 변하지 않는 것 찾기</td></tr>
+<tr><td class="m">39</td><td class="m">회전과 자취</td><td class="l">굴러간 자리, 지나간 영역</td><td class="l"><b>중심의 자취</b> · 원주와 거리</td></tr>
+</table>
+
+<h2><span class="n">2</span>세 가지 손동작이 전부다</h2>
+<div class="note">
+<ul class="li">
+<li><b>쪼갠다</b> — 복잡한 도형을 <b>아는 도형</b>으로 나눈다 (35, 37)</li>
+<li><b>옮긴다</b> — 넓이를 <b>바꾸지 않고</b> 모양만 고친다 (36, 38)</li>
+<li><b>뺀다</b> — <b>전체에서 필요 없는 부분</b>을 뺀다 (37, 39)</li>
+</ul>
+<p>공식을 외우는 것보다 <b>이 셋 중 무엇을 할지 고르는 일</b>이 중요합니다.</p>
+</div>
+
+<h2><span class="n">3</span>이 단계의 서술형은 무엇을 채점하는가</h2>
+<table>
+<tr><th style="width:24%">채점 항목</th><th style="width:38%">답안에 반드시 있어야 할 말</th><th>없으면</th></tr>
+<tr><td class="m">① 어떻게 쪼갰나</td><td class="l">“한 꼭짓점에서 대각선을 그어 <b>삼각형 3개</b>로”</td><td class="l">계산만 있는 답안이 됨</td></tr>
+<tr><td class="m">② 왜 같은가</td><td class="l">“<b>밑변과 높이가 같으므로</b> 넓이가 같다”</td><td class="l">가장 큰 배점을 놓침</td></tr>
+<tr><td class="m">③ 단위</td><td class="l">답에 <b>°, cm², cm³</b> 를 붙였는가</td><td class="l">답이 맞아도 감점</td></tr>
+</table>
+<div class="warn"><b>2단계 도형에서 가장 많이 잃는 점수.</b> <b>π 를 언제 계산하고 언제 남겨 둘지</b> 입니다.
+답이 <b>100 − 25π</b> 처럼 나오면 그대로 두는 편이 정확합니다.
+3.14를 곱하라는 지시가 없으면 <b>π 를 남긴 꼴</b>이 정답입니다. 문제의 마지막 줄을 확인하십시오.</div>
+
+<h2><span class="n">4</span>보조선 — 2단계 도형의 열쇠</h2>
+<div class="sol"><b>막혔을 때 그어 보는 선 네 가지</b>
+
+ ① <b>대각선</b>      — 다각형을 <b>삼각형</b>으로 쪼갠다        (주제 35)
+ ② <b>평행선</b>      — 엇각·동위각을 만들고 <b>높이를 옮긴다</b>  (주제 35 · 36)
+ ③ <b>수선(높이)</b>  — 삼각형·사다리꼴의 <b>높이</b>를 드러낸다   (주제 36)
+ ④ <b>중심을 잇는 선</b> — 원 문제에서 <b>반지름</b>을 만들어 낸다  (주제 37 · 39)</div>
+<p class="small"><b>그림에 없는 선을 스스로 긋는 것</b>이 1단계와 2단계를 가르는 손버릇입니다.
+문제의 그림은 <b>완성된 그림이 아니라 출발점</b>이라고 생각하십시오.</p>
+
+<h2><span class="n">5</span>진도 안내</h2>
+<table>
+<tr><th style="width:8%">주제</th><th style="width:18%">강의 자료</th><th style="width:16%">문제지</th><th style="width:20%">권장 시간</th><th>먼저 확인할 것</th></tr>
+<tr><td class="m">35</td><td>2 ~ 3쪽</td><td>35-1 ~ 35-5</td><td>강의 45분 · 문제 55분</td><td class="l">각도기·삼각형 내각합</td></tr>
+<tr><td class="m">36</td><td>4 ~ 5쪽</td><td>36-1 ~ 36-5</td><td>강의 45분 · 문제 55분</td><td class="l">삼각형 넓이 ＝ 밑변×높이÷2</td></tr>
+<tr><td class="m">37</td><td>6 ~ 7쪽</td><td>37-1 ~ 37-5</td><td>강의 50분 · 문제 60분</td><td class="l">원의 넓이 πr², 원주 2πr</td></tr>
+<tr><td class="m">38</td><td>8 ~ 9쪽</td><td>38-1 ~ 38-5</td><td>강의 45분 · 문제 55분</td><td class="l">1단계 C 주제 13(쌓기나무)</td></tr>
+<tr><td class="m">39</td><td>10 ~ 11쪽</td><td>39-1 ~ 39-5</td><td>강의 45분 · 문제 55분</td><td class="l">원주율과 호의 길이</td></tr>
+</table>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 1 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 35</span><h1>각의 성질 — 삼각형으로 쪼갠다<small>어떤 다각형이든 <b>삼각형으로 쪼개면</b> 각의 합이 곧바로 나온다</small></h1><div class="tag">2단계 · C 도형과 공간<br>2 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>육각형</b>의 내각의 합은 몇 도일까요? 그리고 <b>백각형</b>이라면?</p>
+  <p><b>잠깐!</b> 각도기로 잴 수 없습니다.
+  <b>삼각형 내각의 합이 180°</b> 라는 것 하나만 알면 어떤 다각형이든 계산으로 나옵니다.</p>
+</div>
+
+<h2><span class="n">1</span>한 꼭짓점에서 대각선을 긋는다</h2>
+<div class="figs">
+<div><div class="fig"><svg width="102" height="102" viewBox="0 0 102 102"><polygon points="51.0,9.0 90.9,38.0 75.7,85.0 26.3,85.0 11.1,38.0" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.6"/><line x1="51.0" y1="9.0" x2="75.7" y2="85.0" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 2"/><line x1="51.0" y1="9.0" x2="26.3" y2="85.0" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 2"/></svg></div><div class="cap">오각형 → 삼각형 3개</div></div>
+<div><div class="fig"><svg width="102" height="102" viewBox="0 0 102 102"><polygon points="51.0,9.0 87.4,30.0 87.4,72.0 51.0,93.0 14.6,72.0 14.6,30.0" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.6"/><line x1="51.0" y1="9.0" x2="87.4" y2="72.0" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 2"/><line x1="51.0" y1="9.0" x2="51.0" y2="93.0" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 2"/><line x1="51.0" y1="9.0" x2="14.6" y2="72.0" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="3 2"/></svg></div><div class="cap">육각형 → 삼각형 4개</div></div>
+<div style="flex:1;min-width:200px">
+<div class="sol">한 꼭짓점에서 대각선을 그으면
+ 오각형 → <b>3개</b> ,  육각형 → <b>4개</b>
+ <b>n각형 → (n − 2)개</b>
+
+ <b>내각의 합 ＝ 180° × (n − 2)</b>
+
+  오각형 : 180 × 3 ＝ <b>540°</b>
+  육각형 : 180 × 4 ＝ <b>720°</b>
+  백각형 : 180 × 98 ＝ <b>17640°</b></div>
+</div></div>
+<p><b>왜 (n−2)개인가.</b> 한 꼭짓점에서는 <b>자기 자신과 양옆 두 꼭짓점</b>에는 대각선을 그을 수 없습니다.
+남는 <b>n−3개</b>의 꼭짓점으로 대각선을 그으면 삼각형이 <b>n−2개</b> 생깁니다.
+<b>대각선 하나가 삼각형을 하나 늘린다</b>고 보아도 됩니다.</p>
+
+<h2><span class="n">2</span>외각의 합은 언제나 360°</h2>
+<div class="sol">한 꼭짓점에서 <b>내각 ＋ 외각 ＝ 180°</b> 이므로
+  (내각의 합) ＋ (외각의 합) ＝ 180° × n
+
+  외각의 합 ＝ 180n − 180(n−2) ＝ <b>360°</b>
+
+ → 몇 각형이든 <b>외각의 합은 360°</b> 로 변하지 않는다.</div>
+<div class="note"><b>왜 360°인가 — 걸어서 확인하기.</b> 다각형의 둘레를 따라 <b>한 바퀴 걸어</b> 보십시오.
+꼭짓점마다 <b>외각만큼</b> 몸을 돌리게 되고, 제자리로 돌아왔을 때 <b>정확히 한 바퀴(360°)</b> 를 돈 것입니다.
+변이 몇 개든 한 바퀴는 한 바퀴이므로 외각의 합은 언제나 360°입니다.</div>
+<table>
+<tr><th style="width:22%">정n각형</th><td class="m">정삼각형</td><td class="m">정사각형</td><td class="m">정오각형</td><td class="m">정육각형</td><td class="m">정팔각형</td></tr>
+<tr><th>한 외각</th><td class="m">120°</td><td class="m">90°</td><td class="m">72°</td><td class="m">60°</td><td class="m">45°</td></tr>
+<tr><th>한 내각</th><td class="m">60°</td><td class="m">90°</td><td class="m">108°</td><td class="m">120°</td><td class="m">135°</td></tr>
+</table>
+<p class="small" style="margin:0"><b>정다각형의 한 내각은 외각에서 구하는 편이 빠릅니다.</b>
+한 외각 ＝ 360 ÷ n, 한 내각 ＝ 180 − (한 외각). 180(n−2)÷n 을 계산하는 것보다 간단합니다.</p>
+
+<h3>가운데 한 점에서 쪼개는 방법도 있다</h3>
+<div class="sol">다각형 <b>안쪽의 한 점</b>에서 모든 꼭짓점으로 선을 그으면 삼각형이 <b>n개</b> 생긴다.
+
+  삼각형 n개의 각의 합 ＝ 180n
+  그런데 <b>가운데 점에 모인 각 360°</b> 는 내각이 아니므로 빼야 한다.
+
+    내각의 합 ＝ 180n − 360 ＝ <b>180(n − 2)</b>   ← 같은 답
+
+ <b>어느 쪽으로 쪼개도 답이 같다</b> — 옳게 쪼갰다는 증거다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">삼각형으로 쪼개기 · 외각으로 돌아가기</span></div>
+  <p><b>① 다각형이면 한 꼭짓점에서 대각선을 긋는다</b> → <b>② 삼각형 (n−2)개 × 180°</b>
+  → <b>③ 정다각형이면 외각 360÷n 부터 구한다</b> → <b>④ 작은 다각형(사각형)으로 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 2 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 35</span><h1>각의 성질 — 별 모양과 외각의 힘<small>복잡한 그림에서는 <b>외각</b>이 내각보다 강하다</small></h1><div class="tag">2단계 · C 도형과 공간<br>3 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>별 모양 다섯 각의 합</h2>
+<div class="wrap"><div class="fig"><svg width="108" height="108" viewBox="0 0 108 108"><polygon points="54.0,8.0 81.0,91.2 10.3,39.8 97.7,39.8 27.0,91.2" fill="#e6f2f0" stroke="#0f766e" stroke-width="1.6" fill-rule="evenodd"/><circle cx="54.0" cy="8.0" r="3" fill="#c2410c"/><circle cx="97.7" cy="39.8" r="3" fill="#c2410c"/><circle cx="81.0" cy="91.2" r="3" fill="#c2410c"/><circle cx="27.0" cy="91.2" r="3" fill="#c2410c"/><circle cx="10.3" cy="39.8" r="3" fill="#c2410c"/></svg><div class="cap">다섯 꼭짓점의 각</div></div><div class="txt">
+<p>오각별의 <b>뾰족한 다섯 각</b>을 모두 더하면 몇 도일까요? 놀랍게도 <b>모양에 상관없이 180°</b> 입니다.</p>
+<div class="sol"><b>방법 A · 삼각형의 외각으로</b>
+ 별의 뾰족한 각 하나를 삼각형의 한 각으로 보면,
+ <b>삼각형의 외각은 이웃하지 않은 두 내각의 합</b> 이므로
+ 다섯 각을 <b>안쪽 오각형의 둘레로 모을 수</b> 있다.
+ 결국 <b>삼각형 하나의 내각의 합 ＝ 180°</b> 로 모인다.
+
+<b>방법 B · 정오각별로 확인</b>
+ 정오각별이라면 한 각이 <b>36°</b> 이므로
+   36 × 5 ＝ <b>180°</b>  ○</div>
+</div></div>
+<p class="small"><b>“모양이 달라도 180°”</b> 입니다. 방법 B는 <b>확인</b>일 뿐이고
+<b>모든 별에 대한 근거</b>는 방법 A 입니다.</p>
+
+<h2><span class="n">4</span>삼각형의 외각 정리</h2>
+<div class="sol"><b>삼각형의 한 외각 ＝ 이웃하지 않은 두 내각의 합</b>
+ 세 내각을 ㉮ ㉯ ㉰ 라 하면 ㉮＋㉯＋㉰ ＝ 180° 이므로  ㉰의 외각 ＝ 180°−㉰ ＝ <b>㉮＋㉯</b>
+ [쓰임] 각을 하나씩 구하지 않고 <b>두 각을 한 번에</b> 다룰 수 있다.</div>
+<p class="small"><b>복잡한 각도 문제에서 가장 강력한 도구</b>입니다 — 내각을 하나씩 쫓으면 길을 잃지만,
+외각 정리는 <b>두 각을 한 덩어리로</b> 옮겨 줍니다.</p>
+
+<h2><span class="n">5</span>평행선에서 나오는 각</h2>
+<table>
+<tr><th style="width:24%">이름</th><th style="width:30%">어디에 있나</th><th>성질</th></tr>
+<tr><td class="m">맞꼭지각</td><td class="l">두 직선이 만난 자리의 <b>마주 보는 각</b></td><td class="l">언제나 <b>같다</b></td></tr>
+<tr><td class="m">동위각</td><td class="l">평행선에서 <b>같은 위치</b></td><td class="l">평행이면 <b>같다</b></td></tr>
+<tr><td class="m">엇각</td><td class="l">평행선 <b>안쪽에서 엇갈린 위치</b></td><td class="l">평행이면 <b>같다</b></td></tr>
+</table>
+<div class="warn"><b>평행선이 없으면 동위각·엇각은 같지 않습니다.</b>
+그림에 <b>평행 표시(≫)</b> 가 있는지 반드시 확인하십시오.
+평행선이 보이지 않으면 <b>보조선으로 평행선을 하나 그어</b> 만들어 내는 것이 요령입니다.</div>
+
+<h2><span class="n">6</span>각도 문제를 푸는 순서</h2>
+<div class="sol"><b>① 아는 각부터 그림에 적는다</b> — 머릿속에 두지 말고 <b>숫자를 써 넣는다.</b>
+<b>② 삼각형을 찾는다</b> — 세 각 중 둘을 알면 나머지가 나온다.
+<b>③ 직선(180°)과 한 바퀴(360°)를 쓴다</b> — 한 점에 모인 각의 합.
+<b>④ 평행선이 있으면 엇각·동위각으로 각을 옮긴다.</b>
+
+ 예 : 두 내각이 40°, 75° 인 삼각형 → 나머지 각 <b>65°</b>
+     그 65°의 외각 ＝ 180 − 65 ＝ <b>115°</b> ＝ 40 ＋ 75  ○</div>
+<p class="small"><b>구한 각을 그림에 적어 나가는 것</b>이 전부입니다.
+적어 놓은 각이 늘어날수록 새로 구할 수 있는 각도 늘어납니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“별 모양 다섯 각의 합이 <b>180°</b> 인 이유를 설명하시오.”<br>
+  <span class="small">→ “별의 뾰족한 각들을 <u>삼각형의 외각 정리</u>로 옮깁니다.
+  <u>삼각형의 한 외각은 이웃하지 않은 두 내각의 합</u>이므로,
+  별의 두 꼭짓점 각을 <u>안쪽 삼각형의 한 외각으로 모을</u> 수 있습니다.
+  이렇게 다섯 각을 차례로 모으면 결국 <u>삼각형 하나의 세 내각</u>이 되므로 합이 <u>180°</u> 입니다.
+  정오각별로 확인하면 한 각이 36°이고 <u>36 × 5 ＝ 180°</u> 로 맞습니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>35-1 ~ 35-5</b> &nbsp;·&nbsp; 35-1은 <b>다각형 내각의 합</b>, 35-2는 <b>외각의 합 360°</b>,
+35-3은 <b>정다각형의 한 각</b>, 35-4는 <b>외각 정리로 각 구하기</b>,
+35-5는 <b>별 다섯 각의 합</b>을 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 3 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 36</span><h1>넓이를 옮기기 — 모양은 바뀌어도 넓이는 그대로<small>꼭짓점을 <b>평행선 위에서 미끄러뜨리면</b> 넓이가 변하지 않는다</small></h1><div class="tag">2단계 · C 도형과 공간<br>4 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div style="text-align:center;margin:3px 0"><svg width="210" height="96" viewBox="0 0 210 96"><line x1="6" y1="18" x2="204" y2="18" stroke="#b9b0a0" stroke-width="1" stroke-dasharray="4 3"/><line x1="6" y1="82" x2="204" y2="82" stroke="#b9b0a0" stroke-width="1" stroke-dasharray="4 3"/><line x1="40" y1="82" x2="110" y2="82" stroke="#15803d" stroke-width="2.4"/><polygon points="40,82 110,82 45,18" fill="#cfe8d6" opacity="0.75" stroke="#15803d" stroke-width="1.4"/><polygon points="40,82 110,82 110,18" fill="#a9d6b8" opacity="0.75" stroke="#15803d" stroke-width="1.4"/><polygon points="40,82 110,82 185,18" fill="#7fc199" opacity="0.75" stroke="#15803d" stroke-width="1.4"/><text x="105.0" y="94" text-anchor="middle" font-size="8" fill="#6b635a">밑변이 같고 높이가 같으면 넓이도 같다</text></svg></div>
+  <p>세 삼각형은 <b>모양이 전혀 다른데</b> 넓이가 모두 같습니다. 왜 그럴까요?</p>
+  <p><b>잠깐!</b> 삼각형의 넓이는 <b>밑변 × 높이 ÷ 2</b> 입니다.
+  <b>밑변이 같고 높이도 같으면</b> 모양이 아무리 달라도 넓이는 같습니다.</p>
+</div>
+
+<h2><span class="n">1</span>등적변형 — 넓이를 지키며 모양 바꾸기</h2>
+<div class="sol"><b>꼭짓점을 밑변과 평행한 직선 위에서 옮기면</b> 밑변도 높이도 그대로이므로
+넓이가 변하지 않는다.  (넓이 ＝ 밑변 × 높이 ÷ 2)
+ 이렇게 <b>넓이를 유지하며 모양을 바꾸는 것</b>을 <b>등적변형</b>이라 한다.</div>
+<div class="note"><b>무엇에 쓰는가.</b> <b>계산하기 어려운 도형을 쉬운 도형으로</b> 바꿉니다.
+찌그러진 사각형은 꼭짓점을 평행선을 따라 옮겨 <b>삼각형이나 직사각형</b>으로 만들어 버립니다.</div>
+
+<h2><span class="n">2</span>밑변을 나누면 넓이도 그 비로 나뉜다</h2>
+<div class="sol">삼각형에서 밑변 위의 한 점으로 꼭짓점을 이으면
+두 삼각형이 생기는데, <b>높이가 같으므로</b>
+
+   넓이의 비 ＝ <b>밑변의 비</b>
+
+ 밑변을 <b>3 : 2</b> 로 나누면 넓이도 <b>3 : 2</b>
+ 밑변을 <b>절반</b>으로 나누면 넓이도 <b>절반</b> (중선은 넓이를 이등분한다)</div>
+<p class="small">서술형에서 <b>“두 삼각형은 높이가 같으므로”</b> 라는 한 마디가 배점의 절반입니다.</p>
+
+<h2><span class="n">3</span>사각형의 넓이도 삼각형으로</h2>
+<table>
+<tr><th style="width:26%">도형</th><th style="width:32%">넓이</th><th>왜</th></tr>
+<tr><td class="l">평행사변형</td><td class="m">밑변 × 높이</td><td class="l">삼각형 <b>두 개</b></td></tr>
+<tr><td class="l">사다리꼴</td><td class="m">(윗변＋아랫변) × 높이 ÷ 2</td><td class="l">뒤집어 붙이면 <b>평행사변형</b></td></tr>
+<tr><td class="l">마름모</td><td class="m">두 대각선의 곱 ÷ 2</td><td class="l">둘러싼 직사각형의 <b>절반</b></td></tr>
+</table>
+<p class="small"><b>공식을 외우지 말고 만들어 내는 길</b>을 하나씩 확보해 두십시오.</p>
+
+<h3>사다리꼴 공식을 만들어 보기</h3>
+<div class="sol">윗변 <b>a</b>, 아랫변 <b>b</b>, 높이 <b>h</b> 인 사다리꼴을 <b>하나 더 만들어 뒤집어 붙이면</b>
+
+  밑변 <b>a ＋ b</b>, 높이 <b>h</b> 인 <b>평행사변형</b>이 된다.
+  그 넓이는 (a ＋ b) × h 이고 사다리꼴 <b>두 개 분량</b>이므로
+
+    사다리꼴 ＝ <b>(a ＋ b) × h ÷ 2</b>
+
+ a ＝ 4, b ＝ 8, h ＝ 5 → (4 ＋ 8) × 5 ÷ 2 ＝ <b>30</b></div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">평행선을 긋고 꼭짓점 옮기기</span></div>
+  <p><b>① 밑변으로 삼을 변을 정한다</b> → <b>② 그 변과 평행한 선을 긋는다</b>
+  → <b>③ 꼭짓점을 평행선 위에서 옮겨 쉬운 모양으로</b> → <b>④ “밑변과 높이가 같다”를 답안에 쓴다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 4 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 36</span><h1>넓이를 옮기기 — 쓰임새<small>넓이가 같은 곳을 찾으면 <b>모르는 넓이를 아는 넓이로</b> 바꿀 수 있다</small></h1><div class="tag">2단계 · C 도형과 공간<br>5 / 12 쪽</div></div>
+
+<h2><span class="n">4</span>땅을 곧은 선으로 다시 나누기</h2>
+<div class="sol">두 집 사이의 경계가 <b>꺾인 선</b>으로 되어 있다.
+<b>넓이를 그대로 두고 곧은 선</b>으로 바꾸려면?
+
+ 꺾인 점을 <b>지나는 평행선</b>을 그어 꼭짓점을 옮기면
+ 잘려 나간 삼각형과 새로 생긴 삼각형의 <b>넓이가 같으므로</b>
+ 양쪽 땅의 넓이가 <b>변하지 않는다.</b></div>
+<p class="small">실제로 토지 정리에 쓰이는 방법입니다.
+<b>“어느 삼각형과 어느 삼각형의 넓이가 같은가”</b> 를 지목하는 것이 답안의 핵심입니다.</p>
+
+<h2><span class="n">5</span>대각선으로 나뉜 사각형</h2>
+<div class="sol">사각형 ABCD 에서 두 대각선이 점 O 에서 만난다.
+네 삼각형의 넓이를 각각 ㉮ ㉯ ㉰ ㉱ 라 하면
+
+   <b>㉮ × ㉰ ＝ ㉯ × ㉱</b>
+
+ <b>왜</b> — 마주 보는 두 삼각형은 <b>높이가 같은 삼각형들의 짝</b>이어서
+ 넓이의 비가 AO : OC 와 BO : OD 로 정해지기 때문이다.
+
+ [쓰임] 세 넓이를 알면 <b>나머지 하나</b>가 나온다.</div>
+
+<h2><span class="n">6</span>넓이가 같은 곳 찾기 연습</h2>
+<table>
+<tr><th style="width:40%">이런 그림에서</th><th>넓이가 같은 것</th></tr>
+<tr><td class="l">평행선 사이에 밑변이 같은 삼각형들</td><td class="l"><b>모두 같다</b></td></tr>
+<tr><td class="l">삼각형의 <b>중선</b>으로 나뉜 두 삼각형</td><td class="l"><b>절반씩</b> 같다</td></tr>
+<tr><td class="l">평행사변형을 대각선으로 나눈 두 삼각형</td><td class="l"><b>합동</b>이므로 같다</td></tr>
+<tr><td class="l">사다리꼴에서 대각선이 만든 <b>양옆</b> 두 삼각형</td><td class="l"><b>넓이가 같다</b></td></tr>
+</table>
+<p class="small" style="margin-top:0">마지막 줄이 자주 나옵니다. 사다리꼴 ABCD(AD ∥ BC)에서 대각선을 그으면
+<b>삼각형 ABD 와 ACD 는 밑변 AD 를 공유하고 높이가 같으므로</b> 넓이가 같고,
+공통 부분을 빼면 <b>양옆 두 삼각형의 넓이도 같습니다.</b></p>
+<div class="warn"><b>“같아 보인다”는 근거가 아닙니다.</b>
+반드시 <b>밑변이 무엇이고 높이가 왜 같은지</b> 를 말해야 합니다.
+<b>“밑변 AD 가 공통이고 AD ∥ BC 이므로 높이가 같다”</b> — 이 한 문장이 있어야 점수가 됩니다.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“모양이 다른 두 삼각형의 <b>넓이가 같은 까닭</b>을 설명하시오.”<br>
+  <span class="small">→ “두 삼각형은 <u>같은 변을 밑변으로</u> 하고 있습니다.
+  또 두 꼭짓점이 <u>그 밑변과 평행한 하나의 직선 위</u>에 있으므로
+  밑변에서 꼭짓점까지의 거리, 곧 <u>높이가 서로 같습니다.</u>
+  삼각형의 넓이는 <u>밑변 × 높이 ÷ 2</u> 인데 <u>밑변과 높이가 모두 같으므로</u>
+  모양이 달라도 <u>넓이는 같습니다.</u>”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>36-1 ~ 36-5</b> &nbsp;·&nbsp; 36-1은 <b>등적변형 알아보기</b>, 36-2는 <b>밑변의 비와 넓이의 비</b>,
+36-3은 <b>경계선 바꾸기</b>, 36-4는 <b>대각선으로 나뉜 사각형</b>,
+36-5는 <b>넓이가 같은 까닭</b>을 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 5 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 37</span><h1>색칠된 부분의 넓이 — 전체에서 뺀다<small>색칠된 모양을 직접 재려 하지 마라. <b>아는 도형끼리 더하고 빼면</b> 나온다</small></h1><div class="tag">2단계 · C 도형과 공간<br>6 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div class="wrap"><div class="fig"><svg width="100" height="100" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" fill="#be123c" opacity="0.28" stroke="#be123c" stroke-width="1.5"/><circle cx="50.0" cy="50.0" r="42.0" fill="#fffdf7" stroke="#be123c" stroke-width="1.5"/></svg><div class="cap">한 변 10cm</div></div><div class="txt">
+  <p>한 변이 <b>10cm</b> 인 정사각형 안에 <b>가장 큰 원</b>을 그렸습니다.
+  색칠된 <b>네 귀퉁이</b>의 넓이는 얼마일까요?</p>
+  <p><b>잠깐!</b> 귀퉁이 하나의 모양은 이름조차 없는 도형입니다.
+  그러나 <b>정사각형에서 원을 빼면</b> 한 번에 나옵니다.</p>
+  </div></div>
+</div>
+
+<h2><span class="n">1</span>전체 − 나머지</h2>
+<div class="sol">정사각형 넓이 ＝ 10 × 10 ＝ <b>100 cm²</b>
+원의 반지름 ＝ 5cm  →  원의 넓이 ＝ π × 5 × 5 ＝ <b>25π cm²</b>
+
+  색칠된 부분 ＝ 100 − 25π  ≈ 100 − 78.5 ＝ <b>약 21.5 cm²</b>
+
+ (귀퉁이 하나는 그 <b>4분의 1</b> ＝ 25 − 6.25π)</div>
+<div class="note"><b>π 를 언제 계산할까.</b> <b>100 − 25π</b> 가 이미 완전한 답입니다.
+문제에 <b>“π ＝ 3.14 로 계산하시오”</b> 라고 적혀 있을 때만 숫자로 바꾸십시오.
+미리 계산하면 <b>반올림 오차</b>가 쌓여 마지막 답이 틀어집니다.</div>
+
+<h2><span class="n">2</span>겹친 부분이 있을 때 — 두 번 센 것을 뺀다</h2>
+<div class="wrap"><div class="fig"><svg width="104" height="104" viewBox="0 0 104 104"><rect x="8" y="8" width="88" height="88" fill="#fce8ed" stroke="#be123c" stroke-width="1.5"/><path d="M8 96 A 88 88 0 0 0 96 8 A 88 88 0 0 0 8 96 Z" fill="#be123c" opacity="0.45" stroke="#be123c" stroke-width="1.3"/><path d="M8 8 A 88 88 0 0 1 96 96" fill="none" stroke="#be123c" stroke-width="1.1" stroke-dasharray="3 2"/></svg><div class="cap">사분원 두 개가 겹친 잎 모양</div></div><div class="txt">
+<div class="sol">한 변 <b>10cm</b> 정사각형에서 <b>마주 보는 두 꼭짓점</b>을 중심으로
+반지름 10cm 인 <b>사분원 두 개</b>를 그렸다. <b>겹친 잎 모양</b>의 넓이는?
+
+ 사분원 하나 ＝ π × 10 × 10 ÷ 4 ＝ <b>25π</b>
+ 둘을 더하면 ＝ <b>50π</b>
+ 그런데 이 값은 <b>정사각형을 덮고 겹친 부분을 두 번</b> 센 것이다.
+
+   50π ＝ 100 ＋ (겹친 부분)
+   겹친 부분 ＝ <b>50π − 100</b>  ≈ 157 − 100 ＝ <b>약 57 cm²</b></div>
+</div></div>
+<p class="small"><b>1단계 E영역의 “더한 뒤 겹친 만큼 빼기”</b> 가 넓이에서 그대로 쓰였습니다.
+겹침을 구할 때는 <b>“두 넓이의 합 − 전체 ＝ 겹친 부분”</b> 으로 뒤집어 생각하십시오.</p>
+
+<h2><span class="n">3</span>부채꼴 — 원의 일부</h2>
+<div class="sol">중심각이 <b>a°</b> 인 부채꼴은 원 전체의 <b>a / 360</b> 이다.
+
+  <b>넓이</b>     ＝ π r² × (a ÷ 360)
+  <b>호의 길이</b> ＝ 2π r × (a ÷ 360)
+
+ 반지름 6, 중심각 60° 라면
+   넓이 ＝ 36π × 1/6 ＝ <b>6π</b>       호 ＝ 12π × 1/6 ＝ <b>2π</b></div>
+<p class="small"><b>부채꼴의 “둘레”를 물으면 호만이 아니라 반지름 두 개를 더해야</b> 합니다.
+6 ＋ 6 ＋ 2π. <b>둘레인지 호의 길이인지</b> 문제를 다시 읽으십시오.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">아는 도형으로 쪼개고 · 더하고 빼기</span></div>
+  <p><b>① 아는 도형(사각형·삼각형·원·부채꼴)을 찾는다</b> → <b>② 색칠된 부분을 그것들의 덧셈·뺄셈으로 쓴다</b>
+  → <b>③ 두 번 센 부분이 없는지 확인한다</b> → <b>④ π 를 남긴 꼴로 답하고 단위를 붙인다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 6 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 37</span><h1>색칠된 부분의 넓이 — 옮겨서 간단하게<small>빼기가 복잡하면 <b>조각을 옮겨</b> 반듯한 모양으로 만들어 본다</small></h1><div class="tag">2단계 · C 도형과 공간<br>7 / 12 쪽</div></div>
+
+<h2><span class="n">4</span>조각을 옮기는 방법</h2>
+<div class="sol"><b>예 · 반지름 10 인 사분원에서 직각삼각형을 뺀 부분</b>
+
+  사분원 ＝ π × 100 ÷ 4 ＝ <b>25π</b>
+  직각삼각형 ＝ 10 × 10 ÷ 2 ＝ <b>50</b>
+    색칠된 부분 ＝ <b>25π − 50</b> ≈ 28.5
+
+<b>옮겨서 푸는 경우</b> — 색칠된 조각이 여기저기 흩어져 있으면
+<b>대칭인 자리로 옮겨 붙여</b> 부채꼴이나 사각형으로 만든다.
+넓이는 <b>옮겨도 변하지 않으므로</b>(주제 36) 안심하고 옮길 수 있다.</div>
+<p><b>주제 36의 등적변형이 여기서 힘을 발휘합니다.</b>
+직접 계산할 수 없는 조각도 <b>옮겨서 아는 모양</b>으로 만들면 계산이 됩니다.</p>
+
+<h2><span class="n">5</span>자주 나오는 조합</h2>
+<table>
+<tr><th style="width:36%">그림</th><th style="width:30%">색칠된 넓이</th><th>요령</th></tr>
+<tr><td class="l">정사각형(한 변 a) − 내접원</td><td class="m">a² − π(a/2)²</td><td class="l">반지름은 <b>a의 절반</b></td></tr>
+<tr><td class="l">원 − 내접 정사각형</td><td class="m">πr² − 2r²</td><td class="l">내접 정사각형 넓이 ＝ <b>2r²</b></td></tr>
+<tr><td class="l">사분원 두 개 겹친 잎</td><td class="m">2 × (πa²/4) − a²</td><td class="l">합에서 <b>전체를 뺀다</b></td></tr>
+<tr><td class="l">반원 − 반원 (초승달)</td><td class="l">반원끼리 <b>빼기</b></td><td class="l">지름의 관계를 먼저</td></tr>
+</table>
+<p class="small">두 번째 줄이 헷갈립니다. 반지름 r 인 원에 <b>내접</b>하는 정사각형은
+<b>대각선이 2r</b> 이므로 넓이가 <b>2r × 2r ÷ 2 ＝ 2r²</b> 입니다.
+마름모 넓이 공식(대각선 곱 ÷ 2)을 쓰면 바로 나옵니다.</p>
+
+<h2><span class="n">6</span>순서를 정해 계산하기</h2>
+<div class="sol"><b>복잡한 그림일수록 표로 정리한다.</b>
+
+   전체 사각형        ＋ 200
+   큰 반원            ＋ 50π
+   작은 원 (겹침)     −  16π
+   삼각형 (뺄 부분)   −  60
+   ──────────────────────────
+   색칠된 부분        ＝ 140 ＋ 34π</div>
+<div class="warn"><b>부호를 표로 적으십시오.</b> 머릿속에서 더하고 빼면
+<b>두 번 빼거나 빼야 할 것을 더하는</b> 실수가 반드시 나옵니다.
+<b>＋ 인지 − 인지를 줄마다 적는 것</b>만으로 이 유형의 오답이 크게 줄어듭니다.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“계산 과정에서 <b>두 번 센 부분</b>을 어떻게 처리했는지 설명하시오.”<br>
+  <span class="small">→ “사분원 두 개의 넓이를 더하면 <u>50π</u> 입니다.
+  그런데 두 사분원은 정사각형을 모두 덮으면서 <u>가운데 잎 모양을 두 번</u> 덮습니다.
+  따라서 <u>50π ＝ (정사각형 100) ＋ (잎 모양)</u> 이 되고,
+  잎 모양의 넓이는 <u>50π − 100</u> 입니다.
+  <u>두 번 덮인 부분이 정확히 잎 모양 하나</u> 라는 점이 이 계산의 근거입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>37-1 ~ 37-5</b> &nbsp;·&nbsp; 37-1은 <b>전체 − 나머지</b>, 37-2는 <b>부채꼴의 넓이와 호</b>,
+37-3은 <b>겹친 부분 구하기</b>, 37-4는 <b>조각 옮기기</b>,
+37-5는 <b>두 번 센 부분의 처리</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 7 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 38</span><h1>겉넓이와 부피 — 면을 방향별로 센다<small>겉넓이는 <b>여섯 방향에서 본 넓이</b>로 세고, 부피는 <b>개수</b>로 센다</small></h1><div class="tag">2단계 · C 도형과 공간<br>8 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>쌓기나무 <b>27개</b>로 만든 <b>3 × 3 × 3</b> 정육면체에서
+  <b>한 모퉁이의 나무 하나</b>를 빼냈습니다. <b>겉넓이</b>는 어떻게 될까요?</p>
+  <p><b>잠깐!</b> 부피는 분명히 줄었습니다. 그런데 <b>겉넓이는 그대로</b> 입니다.
+  왜 그럴까요?</p>
+</div>
+
+<h2><span class="n">1</span>모퉁이를 빼내도 겉넓이는 변하지 않는다</h2>
+<div class="sol">모퉁이 나무는 <b>3개의 면</b>이 바깥에 드러나 있었다.
+   → 빼내면 그 <b>3개 면이 사라진다.</b>
+
+ 그런데 나무가 있던 자리에 <b>움푹 팬 안쪽 3개 면</b>이 새로 드러난다.
+   → <b>3개 면이 생긴다.</b>
+
+   사라진 3면 ＝ 생긴 3면   →  <b>겉넓이는 그대로!</b>
+   (부피만 <b>1만큼</b> 줄어든다)</div>
+<div class="note"><b>이것이 “변하지 않는 것을 찾는” 문제입니다.</b>
+1단계 C영역의 <b>홀수점</b>, D영역의 <b>짝수만 만들 수 있다</b> 와 같은 논법입니다.
+다만 여기서는 <b>모퉁이일 때만</b> 성립합니다.
+<b>모서리 가운데</b>(2면 노출)를 빼면 2면이 사라지고 <b>4면</b>이 생겨 겉넓이가 <b>늘어납니다.</b></div>
+<table>
+<tr><th style="width:26%">빼내는 자리</th><th style="width:22%">사라지는 면</th><th style="width:22%">생기는 면</th><th>겉넓이</th></tr>
+<tr><td class="l">모퉁이(꼭짓점)</td><td class="m">3</td><td class="m">3</td><td class="m">그대로</td></tr>
+<tr><td class="l">모서리 가운데</td><td class="m">2</td><td class="m">4</td><td class="m">＋2 늘어남</td></tr>
+<tr><td class="l">면 한가운데</td><td class="m">1</td><td class="m">5</td><td class="m">＋4 늘어남</td></tr>
+</table>
+
+<h2><span class="n">2</span>겉넓이를 세는 두 가지 방법</h2>
+<div class="row"><div class="col">
+<h3>방법 A · 여섯 방향에서 보기</h3>
+<div class="sol">위·아래·앞·뒤·왼·오 <b>여섯 방향</b>에서
+보이는 정사각형을 센다.
+
+ 3 × 3 × 3 이라면 각 방향 <b>9칸</b>씩
+   9 × 6 ＝ <b>54칸</b></div>
+<p class="small">움푹 팬 곳이 없으면 이 방법이 가장 빠릅니다.
+<b>안쪽으로 팬 면은 이 방법으로 세어지지 않으므로</b> 따로 더해야 합니다.</p>
+</div><div class="col">
+<h3>방법 B · 나무마다 세어 빼기</h3>
+<div class="sol">나무 하나는 면이 <b>6개</b>.
+두 나무가 맞닿으면 <b>2면이 사라진다.</b>
+
+ 겉넓이 ＝ 6 × (나무 수) − 2 × (맞닿은 곳)
+
+ 한 줄 4개 : 24 − 2×3 ＝ <b>18</b></div>
+<p class="small"><b>맞닿은 곳을 세는 것</b>이 관건입니다. 복잡한 모양에서는 이 방법이 안전합니다.</p>
+</div></div>
+
+<h2><span class="n">3</span>부피는 층으로 세는 편이 빠르다</h2>
+<div class="sol">위에서 본 모양에 <b>층수</b>를 적어 두면(1단계 C 주제 13)
+
+  <b>부피</b> ＝ 적힌 수를 <b>모두 더한 것</b>
+  <b>1층에 있는 나무</b> ＝ 수가 1 이상인 칸의 개수
+  <b>2층에 있는 나무</b> ＝ 수가 2 이상인 칸의 개수
+
+ 층별로 세면 <b>“2층에는 몇 개인가”</b> 같은 물음에 바로 답할 수 있다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">면을 방향별로 세고 · 맞닿은 곳을 빼기</span></div>
+  <p><b>① 위에서 본 모양에 층수를 적는다</b>(1단계 C 주제 13) → <b>② 여섯 방향에서 보이는 칸을 센다</b>
+  → <b>③ 움푹 팬 안쪽 면을 더한다</b> → <b>④ 다른 방법으로 한 번 더 세어 맞춘다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 8 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 38</span><h1>겉넓이와 부피 — 크기가 바뀌면<small>길이가 2배면 넓이는 <b>4배</b>, 부피는 <b>8배</b>. 이 차이가 많은 것을 설명한다</small></h1><div class="tag">2단계 · C 도형과 공간<br>9 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>길이 · 넓이 · 부피가 늘어나는 비율</h2>
+<table>
+<tr><th style="width:26%">한 변이</th><th style="width:22%">길이</th><th style="width:22%">겉넓이</th><th>부피</th></tr>
+<tr><td class="l">1 → 2 (2배)</td><td class="m">2배</td><td class="m">4배</td><td class="m">8배</td></tr>
+<tr><td class="l">1 → 3 (3배)</td><td class="m">3배</td><td class="m">9배</td><td class="m">27배</td></tr>
+<tr><td class="l">1 → n (n배)</td><td class="m">n배</td><td class="m">n × n 배</td><td class="m">n × n × n 배</td></tr>
+</table>
+<div class="sol"><b>왜인가</b> — 넓이는 <b>두 방향</b>을 곱한 것, 부피는 <b>세 방향</b>을 곱한 것이기 때문이다.
+ 각 방향이 n배씩 늘어나면 넓이는 <b>n을 두 번</b>, 부피는 <b>n을 세 번</b> 곱한 만큼 늘어난다.</div>
+<p class="small">1단계 D영역 <b>단위 바꾸기</b>에서 “1m² ＝ 10000cm²”였던 것과 <b>완전히 같은 이유</b>입니다.
+작은 2와 3이 <b>몇 방향을 곱했는지</b>를 말한다는 사실을 다시 확인하십시오.</p>
+
+<h2><span class="n">4</span>직육면체의 겉넓이와 부피</h2>
+<div class="sol">가로 a, 세로 b, 높이 c 인 직육면체
+
+  <b>부피</b>   ＝ a × b × c
+  <b>겉넓이</b> ＝ 2 × (ab ＋ bc ＋ ca)      ← 마주 보는 면이 <b>두 장씩</b>
+
+ 2 × 3 × 4 라면
+   부피 ＝ <b>24</b>       겉넓이 ＝ 2 × (6 ＋ 12 ＋ 8) ＝ <b>52</b></div>
+<div class="warn"><b>부피가 같아도 겉넓이는 다릅니다.</b>
+부피가 24인 직육면체는 1×1×24, 2×3×4, 2×2×6 등 여러 가지인데
+겉넓이는 각각 98, 52, 56 으로 <b>모두 다릅니다.</b>
+<b>정육면체에 가까울수록 겉넓이가 작아집니다</b> — 1단계 D영역 “둘레가 같으면 정사각형이 가장 넓다”의
+<b>입체 판</b>입니다.</div>
+
+<h2><span class="n">5</span>잘라 내고 뚫는 문제</h2>
+<table>
+<tr><th style="width:34%">무엇을 하면</th><th style="width:22%">부피</th><th>겉넓이</th></tr>
+<tr><td class="l">모퉁이 정육면체를 <b>빼낸다</b></td><td class="m">줄어든다</td><td class="l"><b>그대로</b></td></tr>
+<tr><td class="l">한가운데를 <b>관통해 뚫는다</b></td><td class="m">줄어든다</td><td class="l"><b>늘어난다</b>(안쪽 벽이 생김)</td></tr>
+<tr><td class="l">반으로 <b>자른다</b></td><td class="m">그대로(합)</td><td class="l"><b>늘어난다</b>(단면 두 장)</td></tr>
+</table>
+<p class="small"><b>자르면 부피는 그대로지만 겉넓이는 늘어납니다.</b>
+새로 생긴 <b>단면 두 장</b>만큼 늘어나므로, 자른 단면의 넓이 × 2 를 더하면 됩니다.</p>
+
+<h2><span class="n">6</span>부피가 같은 직육면체들의 겉넓이</h2>
+<table>
+<tr><th style="width:30%">가로×세로×높이</th><td class="m">1×1×24</td><td class="m">1×3×8</td><td class="m">2×2×6</td><td class="m">2×3×4</td></tr>
+<tr><th>부피</th><td class="m">24</td><td class="m">24</td><td class="m">24</td><td class="m">24</td></tr>
+<tr><th>겉넓이</th><td class="m">98</td><td class="m">70</td><td class="m">56</td><td class="m">52</td></tr>
+</table>
+<p class="small"><b>정육면체에 가까울수록 겉넓이가 작습니다.</b>
+포장지를 아끼려면 <b>가장 통통한 모양</b>으로 만들어야 한다는 뜻이고,
+반대로 <b>열을 빨리 식히려면</b> 길고 납작하게 만들어야 합니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“모퉁이 쌓기나무를 빼냈는데 <b>겉넓이가 변하지 않은 까닭</b>을 설명하시오.”<br>
+  <span class="small">→ “모퉁이에 있던 나무는 바깥으로 <u>3개의 면</u>이 드러나 있었으므로,
+  빼내면 그 <u>3개 면이 사라집니다.</u>
+  그런데 나무가 있던 자리가 움푹 파이면서 <u>안쪽 3개 면이 새로 드러납니다.</u>
+  <u>사라진 면과 새로 생긴 면이 각각 3개로 같으므로</u> 겉넓이는 변하지 않고,
+  <u>부피만 나무 한 개만큼</u> 줄어듭니다.
+  다만 <u>모서리 가운데</u>를 빼면 2면이 사라지고 4면이 생겨 <u>겉넓이가 늘어납니다.</u>”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>38-1 ~ 38-5</b> &nbsp;·&nbsp; 38-1은 <b>여섯 방향에서 세기</b>, 38-2는 <b>맞닿은 면 빼기</b>,
+38-3은 <b>길이·넓이·부피의 배율</b>, 38-4는 <b>뚫고 자르기</b>,
+38-5는 <b>겉넓이가 그대로인 까닭</b>을 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 9 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 39</span><h1>도형의 회전과 자취 — 중심을 따라간다<small>굴러가는 도형은 복잡하지만 <b>중심의 자취</b>는 언제나 단순하다</small></h1><div class="tag">2단계 · C 도형과 공간<br>10 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div style="text-align:center;margin:2px 0"><svg width="220" height="80" viewBox="0 0 220 80"><line x1="8" y1="58" x2="212" y2="58" stroke="#b9b0a0" stroke-width="1.4"/><circle cx="30" cy="36" r="22" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.5" opacity="1"/><line x1="30" y1="36" x2="30.0" y2="14.0" stroke="#6d28d9" stroke-width="1.6" opacity="1"/><circle cx="105" cy="36" r="22" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.5" opacity="0.55"/><line x1="105" y1="36" x2="99.2" y2="57.2" stroke="#6d28d9" stroke-width="1.6" opacity="0.55"/><circle cx="180" cy="36" r="22" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.5" opacity="0.55"/><line x1="180" y1="36" x2="191.2" y2="17.1" stroke="#6d28d9" stroke-width="1.6" opacity="0.55"/><path d="M30 66 L 180 66" stroke="#c2410c" stroke-width="1.4"/><text x="105" y="80" text-anchor="middle" font-size="8.4" fill="#c2410c" font-weight="700">굴러간 거리 ＝ 원주 × 회전수</text></svg></div>
+  <p>반지름 <b>3cm</b> 인 원이 직선 위를 미끄러지지 않고 굴러 <b>한 바퀴</b> 돌았습니다.
+  얼마나 나아갔을까요?</p>
+  <p><b>잠깐!</b> 한 바퀴 도는 동안 <b>원의 둘레만큼</b> 나아갑니다.
+  <b>2π × 3 ＝ 6π cm</b> — 굴러간 거리와 원주가 같습니다.</p>
+</div>
+
+<h2><span class="n">1</span>굴러간 거리 ＝ 원주 × 회전수</h2>
+<div class="sol"><b>미끄러지지 않고</b> 굴러간다면 <b>바퀴에 닿은 길이</b>와 <b>지나온 길이</b>가 같다.
+
+   굴러간 거리 ＝ <b>2π r × (회전수)</b>
+
+ 반지름 3 인 원이 <b>60cm</b> 를 굴러갔다면
+   회전수 ＝ 60 ÷ 6π ＝ <b>10/π ≈ 3.2바퀴</b>
+
+<b>중심의 자취</b> — 중심은 언제나 지면에서 <b>r 만큼 떨어진</b> 직선 위를 간다.
+  → 중심이 움직인 거리 <b>＝ 굴러간 거리</b></div>
+<p class="small"><b>중심의 자취가 직선</b>이라는 점이 열쇠입니다.
+바퀴 위의 한 점은 복잡한 곡선(사이클로이드)을 그리지만, <b>중심은 곧게</b> 갑니다.
+그래서 <b>“중심이 얼마나 갔는가”</b> 로 바꾸어 생각하면 문제가 단순해집니다.</p>
+
+<h2><span class="n">2</span>원 둘레를 따라 굴릴 때</h2>
+<div class="sol">반지름 <b>1</b> 인 원이 반지름 <b>3</b> 인 원의 <b>바깥쪽</b>을 따라 한 바퀴 돌면
+작은 원은 몇 바퀴 <b>자전</b>할까?
+
+ <b>중심의 자취</b>는 반지름 <b>3 ＋ 1 ＝ 4</b> 인 원이다.
+ 중심이 간 거리 ＝ 2π × 4 ＝ <b>8π</b>
+ 작은 원의 둘레 ＝ 2π × 1 ＝ <b>2π</b>
+
+   회전수 ＝ 8π ÷ 2π ＝ <b>4바퀴</b>   (3바퀴가 아니다!)
+
+ <b>안쪽</b>을 따라 돌면 중심의 자취가 반지름 <b>3 − 1 ＝ 2</b> 이므로 <b>2바퀴</b>.</div>
+<div class="warn"><b>“3바퀴”라고 답하기 쉬운 대표적인 함정입니다.</b>
+둘레의 비만 보면 3배지만, <b>굴러가는 길 자체가 휘어 있어</b> 한 바퀴가 더해집니다.
+언제나 <b>중심이 그리는 원의 반지름</b>(R ＋ r 또는 R − r)으로 계산하십시오.</div>
+
+<div class="note"><b>왜 한 바퀴가 더해지는가.</b> 작은 원이 큰 원을 <b>한 바퀴 돌아 제자리</b>로 오는 동안,
+작은 원 자신도 <b>공간에서 한 바퀴 방향을 바꾸었습니다.</b>
+바닥을 따라 구른 <b>3바퀴</b>에 그 <b>1바퀴</b>가 더해져 <b>4바퀴</b>가 됩니다.
+동전 두 개로 직접 굴려 보면 눈으로 확인할 수 있습니다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">중심의 자취를 먼저 그린다</span></div>
+  <p><b>① 굴러가는 도형의 중심이 어디를 지나는지 그린다</b> → <b>② 중심이 간 거리를 구한다</b>
+  → <b>③ 그 거리를 도형의 둘레로 나누면 회전수</b> → <b>④ 안쪽인지 바깥쪽인지 확인한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 10 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 39</span><h1>도형의 회전과 자취 — 지나간 영역<small>다각형이 구르면 <b>호가 이어진 자취</b>가, 도형이 돌면 <b>고리 모양 영역</b>이 남는다</small></h1><div class="tag">2단계 · C 도형과 공간<br>11 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>정사각형이 굴러갈 때 꼭짓점의 자취</h2>
+<div class="wrap"><div class="fig"><svg width="190" height="108" viewBox="0 0 190 108"><line x1="6" y1="92" x2="184" y2="92" stroke="#b9b0a0" stroke-width="1.4"/><rect x="12" y="52" width="40" height="40" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.4"/><path d="M12 52 A 40 40 0 0 1 92 52" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-dasharray="4 3"/><path d="M92 52 A 56.6 56.6 0 0 1 132 92" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-dasharray="4 3"/><circle cx="12" cy="52" r="3.4" fill="#6d28d9"/><text x="95.0" y="105" text-anchor="middle" font-size="8" fill="#6b635a">꼭짓점이 그리는 자취 — 90° 호가 이어진다</text></svg></div><div class="txt">
+<div class="sol">한 변 <b>a</b> 인 정사각형이 직선 위를 굴러 <b>한 바퀴</b>(네 번 넘어짐) 돌 때
+어떤 한 꼭짓점이 그리는 자취는 <b>90° 호 세 개</b> 이다.
+
+ · 그 꼭짓점이 <b>회전 중심일 때</b>는 움직이지 않는다 → 호가 <b>하나 빠진다</b>
+ · 나머지 세 번은 중심에서 <b>a, a√2, a</b> 만큼 떨어져 있다.
+
+   자취의 길이 ＝ (2πa ＋ 2πa√2 ＋ 2πa) ÷ 4
+              ＝ <b>(2 ＋ √2) × π a ÷ 2</b></div>
+</div></div>
+<p class="small"><b>“회전의 중심에서 얼마나 떨어져 있는가”</b> 가 호의 반지름입니다.
+매번 중심이 바뀌므로 <b>단계마다 반지름을 다시 재야</b> 합니다.
+정삼각형이라면 <b>120° 호 두 개</b>, 정육각형이라면 <b>60° 호 다섯 개</b> 입니다.</p>
+
+<h2><span class="n">4</span>도형이 지나간 영역</h2>
+<div class="sol"><b>예 · 반지름 1cm 인 원이 한 변 6cm 인 정사각형 <b>바깥</b>을 한 바퀴 돌 때
+원이 지나간 영역의 넓이는?</b>
+
+ <b>직선 구간</b> — 네 변을 따라 폭 <b>2cm</b>(지름)인 직사각형
+     6 × 2 × 4 ＝ <b>48</b>
+ <b>모퉁이 구간</b> — 꼭짓점마다 <b>90° 부채꼴</b>, 네 개를 모으면 <b>반지름 2인 원 하나</b>
+     π × 2 × 2 ＝ <b>4π</b>
+
+   전체 ＝ <b>48 ＋ 4π</b> cm²</div>
+<p><b>직선 부분과 모퉁이 부분으로 나누는 것</b>이 이 유형의 정석입니다.
+모퉁이의 부채꼴을 모으면 <b>언제나 원 하나</b>가 됩니다 — 외각의 합이 <b>360°</b> 이기 때문입니다.
+주제 35가 여기서 쓰입니다.</p>
+
+<h2><span class="n">5</span>돌린 도형이 지나간 영역</h2>
+<table>
+<tr><th style="width:34%">무엇을 돌리면</th><th style="width:26%">지나간 영역</th><th>넓이</th></tr>
+<tr><td class="l">선분을 한 끝을 중심으로 한 바퀴</td><td class="l"><b>원</b></td><td class="m">π r²</td></tr>
+<tr><td class="l">선분을 <b>가운데</b>를 중심으로</td><td class="l"><b>원</b>(반지름은 절반)</td><td class="m">π (r/2)²</td></tr>
+<tr><td class="l">떨어진 선분을 중심 둘레로</td><td class="l"><b>도넛 모양</b></td><td class="m">π R² − π r²</td></tr>
+</table>
+<p class="small"><b>가장 먼 점과 가장 가까운 점</b>을 찾으면 영역이 정해집니다.
+가장 먼 점이 바깥 원, 가장 가까운 점이 안쪽 원의 반지름입니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“원이 굴러간 거리와 원주의 관계를 설명하고, 회전수를 구하시오.”<br>
+  <span class="small">→ “미끄러지지 않고 구른다면 <u>바퀴에 닿았던 길이와 지나온 길이가 같습니다.</u>
+  한 바퀴 돌 때 바닥에 닿는 길이는 <u>원주 2πr</u> 이므로
+  <u>굴러간 거리 ＝ 2πr × 회전수</u> 입니다.
+  또 원의 <u>중심은 지면에서 r 만큼 떨어진 직선 위</u>를 가므로
+  <u>중심이 간 거리가 곧 굴러간 거리</u> 입니다.
+  다른 원의 바깥을 따라 돌 때는 <u>중심의 자취가 반지름 R＋r 인 원</u>이 되므로
+  회전수는 <u>(R＋r) ÷ r</u> 이 됩니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>39-1 ~ 39-5</b> &nbsp;·&nbsp; 39-1은 <b>굴러간 거리와 회전수</b>, 39-2는 <b>원 둘레를 따라 굴리기</b>,
+39-3은 <b>다각형 꼭짓점의 자취</b>, 39-4는 <b>지나간 영역의 넓이</b>,
+39-5는 <b>원주와 굴러간 거리의 관계</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 11 / 12</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">총정리</span><h1>다섯 도구를 한 장으로<small>2단계 C영역이 요구한 것은 <b>쪼개고 · 옮기고 · 빼는</b> 세 손동작이었다</small></h1><div class="tag">2단계 · C 도형과 공간<br>12 / 12 쪽</div></div>
+
+<h2><span class="n">1</span>신호와 도구</h2>
+<table>
+<tr><th style="width:38%">문제에 이런 말이 나오면</th><th style="width:20%">꺼낼 도구</th><th>첫 손동작</th></tr>
+<tr><td class="l">“각의 크기”, “내각의 합”</td><td class="m">각의 성질(35)</td><td class="l"><b>삼각형으로 쪼개기</b></td></tr>
+<tr><td class="l">“넓이가 같은”, 찌그러진 도형</td><td class="m">넓이 옮기기(36)</td><td class="l"><b>평행선</b> 긋기</td></tr>
+<tr><td class="l">“색칠된 부분의 넓이”</td><td class="m">색칠 넓이(37)</td><td class="l"><b>전체 − 나머지</b> 표로 적기</td></tr>
+<tr><td class="l">“겉넓이”, “쌓기나무를 빼면”</td><td class="m">겉넓이·부피(38)</td><td class="l"><b>여섯 방향</b>에서 세기</td></tr>
+<tr><td class="l">“굴러간”, “지나간 영역”</td><td class="m">회전과 자취(39)</td><td class="l"><b>중심의 자취</b> 그리기</td></tr>
+</table>
+
+<h2><span class="n">2</span>가져갈 다섯 문장</h2>
+<div class="note">
+<p><b>① 각의 성질 —</b> n각형은 <b>삼각형 (n−2)개</b>, 내각의 합 <b>180(n−2)</b>,
+<b>외각의 합은 언제나 360°</b>. 복잡한 그림에서는 <b>외각 정리</b>가 강하다.</p>
+<p><b>② 넓이 옮기기 —</b> 꼭짓점을 <b>평행선 위에서 옮기면</b> 넓이가 변하지 않는다.
+서술형에는 반드시 <b>“밑변과 높이가 같으므로”</b> 를 쓴다.</p>
+<p><b>③ 색칠 넓이 —</b> <b>전체에서 빼고</b>, 겹쳤으면 <b>두 넓이의 합 − 전체 ＝ 겹침</b>. π 는 남긴 꼴이 정답이다.</p>
+<p><b>④ 겉넓이·부피 —</b> <b>모퉁이를 빼면 겉넓이가 그대로</b>, 모서리·면 가운데를 빼면 늘어난다.
+길이가 n배면 넓이 <b>n²배</b>, 부피 <b>n³배</b>.</p>
+<p><b>⑤ 회전과 자취 —</b> <b>중심의 자취</b>를 먼저 그린다 — 원 둘레를 따라 굴리면
+중심의 자취가 <b>R±r</b> 이라 회전수가 한 바퀴 어긋난다.</p>
+</div>
+
+<h2><span class="n">3</span>틀렸을 때 어디를 다시 볼까</h2>
+<table>
+<tr><th style="width:40%">이런 실수를 했다면</th><th style="width:14%">돌아갈 곳</th><th>고칠 습관</th></tr>
+<tr><td class="l">다각형 내각합에 180×n 을 썼다 · “같아 보인다”로 넓이가 같다고 했다</td><td class="m">2 · 5쪽</td><td class="l">삼각형 <b>(n−2)개</b> / <b>밑변·높이</b> 지목</td></tr>
+<tr><td class="l">겹친 부분을 두 번 셌다</td><td class="m">6쪽</td><td class="l">부호를 <b>표로</b> 적기</td></tr>
+<tr><td class="l">모서리를 빼고 겉넓이 그대로라 했다</td><td class="m">8쪽</td><td class="l"><b>사라진 면과 생긴 면</b>을 세기</td></tr>
+<tr><td class="l">원 굴리기를 3바퀴라 답했다</td><td class="m">10쪽</td><td class="l">중심의 자취 <b>R＋r</b></td></tr>
+</table>
+
+<h2><span class="n">4</span>1단계 C영역과 무엇이 달라졌는가</h2>
+<div class="note" style="border-left:4px solid #b45309">
+<table style="margin:3px 0 5px">
+<tr><th style="width:34%">1단계에서는</th><th>2단계에서는</th></tr>
+<tr><td class="l">도형의 <b>개수</b>를 세었다</td><td class="l">각과 넓이를 <b>계산</b>하고 근거를 댄다</td></tr>
+<tr><td class="l">쌓기나무의 <b>개수</b>를 구했다</td><td class="l"><b>겉넓이가 변하는지</b>를 따진다</td></tr>
+<tr><td class="l">전개도가 <b>되는지</b> 판정했다</td><td class="l">굴러간 <b>거리와 자취</b>를 구한다</td></tr>
+</table>
+<p style="font-size:10.5pt;margin-top:2px"><b>“모르는 도형은 아는 도형으로 바꾼다.”</b></p>
+<p style="margin-top:4px">다각형을 삼각형으로 쪼개고, 찌그러진 사각형을 평행선으로 펴고,
+색칠 부분을 뺄셈으로 쓰고, 굴러가는 원을 중심의 직선 운동으로 바꾸었습니다.</p>
+</div>
+
+<h2><span class="n">5</span>스스로 확인하는 다섯 질문</h2>
+<div class="note">
+<ol class="li">
+<li><b>십각형</b>의 내각의 합과 <b>외각</b>의 합은?</li>
+<li>두 삼각형의 넓이가 같으려면 <b>무엇이 같아야</b> 하는가?</li>
+<li>모퉁이 쌓기나무를 빼면 겉넓이가 <b>왜</b> 그대로인가?</li>
+<li>반지름 1인 원이 반지름 3인 원 바깥을 돌면 <b>몇 바퀴</b>인가?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">다음으로</span>
+문제지 <b>2단계 C영역 25문항</b>을 풀되, <b>보조선을 긋는 것을 두려워하지 마십시오.</b></div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 C. 도형과 공간 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 12 / 12</span></div>
+</div>
+</body>
+</html>

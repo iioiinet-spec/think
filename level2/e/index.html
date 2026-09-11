@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>사고력수학 2단계 · E. 논리와 문제해결 — 이론 강의자료</title>
+<style>
+@page { size:A4; margin:0; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e4da;font-family:"Pretendard","Apple SD Gothic Neo","맑은 고딕",
+     "Malgun Gothic",sans-serif;color:#2a2724;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:210mm;height:297mm;padding:9mm 12mm 10mm;background:#fffdf7;
+      margin:0 auto 6mm;overflow:hidden;font-size:9.6pt;line-height:1.5}
+@media print{ body{background:#fff} .page{margin:0;box-shadow:none;page-break-after:always} }
+
+.page{--ac:#b45309;--bg:#fdf3e3}
+.t1{--ac:#b45309;--bg:#fdf2e0} .t2{--ac:#0f766e;--bg:#e6f2f0}
+.t3{--ac:#6d28d9;--bg:#efe9fb} .t4{--ac:#be123c;--bg:#fce8ed}
+.t5{--ac:#1d4ed8;--bg:#e6edfc} .t6{--ac:#15803d;--bg:#e7f3e9}
+
+.head{display:flex;align-items:flex-start;gap:8px;border-bottom:2.5px solid var(--ac);
+      padding-bottom:5px;margin-bottom:7px}
+.head .no{flex:none;background:var(--ac);color:#fff;font-weight:800;font-size:8.6pt;
+      padding:3px 8px;border-radius:3px;letter-spacing:.3px;margin-top:2px}
+.head h1{flex:1;font-size:15pt;font-weight:800;letter-spacing:-.4px;color:#1c1a17;line-height:1.25}
+.head h1 small{display:block;font-size:8.8pt;font-weight:600;color:#6b635a;margin-top:2px;letter-spacing:0}
+.head .tag{flex:none;text-align:right;font-size:7.8pt;color:#8a8177;line-height:1.35;margin-top:2px}
+
+h2{font-size:11pt;font-weight:800;color:var(--ac);margin:8px 0 4px;display:flex;
+   align-items:center;gap:6px;letter-spacing:-.3px}
+h2 .n{flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac);color:#fff;
+      font-size:8.4pt;display:flex;align-items:center;justify-content:center;font-weight:800}
+h3{font-size:9.8pt;font-weight:700;color:#3d3830;margin:6px 0 3px}
+p{margin:2.5px 0}
+b{font-weight:700;color:#141210}
+.k{color:var(--ac);font-weight:800}
+.small{font-size:8.2pt;color:#6b635a;line-height:1.45}
+
+.open{background:var(--bg);border-left:4px solid var(--ac);padding:6px 9px;border-radius:0 4px 4px 0}
+.open .lb{font-size:8pt;font-weight:800;color:var(--ac);margin-bottom:2px}
+.strat{border:1.6px solid var(--ac);border-radius:5px;padding:6px 9px;margin:7px 0;background:#fffefb}
+.strat .lb{display:inline-block;background:var(--ac);color:#fff;font-size:7.6pt;font-weight:800;
+      padding:1.5px 6px;border-radius:3px;margin-right:6px}
+.strat .nm{font-weight:800;font-size:10pt;color:#1c1a17}
+.warn{background:#fdf0ee;border-left:4px solid #c2410c;padding:6px 9px;margin:6px 0;
+      border-radius:0 4px 4px 0;font-size:9.1pt}
+.note{background:#f6f3ea;border-radius:4px;padding:6px 9px;margin:6px 0}
+.sol{background:#f7f4ec;border:1px solid #e0d9c8;border-radius:4px;padding:6px 9px;margin:5px 0;
+     white-space:pre-wrap;font-family:"D2Coding","Consolas","Menlo",monospace;font-size:8.8pt;line-height:1.55}
+.write{border:1.4px dashed var(--ac);border-radius:5px;padding:6px 9px;margin:6px 0;background:#fffefb}
+.write .lb{font-size:7.8pt;font-weight:800;color:var(--ac);margin-bottom:3px}
+.frame{background:#fff;border:1px solid #e2dccf;border-radius:3px;padding:5px 7px;font-size:9.1pt}
+.link{background:#1c1a17;color:#f5f1e6;border-radius:5px;padding:6px 9px;margin:6px 0;font-size:8.8pt}
+.link .lb{font-weight:800;color:#ffd89b;margin-right:6px}
+.link b{color:#fff}
+
+ul.li{margin:3px 0 3px 15px} ul.li li{margin:1.5px 0}
+ol.li{margin:3px 0 3px 17px} ol.li li{margin:1.5px 0}
+
+table{width:100%;border-collapse:collapse;margin:5px 0;font-size:8.9pt}
+th,td{border:1px solid #d8d0be;padding:3px 5px;text-align:center}
+th{background:var(--bg);font-weight:700;color:#2a2724}
+td.l{text-align:left} td.m{font-weight:700}
+td.o{background:#e7f3e9;color:#15803d;font-weight:800}
+td.x{background:#f4f0e6;color:#a9a094}
+
+.wrap{display:flex;gap:10px;align-items:flex-start}
+.fig{flex:none} .txt{flex:1}
+.row{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+.col{flex:1}
+.figs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin:4px 0}
+.cap{font-size:8pt;color:#6b635a;text-align:center;margin-top:1px}
+
+.foot{position:absolute;left:12mm;right:12mm;bottom:4mm;display:flex;justify-content:space-between;
+      border-top:1px solid #ded7c7;padding-top:3px;font-size:7.4pt;color:#9a9186}
+</style></head>
+<body>
+<div class="page t1">
+<div class="head"><span class="no">안내</span><h1>세는 법을 고르고 · 반드시 그러함을 보인다<small>2단계 논리는 <b>세는 방법을 고르는 일</b>과 <b>“반드시 그렇다”를 보이는 일</b>로 나뉜다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>이론 강의자료<br>전 12쪽</div></div>
+
+<div class="open">
+  <div class="lb">1단계와 무엇이 다른가</div>
+  <p>1단계 E영역에서는 <b>나뭇가지를 그리고 곱하거나 더했습니다.</b>
+  2단계는 여기에 두 가지를 더합니다.</p>
+  <p>첫째, <b>같은 것을 몇 번 세었는지</b> 따져 나누는 일(44 · 45).
+  둘째, <b>“어떻게 해도 반드시 그렇다”</b> 를 보이는 일(46 · 48) — 이쪽이 2단계의 얼굴입니다.</p>
+</div>
+
+<h2><span class="n">1</span>다섯 주제가 하는 일</h2>
+<table>
+<tr><th style="width:7%">주제</th><th style="width:22%">이름</th><th style="width:32%">핵심 이론</th><th>손에 넣는 도구</th></tr>
+<tr><td class="m">44</td><td class="m">경우의 수 심화</td><td class="l">순서가 있을 때·없을 때, 같은 것이 있을 때</td><td class="l"><b>중복 나누기</b></td></tr>
+<tr><td class="m">45</td><td class="m">여사건 — 빼서 세기</td><td class="l">전체에서 반대 경우를 빼기</td><td class="l"><b>반대로 세기</b></td></tr>
+<tr><td class="m">46</td><td class="m">비둘기집 원리</td><td class="l">서랍을 무엇으로 잡을 것인가</td><td class="l"><b>서랍 정하기</b> · 반례</td></tr>
+<tr><td class="m">47</td><td class="m">표와 그래프로 추론</td><td class="l">조건표 채우기, ○×로 지우기</td><td class="l"><b>확정 칸부터</b></td></tr>
+<tr><td class="m">48</td><td class="m">최적화</td><td class="l">합이 일정할 때 곱의 최대, 배치</td><td class="l"><b>양 끝 비교</b></td></tr>
+</table>
+
+<h2><span class="n">2</span>두 갈래로 나뉜다</h2>
+<div class="note">
+<ul class="li">
+<li><b>세는 문제(44 · 45 · 47)</b> — 답이 <b>수</b>이거나 <b>배치</b>다.
+빠짐없이 · 겹치지 않게 세었다는 <b>근거</b>가 배점이다.</li>
+<li><b>보이는 문제(46 · 48)</b> — 답이 <b>“반드시 그렇다”</b> 이다.
+하나의 예를 드는 것으로는 부족하고, <b>모든 경우에 대해</b> 말해야 한다.</li>
+</ul>
+<p>특히 <b>46과 48은 “최악의 경우”와 “반례”</b> 를 함께 써야 완성됩니다.
+<b>“이만큼이면 반드시 된다”</b> 와 <b>“이보다 적으면 안 될 수 있다”</b> 를 둘 다 보여야 합니다.</p>
+</div>
+
+<h2><span class="n">3</span>이 단계의 서술형은 무엇을 채점하는가</h2>
+<table>
+<tr><th style="width:24%">채점 항목</th><th style="width:38%">답안에 반드시 있어야 할 말</th><th>없으면</th></tr>
+<tr><td class="m">① 왜 나누는가</td><td class="l">“같은 것을 <b>2번씩 세었으므로</b> 2로 나눈다”</td><td class="l">계산만 있는 답안이 됨</td></tr>
+<tr><td class="m">② 왜 빼는가</td><td class="l">“<b>직접 세면 세 경우로 나뉘지만</b> 반대는 하나뿐”</td><td class="l">방법 선택의 근거가 없음</td></tr>
+<tr><td class="m">③ 반례</td><td class="l">“<b>12명이면 그렇지 않을 수 있으므로</b> 13명 필요”</td><td class="l">절반만 증명한 것</td></tr>
+</table>
+<div class="warn"><b>완성된 답안은 언제나 두 방향입니다.</b>
+“13명이면 반드시 같은 달 생일이 있다”만 쓰면 절반이고,
+“<b>12명일 때는 달마다 한 명씩이면 되므로 그렇지 않을 수 있다</b>”까지 써야 <b>13이 최소</b>임을 보인 것입니다.</div>
+
+<h2><span class="n">4</span>세는 방법을 고르는 세 질문</h2>
+<div class="sol"><b>① 순서를 따지는가?</b>       → 아니면 <b>나눈다</b> (주제 44)
+<b>② “적어도”가 있는가?</b>    → 있으면 <b>반대를 센다</b> (주제 45)
+<b>③ “반드시”가 있는가?</b>    → 있으면 <b>서랍을 찾는다</b> (주제 46)
+
+ 조건이 여러 줄이면 <b>표</b>를(47), “가장 크게·작게”면 <b>고정된 것</b>을 찾는다(48).</div>
+<p class="small">문제를 읽자마자 계산에 들어가지 말고 <b>이 세 질문을 먼저</b> 던지십시오.
+2단계에서 기르는 것은 계산력이 아니라 <b>판단력</b>입니다.</p>
+
+<h2><span class="n">5</span>진도 안내</h2>
+<table>
+<tr><th style="width:8%">주제</th><th style="width:18%">강의 자료</th><th style="width:16%">문제지</th><th style="width:20%">권장 시간</th><th>먼저 확인할 것</th></tr>
+<tr><td class="m">44</td><td>2 ~ 3쪽</td><td>44-1 ~ 44-5</td><td>강의 50분 · 문제 60분</td><td class="l">1단계 E 주제 20을 마쳤는가</td></tr>
+<tr><td class="m">45</td><td>4 ~ 5쪽</td><td>45-1 ~ 45-5</td><td>강의 40분 · 문제 50분</td><td class="l">“적어도”의 뜻을 아는가</td></tr>
+<tr><td class="m">46</td><td>6 ~ 7쪽</td><td>46-1 ~ 46-5</td><td>강의 50분 · 문제 60분</td><td class="l">나머지로 분류하기(2단계 A 27)</td></tr>
+<tr><td class="m">47</td><td>8 ~ 9쪽</td><td>47-1 ~ 47-5</td><td>강의 45분 · 문제 55분</td><td class="l">1단계 E 주제 21(참·거짓)</td></tr>
+<tr><td class="m">48</td><td>10 ~ 11쪽</td><td>48-1 ~ 48-5</td><td>강의 50분 · 문제 60분</td><td class="l">1단계 D 주제 17(둘레와 넓이)</td></tr>
+</table>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 1 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 44</span><h1>경우의 수 심화 — 몇 번씩 세었는가<small>먼저 <b>순서를 따져 세고</b>, 그다음 <b>같은 것을 몇 번 세었는지</b>로 나눈다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>2 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p><b>5명</b> 중에서 <b>3명</b>을 뽑을 때,
+  <b>회장·부회장·총무</b>를 뽑으면 <b>60가지</b> 인데
+  그냥 <b>대표 3명</b>을 뽑으면 <b>10가지</b> 입니다.</p>
+  <p><b>잠깐!</b> 왜 <b>6배</b> 차이일까요? 그 6이 어디서 나왔는지 알면
+  “같은 것이 있을 때”의 문제도 전부 풀립니다.</p>
+</div>
+
+<h2><span class="n">1</span>순서가 있으면 그대로, 없으면 나눈다</h2>
+<div class="sol"><b>순서를 따져 세면</b>  5 × 4 × 3 ＝ <b>60가지</b>
+
+ 그런데 <b>대표 3명</b>으로 보면 (가,나,다)를 어떤 순서로 뽑았든 <b>같은 조</b>다.
+ 세 사람을 줄 세우는 방법은 3 × 2 × 1 ＝ <b>6가지</b>
+ → 같은 조를 <b>6번씩</b> 세었다.
+
+   60 ÷ 6 ＝ <b>10가지</b></div>
+<div class="note"><b>“몇 번씩 세었는가”가 나누는 수입니다.</b>
+2명을 뽑으면 2 × 1 ＝ <b>2번</b>씩, 3명이면 <b>6번</b>씩, 4명이면 <b>24번</b>씩 세어집니다.
+<b>먼저 순서를 따져 크게 세고, 나중에 나누는 것</b> — 이 순서가 안전합니다.
+처음부터 “겹치지 않게” 세려 하면 빠뜨리기 쉽습니다.</div>
+<table>
+<tr><th style="width:34%">이런 문제</th><th style="width:22%">순서</th><th>계산</th></tr>
+<tr><td class="l">회장·부회장·총무</td><td class="m">있음</td><td class="m">5 × 4 × 3 ＝ 60</td></tr>
+<tr><td class="l">대표 3명</td><td class="m">없음</td><td class="m">60 ÷ 6 ＝ 10</td></tr>
+<tr><td class="l">1등·2등</td><td class="m">있음</td><td class="m">5 × 4 ＝ 20</td></tr>
+</table>
+
+<h2><span class="n">2</span>같은 것이 섞여 있을 때</h2>
+<div class="sol"><b>1, 1, 2, 3</b> 네 장을 한 줄로 놓는 방법은?
+
+ 모두 다르다면 4 × 3 × 2 × 1 ＝ <b>24가지</b>
+ 그런데 <b>1이 두 장</b>이므로 두 1을 서로 바꿔도 <b>같은 줄</b>이다.
+ 두 장을 바꾸는 방법은 <b>2가지</b> → 같은 줄을 <b>2번씩</b> 세었다.
+
+   24 ÷ 2 ＝ <b>12가지</b>
+
+<b>A, A, A, B, B</b> 라면?
+ 5 × 4 × 3 × 2 × 1 ＝ 120
+ A 세 장끼리 바꾸기 <b>6가지</b>, B 두 장끼리 바꾸기 <b>2가지</b>
+   120 ÷ (6 × 2) ＝ <b>10가지</b></div>
+<p class="small"><b>같은 것끼리 바꾸는 방법의 수로 나눈다</b> — 이유가 <b>“순서 없이 뽑기”와 완전히 같습니다.</b>
+새로운 공식이 아니라 <b>같은 생각의 다른 얼굴</b>입니다.</p>
+
+<h3>뽑는 것과 남기는 것은 같다</h3>
+<div class="sol"><b>6명 중 4명</b>을 뽑는 방법 ＝ <b>6명 중 2명</b>을 <b>남기는</b> 방법
+
+   6 × 5 × 4 × 3 ÷ (4 × 3 × 2 × 1) ＝ <b>15</b>
+   6 × 5 ÷ (2 × 1) ＝ <b>15</b>   ← 같다
+
+ <b>많이 뽑는 문제는 “남기는 쪽”으로 바꾸면 계산이 훨씬 짧다.</b></div>
+<p class="small"><b>“뽑을 사람”과 “남길 사람”을 정하는 것은 같은 일</b> — 주제 45의 여사건과 같은 발상입니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">크게 세고 · 몇 번 세었는지로 나누기</span></div>
+  <p><b>① 순서를 따져 전부 센다</b> → <b>② 같은 것으로 볼 것이 몇 번씩 세어졌는지 센다</b>
+  → <b>③ 그 수로 나눈다</b> → <b>④ 작은 경우를 직접 나열해 확인한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 2 / 12</span></div>
+</div>
+<div class="page t2">
+<div class="head"><span class="no">주제 44</span><h1>경우의 수 심화 — 원탁과 이웃 조건<small>둥글게 앉으면 <b>돌린 것이 같은 배치</b>가 된다. 그만큼 또 나눈다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>3 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>원탁에 둘러앉기</h2>
+<div class="sol"><b>5명</b>이 <b>둥근 탁자</b>에 앉는 방법은?
+
+ 한 줄로 앉으면 5 × 4 × 3 × 2 × 1 ＝ <b>120가지</b>
+ 그런데 원탁에서는 <b>모두 한 칸씩 돌려 앉아도 같은 배치</b>다.
+ 돌리는 방법이 <b>5가지</b> → 같은 배치를 <b>5번씩</b> 세었다.
+
+   120 ÷ 5 ＝ <b>24가지</b>       ( ＝ 4 × 3 × 2 × 1 )
+
+ <b>n명이면 (n−1)명을 줄 세우는 것</b>과 같다.</div>
+<p class="small"><b>한 사람을 고정</b>해도 됩니다 — “가”를 붙박아 두고 나머지 4명을 줄 세우면 <b>24</b>.
+1단계 A영역 주제 1의 <b>“기준 정하기”</b> 그대로입니다.</p>
+
+<h2><span class="n">4</span>“이웃한다 / 이웃하지 않는다”</h2>
+<div class="sol"><b>이웃해야 한다면 — 묶어서 하나로 본다</b>
+ 5명 중 A와 B가 <b>반드시 이웃</b>하게 한 줄로 서는 방법은?
+   AB를 <b>한 덩어리</b>로 보면 <b>4개</b>를 줄 세우는 것 ＝ 4 × 3 × 2 × 1 ＝ 24
+   덩어리 안에서 <b>AB / BA</b> 두 가지  →  24 × 2 ＝ <b>48가지</b>
+
+<b>이웃하면 안 된다면 — 전체에서 뺀다</b>
+   전체 120 − 이웃하는 48 ＝ <b>72가지</b>   ← 주제 45의 방법</div>
+<div class="warn"><b>“이웃해야 한다”면 묶고, “이웃하면 안 된다”면 뺍니다.</b>
+이웃하지 않는 경우를 직접 세려 하면 자리마다 조건이 달라 매우 복잡합니다.
+<b>어느 쪽이 세기 쉬운지 먼저 판단하는 것</b>이 2단계입니다.</div>
+
+<h2><span class="n">5</span>세 가지를 한눈에</h2>
+<table>
+<tr><th style="width:26%">상황</th><th style="width:30%">나누는 수</th><th>왜</th></tr>
+<tr><td class="l">순서 없이 <b>k명</b> 뽑기</td><td class="m">k × (k−1) × ⋯ × 1</td><td class="l">뽑은 사람끼리 <b>줄 세운 만큼</b> 겹침</td></tr>
+<tr><td class="l">같은 것이 <b>k개</b> 있는 배열</td><td class="m">k × (k−1) × ⋯ × 1</td><td class="l">같은 것끼리 <b>바꾼 만큼</b> 겹침</td></tr>
+<tr><td class="l"><b>원탁</b>에 n명</td><td class="m">n</td><td class="l"><b>돌린 만큼</b> 겹침</td></tr>
+</table>
+<p class="small">셋 다 <b>“같은 것으로 볼 것이 몇 번 세어졌는가”</b> 하나입니다 —
+목걸이처럼 뒤집어도 같다면 <b>2로 한 번 더</b> 나눕니다.</p>
+
+<h2><span class="n">6</span>같은 것이 여러 종류일 때</h2>
+<div class="sol"><b>A, A, B, B, C</b> 다섯 장을 한 줄로 놓는 방법은?
+
+ 모두 다르다면 5 × 4 × 3 × 2 × 1 ＝ <b>120</b>
+ A 두 장끼리 바꾸기 <b>2가지</b>, B 두 장끼리 바꾸기 <b>2가지</b>
+
+   120 ÷ (2 × 2) ＝ <b>30가지</b>
+
+ <b>같은 것의 종류마다 나누는 수를 곱해서</b> 한꺼번에 나눈다.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“이 문제에서 <b>왜 나누어야 하는지</b> 설명하시오.”<br>
+  <span class="small">→ “먼저 순서를 따져 세면 5 × 4 × 3 ＝ <u>60가지</u> 입니다.
+  그런데 대표 3명을 뽑는 문제이므로 <u>(가, 나, 다)를 어떤 순서로 뽑았든 같은 조</u> 입니다.
+  세 사람을 줄 세우는 방법이 <u>3 × 2 × 1 ＝ 6가지</u> 이므로
+  같은 조를 <u>6번씩 세었습니다.</u>
+  따라서 <u>60 ÷ 6 ＝ 10가지</u> 이고, 4명 중 2명을 뽑는 작은 경우로 확인하면
+  4 × 3 ÷ 2 ＝ 6 으로 <u>직접 세어 본 결과와 맞습니다.</u>”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>44-1 ~ 44-5</b> &nbsp;·&nbsp; 44-1은 <b>순서 있음·없음</b>, 44-2는 <b>같은 것이 있는 배열</b>,
+44-3은 <b>원탁 배치</b>, 44-4는 <b>이웃 조건</b>,
+44-5는 <b>왜 나누는지</b>를 설명하는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 3 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 45</span><h1>여사건 — 반대를 세어 뺀다<small>“적어도 하나”가 보이면 <b>하나도 없는 경우</b>를 세어 전체에서 빼라</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>4 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div style="text-align:center;margin:2px 0"><svg width="250" height="96" viewBox="0 0 250 96"><rect x="6" y="8" width="238" height="68" fill="#1d4ed8" opacity="0.28" stroke="#1d4ed8" stroke-width="1.5"/><rect x="166" y="44" width="70" height="34" fill="#fffdf7" stroke="#c2410c" stroke-width="1.8"/><text x="201" y="66" text-anchor="middle" font-size="9" font-weight="700" fill="#c2410c">반대 경우</text><text x="60" y="34" font-size="10.5" font-weight="800" fill="#1d4ed8">전체</text><text x="60" y="50" font-size="8.4" fill="#2a2724">구하려는 것 ＝ 전체 − 반대</text><text x="6" y="92" font-size="7.8" fill="#6b635a">파란 부분(구하려는 것)을 직접 세면 복잡하지만, 흰 부분을 세어 빼면 쉽다</text></svg></div>
+  <p>주사위 두 개를 던질 때 <b>적어도 하나가 6</b>이 나오는 경우는 몇 가지일까요?</p>
+  <p><b>잠깐!</b> “첫째가 6 · 둘째가 6 · 둘 다 6”으로 나누면 <b>겹침</b>을 조심해야 합니다.
+  <b>“하나도 6이 아닌 경우”</b> 를 세어 빼면 계산이 한 줄입니다.</p>
+</div>
+
+<h2><span class="n">1</span>전체 − 반대 ＝ 구하려는 것</h2>
+<div class="sol">전체 경우 ＝ 6 × 6 ＝ <b>36가지</b>
+<b>하나도 6이 아닌 경우</b> ＝ 5 × 5 ＝ <b>25가지</b>  (각 주사위가 1 ~ 5)
+
+   적어도 하나가 6  ＝  36 − 25 ＝ <b>11가지</b>
+
+ [직접 세어 확인] 첫째가 6인 것 6가지 ＋ 둘째가 6인 것 6가지
+                 − 둘 다 6인 것 1가지 ＝ <b>11</b>  ○</div>
+<div class="note"><b>왜 빼는 편이 쉬운가.</b> “적어도 하나”는 갈래가 여러 개로 나뉘고 <b>겹침까지</b> 따져야 하지만,
+<b>“하나도 없다”</b> 는 갈래가 <b>하나뿐</b>이며 겹침도 없습니다.</div>
+
+<h2><span class="n">2</span>주사위가 세 개라면 차이가 더 벌어진다</h2>
+<div class="sol">전체 216 − 하나도 6이 아닌 경우 125 ＝ <b>91가지</b>
+ 직접 세려면 <b>“정확히 하나·둘·셋”</b> 세 갈래를 겹치지 않게 맞춰야 한다.</div>
+
+<h2><span class="n">3</span>“적어도”가 보이면 곧바로 반대를 떠올린다</h2>
+<table>
+<tr><th style="width:36%">구하려는 것</th><th style="width:30%">반대 경우</th><th>계산</th></tr>
+<tr><td class="l">동전 5개 중 <b>적어도 하나 앞면</b></td><td class="l">모두 뒷면 (1가지)</td><td class="m">32 − 1 ＝ <b>31</b></td></tr>
+<tr><td class="l">1~100 중 <b>3의 배수도 5의 배수도 아닌</b> 수</td><td class="l">3 또는 5의 배수 (47개)</td><td class="m">100 − 47 ＝ <b>53</b></td></tr>
+<tr><td class="l">5명이 서는데 <b>A와 B가 이웃하지 않게</b></td><td class="l">이웃하는 경우 (48가지)</td><td class="m">120 − 48 ＝ <b>72</b></td></tr>
+<tr><td class="l">4명이 <b>적어도 한 명 제자리</b>에 앉기</td><td class="l">아무도 제자리가 아님 (9가지)</td><td class="m">24 − 9 ＝ <b>15</b></td></tr>
+</table>
+<p class="small"><b>“적어도 · 아닌 · 하지 않는”</b> 이 세 낱말이 신호입니다.
+보이는 즉시 <b>반대가 무엇인지</b> 를 먼저 적어 보십시오.</p>
+
+<h3>비밀번호 문제</h3>
+<div class="sol"><b>“세 자리 비밀번호(0~9 반복 가능) 중 적어도 하나가 0 인 것은?”</b>
+
+ 전체 ＝ 10 × 10 × 10 ＝ <b>1000</b>
+ 0이 하나도 없는 것 ＝ 9 × 9 × 9 ＝ <b>729</b>
+
+   1000 − 729 ＝ <b>271가지</b></div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">반대 경우가 더 간단한지 먼저 본다</span></div>
+  <p><b>① 전체 경우의 수를 구한다</b> → <b>② 구하려는 것의 “반대”를 정확히 말로 쓴다</b>
+  → <b>③ 반대의 갈래가 더 적으면 그쪽을 센다</b> → <b>④ 전체에서 빼고, 작은 경우로 검산한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 4 / 12</span></div>
+</div>
+<div class="page t5">
+<div class="head"><span class="no">주제 45</span><h1>여사건 — 반대를 정확히 만들기<small>반대를 잘못 만들면 <b>그 뒤가 전부 틀린다.</b> 1단계 참·거짓에서 배운 그대로다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>5 / 12 쪽</div></div>
+
+<h2><span class="n">4</span>반대를 만드는 법</h2>
+<table>
+<tr><th style="width:44%">구하려는 것</th><th>그 반대</th></tr>
+<tr><td class="l"><b>적어도 하나</b>는 6이다</td><td class="l"><b>하나도</b> 6이 아니다</td></tr>
+<tr><td class="l"><b>모두</b> 6이다</td><td class="l"><b>적어도 하나는</b> 6이 아니다</td></tr>
+<tr><td class="l">A <b>또는</b> B 이다</td><td class="l">A도 B도 <b>아니다</b></td></tr>
+<tr><td class="l">A <b>이고</b> B 이다</td><td class="l">A가 아니<b>거나</b> B가 아니다</td></tr>
+</table>
+<div class="warn"><b>“모두 ~이다”의 반대는 “모두 ~가 아니다”가 아닙니다.</b>
+반대는 <b>“적어도 하나는 아니다”</b> 입니다.
+1단계 E영역 주제 21에서 거짓말 문제를 풀 때 익힌 것과 <b>같은 변환</b>이며,
+여사건에서 잘못 만든 반대는 <b>계산이 완벽해도 답을 틀리게</b> 합니다.</div>
+
+<h2><span class="n">5</span>빼기가 두 번 필요할 때</h2>
+<div class="sol"><b>“1부터 100까지 중 3의 배수도 5의 배수도 아닌 수는?”</b>
+
+ 3의 배수 : 33개    5의 배수 : 20개    <b>15의 배수 : 6개</b>(두 번 세어짐)
+ 3 또는 5의 배수 ＝ 33 ＋ 20 − 6 ＝ <b>47개</b>
+
+   둘 다 아닌 수 ＝ 100 − 47 ＝ <b>53개</b></div>
+<p class="small"><b>“더한 뒤 겹친 만큼 빼고, 그것을 다시 전체에서 뺀다.”</b>
+겹침 처리(1단계 E 주제 20)와 여사건이 <b>한 문제 안에서 함께</b> 쓰이는 전형입니다.
+<b>15의 배수</b>를 빼는 것은 3과 5의 <b>최소공배수</b>이기 때문입니다(2단계 A 주제 26).</p>
+
+<h2><span class="n">6</span>여사건을 쓰면 안 되는 때</h2>
+<div class="sol"><b>반대가 더 복잡하면 쓰지 않는다.</b>
+
+  “주사위 두 개의 합이 <b>7</b> 인 경우” → 직접 세면 <b>6가지</b>로 간단하다.
+  반대(합이 7이 아닌 경우)는 36 − 6 ＝ 30가지로 <b>오히려 복잡</b>하다.
+
+ <b>판단 기준</b> — 갈래가 <b>하나</b>로 떨어지는 쪽을 센다.</div>
+<p class="small"><b>“무조건 빼기”가 아니라 “어느 쪽이 쉬운가”를 고르는 것</b>이 2단계입니다.
+<b>도구를 고르게 한다</b> 는 이 단계의 취지가 여기서 가장 또렷합니다.</p>
+
+<h2><span class="n">7</span>여사건과 “뽑는 대신 남기기”</h2>
+<div class="sol">둘은 <b>같은 발상</b>이다 — <b>구하기 쉬운 쪽을 구하고 나머지를 얻는 것.</b>
+
+ <b>여사건</b>   구하려는 것 ＝ 전체 − 반대
+ <b>남기기</b>   6명 중 4명 뽑기 ＝ 6명 중 2명 남기기
+
+ 문제가 “세기 어렵게” 쓰여 있으면 <b>뒤집어 읽어 보는 습관</b>을 들이십시오.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“직접 세는 것보다 <b>반대를 세어 빼는 편이 쉬운 이유</b>를 설명하시오.”<br>
+  <span class="small">→ “‘적어도 하나가 6’ 을 직접 세려면 <u>정확히 하나가 6인 경우와 둘 다 6인 경우</u> 로
+  갈래를 나누고, 두 갈래가 <u>겹치지 않는지</u> 까지 확인해야 합니다.
+  그러나 반대인 ‘<u>하나도 6이 아니다</u>’ 는 <u>두 주사위 모두 1 ~ 5</u> 라는 <u>한 갈래</u> 뿐이어서
+  5 × 5 ＝ 25 로 간단히 세어집니다.
+  전체 36에서 빼면 <u>11가지</u> 이고, 직접 센 결과와도 같습니다.
+  <u>갈래가 적고 겹침이 없는 쪽</u>을 세는 것이 이 방법의 이유입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>45-1 ~ 45-5</b> &nbsp;·&nbsp; 45-1은 <b>“적어도 하나”</b>, 45-2는 <b>반대 만들기</b>,
+45-3은 <b>겹침과 여사건을 함께</b>, 45-4는 <b>이웃하지 않게 세우기</b>,
+45-5는 <b>빼는 편이 쉬운 이유</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 5 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 46</span><h1>비둘기집 원리 — 서랍을 무엇으로 잡을 것인가<small>서랍보다 물건이 많으면 <b>어느 서랍엔가 반드시 둘 이상</b>이 들어간다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>6 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div style="text-align:center;margin:2px 0"><svg width="250" height="74" viewBox="0 0 250 74"><rect x="5.0" y="26" width="56.0" height="30" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.4"/><text x="33.0" y="66" text-anchor="middle" font-size="7.6" fill="#6b635a">1</text><rect x="65.0" y="26" width="56.0" height="30" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.4"/><text x="93.0" y="66" text-anchor="middle" font-size="7.6" fill="#6b635a">2</text><rect x="125.0" y="26" width="56.0" height="30" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.4"/><text x="153.0" y="66" text-anchor="middle" font-size="7.6" fill="#6b635a">3</text><rect x="185.0" y="26" width="56.0" height="30" fill="#efe9fb" stroke="#6d28d9" stroke-width="1.4"/><text x="213.0" y="66" text-anchor="middle" font-size="7.6" fill="#6b635a">4</text><circle cx="33.0" cy="48" r="4.6" fill="#6d28d9"/><circle cx="93.0" cy="48" r="4.6" fill="#6d28d9"/><circle cx="153.0" cy="48" r="4.6" fill="#6d28d9"/><circle cx="213.0" cy="48" r="4.6" fill="#6d28d9"/><circle cx="33.0" cy="37" r="4.6" fill="#c2410c"/><text x="5" y="16" font-size="8.4" font-weight="700" fill="#2a2724">서랍 4칸에 물건 5개 → 어딘가에는 <tspan fill="#c2410c">반드시 2개 이상</tspan></text></svg></div>
+  <p><b>13명</b>이 모이면 <b>생일이 같은 달인 사람이 반드시 둘 이상</b> 있습니다. 왜 그럴까요?</p>
+  <p><b>잠깐!</b> 누구와 누구인지는 알 수 없습니다.
+  그런데도 <b>“반드시 있다”</b> 고 말할 수 있다는 것이 이 원리의 힘입니다.</p>
+</div>
+
+<h2><span class="n">1</span>원리 자체는 너무나 당연하다</h2>
+<div class="sol"><b>서랍이 n칸인데 물건이 n＋1개 이상이면,
+어느 서랍엔가 반드시 2개 이상이 들어 있다.</b>
+
+ <b>왜</b> — 만약 모든 서랍에 <b>1개 이하</b>라면 물건은 많아야 <b>n개</b> 여야 한다.
+      그런데 물건이 n＋1개이므로 <b>모순</b>이다.
+
+ 생일 문제 : 서랍 ＝ <b>12개월</b> ,  물건 ＝ <b>13명</b>  →  같은 달이 <b>반드시</b> 있다.</div>
+<div class="note"><b>어려운 것은 원리가 아니라 “서랍을 무엇으로 잡을까”입니다.</b>
+문제마다 서랍이 다릅니다 — <b>달 · 색깔 · 나머지 · 짝지은 수 · 구역</b>.
+<b>“서랍은 무엇이고 물건은 무엇인가”</b> 를 한 줄로 적는 것이 이 주제의 전부입니다.</div>
+
+<h2><span class="n">2</span>서랍을 잡는 네 가지 방식</h2>
+<table>
+<tr><th style="width:34%">문제</th><th style="width:30%">서랍</th><th>물건</th></tr>
+<tr><td class="l">13명 중 같은 달 생일</td><td class="l"><b>12개월</b></td><td class="l">13명</td></tr>
+<tr><td class="l">서랍 속 5색 양말에서 같은 색 한 켤레</td><td class="l"><b>5가지 색</b></td><td class="l">꺼낸 양말</td></tr>
+<tr><td class="l">정수 <b>n＋1</b>개 중 차가 n의 배수인 둘</td><td class="l"><b>n으로 나눈 나머지</b></td><td class="l">n＋1개의 수</td></tr>
+<tr><td class="l">1~10 중 6개 뽑으면 합이 11인 짝</td><td class="l"><b>{1,10}{2,9}⋯{5,6}</b> 5쌍</td><td class="l">뽑은 6개</td></tr>
+</table>
+<div class="sol"><b>세 번째를 확인해 보자.</b> 정수를 n으로 나눈 나머지는 <b>0, 1, ⋯, n−1</b> 의 <b>n가지</b>뿐이다.
+ 정수가 <b>n＋1개</b>이면 나머지가 같은 두 수가 <b>반드시</b> 있고,
+ 나머지가 같은 두 수의 <b>차는 n의 배수</b> 이다.
+ (2단계 A영역 주제 27의 <b>나머지로 묶기</b> 가 서랍이 되었다)</div>
+
+<h2><span class="n">3</span>서랍이 “구역”일 때</h2>
+<div class="sol"><b>“한 변이 2cm 인 정사각형 안에 점 5개를 찍으면,
+거리가 √2 cm 이하인 두 점이 반드시 있다.”</b>
+
+ 정사각형을 <b>한 변 1cm 인 작은 정사각형 4칸</b>으로 나눈다  ← <b>서랍 4칸</b>
+ 점이 <b>5개</b> 이므로 어느 칸엔가 <b>반드시 2개 이상</b>이 들어간다.
+ 한 변 1인 정사각형 안의 두 점은 아무리 멀어도 <b>대각선 길이 √2</b> 를 넘지 못한다.
+
+   → 거리가 √2 이하인 두 점이 <b>반드시</b> 있다.</div>
+<p class="small"><b>서랍이 수나 색이 아니라 “공간의 구역”</b> 인 경우입니다.
+비둘기집의 서랍은 <b>무엇이든 될 수 있다</b>는 것을 보여 주는 대표적인 예입니다.</p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">서랍과 물건을 한 줄로 적기</span></div>
+  <p><b>① “반드시 ~인 둘이 있다”를 찾는다</b> → <b>② 무엇이 같아야 하는지 본다(그것이 서랍)</b>
+  → <b>③ 서랍 수 ＋ 1 개가 있는지 확인한다</b> → <b>④ 하나 적을 때의 반례를 만들어 최소임을 보인다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 6 / 12</span></div>
+</div>
+<div class="page t3">
+<div class="head"><span class="no">주제 46</span><h1>비둘기집 원리 — 최악의 경우와 반례<small>“몇 개면 되는가”는 <b>가장 운 나쁜 경우</b>를 상상하는 문제다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>7 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>양말 문제 — 최악의 경우를 세어 본다</h2>
+<div class="sol">서랍에 <b>5가지 색</b> 양말이 뒤섞여 있다. 어두워서 색을 볼 수 없다.
+<b>같은 색 한 켤레</b>를 확실히 얻으려면 몇 짝을 꺼내야 할까?
+
+ <b>가장 운이 나쁘면</b> 5짝을 꺼냈는데 <b>모두 다른 색</b>일 수 있다.
+ 그러나 <b>6짝째</b>는 어떤 색이든 <b>이미 있는 색과 같아진다.</b>
+
+   → <b>6짝</b>
+
+ <b>반례(5짝으로는 안 되는 이유)</b> — 다섯 색을 하나씩 꺼내면 켤레가 <b>하나도 없다.</b></div>
+<div class="note"><b>답안은 반드시 두 방향이어야 합니다.</b>
+<b>① 6짝이면 반드시 된다</b>(서랍 5칸에 물건 6개) 와
+<b>② 5짝으로는 안 될 수 있다</b>(각 색 하나씩인 반례).
+①만 쓰면 “6이면 된다”는 보였지만 <b>“6이 최소”</b> 는 보이지 못한 것입니다.</div>
+
+<h2><span class="n">4</span>“두 켤레”라면 얼마나 더 필요할까</h2>
+<div class="sol"><b>3가지 색</b>에서 <b>같은 색 두 켤레</b>를 얻으려면?
+ 5짝 → (3, 1, 1) 이면 켤레가 <b>1개</b> 뿐  ✕
+ 6짝 → 어떻게 나뉘어도 켤레가 <b>2개 이상</b>  ○  → <b>6짝</b>
+ <b>반례</b> — 5짝일 때 (3,1,1)이면 켤레가 하나뿐이므로 부족하다.</div>
+<p class="small">켤레 문제에서는 <b>홀수로 남는 짝</b>이 손해이므로, 그것이 최대가 되는 배분이 최악의 경우입니다.</p>
+
+<h2><span class="n">5</span>“적어도 k개”로 늘어날 때</h2>
+<div class="sol"><b>서랍 n칸에 물건이 n × k ＋ 1 개 이상이면 어느 서랍엔가 반드시 k＋1개 이상</b>이다.
+ 12개월에 <b>25명</b> ＝ 12 × 2 ＋ 1 → 같은 달 생일이 <b>3명 이상</b>.
+ <b>24명이면?</b> 달마다 2명씩이면 되므로 <b>반드시 그렇지는 않다.</b></div>
+<div class="warn"><b>“몇 명이면 3명 이상이 같은 달인가”</b> 같은 문제에서
+<b>12 × 3 ＝ 36</b> 이라고 답하기 쉽습니다. 정답은 <b>12 × 2 ＋ 1 ＝ 25</b> 입니다.
+<b>“하나 더 넘치면 된다”</b> 는 것이 이 원리의 핵심이므로 <b>＋1</b> 을 잊지 마십시오.</div>
+
+<h2><span class="n">6</span>비둘기집을 쓸 수 있는지 알아보는 법</h2>
+<table>
+<tr><th style="width:40%">문제에 이런 말이 있으면</th><th>비둘기집</th></tr>
+<tr><td class="l">“<b>반드시</b> ~인 둘이 있다”, “<b>적어도</b> ~는 같다”</td><td class="m">○</td></tr>
+<tr><td class="l">“<b>최소 몇 개</b>를 꺼내야 확실한가”</td><td class="m">○</td></tr>
+<tr><td class="l">“몇 가지 방법이 있는가”</td><td class="m">✕ (주제 44)</td></tr>
+<tr><td class="l">“가장 큰 값은 얼마인가”</td><td class="m">✕ (주제 48)</td></tr>
+</table>
+<p class="small"><b>“반드시 · 확실히 · 최소한”</b> 이 신호입니다.
+반대로 <b>“몇 가지 · 가장 큰”</b> 은 다른 주제의 신호이므로 헷갈리지 마십시오.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“같은 색 한 켤레를 얻으려면 <b>최소 몇 짝</b>을 꺼내야 하는지, <b>근거와 반례</b>를 함께 쓰시오.”<br>
+  <span class="small">→ “색이 <u>5가지</u> 이므로 색을 <u>서랍 5칸</u> 으로 봅니다.
+  양말 <u>6짝</u>을 꺼내면 서랍 5칸에 물건 6개를 넣는 것이므로
+  <u>어느 색엔가 반드시 2짝 이상</u>이 들어가 한 켤레가 만들어집니다.
+  한편 <u>5짝일 때는 다섯 색을 하나씩 꺼낼 수 있어</u> 켤레가 하나도 생기지 않을 수 있습니다.
+  따라서 <u>6짝이 최소</u> 입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>46-1 ~ 46-5</b> &nbsp;·&nbsp; 46-1은 <b>서랍 정하기</b>, 46-2는 <b>양말·구슬 최악의 경우</b>,
+46-3은 <b>나머지를 서랍으로</b>, 46-4는 <b>“k개 이상”으로 늘리기</b>,
+46-5는 <b>반례까지 포함한 답안</b>을 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 7 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 47</span><h1>표와 그래프로 추론 — 확정 칸부터 채운다<small>조건을 머릿속에 두지 마라. <b>표에 ○와 ×를 적어 나가면</b> 답이 저절로 남는다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>8 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <p>민수 · 지호 · 서연은 <b>수학 · 과학 · 국어</b> 중 서로 다른 과목을,
+  <b>빨강 · 파랑 · 초록</b> 중 서로 다른 색을 좋아합니다.</p>
+  <div class="sol">① 민수는 <b>수학</b>을 좋아하지 않는다.      ② <b>과학</b>을 좋아하는 사람은 <b>파랑</b>을 좋아한다.
+③ 지호는 <b>초록</b>을 좋아한다.            ④ 서연은 <b>국어</b>를 좋아하지 않는다.
+⑤ 서연은 <b>파랑</b>을 좋아하지 않는다.</div>
+</div>
+
+<h2><span class="n">1</span>표를 두 개 그린다</h2>
+<div class="row"><div class="col">
+<table>
+<tr><th style="width:22%">사람 \ 과목</th><th>수학</th><th>과학</th><th>국어</th></tr>
+<tr><th>민수</th><td class="x">×①</td><td class="o">○</td><td class="x">×</td></tr>
+<tr><th>지호</th><td class="x">×</td><td class="x">×</td><td class="o">○</td></tr>
+<tr><th>서연</th><td class="o">○</td><td class="x">×</td><td class="x">×④</td></tr>
+</table>
+</div><div class="col">
+<table>
+<tr><th style="width:22%">사람 \ 색</th><th>빨강</th><th>파랑</th><th>초록</th></tr>
+<tr><th>민수</th><td class="x">×</td><td class="o">○</td><td class="x">×</td></tr>
+<tr><th>지호</th><td class="x">×</td><td class="x">×</td><td class="o">○③</td></tr>
+<tr><th>서연</th><td class="o">○</td><td class="x">×⑤</td><td class="x">×</td></tr>
+</table>
+</div></div>
+
+<h2><span class="n">2</span>지운 순서를 그대로 적는다</h2>
+<div class="sol"><b>1단계</b> ③에서 지호 ＝ <b>초록</b>. 같은 줄·같은 칸의 나머지에 모두 ×.
+<b>2단계</b> ②에서 <b>과학인 사람은 파랑</b> 인데 지호는 초록이므로 <b>지호는 과학이 아니다.</b>
+<b>3단계</b> ⑤에서 서연은 파랑이 아니므로, ②에 의해 <b>서연도 과학이 아니다.</b>
+<b>4단계</b> 과학은 민수뿐 → <b>민수 ＝ 과학</b>, ②에 의해 <b>민수 ＝ 파랑</b>.
+<b>5단계</b> ①·④에서 민수는 수학 ✕, 서연은 국어 ✕ → <b>서연 ＝ 수학</b>, <b>지호 ＝ 국어</b>.
+<b>6단계</b> 남은 색 : 서연 ＝ <b>빨강</b>.
+
+ <b>민수 — 과학 · 파랑 ／ 지호 — 국어 · 초록 ／ 서연 — 수학 · 빨강</b></div>
+<div class="note"><b>서술형의 배점은 “표”가 아니라 “순서”에 있습니다.</b>
+<b>어느 조건에서 무엇이 확정되었고, 그래서 무엇이 지워졌는가</b> 를
+<b>번호를 붙여 차례로</b> 쓰는 것이 답안입니다.
+표만 채워 놓고 결과만 옮겨 적으면 <b>절반</b>입니다.</div>
+
+<h2><span class="n">3</span>조건을 표 위의 손동작으로 바꾸기</h2>
+<table>
+<tr><th style="width:38%">조건의 모양</th><th style="width:26%">표에서 하는 일</th><th>보기</th></tr>
+<tr><td class="l">“A는 X이다”</td><td class="l">그 칸에 <b>○</b>, 십자로 <b>×</b></td><td class="l">③ 지호 ＝ 초록</td></tr>
+<tr><td class="l">“A는 X가 아니다”</td><td class="l">그 칸에 <b>×</b> 하나</td><td class="l">① 민수 ✕ 수학</td></tr>
+<tr><td class="l">“X인 사람은 Y이다”</td><td class="l"><b>두 표를 잇는</b> 조건 — 한쪽이 정해지면 다른 쪽도 정해진다</td><td class="l">② 과학 → 파랑</td></tr>
+<tr><td class="l">“A와 B는 다르다”</td><td class="l">같은 칸에 둘 다 ○가 될 수 없음</td><td class="l">서로 다른 과목</td></tr>
+</table>
+<p class="small"><b>세 번째 줄이 이 문제의 열쇠</b>였습니다. ②는 사람에 대한 조건이 아니라
+<b>과목 표와 색 표를 연결하는</b> 조건이어서, 지호가 초록이라는 사실이 <b>과목 표로 옮겨 갈 수</b> 있었습니다.
+<b>두 표를 잇는 조건부터 찾으십시오.</b></p>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">확정 칸부터 · 지운 근거를 번호로</span></div>
+  <p><b>① 표를 그린다</b>(짝짓는 대상마다 하나씩) → <b>② 곧바로 ○가 되는 조건부터 적는다</b>
+  → <b>③ ○를 하나 넣으면 같은 줄·칸을 모두 ×로</b> → <b>④ 한 줄에 ×가 둘이면 남은 하나가 ○.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 8 / 12</span></div>
+</div>
+<div class="page t6">
+<div class="head"><span class="no">주제 47</span><h1>표와 그래프로 추론 — 조건이 모자랄 때<small>답이 <b>하나로 정해지지 않는다면</b> 그것도 답이다. 다만 근거를 대야 한다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>9 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>조건 하나가 빠지면 어떻게 되나</h2>
+<div class="sol">앞 문제에서 <b>⑤(서연은 파랑이 아니다)</b> 를 빼 보자.
+
+ <b>경우 1</b> 민수 ＝ 과학·파랑 , 지호 ＝ 국어·초록 , 서연 ＝ 수학·빨강
+ <b>경우 2</b> 서연 ＝ 과학·파랑 , 지호 ＝ 수학·초록 , 민수 ＝ 국어·빨강
+
+ <b>두 경우 모두 ① ~ ④ 를 만족</b>한다 → 답이 <b>하나로 정해지지 않는다.</b>
+
+ → ⑤ 는 <b>경우 2를 지우기 위해</b> 꼭 필요한 조건이었다.</div>
+<p><b>“조건이 충분한가”를 확인하는 것</b>도 2단계의 문항입니다.
+<b>“답이 여러 개이다”</b> 라고 답할 때는 <b>서로 다른 두 경우를 실제로 제시</b>해야 합니다.
+1단계에서 <b>반례를 드는 것</b>과 같은 형식입니다.</p>
+
+<h2><span class="n">4</span>표 말고 그림이 나은 경우</h2>
+<table>
+<tr><th style="width:30%">이런 조건</th><th style="width:26%">쓸 도구</th><th>왜</th></tr>
+<tr><td class="l">A는 B의 <b>옆자리</b>다</td><td class="m">자리 그림</td><td class="l">순서·거리가 중요</td></tr>
+<tr><td class="l">A가 B보다 <b>키가 크다</b></td><td class="m">수직선·사슬</td><td class="l">대소를 <b>한 줄로</b> 세운다</td></tr>
+<tr><td class="l">A와 B는 <b>서로 안다</b></td><td class="m">점과 선</td><td class="l">관계는 <b>그래프</b>로</td></tr>
+<tr><td class="l">누가 무엇을 좋아한다</td><td class="m">○× 표</td><td class="l">짝짓기는 <b>표</b>로</td></tr>
+</table>
+<div class="sol"><b>대소 관계의 예</b> — “A는 B보다 크고, C는 A보다 작고, D는 B보다 크다.”
+   작은 쪽 ← C &lt; A &lt; B &lt; D → 큰 쪽    한 줄로 세우면 <b>순서가 한눈에</b> 보인다.</div>
+<p class="small"><b>짝짓기면 표, 순서면 줄, 관계면 점과 선</b> — 조건의 성격에 따라 도구를 고릅니다.</p>
+
+<h2><span class="n">5</span>흔한 실수</h2>
+<div class="warn">
+<ul class="li">
+<li>○를 넣고 <b>같은 줄·같은 칸을 ×로 지우지 않음</b> — 표의 힘은 여기서 나옵니다.</li>
+<li>“~가 아니다”라는 조건을 <b>×로 적지 않고</b> 머릿속에 둠</li>
+<li>답을 찾고 <b>나머지 조건을 확인하지 않음</b> — 반드시 <b>전 조건에 넣어 검산</b>하십시오.</li>
+</ul></div>
+
+<h2><span class="n">6</span>표를 채우는 두 가지 규칙</h2>
+<div class="sol"><b>규칙 A · ○를 넣으면 십자로 지운다</b>
+  한 사람이 두 과목을 좋아할 수 없고, 한 과목을 두 사람이 좋아할 수 없으므로
+  <b>같은 가로줄과 같은 세로줄</b>을 모두 ×로 지운다.
+
+<b>규칙 B · 한 줄에 ×가 모두 차면 남은 하나가 ○</b>
+  가로줄에서 두 칸이 ×이면 남은 칸이 <b>반드시</b> ○.
+  세로줄에서도 마찬가지다.
+
+ 두 규칙을 <b>번갈아 적용</b>하면 표가 저절로 채워진다.</div>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“각 사람이 좋아하는 과목과 색을 정한 <b>과정을 순서대로</b> 쓰시오.”<br>
+  <span class="small">→ “③에서 <u>지호가 초록</u> 으로 확정되므로 지호의 다른 색을 모두 지웠습니다.
+  ②에 따르면 <u>과학을 좋아하는 사람은 파랑</u> 인데 지호는 초록이므로 <u>지호는 과학이 아닙니다.</u>
+  ⑤에서 서연은 파랑이 아니므로 <u>서연도 과학이 아닙니다.</u>
+  따라서 <u>과학은 민수</u> 이고, ②에 의해 <u>민수는 파랑</u> 입니다.
+  ④에서 서연은 국어가 아니므로 <u>서연은 수학</u>, 남은 <u>지호가 국어</u> 이며
+  남은 색인 <u>빨강이 서연</u> 입니다. 모든 조건에 넣어 확인하니 <u>어긋나지 않았습니다.</u>”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>47-1 ~ 47-5</b> &nbsp;·&nbsp; 47-1은 <b>○× 표 채우기</b>, 47-2는 <b>대소 관계 줄 세우기</b>,
+47-3은 <b>조건이 모자랄 때</b>, 47-4는 <b>표와 그림 고르기</b>,
+47-5는 <b>지운 근거를 순서대로</b> 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 9 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 48</span><h1>최적화 — 가장 크게, 가장 작게<small>합이 일정하면 <b>가까울수록 곱이 크다.</b> 이 한 문장이 최적화의 절반이다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>10 / 12 쪽</div></div>
+
+<div class="open">
+  <div class="lb">생각 열기</div>
+  <div style="text-align:center;margin:2px 0"><svg width="250" height="100" viewBox="0 0 250 100"><line x1="18" y1="82" x2="244" y2="82" stroke="#b9b0a0" stroke-width="1"/><line x1="18" y1="8" x2="18" y2="82" stroke="#b9b0a0" stroke-width="1"/><polyline points="18.0,68.7 30.3,56.8 42.7,46.3 55.0,37.2 67.3,29.5 79.7,23.2 92.0,18.3 104.3,14.8 116.7,12.7 129.0,12.0 141.3,12.7 153.7,14.8 166.0,18.3 178.3,23.2 190.7,29.5 203.0,37.2 215.3,46.3 227.7,56.8 240.0,68.7" fill="none" stroke="#be123c" stroke-width="1.8"/><circle cx="18.0" cy="68.7" r="2.2" fill="#be123c"/><circle cx="30.3" cy="56.8" r="2.2" fill="#be123c"/><circle cx="42.7" cy="46.3" r="2.2" fill="#be123c"/><circle cx="55.0" cy="37.2" r="2.2" fill="#be123c"/><circle cx="67.3" cy="29.5" r="2.2" fill="#be123c"/><circle cx="79.7" cy="23.2" r="2.2" fill="#be123c"/><circle cx="92.0" cy="18.3" r="2.2" fill="#be123c"/><circle cx="104.3" cy="14.8" r="2.2" fill="#be123c"/><circle cx="116.7" cy="12.7" r="2.2" fill="#be123c"/><circle cx="129.0" cy="12.0" r="3.6" fill="#15803d"/><text x="129.0" y="5.0" text-anchor="middle" font-size="8.4" font-weight="800" fill="#15803d">100</text><circle cx="141.3" cy="12.7" r="2.2" fill="#be123c"/><circle cx="153.7" cy="14.8" r="2.2" fill="#be123c"/><circle cx="166.0" cy="18.3" r="2.2" fill="#be123c"/><circle cx="178.3" cy="23.2" r="2.2" fill="#be123c"/><circle cx="190.7" cy="29.5" r="2.2" fill="#be123c"/><circle cx="203.0" cy="37.2" r="2.2" fill="#be123c"/><circle cx="215.3" cy="46.3" r="2.2" fill="#be123c"/><circle cx="227.7" cy="56.8" r="2.2" fill="#be123c"/><circle cx="240.0" cy="68.7" r="2.2" fill="#be123c"/><text x="125.0" y="96" text-anchor="middle" font-size="8" fill="#6b635a">합이 20로 일정할 때 두 수의 곱 — 가운데에서 가장 크다</text></svg></div>
+  <p>두 수의 <b>합이 20</b> 일 때 <b>곱이 가장 큰</b> 경우는? 그리고 <b>가장 작은</b> 경우는?</p>
+  <p><b>잠깐!</b> 그래프가 <b>가운데에서 가장 높습니다.</b>
+  두 수가 <b>같을 때(10 × 10 ＝ 100)</b> 곱이 최대이고, <b>멀어질수록</b> 작아집니다.</p>
+</div>
+
+<h2><span class="n">1</span>합이 일정할 때</h2>
+<div class="sol"><b>합이 20인 두 수</b>
+  1 × 19 ＝ 19 ,  5 × 15 ＝ 75 ,  9 × 11 ＝ 99 ,  <b>10 × 10 ＝ 100</b>
+
+ <b>왜 같을 때 최대인가</b> — 두 수를 10, 10 에서 <b>한쪽을 1 늘리고 한쪽을 1 줄이면</b>
+   11 × 9 ＝ 99 로 <b>1이 줄어든다.</b> 2씩 벌리면 12 × 8 ＝ 96 으로 <b>4가 줄어든다.</b>
+   벌어진 만큼(<b>차의 절반</b>의 제곱만큼) 곱이 줄어들기 때문이다.
+
+ <b>세 수라면?</b> 합이 30 → 10 × 10 × 10 ＝ <b>1000</b> 이 최대. 역시 <b>모두 같을 때</b>.</div>
+<div class="note"><b>1단계 D영역의 “둘레가 같으면 정사각형이 가장 넓다”</b> 와 같은 사실입니다.
+둘레 20이면 가로＋세로 ＝ 10 으로 <b>합이 일정</b>하고, 넓이는 <b>곱</b>이므로
+<b>가로 ＝ 세로 ＝ 5</b> 일 때 최대(25)였습니다.
+<b>도형 문제가 수 문제로 바뀐 것</b>일 뿐입니다.</div>
+
+<h2><span class="n">2</span>거꾸로 — 곱이 일정할 때</h2>
+<div class="sol"><b>곱이 36인 두 자연수의 합</b>
+  1 ＋ 36 ＝ 37 ,  2 ＋ 18 ＝ 20 ,  3 ＋ 12 ＝ 15 ,  4 ＋ 9 ＝ 13 ,  <b>6 ＋ 6 ＝ 12</b>
+
+   → <b>두 수가 같을 때 합이 최소</b> 다.
+
+ “넓이가 같은 직사각형 중 <b>둘레가 가장 짧은 것은 정사각형</b>” 과 같은 말이다.</div>
+<p class="small"><b>합이 일정 → 곱은 같을 때 최대</b> / <b>곱이 일정 → 합은 같을 때 최소</b>.
+두 문장을 함께 외우지 말고 <b>“같을수록 통통하고, 통통할수록 넓고 둘레가 짧다”</b> 로 기억하십시오.</p>
+
+<h2><span class="n">3</span>조건이 붙었을 때 — 가능한 범위 안에서 가장 가깝게</h2>
+<div class="sol"><b>“합이 12인 세 자연수의 곱을 가장 크게”</b>
+  4 × 4 × 4 ＝ <b>64</b>       (3 × 4 × 5 ＝ 60 , 2 × 5 × 5 ＝ 50)
+
+<b>“합이 13인 세 자연수라면?”</b> 셋이 똑같을 수 없다.
+  <b>최대한 고르게</b> → 4, 4, 5  →  4 × 4 × 5 ＝ <b>80</b>
+  (3 × 5 × 5 ＝ 75 보다 크다)
+
+ → <b>정확히 같게 만들 수 없으면 “가능한 한 가깝게”</b> 나눈다.</div>
+
+<div class="strat">
+  <div><span class="lb">오늘의 전략</span><span class="nm">양 끝과 가운데를 견주어 본다</span></div>
+  <p><b>① 무엇이 고정되어 있는지 찾는다</b>(합인가 곱인가) → <b>② 가장 벌어진 경우와 가장 가까운 경우를 계산한다</b>
+  → <b>③ 어느 쪽이 큰지 확인한다</b> → <b>④ 한 칸 옮겼을 때 나빠지는지 보여 최적임을 말한다.</b></p>
+</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 10 / 12</span></div>
+</div>
+<div class="page t4">
+<div class="head"><span class="no">주제 48</span><h1>최적화 — 자리를 배치하는 문제<small><b>큰 자리에 큰 수</b>가 원칙이지만, 두 수로 나눌 때는 <b>고르게</b> 나누어야 한다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>11 / 12 쪽</div></div>
+
+<h2><span class="n">3</span>숫자 카드를 배치해 곱을 가장 크게</h2>
+<div class="sol"><b>1 ~ 6 을 한 번씩 써서 (세 자리 수) × (세 자리 수) 를 가장 크게</b>
+
+ <b>원칙 ①</b> 가장 큰 수 <b>6과 5</b> 를 <b>백의 자리</b>에 나누어 놓는다.
+   (한쪽에 몰면 다른 수가 작아져 곱이 줄어든다 — <b>합이 일정할 때 고르게</b>)
+ <b>원칙 ②</b> 그다음 큰 <b>4와 3</b> 을 십의 자리에, <b>2와 1</b> 을 일의 자리에.
+   이때 <b>백의 자리가 작은 쪽에 큰 수</b>를 주어 두 수를 가깝게 만든다.
+
+   <b>542 × 631 ＝ 342002</b>   ← 최대
+
+ <b>가장 작게</b> 하려면 반대로 <b>135 × 246 ＝ 33210</b></div>
+<p class="small"><b>“큰 자리에 큰 수”와 “두 수를 가깝게”가 함께 작동합니다.</b>
+백의 자리에는 6과 5를 <b>나누어</b> 놓되, 그다음부터는 <b>작은 쪽을 키우는 방향</b>으로 채웁니다.
+헷갈리면 <b>후보 두세 개를 실제로 곱해 견주어</b> 보십시오 — 그것이 근거가 됩니다.</p>
+
+<h2><span class="n">4</span>최적임을 보이는 법</h2>
+<div class="sol"><b>“왜 그것이 최대인가”를 답안에 쓰는 두 가지 방법</b>
+
+ <b>방법 A · 한 칸 옮겨 본다</b>
+   6과 5를 한쪽에 몰아 <b>651 × 432 ＝ 281232</b> → 342002 보다 <b>작다.</b>
+   두 수를 바꿔 <b>541 × 632 ＝ 341912</b> → 역시 <b>작다.</b>
+   → <b>어떻게 바꾸어도 나빠지므로</b> 이것이 최대다.
+
+ <b>방법 B · 원칙으로 설명한다</b>
+   자리값이 큰 곳에 큰 수를 두어야 하고, 두 수의 <b>합이 일정할 때는 가까울수록 곱이 크므로</b>
+   6과 5를 나누어 놓아야 한다.</div>
+<div class="warn"><b>“여러 개 계산해 보니 이게 제일 컸다”는 절반입니다.</b>
+모든 경우를 계산한 것이 아니기 때문입니다.
+<b>방법 A(바꾸면 나빠진다)</b> 나 <b>방법 B(원칙)</b> 로 <b>“다른 배치는 더 클 수 없다”</b> 를 말해야
+완성된 답안이 됩니다. 주제 46의 <b>반례</b>와 짝을 이루는 형식입니다.</div>
+
+<h2><span class="n">5</span>자주 나오는 최적화 유형</h2>
+<table>
+<tr><th style="width:36%">문제</th><th style="width:26%">원칙</th><th>답</th></tr>
+<tr><td class="l">합 20인 두 수의 곱 최대</td><td class="l">같게</td><td class="m">10 × 10 ＝ 100</td></tr>
+<tr><td class="l">곱 36인 두 수의 합 최소</td><td class="l">같게</td><td class="m">6 ＋ 6 ＝ 12</td></tr>
+<tr><td class="l">둘레 20인 직사각형 넓이 최대</td><td class="l">정사각형</td><td class="m">5 × 5 ＝ 25</td></tr>
+<tr><td class="l">1~6으로 세 자리 × 세 자리 최대</td><td class="l">큰 자리에 크게 · 고르게</td><td class="m">542 × 631</td></tr>
+</table>
+<p class="small">네 문제가 <b>모두 “같게 나눌수록 좋다”</b> 로 통합니다.
+1단계 D영역의 도형, 2단계 D영역의 비 — 이 감각이 계속 이어져 왔습니다.</p>
+
+<div class="write">
+  <div class="lb">이 주제의 서술형 질문</div>
+  <div class="frame">“이 배치가 <b>최대임을 보이는 근거</b>를 쓰시오.”<br>
+  <span class="small">→ “먼저 <u>자리값이 가장 큰 백의 자리</u> 에 가장 큰 수 6과 5를 두어야 합니다.
+  다만 <u>한쪽에 몰면 다른 수가 작아져</u> 곱이 줄어드는데,
+  <u>합이 일정할 때는 두 수가 가까울수록 곱이 크기</u> 때문입니다.
+  그래서 6과 5를 <u>나누어 놓고</u> 나머지도 같은 원칙으로 채우면 <u>542 × 631 ＝ 342002</u> 가 됩니다.
+  실제로 6과 5를 몰아 놓은 <u>651 × 432 ＝ 281232</u> 나
+  두 수를 바꾼 <u>541 × 632 ＝ 341912</u> 는 모두 더 작으므로,
+  <u>어떻게 바꾸어도 나빠져</u> 이것이 최대입니다.”</span></div>
+</div>
+
+<div class="link"><span class="lb">이 이론으로 풀리는 문항</span>
+<b>48-1 ~ 48-5</b> &nbsp;·&nbsp; 48-1은 <b>합이 일정할 때 곱의 최대</b>, 48-2는 <b>곱이 일정할 때 합의 최소</b>,
+48-3은 <b>숫자 카드 배치</b>, 48-4는 <b>도형에서의 최적화</b>,
+48-5는 <b>최적임을 보이는 근거</b>를 쓰는 문항입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 11 / 12</span></div>
+</div>
+<div class="page t1">
+<div class="head"><span class="no">총정리</span><h1>다섯 도구를 한 장으로 — 그리고 2단계의 끝<small>2단계 스물네 주제가 요구한 것은 <b>도구를 고르는 눈</b> 하나였다</small></h1><div class="tag">2단계 · E 논리와 문제해결<br>12 / 12 쪽</div></div>
+
+<h2><span class="n">1</span>신호와 도구</h2>
+<table>
+<tr><th style="width:38%">문제에 이런 말이 나오면</th><th style="width:20%">꺼낼 도구</th><th>첫 손동작</th></tr>
+<tr><td class="l">“몇 가지”, 같은 것이 섞임, 원탁</td><td class="m">경우의 수(44)</td><td class="l">크게 세고 <b>몇 번 세었나</b>로 나누기</td></tr>
+<tr><td class="l">“적어도”, “~가 아닌”</td><td class="m">여사건(45)</td><td class="l"><b>반대</b>를 말로 적기</td></tr>
+<tr><td class="l">“반드시 ~인 둘이 있다”</td><td class="m">비둘기집(46)</td><td class="l"><b>서랍과 물건</b>을 한 줄로</td></tr>
+<tr><td class="l">조건이 여러 줄로 주어짐</td><td class="m">조건표(47)</td><td class="l">표를 그리고 <b>확정 칸부터</b></td></tr>
+<tr><td class="l">“가장 크게”, “가장 작게”</td><td class="m">최적화(48)</td><td class="l">고정된 것이 <b>합인지 곱인지</b></td></tr>
+</table>
+
+<h2><span class="n">2</span>가져갈 다섯 문장</h2>
+<div class="note">
+<p><b>① 경우의 수 —</b> 먼저 <b>순서를 따져 크게 세고</b>, <b>같은 것으로 볼 것이 몇 번 세어졌는지</b>로 나눈다.
+뽑기·같은 것이 있는 배열·원탁이 <b>모두 같은 이유</b>로 나뉜다.</p>
+<p><b>② 여사건 —</b> <b>갈래가 적은 쪽</b>을 센다. “적어도 하나”의 반대는 <b>“하나도 없다”</b> 로 갈래가 하나뿐이다.
+다만 <b>반대가 더 복잡하면 쓰지 않는다.</b></p>
+<p><b>③ 비둘기집 —</b> 어려운 것은 원리가 아니라 <b>서랍을 무엇으로 잡을까</b> 이다.
+답안은 <b>“이만큼이면 반드시 된다” ＋ “이보다 적으면 안 될 수 있다”</b> 두 방향이어야 한다.</p>
+<p><b>④ 조건표 —</b> ○를 넣으면 <b>같은 줄·칸을 모두 ×</b>. 배점은 표가 아니라 <b>지운 순서</b>에 있다.</p>
+<p><b>⑤ 최적화 —</b> <b>같게 나눌수록 곱이 크고 합이 작다.</b>
+“여러 개 해 보니 제일 컸다”가 아니라 <b>“바꾸면 나빠진다”</b> 를 보여야 한다.</p>
+</div>
+
+<h2><span class="n">3</span>2단계 스물네 주제가 말한 것 하나</h2>
+<div class="note" style="border-left:4px solid #b45309">
+<table style="margin:2px 0 5px">
+<tr><th style="width:14%">영역</th><th style="width:34%">배운 것</th><th>한 문장</th></tr>
+<tr><td class="m">A 수와 연산</td><td class="l">약수·GCD·나머지·분수·진법</td>
+<td class="l">수를 <b>쪼개면</b> 물음이 지수 이야기로 바뀐다</td></tr>
+<tr><td class="m">B 규칙과 패턴</td><td class="l">등차·피보나치·도형수·식·겹침</td>
+<td class="l">규칙을 찾는 데서 <b>왜 그런지 말하는</b> 데로</td></tr>
+<tr><td class="m">C 도형과 공간</td><td class="l">각·등적변형·색칠·겉넓이·자취</td>
+<td class="l">모르는 도형은 <b>아는 도형으로</b> 바꾼다</td></tr>
+<tr><td class="m">D 측정과 비율</td><td class="l">비·농도·속력·일</td>
+<td class="l"><b>변하지 않는 것</b>을 붙들고 양으로 바꾼다</td></tr>
+<tr><td class="m">E 논리와 문제해결</td><td class="l">경우의 수·여사건·비둘기집·표·최적화</td>
+<td class="l"><b>세는 법을 고르고</b> 반드시 그러함을 보인다</td></tr>
+</table>
+<p style="font-size:10.5pt"><b>“1단계가 도구를 손에 넣는 과정이었다면, 2단계는 어느 도구를 꺼낼지 정하는 과정이었다.”</b></p>
+<p style="margin-top:4px">문제를 읽고 <b>가장 먼저 소인수분해를 해 볼지, 표를 그릴지, 반대를 세어 볼지</b>
+정하는 <b>30초</b> — 그 판단이 2단계에서 자란 힘입니다.
+그리고 어느 도구를 고르든 마지막에 요구되는 것은 언제나 같았습니다.
+<b>“왜 그런가”</b> 를 한 문장으로 쓰는 일입니다.</p>
+</div>
+
+<h2><span class="n">4</span>스스로 확인하는 다섯 질문</h2>
+<div class="note">
+<ol class="li">
+<li>5명 중 3명을 뽑을 때 60을 <b>6으로 나누는 까닭</b>은?</li>
+<li>“적어도 하나가 6”을 <b>반대로 세면</b> 왜 쉬운가?</li>
+<li>양말 문제에서 <b>반례</b>는 어떻게 쓰는가?</li>
+<li>조건표에서 ○를 넣은 뒤 <b>반드시 해야 할 일</b>은?</li>
+<li>542 × 631 이 최대임을 <b>어떻게 보이는가</b>?</li>
+</ol>
+</div>
+
+<div class="link"><span class="lb">마무리</span>
+문제지 <b>2단계 E영역 25문항</b>을 끝내면 2단계 전 과정이 마무리됩니다.
+1단계 문제지를 다시 펼쳐 보십시오. <b>그때는 보이지 않던 구조가 보인다면</b> 제대로 온 것입니다.</div>
+<div class="foot"><span>세영코딩연구소 · 세영AI코딩학원 &nbsp;|&nbsp; 사고력수학 2단계 E. 논리와 문제해결 — 이론 강의자료</span><span>Ph.D KIM &nbsp;·&nbsp; 12 / 12</span></div>
+</div>
+</body>
+</html>
