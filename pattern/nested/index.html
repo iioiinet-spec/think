@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Python 중첩 반복문 문제풀이 패턴 10선</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1f2430;--mut:#6b7280;--pri:#2563eb;--ok:#16a34a;--no:#dc2626;--code:#0f172a;--ct:#e2e8f0;--hl:#2563eb55;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#10131a;--card:#181c26;--tx:#e5e7eb;--mut:#9ca3af;--pri:#60a5fa;--bd:#2a3040;--hl:#60a5fa44}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'Pretendard','Noto Sans KR','맑은 고딕',sans-serif;line-height:1.6}
+header{padding:28px 20px 8px;max-width:980px;margin:auto}h1{margin:0;font-size:24px}header p{color:var(--mut);margin:6px 0 0}
+nav{max-width:980px;margin:12px auto;padding:0 20px;display:flex;flex-wrap:wrap;gap:6px}
+nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 13px;cursor:pointer;font-size:14px}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}nav button.done::after{content:' ✓';color:var(--ok)}nav button.on.done::after{color:#fff}
+main{max-width:980px;margin:auto;padding:0 20px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 4px;font-size:20px}.tag{color:var(--mut);font-size:13px;margin-bottom:10px}
+.tip{background:#f59e0b1f;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:6px;margin-top:12px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--bd);padding:7px 10px;text-align:left}th{background:var(--bg)}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.code{background:var(--code);color:var(--ct);border-radius:10px;padding:10px 0;font:13px/1.7 Consolas,'D2Coding',monospace;overflow-x:auto}
+.ln{padding:0 12px;white-space:pre}.ln span{display:inline-block;width:24px;color:#64748b;user-select:none}.ln.on{background:var(--hl);box-shadow:inset 3px 0 var(--pri)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.ctl input{width:84px;padding:5px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--tx)}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 12px;cursor:pointer}.btn.p{background:var(--pri);color:#fff;border-color:var(--pri)}
+.box{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px;min-height:48px}.box b{font-size:12px;color:var(--mut);display:block}
+pre.out{margin:0;font:14px Consolas,monospace;white-space:pre}.note{color:var(--pri);font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer}
+.opt.ok{background:#16a34a22;border-color:var(--ok)}.opt.no{background:#dc262622;border-color:var(--no)}
+</style></head><body>
+<header><h1>Python 중첩 반복문 문제풀이 패턴 10선</h1><p>문제 키워드를 보고 알맞은 패턴을 떠올리는 연습 — 코드를 한 줄씩 실행하며 변수 변화를 확인하세요.</p></header>
+<nav id="nav"></nav><main id="app"></main>
+<script>
+function mk(fn){return function(p){const v={},st=[];const S=(l,note,out,k)=>st.push({l,v:JSON.parse(JSON.stringify(v)),note:note||'',out:out||'',k:k?1:0});fn(p,v,S);return st;};}
+const PATTERNS=[
+{no:1,title:'직사각형 출력 (행 × 열)',kw:'n줄 m칸, 격자 출력, 사각형 별 찍기',
+ desc:'중첩 for의 기본 틀입니다. 바깥 for는 "몇 번째 줄인가", 안쪽 for는 "한 줄에 몇 칸을 찍는가"를 맡습니다. 안쪽 for가 한 번 끝날 때마다 줄바꿈을 합니다.',
+ tip:'줄바꿈 printf("\\n")은 안쪽 for 밖, 바깥 for 안에 있어야 합니다.',
+ params:[{k:'r',label:'줄 수 r',d:3,min:1,max:5},{k:'c',label:'칸 수 c',d:5,min:1,max:8}],
+ code:['int r, c;','scanf("%d %d", &r, &c);','for (int i = 1; i <= r; i++) {','    for (int j = 1; j <= c; j++) {','        printf("*");','    }','    printf("\\n");','}'],
+ trace:mk((p,v,S)=>{v.r=p.r;v.c=p.c;S(1,'r, c 입력');for(let i=1;i<=p.r;i++){v.i=i;S(2,i+'번째 줄 시작');for(let j=1;j<=p.c;j++){v.j=j;S(3,'j='+j+' ≤ c');S(4,'별 1개','*');}delete v.j;S(6,'안쪽 for 종료 → 줄바꿈','\n',1);}}),
+ quiz:{q:'printf("\\n")을 안쪽 for 안(printf("*") 아래)에 넣으면 r=2, c=3의 출력 모양은?',o:['2줄 3칸 직사각형','한 줄에 별 하나씩 6줄','한 줄에 별 6개','출력 없음'],a:1,e:'별을 찍을 때마다 줄이 바뀌어 별 1개짜리 줄이 6개 생깁니다.'}},
+{no:2,title:'직각삼각형 (안쪽 횟수가 i에 의존)',kw:'계단, 삼각형, 줄마다 개수가 늘어나는',
+ desc:'안쪽 for의 종료 조건을 바깥 변수 i로 두면 줄마다 찍는 개수가 달라집니다. j <= i 이면 i번째 줄에 i개를 찍습니다.',
+ tip:'안쪽 조건을 j <= n 으로 쓰면 삼각형이 아니라 사각형이 됩니다.',
+ params:[{k:'n',label:'n',d:4,min:1,max:7}],
+ code:['int n;','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    for (int j = 1; j <= i; j++) {','        printf("*");','    }','    printf("\\n");','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,i+'번째 줄: 별 '+i+'개 예정');for(let j=1;j<=i;j++){v.j=j;S(3,'j='+j+' ≤ i='+i);S(4,'별 1개','*');}delete v.j;S(6,'줄바꿈','\n',1);}}),
+ quiz:{q:'n = 5일 때 찍히는 별의 총 개수는?',o:['10','15','20','25'],a:1,e:'1+2+3+4+5 = 15개입니다.'}},
+{no:3,title:'피라미드 (공백 + 별 규칙 세우기)',kw:'피라미드, 가운데 정렬, 마름모, 규칙을 식으로',
+ desc:'한 줄을 "공백 → 별" 두 구간으로 나누고, 각 구간의 개수를 i에 대한 식으로 세웁니다. n줄 피라미드는 공백 n-i개, 별 2i-1개입니다.',
+ tip:'식은 직접 표로 먼저 적어 보세요: i=1 → 공백 n-1, 별 1 / i=2 → 공백 n-2, 별 3 …',
+ params:[{k:'n',label:'줄 수 n',d:4,min:1,max:6}],
+ code:['int n;','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    for (int j = 1; j <= n - i; j++) printf(" ");','    for (int j = 1; j <= 2 * i - 1; j++) printf("*");','    printf("\\n");','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,i+'번째 줄 시작');S(3,'공백 n-i = '+(p.n-i)+'개',' '.repeat(p.n-i));S(4,'별 2i-1 = '+(2*i-1)+'개','*'.repeat(2*i-1));S(5,'줄바꿈','\n',1);}}),
+ quiz:{q:'n = 4일 때 3번째 줄의 공백 수와 별 수는?',o:['공백 2, 별 3','공백 1, 별 5','공백 1, 별 3','공백 2, 별 5'],a:1,e:'i=3 → 공백 4-3=1, 별 2×3-1=5 입니다.'}},
+{no:4,title:'구구단 (바깥 = 단, 안쪽 = 곱하는 수)',kw:'구구단, 곱셈표, 모든 조합 출력',
+ desc:'두 변수의 모든 조합을 만들 때 쓰는 패턴입니다. 바깥 변수는 천천히, 안쪽 변수는 빨리 변합니다. 출력 순서는 바깥·안쪽을 누가 맡았느냐로 결정됩니다.',
+ tip:'바깥과 안쪽 for를 맞바꾸면 출력 순서가 달라집니다 (단별 출력 → 곱하는 수별 출력).',
+ params:[{k:'d',label:'마지막 단 d',d:3,min:2,max:9}],
+ code:['int d;','scanf("%d", &d);','for (int i = 2; i <= d; i++) {','    for (int j = 1; j <= 9; j++) {','        printf("%d x %d = %d\\n", i, j, i * j);','    }','}'],
+ trace:mk((p,v,S)=>{v.d=p.d;S(1,'d 입력');for(let i=2;i<=p.d;i++){v.i=i;S(2,i+'단 시작');for(let j=1;j<=9;j++){v.j=j;S(3,'j='+j);S(4,i+' × '+j+' 출력',i+' x '+j+' = '+i*j+'\n',j==9);}delete v.j;}}),
+ quiz:{q:'바깥을 j(1~9), 안쪽을 i(2~d)로 바꾸면 출력 순서는?',o:['단별로 출력 (2x1 … 2x9, 3x1 …)','같은 j끼리 먼저 (2x1, 3x1, 2x2, 3x2 …)','출력 없음','무한 반복'],a:1,e:'바깥 j가 고정된 채 안쪽 i가 한 바퀴 돌기 때문에 2x1, 3x1, … 순으로 나옵니다.'}},
+{no:5,title:'번호 이어 쓰기 (카운터 변수)',kw:'1부터 차례로 채우기, 행렬 번호, 달력 만들기',
+ desc:'반복 변수와 별개로 num 변수를 두고 매 칸마다 1씩 올리면 행렬을 1, 2, 3, … 순서로 채울 수 있습니다. 같은 값은 (i-1)*c + j 로도 구할 수 있습니다.',
+ tip:'num은 반복문 밖에서 한 번만 초기화해야 합니다. 안쪽에서 초기화하면 매 줄이 1부터 다시 시작합니다.',
+ params:[{k:'r',label:'행 r',d:3,min:1,max:4},{k:'c',label:'열 c',d:4,min:1,max:6}],
+ code:['int r, c, num = 1;','scanf("%d %d", &r, &c);','for (int i = 1; i <= r; i++) {','    for (int j = 1; j <= c; j++) {','        printf("%d ", num);','        num++;','    }','    printf("\\n");','}'],
+ trace:mk((p,v,S)=>{v.num=1;S(0,'num을 1로 한 번만 초기화');v.r=p.r;v.c=p.c;S(1,'r, c 입력');for(let i=1;i<=p.r;i++){v.i=i;S(2,i+'번째 행');for(let j=1;j<=p.c;j++){v.j=j;S(3,'j='+j);S(4,'num 출력',v.num+' ');v.num++;S(5,'num 증가');}delete v.j;S(7,'줄바꿈','\n',1);}}),
+ quiz:{q:'r=3, c=4 일 때 2행 3열 칸의 값은?',o:['6','7','8','10'],a:1,e:'(2-1)×4 + 3 = 7 입니다.'}},
+{no:6,title:'2차원 배열 행별 합 (초기화 위치)',kw:'행의 합, 열의 합, 표 계산, 2차원 배열',
+ desc:'행별 합은 "행마다 새로 시작"이므로 합계 변수를 바깥 for 안, 안쪽 for 밖에서 0으로 만듭니다. 전체 합은 바깥 for 밖에서 만든 변수에 행 합을 더해 구합니다.',
+ tip:'초기화 위치가 한 칸만 틀려도 결과가 달라집니다. "언제 새로 시작해야 하는가?"를 먼저 생각하세요.',
+ params:[{k:'r',label:'사용할 행 수 r',d:3,min:1,max:3}],
+ code:['int a[3][4] = {{3,1,4,2},{5,9,2,6},{5,3,5,8}};','int r, total = 0;','scanf("%d", &r);   // 앞의 r개 행만 사용','for (int i = 0; i < r; i++) {','    int rowSum = 0;','    for (int j = 0; j < 4; j++) {','        rowSum += a[i][j];','    }','    printf("%d ", rowSum);','    total += rowSum;','}','printf("\\n%d", total);'],
+ trace:mk((p,v,S)=>{const A=[[3,1,4,2],[5,9,2,6],[5,3,5,8]];v.total=0;S(1,'전체 합 초기화');v.r=p.r;S(2,'r 입력');for(let i=0;i<p.r;i++){v.i=i;S(3,i+'행 시작');v.rowSum=0;S(4,'행 합을 0으로 (행마다 새로 시작)');for(let j=0;j<4;j++){v.j=j;v['a[i][j]']=A[i][j];S(5,'j='+j+', a[i][j]='+A[i][j]);v.rowSum+=A[i][j];S(6,'rowSum에 더함');}delete v.j;delete v['a[i][j]'];S(8,'행 합 출력',v.rowSum+' ');v.total+=v.rowSum;S(9,'전체 합에 더함',0,1);}delete v.i;delete v.rowSum;S(11,'전체 합 출력','\n'+v.total);}),
+ quiz:{q:'int rowSum = 0 을 맨 위(바깥 for 밖)로 옮기면 두 번째 행의 출력값은?',o:['22','32','10','53'],a:1,e:'첫 행 합 10이 남은 채 22가 더해져 32가 됩니다.'}},
+{no:7,title:'모든 쌍 검사 (j = i + 1)',kw:'두 수의 합이 k인 쌍, 서로 다른 두 원소, 모든 쌍',
+ desc:'서로 다른 두 원소를 짝지을 때 안쪽 for를 j = i + 1 부터 시작하면 (i, j)와 (j, i) 중복 없이 모든 쌍을 딱 한 번씩 검사합니다.',
+ tip:'j를 0부터 시작하면 자기 자신과의 짝, 같은 쌍의 중복 계산이 생깁니다.',
+ params:[{k:'k',label:'목표 합 k',d:6,min:2,max:9}],
+ code:['int a[5] = {1, 3, 5, 2, 4}, k, cnt = 0;','scanf("%d", &k);','for (int i = 0; i < 5; i++) {','    for (int j = i + 1; j < 5; j++) {','        if (a[i] + a[j] == k) cnt++;','    }','}','printf("%d", cnt);'],
+ trace:mk((p,v,S)=>{const A=[1,3,5,2,4];v.cnt=0;v.k=p.k;S(1,'k 입력');for(let i=0;i<5;i++){v.i=i;S(2,'a['+i+']='+A[i]+' 을 기준으로');for(let j=i+1;j<5;j++){v.j=j;v.sum=A[i]+A[j];S(3,A[i]+' + '+A[j]+' = '+v.sum);if(v.sum==p.k){v.cnt++;S(4,'합이 k → 쌍 발견',0,1);}else S(4,'합이 k가 아님');}delete v.j;delete v.sum;}delete v.i;S(7,'출력',String(v.cnt));}),
+ quiz:{q:'안쪽 for를 j = 0 부터 시작하면 생기는 문제는?',o:['같은 쌍을 두 번 세거나 자기 자신과 짝지음','컴파일 오류','아무 문제 없음','쌍을 하나도 못 찾음'],a:0,e:'(i,j)와 (j,i)가 모두 검사되고 i==j인 경우도 검사됩니다.'}},
+{no:8,title:'바깥 반복마다 새로 세기 (약수 개수표)',kw:'각 수마다 ~의 개수, 수마다 따로 계산, 표 만들기',
+ desc:'바깥 for가 대상(수)을 하나씩 정하고, 안쪽 for가 그 대상에 대한 값을 계산해 결과를 만듭니다. 카운터는 바깥 for 안에서 매번 0으로 초기화하고, 결과는 안쪽 for가 끝난 뒤 출력합니다.',
+ tip:'cnt를 바깥 for 밖에서 초기화하면 앞 수의 약수 개수가 계속 쌓입니다.',
+ params:[{k:'n',label:'n',d:6,min:1,max:8}],
+ code:['int n;','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    int cnt = 0;','    for (int j = 1; j <= i; j++) {','        if (i % j == 0) cnt++;','    }','    printf("%d:%d ", i, cnt);','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,'i='+i+' 차례');v.cnt=0;S(3,'cnt를 0으로 (수마다 새로 시작)');for(let j=1;j<=i;j++){v.j=j;if(i%j==0){v.cnt++;S(5,i+' % '+j+' == 0 → cnt 증가');}else S(5,i+' % '+j+' ≠ 0 → 건너뜀');}delete v.j;S(7,i+'의 약수 개수 출력',i+':'+v.cnt+' ',1);}}),
+ quiz:{q:'n = 6일 때 마지막으로 출력되는 "6:?" 의 값은?',o:['2','3','4','6'],a:2,e:'6의 약수는 1, 2, 3, 6 → 4개입니다.'}},
+{no:9,title:'소수 나열 (안쪽 break + 깃발)',kw:'소수 목록, 2부터 n까지 소수, 범위 안의 소수 개수',
+ desc:'바깥 for가 후보 수 i를 정하고 안쪽 for가 나누어떨어지는지 검사합니다. 약수를 발견하면 깃발을 0으로 하고 break로 안쪽 for만 빠져나옵니다. 바깥 for는 계속 진행됩니다.',
+ tip:'break는 가장 가까운 반복문 하나만 탈출합니다. 바깥 for까지 끝내려면 깃발 변수나 return이 필요합니다.',
+ params:[{k:'n',label:'n',d:15,min:2,max:20}],
+ code:['int n;','scanf("%d", &n);','for (int i = 2; i <= n; i++) {','    int isPrime = 1;','    for (int j = 2; j * j <= i; j++) {','        if (i % j == 0) {','            isPrime = 0;','            break;   // 안쪽 for만 탈출','        }','    }','    if (isPrime) printf("%d ", i);','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=2;i<=p.n;i++){v.i=i;S(2,'후보 i='+i);v.isPrime=1;S(3,'깃발을 1로');let b=0;for(let j=2;j*j<=i;j++){v.j=j;S(4,'j='+j+', j*j='+j*j+' ≤ i');if(i%j==0){S(5,'나누어떨어짐');v.isPrime=0;S(6,'깃발을 0으로');S(7,'break: 안쪽 for만 탈출');b=1;break;}S(5,'나머지 '+i%j+' → 계속');}if(!b)S(4,'j*j > i → 안쪽 for 종료');delete v.j;if(v.isPrime)S(10,i+'은 소수 → 출력',i+' ',1);else S(10,i+'은 소수 아님 → 출력 안 함',0,1);}}),
+ quiz:{q:'안쪽 for 안의 break는 어느 반복문을 탈출하나요?',o:['안쪽 for만','바깥 for만','두 for 모두','프로그램 전체'],a:0,e:'break는 자신을 직접 감싸는 가장 안쪽 반복문 하나만 끝냅니다.'}},
+{no:10,title:'체스판 무늬 ((i + j) % 2)',kw:'체크무늬, 번갈아 출력, 좌표의 합·차로 규칙 찾기',
+ desc:'중첩 반복문 안에 if를 넣어 좌표(i, j)의 성질로 출력을 바꿉니다. (i + j)가 짝수인지 홀수인지에 따라 O, X를 번갈아 찍으면 체스판 무늬가 됩니다.',
+ tip:'규칙이 안 보이면 좌표를 격자에 직접 적고 (i+j), (i-j), i*j 중 무엇이 규칙과 맞는지 확인하세요.',
+ params:[{k:'n',label:'n',d:4,min:1,max:6}],
+ code:['int n;','scanf("%d", &n);','for (int i = 0; i < n; i++) {','    for (int j = 0; j < n; j++) {','        if ((i + j) % 2 == 0) printf("O");','        else printf("X");','    }','    printf("\\n");','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=0;i<p.n;i++){v.i=i;S(2,i+'행 시작');for(let j=0;j<p.n;j++){v.j=j;S(3,'j='+j);const e=(i+j)%2==0;if(e)S(4,'(i+j)%2 = 0 → O','O');else S(5,'(i+j)%2 = 1 → X','X');}delete v.j;S(7,'줄바꿈','\n',1);}}),
+ quiz:{q:'n = 3 일 때 첫 번째 줄에 출력되는 것은?',o:['OXO','XOX','OOO','OXX'],a:0,e:'(0+0), (0+1), (0+2)를 2로 나눈 나머지가 0, 1, 0 이라 O, X, O 입니다.'}}
+];
+PATTERNS.guide='① 바깥 for가 맡을 것(줄·행·기준값) 정하기 → ② 안쪽 for가 맡을 것(칸·열·비교 대상) 정하기 → ③ 안쪽 반복 횟수를 i에 대한 식으로 세우기 → ④ 변수 초기화·줄바꿈·결과 출력 위치 정하기.';
+
+function applyPy(P,OV,SUB){
+ const sub=(s,l)=>l.reduce((t,[a,b])=>t.split(a).join(b),String(s));
+ const ren=(s,m)=>Object.entries(m||{}).reduce((t,[a,b])=>t.replace(new RegExp('\\b'+a+'\\b','g'),b),s);
+ P.forEach((p,i)=>{
+  const o=OV[i],t=p.trace,R=o.ren||{},X=SUB.concat(o.sub||[]),D=o.drop||[];
+  const tx=s=>ren(sub(s,X),R);
+  p.code=o.code;
+  p.trace=q=>t(q).map(s=>{const v={};for(const k in s.v){if(D.includes(k))continue;v[R[k]||k]=s.v[k];}return {l:o.map[s.l]??0,v,note:tx(s.note),out:s.out,k:s.k};});
+  ['title','kw','desc','tip'].forEach(f=>{p[f]=tx(o[f]!==undefined?o[f]:p[f]);});
+  if(o.xdesc)p.desc+=' '+o.xdesc;
+  const z=Object.assign({},p.quiz,o.quiz||{});
+  p.quiz={q:tx(z.q),o:z.o.map(tx),a:z.a,e:tx(z.e)};
+  if(o.params)p.params=o.params;
+ });
+ if(P.guide)P.guide=sub(P.guide,SUB);
+}
+applyPy(PATTERNS,[{"code":["r, c = map(int, input().split())","for i in range(1, r + 1):","    for j in range(1, c + 1):","        print(\"*\", end=\"\")","    print()"],"map":[0,0,1,2,3,3,4,4],"tip":"줄바꿈 print() 는 안쪽 for 밖, 바깥 for 안에 있어야 합니다. end=\"\" 를 빼먹으면 별마다 줄이 바뀝니다.","quiz":{"q":"print() 를 안쪽 for 안(print(\"*\", end=\"\") 아래)에 넣으면 r=2, c=3의 출력 모양은?"}},{"code":["n = int(input())","for i in range(1, n + 1):","    for j in range(1, i + 1):","        print(\"*\", end=\"\")","    print()"],"map":[0,0,1,2,3,3,4,4],"sub":[["j <= i","range(1, i + 1)"]],"tip":"안쪽 반복을 range(1, n + 1) 로 쓰면 삼각형이 아니라 사각형이 됩니다."},{"code":["n = int(input())","for i in range(1, n + 1):","    for j in range(n - i):","        print(\" \", end=\"\")","    for j in range(2 * i - 1):","        print(\"*\", end=\"\")","    print()"],"map":[0,0,1,2,4,6,6]},{"code":["d = int(input())","for i in range(2, d + 1):","    for j in range(1, 10):","        print(i, \"x\", j, \"=\", i * j)"],"map":[0,0,1,2,3,3,3]},{"code":["num = 1","r, c = map(int, input().split())","for i in range(1, r + 1):","    for j in range(1, c + 1):","        print(num, end=\" \")","        num += 1","    print()"],"map":[0,1,2,3,4,5,5,6,6]},{"code":["a = [[3, 1, 4, 2], [5, 9, 2, 6], [5, 3, 5, 8]]","total = 0","r = int(input())   # 앞의 r개 행만 사용","for i in range(r):","    row_sum = 0","    for j in range(4):","        row_sum += a[i][j]","    print(row_sum, end=\" \")","    total += row_sum","print()","print(total)"],"map":[0,1,2,3,4,5,6,6,7,8,8,10],"ren":{"rowSum":"row_sum"},"quiz":{"q":"row_sum = 0 을 맨 위(바깥 for 밖)로 옮기면 두 번째 행의 출력값은?"}},{"code":["a = [1, 3, 5, 2, 4]","k = int(input())","cnt = 0","for i in range(5):","    for j in range(i + 1, 5):","        if a[i] + a[j] == k:","            cnt += 1","print(cnt)"],"map":[0,1,3,4,5,5,5,7],"sub":[["(j = i + 1)","(range(i + 1, n))"],["j = i + 1 부터 시작하면","range(i + 1, 5) 로 시작하면"]],"quiz":{"q":"안쪽 반복을 range(i + 1, 5) 대신 range(5) 로 쓰면 생기는 문제는?"}},{"code":["n = int(input())","for i in range(1, n + 1):","    cnt = 0","    for j in range(1, i + 1):","        if i % j == 0:","            cnt += 1","    print(f\"{i}:{cnt}\", end=\" \")"],"map":[0,0,1,2,3,4,3,6,6]},{"code":["n = int(input())","for i in range(2, n + 1):","    is_prime = 1","    for j in range(2, int(i ** 0.5) + 1):","        if i % j == 0:","            is_prime = 0","            break      # 안쪽 for만 탈출","    if is_prime:","        print(i, end=\" \")"],"map":[0,0,1,2,3,4,5,6,6,6,7,8],"ren":{"isPrime":"is_prime"}},{"code":["n = int(input())","for i in range(n):","    for j in range(n):","        if (i + j) % 2 == 0:","            print(\"O\", end=\"\")","        else:","            print(\"X\", end=\"\")","    print()"],"map":[0,0,1,2,4,6,6,7,7]}],[["2차원 배열","2차원 리스트"],["배열","리스트"],["&&","and"],["||","or"]]);
+
+const nav=document.getElementById('nav'),app=document.getElementById('app');
+let cur=-1,steps=[],si=0,timer=null,done={};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function drawNav(){nav.innerHTML='';[['개요',-1],...PATTERNS.map((p,i)=>[p.no,i])].forEach(([t,i])=>{const b=document.createElement('button');b.textContent=t;b.className=(cur===i?'on ':'')+(done[i]?'done':'');b.onclick=()=>show(i);nav.appendChild(b);});}
+function show(i){clearInterval(timer);cur=i;drawNav();i<0?overview():pattern(PATTERNS[i]);window.scrollTo(0,0);}
+function overview(){app.innerHTML='<div class="card"><h2>문제 키워드 → 패턴 찾기</h2><div class="tag">문제를 읽고 아래 표에서 비슷한 표현을 찾아 해당 패턴 탭을 열어 보세요.</div><table><tr><th>패턴</th><th>이런 표현이 나오면</th></tr>'+PATTERNS.map((p,i)=>`<tr><td><a href="#" onclick="show(${i});return false">${p.no}. ${p.title}</a></td><td>${p.kw}</td></tr>`).join('')+'</table><div class="tip">공통 순서: '+(PATTERNS.guide||'① 필요한 변수와 초기값 정하기 → ② 반복 범위 정하기 → ③ 반복 안의 조건 세우기 → ④ 반복 밖에서 결과 출력.')+'</div></div>';}
+function pattern(P){
+ app.innerHTML=`<div class="card"><h2>패턴 ${P.no}. ${P.title}</h2><div class="tag">키워드: ${P.kw}</div><p>${P.desc}</p>
+ <div class="ctl">${P.params.map(q=>`<label>${q.label} <input type="number" id="in_${q.k}" value="${q.d}" min="${q.min}" max="${q.max}"></label>`).join('')}${P.inp?`<span>입력: <b>${P.inp}</b></span>`:''}
+ <button class="btn p" onclick="run()">▶ 실행</button><button class="btn" onclick="mv(-1)">◀ 이전</button><button class="btn" onclick="mv(1)">다음 ▶</button><button class="btn" onclick="auto()">⏯ 자동</button></div>
+ <div class="grid"><div class="code" id="code">${P.code.map((c,k)=>`<div class="ln" id="l${k}"><span>${k+1}</span>${esc(c)}</div>`).join('')}</div>
+ <div><div class="box"><b>변수 상태</b><div id="vars">—</div></div><div class="box"><b>출력</b><pre class="out" id="out"></pre></div><div class="box"><b>설명</b><div class="note" id="note">▶ 실행을 눌러 시작하세요.</div></div></div></div>
+ <div class="tip">⚠ 실수 포인트: ${P.tip}</div></div>
+ <div class="card"><h2>확인 문제</h2><p>${P.quiz.q}</p>${P.quiz.o.map((o,k)=>`<button class="opt" onclick="ans(this,${k})">${'①②③④'[k]} ${o}</button>`).join('')}<div id="exp" class="note"></div></div>`;
+ steps=[];si=0;run();
+}
+function run(){clearInterval(timer);const P=PATTERNS[cur],a={};P.params.forEach(q=>{let v=parseInt(document.getElementById('in_'+q.k).value);if(isNaN(v))v=q.d;a[q.k]=Math.max(q.min,Math.min(q.max,v));document.getElementById('in_'+q.k).value=a[q.k];});steps=P.trace(a);si=0;draw();}
+function mv(d){si=Math.max(0,Math.min(steps.length-1,si+d));draw();}
+function auto(){clearInterval(timer);if(si>=steps.length-1)si=0;timer=setInterval(()=>{if(si>=steps.length-1)return clearInterval(timer);si++;draw();},700);}
+function draw(){const s=steps[si];document.querySelectorAll('.ln').forEach(e=>e.classList.remove('on'));document.getElementById('l'+s.l).classList.add('on');
+ document.getElementById('vars').innerHTML='<table><tr>'+Object.keys(s.v).map(k=>`<th>${k}</th>`).join('')+'</tr><tr>'+Object.values(s.v).map(x=>`<td>${x}</td>`).join('')+'</tr></table>';
+ document.getElementById('out').textContent=steps.slice(0,si+1).map(t=>t.out).join('');document.getElementById('note').textContent=`(${si+1}/${steps.length}) `+s.note;}
+function ans(b,k){const Q=PATTERNS[cur].quiz,ok=k===Q.a;b.classList.add(ok?'ok':'no');if(!ok)document.querySelectorAll('.opt')[Q.a].classList.add('ok');document.getElementById('exp').textContent=(ok?'정답! ':'오답. ')+Q.e;if(ok){done[cur]=1;drawNav();}}
+show(-1);
+</script></body></html>
