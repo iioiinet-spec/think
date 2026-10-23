@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C언어 조건문 문제풀이 패턴 10선</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1f2430;--mut:#6b7280;--pri:#2563eb;--ok:#16a34a;--no:#dc2626;--code:#0f172a;--ct:#e2e8f0;--hl:#2563eb55;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#10131a;--card:#181c26;--tx:#e5e7eb;--mut:#9ca3af;--pri:#60a5fa;--bd:#2a3040;--hl:#60a5fa44}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'Pretendard','Noto Sans KR','맑은 고딕',sans-serif;line-height:1.6}
+header{padding:28px 20px 8px;max-width:980px;margin:auto}h1{margin:0;font-size:24px}header p{color:var(--mut);margin:6px 0 0}
+nav{max-width:980px;margin:12px auto;padding:0 20px;display:flex;flex-wrap:wrap;gap:6px}
+nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 13px;cursor:pointer;font-size:14px}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}nav button.done::after{content:' ✓';color:var(--ok)}nav button.on.done::after{color:#fff}
+main{max-width:980px;margin:auto;padding:0 20px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 4px;font-size:20px}.tag{color:var(--mut);font-size:13px;margin-bottom:10px}
+.tip{background:#f59e0b1f;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:6px;margin-top:12px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--bd);padding:7px 10px;text-align:left}th{background:var(--bg)}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.code{background:var(--code);color:var(--ct);border-radius:10px;padding:10px 0;font:13px/1.7 Consolas,'D2Coding',monospace;overflow-x:auto}
+.ln{padding:0 12px;white-space:pre}.ln span{display:inline-block;width:24px;color:#64748b;user-select:none}.ln.on{background:var(--hl);box-shadow:inset 3px 0 var(--pri)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.ctl input{width:84px;padding:5px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--tx)}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 12px;cursor:pointer}.btn.p{background:var(--pri);color:#fff;border-color:var(--pri)}
+.box{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px;min-height:48px}.box b{font-size:12px;color:var(--mut);display:block}
+pre.out{margin:0;font:14px Consolas,monospace;white-space:pre}.note{color:var(--pri);font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer}
+.opt.ok{background:#16a34a22;border-color:var(--ok)}.opt.no{background:#dc262622;border-color:var(--no)}
+</style></head><body>
+<header><h1>C언어 조건문 문제풀이 패턴 10선</h1><p>문제 키워드를 보고 알맞은 패턴을 떠올리는 연습 — 코드를 한 줄씩 실행하며 변수 변화를 확인하세요.</p></header>
+<nav id="nav"></nav><main id="app"></main>
+<script>
+function mk(fn){return function(p){const v={},st=[];const S=(l,note,out,k)=>st.push({l,v:JSON.parse(JSON.stringify(v)),note:note||'',out:out||'',k:k?1:0});fn(p,v,S);return st;};}
+const PATTERNS=[
+{no:1,title:'단독 if (조건일 때만 바꾸기)',kw:'절댓값, 음수면 바꾸기, 범위 보정',
+ desc:'else 없이 if만 쓰면 조건이 참일 때만 실행되고, 거짓이면 아무 일도 없이 지나갑니다. 값을 보정하거나 예외를 처리할 때 가장 많이 씁니다.',
+ tip:'if (조건); 처럼 뒤에 세미콜론을 붙이면 조건과 상관없이 다음 문장이 항상 실행됩니다.',
+ params:[{k:'n',label:'n',d:-7,min:-100,max:100}],
+ code:['int n;','scanf("%d", &n);','if (n < 0)','    n = -n;','printf("%d", n);'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');if(p.n<0){S(2,'n < 0 → 참');v.n=-v.n;S(3,'부호를 바꿈');}else S(2,'n < 0 → 거짓, 건너뜀');S(4,'출력',String(v.n));}),
+ quiz:{q:'n = 0 을 입력하면 출력은?',o:['0','-0','1','오류'],a:0,e:'0 < 0 은 거짓이라 그대로 0이 출력됩니다.'}},
+{no:2,title:'if-else (둘 중 하나 고르기)',kw:'짝수/홀수, 합격/불합격, 양수/음수',
+ desc:'조건이 참이면 if 블록, 거짓이면 else 블록이 실행되어 둘 중 정확히 하나만 실행됩니다. 짝수 판별은 n % 2 == 0 입니다.',
+ tip:'홀수 판별을 n % 2 == 1 로 쓰면 음수 홀수(-3 % 2 = -1)를 놓칩니다. n % 2 != 0 을 쓰세요.',
+ params:[{k:'n',label:'n',d:7,min:-50,max:50}],
+ code:['int n;','scanf("%d", &n);','if (n % 2 == 0)','    printf("짝수");','else','    printf("홀수");'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');const e=p.n%2==0;S(2,'n % 2 = '+(p.n%2)+(e?' → 참':' → 거짓'));if(e)S(3,'if 블록 실행','짝수');else S(5,'else 블록 실행','홀수');}),
+ quiz:{q:'n = -3 일 때 if (n % 2 == 1) 로 홀수를 판별하면 결과는?',o:['홀수','홀수인데 짝수로 오판','오류','출력 없음'],a:1,e:'C에서 -3 % 2 는 -1 이라 조건이 거짓이 되어 else(짝수)로 갑니다.'}},
+{no:3,title:'else if 사슬 (구간 판별)',kw:'점수 구간, 학점, 등급, 나이대 분류',
+ desc:'위에서부터 차례로 검사하다가 처음 참인 곳 하나만 실행하고 나머지는 모두 건너뜁니다. 그래서 조건의 순서가 곧 논리입니다. 좁은 범위(높은 점수)부터 쓰면 아래 조건은 "앞에서 걸러진 나머지"라는 뜻이 됩니다.',
+ tip:'순서를 거꾸로(>= 80 먼저) 쓰면 95점도 B가 됩니다.',
+ params:[{k:'s',label:'score',d:85,min:0,max:100}],
+ code:['int score;','scanf("%d", &score);','if (score >= 90) printf("A");','else if (score >= 80) printf("B");','else if (score >= 70) printf("C");','else printf("F");'],
+ trace:mk((p,v,S)=>{const s=p.s;v.score=s;S(1,'score 입력');if(s>=90){S(2,'90 이상 → 참, 나머지 건너뜀','A');}else{S(2,'90 이상 → 거짓');if(s>=80){S(3,'80 이상 → 참','B');}else{S(3,'80 이상 → 거짓');if(s>=70){S(4,'70 이상 → 참','C');}else{S(4,'70 이상 → 거짓');S(5,'else 실행','F');}}}}),
+ quiz:{q:'else if 조건을 80 → 90 순서로 바꾸면 score = 95 의 출력은?',o:['A','B','C','F'],a:1,e:'95 >= 80 이 먼저 참이 되어 B가 출력됩니다.'}},
+{no:4,title:'복합 조건 (&&, ||)',kw:'윤년, ~이면서 ~인, ~이거나, 범위 안에 있는',
+ desc:'&&는 둘 다 참일 때, ||는 하나라도 참일 때 참입니다. 윤년은 "4의 배수이면서 100의 배수가 아니거나, 400의 배수"입니다. && 가 || 보다 먼저 계산되므로 의미 단위를 괄호로 묶어 두면 안전합니다.',
+ tip:'범위 검사는 1 <= x <= 10 이 아니라 x >= 1 && x <= 10 으로 써야 합니다.',
+ params:[{k:'y',label:'연도 y',d:2024,min:1,max:3000}],
+ code:['int y;','scanf("%d", &y);','if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)','    printf("윤년");','else','    printf("평년");'],
+ trace:mk((p,v,S)=>{const y=p.y;v.y=y;S(1,'연도 입력');const a=y%4==0&&y%100!=0,b=y%400==0;S(2,'y%4='+y%4+', y%100='+y%100+', y%400='+y%400+' → (왼쪽 '+(a?'참':'거짓')+') || (오른쪽 '+(b?'참':'거짓')+')');if(a||b)S(3,'윤년','윤년');else S(5,'평년','평년');}),
+ quiz:{q:'y = 1900 은?',o:['윤년 (4의 배수)','평년 (100의 배수이고 400의 배수는 아님)','윤년 (400의 배수)','판별 불가'],a:1,e:'1900은 100의 배수이지만 400의 배수가 아니라 평년입니다.'}},
+{no:5,title:'연속 if (최댓값 갱신)',kw:'세 수 중 가장 큰 수, 가장 작은 수, 정렬 전 비교',
+ desc:'기준값을 하나 정하고, 독립된 if를 이어서 쓰며 더 큰 값이 나올 때마다 기준값을 갱신합니다. 각 if가 서로 독립이라 앞 결과와 상관없이 모두 검사합니다.',
+ tip:'두 번째 if를 else if로 바꾸면 첫 번째 if가 참일 때 검사가 생략되어 틀릴 수 있습니다.',
+ params:[{k:'a',label:'a',d:3,min:-99,max:99},{k:'b',label:'b',d:9,min:-99,max:99},{k:'c',label:'c',d:5,min:-99,max:99}],
+ code:['int a, b, c, max;','scanf("%d %d %d", &a, &b, &c);','max = a;','if (b > max) max = b;','if (c > max) max = c;','printf("%d", max);'],
+ trace:mk((p,v,S)=>{v.a=p.a;v.b=p.b;v.c=p.c;S(1,'세 수 입력');v.max=p.a;S(2,'max를 a로 시작');if(p.b>v.max){v.max=p.b;S(3,'b가 더 큼 → max 갱신');}else S(3,'b가 크지 않음 → 유지');if(p.c>v.max){v.max=p.c;S(4,'c가 더 큼 → max 갱신');}else S(4,'c가 크지 않음 → 유지');S(5,'출력',String(v.max));}),
+ quiz:{q:'두 번째 if를 else if 로 바꾸고 a=1, b=5, c=9 를 넣으면 출력은?',o:['9','5','1','오류'],a:1,e:'b > max 가 참이라 else if (c 검사)가 건너뛰어져 5가 출력됩니다.'}},
+{no:6,title:'중첩 if (조건 안의 조건)',kw:'먼저 성립 여부 확인 후 종류 구분, 단계별 판단',
+ desc:'먼저 "성립하는가"를 검사하고, 성립할 때만 안쪽 if로 세부 종류를 가립니다. 삼각형은 가장 긴 변이 나머지 두 변의 합보다 작아야 성립합니다.',
+ tip:'중괄호 { } 를 생략하면 else가 바로 위 if에 붙어(dangling else) 의도와 다르게 동작할 수 있습니다.',
+ params:[{k:'a',label:'a',d:5,min:1,max:20},{k:'b',label:'b',d:5,min:1,max:20},{k:'c',label:'c',d:8,min:1,max:20}],
+ code:['int a, b, c;','scanf("%d %d %d", &a, &b, &c);','if (a + b > c && a + c > b && b + c > a) {','    if (a == b && b == c) printf("정삼각형");','    else if (a == b || b == c || a == c) printf("이등변삼각형");','    else printf("일반 삼각형");','} else {','    printf("삼각형 불가");','}'],
+ trace:mk((p,v,S)=>{const {a,b,c}=p;v.a=a;v.b=b;v.c=c;S(1,'세 변 입력');const ok=a+b>c&&a+c>b&&b+c>a;if(!ok){S(2,'성립 조건 거짓');S(7,'else 블록','삼각형 불가');return;}S(2,'성립 조건 참 → 안쪽 if 검사');if(a==b&&b==c)S(3,'세 변이 모두 같음','정삼각형');else{S(3,'모두 같지는 않음');if(a==b||b==c||a==c)S(4,'두 변이 같음','이등변삼각형');else{S(4,'같은 변 없음');S(5,'else 실행','일반 삼각형');}}}),
+ quiz:{q:'a=2, b=3, c=5 를 입력하면 출력은?',o:['이등변삼각형','일반 삼각형','삼각형 불가','정삼각형'],a:2,e:'2 + 3 > 5 가 거짓이라 성립하지 않습니다 (선분이 일직선이 됨).'}},
+{no:7,title:'switch (값에 따른 분기)',kw:'월별 일수, 메뉴 번호, 요일, 정해진 값 중 하나',
+ desc:'정수·문자 값이 정확히 일치하는 case로 이동합니다. 같은 결과를 내는 값은 case를 나란히 적어 묶고, 어디에도 해당하지 않으면 default가 실행됩니다. 각 묶음 끝에는 break가 필요합니다.',
+ tip:'break를 빼먹으면 다음 case 코드까지 계속 실행됩니다(fall-through). 범위 비교(>=)는 switch로 못 하므로 if를 쓰세요.',
+ params:[{k:'m',label:'월 m',d:4,min:1,max:12}],
+ code:['int m;','scanf("%d", &m);','switch (m) {','    case 2: printf("28"); break;','    case 4: case 6: case 9: case 11:','        printf("30"); break;','    default:','        printf("31");','}'],
+ trace:mk((p,v,S)=>{const m=p.m;v.m=m;S(1,'월 입력');S(2,'switch (m) — m='+m+' 과 일치하는 case를 찾음');if(m==2)S(3,'case 2 일치, break로 탈출','28');else if([4,6,9,11].includes(m)){S(4,'묶인 case 중 일치');S(5,'30 출력 후 break','30');}else{S(6,'일치하는 case 없음 → default');S(7,'31 출력','31');}}),
+ quiz:{q:'case 2 의 break 를 지우고 m = 2 를 입력하면 출력은?',o:['28','30','2830','283031'],a:2,e:'28 출력 후 break가 없어 아래 case 4… 묶음의 printf("30")까지 실행되고 그 뒤 break로 끝납니다.'}},
+{no:8,title:'삼항 연산자 (조건 ? 값1 : 값2)',kw:'둘 중 큰 값/작은 값, 한 줄로 값 고르기, 출력 문구 선택',
+ desc:'조건이 참이면 앞의 값, 거짓이면 뒤의 값이 결과가 되는 "값을 만드는 if-else"입니다. 변수 초기화나 printf 안에서 짧게 쓸 때 편합니다.',
+ tip:'삼항 연산자를 중첩하면 읽기 어려워집니다. 3갈래 이상은 else if가 낫습니다.',
+ params:[{k:'a',label:'a',d:3,min:-99,max:99},{k:'b',label:'b',d:9,min:-99,max:99}],
+ code:['int a, b;','scanf("%d %d", &a, &b);','int max = (a > b) ? a : b;','printf("%d\\n", max);','printf("%s", (max % 2 == 0) ? "짝수" : "홀수");'],
+ trace:mk((p,v,S)=>{v.a=p.a;v.b=p.b;S(1,'a, b 입력');v.max=p.a>p.b?p.a:p.b;S(2,'a > b 가 '+(p.a>p.b?'참 → a':'거짓 → b')+' 선택');S(3,'max 출력',v.max+'\n');S(4,'max % 2 == 0 이 '+(v.max%2==0?'참 → 짝수':'거짓 → 홀수'),v.max%2==0?'짝수':'홀수');}),
+ quiz:{q:'(a > b) ? a : b 를 (a < b) ? a : b 로 바꾸면 구해지는 값은?',o:['최댓값','최솟값','합','차'],a:1,e:'a가 더 작으면 a, 아니면 b를 고르므로 최솟값입니다.'}},
+{no:9,title:'단락 평가 (안전하게 검사하기)',kw:'0으로 나누기 방지, 배열 범위 검사, 앞 조건이 거짓이면 뒤는 보지 않음',
+ desc:'&&는 왼쪽이 거짓이면 오른쪽을 아예 계산하지 않고, ||는 왼쪽이 참이면 오른쪽을 계산하지 않습니다. 이 성질로 "안전한지 먼저 확인하고 계산"하는 조건을 쓸 수 있습니다.',
+ tip:'안전 검사(b != 0)는 반드시 계산식(a / b)보다 왼쪽에 둡니다.',
+ params:[{k:'a',label:'a',d:10,min:1,max:100},{k:'b',label:'b',d:0,min:0,max:20}],
+ code:['int a, b;','scanf("%d %d", &a, &b);','if (b != 0 && a / b > 2)','    printf("몫이 2보다 큼");','else','    printf("조건 불만족");'],
+ trace:mk((p,v,S)=>{v.a=p.a;v.b=p.b;S(1,'a, b 입력');if(p.b==0){S(2,'b != 0 이 거짓 → a / b 는 계산하지 않음 (단락 평가)');S(5,'else 실행','조건 불만족');return;}const q=Math.trunc(p.a/p.b);S(2,'b != 0 참 → a / b = '+q+' 계산, '+q+' > 2 는 '+(q>2?'참':'거짓'));if(q>2)S(3,'if 실행','몫이 2보다 큼');else S(5,'else 실행','조건 불만족');}),
+ quiz:{q:'조건을 a / b > 2 && b != 0 으로 순서를 바꾸고 b = 0 을 입력하면?',o:['"조건 불만족" 출력','0으로 나누는 런타임 오류','"몫이 2보다 큼" 출력','컴파일 오류'],a:1,e:'왼쪽 a / b 가 먼저 계산되어 0으로 나누기 오류가 발생합니다.'}},
+{no:10,title:'구간별 계산 (누진 요금)',kw:'요금 계산, 구간별 세율, 사용량에 따라 단가가 달라지는',
+ desc:'구간마다 계산식이 달라질 때 else if 사슬과 계산식을 결합합니다. 앞 구간을 가득 채운 값을 먼저 더하고, 현재 구간에 걸친 부분만 단가를 곱합니다. (100 이하 100원, 101~200 150원, 201 이상 200원)',
+ tip:'(x - 100) 처럼 "구간을 넘은 만큼"만 곱해야 합니다. x 전체에 새 단가를 곱하면 안 됩니다.',
+ params:[{k:'x',label:'사용량 x',d:250,min:1,max:400}],
+ code:['int x, fee;','scanf("%d", &x);','if (x <= 100)','    fee = x * 100;','else if (x <= 200)','    fee = 100 * 100 + (x - 100) * 150;','else','    fee = 100 * 100 + 100 * 150 + (x - 200) * 200;','printf("%d", fee);'],
+ trace:mk((p,v,S)=>{const x=p.x;v.x=x;S(1,'사용량 입력');if(x<=100){S(2,'100 이하 → 참');v.fee=x*100;S(3,'fee = x * 100');}else{S(2,'100 이하 → 거짓');if(x<=200){S(4,'200 이하 → 참');v.fee=10000+(x-100)*150;S(5,'1구간 10000 + 초과분 '+(x-100)+' × 150');}else{S(4,'200 이하 → 거짓');S(6,'else 실행');v.fee=25000+(x-200)*200;S(7,'1·2구간 25000 + 초과분 '+(x-200)+' × 200');}}S(8,'출력',String(v.fee));}),
+ quiz:{q:'x = 150 일 때 요금은?',o:['15000','17500','22500','30000'],a:1,e:'10000 + (150 - 100) × 150 = 17500 입니다.'}}
+];
+PATTERNS.guide='① 입력값과 경우의 수 정하기 → ② 조건식 세우기(범위는 && , 선택지는 ||) → ③ 조건이 겹치면 좁은 조건부터 순서 정하기 → ④ 빠진 경우는 else/default로 처리하기.';
+
+const nav=document.getElementById('nav'),app=document.getElementById('app');
+let cur=-1,steps=[],si=0,timer=null,done={};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function drawNav(){nav.innerHTML='';[['개요',-1],...PATTERNS.map((p,i)=>[p.no,i])].forEach(([t,i])=>{const b=document.createElement('button');b.textContent=t;b.className=(cur===i?'on ':'')+(done[i]?'done':'');b.onclick=()=>show(i);nav.appendChild(b);});}
+function show(i){clearInterval(timer);cur=i;drawNav();i<0?overview():pattern(PATTERNS[i]);window.scrollTo(0,0);}
+function overview(){app.innerHTML='<div class="card"><h2>문제 키워드 → 패턴 찾기</h2><div class="tag">문제를 읽고 아래 표에서 비슷한 표현을 찾아 해당 패턴 탭을 열어 보세요.</div><table><tr><th>패턴</th><th>이런 표현이 나오면</th></tr>'+PATTERNS.map((p,i)=>`<tr><td><a href="#" onclick="show(${i});return false">${p.no}. ${p.title}</a></td><td>${p.kw}</td></tr>`).join('')+'</table><div class="tip">공통 순서: '+(PATTERNS.guide||'① 필요한 변수와 초기값 정하기 → ② 반복 범위 정하기 → ③ 반복 안의 조건 세우기 → ④ 반복 밖에서 결과 출력.')+'</div></div>';}
+function pattern(P){
+ app.innerHTML=`<div class="card"><h2>패턴 ${P.no}. ${P.title}</h2><div class="tag">키워드: ${P.kw}</div><p>${P.desc}</p>
+ <div class="ctl">${P.params.map(q=>`<label>${q.label} <input type="number" id="in_${q.k}" value="${q.d}" min="${q.min}" max="${q.max}"></label>`).join('')}${P.inp?`<span>입력: <b>${P.inp}</b></span>`:''}
+ <button class="btn p" onclick="run()">▶ 실행</button><button class="btn" onclick="mv(-1)">◀ 이전</button><button class="btn" onclick="mv(1)">다음 ▶</button><button class="btn" onclick="auto()">⏯ 자동</button></div>
+ <div class="grid"><div class="code" id="code">${P.code.map((c,k)=>`<div class="ln" id="l${k}"><span>${k+1}</span>${esc(c)}</div>`).join('')}</div>
+ <div><div class="box"><b>변수 상태</b><div id="vars">—</div></div><div class="box"><b>출력</b><pre class="out" id="out"></pre></div><div class="box"><b>설명</b><div class="note" id="note">▶ 실행을 눌러 시작하세요.</div></div></div></div>
+ <div class="tip">⚠ 실수 포인트: ${P.tip}</div></div>
+ <div class="card"><h2>확인 문제</h2><p>${P.quiz.q}</p>${P.quiz.o.map((o,k)=>`<button class="opt" onclick="ans(this,${k})">${'①②③④'[k]} ${o}</button>`).join('')}<div id="exp" class="note"></div></div>`;
+ steps=[];si=0;run();
+}
+function run(){clearInterval(timer);const P=PATTERNS[cur],a={};P.params.forEach(q=>{let v=parseInt(document.getElementById('in_'+q.k).value);if(isNaN(v))v=q.d;a[q.k]=Math.max(q.min,Math.min(q.max,v));document.getElementById('in_'+q.k).value=a[q.k];});steps=P.trace(a);si=0;draw();}
+function mv(d){si=Math.max(0,Math.min(steps.length-1,si+d));draw();}
+function auto(){clearInterval(timer);if(si>=steps.length-1)si=0;timer=setInterval(()=>{if(si>=steps.length-1)return clearInterval(timer);si++;draw();},700);}
+function draw(){const s=steps[si];document.querySelectorAll('.ln').forEach(e=>e.classList.remove('on'));document.getElementById('l'+s.l).classList.add('on');
+ document.getElementById('vars').innerHTML='<table><tr>'+Object.keys(s.v).map(k=>`<th>${k}</th>`).join('')+'</tr><tr>'+Object.values(s.v).map(x=>`<td>${x}</td>`).join('')+'</tr></table>';
+ document.getElementById('out').textContent=steps.slice(0,si+1).map(t=>t.out).join('');document.getElementById('note').textContent=`(${si+1}/${steps.length}) `+s.note;}
+function ans(b,k){const Q=PATTERNS[cur].quiz,ok=k===Q.a;b.classList.add(ok?'ok':'no');if(!ok)document.querySelectorAll('.opt')[Q.a].classList.add('ok');document.getElementById('exp').textContent=(ok?'정답! ':'오답. ')+Q.e;if(ok){done[cur]=1;drawNav();}}
+show(-1);
+</script></body></html>
