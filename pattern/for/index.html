@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Python 단순 반복문 문제풀이 패턴 10선</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1f2430;--mut:#6b7280;--pri:#2563eb;--ok:#16a34a;--no:#dc2626;--code:#0f172a;--ct:#e2e8f0;--hl:#2563eb55;--bd:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#10131a;--card:#181c26;--tx:#e5e7eb;--mut:#9ca3af;--pri:#60a5fa;--bd:#2a3040;--hl:#60a5fa44}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:'Pretendard','Noto Sans KR','맑은 고딕',sans-serif;line-height:1.6}
+header{padding:28px 20px 8px;max-width:980px;margin:auto}h1{margin:0;font-size:24px}header p{color:var(--mut);margin:6px 0 0}
+nav{max-width:980px;margin:12px auto;padding:0 20px;display:flex;flex-wrap:wrap;gap:6px}
+nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 13px;cursor:pointer;font-size:14px}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}nav button.done::after{content:' ✓';color:var(--ok)}nav button.on.done::after{color:#fff}
+main{max-width:980px;margin:auto;padding:0 20px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+h2{margin:0 0 4px;font-size:20px}.tag{color:var(--mut);font-size:13px;margin-bottom:10px}
+.tip{background:#f59e0b1f;border-left:4px solid #f59e0b;padding:8px 12px;border-radius:6px;margin-top:12px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--bd);padding:7px 10px;text-align:left}th{background:var(--bg)}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.code{background:var(--code);color:var(--ct);border-radius:10px;padding:10px 0;font:13px/1.7 Consolas,'D2Coding',monospace;overflow-x:auto}
+.ln{padding:0 12px;white-space:pre}.ln span{display:inline-block;width:24px;color:#64748b;user-select:none}.ln.on{background:var(--hl);box-shadow:inset 3px 0 var(--pri)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.ctl input{width:84px;padding:5px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--tx)}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 12px;cursor:pointer}.btn.p{background:var(--pri);color:#fff;border-color:var(--pri)}
+.box{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px;min-height:48px}.box b{font-size:12px;color:var(--mut);display:block}
+pre.out{margin:0;font:14px Consolas,monospace;white-space:pre}.note{color:var(--pri);font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);cursor:pointer}
+.opt.ok{background:#16a34a22;border-color:var(--ok)}.opt.no{background:#dc262622;border-color:var(--no)}
+</style></head><body>
+<header><h1>Python 단순 반복문 문제풀이 패턴 10선</h1><p>문제 키워드를 보고 알맞은 패턴을 떠올리는 연습 — 코드를 한 줄씩 실행하며 변수 변화를 확인하세요.</p></header>
+<nav id="nav"></nav><main id="app"></main>
+<script>
+function mk(fn){return function(p){const v={},st=[];const S=(l,note,out,k)=>st.push({l,v:JSON.parse(JSON.stringify(v)),note:note||'',out:out||'',k:k?1:0});fn(p,v,S);return st;};}
+const PATTERNS=[
+{no:1,title:'for문 기본 틀 (시작 · 조건 · 증감)',kw:'1부터 n까지, n번 반복, 반복 횟수 정하기',
+ desc:'for (초기식; 조건식; 증감식) 은 "어디서 시작해서, 언제까지, 어떻게 변하는가"를 한 줄에 적는 틀입니다. 조건식이 참인 동안 몸체를 실행하고, 한 번 끝날 때마다 증감식이 실행됩니다.',
+ tip:'i < n 과 i <= n 은 반복 횟수가 1 차이 납니다. 1부터 n까지는 i <= n, 0부터 n-1까지는 i < n 입니다.',
+ params:[{k:'n',label:'n',d:5,min:1,max:15}],
+ code:['int n;','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    printf("%d ", i);','}'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,'i='+i+' ≤ n → 참, 몸체 실행');S(3,'i 출력',i+' ',1);}v.i=p.n+1;S(2,'i='+v.i+' > n → 조건 거짓, 반복 종료');}),
+ quiz:{q:'for (int i = 0; i < 5; i++) 의 몸체는 몇 번 실행되나요?',o:['4번','5번','6번','0번'],a:1,e:'i가 0, 1, 2, 3, 4 일 때 실행되어 모두 5번입니다.'}},
+{no:2,title:'증가폭 바꾸기 (i += d)',kw:'홀수만, 3씩 증가, 일정한 간격으로',
+ desc:'증감식을 i += d 로 바꾸면 d칸씩 건너뛰며 반복합니다. 시작값을 바꾸면 홀수·짝수·특정 나머지를 가진 수만 골라서 돌 수 있어 if가 필요 없어집니다.',
+ tip:'d가 0이면 i가 변하지 않아 무한 루프입니다. 증가폭은 반드시 1 이상이어야 합니다.',
+ params:[{k:'s',label:'시작 s',d:1,min:1,max:20},{k:'e',label:'끝 e',d:20,min:1,max:30},{k:'d',label:'증가폭 d',d:3,min:1,max:10}],
+ code:['int s, e, d;','scanf("%d %d %d", &s, &e, &d);','for (int i = s; i <= e; i += d) {','    printf("%d ", i);','}'],
+ trace:mk((p,v,S)=>{v.s=p.s;v.e=p.e;v.d=p.d;S(1,'s, e, d 입력');let i=p.s;for(;i<=p.e;i+=p.d){v.i=i;S(2,'i='+i+' ≤ e → 참');S(3,'i 출력',i+' ',1);}v.i=i;S(2,'i='+i+' > e → 반복 종료');}),
+ quiz:{q:'s = 2, e = 10, d = 2 일 때 출력되는 수는 모두 몇 개인가요?',o:['4개','5개','6개','9개'],a:1,e:'2, 4, 6, 8, 10 → 5개입니다.'}},
+{no:3,title:'거꾸로 세기 (i--)',kw:'역순 출력, 카운트다운, n부터 1까지',
+ desc:'시작값을 크게 두고 증감식을 i-- 로 바꾸면 거꾸로 돕니다. 이때 조건식은 "아직 끝값에 도달하지 않았다"는 뜻의 >= (또는 >) 로 바꿔야 합니다.',
+ tip:'감소하는데 조건식을 i <= 1 처럼 쓰면 처음부터 거짓이라 몸체가 한 번도 실행되지 않습니다.',
+ params:[{k:'n',label:'n',d:5,min:1,max:10}],
+ code:['int n;','scanf("%d", &n);','for (int i = n; i >= 1; i--) {','    printf("%d ", i);','}','printf("발사!");'],
+ trace:mk((p,v,S)=>{v.n=p.n;S(1,'n 입력');for(let i=p.n;i>=1;i--){v.i=i;S(2,'i='+i+' ≥ 1 → 참');S(3,'i 출력',i+' ',1);}v.i=0;S(2,'i=0 < 1 → 조건 거짓, 반복 종료');S(5,'반복이 끝난 뒤 한 번만 출력','발사!');}),
+ quiz:{q:'for (int i = 5; i > 0; i--) 에서 마지막으로 출력되는 i는?',o:['0','1','5','-1'],a:1,e:'i > 0 인 동안만 실행되므로 마지막은 i = 1 입니다.'}},
+{no:4,title:'누적곱 (팩토리얼)',kw:'팩토리얼, 모두 곱한 값, 1×2×...×n',
+ desc:'합을 구할 때 0으로 시작했듯이, 곱을 구할 때는 1로 시작해 매번 곱합니다. 0은 덧셈의 단위원, 1은 곱셈의 단위원이라고 기억하세요.',
+ tip:'int는 12!까지만 안전합니다. 13! 이상은 값이 넘쳐 엉뚱한 수가 나오므로 long long 을 써야 합니다.',
+ params:[{k:'n',label:'n',d:5,min:1,max:10}],
+ code:['int n, f = 1;   // 곱의 시작은 1','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    f *= i;   // 누적곱','}','printf("%d", f);'],
+ trace:mk((p,v,S)=>{v.f=1;v.n=p.n;S(1,'n 입력, f는 1로 시작');for(let i=1;i<=p.n;i++){v.i=i;S(2,'i='+i);v.f*=i;S(3,'f에 '+i+'를 곱함',0,1);}delete v.i;S(5,'결과 출력',String(v.f));}),
+ quiz:{q:'f를 1이 아닌 0으로 시작하면 n = 5의 결과는?',o:['120','0','5','1'],a:1,e:'0에 무엇을 곱해도 0이라 결과가 항상 0이 됩니다.'}},
+{no:5,title:'거듭제곱 (같은 수를 반복해서 곱하기)',kw:'a의 b제곱, 같은 수를 여러 번 곱하기, 자릿수 늘리기',
+ desc:'a^b 는 결과를 1로 두고 a를 b번 곱한 값입니다. 이때 반복 변수 i는 값 계산에 쓰이지 않고 "횟수를 세는 용도"로만 쓰입니다.',
+ tip:'반복 변수를 쓰지 않아도 괜찮습니다. 횟수만 중요하면 i = 0 부터 i < b 로 돌려 b번을 정확히 맞추세요.',
+ params:[{k:'a',label:'밑 a',d:2,min:1,max:9},{k:'b',label:'지수 b',d:8,min:0,max:9}],
+ code:['int a, b, r = 1;','scanf("%d %d", &a, &b);','for (int i = 0; i < b; i++) {','    r *= a;','}','printf("%d", r);'],
+ trace:mk((p,v,S)=>{v.r=1;v.a=p.a;v.b=p.b;S(1,'a, b 입력, r은 1로 시작');for(let i=0;i<p.b;i++){v.i=i;S(2,(i+1)+'번째 반복');v.r*=p.a;S(3,'r에 a를 곱함',0,1);}delete v.i;S(5,'결과 출력',String(v.r));}),
+ quiz:{q:'b = 0 이면 위 코드의 출력은?',o:['0','1','a','오류'],a:1,e:'반복이 한 번도 실행되지 않아 초기값 1이 그대로 출력됩니다. (a^0 = 1)'}},
+{no:6,title:'while문 (횟수를 모를 때)',kw:'몇 번 나눌 수 있나, 0이 될 때까지, 조건이 거짓이 될 때까지',
+ desc:'반복 횟수를 미리 알 수 없고 "조건이 참인 동안"만 반복하면 while이 어울립니다. 조건식에 쓰이는 변수를 몸체 안에서 반드시 변화시켜야 언젠가 반복이 끝납니다.',
+ tip:'조건식에 영향을 주는 변수를 바꾸는 문장이 없으면 무한 루프가 됩니다.',
+ params:[{k:'n',label:'n',d:100,min:1,max:1000}],
+ code:['int n, cnt = 0;','scanf("%d", &n);','while (n > 1) {','    n /= 2;','    cnt++;','}','printf("%d", cnt);'],
+ trace:mk((p,v,S)=>{v.n=p.n;v.cnt=0;S(1,'n 입력');while(v.n>1){S(2,'n > 1 → 참');v.n=Math.floor(v.n/2);S(3,'n을 2로 나눔');v.cnt++;S(4,'횟수 증가',0,1);}S(2,'n=1 → 조건 거짓, 반복 종료');S(6,'나눈 횟수 출력',String(v.cnt));}),
+ quiz:{q:'n = 16 일 때 출력되는 cnt는?',o:['3','4','5','16'],a:1,e:'16 → 8 → 4 → 2 → 1, 모두 4번 나눕니다.'}},
+{no:7,title:'do-while문 (최소 한 번은 실행)',kw:'입력 검증, 올바른 값이 올 때까지 다시 입력, 먼저 실행하고 검사',
+ desc:'do-while은 몸체를 먼저 실행하고 나서 조건을 검사하므로 조건이 처음부터 거짓이어도 최소 한 번은 실행됩니다. 입력을 받아 검사하는 패턴에 자주 쓰입니다.',
+ tip:'while (조건); 끝의 세미콜론을 빼먹으면 문법 오류가 납니다.',
+ params:[],inp:'-3 0 -1 5 7',
+ code:['int x;','do {','    scanf("%d", &x);   // 입력: -3 0 -1 5 7','} while (x <= 0);','printf("%d", x);'],
+ trace:mk((p,v,S)=>{let first=1;for(const x of [-3,0,-1,5,7]){if(first){S(1,'do 블록 먼저 실행 (조건 검사는 나중)');first=0;}v.x=x;S(2,'x='+x+' 입력');if(x<=0){S(3,'x ≤ 0 → 참, 다시 반복',0,1);}else{S(3,'x ≤ 0 → 거짓, 반복 종료',0,1);break;}}S(4,'올바른 값 출력',String(v.x));}),
+ quiz:{q:'x가 처음부터 5로 입력된다면 scanf는 몇 번 실행되나요?',o:['0번','1번','2번','무한 반복'],a:1,e:'do-while은 먼저 한 번 실행한 뒤 조건을 검사하므로 정확히 1번입니다.'}},
+{no:8,title:'break (조건을 만족하는 순간 탈출)',kw:'처음으로 ~가 되는 순간, 합이 처음 ~를 넘는, 횟수를 모르는 탐색',
+ desc:'for의 조건식을 비워 두면 항상 참인 무한 반복이 됩니다. 그 안에서 원하는 조건을 만나면 break로 빠져나오는 방식으로, "언제 끝날지 모르는" 탐색을 만듭니다.',
+ tip:'break 뒤에도 i 값을 쓰려면 반복 변수를 for 안이 아닌 밖에서 선언해야 합니다.',
+ params:[{k:'limit',label:'기준값 limit',d:100,min:10,max:500}],
+ code:['int limit, sum = 0, i;','scanf("%d", &limit);','for (i = 1; ; i++) {','    sum += i;','    if (sum > limit) break;','}','printf("%d %d", i, sum);'],
+ trace:mk((p,v,S)=>{v.limit=p.limit;v.sum=0;S(1,'limit 입력');for(let i=1;;i++){v.i=i;S(2,'i='+i+' (조건식이 비어 있어 항상 참)');v.sum+=i;S(3,'sum에 i를 더함');if(v.sum>p.limit){S(4,'sum > limit → break로 탈출');break;}S(4,'아직 limit 이하 → 계속',0,1);}S(6,'탈출한 시점의 i와 sum 출력',v.i+' '+v.sum);}),
+ quiz:{q:'limit = 10 일 때 출력되는 "i sum"은?',o:['4 10','5 15','5 10','4 15'],a:1,e:'1+2+3+4 = 10 은 limit 이하이고, i=5 에서 15가 되어 처음으로 넘으므로 "5 15" 입니다.'}},
+{no:9,title:'continue (이번 회차만 건너뛰기)',kw:'~의 배수 제외, 일부만 처리, 조건에 맞으면 건너뛰기',
+ desc:'continue를 만나면 몸체의 나머지를 건너뛰고 곧바로 다음 회차(증감식)로 넘어갑니다. "제외 조건"을 앞에 두면 아래 코드는 "제외되지 않은 경우"만 처리하게 되어 if 중첩이 줄어듭니다.',
+ tip:'while문에서 continue를 쓸 때는 증감 문장이 건너뛰어지지 않도록 continue보다 앞에 두어야 무한 루프를 피합니다.',
+ params:[{k:'n',label:'n',d:10,min:1,max:20}],
+ code:['int n, sum = 0;','scanf("%d", &n);','for (int i = 1; i <= n; i++) {','    if (i % 3 == 0) continue;   // 건너뛰기','    sum += i;','}','printf("%d", sum);'],
+ trace:mk((p,v,S)=>{v.n=p.n;v.sum=0;S(1,'n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,'i='+i);if(i%3==0){S(3,'3의 배수 → continue, 아래를 건너뜀',0,1);continue;}S(3,'i%3 = '+i%3+' → 통과');v.sum+=i;S(4,'sum에 i를 더함',0,1);}delete v.i;S(6,'결과 출력',String(v.sum));}),
+ quiz:{q:'continue가 실행되면 어떻게 되나요?',o:['반복문 전체가 끝난다','이번 회차의 나머지만 건너뛰고 다음 회차를 진행한다','프로그램이 종료된다','조건식을 무시하고 계속 반복한다'],a:1,e:'break는 반복문을 끝내고, continue는 현재 회차만 건너뜁니다.'}},
+{no:10,title:'수열 만들기 (값을 갱신하며 반복)',kw:'등차수열, 규칙에 따라 변하는 값, n번째 항, 첫 n항의 합',
+ desc:'반복마다 값이 규칙에 따라 변하는 문제는 "현재 값을 사용한 뒤 다음 값으로 갱신"하는 틀로 풉니다. 출력과 합 누적을 먼저 하고, 마지막 줄에서 a += d 로 다음 항을 준비합니다.',
+ tip:'a += d 를 출력보다 먼저 쓰면 첫 항이 건너뛰어집니다. 사용 → 갱신 순서를 지키세요.',
+ params:[{k:'a',label:'첫 항 a',d:3,min:1,max:20},{k:'d',label:'공차 d',d:4,min:1,max:10},{k:'n',label:'항의 수 n',d:5,min:1,max:10}],
+ code:['int a, d, n, sum = 0;','scanf("%d %d %d", &a, &d, &n);','for (int i = 1; i <= n; i++) {','    printf("%d ", a);','    sum += a;','    a += d;   // 다음 항으로 갱신','}','printf("\\n합: %d", sum);'],
+ trace:mk((p,v,S)=>{v.a=p.a;v.d=p.d;v.n=p.n;v.sum=0;S(1,'a, d, n 입력');for(let i=1;i<=p.n;i++){v.i=i;S(2,i+'번째 항');S(3,'현재 항 출력',v.a+' ');v.sum+=v.a;S(4,'합에 현재 항을 더함');v.a+=p.d;S(5,'다음 항으로 갱신',0,1);}delete v.i;S(7,'합 출력','\n합: '+v.sum);}),
+ quiz:{q:'a = 3, d = 4 일 때 5번째 항은?',o:['15','19','23','20'],a:1,e:'3, 7, 11, 15, 19 → 5번째 항은 19 입니다.'}}
+];
+PATTERNS.guide='① 몇 번 반복하는지(횟수 또는 종료 조건) 정하기 → ② 반복 변수의 시작·끝·증감 정하기 → ③ 반복 밖에서 초기화할 변수(합 0, 곱 1, 개수 0) 정하기 → ④ 반복 안에서 갱신할 것과 결과 출력 위치 정하기.';
+
+function applyPy(P,OV,SUB){
+ const sub=(s,l)=>l.reduce((t,[a,b])=>t.split(a).join(b),String(s));
+ const ren=(s,m)=>Object.entries(m||{}).reduce((t,[a,b])=>t.replace(new RegExp('\\b'+a+'\\b','g'),b),s);
+ P.forEach((p,i)=>{
+  const o=OV[i],t=p.trace,R=o.ren||{},X=SUB.concat(o.sub||[]),D=o.drop||[];
+  const tx=s=>ren(sub(s,X),R);
+  p.code=o.code;
+  p.trace=q=>{let prev=null;return t(q).map(s=>{const v={};for(const k in s.v){if(D.includes(k))continue;v[R[k]||k]=s.v[k];}let note=tx(s.note);if(o.endfix&&/반복 종료/.test(s.note)){if(prev&&('i' in prev))v.i=prev.i;else delete v.i;note='range의 값을 모두 사용함 → 반복 종료';}prev=v;return {l:o.map[s.l]??0,v,note,out:s.out,k:s.k};});};
+  ['title','kw','desc','tip'].forEach(f=>{p[f]=tx(o[f]!==undefined?o[f]:p[f]);});
+  if(o.xdesc)p.desc+=' '+o.xdesc;
+  const z=Object.assign({},p.quiz,o.quiz||{});
+  p.quiz={q:tx(z.q),o:z.o.map(tx),a:z.a,e:tx(z.e)};
+  if(o.params)p.params=o.params;
+ });
+ if(P.guide)P.guide=sub(P.guide,SUB);
+}
+applyPy(PATTERNS,[{"code":["n = int(input())","for i in range(1, n + 1):","    print(i, end=\" \")"],"map":[0,0,1,2,2],"endfix":1,"title":"for문 기본 틀 (range의 시작 · 끝 · 간격)","desc":"for 변수 in range(시작, 끝, 간격) 은 \"어디서 시작해서, 어디 직전까지, 몇 칸씩\"을 한 줄에 적는 틀입니다. 반복 변수가 range의 값을 하나씩 받으며 몸체를 실행합니다. range의 끝 값은 포함되지 않습니다.","tip":"range(1, n) 과 range(1, n + 1) 은 반복 횟수가 1 차이 납니다. 1부터 n까지는 range(1, n + 1), 0부터 n-1까지는 range(n) 입니다.","quiz":{"q":"for i in range(5): 의 몸체는 몇 번 실행되나요?","e":"i가 0, 1, 2, 3, 4 일 때 실행되어 모두 5번입니다."}},{"code":["s, e, d = map(int, input().split())","for i in range(s, e + 1, d):","    print(i, end=\" \")"],"map":[0,0,1,2,2],"endfix":1,"title":"증가폭 바꾸기 (range의 세 번째 값)","desc":"range(시작, 끝, 간격)의 세 번째 값으로 간격을 바꾸면 d칸씩 건너뛰며 반복합니다. 시작값을 바꾸면 홀수·짝수·특정 나머지를 가진 수만 골라 돌 수 있어 if가 필요 없어집니다. 끝 값은 포함되지 않으므로 e까지 포함하려면 e + 1 을 씁니다.","tip":"간격이 0이면 ValueError 가 납니다. 간격은 1 이상이어야 합니다."},{"code":["n = int(input())","for i in range(n, 0, -1):","    print(i, end=\" \")","print(\"발사!\")"],"map":[0,0,1,2,2,3],"endfix":1,"title":"거꾸로 세기 (range의 음수 간격)","desc":"range(시작, 끝, -1) 처럼 간격을 음수로 주면 거꾸로 돕니다. 끝 값은 포함되지 않으므로 1까지 세려면 끝 값을 0으로 둡니다.","tip":"range(n, 1, -1) 로 쓰면 1이 빠집니다. 또 간격이 음수인데 시작이 끝보다 작으면(range(1, 5, -1)) 한 번도 실행되지 않습니다.","quiz":{"q":"for i in range(5, 0, -1): 에서 마지막으로 출력되는 i는?","e":"끝 값 0은 포함되지 않으므로 마지막은 i = 1 입니다."}},{"code":["n = int(input())","f = 1   # 곱의 시작은 1","for i in range(1, n + 1):","    f *= i   # 누적곱","print(f)"],"map":[1,0,2,3,3,4],"tip":"파이썬의 int는 크기 제한이 없어 큰 팩토리얼도 정확히 계산됩니다. (C에서는 13!부터 int가 넘칩니다.) 그래도 초기값 1과 누적곱 구조는 같습니다."},{"code":["a, b = map(int, input().split())","r = 1","for i in range(b):","    r *= a","print(r)"],"map":[1,0,2,3,3,4],"xdesc":"(파이썬에는 a ** b 도 있지만, 반복의 원리를 익히기 위한 문제입니다.)","tip":"반복 변수를 값 계산에 쓰지 않을 때는 관례적으로 for _ in range(b): 처럼 _ 를 씁니다."},{"code":["n = int(input())","cnt = 0","while n > 1:","    n //= 2","    cnt += 1","print(cnt)"],"map":[1,0,2,3,4,4,5],"xdesc":"(/ 는 실수 나눗셈이므로 정수 몫이 필요할 때는 // 를 사용합니다.)"},{"code":["while True:","    x = int(input())   # 입력: -3 0 -1 5 7","    if x > 0:","        break","print(x)"],"map":[0,0,1,2,4],"title":"while True + break (최소 한 번은 실행)","kw":"입력 검증, 올바른 값이 올 때까지 다시 입력, 먼저 실행하고 검사","desc":"파이썬에는 do-while 문이 없어서 while True: 로 무한 반복을 만들고, 올바른 값이 들어오면 break로 빠져나옵니다. 입력을 먼저 받고 검사하므로 몸체는 최소 한 번 실행됩니다.","tip":"while True: 는 break가 없으면 무한 루프입니다. 입력 검증에서는 \"올바른 값일 때 break\" 형태로 씁니다.","quiz":{"q":"x가 처음부터 5로 입력된다면 input()은 몇 번 실행되나요?","e":"while True 의 몸체가 먼저 한 번 실행되고 바로 break 되므로 정확히 1번입니다."},"sub":[["do 블록 먼저 실행 (조건 검사는 나중)","while True 의 몸체가 먼저 실행됨"],["x ≤ 0 → 참, 다시 반복","x가 0 이하 → break 하지 않고 다시 반복"],["x ≤ 0 → 거짓, 반복 종료","x > 0 → break로 반복 종료"]]},{"code":["limit = int(input())","total = 0","i = 1","while True:","    total += i","    if total > limit:","        break","    i += 1","print(i, total)"],"map":[0,0,3,4,5,5,8],"ren":{"sum":"total"},"desc":"while True: 는 조건이 항상 참인 무한 반복입니다. 그 안에서 원하는 조건을 만나면 break로 빠져나오는 방식으로 \"언제 끝날지 모르는\" 탐색을 만듭니다.","tip":"i += 1 을 break 검사보다 앞에 두면 탈출 시점의 i가 1 커집니다. 증가는 break 검사 뒤에 두어야 합니다.","sub":[["(조건식이 비어 있어 항상 참)","(while True 라서 항상 참)"]]},{"code":["n = int(input())","total = 0","for i in range(1, n + 1):","    if i % 3 == 0:","        continue   # 건너뛰기","    total += i","print(total)"],"map":[0,0,2,3,5,5,6],"ren":{"sum":"total"}},{"code":["a, d, n = map(int, input().split())","total = 0","for i in range(1, n + 1):","    print(a, end=\" \")","    total += a","    a += d   # 다음 항으로 갱신","print()","print(\"합:\", total)"],"map":[0,0,2,3,4,5,5,7],"ren":{"sum":"total"}}],[]);
+
+const nav=document.getElementById('nav'),app=document.getElementById('app');
+let cur=-1,steps=[],si=0,timer=null,done={};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function drawNav(){nav.innerHTML='';[['개요',-1],...PATTERNS.map((p,i)=>[p.no,i])].forEach(([t,i])=>{const b=document.createElement('button');b.textContent=t;b.className=(cur===i?'on ':'')+(done[i]?'done':'');b.onclick=()=>show(i);nav.appendChild(b);});}
+function show(i){clearInterval(timer);cur=i;drawNav();i<0?overview():pattern(PATTERNS[i]);window.scrollTo(0,0);}
+function overview(){app.innerHTML='<div class="card"><h2>문제 키워드 → 패턴 찾기</h2><div class="tag">문제를 읽고 아래 표에서 비슷한 표현을 찾아 해당 패턴 탭을 열어 보세요.</div><table><tr><th>패턴</th><th>이런 표현이 나오면</th></tr>'+PATTERNS.map((p,i)=>`<tr><td><a href="#" onclick="show(${i});return false">${p.no}. ${p.title}</a></td><td>${p.kw}</td></tr>`).join('')+'</table><div class="tip">공통 순서: '+(PATTERNS.guide||'① 필요한 변수와 초기값 정하기 → ② 반복 범위 정하기 → ③ 반복 안의 조건 세우기 → ④ 반복 밖에서 결과 출력.')+'</div></div>';}
+function pattern(P){
+ app.innerHTML=`<div class="card"><h2>패턴 ${P.no}. ${P.title}</h2><div class="tag">키워드: ${P.kw}</div><p>${P.desc}</p>
+ <div class="ctl">${P.params.map(q=>`<label>${q.label} <input type="number" id="in_${q.k}" value="${q.d}" min="${q.min}" max="${q.max}"></label>`).join('')}${P.inp?`<span>입력: <b>${P.inp}</b></span>`:''}
+ <button class="btn p" onclick="run()">▶ 실행</button><button class="btn" onclick="mv(-1)">◀ 이전</button><button class="btn" onclick="mv(1)">다음 ▶</button><button class="btn" onclick="auto()">⏯ 자동</button></div>
+ <div class="grid"><div class="code" id="code">${P.code.map((c,k)=>`<div class="ln" id="l${k}"><span>${k+1}</span>${esc(c)}</div>`).join('')}</div>
+ <div><div class="box"><b>변수 상태</b><div id="vars">—</div></div><div class="box"><b>출력</b><pre class="out" id="out"></pre></div><div class="box"><b>설명</b><div class="note" id="note">▶ 실행을 눌러 시작하세요.</div></div></div></div>
+ <div class="tip">⚠ 실수 포인트: ${P.tip}</div></div>
+ <div class="card"><h2>확인 문제</h2><p>${P.quiz.q}</p>${P.quiz.o.map((o,k)=>`<button class="opt" onclick="ans(this,${k})">${'①②③④'[k]} ${o}</button>`).join('')}<div id="exp" class="note"></div></div>`;
+ steps=[];si=0;run();
+}
+function run(){clearInterval(timer);const P=PATTERNS[cur],a={};P.params.forEach(q=>{let v=parseInt(document.getElementById('in_'+q.k).value);if(isNaN(v))v=q.d;a[q.k]=Math.max(q.min,Math.min(q.max,v));document.getElementById('in_'+q.k).value=a[q.k];});steps=P.trace(a);si=0;draw();}
+function mv(d){si=Math.max(0,Math.min(steps.length-1,si+d));draw();}
+function auto(){clearInterval(timer);if(si>=steps.length-1)si=0;timer=setInterval(()=>{if(si>=steps.length-1)return clearInterval(timer);si++;draw();},700);}
+function draw(){const s=steps[si];document.querySelectorAll('.ln').forEach(e=>e.classList.remove('on'));document.getElementById('l'+s.l).classList.add('on');
+ document.getElementById('vars').innerHTML='<table><tr>'+Object.keys(s.v).map(k=>`<th>${k}</th>`).join('')+'</tr><tr>'+Object.values(s.v).map(x=>`<td>${x}</td>`).join('')+'</tr></table>';
+ document.getElementById('out').textContent=steps.slice(0,si+1).map(t=>t.out).join('');document.getElementById('note').textContent=`(${si+1}/${steps.length}) `+s.note;}
+function ans(b,k){const Q=PATTERNS[cur].quiz,ok=k===Q.a;b.classList.add(ok?'ok':'no');if(!ok)document.querySelectorAll('.opt')[Q.a].classList.add('ok');document.getElementById('exp').textContent=(ok?'정답! ':'오답. ')+Q.e;if(ok){done[cur]=1;drawNav();}}
+show(-1);
+</script></body></html>
