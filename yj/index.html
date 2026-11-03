@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027 디미고 해킹방어과 — 유준이 실전 심층면접 트레이닝</title>
+<style>
+:root{
+  --ink:#0B1220; --ink2:#1E293B; --line:#E2E8F0; --line2:#CBD5E1;
+  --bg:#F1F5F9; --card:#FFFFFF; --text:#334155; --dim:#64748B;
+  --blue:#2563EB; --blue-d:#1D4ED8; --red:#E11D48; --green:#059669;
+  --amber:#D97706; --purple:#7C3AED; --cyan:#0891B2;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,sans-serif;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;overflow:hidden;}
+.app{width:100%;max-width:1400px;height:100vh;max-height:1000px;background:var(--card);
+  border-radius:18px;box-shadow:0 24px 50px rgba(11,18,32,.14);display:grid;
+  grid-template-columns:292px 1fr;overflow:hidden;border:1px solid var(--line);}
+
+/* 사이드바 */
+.side{background:linear-gradient(170deg,#0B1220,#1E293B);display:flex;flex-direction:column;padding:26px 16px 14px;}
+.bd{font-size:1.22rem;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.35;}
+.bs{font-size:.76rem;color:#94A3B8;margin:8px 0 18px;line-height:1.6;}
+.nav{list-style:none;display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.nav li{padding:14px 15px;border-radius:11px;font-size:.9rem;font-weight:700;color:#CBD5E1;
+  cursor:pointer;transition:.16s;min-height:48px;display:flex;align-items:center;gap:9px;}
+.nav li:active{transform:scale(.97);}
+.nav li.on{background:#fff;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.28);}
+.nav li .cnt{margin-left:auto;font-size:.72rem;opacity:.65;font-weight:800;}
+.cr{margin-top:12px;padding:13px 10px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:.71rem;color:#94A3B8;line-height:1.7;text-align:center;}
+.cr b{color:#E2E8F0;display:block;font-size:.79rem;margin-bottom:3px;}
+
+/* 본문 */
+.main{padding:26px 32px 34px;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#FBFCFE;}
+.page{display:none;} .page.on{display:block;animation:f .26s ease;}
+@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.head{border-bottom:3px solid var(--line);padding-bottom:15px;margin-bottom:20px;}
+.head h2{font-size:1.65rem;font-weight:800;color:var(--ink);letter-spacing:-.6px;}
+.head p{font-size:.9rem;color:var(--dim);margin-top:6px;line-height:1.65;}
+
+.bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid var(--line);
+  border-radius:13px;padding:12px 16px;margin-bottom:16px;}
+.btn{padding:11px 18px;border:none;border-radius:10px;background:var(--blue);color:#fff;
+  font-size:.88rem;font-weight:800;cursor:pointer;min-height:44px;transition:.16s;}
+.btn:active{transform:scale(.97);}
+.btn.gh{background:#fff;color:var(--ink);border:2px solid var(--line2);}
+.btn.gr{background:var(--green);} .btn.rd{background:var(--red);}
+.meta{font-size:.86rem;color:var(--dim);font-weight:700;margin-left:auto;}
+
+/* 질문 카드 */
+.qc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0;margin-bottom:14px;
+  overflow:hidden;box-shadow:0 2px 8px rgba(11,18,32,.04);}
+.qh{padding:18px 20px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;}
+.qh:active{background:#F8FAFC;}
+.qn{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;}
+.qt{flex:1;font-size:1.02rem;font-weight:700;color:var(--ink);line-height:1.6;}
+.lv{display:inline-block;padding:2px 9px;border-radius:6px;font-size:.68rem;font-weight:800;margin-left:7px;vertical-align:middle;}
+.lv.a{background:#DBEAFE;color:#1D4ED8;} .lv.b{background:#FEF3C7;color:#B45309;}
+.lv.c{background:#FEE2E2;color:#BE123C;}
+.tog{flex-shrink:0;font-size:.78rem;font-weight:800;color:var(--blue);padding:7px 12px;
+  border:2px solid #BFDBFE;border-radius:8px;background:#EFF6FF;white-space:nowrap;}
+.qb{display:none;padding:0 20px 20px;} .qc.open .qb{display:block;}
+.qc.open .tog{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+.sec{border-left:5px solid;border-radius:10px;padding:14px 16px;margin-top:12px;}
+.sec h6{font-size:.84rem;font-weight:800;margin-bottom:7px;letter-spacing:.2px;}
+.sec p{font-size:.93rem;line-height:1.85;}
+.sec ul{padding-left:19px;margin-top:5px;} .sec li{font-size:.92rem;line-height:1.8;margin-bottom:3px;}
+.s-int{background:#F5F3FF;border-color:var(--purple);} .s-int h6{color:#6D28D9;} .s-int p,.s-int li{color:#4C1D95;}
+.s-ans{background:#F0FDF4;border-color:var(--green);} .s-ans h6{color:#047857;} .s-ans p,.s-ans li{color:#064E3B;}
+.s-fu{background:#FFF7ED;border-color:var(--amber);} .s-fu h6{color:#B45309;} .s-fu p,.s-fu li{color:#7C2D12;}
+.s-wn{background:#FEF2F2;border-color:var(--red);} .s-wn h6{color:#BE123C;} .s-wn p,.s-wn li{color:#881337;}
+.s-tp{background:#ECFEFF;border-color:var(--cyan);} .s-tp h6{color:#0E7490;} .s-tp p,.s-tp li{color:#164E63;}
+code{background:#0F172A;color:#E2E8F0;padding:2px 7px;border-radius:5px;font-size:.86em;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:600;}
+.sec b{font-weight:800;}
+
+/* 일반 카드 */
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(11,18,32,.04);}
+.card h3{font-size:1.14rem;font-weight:800;color:var(--ink);margin-bottom:12px;}
+.card h4{font-size:.99rem;font-weight:800;color:var(--blue-d);margin:16px 0 7px;}
+.card p,.card li{font-size:.93rem;line-height:1.8;color:var(--text);}
+.card ul{padding-left:20px;} .card li{margin-bottom:4px;}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.88rem;}
+th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;line-height:1.65;vertical-align:top;}
+th{background:#F1F5F9;font-weight:800;color:var(--ink);}
+tr:nth-child(even) td{background:#FAFBFC;}
+td code{font-size:.84em;}
+
+/* 모의면접 */
+.sim{background:linear-gradient(135deg,#0B1220,#334155);color:#fff;border-radius:16px;padding:30px;margin-bottom:16px;}
+.sim .tagl{font-size:.8rem;color:#94A3B8;font-weight:700;letter-spacing:1px;}
+.sim .qq{font-size:1.3rem;font-weight:800;line-height:1.6;margin:12px 0 18px;}
+.timer{font-size:2.1rem;font-weight:800;color:#67E8F9;font-variant-numeric:tabular-nums;}
+.foot{text-align:center;padding:22px 0 6px;font-size:.77rem;color:#94A3B8;line-height:1.8;
+  border-top:1px solid var(--line);margin-top:24px;}
+.foot b{color:var(--dim);}
+@media(max-width:1100px){.app{grid-template-columns:230px 1fr;}}
+</style>
+
+<style id="enhanced-2027-styles">
+:root{--ink:#3A1530;--ink2:#582A43;--line:#F1CBD8;--line2:#E8B7C9;--bg:#FFF7FB;--card:#FFFFFF;--text:#4D2E40;--dim:#6E5362;--blue:#AD2456;--blue-d:#8F1A47;--red:#C3335E;--green:#3D7860;--amber:#9C5D13;--purple:#893F72;--cyan:#7D446E;--rose:#A5144A;}
+body{background:#FFF7FA;color:var(--ink);}
+.app{box-shadow:0 18px 45px rgba(137,24,76,.13);border-color:#F2C9D8;}
+.side{background:linear-gradient(180deg,#A21D55 0%,#6B1742 100%);}
+.bs,.cr{color:#F6D6E2}.cr b{color:#fff}
+.nav li{color:#FAE1E9}.nav li.on{color:#80143F;background:#FFF6FA}.nav li:hover:not(.on){background:rgba(255,255,255,.13)}
+.main{background:#FFFBFD}.head h2,.qt,.qn,.card h3{color:var(--ink)}
+.card,.qc,.bar{border-color:var(--line);box-shadow:0 3px 13px rgba(159,44,89,.04)}
+.qn{background:#8F2153;color:#fff}.tog{border-color:#DDA3BA;background:#FFEAF2;color:#8B1F50}
+.qc.open .tog{background:#8B1F50;border-color:#8B1F50}
+.sec{border-radius:9px}.s-int{background:#FFF4F8;border-color:#B86288}.s-int h6,.s-int p,.s-int li{color:#682A49}
+.s-ans{background:#F2F9F5;border-color:#418368}.s-ans h6,.s-ans p,.s-ans li{color:#204F3E}
+.s-fu{background:#FFFAF1;border-color:#AD792E}.s-fu h6,.s-fu p,.s-fu li{color:#694310}
+.s-wn{background:#FFF1F3;border-color:#BC3B61}.s-wn h6,.s-wn p,.s-wn li{color:#74203D}
+.s-tp{background:#FAF2FC;border-color:#88437B}.s-tp h6,.s-tp p,.s-tp li{color:#542849}
+.btn{background:#A21D55}.btn.gr{background:#397D5F}.btn.rd{background:#B43053}.btn.gh{border-color:#E1B6C7;color:#7C214A;background:#fff}
+.btn:hover{filter:brightness(.95)}a{color:#8F1A47;text-decoration:underline;text-underline-offset:3px}
+.sim{background:linear-gradient(135deg,#FFE0ED,#F6C8DB);color:#5D1739;border:2px solid #EAC0D0;padding:27px}
+.sim .tagl{color:#82465F}.sim .timer{color:#7B1440}
+th{background:#FCECF3;color:#682A46}tr:nth-child(even) td{background:#FFFAFC}
+.card p,.card li{color:#4A3140}code{background:#54253F;color:#FFF7FA}
+.card h4{color:#92244F}.hint{font-size:.83rem;color:#755869;line-height:1.8}
+.mydraft{background:#FFF9FC;border-top:1px solid #F2DAE5;padding:15px 20px}
+.mydraft>label,.inp-label{display:block;color:#743050;font-weight:800;font-size:.87rem;margin:8px 0 7px}
+.note{display:block;width:100%;border:1.5px solid #D9A9BF;border-radius:10px;padding:12px 13px;background:#fff;color:#401E31;font-size:1rem;line-height:1.6;resize:vertical;min-height:76px;font-family:inherit}
+.note:focus{outline:3px solid #F8CEDF;border-color:#A21D55}
+.rate{display:flex;align-items:center;gap:10px;color:#72284B;font-size:.85rem;font-weight:700;margin-top:8px}
+.rate select{border:1px solid #DCB3C7;border-radius:8px;background:white;color:#662A48;padding:8px 10px;max-width:100%;font-size:.85rem}
+.prepitem{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid #F4E3EB;cursor:pointer}
+.prepitem input{width:21px;height:21px;accent-color:#A21D55;margin-top:3px;flex-shrink:0}
+.prepitem b{display:block;font-size:.94rem;color:#53263D}.prepitem small{font-size:.83rem;color:#6D5261;display:block;margin-top:4px;line-height:1.6}
+@media(max-width:800px){html,body{height:auto;min-height:100%;overflow:auto;display:block}.app{display:flex;flex-direction:column;width:100%;max-width:none;max-height:none;height:auto;border-radius:0;overflow:visible;box-shadow:none}.side{padding:17px 15px 10px;position:sticky;top:0;z-index:30;box-shadow:0 3px 10px rgba(90,20,52,.14)}.bs{margin:4px 0 8px}.nav{flex:0 0 auto;display:flex;flex-direction:row;gap:7px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;white-space:nowrap;padding-bottom:5px}.nav li{min-height:39px;padding:9px 11px;white-space:nowrap;font-size:.8rem;border-radius:9px}.nav .cnt{margin-left:5px}.cr{display:none}.main{padding:16px 13px 30px;overflow:visible}.head h2{font-size:1.37rem}.qc .qh{padding:15px 12px}.qc .qt{font-size:.93rem}.qb{padding:0 12px 15px}.card{padding:16px}.bar{padding:10px;gap:7px}.btn{font-size:.82rem;padding:10px 12px}.sim{padding:18px}.sim .qq{font-size:1.16rem}.qn{width:28px;height:28px}.tog{padding:6px 7px}.mydraft{padding:12px}.lv{display:inline-block;margin-left:4px}.main table{font-size:.81rem;display:block;overflow-x:auto;white-space:normal}.main th,.main td{min-width:90px;padding:8px}}
+@media print{html,body{height:auto!important;overflow:visible!important;background:white!important}.app{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;border:0!important;box-shadow:none!important}.side,.bar,.mydraft,.sim,.qbar,.btn{display:none!important}.main{padding:0!important;overflow:visible!important;background:white!important}.qc{break-inside:avoid;box-shadow:none!important;border-color:#aaa!important}.qc .qh{cursor:default}.qc .tog{display:none}.qb{display:none!important}.print-solutions .qb{display:block!important}.page,.card{break-inside:avoid}.head{page-break-after:avoid}.foot{margin-top:16px}a{color:black}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="bd">유준이 디미고 심층면접</div>
+  <div class="bs">2027학년도 진로적성특별전형 · 해킹방어과<br>데이터 카빙 기술·인성·실전 10분 면접</div>
+  <ul class="nav" id="nav"></ul>
+  <div class="cr"><b>세영코딩연구소</b>저자 : 컴퓨터공학박사 KIM</div>
+</aside>
+<main class="main" id="main"></main>
+</div>
+
+<script>
+/* ===================== 데이터 ===================== */
+const strategy = `
+<div class="head"><h2>면접 전략 — 먼저 읽고 시작하세요</h2>
+<p>진로적성특별전형 면접은 <b>“제출 자료와 본인의 경험을 이해하고 설명할 수 있는가”</b>를 확인하는 자리입니다. 지식 자랑이 아니라 <b>검증</b>이 목적입니다.</p></div>
+
+<div class="card" style="border:2px solid #E9A1B4;background:#FFF6FA">
+<h3>실제 제출 자료 확인 — 가장 먼저!</h3>
+<p><b>학생명 확인:</b> 이번 면접 연습 대상은 <b>유준</b>입니다. 참고한 실적설명서 PDF에도 지원자 성명이 <b>김유준</b>으로 기재되어 있습니다. 실제 제출한 파일의 전형·학과·내용이 최종본과 일치하는지 확인하세요. 본 자료는 면접 연습 교재이며, 실적물의 실제 수행 범위는 코드와 활동 기록을 기준으로 설명해야 합니다.</p>
+<p style="margin-top:10px"><b>사실로 확인되는 주요 실적:</b> C언어 데이터 카빙, 2026년 9~10월 제작, 서명/푸터 기반 탐색, PNG CRC 활용 단편화 복구 시도, JPEG 마커 검사, ZIP EOCD 문서 분류, 파일 크기·자료형 수정, 복구 리포트. <b>추가 증빙 필요:</b> 전체 코드 줄 수, 정량 성공률, 특정 도구 사용, 실제 테스트 날짜 및 개인별 기여 분율.</p>
+</div>
+<div class="card"><h3>학교 공식 안내: 심층면접 10분</h3>
+<p>2027학년도 학교 안내: <b>1명 대 면접위원 2~3명, 약 10분(±2분)</b>. 실적물 확인, 진로목표·학업역량, 인성, 단체생활 적응력을 살핍니다. 2026학년도 공식 기출 질문도 함께 훈련하세요.</p>
+<p style="margin-top:8px"><a href="https://dimigo-h.goeas.kr/dimigo-h/na/ntt/selectNttInfo.do?bbsId=6915&amp;mi=13631&amp;nttSn=1525010" target="_blank" rel="noopener">2027학년도 학교 공식 면접 진행 방식 및 기출문항 확인</a></p>
+</div>
+<div class="card"><h3>1. 면접관이 확인하려는 4가지</h3>
+<table>
+<tr><th style="width:150px">확인 항목</th><th>확인하려는 내용</th><th style="width:230px">대응 원칙</th></tr>
+<tr><td><b>본인 수행 확인</b></td><td>“이 코드를 진짜 이해하고 있나? 누가 대신 해준 건 아닌가?”</td><td>용어를 <b>내 말로 다시 정의</b>하고, 코드 흐름을 손으로 그리듯 설명</td></tr>
+<tr><td><b>문제 해결력</b></td><td>“막혔을 때 어떻게 돌파했나?”</td><td><b>문제 → 가설 → 시도 → 실패 → 수정</b> 4단 구조로 말하기</td></tr>
+<tr><td><b>정직성</b></td><td>“AI 사용을 솔직히 말하나?”</td><td>활용 범위를 구체적으로 설명하고 실제 수행과 구분</td></tr>
+<tr><td><b>성장 가능성</b></td><td>“한계를 알고 다음을 설계할 줄 아나?”</td><td>한계를 인정하되 <b>반드시 개선안을 세트로</b></td></tr>
+</table></div>
+
+<div class="card"><h3>2. 답변의 기본 골격 (30초 ~ 1분)</h3>
+<ul>
+<li><b>1단 — 결론 한 문장</b>: “입니다.” 먼저 답을 던진다.</li>
+<li><b>2단 — 근거·과정 2~3문장</b>: 내 코드에서 실제로 무엇을 했는지.</li>
+<li><b>3단 — 배운 점 또는 한계 1문장</b>: 성장의 증거를 남긴다.</li>
+</ul>
+<div class="sec s-wn"><h6>하지 말아야 할 것</h6>
+<ul><li>모르는 것을 아는 척하기 → 정확한 확인 질문에서 설명이 어려워집니다.</li>
+<li>암기한 정의를 그대로 읊기 → “교과서 말고 본인 말로 설명해 보세요”가 바로 따라옵니다.</li>
+<li>“AI가 해줬어요”로 끝내기 / 반대로 “AI 전혀 안 썼어요”라고 거짓말하기.</li></ul></div></div>
+
+<div class="card"><h3>3. 모르는 질문이 나왔을 때 (암기 필수 3종 세트)</h3>
+<div class="sec s-ans"><h6>그대로 외워 두세요</h6>
+<ul>
+<li><b>완전히 모를 때</b> — “그 부분은 아직 충분히 공부하지 못했습니다. 다만 제가 아는 내용과 연결해 보면 [추측 내용]일 것 같습니다. 정확한 내용은 확인하겠습니다.”</li>
+<li><b>헷갈릴 때</b> — “정확한 수치는 기억나지 않지만, 제가 구현할 때 사용한 원리는 [원리]입니다.”</li>
+<li><b>지적받았을 때</b> — “지적하신 부분을 이해했습니다. 제가 놓친 조건은 [조건]입니다. [개선 방법]으로 보완할 수 있는지 확인하겠습니다.”</li>
+</ul></div>
+<p style="margin-top:12px"><b>핵심:</b> 모르는 것을 숨기지 말고 아는 범위와 확인할 부분을 분리하세요. 실제 평가 점수는 학교 기준에 따릅니다.</p></div>
+
+<div class="card"><h3>4. 이 실적물의 강점과 약점 (자기 객관화)</h3>
+<table><tr><th style="width:50%">강점 — 적극적으로 어필</th><th>약점 — 먼저 인정하고 개선안 제시</th></tr>
+<tr><td>
+<ul><li>C로 <b>바이트 단위</b>를 직접 다룬 경험 (저수준 이해)</li>
+<li>단순 시그니처 카빙을 넘어 <b>단편화 복구</b>까지 시도</li>
+<li>CRC32·EOCD 등 <b>포맷 명세를 직접 읽고</b> 적용</li>
+<li>문제 발견 → 수정 이력이 명확 (2MB 한계, GIF 조기 종료 등)</li></ul>
+</td><td>
+<ul><li>16MB 메모리 적재 방식 → 실제 디스크 규모 불가</li>
+<li>“첫 후보 채택” 휴리스틱 → <b>오탐 가능성</b></li>
+<li>복구 성공률의 <b>정량 측정 부족</b></li>
+<li>AI 보조 구간 존재 → 설명 책임이 더 큼</li></ul>
+</td></tr></table></div>
+
+<div class="card"><h3>5. 면접 전날 체크리스트</h3>
+<ul>
+<li><b>암기 팩트시트</b> 탭의 시그니처 표·숫자를 소리 내어 3회 확인</li>
+<li><b>모의 면접</b> 탭으로 랜덤 15문항, 실제로 입 밖으로 소리 내어 답변</li>
+<li>제출한 실적설명서를 <b>처음부터 끝까지 1회 정독</b> — 내가 쓴 문장을 면접관이 그대로 인용합니다</li>
+<li>본인 코드의 <code>png_gap_data</code>, <code>jpeg_scan</code>, <code>zip_kind</code> 함수를 다시 열어 흐름 복기</li>
+<li>“1분 자기소개”와 “1분 실적 설명”을 <b>타이머 재고</b> 연습</li>
+</ul></div>
+`;
+
+const facts = `
+<div class="head"><h2>암기 팩트시트 — 틀리면 치명적인 것들</h2>
+<p>면접관이 가장 쉽게 진위를 확인하는 방법은 <b>구체적인 수치와 바이트 값</b>을 묻는 것입니다. 아래는 반드시 입에서 바로 나와야 합니다.</p></div>
+
+<div class="card"><h3>파일 시그니처 &amp; 푸터 (최우선 암기)</h3>
+<table>
+<tr><th style="width:90px">파일</th><th style="width:230px">시그니처 (헤더)</th><th style="width:170px">푸터 (끝)</th><th>주의할 점</th></tr>
+<tr><td><b>JPEG</b></td><td><code>FF D8</code> (SOI; 다음 마커는 형식에 따라 다름)</td><td><code>FF D9</code> (EOI)</td><td>일부 APP/EXIF 구간에 썸네일이 있을 수 있어 단순 푸터 검색은 위험</td></tr>
+<tr><td><b>PNG</b></td><td><code>89 50 4E 47 0D 0A 1A 0A</code> (8바이트)</td><td><code>IEND</code> 전체 청크 = <code>00 00 00 00 49 45 4E 44 AE 42 60 82</code></td><td>청크마다 CRC32가 있어 <b>검증 가능</b></td></tr>
+<tr><td><b>GIF</b></td><td><code>47 49 46 38 37 61</code> (GIF87a)<br><code>47 49 46 38 39 61</code> (GIF89a)</td><td><code>3B</code> (1바이트)</td><td>1바이트라 <b>데이터 중에 수없이 등장</b> → 블록 길이 추적 필수</td></tr>
+<tr><td><b>ZIP</b></td><td><code>50 4B 03 04</code> (PK..)</td><td>EOCD 레코드 <code>50 4B 05 06</code></td><td>OOXML 문서가 ZIP 컨테이너를 사용함</td></tr>
+<tr><td><b>PDF</b></td><td><code>25 50 44 46</code> (%PDF)</td><td><code>25 25 45 4F 46</code> (%%EOF)</td><td>증분 업데이트로 %%EOF가 여러 번 나타날 수 있어 최종 유효 구조 확인 필요</td></tr>
+</table>
+<div class="sec s-tp"><h6>외우는 요령</h6><p>JPEG는 <b>“FF D8로 시작해 FF D9로 끝난다”</b>, PNG는 <b>“89 PNG”</b>(0x89 + 아스키 PNG), ZIP은 <b>“PK”</b>(개발자 Phil Katz의 이니셜), GIF·PDF는 <b>아스키 그대로</b>입니다.</p></div></div>
+
+<div class="card"><h3>PNG 청크 구조 (건너뛰기 계산의 근거)</h3>
+<table><tr><th style="width:130px">구성</th><th style="width:90px">크기</th><th>설명</th></tr>
+<tr><td>Length</td><td>4바이트</td><td><b>Data 부분만의</b> 길이 (빅 엔디언)</td></tr>
+<tr><td>Chunk Type</td><td>4바이트</td><td>영문 4글자 (<code>IHDR</code>, <code>IDAT</code>, <code>IEND</code> 등)</td></tr>
+<tr><td>Data</td><td>Length 바이트</td><td>실제 내용</td></tr>
+<tr><td>CRC32</td><td>4바이트</td><td><b>Type + Data</b>에 대한 검사값 (Length는 제외)</td></tr>
+</table>
+<div class="sec s-ans"><h6>그래서 “데이터 크기 + 12”</h6>
+<p>4(Length) + 4(Type) + 4(CRC) = <b>12바이트</b>가 고정 오버헤드입니다. 따라서 다음 청크로 가려면 <code>현재 위치 + 12 + Length</code>만큼 이동하면 됩니다. 시작할 때 <b>시그니처 8바이트</b>를 먼저 건너뛰는 것도 꼭 함께 말하세요.</p></div>
+<div class="sec s-tp"><h6>PNG는 빅 엔디언, ZIP은 리틀 엔디언</h6>
+<p>이 차이를 짚어 주면 “포맷 명세를 직접 읽었다”는 강력한 증거가 됩니다.</p></div></div>
+
+<div class="card"><h3>ZIP · EOCD 구조</h3>
+<table><tr><th style="width:230px">시그니처</th><th>의미</th></tr>
+<tr><td><code>50 4B 03 04</code></td><td>로컬 파일 헤더 — 압축된 파일 하나의 시작</td></tr>
+<tr><td><code>50 4B 01 02</code></td><td>중앙 디렉터리 헤더 — 파일 목록 항목</td></tr>
+<tr><td><code>50 4B 05 06</code></td><td><b>EOCD</b> (End of Central Directory) — 최소 22바이트, ZIP 끝부분(주석이 뒤따를 수 있음)</td></tr>
+</table>
+<h4>EOCD가 담고 있는 것</h4>
+<ul><li>EOCD 시그니처 (4바이트)</li><li>전체 항목(파일·폴더) 개수</li><li>중앙 디렉터리의 <b>크기</b></li><li>중앙 디렉터리가 <b>시작되는 위치(offset)</b></li></ul>
+<div class="sec s-ans"><h6>문서 종류 판별 규칙</h6>
+<p>중앙 디렉터리의 내부 경로를 읽어 <code>word/</code> → docx, <code>xl/</code> → xlsx, <code>ppt/</code> → pptx로 <b>추정</b>하며, 이 규칙은 완전한 포맷 검증이 아닙니다.</p></div></div>
+
+<div class="card"><h3>리틀 엔디언 (반드시 예시와 함께)</h3>
+<div class="sec s-ans"><h6>30초 설명 스크립트</h6>
+<p>“리틀 엔디언은 숫자를 저장할 때 <b>작은 자리 바이트부터</b> 기록하는 방식입니다. 예를 들어 <code>0x1234</code>는 메모리에 <code>34 12</code> 순서로 들어갑니다. ZIP은 리틀 엔디언을 쓰기 때문에, 파일에서 읽은 바이트를 <b>거꾸로 뒤집어 다시 합쳐야</b> 원래 숫자가 됩니다. 반대로 PNG는 빅 엔디언이라 읽은 순서 그대로 쓰면 됩니다. 디버깅 중 엔디언 문제를 겪었다면 실제 입력값과 수정 기록을 근거로 설명하세요.”</p></div></div>
+
+<div class="card"><h3>내 프로젝트의 숫자</h3>
+<table>
+<tr><th style="width:190px">항목</th><th>값</th><th>면접에서 덧붙일 한마디</th></tr>
+<tr><td>제작 기간</td><td>2026.09 ~ 2026.10 (2개월)</td><td>개인 연구, 단독 수행</td></tr>
+<tr><td>최대 처리 크기</td><td>2MB → <b>16MB</b></td><td>메모리 적재 방식의 구조적 한계</td></tr>
+<tr><td>자료형 변경</td><td><code>int</code>(4바이트) → <code>unsigned char</code>(1바이트)</td><td>메모리 사용량 <b>1/4</b>로 감소</td></tr>
+<tr><td>클러스터 크기</td><td>사용자 입력 (일반적으로 4096바이트)</td><td>흔히 4KB를 사용하지만 볼륨별로 달라짐</td></tr>
+<tr><td>PNG 청크 오버헤드</td><td><b>12바이트</b></td><td>4+4+4</td></tr>
+<tr><td>PNG 시그니처</td><td><b>8바이트</b></td><td>처음에 건너뛰는 양</td></tr>
+<tr><td>EOCD 최소 크기</td><td><b>22바이트</b></td><td>주석이 있으면 더 길어짐</td></tr>
+<tr><td>JPEG 단편화 판단 기준</td><td><code>0x00</code> <b>64바이트</b> 연속</td><td>비정상 패턴 임계값</td></tr>
+</table></div>
+
+<div class="card"><h3>포렌식 기본 용어 (꼬리질문 대비)</h3>
+<table>
+<tr><th style="width:170px">용어</th><th>한 줄 정의</th></tr>
+<tr><td><b>데이터 카빙</b></td><td>파일 시스템 정보 없이 <b>내용 자체의 패턴</b>만으로 파일을 복원하는 기법</td></tr>
+<tr><td><b>단편화</b></td><td>한 파일이 디스크의 연속되지 않은 여러 조각에 나뉘어 저장된 상태</td></tr>
+<tr><td><b>클러스터</b></td><td>파일 시스템이 저장 공간을 다루는 <b>최소 할당 단위</b></td></tr>
+<tr><td><b>미할당 영역</b></td><td>삭제 등으로 파일 시스템이 “비었다”고 표시했지만 <b>데이터는 남아 있는</b> 공간</td></tr>
+<tr><td><b>CRC32</b></td><td>저장·전송 중 오류를 검출하는 32비트 검사값 (오류 <b>검출</b>용, 복구는 못 함)</td></tr>
+<tr><td><b>해시 (MD5/SHA-256)</b></td><td>데이터 요약값. 동일성을 높은 신뢰도로 검증하는 데 사용(이론상 충돌 가능)</td></tr>
+<tr><td><b>쓰기 방지 장치</b></td><td>원본 증거 매체에 <b>단 1바이트도 쓰지 못하게</b> 막는 하드웨어/소프트웨어</td></tr>
+<tr><td><b>연계 보관성</b></td><td>누가·언제·어디서·어떻게 증거를 취급했는지 기록하는 증거 관리 연속성(Chain of Custody)</td></tr>
+</table></div>
+`;
+
+const QS = {
+ basic:[
+ {lv:"a",q:"본인이 제출한 실적물을 1분 안에 설명해 주세요.",
+  int:"실적물 소개를 확인하는 대표 연습 질문입니다. 1분 안에 <b>무엇을·왜·어떻게·무슨 성과</b>가 모두 들어가는지로 준비도를 판단합니다.",
+  ans:["“디지털 포렌식의 파일 복구 기법인 <b>데이터 카빙</b>을 C언어로 직접 구현한 연구입니다.”",
+   "“데이터 카빙은 파일 시스템 정보 없이, 파일 고유의 <b>시그니처와 푸터</b>라는 패턴만으로 파일을 찾아 복원하는 방법입니다. 디스크 이미지를 한 바이트씩 훑으며 JPEG, PNG, GIF, ZIP 등의 시작 표식을 찾고, 포맷별 구조를 따라가며 끝을 찾아 저장하도록 만들었습니다.”",
+   "“가장 공을 들인 부분은 <b>단편화 복구</b>입니다. 파일이 디스크에 조각나 저장된 경우, PNG는 CRC32 검증으로, JPEG는 마커 규칙으로 끊긴 지점을 찾아 다음 조각을 이어 붙였습니다.”",
+   "“추가로 ZIP 내부의 EOCD를 분석해 docx·xlsx·pptx를 구분하고, 복구 결과를 디스크 맵과 통계로 보여 주는 리포트 기능까지 만들었습니다.”"],
+  fu:["→ “어느 함수가 핵심인가요?” / “실제 복구 개수와 테스트 근거를 보여줄 수 있나요?”"]},
+
+ {lv:"a",q:"데이터 카빙이 정확히 무엇인가요? 일반적인 파일 복구와 어떻게 다릅니까?",
+  int:"개념을 <b>자기 말로</b> 정의할 수 있는지. 암기한 문장을 읊으면 바로 재질문이 들어옵니다.",
+  ans:["“파일 시스템 기반 복구는 관리 정보가 남아 있을 때 이를 활용할 수 있습니다. 윈도우 NTFS라면 MFT 같은 목차에 ‘이 파일은 어디서 시작해서 몇 바이트다’라는 기록이 남아 있는데, 그걸 보고 되살리는 방식입니다.”",
+   "“그런데 포맷을 했거나 관리 정보 자체가 망가지면 그 목차가 사라집니다. <b>데이터 카빙은 목차 없이, 책 내용만 보고 어디서 어디까지가 한 권인지 찾아내는 방식</b>입니다.”",
+   "“파일 시스템 메타데이터가 없는 경우에도 파일 본문 일부를 찾을 수 있지만, 원래 파일 이름·경로 등의 복구는 제한적이며 파일 내부 메타데이터는 별개로 남을 수 있습니다. 단편화된 파일의 복원은 특히 어렵습니다.”"],
+  fu:["→ “그럼 카빙으로는 파일 이름을 못 살리나요?” → 파일 시스템 이름은 보통 어렵지만 내부 메타데이터는 남을 수 있습니다. 제 프로그램은 <code>recovered_0001.jpg</code>처럼 순번으로 이름을 붙였습니다."]},
+
+ {lv:"a",q:"왜 하필 데이터 카빙을 주제로 선택했나요?",
+  int:"동기가 <b>구체적인 계기</b>에서 출발했는지, 아니면 입시용으로 급조한 것인지 봅니다.",
+  ans:["“1학년 1학기 정보 수업에서 디지털 포렌식을 처음 배웠습니다. 삭제한 데이터를 되살려 증거로 쓴다는 점이 인상 깊어 따로 찾아보았습니다.”",
+   "“찾아보니 포렌식은 수집·분석·보고의 여러 단계가 있는데, 그중에서 <b>이미 사라진 것처럼 보이는 데이터를 되살리는 파일 복구</b> 단계가 가장 흥미로웠습니다.”",
+   "“파일 복구가 어떤 바이트 패턴과 파일 구조를 근거로 동작하는지 직접 확인하고 싶었습니다. 그래서 C언어로 시그니처 탐색부터 구현해 보기로 했습니다.”"],
+  fu:["→ “기존 복구 도구와 무엇이 다른가요?” / 실제로 사용한 도구가 있을 때만 도구명과 경험을 답하세요."]},
+
+ {lv:"c",q:"1학년 때 관심을 가졌다고 했는데, 왜 3학년 9월에야 만들었나요? 입시를 위해 급하게 만든 건 아닌가요?",
+  int:"<b>압박 질문입니다.</b> 당황하는지, 솔직하게 맥락을 설명하는지를 봅니다. 변명하면 더 의심받습니다.",
+  ans:["“정보 시간에 포렌식을 접한 뒤, 실제 구현 시점은 3학년 9~10월이었습니다. 그 사이 어떤 공부를 했는지는 제 학습 기록을 확인하여 정확히 설명하겠습니다.”",
+   "“프로젝트를 시작할 수 있었던 구체적인 계기는 [실제로 학습한 C언어 내용·만든 코드·날짜]와 연결해서 설명하겠습니다.”",
+   "“입시 준비가 계기 중 하나였는지까지 포함해 사실대로 말하고, 그보다 중요한 것은 실제로 구현하고 수정한 과정을 근거로 제시하겠습니다.”"],
+  fu:["→ “2학년 때 공부한 걸 증명할 수 있나요?” → 당시 작성한 코드·학습 기록을 언급할 수 있도록 준비하세요."],
+  warn:"없는 성장 서사를 만들어 내지 마세요. 1학년 때의 관심과 3학년 9~10월 실제 개발 사이의 과정을 사실에 맞게 정리하세요."},
+
+ {lv:"b",q:"왜 Python이 아니라 C언어로 구현했나요? Python이 훨씬 쉬웠을 텐데요.",
+  int:"언어 선택에 <b>이유가 있는지</b>. “어려운 걸 했으니 봐 달라”는 식이면 감점입니다.",
+  ans:["“C언어에서는 <code>unsigned char</code> 배열과 포인터를 이용해 바이트를 직접 다루는 과정을 배우기 좋아 선택했습니다. Python도 바이트 처리를 할 수 있으므로, C가 유일한 방법이라는 뜻은 아닙니다.”",
+   "“둘째, 배열의 메모리 크기, 자료형 선택, 범위 검사 등 시스템 프로그래밍의 기초를 연습할 수 있었습니다.”",
+   "“셋째, 기존 C 기반 파일 카빙 도구의 구현을 이해하는 데도 도움이 되겠다고 판단했습니다. 해당 도구의 소스코드를 실제 읽었다고 주장하려면 근거가 필요합니다.”",
+   "“특히 바이트 배열 저장형을 <code>int</code>에서 <code>unsigned char</code>로 바꿔 해당 배열의 원소당 메모리를 4바이트에서 1바이트로 줄인 경험이 의미 있었습니다. 전체 프로그램 메모리가 반드시 1/4이 된다는 뜻은 아닙니다.”"],
+  fu:["→ “C의 어떤 점이 가장 힘들었나요?” → 포인터 범위를 넘는 접근, 메모리 해제 누락 등 구체적으로."]},
+
+ {lv:"b",q:"2개월 동안 어떤 순서로 개발했는지 말해 주세요.",
+  int:"<b>계획적으로 진행했는가.</b> 실제로 만든 사람만이 순서를 자연스럽게 말할 수 있습니다.",
+  ans:["“크게 4단계였습니다. 1. <b>기초 탐색</b>: 시그니처와 푸터만으로 파일을 찾아 저장하는 최소 기능을 먼저 만들었습니다.”",
+   "“2. <b>버그 수정</b>: 2MB 이상 저장 실패, GIF·PDF가 중간에 끊기는 문제를 발견해 자료형과 종료 조건을 고쳤습니다.”",
+   "“3. <b>단편화 복구</b>: 가장 오래 걸린 단계로, PNG는 CRC32, JPEG는 마커 규칙을 이용해 끊긴 조각을 잇도록 만들었습니다.”",
+   "“4. <b>결과 정리</b>: ZIP 내부 문서 종류 구분과 디스크 맵·통계 리포트를 추가했습니다.”",
+   "“즉 <b>동작하는 최소 버전을 먼저 만들고, 문제를 발견할 때마다 기능을 덧붙이는</b> 방식으로 진행했습니다.”"],
+  fu:["→ “어느 단계에서 가장 오래 멈춰 있었나요?”"]},
+
+ {lv:"b",q:"개발하면서 가장 어려웠던 순간과, 그걸 어떻게 해결했는지 말해 주세요.",
+  int:"<b>문제 해결 과정</b>이 핵심. 결과만 말하면 점수가 안 나옵니다.",
+  ans:["“GIF와 PDF가 저장 도중 끊기는 문제였습니다. 처음에는 코드 오류인 줄 알고 한참 엉뚱한 곳을 봤습니다.”",
+   "“실적설명서에는 GIF·PDF 데이터를 저장하다 종료 표식과 비슷한 값 때문에 파일이 중간에 끊기는 문제를 발견했다고 적혀 있습니다. 진짜 끝 표식인지 확인하려면 파일의 형식 구조를 따라가야 합니다.”",
+   "“그래서 <b>패턴만 찾는 방식을 버리고, 포맷 구조를 따라가는 방식으로 바꿨습니다.</b> GIF는 블록마다 길이 정보가 있어서 그 길이만큼 건너뛰며 진짜 끝까지 따라가도록 수정했고, PNG는 청크 길이+12, JPEG는 마커를 따라가는 식으로 포맷별 로직을 분리했습니다.”",
+   "“이때 <b>‘단순한 패턴 매칭의 한계’</b>를 몸으로 배웠습니다.”"],
+  fu:["→ “문제를 어떻게 재현하고 확인했나요?” → 사용한 편집기·도구·파일은 직접 사용한 경우에만 말하세요."]},
+
+ {lv:"b",q:"전체 코드는 몇 줄 정도이고, 혼자 작성한 비율은 어느 정도입니까?",
+  int:"규모를 <b>정확히 파악</b>하고 있는지, AI 비율을 솔직히 말하는지.",
+  ans:["“전체 분량과 함수 구성은 미리 정리해 두고 정확한 수치로 답하세요. (예: 약 줄, 함수 개)”",
+   "“구조 설계와 시그니처·푸터 테이블, EOCD 분석, 자료형 최적화는 <b>제가 직접</b> 작성했습니다.”",
+   "“JPEG 마커 유효성 검사 로직과 리포트 출력 형식 일부는 AI의 도움을 받아 초안을 만든 뒤, 동작을 이해하고 제 코드에 맞게 수정했습니다.”"],
+  fu:["→ “AI가 도와준 그 함수, 지금 설명해 보세요.” — 입력과 반환값, 예외 처리를 설명해 보세요."],
+  warn:"줄 수를 모르면 “직접 만들지 않았다”는 인상을 줍니다. <b>면접 전에 꼭 세어 보세요.</b>"}
+ ],
+
+ format:[
+ {lv:"a",q:"시그니처와 푸터가 무엇인지, 예를 들어 설명해 주세요.",
+  int:"가장 기본. 여기서 막히면 그 뒤 질문은 의미가 없습니다.",
+  ans:["“파일 시그니처는 파일 형식을 판별할 때 참고하는 <b>특징적인 바이트 패턴</b>입니다. 주로 파일 앞부분에 나타나지만 모든 형식이 고정된 단일 시그니처를 갖는 것은 아닙니다.”",
+   "“푸터는 일부 파일 형식에서 <b>종료를 나타내는 바이트 또는 구조</b>입니다. 모든 파일에 단순한 푸터가 있는 것은 아닙니다.”",
+   "“예를 들어 JPEG는 SOI 마커 <code>FF D8</code>로 시작하고 대개 <code>FF D9</code>(EOI)로 끝납니다. PNG의 8바이트 시그니처는 <code>89 50 4E 47 0D 0A 1A 0A</code>입니다.”",
+   "“확장자는 사용자가 마음대로 바꿀 수 있지만 시그니처는 파일 내용 자체에 있어서, <b>확장자를 .txt로 바꿔도 실제로는 JPEG라는 걸 알아낼 수 있습니다.</b>”"],
+  fu:["→ “확장자를 바꾼 파일을 실제로 테스트해 봤나요?”"]},
+
+ {lv:"a",q:"JPEG의 시그니처와 푸터를 말해 보세요. 그런데 FF D9가 이미지 데이터 중간에 우연히 나올 수도 있지 않나요?",
+  int:"<b>매우 자주 나오는 함정 질문입니다.</b> 표면적 지식인지 포맷을 진짜 읽었는지 가릅니다.",
+  ans:["“JPEG는 SOI <code>FF D8</code>로 시작하고 EOI <code>FF D9</code>로 끝나는 형식입니다.”",
+   "“말씀하신 우려는 타당하지만, JPEG는 그걸 막는 장치가 있습니다. 압축된 픽셀 데이터 안에서 <code>FF</code> 바이트가 실제 값으로 필요하면 <b>뒤에 <code>00</code>을 끼워 넣어 <code>FF 00</code>으로 기록</b>합니다. 이를 바이트 스터핑이라고 하며, 덕분에 데이터 중간의 <code>FF</code>가 마커로 오인되지 않습니다.”",
+   "“일부 JPEG는 APP/EXIF 영역에 JPEG 형식의 썸네일을 포함할 수 있습니다. 따라서 JPEG 파일의 구조를 고려하지 않고 가장 먼저 나오는 <code>FF D9</code>에서 자르면 잘못된 범위를 복구할 위험이 있습니다. 실제로 이 오류를 겪었다고 말하려면 테스트 근거가 필요합니다.”",
+   "“그래서 제 코드에서는 <code>FF</code> 뒤에 오는 마커를 하나씩 확인하며 넘어가는 방식으로 처리했습니다.”"],
+  fu:["→ “SOS 마커가 뭔가요?” → <code>FF DA</code>, Start of Scan. 압축된 픽셀 데이터가 시작되는 지점."],
+  tip:"EXIF 썸네일 이야기까지 나오면 <b>“직접 디버깅해 본 사람”</b>으로 확실히 인식됩니다."},
+
+ {lv:"b",q:"PNG 파일의 구조를 설명해 보세요.",
+  int:"청크 구조를 말할 수 있어야 뒤의 단편화 복구 설명이 성립합니다.",
+  ans:["“PNG는 맨 앞 <b>8바이트 시그니처</b> 뒤에, <b>청크</b>라는 단위가 계속 이어지는 구조입니다.”",
+   "“청크 하나는 1. 길이 4바이트 2. 종류 4바이트 3. 데이터 4. CRC32 4바이트로 구성됩니다. 길이는 <b>데이터 부분만의</b> 크기입니다.”",
+   "“주요 청크는 이미지 정보를 담은 IHDR, 실제 픽셀 데이터가 들어 있는 IDAT, 파일 끝을 알리는 IEND입니다.”",
+   "“이 구조 덕분에 <b>각 청크마다 CRC로 손상 여부를 확인할 수 있고</b>, 제 단편화 복구는 바로 이 성질을 이용했습니다.”"],
+  fu:["→ “청크가 여러 개로 쪼개져 있어도 되나요?” → IDAT는 여러 개로 나뉠 수 있습니다."]},
+
+ {lv:"b",q:"PNG에서 ‘시그니처 8바이트 후 데이터 크기+12바이트씩 건너뛴다’고 썼는데, 왜 하필 12인가요?",
+  int:"<b>숫자의 근거를 묻는 전형적 검증 질문.</b> 베껴 쓴 사람은 여기서 무너집니다.",
+  ans:["“청크에서 데이터를 제외한 고정 부분이 <b>길이 4바이트 + 종류 4바이트 + CRC 4바이트 = 12바이트</b>이기 때문입니다.”",
+   "“그래서 현재 청크의 시작 위치에서 <code>12 + 데이터 길이</code>만큼 이동하면 정확히 다음 청크의 시작에 도착합니다.”",
+   "“맨 처음에 8을 건너뛰는 것은 PNG 시그니처가 8바이트이기 때문이고, 그 뒤부터는 이 12바이트 규칙이 반복됩니다.”"],
+  fu:["→ “길이 값은 빅 엔디언인가요 리틀 엔디언인가요?” → <b>PNG는 빅 엔디언</b>입니다. (ZIP과 반대)"]},
+
+ {lv:"b",q:"CRC32가 무엇인가요? 오류를 고칠 수도 있나요?",
+  int:"<b>검출과 정정을 구분</b>하는지가 포인트입니다. 많은 지원자가 여기서 틀립니다.",
+  ans:["“CRC32는 데이터를 기반으로 계산하는 <b>32비트 오류 검출값</b>입니다. 데이터가 바뀌면 값이 달라지는 경우가 많지만 충돌 가능성이 있어 모든 손상을 100% 찾아내는 것은 아닙니다.”",
+   "“중요한 건 CRC는 <b>오류를 검출할 뿐 고치지는 못한다</b>는 점입니다. ‘뭔가 잘못됐다’는 것만 알려 줍니다. 오류를 정정하려면 해밍 코드 같은 별도의 방식이 필요합니다.”",
+   "“프로젝트에서는 CRC 불일치를 단편화 탐색의 <b>출발 신호</b>로 사용했습니다. 그러나 실제로는 데이터 손상, 계산 오류, 잘못된 청크 해석도 원인이므로 단편화가 확정되는 것은 아닙니다.”"],
+  fu:["→ “CRC 계산은 직접 구현했나요?” → 정직하게. 직접 구현했다면 테이블 방식인지 비트 단위인지까지."]},
+
+ {lv:"b",q:"GIF는 왜 중간에 끊겼나요? 어떻게 해결했습니까?",
+  int:"실제로 겪은 버그인지 확인합니다. 원인을 정확히 말해야 합니다.",
+  ans:["“GIF의 트레일러는 <code>3B</code> 한 바이트입니다. 이 값은 다른 데이터에도 나타날 수 있으므로 단순 검색만 하면 파일을 조기에 끊을 위험이 있습니다.”",
+   "“해결책은 <b>패턴 검색을 버리고 구조를 따라가는 것</b>이었습니다. GIF는 데이터가 서브블록으로 나뉘어 있고 <b>각 블록 앞에 그 블록의 길이가 적혀</b> 있습니다. 그 길이만큼 건너뛰기를 반복하면 데이터 안의 <code>3B</code>를 밟지 않고 진짜 끝에 도달할 수 있습니다.”",
+   "“이 경험으로 <b>‘푸터 검색은 보조 수단이고, 포맷 구조 추적이 본질’</b>이라는 걸 배웠습니다.”"],
+  fu:["→ “PDF도 같은 문제가 있었나요?” → PDF는 증분 업데이트에서 <code>%%EOF</code>가 여러 번 나올 수 있습니다. 마지막 유효한 파일 구조·교차참조 정보를 기준으로 확인해야 하며, 단순히 마지막 문자열만 찾는 것은 충분하지 않습니다."]},
+
+ {lv:"b",q:"리틀 엔디언이 무엇인지 예를 들어 설명해 주세요.",
+  int:"ZIP 분석의 전제 지식. 예시 없이 정의만 말하면 재질문이 옵니다.",
+  ans:["“숫자를 메모리나 파일에 저장할 때 <b>낮은 자리 바이트부터</b> 기록하는 방식입니다.”",
+   "“<code>0x1234</code>라는 숫자는 리틀 엔디언에서 <code>34 12</code> 순서로 저장됩니다. 사람이 읽는 순서와 반대라 헷갈립니다.”",
+   "“ZIP은 리틀 엔디언이므로 예를 들어 바이트 <code>34 12</code>를 <code>0x1234</code>로 해석합니다. 코드는 <code>b0 | (b1 &lt;&lt; 8)</code>처럼 조합할 수 있습니다. 실제로 오류가 났었다고 하려면 수정 기록이 있어야 합니다.”",
+   "“반대로 PNG는 빅 엔디언이라 읽은 순서 그대로 쓰면 됩니다. 두 포맷을 같이 다루면서 이 차이를 분명히 알게 됐습니다.”"],
+  fu:["→ “왜 리틀 엔디언을 쓰는 걸까요?” → 형식의 설계·호환성과 관련이 있으며, ZIP이 특정 CPU 때문에 선택했다고 단정하지 않는 것이 좋습니다."]},
+
+ {lv:"b",q:"EOCD가 무엇이고, 거기서 어떤 정보를 읽었나요?",
+  int:"ZIP 분석의 핵심. 약어 풀이와 역할을 모두 말해야 합니다.",
+  ans:["“EOCD는 <b>End of Central Directory</b>의 약자로, 일반 ZIP 파일의 끝부분에 있는 최소 22바이트짜리 레코드입니다. 뒤에 ZIP 주석이 붙을 수 있습니다.”",
+   "“여기에는 EOCD 시그니처 <code>50 4B 05 06</code>, 압축된 항목의 <b>총 개수</b>, 파일 목록(중앙 디렉터리)의 <b>크기</b>, 그리고 그 목록이 <b>시작되는 위치</b>가 들어 있습니다.”",
+   "“ZIP은 목차가 맨 앞이 아니라 <b>맨 뒤</b>에 있기 때문에, 파일 끝에서부터 EOCD를 찾아 그 위치 정보를 따라가야 내부 파일 목록을 읽을 수 있습니다. 저는 그 목록의 경로를 보고 문서 종류를 판별했습니다.”"],
+  fu:["→ “왜 목차가 뒤에 있을까요?” → 압축하면서 바로바로 쓸 수 있고, 여러 디스켓에 나눠 담던 시절의 설계가 남은 것입니다."]},
+
+ {lv:"a",q:"docx, xlsx, pptx를 어떻게 구분했나요? 셋 다 시그니처가 같지 않습니까?",
+  int:"관찰력과 해결 방식. 명확한 규칙을 말해야 합니다.",
+  ans:["“맞습니다. 셋 다 ZIP이라 시그니처가 <code>50 4B 03 04</code>로 똑같습니다. 그래서 <b>시그니처만으로는 절대 구분할 수 없습니다.</b>”",
+   "“대신 보통 ZIP 내부의 <code>word/</code>, <code>xl/</code>, <code>ppt/</code> 같은 경로와 <code>[Content_Types].xml</code> 등을 확인해 추정할 수 있습니다. 제 구현은 경로 기반의 간단한 판별 방식이었습니다.”",
+   "“코드에서는 중앙 디렉터리 항목의 내부 경로가 <code>word/</code>, <code>xl/</code>, <code>ppt/</code>로 시작하는지 확인해 docx·xlsx·pptx를 <b>추정</b>하고 없으면 일반 ZIP으로 분류했습니다. 악의적으로 이름만 맞춘 ZIP을 오분류할 수 있습니다.”",
+   "“다음 항목으로 넘어갈 때는 현재 항목의 길이만큼 위치를 더해 이동하는 방식으로 목록 전체를 순회했습니다.”"],
+  fu:["→ “한글(.hwpx)이나 ODF도 ZIP인데 구분할 수 있나요?” → hwpx는 <code>Contents/</code>, ODF는 <code>mimetype</code> 항목으로 구분 가능합니다. 모르면 솔직히 말하고 접근 방법만 제시하세요."]},
+
+ {lv:"b",q:"클러스터가 무엇이고, 왜 클러스터 경계에서만 검사했나요?",
+  int:"성능 최적화의 근거를 이해하는지.",
+  ans:["“클러스터는 파일 시스템이 저장 공간을 나누어 관리하는 <b>최소 단위</b>입니다. NTFS나 FAT32는 보통 4096바이트, 즉 4KB를 씁니다.”",
+   "“일반 파일 시스템의 할당된 파일 데이터는 보통 클러스터 단위로 배치되지만, 파일 이미지 내부의 중첩 파일이나 비정렬 데이터는 예외일 수 있습니다. 그래서 기본 시그니처 탐색은 바이트 단위로 수행하고, <b>단편화 후보 위치</b>를 찾을 때 설정한 클러스터 크기와 경계를 이용했습니다.”",
+   "“제 프로그램은 클러스터 크기를 <b>사용자가 입력</b>하게 했는데, 이는 분석하려는 디스크마다 값이 다를 수 있기 때문입니다.”"],
+  fu:["→ “그럼 클러스터 크기를 잘못 입력하면 어떻게 되나요?” → 파일 시작점을 건너뛰어 아예 못 찾습니다. <b>정직하게 인정할 부분입니다.</b>"]},
+
+ {lv:"b",q:"int를 unsigned char로 바꿨다고 했는데, 왜 그렇게 했고 효과가 얼마나 됐나요?",
+  int:"<b>자료형 크기를 정확히 아는지</b> 확인하는 기초 CS 질문. 숫자로 답해야 합니다.",
+  ans:["“처음엔 바이트 하나를 <code>int</code>에 담았는데, <code>int</code>는 <b>4바이트</b>입니다. 즉 1바이트짜리 데이터를 저장하려고 메모리를 4배 쓰고 있었습니다.”",
+   "“바이트 값의 범위는 <b>0부터 255</b>까지이고, <code>unsigned char</code>가 정확히 그 범위를 <b>1바이트</b>로 표현합니다. 그래서 전부 바꿨고 <b>메모리 사용량이 1/4로 줄었습니다.</b>”",
+   "“<code>signed char</code>가 아니라 <code>unsigned</code>를 쓴 이유도 중요합니다. <code>signed char</code>는 −128~127이라 <code>0xFF</code> 같은 값이 음수 −1로 읽혀서 비교문이 전부 틀어집니다. JPEG는 <code>FF</code>로 시작하니 치명적이었을 것입니다.”",
+   "“이 변경과 함께 처리 가능한 최대 크기를 2MB에서 16MB로 늘렸습니다.”"],
+  fu:["→ “16MB도 작지 않나요?” → 다음 질문에서 다룹니다. <b>스트리밍 처리</b>로 답하세요."],
+  tip:"signed/unsigned 차이까지 말하면 C를 제대로 다뤘다는 강한 증거가 됩니다."}
+ ],
+
+ frag:[
+ {lv:"a",q:"단편화가 왜 생기나요?",
+  int:"현상의 원인을 이해하는지. 이게 흔들리면 복구 설명 전체가 흔들립니다.",
+  ans:["“디스크에서 파일을 지우고 쓰고를 반복하면, 빈 공간이 여기저기 작게 흩어집니다.”",
+   "“그 상태에서 큰 파일을 저장하면 한 군데에 통째로 넣을 자리가 없어서, <b>운영체제가 파일을 여러 조각으로 나눠 흩어진 빈 공간들에 나눠 담습니다.</b> 이게 단편화입니다.”",
+   "“파일 시스템이 정상일 때는 목차에 ‘이 파일은 몇 번, 몇 번, 몇 번 클러스터에 있다’고 기록되어 있어 문제가 없습니다. <b>그런데 카빙은 그 목차가 없는 상태에서 복구하는 것이라, 단편화가 가장 큰 난관</b>이 됩니다.”"],
+  fu:["→ “SSD에서도 단편화가 생기나요?” → 물리적으로는 덜 문제지만 논리적 조각화는 발생합니다."]},
+
+ {lv:"b",q:"PNG 단편화 복구에서 png_gap_data와 png_gap_hdr은 어떻게 다른가요?",
+  int:"본인 코드의 <b>함수 설계 의도</b>를 아는지. 베꼈다면 절대 설명 못 합니다.",
+  ans:["“끊긴 <b>위치</b>가 다르기 때문에 두 가지로 나눴습니다.”",
+   "“<code>png_gap_data</code>는 <b>청크 데이터 한가운데에서</b> 끊긴 경우입니다. 앞부분 데이터는 이미 읽었으니, 그것까지의 CRC 중간값을 계산해 두고, 다음 후보 클러스터의 남은 바이트를 이어 붙여 계산했을 때 <b>저장된 CRC와 일치하는 후보</b>를 찾습니다. 일치하면 가능한 다음 조각으로 채택합니다. CRC 일치만으로 완전한 복구를 보장하지는 못합니다.”",
+   "“<code>png_gap_hdr</code>는 <b>청크와 청크의 경계에서 정확히</b> 끊긴 경우입니다. 이때는 중간값을 이어 붙일 게 없으니, 후보 클러스터들을 돌며 <b>CRC가 맞는 IDAT나 IEND 청크가 시작되는 곳</b>으로 점프합니다.”",
+   "“즉 전자는 <b>조각 잇기</b>, 후자는 <b>다음 청크 찾기</b>입니다.”"],
+  fu:["→ “두 경우를 어떻게 구분하나요?” → 끊긴 지점이 청크 경계와 일치하는지로 판단합니다."],
+  tip:"이 질문은 <b>중요도가 높습니다.</b> 실적설명서에 함수 이름을 직접 적었기 때문입니다."},
+
+ {lv:"c",q:"CRC가 틀리면 단편화라고 판단했다고 했는데, CRC가 틀리는 다른 원인은 없나요?",
+  int:"<b>논리의 허점을 찌르는 질문.</b> 반박이 아니라 <b>인정 + 보완</b>으로 답해야 합니다.",
+  ans:["“맞습니다. CRC 불일치는 단편화만의 신호가 아닙니다. <b>데이터 자체가 덮어쓰기로 손상된 경우</b>나 <b>원래 파일이 깨져 있던 경우</b>에도 똑같이 CRC가 틀립니다.”",
+   "“제 프로그램은 그 둘을 구분하지 못하고 일단 단편화로 가정해 다음 조각을 찾습니다. 그래서 <b>손상된 파일에 엉뚱한 조각을 붙일 위험</b>이 있습니다.”",
+   "“이 때문에 끝내 조각을 찾지 못하면 그 지점에서 잘라 <code>_partial</code>이라는 이름으로 저장하도록 했고, <b>결과 이미지는 반드시 눈으로 확인해야 한다</b>는 점을 한계로 명시했습니다.”",
+   "“개선한다면 PNG 청크 연결성·디코더 재검증·여러 후보의 점수 비교를 추가하겠습니다. 엔트로피만으로 단편화와 손상을 정확히 구분할 수는 없습니다.”"],
+  fu:["→ “엔트로피로 어떻게 구분하죠?” → 엔트로피는 데이터 분포를 비교하는 보조 특징일 뿐 단편화 여부를 확정하지 못합니다."],
+  tip:"<b>약점을 먼저 인정하고 개선안을 붙이는</b> 이 패턴이 가장 높은 점수를 받습니다."},
+
+ {lv:"b",q:"JPEG는 CRC가 없는데 단편화를 어떻게 판단했나요?",
+  int:"포맷별로 <b>다른 전략</b>을 쓴 이유를 설명할 수 있는지.",
+  ans:["“JPEG는 PNG 청크처럼 CRC32 필드가 없어 같은 방법으로 조각 일치를 확인하기 어렵습니다. 대신 JPEG 마커 규칙과 디코더의 구조적 유효성 등을 이용해 오류 가능성을 판단할 수 있습니다.”",
+   "“세 가지를 봤습니다. 1. 압축 데이터 구간에 <b>나와서는 안 되는 마커</b>가 나타나는 경우, 2. <code>0x00</code>이 <b>64바이트 넘게 연속</b>되는 경우, 3. 갑자기 <b>읽을 수 있는 텍스트</b>가 나오는 경우입니다.”",
+   "“이 중 하나라도 걸리면 단편화로 보고 <code>-1</code>을 반환해 조각 탐색을 시작합니다. CRC처럼 확실하지는 않은 <b>휴리스틱, 즉 경험적 판단</b>이라는 점은 분명한 한계입니다.”"],
+  fu:["→ “64바이트는 어떻게 정했나요?” → 실험적으로 정한 임계값이라면 솔직히 그렇게 말하세요."]},
+
+ {lv:"b",q:"gapMax는 무엇이고, 그 값은 어떻게 정했나요?",
+  int:"상수 하나에도 <b>근거</b>가 있는지 봅니다.",
+  ans:["“<code>gapMax</code>는 끊긴 지점에서 다음 조각을 <b>얼마나 멀리까지 찾아볼지</b> 정하는 탐색 범위입니다.”",
+   "“범위를 너무 좁게 잡으면 멀리 떨어진 조각을 못 찾고, 너무 넓게 잡으면 <b>탐색 시간이 급격히 늘고 엉뚱한 조각을 붙일 확률도 올라갑니다.</b> 전형적인 트레이드오프입니다.”",
+   "“<code>gapMax</code>의 실제 값과 선정 근거는 코드 및 테스트 기록을 확인해 설명해야 합니다. 실험으로 최적화했다는 근거가 없다면 그렇게 주장하지 않겠습니다.”",
+   "“이상적으로는 <b>디스크 상태에 따라 자동으로 조정</b>되는 게 맞다고 생각합니다.”"],
+  fu:["→ “실험은 어떻게 했나요?” → 조각 간격을 달리한 테스트 이미지를 만들어 비교했다면 그 과정을 말하세요."]},
+
+ {lv:"c",q:"‘첫 번째 후보를 채택한다’고 했는데, 그게 왜 위험한가요? 더 나은 방법은 없나요?",
+  int:"<b>알고리즘의 품질</b>을 스스로 평가할 수 있는지. 최고 난도 질문입니다.",
+  ans:["“첫 후보 채택은 <b>탐욕적(greedy) 방식</b>입니다. 조건을 만족하는 첫 조각을 바로 붙이고 되돌아가지 않기 때문에 빠르지만, <b>우연히 조건을 통과한 엉뚱한 조각</b>을 붙여도 그대로 확정돼 버립니다.”",
+   "“특히 JPEG는 CRC 검증이 없어 ‘이상이 없어 보인다’ 정도로 판단하므로 오탐 위험이 더 큽니다. 그래서 결과를 눈으로 확인해야 한다고 한계에 적었습니다.”",
+   "“개선 방향은 세 가지로 생각합니다. 1. 첫 후보에서 멈추지 말고 <b>여러 후보를 모두 시도해 점수를 매긴 뒤 최선을 고르는 방식</b>, 2. 잘못 붙였을 때 되돌아가는 <b>백트래킹</b>, 3. PNG처럼 <b>검증 가능한 포맷을 먼저 처리</b>해 확실한 영역을 제외한 뒤 나머지를 탐색하는 방식입니다.”",
+   "“관련 연구에 여러 조각을 탐색하는 카빙 기법들이 있으며, 제 코드는 그보다 단순한 <b>후보 탐색 휴리스틱</b>입니다. 학술 개념을 공부한 경우에만 추가로 설명하겠습니다.”"],
+  fu:["→ “그 방법들의 단점은?” → 전부 <b>계산량 증가</b>입니다. 정확도와 속도의 교환."],
+  tip:"학술 용어보다 실제 코드가 어떤 판단을 하고 어떤 경우 실패하는지 설명하는 것이 중요합니다."},
+
+ {lv:"b",q:"이 프로그램의 시간 복잡도는 어떻게 되나요?",
+  int:"구현만 한 게 아니라 <b>분석도 했는지</b>.",
+  ans:["“제 실적설명서에는 디스크 이미지에서 한 칸씩 이동하며 시작 표식을 탐색했다고 설명되어 있습니다. 입력 크기를 <code>N</code>, 고정 길이 시그니처 수를 일정하다고 하면 기본 검색은 대략 <b>O(N)</b>입니다.”",
+   "“단편화 탐색은 <code>F</code>개 끊김마다 최대 <code>G</code>개 후보를 검사하고, 각 후보의 검증 비용을 <code>L</code>이라고 하면 <b>O(N + F×G×L)</b>로 거칠게 추정할 수 있습니다. 정확한 분석은 코드의 루프 구조를 확인해야 합니다.”",
+   "“즉 <b>단편화가 심할수록 급격히 느려지는</b> 구조이고, 이것이 <code>gapMax</code>를 무작정 키울 수 없는 이유입니다.”"],
+  fu:["→ “실제로 얼마나 걸렸나요?” → 측정했다면 수치로, 안 했다면 “측정하지 못했다”고 솔직히."]},
+
+ {lv:"c",q:"16MB까지만 처리된다고 했는데, 실제 수사에서는 수백 GB 디스크를 다룹니다. 어떻게 하시겠습니까?",
+  int:"<b>구조적 한계</b>를 인식하고 해결 방향을 제시할 수 있는지. 실용성 검증 질문입니다.",
+  ans:["“지금 방식의 근본 문제는 <b>파일 전체를 메모리에 한 번에 올려놓고</b> 작업한다는 점입니다. 그래서 메모리 크기가 곧 처리 한계가 됩니다. 500GB를 통째로 올릴 수는 없습니다.”",
+   "“해결 방법은 <b>스트리밍 방식으로 바꾸는 것</b>입니다. 디스크를 일정 크기의 버퍼, 예를 들어 1MB씩 순서대로 읽어 들이면서 처리하고, 처리가 끝난 부분은 메모리에서 버리는 구조로 만들면 됩니다.”",
+   "“다만 이때 <b>버퍼 경계에 시그니처가 걸쳐 있는 경우</b>를 처리해야 합니다. 앞 버퍼의 끝 몇 바이트를 다음 버퍼 앞에 겹쳐 붙이는 방식으로 해결할 수 있습니다.”",
+   "“더 나아가면 운영체제의 <b>메모리 매핑(mmap)</b>을 쓰거나, 디스크 영역을 나눠 <b>병렬 처리</b>하는 방법도 있습니다. 이 부분은 고등학교에 가서 꼭 다시 구현해 보고 싶습니다.”"],
+  fu:["→ “버퍼 크기는 얼마가 적당할까요?” → 디스크 I/O 단위와 맞추는 게 유리하다는 정도로."],
+  tip:"‘한계를 몰랐다’가 아니라 <b>‘알고 있었고 해결 방향도 있다’</b>로 가는 것이 핵심입니다."},
+
+ {lv:"b",q:"_partial로 저장하는 기능은 왜 만들었나요?",
+  int:"설계 판단의 이유. 사소해 보여도 사고력을 드러냅니다.",
+  ans:["“조각을 끝내 찾지 못했을 때 <b>아무것도 저장하지 않는 것보다, 찾은 데까지라도 남기는 게 낫다</b>고 판단했기 때문입니다.”",
+   "“실제 수사에서는 이미지 일부만 복구되어도 중요한 단서가 될 수 있습니다. JPEG는 위에서부터 순차적으로 그려지므로 절반만 복구돼도 윗부분은 볼 수 있습니다.”",
+   "“다만 <b>완전한 복구와 혼동되면 안 되므로</b> 파일 이름에 <code>_partial</code>을 붙여 명확히 구분했습니다. 포렌식에서는 <b>불확실한 결과를 불확실하다고 표시하는 것</b>이 중요하다고 생각했습니다.”"],
+  fu:["→ “그럼 완전 복구와 부분 복구 비율은?” → 리포트에 통계를 넣었다면 그걸 언급하세요."]}
+ ],
+
+ ai:[
+ {lv:"c",q:"실적설명서에 AI의 도움을 받았다고 적으셨는데, 정확히 어느 부분을 어떻게 도움받았는지 구체적으로 말해 주세요.",
+  int:"<b>반드시 나오는 질문입니다.</b> 제출한 실적설명서 작성 유의사항에는 생성형 AI 활용 부분과 내용을 구체적으로 기술하라고 되어 있습니다. 질문 가능성이 있으므로 준비해야 합니다. <b>정직성이 전부입니다.</b>",
+  ans:["“제출 설명서 기준으로 세 부분입니다. 첫째, <b>파일 일부를 디스크 이미지 형태로 변형하는 과정</b>입니다. 파일 일부를 일부러 조각내 가상 디스크처럼 만드는 작업에서 AI의 도움을 받았습니다. 이건 복구 알고리즘 자체가 아니라 <b>테스트 환경 준비</b>였습니다.”",
+   "“둘째, <b>리포트 파일을 구성하는 과정</b>입니다. 정확히 어떤 코드 생성·수정에 AI를 사용했는지 기록으로 확인하여 말하겠습니다.”",
+   "“셋째, <b>JPEG 마커 검사와 파일의 끝·유효성을 판별하는 과정</b>입니다. AI가 제안한 코드 범위와 제가 수정한 범위를 원본 코드·대화 기록과 대조해 구체적으로 설명하겠습니다.”",
+   "“설명서에서는 시그니처·푸터 조사, 변수 크기 조정, EOCD를 통한 파일 분류 등 자신이 한 일을 적었습니다. 다만 <b>AI가 작성한 코드와 본인 수정 코드의 경계</b>는 기록으로 확인해 설명하겠습니다. 직접 하지 않은 일을 직접 했다고 말하지 않겠습니다.”"],
+  fu:["→ “방금 말한 JPEG 마커 검사 코드, 지금 설명해 보세요.” — <b>반드시 이어집니다.</b>"],
+  warn:"절대 <b>축소하거나 숨기지 마세요.</b> 요강에 명시된 항목이라 면접관은 이미 답을 보고 들어옵니다. 숨기는 순간 신뢰가 무너집니다.",
+  tip:"<b>“도움받은 부분 → 직접 한 부분 → 받은 것도 이해하고 수정함”</b> 3단 구조로 말하면 오히려 가산점이 됩니다."},
+
+ {lv:"c",q:"AI가 작성한 코드를 본인이 정말 이해하고 있습니까? 그 함수를 지금 설명해 보세요.",
+  int:"<b>본인 수행 확인의 핵심 질문.</b> 앞 질문의 꼬리로 거의 항상 따라옵니다.",
+  ans:["“<code>jpeg_scan</code> 함수를 설명드리겠습니다. 이 함수는 SOS 마커 이후의 압축 데이터 구간을 한 바이트씩 보면서 <b>지금 이 데이터가 정상인지</b> 판단합니다.”",
+   "“<code>FF</code>를 만나면 다음 바이트를 확인합니다. <code>FF 00</code>이면 바이트 스터핑이라 정상 데이터로 넘기고, <code>FF D9</code>면 파일 끝이므로 종료합니다. 그런데 <b>이 구간에 나와서는 안 되는 마커</b>가 나오면 이상 신호로 봅니다.”",
+   "“또 <code>0x00</code>이 64바이트 넘게 이어지거나 읽을 수 있는 텍스트가 나오면 역시 이상으로 판단해 <code>-1</code>을 반환합니다. 그러면 호출한 쪽에서 <code>jpeg_gap</code>을 불러 다음 조각을 찾습니다.”",
+   "“64바이트 기준은 코드에 적힌 휴리스틱이며, 왜 그 수치인지 근거를 확인해 답해야 합니다. AI가 제안한 값인지도 명확히 구분하겠습니다.”"],
+  fu:["→ “FF 00이 왜 필요하죠?” → 데이터 안의 FF가 마커로 오인되지 않게 하는 바이트 스터핑."],
+  warn:"정확히 설명하기 어렵다면 실제로 이해한 범위를 정직하게 답하세요. 코드를 열어 입력·반환·반례를 설명할 수 있게 연습하세요."},
+
+ {lv:"b",q:"AI 도움 없이 혼자 했다면 결과가 달랐을까요?",
+  int:"자기 기여도를 <b>과장도 비하도 없이</b> 평가하는지.",
+  ans:["“시간은 더 걸렸겠지만 <b>핵심 기능은 만들었을 것</b>이라고 생각합니다. 구조 설계와 CRC 기반 복구는 제가 포맷 명세를 직접 읽고 만든 부분이기 때문입니다.”",
+   "“다만 리포트 출력 같은 부가 기능까지는 2개월 안에 못 끝냈을 수 있습니다.”",
+   "“AI를 쓰면서 중요하게 생각한 기준은 <b>‘이해하지 못한 코드는 넣지 않는다’</b>였습니다. 이해하지 못한 코드가 들어가면 버그가 났을 때 제가 고칠 수 없기 때문입니다. 실제로 AI가 준 코드 중에 제 자료형과 맞지 않는 부분이 있어 직접 수정한 적도 있습니다.”"],
+  fu:["→ “고친 사례 하나만 말해 보세요.”"]},
+
+ {lv:"b",q:"AI를 어떻게 쓰는 것이 올바른 사용이라고 생각하나요?",
+  int:"가치관과 태도. <b>해킹방어과 지원자의 윤리 의식</b>을 함께 봅니다.",
+  ans:["“AI는 <b>검색을 대신하는 도구</b>이지 사고를 대신하는 도구는 아니라고 생각합니다.”",
+   "“제 기준은 두 가지였습니다. 첫째, <b>무엇을 만들지는 내가 정한다</b>. AI에게 ‘데이터 카빙 프로그램 만들어 줘’라고 하는 것과, 제가 설계한 구조 안에서 ‘이 부분 출력 서식을 어떻게 짜면 좋을까’라고 묻는 것은 전혀 다릅니다.”",
+   "“둘째, <b>이해하지 못한 코드는 쓰지 않는다</b>입니다. 이해 못 한 코드는 제 것이 아니고, 문제가 생겨도 고칠 수 없습니다.”",
+   "“보안 분야는 특히 <b>원리를 모르고 도구만 쓰면 위험하다</b>고 생각합니다. 그래서 더 엄격하게 기준을 지키려 했습니다.”"],
+  fu:["→ “그 기준을 어긴 적은 없었나요?” — 있었다면 솔직하게, 그리고 어떻게 바로잡았는지."]}
+ ],
+
+ limit:[
+ {lv:"a",q:"이 프로그램의 한계는 무엇이라고 생각하나요?",
+  int:"실적설명서에 직접 쓴 내용. <b>본인이 쓴 글을 기억하는지</b>부터 확인합니다.",
+  ans:["“크게 세 가지입니다. 첫째, <b>심하게 손상되거나 덮어쓰인 데이터는 복구할 수 없습니다.</b> 카빙은 남아 있는 조각을 잇는 방식이지 없는 데이터를 만들어 내지는 못합니다.”",
+   "“둘째, <b>조각의 원래 순서를 정확히 판단하지 못할 수 있습니다.</b> 특히 JPEG는 검증값이 없어 그럴듯해 보이는 조각을 붙여도 실제로는 틀릴 수 있습니다.”",
+   "“셋째, <b>복구에 성공한 것처럼 보여도 내용이 온전하다고 확신할 수 없습니다.</b> 그래서 결과를 반드시 눈으로 확인해야 한다고 적었습니다.”",
+   "“추가로 16MB 메모리 적재 방식이라는 규모 한계도 있습니다.”"],
+  fu:["→ “그중 가장 심각한 건?” → 저는 <b>세 번째</b>라고 봅니다. 포렌식은 <b>증거의 신뢰성</b>이 생명이기 때문입니다."]},
+
+ {lv:"b",q:"복구 성공률은 얼마나 됐나요? 어떻게 측정했습니까?",
+  int:"<b>정량 평가를 했는지.</b> 안 했다면 솔직히 말하고, 어떻게 측정해야 하는지를 말해야 합니다.",
+  ans:["“(측정했다면 수치로 답하고 조건을 함께 밝히세요. 예: 단편화 없는 경우 %, 2조각 단편화 %)”",
+   "“(측정하지 못했다면) 솔직히 체계적인 성공률 측정은 하지 못했습니다. 눈으로 확인하는 방식에 머물렀습니다. 돌아보면 이게 가장 아쉬운 부분입니다.”",
+   "“제대로 측정하려면 <b>원본 파일을 미리 알고 있는 테스트 이미지</b>를 만들어, 복구 결과와 원본의 <b>해시값을 비교</b>해야 합니다. 해시가 같으면 완전 복구, 다르면 부분 복구로 자동 집계할 수 있습니다.”",
+   "“단편화 조각 수를 1개, 2개, 3개로 늘려 가며 성공률 변화를 측정하면 알고리즘 성능을 객관적으로 보여 줄 수 있었을 것입니다.”"],
+  fu:["→ “그럼 지금이라도 측정해 보실 생각이 있나요?”"],
+  tip:"측정하지 않았다면 <b>“측정 방법을 설계할 줄 안다”</b>는 것으로 만회할 수 있습니다."},
+
+ {lv:"b",q:"테스트는 어떻게 했나요? 테스트용 디스크 이미지는 어떻게 만들었습니까?",
+  int:"실험 환경을 직접 구성했는지.",
+  ans:["“실제 디스크를 쓸 수는 없어서, 여러 파일을 이어 붙이고 일부러 조각내어 <b>디스크 이미지 비슷한 파일</b>을 만들어 테스트했습니다.”",
+   "“(AI 도움을 받은 부분이므로 반드시 함께 밝히세요.) 이 변환 과정 일부는 AI의 도움을 받았습니다.”",
+   "“정확한 테스트 항목과 결과 수치는 제출한 설명서만으로 모두 확인되지 않으므로, 테스트 파일 목록과 실행 로그를 정리해 두겠습니다.”",
+   "“설명서에는 복구 전·후 이미지가 있으므로, 어떤 파일을 어떤 방법으로 확인했는지 실제 기록대로 설명하겠습니다.”"],
+  fu:["→ “실제 포렌식 테스트 이미지 세트가 있다는 건 아시나요?” → DFRWS 챌린지 등 공개 데이터셋. 모르면 솔직히."]},
+
+ {lv:"b",q:"복구한 파일이 원본과 같은지 어떻게 검증하나요?",
+  int:"<b>해시 개념</b>을 아는지. 포렌식의 기본입니다.",
+  ans:["“<b>해시값을 비교</b>하면 됩니다. MD5나 SHA-256으로 원본과 복구본의 해시를 각각 구해서 같으면 완전히 동일한 파일입니다.”",
+   "“해시는 데이터가 <b>단 한 비트만 달라도 값이 완전히 바뀌기</b> 때문에, 파일이 온전한지 증명하는 데 쓰입니다.”",
+   "“실제 포렌식에서는 복구 검증뿐 아니라, <b>증거 수집 단계에서 원본 디스크의 해시를 먼저 구해 두고</b> 분석이 끝난 뒤 값이 그대로인지 확인해 ‘증거를 변경하지 않았다’는 것을 증명합니다.”",
+   "“설명서에는 해시 기반 자동 검증이 제시되지 않았으므로, 실제 코드에 없다면 다음 개선 기능으로 추가하고 싶습니다.”"],
+  fu:["→ “MD5와 SHA-256 중 뭐가 더 안전한가요?” → MD5는 충돌이 발견되어 SHA-256을 권장합니다."]},
+
+ {lv:"c",q:"이 프로그램을 실제 수사에 쓰려면 무엇이 더 필요할까요?",
+  int:"<b>기술을 넘어 절차·법적 요건</b>까지 생각하는지. 해킹방어과 지원자에게 중요한 질문입니다.",
+  ans:["“기술적으로는 대용량 스트리밍 처리, 복구 신뢰도 표시, 더 많은 포맷 지원이 필요합니다.”",
+   "“하지만 그보다 중요한 건 <b>절차적 요건</b>이라고 생각합니다. 세 가지를 꼽겠습니다.”",
+   "“첫째, <b>원본 보존</b>입니다. 쓰기 방지 장치를 써서 원본 디스크에 단 1바이트도 쓰지 않고, 복제본으로만 작업해야 합니다.”",
+   "“둘째, <b>무결성 증명</b>입니다. 작업 전후 해시를 기록해 증거가 변경되지 않았음을 보일 수 있어야 합니다.”",
+   "“셋째, <b>연계 보관성</b>입니다. 누가 언제 무엇을 했는지 전 과정이 기록으로 남아야 법정에서 증거로 인정됩니다.”",
+   "“즉 <b>복구에 성공하는 것만으로는 부족하고, 그 과정이 신뢰받을 수 있어야</b> 진짜 포렌식 도구가 된다고 배웠습니다.”"],
+  fu:["→ “쓰기 방지는 어떻게 하나요?” → 하드웨어 라이트 블로커 또는 읽기 전용 마운트."],
+  tip:"기술만 말하는 지원자가 대부분입니다. <b>절차·윤리까지 말하면 확실히 차별화</b>됩니다."},
+
+ {lv:"b",q:"PhotoRec이나 Foremost 같은 기존 도구가 이미 있는데, 직접 만든 의미가 무엇인가요?",
+  int:"<b>살짝 도발적인 질문.</b> 위축되지 말고 학습 목적을 당당히 말해야 합니다.",
+  ans:["“기존 도구를 이기려고 만든 것이 아닙니다. <b>원리를 이해하기 위해</b> 만들었습니다.”",
+   "“기성 도구가 제공하는 복구 결과를 넘어, 파일의 시작·끝과 단편화가 어떻게 작동하는지 직접 코드로 확인한 점이 학습 성과입니다. 기존 도구 사용 경험은 실제 경험일 경우에만 말하겠습니다.”",
+   "“제 구현의 한계는 잘 알고 있습니다. 상용·오픈소스 도구의 성능과 직접 비교한 데이터는 아직 제시하지 못했습니다.”",
+   "“<b>도구를 쓰는 사람에서 도구를 이해하는 사람으로</b> 한 걸음 간 것이 가장 큰 의미입니다.”"],
+  fu:["→ “그럼 PhotoRec보다 나은 점은 하나도 없나요?” → 솔직히 성능은 못 미치지만, <b>문서 종류 판별과 리포트</b>는 제가 필요해서 직접 설계한 부분입니다."]},
+
+ {lv:"b",q:"다음에 기능을 추가한다면 무엇을 하고 싶습니까?",
+  int:"<b>지속 의지.</b> 끝난 프로젝트인지, 계속 갈 프로젝트인지 봅니다.",
+  ans:["“세 가지를 생각하고 있습니다. 우선순위 순서로 말씀드리겠습니다.”",
+   "“첫째, <b>스트리밍 처리로의 전환</b>입니다. 16MB 한계를 없애는 게 가장 급합니다. 버퍼 단위로 읽으며 경계를 겹쳐 처리하는 방식으로 바꾸려 합니다.”",
+   "“둘째, <b>복구 신뢰도 점수</b>입니다. 지금은 복구/부분복구 두 가지뿐인데, 조각을 몇 번 이었는지·검증을 통과했는지에 따라 점수를 매겨 사용자가 어떤 결과를 먼저 확인할지 판단할 수 있게 하고 싶습니다.”",
+   "“셋째, <b>해시 기반 자동 검증과 성공률 통계</b>입니다. 지금 가장 부족한 정량 평가를 보완하는 부분입니다.”"],
+  fu:["→ “고등학교에 와서도 계속할 건가요?”"]},
+
+ {lv:"c",q:"요즘 SSD는 TRIM 기능 때문에 삭제 데이터가 즉시 지워집니다. 그럼 카빙이 의미가 없어지는 것 아닌가요?",
+  int:"<b>최신 기술 동향</b>을 아는지. 모르면 솔직히 인정하되 사고력을 보여야 합니다.",
+  ans:["“중요한 지적입니다. TRIM은 운영체제가 ‘이 블록은 더 이상 안 쓴다’고 SSD에 알려 주고, SSD가 미리 실제로 지워 버리는 기능입니다. 그래서 <b>SSD에서는 삭제 직후 데이터가 사라져 카빙이 어려워집니다.</b>”",
+   "“그래도 카빙이 무의미해지지는 않는다고 생각합니다. 이유는 세 가지입니다. 1. TRIM이 꺼져 있거나 지원하지 않는 환경이 여전히 있고, 2. <b>매체 및 컨트롤러에 따라</b> 동작이 다르고, 3. 삭제된 파일뿐 아니라 <b>손상된 파일 시스템에서 복구</b>할 때도 카빙이 쓰이기 때문입니다.”",
+   "“다만 SSD 환경에서는 복구보다 <b>로그나 캐시 같은 다른 흔적</b>을 분석하는 쪽이 중요해진다고 알고 있습니다. 이 부분은 더 공부하고 싶습니다.”"],
+  fu:["→ “그럼 SSD 포렌식은 어떻게 하죠?” → 모르면 “아직 공부하지 못했습니다”로 솔직하게."],
+  warn:"모르는 내용이면 아는 척하지 말고 <b>“그 부분은 아직 공부하지 못했습니다”</b> + 아는 범위에서의 추론으로 답하세요."}
+ ],
+
+ career:[
+ {lv:"a",q:"왜 해킹방어과에 지원했나요?",
+  int:"<b>학과 이해도.</b> 막연한 ‘해커가 멋있어서’는 감점입니다. 실적물과 연결해야 합니다.",
+  ans:["“이번 프로젝트를 하면서 <b>보안은 결국 데이터가 어떻게 생겼는지를 아는 데서 출발한다</b>는 걸 느꼈습니다.”",
+   "“파일이 메모리와 디스크에 어떤 바이트로 놓이는지 알게 되니, 왜 확장자만 믿으면 안 되는지, 왜 삭제가 삭제가 아닌지가 이해됐습니다. 이런 <b>낮은 층위의 이해</b>가 공격과 방어 양쪽의 기초라고 생각했습니다.”",
+   "“디미고 해킹방어과는 이런 기초부터 체계적으로 배울 수 있고, 같은 관심을 가진 친구들과 함께 깊이 파고들 수 있는 곳이라고 생각해 지원했습니다.”",
+   "“특히 혼자 공부하면서 가장 아쉬웠던 것이 <b>제 방식이 맞는지 확인해 줄 사람이 없다는 점</b>이었습니다.”"],
+  fu:["→ “공격과 방어 중 어느 쪽에 관심이 있나요?”"]},
+
+ {lv:"a",q:"디미고에 입학하면 무엇을 하고 싶습니까? 구체적으로 말해 주세요.",
+  int:"<b>구체성</b>이 전부입니다. “열심히 하겠습니다”는 아무 의미가 없습니다.",
+  ans:["“세 가지를 계획하고 있습니다.”",
+   "“첫째, <b>이번 프로젝트의 미완성 부분을 완성</b>하고 싶습니다. 스트리밍 처리와 해시 검증을 넣어 실제로 쓸 수 있는 수준까지 끌어올리는 것이 1학년 목표입니다.”",
+   "“둘째, <b>포렌식을 넘어 시스템 보안 전반</b>을 배우고 싶습니다. 메모리 구조를 다루다 보니 버퍼 오버플로 같은 취약점의 원리가 궁금해졌습니다.”",
+   "“셋째, <b>팀으로 일하는 경험</b>입니다. 이번 프로젝트는 혼자 했는데, 막혔을 때 의논할 사람이 없는 게 가장 힘들었습니다. CTF 대회에 팀으로 나가 보고 싶습니다.”"],
+  fu:["→ “CTF가 뭔지 아세요?” → Capture The Flag. 보안 문제를 풀어 깃발(인증 문자열)을 찾는 대회."]},
+
+ {lv:"b",q:"3년간의 계획을 학년별로 말해 보세요.",
+  int:"<b>장기적 사고</b>를 하는지. 막연하면 준비 부족으로 보입니다.",
+  ans:["“1학년에는 <b>기초를 메우겠습니다.</b> C를 더 깊이 다지고 리눅스와 네트워크 기초, 그리고 이번 프로젝트를 제대로 완성하는 것이 목표입니다.”",
+   "“2학년에는 <b>분야를 넓히겠습니다.</b> 시스템 해킹과 리버싱을 공부하고, 교내외 CTF에 팀으로 참가해 실전 감각을 기르고 싶습니다.”",
+   "“3학년에는 <b>하나를 깊게 파고 결과물로 남기겠습니다.</b> 포렌식 쪽으로 방향을 잡는다면, 지금 프로젝트를 발전시켜 공개할 수 있는 수준의 도구로 만드는 것이 목표입니다.”",
+   "“공통적으로 매 학년 <b>만든 것을 기록으로 남기는 습관</b>을 유지하려 합니다. 이번에 실적설명서를 쓰면서 기록의 중요성을 크게 느꼈습니다.”"],
+  fu:["→ “졸업 후에는?”"]},
+
+ {lv:"b",q:"화이트해커란 무엇이라고 생각합니까?",
+  int:"<b>윤리 의식.</b> 해킹방어과 면접에서 빠지지 않습니다.",
+  ans:["“같은 기술을 쓰더라도 <b>허락받은 범위 안에서, 지키기 위해 쓰는 사람</b>이라고 생각합니다.”",
+   "“기술 자체에는 선악이 없습니다. 제가 만든 데이터 카빙도 수사에 쓰면 증거를 찾는 도구이지만, 남의 디스크에 쓰면 사생활 침해가 됩니다. <b>차이는 기술이 아니라 권한과 목적</b>에 있습니다.”",
+   "“그래서 화이트해커에게 가장 중요한 건 실력보다 <b>선을 지키는 판단력</b>이라고 생각합니다. 실력이 늘수록 넘을 수 있는 선도 많아지기 때문입니다.”"],
+  fu:["→ “허락받지 않은 시스템을 테스트해 본 적 있나요?” → 사실대로 답하되, 허가되지 않은 테스트가 있었다면 정당화하지 말고 책임과 배운 점을 설명해야 합니다. 허위 답변은 피합니다."]},
+
+ {lv:"c",q:"본인이 만든 복구 도구가 범죄에 악용될 수도 있습니다. 어떻게 생각합니까?",
+  int:"<b>기술의 양면성</b>을 인식하는지. 회피하면 감점입니다.",
+  ans:["“충분히 가능한 일이라고 생각합니다. 삭제된 데이터를 되살리는 기술은 <b>남의 USB나 중고 기기에서 개인정보를 빼내는 데</b> 그대로 쓰일 수 있습니다.”",
+   "“그래서 저는 두 가지가 중요하다고 봅니다. 첫째, <b>사용 권한</b>입니다. 복구는 그 데이터에 대한 정당한 권한이 있는 사람만 해야 합니다.”",
+   "“둘째, <b>반대편 기술도 함께 알아야 한다</b>는 점입니다. 복구를 공부하면서 자연스럽게 ‘그럼 확실히 지우려면 어떻게 해야 하나’도 알게 됐습니다. 여러 번 덮어쓰기나 암호화 후 키 폐기 같은 방법입니다.”",
+   "“복구를 아는 사람이 <b>안전한 삭제도 설계할 수 있다</b>고 생각합니다. 그게 방어라고 봅니다.”"],
+  fu:["→ “중고 기기를 팔 때 어떻게 해야 하나요?” → 매체 종류와 상태에 따라 제조사 보안 삭제·암호화 키 폐기 등 적절한 방법을 선택해야 하며, SSD에 반복 덮어쓰기는 만능 대책이 아닙니다."],
+  tip:"<b>“복구를 아니까 안전한 삭제도 설계할 수 있다”</b> — 이 한 문장이 해킹방어과 지원자다운 답변입니다."},
+
+ {lv:"b",q:"이번 프로젝트는 혼자 했는데, 협업 경험은 있습니까?",
+  int:"<b>개인 프로젝트의 약점을 찌르는 질문.</b> 없다면 솔직히 말하고 의지를 보여야 합니다.",
+  ans:["“(경험이 있다면 구체적으로: 어떤 역할, 어떤 갈등, 어떻게 조율했는지)”",
+   "“(없다면) 이번 실적물은 개인 연구라 혼자 진행했습니다. 그래서 오히려 협업의 필요성을 크게 느꼈습니다.”",
+   "“단편화 복구에서 막혔을 때 <b>제 판단이 맞는지 확인해 줄 사람이 없다는 점</b>이 가장 힘들었습니다. 혼자서는 같은 생각을 계속 맴돌게 되더라고요.”",
+   "“그래서 디미고에서 가장 기대하는 것이 <b>같은 문제를 다른 방식으로 보는 친구들</b>과 함께 작업하는 경험입니다. 제 코드를 다른 사람이 읽을 수 있게 쓰는 연습도 해야 한다고 생각합니다.”"],
+  fu:["→ “팀에서 의견이 갈리면 어떻게 하시겠어요?”"]},
+
+ {lv:"b",q:"프로젝트를 하면서 가장 크게 성장했다고 느낀 점은 무엇입니까?",
+  int:"<b>메타인지.</b> 기술이 아니라 태도의 변화를 말하면 더 좋습니다.",
+  ans:["“<b>‘동작한다’와 ‘맞다’는 다르다</b>는 것을 배운 점입니다.”",
+   "“처음에는 파일이 저장되기만 하면 성공이라고 생각했습니다. 그런데 열어 보니 GIF가 중간에서 잘려 있었습니다. 프로그램은 오류 없이 끝났는데 결과는 틀렸던 것입니다.”",
+   "“그때부터 <b>결과를 의심하는 습관</b>이 생겼습니다. 복구된 파일을 매번 직접 열어 확인하고, 왜 이 값이 나왔는지 헥스 에디터로 따라가 보게 됐습니다.”",
+   "“이게 보안 분야에서 특히 중요한 태도라고 생각합니다. 오류 없이 돌아가는 프로그램이 안전한 프로그램은 아니니까요.”"],
+  fu:["→ “그 습관을 다른 데서도 쓴 적 있나요?”"]},
+
+ {lv:"a",q:"마지막으로 하고 싶은 말이 있습니까?",
+  int:"<b>마무리 인상.</b> 새로운 정보보다 <b>핵심 메시지 하나</b>를 남기는 게 좋습니다. 30초 이내.",
+  ans:["“제 프로젝트는 완성된 도구가 아닙니다. 16MB 제한도 있고, 복구 결과를 눈으로 확인해야 하는 한계도 있습니다.”",
+   "“그래도 <b>어디가 왜 부족한지는 정확히 알고 있습니다.</b> 그걸 알게 된 것이 2개월 동안 얻은 가장 큰 수확이라고 생각합니다.”",
+   "“디미고에서 그 부족한 부분을 하나씩 채워 나가고 싶습니다. 감사합니다.”"],
+  fu:[],
+  tip:"장황하게 늘어놓지 말고 <b>‘한계 인정 → 성장 의지’</b>로 짧고 단정하게 끝내세요."}
+ ]
+};
+
+
+QS.official = [
+ {lv:"a",q:"[학교 공식 기출] 전공 역량으로 볼 때 자신이 해킹방어과에 합격할 자격이 있다고 생각한다면 이유는 무엇인가요?",
+  int:"2026학년도 학교가 공개한 심층면접 기출. 자신의 실제 활동으로 역량을 입증하고 부족한 점도 말하세요.",
+  ans:["“파일이름이나 확장자만 보지 않고 파일 구조를 분석해 복구하는 C 프로젝트를 진행하며 포렌식의 기본 원리를 공부했습니다.”",
+  "“PNG 청크의 길이·CRC를 읽고, JPEG는 마커 구조로 검사하는 등 파일마다 다른 방법을 적용하려 했습니다. 특히 실패 사례를 수정하며 원인을 확인하는 태도를 배웠습니다.”",
+  "“아직 대용량 처리·복구 성공률 검증이 부족합니다. 디미고에서 운영체제·네트워크·보안 기초를 체계적으로 배우고 더 신뢰할 수 있는 도구로 발전시키고 싶습니다.”"],
+  fu:["실제로 학생 본인이 수정한 함수 하나를 코드로 보여줄 수 있나요?", "학과 수업 중 무엇을 배우고 싶은지 학교 자료에서 한 가지만 골라 구체화하세요."]},
+ {lv:"a",q:"[학교 공식 기출] 지금까지 가장 열심히 공부한 과목은 무엇이고 왜 그렇게 공부했나요?",
+  int:"학교 공식 기출. C언어가 관련된 실제 교과 또는 학습 경험을 먼저 확인하고 답하세요.",
+  ans:["“제가 가장 열심히 공부한 과목은 [실제 교과명]입니다. 관심을 갖게 된 이유는 [사실에 맞는 계기]였습니다.”",
+   "“그 과목에서 [직접 푼 문제·수업·실습]을 통해 [구체 개념]을 익혔고, 데이터 카빙 프로젝트에 [적용한 실제 부분]을 연결해 보았습니다.”",
+   "“어려웠던 부분은 [실제 어려움]이고 [진짜 해결 방법]으로 극복했습니다.”"],
+  fu:["그 과목에서 가장 이해하기 어려웠던 개념은?", "교과 학습과 개인 프로젝트의 연결 고리를 설명할 수 있나요?"],
+  warn:"과목·성적·수상·학습 기록은 학생에게 확인한 내용으로만 입력합니다."},
+ {lv:"a",q:"실적설명서의 내용 중 본인 기여를 30초 안에 딱 하나만 증명해 보세요.",
+  int:"실적물 기여도 확인을 위한 연습 문항(공식 기출 아님).",
+  ans:["“제가 설명할 부분은 [실제 직접 작업한 함수명]입니다.”",
+   "“입력은 [값], 핵심 조건은 [조건], 출력은 [결과]입니다. 처음에는 [실제 오류]가 있었고 [수정 내용]을 적용했습니다.”",
+   "“코드의 [함수·변수]를 열어 보여드리면 이 과정을 확인할 수 있습니다.”"],
+  fu:["해당 코드가 없는 경우 답변을 외우지 말고 실제 구현 부분을 선택하세요."]},
+ {lv:"b",q:"제출한 자기소개서와 취업·창업계획서가 데이터 카빙 경험과 어떻게 연결됩니까?",
+  int:"학교 제출서류 안내에는 관련 자기소개서와 계획서 양식도 포함. 문서가 실제로 제출되었다면 내용의 일관성을 확인하세요.",
+  ans:["“제 실적물은 파일 구조를 직접 살펴본 경험이고, 이후 관심 분야는 [실제 진로 목표]입니다.”",
+   "“자기소개서의 [실제 진술]은 [실제 활동]으로 설명할 수 있고, 계획서의 [실제 목표]는 [달성하려는 학습 단계]로 이어집니다.”"],
+  fu:["지원자가 실제 제출한 자기소개서·계획서를 읽고 문장 그대로 질문해 보세요."],warn:"해당 문서를 확인하지 않은 상태이므로 구체 문구를 만들어 넣지 않았습니다."}
+];
+QS.code = [
+ {lv:"b",q:"PNG에서 CRC32가 일치했는데도 복구 파일이 잘못될 수 있나요?",
+ int:"CRC32는 Type+Data에 대한 32비트 오류 검출값. 전체 파일 완전성의 보증이 아닙니다.",
+ ans:["“네. 청크 하나의 CRC가 맞더라도 그 청크가 원래 그 이미지의 올바른 위치에 있었는지까지 증명하지는 못합니다.”",
+ "“서로 다른 데이터에서 우연히 CRC가 같아질 가능성도 있고, 전체 청크 순서·이미지 디코딩 결과 검증이 필요합니다.”"],
+ fu:["CRC는 PNG 청크의 어떤 부분을 계산하나요? → Length를 제외한 Type+Data"]},
+ {lv:"b",q:"JPEG의 <code>FF D8</code>, <code>FF DA</code>, <code>FF 00</code>, <code>FF D9</code>를 각각 설명하세요.",
+ int:"가장 짧게 진위를 확인할 수 있는 기술 질문입니다.",
+ ans:["“<code>FF D8</code>은 SOI(시작), <code>FF DA</code>는 SOS(스캔 시작), <code>FF D9</code>는 EOI(끝)입니다.”",
+ "“<code>FF 00</code>은 SOS 이후 엔트로피 부호화 데이터에서 <code>FF</code>를 데이터로 표현하기 위한 바이트 스터핑입니다.”",
+ "“또 <code>FF D0~D7</code>은 정상적인 재시작 마커일 수 있으므로 무조건 오류로 판단하면 안 됩니다.”"],
+ fu:["JPEG를 그냥 첫 FF D9까지 잘랐을 때 생길 수 있는 문제는?"]},
+ {lv:"b",q:"입력 N바이트를 한 칸씩 탐색하면 시간복잡도가 왜 O(N)인가요?",
+ int:"기존 자료에서 바이트 단위 탐색과 클러스터 단위 O(N/C)라는 설명이 충돌했습니다.",
+ ans:["“시그니처 종류와 길이를 고정된 상수로 보면 N개 위치를 확인하므로 기본 검색은 O(N)입니다.”",
+ "“단편화 후보를 G개 검증하고 후보당 비용이 L이면 추가 비용이 생깁니다. 실제 복잡도는 코드의 중첩 루프에 따라 달라집니다.”"],
+ fu:["시그니처 종류가 여러 개면? → 각 위치에서 비교하는 종류 수 K가 늘면 O(NK)로 볼 수 있습니다."]},
+ {lv:"c",q:"클러스터 크기를 4096으로 정했다고 모든 카빙 시작점을 4096바이트마다 검색해도 됩니까?",
+ int:"원본은 바이트 단위 헤더 탐색과 사용자 입력 클러스터 경계 후보 검사를 함께 설명합니다.",
+ ans:["“아닙니다. 디스크 이미지에 파일 시스템 구조, 시작 오프셋, 내장 파일 등이 있으므로 단순히 절대 오프셋 4096의 배수에만 헤더가 있다고 보장할 수 없습니다.”",
+ "“제 프로젝트에서는 헤더 기본 탐색과 단편화 후보의 클러스터 단위 점프를 구분해서 설명해야 합니다. 실제 코드에서도 두 루프를 확인하겠습니다.”"],
+ fu:["바이트 탐색을 할 때 스캔 경계의 시그니처를 놓치지 않으려면?"]},
+ {lv:"b",q:"ZIP의 EOCD는 항상 파일 마지막 22바이트에 있나요?",
+ int:"ZIP에는 EOCD 가변 길이 주석이 있습니다.",
+ ans:["“아닙니다. EOCD 기본 레코드는 최소 22바이트이지만 뒤에 ZIP 주석이 올 수 있습니다.”",
+ "“일반 ZIP이면 끝부분에서 가능한 EOCD 서명을 거꾸로 찾고 주석 길이와 구조를 검증해야 합니다. ZIP64·분할 ZIP은 별도 고려가 필요합니다.”"],
+ fu:["중앙 디렉터리가 무엇인가요?", "docx 판별에 word/ 경로만 쓰면 어떤 오탐이 생기나요?"]},
+ {lv:"b",q:"C언어에서 파일 크기, 배열 길이, 포인터 범위 검사를 어떻게 안전하게 합니까?",
+ int:"해킹방어과 특성상 입력 검증과 안전성에 관심을 가질 수 있습니다.",
+ ans:["“입력 오프셋이 버퍼 크기보다 크지 않은지 먼저 확인하고, 길이를 더하기 전에 <code>len &lt;= capacity - offset</code> 방식으로 범위를 확인합니다.”",
+ "“파일에서 읽는 길이와 정수 오버플로·음수 오프셋을 확인하지 않으면 복구 도구도 메모리 접근 오류가 생길 수 있습니다.”"],
+ fu:["<code>size_t</code>를 쓰는 이유는?", "파일을 읽었을 때 반환된 바이트 수를 확인하지 않으면 어떻게 되나요?"]},
+ {lv:"c",q:"수정 전후에 파일이 열리는 것만으로 복구 성공을 증명할 수 있습니까?",
+ int:"시각적 복구와 바이트 단위 동일성을 구분하는 질문.",
+ ans:["“아닙니다. 파일이 열려도 일부 데이터가 누락되었거나 순서가 잘못되었을 수 있습니다.”",
+ "“원본이 있는 테스트 파일이라면 SHA-256 해시와 바이트 길이 비교가 강력한 검증입니다. 손상 파일은 파서·디코더 검사와 부분복구 표시를 함께 사용해야 합니다.”"],
+ fu:["서로 다른 파일이 같은 해시를 가질 가능성은? → 이론상 충돌 가능, SHA-256은 실용적으로 매우 낮음."]}
+];
+QS.community = [
+ {lv:"a",q:"팀 프로젝트에서 역할이 겹치거나 의견이 충돌하면 어떻게 하겠습니까?",
+ int:"학교 공식 평가 요소인 단체생활 적응력에 대비한 연습.",
+ ans:["“먼저 상대 의견을 끝까지 듣고 각 제안의 근거를 정리하겠습니다.”",
+ "“가능하면 작은 테스트를 만들어 실제 결과를 비교하고, 최종 결정 뒤에는 역할과 일정·책임을 기록하겠습니다.”",
+ "“다만 제가 이런 방식으로 실제 협업한 경험이 있다면 그 사례로 답하겠습니다.”"],fu:["실제로 갈등을 해결한 사례가 있나요? → 없다면 없다고 말하고 계획만 제시하세요."]},
+ {lv:"a",q:"기숙사 또는 공동체 생활에서 규칙을 어기는 친구를 보면 어떻게 하겠습니까?",
+ int:"단체생활 적응력과 타인 존중에 대한 가상 상황.",
+ ans:["“상황을 먼저 확인하고 감정적으로 몰아붙이지 않겠습니다.”",
+ "“사소한 문제는 당사자에게 조용히 규칙을 알려주고, 안전이나 다른 학생의 권리가 걸린 문제는 담당 선생님에게 상담하겠습니다.”"],fu:["친한 친구라도 같은 기준을 적용할 수 있나요?"]},
+ {lv:"a",q:"다른 사람의 코드를 참고할 때 표절과 학습의 경계는 어디라고 생각합니까?",
+ int:"AI 활용·오픈소스 윤리 질문.",
+ ans:["“코드를 사용했다면 출처·라이선스를 확인하고, 남의 작업을 본인이 했다고 주장하지 않겠습니다.”",
+ "“모르는 부분은 직접 실행·수정해 이해한 범위를 설명하고, 도움받은 부분은 명확히 밝히겠습니다.”"],fu:["AI가 작성한 코드와 인터넷에서 가져온 코드는 공개 방식이 어떻게 달라져야 하나요?"]},
+ {lv:"b",q:"면접위원이 ‘이 코드 네가 안 짠 것 같은데?’라고 지적하면 어떻게 답하겠습니까?",
+ int:"압박형 표현이지만 실제 출제 여부는 알 수 없습니다. 정직·근거 위주로 답하세요.",
+ ans:["“그렇게 보일 수 있는 부분이 있다는 점을 이해합니다. 해당 함수의 입력·반환·예외 상황을 코드에서 설명하겠습니다.”",
+ "“AI 도움을 받은 부분이라면 어떤 도움을 받았는지 먼저 밝히고, 직접 수정한 구간은 변경 전후로 설명하겠습니다.”"],fu:["실제 코드·테스트 로그·작업 기록 중 무엇을 보여줄 수 있나요?"]}
+];
+
+const CATS=[
+ {k:"strategy",n:"면접 전략·공식 정보",type:"page"},
+ {k:"official",n:"학교 공식 기출·서류",type:"qs"},
+ {k:"basic",n:"1. 프로젝트 기본",type:"qs"},
+ {k:"format",n:"2. 파일 포맷 심화",type:"qs"},
+ {k:"frag",n:"3. 단편화·알고리즘",type:"qs"},
+ {k:"code",n:"코드 실전 검증",type:"qs"},
+ {k:"ai",n:"4. AI 활용·정직성",type:"qs"},
+ {k:"limit",n:"5. 한계·개선·확장",type:"qs"},
+ {k:"career",n:"6. 진로·인성",type:"qs"},
+ {k:"community",n:"협업·공동체",type:"qs"},
+ {k:"prep",n:"실전 답변 준비표",type:"page"},
+ {k:"facts",n:"암기 팩트시트",type:"page"},
+ {k:"sim",n:"모의 면접",type:"sim"}
+];
+
+
+const PREP=[
+ ["학생·지원 서류 일치", "면접 대상 유준과 제출 실적설명서(김유준 표기)의 성명·전형·학과·최종본 일치 확인"],
+ ["직접 구현한 코드", "학생이 직접 작성·수정한 핵심 함수 2~3개를 특정하고 입력·출력을 직접 설명"],
+ ["AI 사용 범위", "디스크 이미지 변형·리포트·JPEG 검사 보조 범위를 코드 이력과 맞춤"],
+ ["실제 테스트 근거", "복구한 원본/복구본 샘플, 실행 로그, 가능하면 파일 크기·해시 준비"],
+ ["수치·상수 점검", "16MB 의미, gapMax 실제 값, 64바이트 기준 근거, 코드 줄 수를 확인"],
+ ["진로·인성 경험", "실제 학교생활·배려·협업 사례를 하나씩 30초로 말하기"],
+ ["제출서류 일관성", "실적설명서뿐 아니라 실제 제출한 자기소개서·취업/창업계획서와 모순 없는지 검토"],
+ ["현장 표현", "30초 자기소개·60초 실적설명·10분 통합 시뮬레이션 1회 이상"]
+];
+const STKEY='dimigo_2027_yujin_v2';
+function loadStore(){try{return JSON.parse(localStorage.getItem(STKEY)||'{}')}catch(e){return {}}}
+let store=loadStore();
+function persist(){try{localStorage.setItem(STKEY,JSON.stringify(store));}catch(e){}}
+function qKey(it){let h=2166136261; for(let i=0;i<it.q.length;i++){h^=it.q.charCodeAt(i);h=Math.imul(h,16777619);}return 'q'+(h>>>0).toString(36)}
+function escHTML(t){return String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function saveNote(id,v){store['note_'+id]=v;persist();}
+function saveRate(id,v){store['rate_'+id]=v;persist();}
+function savePrep(i,v){store['prep_'+i]=v;persist();document.getElementById('prep-counter').textContent=`${PREP.filter((x,j)=>store['prep_'+j]).length} / ${PREP.length}개 확인`;}
+function prepHTML(){return `<div class="head"><h2>유준이 실전 답변 준비표</h2><p>체크리스트와 메모는 <b>현재 브라우저에만</b> 자동 저장됩니다. 학교에 제출되는 문서가 아닙니다.</p></div>
+<div class="card"><h3>면접 전 반드시 확인할 8가지 <span id="prep-counter" style="color:var(--rose)">${PREP.filter((x,i)=>store['prep_'+i]).length} / ${PREP.length}개 확인</span></h3>
+${PREP.map(([a,b],i)=>`<label class="prepitem"><input type="checkbox" ${store['prep_'+i]?'checked':''} onchange="savePrep(${i},this.checked)"><span><b>${a}</b><small>${b}</small></span></label>`).join('')}</div>
+<div class="card"><h3>면접 10분 시나리오 — 교사 연습안 (공식 배점 아님)</h3>
+<table><tr><th>시간</th><th>연습 흐름</th><th>기준</th></tr>
+<tr><td>0~1분</td><td>30초 자기소개 + 지원 동기</td><td>간결함·진로</td></tr>
+<tr><td>1~3분</td><td>실적물 1분 설명 + 본인 기여</td><td>진위·근거</td></tr>
+<tr><td>3~6분</td><td>PNG/JPEG/ZIP·C 코드 심층</td><td>정확성·반례</td></tr>
+<tr><td>6~8분</td><td>AI 활용·한계·개선</td><td>정직성·성찰</td></tr>
+<tr><td>8~10분</td><td>공식 기출·인성·협업·마무리</td><td>진로·공동체</td></tr></table>
+<p class="hint" style="margin-top:12px">실제 2027학년도 심층면접은 약 10분(±2분)입니다. 위 분배는 본 교재의 연습용입니다.</p></div>
+<div class="card"><h3>답변 예시 — 제출 내용과 대조하여 말하기</h3>
+<div class="sec s-ans"><h6>30초 핵심 소개 예시</h6><p>“저는 디지털 포렌식에서 삭제된 파일을 복원하는 원리가 궁금해 C언어로 데이터 카빙을 구현해 보았습니다. PNG는 청크 구조와 CRC를, JPEG는 마커를 활용해 손상된 파일의 복구를 시도했습니다. 개발 중 파일이 중간에 끊기던 문제를 수정하며, 결과가 만들어졌다는 사실과 결과가 정확하다는 것은 다르다는 점을 배웠습니다.”</p></div>
+<div class="sec s-int"><h6>60초 실적 설명 구성</h6><p>“정보 수업에서 디지털 포렌식을 접한 것이 계기였습니다. 파일 시스템의 목차 정보 없이도 바이트 패턴을 추적해 파일을 찾을 수 있다는 점에 관심을 가졌습니다. C언어로 JPEG·PNG·GIF·ZIP 형식을 검사하고, 중간에 복구가 끊기는 문제를 줄이기 위해 파일 구조를 읽는 방식을 보완했습니다. PNG는 청크 CRC를, JPEG는 마커 검사 규칙을 이용해 단편화된 조각 연결을 시도했습니다. ZIP 중앙 디렉터리에서는 문서 종류를 추정하고, 복구 결과 리포트를 출력했습니다. 다만 일부 기능에는 AI 도움을 받았으며, 복구 성공을 객관적으로 검증하는 기능은 더 개선하고 싶습니다.”</p></div>
+<p class="hint">학생이 직접 수행한 범위와 맞을 때만 사용하세요. 읽는 속도에 따라 소요 시간이 달라질 수 있습니다.</p></div>
+<div class="card"><h3>5회 집중 훈련 운영안</h3><table><tr><th>회차</th><th>핵심 목표</th><th>교사 확인</th></tr>
+<tr><td>1회</td><td>제출 서류 문장·직접 기여·AI 기여 대조</td><td>실제 코드 2개 지목</td></tr>
+<tr><td>2회</td><td>PNG·JPEG·ZIP 바이트 설명 및 반례</td><td>화이트보드 구조 그림</td></tr>
+<tr><td>3회</td><td>오류 수정 사례·한계·정량 검증 계획</td><td>증거 자료 확보</td></tr>
+<tr><td>4회</td><td>공식 기출 2문제·진로·인성·협업</td><td>자기 경험 3개 정리</td></tr>
+<tr><td>5회</td><td>10분 실전 모의면접 2회 및 피드백</td><td>답변 정확성·시간 평가</td></tr></table></div>
+<div class="card"><h3>유준이 답변 원고 — 직접 작성</h3><p>실제로 수행한 일을 확인한 뒤 아래에 작성하세요. 저장은 이 브라우저에서만 이루어집니다.</p>
+<label class="inp-label" for="intro30">30초 자기소개</label><textarea id="intro30" class="note" rows="4" placeholder="관심 계기 → 내가 한 일 → 디미고에서 배우고 싶은 것" oninput="saveNote('intro30',this.value)">${escHTML(store['note_intro30'])}</textarea>
+<label class="inp-label" for="project60">60초 프로젝트 설명</label><textarea id="project60" class="note" rows="6" placeholder="문제 정의 → C 구현 → 실제 수정한 오류 → 검증/한계" oninput="saveNote('project60',this.value)">${escHTML(store['note_project60'])}</textarea>
+<label class="inp-label" for="proofmemo">실제로 증명할 수 있는 코드·실험 메모</label><textarea id="proofmemo" class="note" rows="5" placeholder="함수명, 입력 사례, 출력 화면, 직접 수정한 부분, AI 도움" oninput="saveNote('proofmemo',this.value)">${escHTML(store['note_proofmemo'])}</textarea>
+</div>
+<div class="card"><h3>교사용 5개 평가 기준 — 각 0~4점 (총 20점)</h3>
+<table><tr><th>항목</th><th>0점</th><th>2점</th><th>4점</th></tr>
+<tr><td>사실 정확성</td><td>용어 오답</td><td>기본 개념 설명</td><td>반례·한계 구분</td></tr>
+<tr><td>본인 기여 근거</td><td>구체 작업 없음</td><td>함수 설명</td><td>코드·수정 근거</td></tr>
+<tr><td>설명 구성</td><td>요점 불명확</td><td>핵심 전달</td><td>결론·근거·한계</td></tr>
+<tr><td>정직성·윤리</td><td>AI·한계 은폐</td><td>사용 사실 언급</td><td>범위·한계 구분</td></tr>
+<tr><td>인성·협력</td><td>근거 없음</td><td>적절한 태도</td><td>실제 경험 제시</td></tr></table>
+<p class="hint">학교 공식 평가표가 아닌 지도교사의 자체 피드백 기준입니다.</p></div>
+<div class="bar"><button class="btn" onclick="window.print()">현재 준비표 인쇄</button><button class="btn gh" onclick="downloadNotes()">내 메모 텍스트 내보내기</button></div>`;}
+function downloadNotes(){const lines=["2027 디미고 유준이 면접 답변 메모",...Object.entries(store).filter(([k,v])=>k.startsWith('note_')&&String(v).trim()).map(([k,v])=>`${k}\n${v}\n`)];const blob=new Blob([lines.join('\n\n')],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='디미고_유준_답변메모.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),800);}
+
+/* ===================== 렌더링 ===================== */
+const LVN={a:"기본",b:"심화",c:"압박"};
+function qCard(it,i,open){
+ const b=[];
+ const id=qKey(it);
+ b.push(`<div class="sec s-int"><h6>면접에서 확인할 내용</h6><p>${it.int}</p></div>`);
+ b.push(`<div class="sec s-ans"><h6>답변 구성 예시 (실제 경험에 맞게 수정)</h6><ul>${it.ans.map(a=>`<li>${a}</li>`).join('')}</ul></div>`);
+ if(it.fu&&it.fu.length)b.push(`<div class="sec s-fu"><h6>이어질 꼬리질문</h6><ul>${it.fu.map(f=>`<li>${f}</li>`).join('')}</ul></div>`);
+ if(it.warn)b.push(`<div class="sec s-wn"><h6>주의</h6><p>${it.warn}</p></div>`);
+ if(it.tip)b.push(`<div class="sec s-tp"><h6>차별화 포인트</h6><p>${it.tip}</p></div>`);
+ return `<div class="qc${open?' open':''}">
+  <div class="qh" onclick="this.parentNode.classList.toggle('open')">
+    <div class="qn">${i+1}</div>
+    <div class="qt">${it.q}<span class="lv ${it.lv}">${LVN[it.lv]}</span></div>
+    <div class="tog">답변</div></div>
+  <div class="mydraft"><label for="n_${id}">내 답변 초안 (먼저 말한 다음 작성해 보세요)</label>
+    <textarea id="n_${id}" class="note" rows="3" oninput="saveNote('${id}',this.value)" placeholder="실제로 수행한 내용만 적으세요">${escHTML(store['note_'+id])}</textarea>
+    <label class="rate">자가 평가 <select onchange="saveRate('${id}',this.value)"><option value="">미평가</option><option value="1" ${store['rate_'+id]==='1'?'selected':''}>1 — 설명 부족</option><option value="2" ${store['rate_'+id]==='2'?'selected':''}>2 — 일부 설명</option><option value="3" ${store['rate_'+id]==='3'?'selected':''}>3 — 근거 제시</option><option value="4" ${store['rate_'+id]==='4'?'selected':''}>4 — 정확·반례·근거</option></select></label>
+  </div><div class="qb">${b.join('')}</div></div>`;
+}
+const FOOT=`<div class="foot"><b>세영코딩연구소</b> &nbsp;|&nbsp; 저자 : 컴퓨터공학박사 KIM<br>
+2027학년도 한국디지털미디어고등학교 진로적성특별전형 · 해킹방어과 면접 대비 연습 교재<br>정답 예시는 실제 활동에 맞게 반드시 수정하세요. 학교 공식 평가표가 아닙니다.</div>`;
+
+const TITLES={
+ official:["학교 공식 기출·서류 연결", "학교가 공개한 2026학년도 심층면접 기출문항 2개를 포함합니다. 정답 암기보다 실제 경험을 말하는 것이 중요합니다."],
+ basic:["1. 프로젝트 기본 질문","실적물의 정체성과 제작 과정을 확인하는 단계입니다. 면접 초반 5분이 여기서 결정됩니다."],
+ format:["2. 파일 포맷 기술 심화","<b>본인 수행 확인의 핵심 구간입니다.</b> 바이트 값과 구조를 정확히 말할 수 있어야 합니다."],
+ code:["C언어·파일 형식 실전 검증", "기술적으로 부정확한 설명을 바로잡고, 반례와 간단한 코드 추적을 연습하세요."],
+ frag:["3. 단편화 복구와 알고리즘","실적설명서에서 가장 공들인 부분이므로 가장 깊게 파고듭니다. 함수 이름까지 적어 두셨기 때문에 반드시 질문이 옵니다."],
+ ai:["4. AI 활용과 정직성","<b>모집 요강에 명시된 평가 항목입니다.</b> 질문받을 수 있으므로 증거와 함께 준비하세요."],
+ limit:["5. 한계·개선·확장","한계를 아는지, 그리고 다음을 설계할 수 있는지를 봅니다. 성장 가능성 평가 구간입니다."],
+ community:["인성·협업·단체생활", "학교 공식 면접 평가 범위에 포함되는 생활·협업 질문을 연습하세요."],
+ career:["6. 진로와 인성","기술 외 영역. 실적물과 연결해 답할수록 설득력이 커집니다."]
+};
+let curCat="strategy";
+function render(){
+ const m=document.getElementById('main');
+ if(curCat==="strategy"){m.innerHTML=strategy+FOOT;}
+ else if(curCat==="facts"){m.innerHTML=facts+FOOT;}
+ else if(curCat==="prep"){m.innerHTML=prepHTML()+FOOT;}
+ else if(curCat==="sim"){m.innerHTML=simHTML()+FOOT;newSim();}
+ else{
+  const list=QS[curCat],t=TITLES[curCat];
+  m.innerHTML=`<div class="head"><h2>${t[0]}</h2><p>${t[1]}</p></div>
+  <div class="bar"><button class="btn" onclick="allOpen(1)">답변 모두 펼치기</button>
+  <button class="btn gh" onclick="allOpen(0)">모두 접기 (스스로 답해보기)</button>
+  <button class="btn gh" onclick="printBank(false)">문제지만 인쇄</button><button class="btn gh" onclick="printBank(true)">해설 포함 인쇄</button>
+  <div class="meta">총 ${list.length}문항</div></div>
+  ${list.map((it,i)=>qCard(it,i,false)).join('')}${FOOT}`;
+ }
+ m.scrollTop=0;
+}
+function printBank(showAnswer){ document.body.classList.toggle('print-solutions',showAnswer);window.print();setTimeout(()=>document.body.classList.remove('print-solutions'),800);}
+function allOpen(v){document.querySelectorAll('.qc').forEach(c=>v?c.classList.add('open'):c.classList.remove('open'));}
+document.getElementById('nav').innerHTML=CATS.map(c=>
+ `<li class="${c.k===curCat?'on':''}" onclick="goCat('${c.k}',this)">${c.n}${QS[c.k]?`<span class="cnt">${QS[c.k].length}</span>`:''}</li>`).join('');
+function goCat(k,el){stopT();curCat=k;document.querySelectorAll('#nav li').forEach(n=>n.classList.remove('on'));el.classList.add('on');render();}
+
+/* ---------- 모의면접: 10분 실전 세트 + 랜덤 ---------- */
+let pool=[],cur=null,tmr=null,sec=0,mockElapsed=0, simSet=[],simIndex=0,simRatings=[];
+function allQs(){const r=[];for(const k in QS)QS[k].forEach(q=>r.push({...q,cat:k}));return r;}
+function sample(cat){const a=QS[cat]||[];return {...a[Math.floor(Math.random()*a.length)],cat};}
+function simHTML(){return `<div class="head"><h2>모의면접 — 공식 시간에 맞춘 10분 연습</h2><p>학교 안내 기준: 심층면접은 학생 1명, 면접위원 2~3명, 약 10분(±2분). 본 세트의 질문 배분과 점수는 <b>교사용 연습안</b>입니다.</p></div>
+ <div class="bar"><button class="btn" onclick="newMock10()">10분 세트 시작</button><button class="btn gh" onclick="newSim()">랜덤 한 문제</button>
+ <button class="btn" onclick="startT()">타이머</button><button class="btn gh" onclick="stopT()">정지</button>
+ <button class="btn rd" onclick="revealSim()">답변 예시</button><button class="btn gh" onclick="nextSim()">다음</button><div class="meta" id="simmeta"></div></div>
+ <div class="sim"><div class="tagl" id="simcat">PRACTICE INTERVIEW</div>
+ <div class="qq" id="simq">—</div><div class="timer" id="simt">00:00</div></div>
+ <div class="card"><h3>교사 즉시 평가 (연습 기준)</h3><p>문항마다 0~4점으로 평가합니다. 0=미답변, 2=핵심 일부 설명, 4=정확한 근거·한계 제시.</p>
+ <label class="rate">이번 답변 점수 <select id="simrating"><option value="0">0점</option><option value="1">1점</option><option value="2">2점</option><option value="3">3점</option><option value="4">4점</option></select></label>
+ <label class="inp-label" for="simnote">교사 피드백</label><textarea class="note" id="simnote" rows="2" placeholder="잘한 점 1개 + 다음에 고칠 점 1개"></textarea></div>
+ <div id="simans"></div><div id="simfeedback"></div>`;}
+function showSim(q){cur=q;stopT();sec=0;
+ const names={official:"학교 공식 기출",basic:"프로젝트 기본",format:"파일 포맷",frag:"단편화·알고리즘",code:"코드 검증",ai:"AI 활용",limit:"한계·개선",career:"진로·인성",community:"협업·공동체"};
+ document.getElementById('simcat').textContent=`${names[q.cat]} · 난이도 ${LVN[q.lv]}`;
+ document.getElementById('simq').textContent=q.q.replace(/<[^>]*>/g,'');
+ document.getElementById('simt').textContent='00:00';document.getElementById('simt').style.color='#7B1440';
+ document.getElementById('simans').innerHTML=''; document.getElementById('simrating').value='0';document.getElementById('simnote').value='';
+ document.getElementById('simmeta').textContent=simSet.length?`세트 ${simIndex+1}/${simSet.length} · 전체 00:00 / 10:00`:'무작위 1문항';}
+function newMock10(){simSet=['official','basic','format','frag','code','ai','community'].map(sample);simRatings=[];simIndex=0;mockElapsed=0;document.getElementById('simfeedback').innerHTML='';showSim(simSet[simIndex]);startT();}
+function newSim(){simSet=[];simRatings=[];simIndex=0;mockElapsed=0;document.getElementById('simfeedback').innerHTML='';if(!pool.length)pool=allQs().sort(()=>Math.random()-.5);showSim(pool.pop());}
+function nextSim(){if(!cur)return;if(!simSet.length){newSim();return;}
+ const rate=Number(document.getElementById('simrating').value||0), note=document.getElementById('simnote').value;
+ simRatings.push({q:cur.q,rate,note});if(simIndex+1<simSet.length){simIndex++;showSim(simSet[simIndex]);startT();}else{
+ stopT();const sum=simRatings.reduce((a,b)=>a+b.rate,0),max=4*simRatings.length;
+ document.getElementById('simfeedback').innerHTML=`<div class="card"><h3>10분 실전 면접 피드백</h3><p><b>총점 ${sum}/${max}</b> (지도교사의 자체 연습 점수)</p><table><tr><th>질문</th><th>점수</th><th>피드백</th></tr>${simRatings.map(x=>`<tr><td>${escHTML(x.q.replace(/<[^>]*>/g,''))}</td><td>${x.rate}/4</td><td>${escHTML(x.note)}</td></tr>`).join('')}</table><p class="hint">학교의 실제 면접 채점 결과나 공식 배점이 아닙니다.</p></div>`;
+ document.getElementById('simmeta').textContent='세트 종료';}}
+function startT(){stopT();tmr=setInterval(()=>{sec++;if(simSet.length)mockElapsed++; const m=String(Math.floor(sec/60)).padStart(2,'0'),s=String(sec%60).padStart(2,'0');
+ const el=document.getElementById('simt');if(!el){stopT();return;}el.textContent=`${m}:${s}`;el.style.color=sec>110?'#A61B50':sec>60?'#9A5B00':'#7B1440';if(simSet.length){let mm=String(Math.floor(mockElapsed/60)).padStart(2,'0'),ss=String(mockElapsed%60).padStart(2,'0');document.getElementById('simmeta').textContent=`세트 ${simIndex+1}/${simSet.length} · 전체 ${mm}:${ss} / 10:00${mockElapsed>600?' (권장 시간 초과)':''}`;}},1000);}
+function stopT(){if(tmr){clearInterval(tmr);tmr=null;}}
+function revealSim(){if(!cur)return;stopT();document.getElementById('simans').innerHTML=qCard(cur,0,true);}
+render();
+</script>
+</body>
+</html>
