@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 배열과 메모리 — 중등정보올림피아드 자료구조</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:27pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page{margin:0;width:auto;height:auto;min-height:0;padding:0;break-after:page;overflow:visible;}
+    .page:last-child{break-after:auto;}
+    .cover{height:266mm;padding:16mm 14mm;}
+    .foot{display:none;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2,.grid3{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4;}
+
+/* 화면 전용 인쇄 안내 */
+.print-toolbar{width:min(210mm,100%);margin:10px auto 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1px solid #ccd6df;border-radius:10px;font-size:14px;color:#24364e;box-shadow:0 2px 9px #2334}
+.print-toolbar button{border:0;border-radius:8px;padding:10px 16px;background:#0d726b;color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+@media screen and (max-width:850px){.page{width:100%;margin:0 auto 12px;padding:18px}.print-toolbar{flex-direction:column;align-items:stretch}.grid2,.grid3{grid-template-columns:1fr}pre{overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}}
+@media print{
+  @page{size:A4;margin:0}
+  html,body{width:210mm!important;margin:0!important;padding:0!important;background:#fff!important;color:#111!important}
+  .print-toolbar{display:none!important}
+  *,*::before,*::after{background:transparent!important;background-image:none!important;box-shadow:none!important;text-shadow:none!important;color:#111!important;print-color-adjust:economy!important;-webkit-print-color-adjust:economy!important}
+  .page{width:210mm!important;min-height:297mm!important;margin:0!important;padding:13mm 14mm 13mm!important;break-after:page!important;page-break-after:always!important;overflow:visible!important;border:none!important;}
+  .page:last-child{break-after:auto!important;page-break-after:auto!important;}
+  .cover{height:297mm!important;min-height:297mm!important;display:flex!important;padding:20mm 18mm 18mm!important;background:#fff!important;color:#111!important;border:1px solid transparent!important}
+  .cover .eyebrow,.cover h1,.cover .chno,.cover .sub,.cover-goal h3,.cover-goal li,.cover-bottom,.cover-bottom .brand{color:#111!important}
+  .cover-goal,.box,.qa,.ex,.prob,.ex-h,pre,pre.out,table,th,td,thead th,.chk,code.inl{background:#fff!important;color:#111!important}
+  .cover-goal,.box,.qa,.ex,.prob,pre,pre.out{border-color:#aaa!important}
+  table,th,td{border-color:#888!important}
+  .ex-h,thead th{font-weight:800!important;border-bottom:1px solid #555!important}
+  .cover-rule{background:#111!important}
+  .foot{display:none!important}
+  body{font-size:9.6pt!important;line-height:1.55!important}
+  pre{white-space:pre-wrap!important;overflow-wrap:anywhere!important;font-size:7.4pt!important;line-height:1.42!important;border:1px solid #bbb!important}
+  svg{background:#fff!important}
+  svg rect,svg circle,svg ellipse,svg polygon{fill:#fff!important;stroke:#888!important}
+  svg path,svg line,svg polyline{stroke:#666!important}
+  svg path[fill="none"]{fill:none!important}
+  svg marker path{fill:#666!important;stroke:#666!important}
+  svg text,svg tspan{fill:#111!important;stroke:none!important}
+  .grid2,.grid3{break-inside:avoid}
+  tr,.box,.qa,.ex,.prob,pre,figure{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="print-toolbar" role="toolbar" aria-label="인쇄 옵션">
+  <span><b>04 배열과 메모리</b> · 오류 검토 수정본</span>
+  <button type="button" onclick="window.print()" aria-label="잉크 절약 A4 인쇄 또는 PDF 저장">A4 잉크 절약 인쇄 / PDF 저장</button>
+</div>
+
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+  <div>
+    <div class="eyebrow">PART 1 · 선형 자료구조</div>
+    <div class="cover-rule"></div>
+    <div class="chno">04</div>
+    <h1>배열과 메모리</h1>
+    <div class="sub">
+      연속 할당 ‖ 행 우선 저장 ‖ 2차원의 1차원 매핑 ‖ 인덱스 설계 ‖ 캐시 친화 순회<br>
+      난이도 ★☆☆☆☆ · 4주차 · 100분 2차시 · PART 1의 첫 장
+    </div>
+    <div class="cover-goal">
+      <h3>이 장을 마치면 할 수 있는 것</h3>
+      <ul>
+        <li>배열 접근이 왜 O(1)인지 주소 계산식으로 설명할 수 있다</li>
+        <li><code>a[i][j]</code>가 메모리에서 몇 번째 칸인지 <code>i*C+j</code>로 구할 수 있다</li>
+        <li>2차원 배열을 1차원으로 직접 옮겨 쓸 수 있다</li>
+        <li>격자 문제의 8방향 탐색 틀과 경계 검사를 안전하게 작성할 수 있다</li>
+        <li>순회 순서를 바꾸는 것만으로 10배 이상 빨라지는 이유를 설명할 수 있다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+
+<!-- ============ 1. 왜 필요한가 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+  <p class="lead">배열은 가장 먼저 배우는 자료구조지만, 끝까지 쓰는 자료구조이기도 하다.</p>
+
+  <h3 class="sub">1.1 36장 전체의 바닥</h3>
+  <p>앞으로 만들 자료구조들이 실제로 무엇 위에 세워지는지 미리 보자.</p>
+  <table>
+    <thead><tr><th style="width:26%">자료구조</th><th class="c" style="width:12%">학습 장</th><th>속을 들여다보면</th></tr></thead>
+    <tbody>
+      <tr><td class="k">동적 배열 Vec</td><td class="c">05</td><td>동적 할당한 배열 + 현재 길이 + 용량</td></tr>
+      <tr><td class="k">스택 · 큐 · 덱</td><td class="c">06–08</td><td>배열 + 끝 위치 한두 개</td></tr>
+      <tr><td class="k">연결 리스트</td><td class="c">09–10</td><td>배열로 만든 노드 풀</td></tr>
+      <tr><td class="k">이진 힙</td><td class="c">18</td><td><strong>완전히 배열 하나</strong> — 부모는 <code class="inl">i/2</code>, 자식은 <code class="inl">2i</code>, <code class="inl">2i+1</code></td></tr>
+      <tr><td class="k">세그먼트 트리</td><td class="c">27</td><td>크기 4N짜리 배열 하나</td></tr>
+      <tr><td class="k">트라이</td><td class="c">32</td><td>배열로 만든 노드 풀 + 자식 배열</td></tr>
+    </tbody>
+  </table>
+  <p>힙이나 세그먼트 트리처럼 “트리”라고 부르는 자료구조도 배열로 효율적으로 구현할 수 있다. <em class="hl">배열의 주소 계산을 제대로 이해하는 것이 이후 여러 장의 전제</em>가 되는 이유다.</p>
+
+  <h3 class="sub">1.2 같은 계산, 순회 순서에 따라 큰 차이</h3>
+  <p>4000 × 4000 격자를 <code class="inl">a[i][j] = (i+j) &amp; 1023</code>으로 초기화하고 모든 칸을 더한다고 하자. 합계는 <code class="inl">long long s = 0</code>으로 계산한다. 두 코드는 안쪽·바깥쪽 루프의 순서만 다르다.</p>
+  <div class="grid2">
+    <div>
+<pre><span class="cm">/* 바깥이 i, 안쪽이 j */</span>
+<span class="kw">for</span> (<span class="kw">int</span> i=0; i&lt;R; i++)
+  <span class="kw">for</span> (<span class="kw">int</span> j=0; j&lt;C; j++)
+    s += a[i][j];</pre>
+    </div>
+    <div>
+<pre><span class="cm">/* 바깥이 j, 안쪽이 i */</span>
+<span class="kw">for</span> (<span class="kw">int</span> j=0; j&lt;C; j++)
+  <span class="kw">for</span> (<span class="kw">int</span> i=0; i&lt;R; i++)
+    s += a[i][j];</pre>
+    </div>
+  </div>
+<pre class="out"><span class="cm">측정 예시 (4000 × 4000, gcc -std=c11 -O2, 환경에 따라 다름)</span>
+행 우선 순회 a[i][j] :    6.8 ms      합 8187829248
+열 우선 순회 a[i][j] :   96.7 ms      합 8187829248
+                                      <span class="lbl">-> 약 14배 느림</span></pre>
+  <div class="box warm">
+    <h4>복잡도는 둘 다 O(R×C)다</h4>
+    <p style="margin-bottom:0;">1,600만 칸을 정확히 한 번씩 더하는 것도 같고, 합도 똑같이 나온다. 제시한 측정 예에서는 <strong>약 14배</strong> 차이가 났다(모든 환경에서 같은 배율이 나오지는 않는다). 02장 2.5절에서 말한 <em class="hl">“빅오가 재지 않는 것”</em>의 가장 대표적인 사례이고, 이유는 2.4절에서 밝힌다.</p>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q. 그럼 배열은 그냥 외워서 쓰면 되는 거 아닌가요?</div>
+    <div>문법은 이미 안다. 이 장에서 배우는 것은 문법이 아니라 <strong>배열이 메모리에서 어떻게 놓이는가</strong>다. 그것을 알아야 ① 2차원을 1차원으로 바꿔 쓸 수 있고 ② 순회 순서를 고를 수 있고 ③ 18장 힙에서 <code class="inl">2i</code>, <code class="inl">2i+1</code>이 왜 자식인지 납득할 수 있다.</div>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.1~2.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+
+  <h3 class="sub">2.1 배열은 연속된 한 줄이다</h3>
+  <p>배열의 유일하면서도 가장 중요한 성질은 <strong>원소들이 메모리에 빈틈없이 붙어 있다</strong>는 것이다. 여기서 모든 성질이 따라 나온다.</p>
+  <figure>
+    <svg viewBox="0 0 660 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="배열의 주소 계산">
+      <text x="14" y="18" font-size="10" fill="#5b6876">메모리 주소 →</text>
+      <g font-size="9.5" text-anchor="middle">
+        <rect x="60" y="26" width="76" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="98" y="46" fill="#0f2a4a" font-weight="700">a[0]</text>
+        <rect x="136" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5"/><text x="174" y="46">a[1]</text>
+        <rect x="212" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5"/><text x="250" y="46">a[2]</text>
+        <rect x="288" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5"/><text x="326" y="46">a[3]</text>
+        <rect x="364" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5"/><text x="402" y="46">a[4]</text>
+        <rect x="440" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5"/><text x="478" y="46">a[5]</text>
+        <rect x="516" y="26" width="76" height="30" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/><text x="554" y="46" fill="#9aa8b5">…</text>
+      </g>
+      <g font-size="8.5" fill="#5b6876" text-anchor="middle">
+        <text x="98" y="68">기준 주소</text>
+        <text x="174" y="68">+4</text><text x="250" y="68">+8</text><text x="326" y="68">+12</text>
+        <text x="402" y="68">+16</text><text x="478" y="68">+20</text>
+      </g>
+      <rect x="60" y="80" width="532" height="36" rx="4" fill="#0f2a4a"/>
+      <text x="326" y="96" font-size="10.5" fill="#9ee3dc" text-anchor="middle" font-weight="700">a[i]의 주소 = 기준 주소 + i × (원소 한 개의 크기)</text>
+      <text x="326" y="110" font-size="9.5" fill="#fff" text-anchor="middle">곱셈 한 번 · 덧셈 한 번으로 끝나므로 i가 아무리 커도 같은 시간 → O(1)</text>
+    </svg>
+    <figcaption>그림 4-1. 배열 접근이 O(1)인 이유 — 찾아가는 것이 아니라 계산하는 것이다</figcaption>
+  </figure>
+  <p>연결 리스트(09장)는 이 계산을 할 수 없다. 노드가 흩어져 있어 <strong>주소를 계산할 방법이 없고</strong>, 처음부터 화살표를 i번 따라가는 수밖에 없다. 그래서 <code class="inl">get(i)</code>가 O(N)이 된다.</p>
+
+  <h3 class="sub">2.2 2차원 배열은 사실 1차원이다</h3>
+  <p>C의 2차원 배열은 “표”처럼 보이지만, 메모리에는 <strong>한 줄로 쭉</strong> 놓인다. 1행을 다 놓고 그다음에 2행을 놓는 방식이며 이것을 <strong>행 우선(row-major)</strong> 저장이라고 한다. <code class="inl">int g[3][4]</code>에 0부터 11까지 넣고 메모리 순서대로 읽어 보면 이렇다.</p>
+<pre class="out"><span class="lbl">$ ./addr</span>
+2차원 배열 g[3][4]를 메모리 순서대로 읽으면:
+  0 1 2 3 4 5 6 7 8 9 10 11
+
+각 칸이 기준점에서 몇 번째 int인가:
+  g[0][0]= 0   g[0][1]= 1   g[0][2]= 2   g[0][3]= 3
+  g[1][0]= 4   g[1][1]= 5   g[1][2]= 6   g[1][3]= 7
+  g[2][0]= 8   g[2][1]= 9   g[2][2]=10   g[2][3]=11
+
+i*C+j 공식과 비교: 모두 일치
+이웃 칸 주소 차이 = 4 바이트,  한 행의 크기 = 16 바이트</pre>
+  <div class="box teal">
+    <h4>외워야 할 한 줄</h4>
+    <p style="text-align:center;font-size:12pt;margin:1mm 0 2mm 0;"><strong>g[i][j] 는 선형 위치 <span style="color:var(--teal);">i × C + j</span> 에 있다</strong> &nbsp;<span style="font-size:9pt;color:var(--muted);">(C = 열의 개수)</span></p>
+    <p style="margin-bottom:0;">행 번호 i에 <strong>한 행의 길이 C</strong>를 곱해 i행의 시작을 찾고, 거기서 j칸 더 간다. <em class="hl">C는 행의 개수가 아니라 열의 개수다</em> — 이것을 뒤집는 실수가 가장 흔하다.</p>
+  </div>
+  <p>연속된 같은 원소형을 쓰면 2차원 배열과 <code class="inl">i*C+j</code>로 매핑한 1차원 배열의 <strong>원소 배치는 같다.</strong> 성능은 대체로 비슷하지만 컴파일러 최적화·정렬·접근 패턴에 따라 차이가 날 수 있다.</p>
+<pre class="out"><span class="lbl">측정 예시 (4000 × 4000 전체 더하기, 환경에 따라 다름)</span>
+2차원 배열  g2[i][j]     :  5.8 ms
+1차원 배열  g1[i*C+j]    :  5.8 ms      <span class="lbl">차이 없음</span></pre>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.3~2.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">2.3 인덱스 설계 — 0부터인가 1부터인가</h3>
+  <p>C의 배열은 0부터 시작한다. 그런데 일부러 1부터 쓰는 경우가 있다. 어느 쪽이 옳은 것이 아니라 <strong>단원마다 편한 쪽을 쓴다.</strong></p>
+  <table>
+    <thead><tr><th style="width:16%">방식</th><th style="width:30%">쓰는 곳</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td class="k">0-인덱스</td><td>대부분의 경우 (기본)</td><td>C의 기본이고 <code class="inl">i*C+j</code> 계산이 깔끔하다</td></tr>
+      <tr><td class="k">1-인덱스</td><td>펜윅 트리(26장)의 전형적 구현, 일부 세그먼트 트리(27장)·이진 힙(18장)</td><td>1부터 세는 이진 힙은 부모·자식 인덱스를 <code class="inl">i/2</code>, <code class="inl">2i</code>, <code class="inl">2i+1</code>로 계산한다. 단, 이 자료구조들 모두 0-인덱스 구현도 가능하고 공식만 달라진다</td></tr>
+      <tr><td class="k">입력 그대로</td><td>문제가 1번부터 번호를 줄 때</td><td>번호 변환을 안 해도 되어 실수가 줄어든다. 배열을 한 칸 크게 잡으면 된다</td></tr>
+    </tbody>
+  </table>
+  <div class="box">
+    <h4>여유 칸(패딩)을 두는 기법</h4>
+    <p>격자 문제에서 배열의 가로·세로를 각각 두 칸 크게 잡고, 실제 격자를 한 칸 안쪽에 놓아 테두리를 벽으로 채우면 일부 경계 검사를 줄일 수 있다. 단, 모든 이동이 할당된 배열 안에 머물도록 설계해야 하며 테두리와 실제 칸을 혼동하면 안 된다.</p>
+    <p style="margin-bottom:0;">다만 이 교재는 <em class="hl">기본적으로 명시적 경계 검사(3.2절)를 쓴다.</em> 패딩은 테두리 값이 문제의 의미와 섞여 혼동을 일으키기 쉬워, 익숙해진 뒤에 쓰는 편이 안전하다.</p>
+  </div>
+
+  <h3 class="sub">2.4 왜 행 우선 순회가 14배 빠른가</h3>
+  <p>일반적인 CPU는 인접한 데이터를 보통 <strong>64바이트 캐시 라인</strong> 단위로 읽는다(하드웨어에 따라 다름). <code class="inl">int</code>가 4바이트인 환경이라면 한 라인에 16개가 들어갈 수 있다. 연속 접근은 이 데이터를 재사용하기 쉽다.</p>
+  <figure>
+    <svg viewBox="0 0 660 164" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="행 우선과 열 우선 순회의 메모리 접근 차이">
+      <text x="14" y="16" font-size="10.5" font-weight="700" fill="#0d7c74">행 우선 a[i][j] — 가져온 덩어리를 전부 쓴다</text>
+      <g>
+        <rect x="14" y="24" width="256" height="24" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.5"/>
+        <text x="142" y="40" font-size="9" fill="#0f2a4a" text-anchor="middle">한 번 가져온 64바이트 (int 16개)</text>
+        <rect x="278" y="24" width="256" height="24" fill="#f4f7fa" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+        <text x="406" y="40" font-size="9" fill="#5b6876" text-anchor="middle">다음 덩어리</text>
+      </g>
+      <text x="14" y="62" font-size="8.8" fill="#0d7c74">↑ 16칸을 연달아 쓰고 나서 다음 덩어리를 가져온다 → 가져오는 횟수 1/16</text>
+
+      <text x="14" y="92" font-size="10.5" font-weight="700" fill="#b4531a">열 우선 — 같은 열의 다른 행으로 건너뛴다</text>
+      <g>
+        <rect x="14" y="100" width="100" height="24" fill="#fff6ec" stroke="#b4531a" stroke-width="1.3"/>
+        <rect x="14" y="100" width="12" height="24" fill="#b4531a"/>
+        <rect x="122" y="100" width="100" height="24" fill="#fff6ec" stroke="#b4531a" stroke-width="1.3"/>
+        <rect x="122" y="100" width="12" height="24" fill="#b4531a"/>
+        <rect x="230" y="100" width="100" height="24" fill="#fff6ec" stroke="#b4531a" stroke-width="1.3"/>
+        <rect x="230" y="100" width="12" height="24" fill="#b4531a"/>
+        <rect x="338" y="100" width="100" height="24" fill="#fff6ec" stroke="#b4531a" stroke-width="1.3"/>
+        <rect x="338" y="100" width="12" height="24" fill="#b4531a"/>
+        <text x="460" y="116" font-size="9" fill="#b4531a">…</text>
+      </g>
+      <text x="14" y="138" font-size="8.8" fill="#b4531a">↑ 연속하지 않은 주소를 차례로 접근 → 캐시 효율이 낮아질 수 있다</text>
+      <rect x="480" y="92" width="166" height="44" rx="4" fill="#0f2a4a"/>
+      <text x="563" y="110" font-size="10" fill="#9ee3dc" text-anchor="middle" font-weight="700">같은 1,600만 번 접근</text>
+      <text x="563" y="126" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">캐시 미스가 늘 수 있음</text>
+    </svg>
+    <figcaption>그림 4-2. 접근 횟수는 같지만 “메모리에서 실제로 퍼 오는 횟수”가 다르다</figcaption>
+  </figure>
+  <p>행 우선으로 <code class="inl">a[i][0], a[i][1], a[i][2]…</code>를 읽으면 이미 가져온 덩어리 안에 다음 값들이 들어 있어 거의 공짜다. 반면 열 우선으로 <code class="inl">a[0][j], a[1][j], a[2][j]…</code>를 읽으면 <strong>한 행 전체(4000 × 4바이트 = 16KB)를 건너뛰어</strong> 캐시 미스와 주소 변환 부담이 커질 수 있다. 이미 캐시에 있는 자료를 재사용할 가능성도 있으므로, 메모리 접근 횟수가 반드시 16배가 되는 것은 아니다.</p>
+  <div class="box teal">
+    <h4>규칙 한 줄</h4>
+    <p style="margin-bottom:0;"><em class="hl">2차원 배열은 안쪽 루프가 뒤 첨자(j)가 되게 쓴다.</em> <code class="inl">for i → for j → a[i][j]</code>가 맞는 순서다. 대형 격자에서 유리한 경우가 많다. 정확한 배율은 CPU·데이터 크기·접근 패턴에 따라 달라진다.</p>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.1~3.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현</h2>
+  <p class="lead">필수 구현은 두 개다 — 2D↔1D 매핑 함수와 경계 안전 접근.</p>
+
+  <h3 class="sub">3.1 2D ↔ 1D 매핑</h3>
+  <p>여러 크기의 격자를 동일한 저장 공간에서 처리하거나 간단한 포인터 인자로 넘기려면 1차원 매핑이 편리하다. 2차원 배열도 가변 길이 배열(VLA)을 지원하는 C11 컴파일러에서는 열 크기를 실행 시 전달할 수 있다.</p>
+<pre><span class="cm">/* grid.c — 2차원을 1차원 배열 위에 올린다 */</span>
+#include &lt;stdio.h&gt;
+
+#define MAXR 2000
+#define MAXC 2000
+<span class="kw">static</span> <span class="kw">int</span> g[MAXR * MAXC];     <span class="cm">/* 400만 칸 = 약 15 MB, 전역 */</span>
+<span class="kw">static</span> <span class="kw">int</span> R, C;                <span class="cm">/* 실제로 쓰는 행·열 수 */</span>
+<span class="kw">static</span> <span class="kw">inline</span> <span class="kw">int</span> <span class="fn">idx</span>(<span class="kw">int</span> i, <span class="kw">int</span> j){
+    <span class="kw">return</span> i * C + j;            <span class="cm">/* C는 열의 개수 */</span>
+}
+<span class="kw">static</span> <span class="kw">inline</span> <span class="kw">int</span> <span class="fn">at</span>(<span class="kw">int</span> i, <span class="kw">int</span> j){
+    <span class="kw">return</span> g[<span class="fn">idx</span>(i, j)];
+}
+<span class="kw">static</span> <span class="kw">inline</span> <span class="kw">void</span> <span class="fn">set</span>(<span class="kw">int</span> i, <span class="kw">int</span> j, <span class="kw">int</span> v){
+    g[<span class="fn">idx</span>(i, j)] = v;
+}</pre>
+  <p style="font-size:9pt;">전제: <code class="inl">1 ≤ R ≤ MAXR</code>, <code class="inl">1 ≤ C ≤ MAXC</code>를 확인하고, 접근 전에 <code class="inl">in_range(i,j)</code>로 경계를 검사한다. 이 함수들 자체에는 검사 코드가 없다.</p>
+  <div class="box">
+    <h4><code class="inl">inline</code>을 붙이는 이유</h4>
+    <p style="margin-bottom:0;"><code class="inl">inline</code>은 함수 본문을 호출 위치에 펼치는 최적화를 권하는 힌트일 뿐, 반드시 인라인으로 처리된다는 보장은 없다. 1,600만 번 부르는 함수라면 의미가 있지만 <code class="inl">-O2</code>가 알아서 해 주는 경우가 많아, <em class="hl">안 붙여도 큰일은 안 난다.</em></p>
+  </div>
+
+  <h4 class="mini">왜 2차원 배열 대신 이 방식을 쓰는가</h4>
+  <table>
+    <thead><tr><th style="width:24%">상황</th><th>어느 쪽</th></tr></thead>
+    <tbody>
+      <tr><td class="k">크기가 고정</td><td><code class="inl">int g[2000][2000]</code> — 읽기 쉬운 쪽이 낫다</td></tr>
+      <tr><td class="k">함수에 넘겨야 함</td><td><strong>1차원 매핑</strong>은 포인터와 열 수만 넘기면 편하다. 다만 VLA 지원 환경에서는 <code class="inl">void f(int r,int c,int a[r][c])</code>도 가능하다</td></tr>
+      <tr><td class="k">차원이 3개 이상</td><td><strong>1차원도 유용하다.</strong> <code class="inl">(i*C + j)*D + k</code>처럼 한 줄로 확장된다</td></tr>
+      <tr><td class="k">좌표를 하나의 수로</td><td><strong>1차원.</strong> 30장 BFS에서 (i, j)를 <code class="inl">i*C+j</code> 하나로 큐에 넣는다</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">3.2 경계 안전 접근</h3>
+  <p>배열 범위를 벗어난 접근은 C에서 <strong>정의되지 않은 동작</strong>이며, 엉뚱한 값·비정상 종료 등 여러 증상이 나타날 수 있다. 따라서 검사 함수를 따로 둔다.</p>
+<pre><span class="kw">static</span> <span class="kw">inline</span> <span class="kw">int</span> <span class="fn">in_range</span>(<span class="kw">int</span> i, <span class="kw">int</span> j){
+    <span class="kw">return</span> 0 &lt;= i &amp;&amp; i &lt; R &amp;&amp; 0 &lt;= j &amp;&amp; j &lt; C;
+}</pre>
+  <p style="font-size:9pt;"><strong>주의.</strong> <code class="inl">i &lt; R</code>만 검사하면 <code class="inl">i=-1</code>을 막을 수 없다. 네 조건을 모두 검사하지 않으면 범위 밖 접근으로 정의되지 않은 동작이 발생할 수 있다.</p>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.3~3.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.3 격자 8방향 탐색 틀</h3>
+  <p>격자 문제의 절반은 “어떤 칸의 이웃을 살펴보라”는 형태다. 방향을 배열로 적어 두면 <code class="inl">if</code>문 여덟 개가 루프 하나로 줄어든다.</p>
+<pre><span class="cm">/* 8방향 — 위부터 시계 방향 */</span>
+<span class="kw">static</span> <span class="kw">const</span> <span class="kw">int</span> dy[8] = {-1,-1, 0, 1, 1, 1, 0,-1};
+<span class="kw">static</span> <span class="kw">const</span> <span class="kw">int</span> dx[8] = { 0, 1, 1, 1, 0,-1,-1,-1};
+
+<span class="cm">/* (i, j)의 이웃 중 값이 1인 칸을 센다 */</span>
+<span class="kw">static</span> <span class="kw">int</span> <span class="fn">count_neighbor</span>(<span class="kw">int</span> i, <span class="kw">int</span> j){
+    <span class="kw">int</span> cnt = 0;
+    <span class="kw">for</span> (<span class="kw">int</span> d = 0; d &lt; 8; d++) {
+        <span class="kw">int</span> ni = i + dy[d], nj = j + dx[d];
+        <span class="kw">if</span> (!<span class="fn">in_range</span>(ni, nj)) <span class="kw">continue</span>;   <span class="cm">/* 경계 밖은 건너뛴다 */</span>
+        <span class="kw">if</span> (<span class="fn">at</span>(ni, nj) == 1) cnt++;
+    }
+    <span class="kw">return</span> cnt;
+}</pre>
+  <div class="box teal">
+    <h4>4방향만 필요하면</h4>
+    <p style="margin-bottom:0;">두 배열의 <strong>앞 네 개만 쓰도록 짝수 인덱스를 고르는</strong> 방식은 헷갈린다. 4방향용을 따로 적는 편이 안전하다 — <code class="inl">dy[4] = {-1, 0, 1, 0}</code>, <code class="inl">dx[4] = {0, 1, 0, -1}</code> (위·오른쪽·아래·왼쪽). <em class="hl">두 배열의 d번째끼리 짝이 맞는지</em>만 확인하면 된다.</p>
+  </div>
+  <div class="box warm">
+    <h4>dy와 dx의 순서를 혼동하지 않기</h4>
+    <p style="margin-bottom:0;">이 교재는 <strong>첫 첨자 i를 행(세로), 둘째 j를 열(가로)</strong>로 쓴다. 그래서 i에 더하는 것이 <code class="inl">dy</code>, j에 더하는 것이 <code class="inl">dx</code>다. 문제에 따라 (x, y)로 주어지면 <em class="hl">읽자마자 (행, 열)로 바꿔 적어 두고</em> 그 뒤로는 한 가지 표기만 쓴다. 섞어 쓰면 반드시 틀린다.</p>
+  </div>
+
+  <h3 class="sub">3.4 실측 정리</h3>
+  <table>
+    <thead><tr><th style="width:34%">실험 (4000 × 4000)</th><th class="c" style="width:18%">시간</th><th>결론</th></tr></thead>
+    <tbody>
+      <tr><td class="k">행 우선 <code class="inl">a[i][j]</code></td><td class="c ok">6.8 ms</td><td rowspan="2">같은 복잡도, 같은 결과지만 측정 예시에서는 약 14배. 배율은 환경에 따라 다르다</td></tr>
+      <tr><td class="k">열 우선 <code class="inl">a[i][j]</code> (i 안쪽)</td><td class="c no">96.7 ms</td></tr>
+      <tr><td class="k">2차원 <code class="inl">g2[i][j]</code></td><td class="c">5.8 ms</td><td rowspan="2">같은 배치이므로 성능도 대체로 비슷하다. 항상 정확히 같은 시간은 아니다</td></tr>
+      <tr><td class="k">1차원 <code class="inl">g1[i*C+j]</code></td><td class="c">5.8 ms</td></tr>
+    </tbody>
+  </table>
+  <div class="qa">
+    <div class="q">Q. 열 우선으로 읽어야만 하는 문제면 어떻게 하나요?</div>
+    <div>두 가지 방법이 있다. ① <strong>배열을 처음부터 돌려서(전치해서) 담는다</strong> — 열 수에 맞는 전치 배열 <code class="inl">t[C][R]</code>을 확보해 <code class="inl">t[j][i]</code>에 넣으면 열 방향 연산을 행 방향 접근으로 바꿀 수 있다. 전치 비용과 추가 메모리도 계산해야 한다. ② 그냥 둔다 — 느린 경우에도 총 시간이 제한 안에 들면 그대로 사용해도 된다. <em class="hl">먼저 02장의 예산 계산을 해 보고 결정한다.</em></div>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석</h2>
+
+  <h3 class="sub">4.1 배열 연산의 비용</h3>
+  <table>
+    <thead><tr><th style="width:28%">연산</th><th class="c" style="width:16%">복잡도</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="k">a[i] 읽기 · 쓰기</td><td class="c ok">O(1)</td><td>주소 계산 한 번. i가 0이든 100만이든 같다</td></tr>
+      <tr><td class="k">전체 순회</td><td class="c">O(N)</td><td>2차원이면 O(R × C)</td></tr>
+      <tr><td class="k">값으로 찾기</td><td class="c">O(N)</td><td>정렬되어 있고 임의 접근이 가능하면 이분 탐색 O(log N) — 12장</td></tr>
+      <tr><td class="k">중간에 삽입 · 삭제</td><td class="c no">O(N)</td><td>뒤를 전부 밀거나 당겨야 한다 — 01장 연습 04</td></tr>
+      <tr><td class="k">맨 뒤에 추가</td><td class="c ok">O(1)*</td><td>빈 용량이 남아 있을 때 O(1). 용량을 늘리는 동적 배열은 분할 상환 O(1) — 05장 Vec</td></tr>
+    </tbody>
+  </table>
+  <p>배열의 강점은 <strong>O(1) 임의 접근</strong> 하나이고, 약점은 <strong>중간 조작이 O(N)</strong>이라는 것이다. 이후 배우는 여러 자료구조는 이런 장단점을 다르게 조합한다. * 맨 뒤 추가는 용량이 남아 있다는 조건이 필요하다.</p>
+
+  <h3 class="sub">4.2 공간 — 2차원 배열의 크기 감각</h3>
+  <p>2차원도 원소 수에 원소 하나의 바이트 수를 곱해 계산한다. 아래는 <code class="inl">int=4바이트</code>, <code class="inl">long long=8바이트</code>, 1MiB=1,048,576바이트인 일반적인 채점 환경을 가정한다. 메모리 제한 256MB 기준이다.</p>
+  <table>
+    <thead><tr><th style="width:30%">선언</th><th class="c" style="width:18%">칸 수</th><th class="c" style="width:18%">메모리</th><th class="c" style="width:14%">판정</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inl">int g[1000][1000];</code></td><td class="c">100만</td><td class="c">약 3.8 MB</td><td class="c ok">여유</td><td>가장 흔한 크기</td></tr>
+      <tr><td><code class="inl">int g[2000][2000];</code></td><td class="c">400만</td><td class="c">약 15 MB</td><td class="c ok">여유</td><td></td></tr>
+      <tr><td><code class="inl">int g[5000][5000];</code></td><td class="c">2,500만</td><td class="c">약 95 MB</td><td class="c mid">확인</td><td>약 95MiB 사용. 다른 배열도 사용할 여지가 있지만 전체 합산 필요</td></tr>
+      <tr><td><code class="inl">int g[10000][10000];</code></td><td class="c">1억</td><td class="c no">약 381 MB</td><td class="c no">불가</td><td><code class="inl">char</code>로 바꾸면 95 MB</td></tr>
+      <tr><td><code class="inl">long long g[3000][3000];</code></td><td class="c">900만</td><td class="c">약 69 MB</td><td class="c mid">주의</td><td>int면 34 MB</td></tr>
+    </tbody>
+  </table>
+  <div class="box">
+    <h4>크기를 줄이는 두 가지 수단</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>자료형 낮추기</strong> — 값이 0~255면 <code class="inl">unsigned char</code>(통상 1바이트), 0/1이면 <code class="inl">unsigned char</code>를 사용할 수 있다. 일반적인 4바이트 int 대비 1/4이다. 단순 <code class="inl">char</code>는 부호 유무가 환경에 따라 다르다</li>
+      <li><strong>줄 수 줄이기</strong> — <code class="inl">dp[i]</code>를 구하는 데 <code class="inl">dp[i-1]</code>만 필요하면 <code class="inl">dp[2][C]</code>로 충분하다. 02장 예제 4에서 본 슬라이딩 배열</li>
+    </ul>
+  </div>
+
+  <h3 class="sub">4.3 선언 위치 다시 확인</h3>
+  <p>03장의 규칙이 그대로 적용된다. <code class="inl">int g[2000][2000]</code>은 15MB이므로 <strong>스택 한도가 8MiB인 환경에서는 실패할 수 있다.</strong> 2차원 배열은 금방 커지므로 <em class="hl">큰 격자 배열은 전역·정적 영역 또는 동적 할당을 우선 고려</em>한다고 외워 두는 편이 낫다.</p>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제</h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 1 <span class="tag">선형 위치 구하기</span></div>
+    <div class="ex-b">
+      <p><code class="inl">int g[5][7]</code>이 있다. (1) <code class="inl">g[3][4]</code>는 기준점에서 몇 번째 칸인가? (2) 선형 위치 25번 칸은 <code class="inl">g[?][?]</code>인가? (3) <code class="inl">g[3][4]</code>와 <code class="inl">g[4][4]</code>의 주소 차이는 몇 바이트인가?</p>
+      <div class="sol">
+        <p><b>풀이.</b> 열의 개수 C = 7이다.</p>
+        <ul style="margin-bottom:2mm;">
+          <li>(1) <code class="inl">i*C + j</code> = 3 × 7 + 4 = <strong>25번</strong></li>
+          <li>(2) 거꾸로 간다. <strong>i = 25 / 7 = 3</strong>(몫), <strong>j = 25 % 7 = 4</strong>(나머지) → <code class="inl">g[3][4]</code>. (1)과 짝이 맞는다</li>
+          <li>(3) 행이 하나 다르므로 <strong>한 행 전체</strong>만큼 떨어져 있다. 7 × 4바이트 = <strong>28바이트</strong></li>
+        </ul>
+        <div class="box teal" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>1D → 2D 역변환 공식.</b> 선형 위치 k에 대해 <em class="hl">i = k / C, j = k % C</em>. 30장 BFS에서 큐에 <code class="inl">i*C+j</code> 하나만 넣고 꺼낼 때 이 공식으로 되돌린다. (1)과 (2)를 한 쌍으로 외운다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 2 <span class="tag">순회 순서 고르기</span></div>
+    <div class="ex-b">
+      <p>다음 두 코드는 같은 일을 한다. N = 4000일 때 어느 쪽이 빠르며, 몇 배쯤 차이가 나겠는가?</p>
+<pre>(가) <span class="kw">for</span>(i=0;i&lt;N;i++) <span class="kw">for</span>(j=0;j&lt;N;j++) b[i][j] = a[i][j] * 2;
+(나) <span class="kw">for</span>(j=0;j&lt;N;j++) <span class="kw">for</span>(i=0;i&lt;N;i++) b[i][j] = a[i][j] * 2;</pre>
+      <div class="sol">
+        <p><b>풀이.</b> 보통 <strong>(가)가 빠르다.</strong> 안쪽 루프가 뒤 첨자 j이므로 <code class="inl">a[i][0], a[i][1], …</code>을 연속으로 읽는다. 가져온 64바이트 덩어리를 16칸 모두 쓰고 다음으로 넘어간다.</p>
+        <p style="margin-bottom:2mm;">(나)는 <code class="inl">a[0][j], a[1][j], …</code>로 한 행(16KB)씩 건너뛰며 접근해 매번 새 덩어리를 퍼 와야 한다. 교재 1.2절의 측정 예에서는 <strong>약 14배</strong> 차이가 났지만, 여기서는 읽기·쓰기를 동시에 하므로 배율을 그대로 적용할 수 없다.</p>
+        <p style="margin-bottom:0;"><b>주의.</b> 여기서는 <code class="inl">a</code>와 <code class="inl">b</code> <strong>두 배열</strong>을 건드리므로 실제 배율은 1.2절보다 달라질 수 있다. 정확한 값보다 <em class="hl">“(가)가 크게 빠르다”를 즉시 판단하는 것</em>이 이 예제의 목적이다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 3 <span class="tag">경계 밖 접근 추적</span></div>
+    <div class="ex-b">
+      <p><code class="inl">R = 3, C = 4</code>인 격자를 1차원 배열 <code class="inl">g[12]</code>에 담았다. <code class="inl">in_range</code> 검사 없이 <code class="inl">g[idx(1, -1)]</code>을 읽으면 실제로 어느 칸을 읽게 되는가? 왜 이것이 위험한가?</p>
+      <div class="sol">
+        <p><b>풀이.</b> <code class="inl">idx(1, -1)</code> = 1 × 4 + (−1) = <strong>3</strong>. 즉 <code class="inl">g[3]</code>을 읽는다. 그런데 <code class="inl">g[3]</code>은 선형 위치 3이므로 <strong><code class="inl">g[0][3]</code> — 0행의 마지막 칸</strong>이다.</p>
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:26%">의도</th><th class="c" style="width:26%">실제로 읽은 칸</th><th>무슨 일이 생기나</th></tr></thead>
+          <tbody>
+            <tr><td class="c">1행의 왼쪽 바깥<br>(없는 칸)</td><td class="c no">g[0][3]<br>(0행 오른쪽 끝)</td><td>배열 범위 <strong>안</strong>이므로 죽지도 않는다. 엉뚱한 칸의 값을 이웃으로 세고 조용히 틀린 답을 낸다</td></tr>
+          </tbody>
+        </table>
+        <div class="box warm" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>이것이 1차원 매핑의 함정이다.</b> 2차원 배열 <code class="inl">g[1][-1]</code>은 행 경계를 벗어난 접근으로 C에서 정의되지 않은 동작이다(반드시 비정상 종료하는 것은 아니다). 하지만 1차원 배열로 <code class="inl">i*C+j</code>를 계산하면, 이 사례에서는 선형 인덱스 3이 유효하므로 <em class="hl">윗줄의 오른쪽 끝을 정상적인 배열 인덱스로 잘못 읽는</em> 논리 오류가 발생한다. 그래서 <strong><code class="inl">in_range</code>를 먼저 부르는 것이 선택이 아니라 필수</strong>다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 4 <span class="tag">메모리 설계</span></div>
+    <div class="ex-b">
+      <p>R, C ≤ 3,000인 격자를 받아 각 칸의 값(0~100)과, 각 칸까지의 최대 점수(최대 10<sup>12</sup>)를 저장해야 한다. 메모리 제한은 256MB다. 어떻게 선언하겠는가?</p>
+      <div class="sol">
+        <p><b>풀이.</b> 두 배열의 자료형을 값의 범위에 맞춰 따로 정한다.</p>
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th style="width:26%">배열</th><th class="c" style="width:16%">필요한 범위</th><th class="c" style="width:16%">고른 자료형</th><th class="c" style="width:14%">메모리</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td class="k">칸의 값</td><td class="c">0 ~ 100</td><td class="c tt">unsigned char</td><td class="c">약 8.6 MiB</td><td>127까지 담기므로 충분</td></tr>
+            <tr><td class="k">최대 점수</td><td class="c">~10<sup>12</sup></td><td class="c tt">long long</td><td class="c">약 69 MB</td><td>int는 21억까지라 불가</td></tr>
+          </tbody>
+        </table>
+<pre style="margin-bottom:2mm;"><span class="kw">static</span> <span class="kw">unsigned</span> <span class="kw">char</span> val[3000][3000];   <span class="cm">/* 약 8.6 MB */</span>
+<span class="kw">static</span> <span class="kw">long</span> <span class="kw">long</span> dp [3000][3000];   <span class="cm">/* 약 69 MB — 합계 약 78 MB */</span></pre>
+        <p style="margin-bottom:0;"><b>생각할 점.</b> 둘 다 <code class="inl">long long</code>으로 잡으면 138MB로 여전히 들어가긴 한다. 하지만 <em class="hl">여유를 남겨 두는 것이 안전하다.</em> 그리고 만약 dp도 한 줄씩만 필요하다면 <code class="inl">long long dp[2][3000]</code>으로 69MB가 48KB가 된다 — 설계 단계에서 한 번 더 생각할 값어치가 있다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">6</span>연습 문제</h2>
+  <p class="lead">01~06은 공책에, 07~10은 컴퓨터로 푼다. 제한 시간 50분.</p>
+
+  <div class="prob"><span class="pn">01</span><code class="inl">int g[6][9]</code>에 대해 답하라. (1) <code class="inl">g[4][7]</code>의 선형 위치는? (2) 선형 위치 38번은 <code class="inl">g[?][?]</code>인가? (3) <code class="inl">g[2][0]</code>과 <code class="inl">g[3][0]</code>의 주소 차이는 몇 바이트인가?</div>
+
+  <div class="prob"><span class="pn">02</span><code class="inl">i*C+j</code>에서 C가 <strong>열의 개수</strong>인 이유를 설명하라. 만약 행의 개수 R을 잘못 넣으면 <code class="inl">g[1][0]</code>이 어느 칸을 가리키게 되는지 <code class="inl">R=3, C=4</code>인 격자를 예로 들어 보여라.</div>
+
+  <div class="prob"><span class="pn">03</span>배열 접근이 O(1)인 이유를 주소 계산식으로 설명하라. 또 연결 리스트에서 <code class="inl">get(i)</code>가 왜 같은 방법을 쓸 수 없는지 한 문장으로 쓰라.</div>
+
+  <div class="prob"><span class="pn">04</span>4방향 탐색용 <code class="inl">dy[4]</code>, <code class="inl">dx[4]</code>를 작성하라(위·오른쪽·아래·왼쪽 순서). 그리고 <code class="inl">(2, 3)</code>에서 네 방향으로 한 칸씩 갔을 때의 좌표를 모두 쓰라.</div>
+
+  <div class="prob"><span class="pn">05</span><code class="inl">in_range</code>에서 <code class="inl">0 &lt;= i</code> 조건을 빠뜨렸다. <code class="inl">R=3, C=4</code>인 1차원 매핑 격자에서 <code class="inl">(0, 2)</code>의 위쪽 이웃을 검사 없이 읽으려 한다. <code class="inl">idx(-1,2)</code>는 몇이며, 왜 <strong>유효한 칸이 아니라 정의되지 않은 동작</strong>이 발생하는가? 계산을 쓰라. (참고: <code class="inl">idx(1,-1)=3</code>은 다른 종류의 오류다.)</div>
+
+  <div class="prob"><span class="pn">06</span>메모리 제한 256MB에서 다음을 판정하고 사용량을 계산하라. 불가능하면 대안을 제시할 것.<br>
+  ① <code class="inl">int a[4000][4000];</code> &nbsp; ② <code class="inl">long long b[4000][4000];</code> &nbsp; ③ <code class="inl">char c[15000][15000];</code> &nbsp; ④ 0/1만 담는 <code class="inl">int d[8000][8000];</code></div>
+
+  <div class="prob"><span class="pn">07</span>교재 1.2절의 실험을 재현하라. 4000 × 4000 배열에서 행 우선과 열 우선 순회 시간을 재고, 두 합이 같은지 확인하라. 그다음 크기를 1000 × 1000으로 줄여 다시 재고, <strong>배율이 달라지는지</strong> 관찰해 설명하라.</div>
+
+  <div class="prob"><span class="pn">08</span><code class="inl">idx()</code>, <code class="inl">at()</code>, <code class="inl">set()</code>, <code class="inl">in_range()</code> 네 함수를 직접 작성하라. 그다음 R × C 격자를 입력받아 <strong>테두리 칸의 값만 모두 더해</strong> 출력하는 프로그램을 만들라. (테두리 = 0행, R−1행, 0열, C−1열)</div>
+
+  <div class="prob"><span class="pn">09</span>R × C 격자와 값이 주어진다. 각 칸에 대해 <strong>8방향 이웃 중 자기보다 큰 값의 개수</strong>를 구해 같은 크기의 격자로 출력하라. 3.3절의 틀을 쓸 것. 입력 예와 정답 예를 스스로 하나 만들어 함께 제출하라.</div>
+
+  <div class="prob"><span class="pn">10</span>2차원 배열을 함수에 넘기는 두 방법을 비교하라. (1) 열 수가 컴파일 시 정해진 경우 <code class="inl">long long sum2d_fixed(int r, int a[][4])</code>를 작성하라. (2) 가변 길이 배열(VLA)을 지원하는 C11 컴파일러에서 <code class="inl">long long sum2d_vla(int r,int c,int a[r][c])</code>도 작성해 보라. (C11에서 VLA 지원은 선택적이다.) (3) 1차원 매핑 <code class="inl">long long sum1d(const int *a,int r,int c)</code>와 비교하고, 각 방식의 열 수 처리 차이를 세 줄로 정리하라.</div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">7</span>도전 문제</h2>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C1</span><strong>루프 순서를 바꿔 빠르게 만들기</strong><br>
+    R × C 격자가 주어지고, <strong>각 열의 합</strong>을 C개 출력해야 한다. R = C = 4,000이다. 합계는 <code class="inl">long long s[C]</code>처럼 64비트 정수로 저장한다고 가정한다.<br>
+    (1) 가장 단순한 방법은 <code class="inl">for j → for i → s[j] += a[i][j]</code>다. 이 코드가 느린 이유를 2.4절을 근거로 설명하라.<br>
+    (2) <strong>루프 순서만 바꿔서</strong> 같은 답을 얻을 수 있다. 어떻게 하면 되는가? 코드를 쓰고, 왜 이것이 빠른지 설명하라. (힌트 — 결과를 담는 <code class="inl">s[]</code>는 작아서 계속 캐시에 머문다.)<br>
+    (3) 두 방식의 복잡도를 각각 쓰라. 복잡도가 같은데도 차이가 나는 이유를 한 문장으로 정리하라.<br>
+    (4) <span style="color:var(--muted);">(선택)</span> 직접 측정해 배율을 보고하라.
+  </div>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C2</span><strong>3차원으로 확장하기</strong><br>
+    크기 A × B × C인 3차원 격자를 1차원 배열 하나에 담으려 한다.<br>
+    (1) <code class="inl">g[i][j][k]</code>의 선형 위치를 구하는 식을 세워라. 2차원의 <code class="inl">i*C+j</code>를 어떻게 확장했는지 과정을 보일 것.<br>
+    (2) 역변환 식(선형 위치 → i, j, k)도 세워라.<br>
+    (3) A = B = C = 300일 때 <code class="inl">int</code>로 선언하면 메모리가 얼마인가? 256MiB 한도에서 <strong>배열 하나만</strong> 저장할 수 있을 때 각 변의 최대 정수 길이는 대략 얼마인가? (int=4바이트, 다른 메모리는 무시)<br>
+    (4) 3차원에서 <strong>가장 빠른 순회 순서</strong>는 무엇인가? 2.4절의 논리를 그대로 적용해 답하라.<br>
+    (5) 6방향(상하좌우앞뒤) 탐색용 <code class="inl">dz</code>, <code class="inl">dy</code>, <code class="inl">dx</code> 배열을 작성하라.
+  </div>
+
+  <div class="box teal">
+    <h4>두 문항이 겨냥하는 것</h4>
+    <p style="margin-bottom:0;">C1은 <strong>“복잡도를 못 줄여도 상수는 줄일 수 있다”</strong>는 경험이다. 대회에서 시간 초과가 났을 때 알고리즘을 통째로 바꾸기 전에 해 볼 수 있는 가장 싼 시도다. C2는 매핑 공식이 <strong>차원과 무관하게 같은 원리로 확장된다</strong>는 것을 보여 준다. 30장 상태 공간 탐색에서 “위치 + 상태”를 한 배열에 담을 때 이 사고가 그대로 쓰인다.</p>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 8. 막히는 지점 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+
+  <table>
+    <thead><tr><th style="width:26%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">“<code class="inl">i*R+j</code>였나 <code class="inl">i*C+j</code>였나”</td><td>R을 넣으면 정사각형 격자에서는 우연히 맞고 직사각형에서만 틀려 발견이 늦다</td><td><strong>“행을 건너뛰려면 한 행의 길이를 곱한다”</strong>로 외운다. 한 행의 길이 = 열의 개수 C</td></tr>
+      <tr><td class="tt">“경계 검사는 <code class="inl">i&lt;R</code>만 하면 되지”</td><td>i가 −1이 되는 경우를 못 막는다. 예를 들어 <code class="inl">idx(-1,2)=-2</code>는 배열 전체를 벗어난다. 다른 방향에서는 유효한 다른 행으로 잘못 이동할 수도 있다</td><td>네 조건을 한 줄로 묶은 <code class="inl">in_range</code>를 만들고 항상 그대로 쓴다</td></tr>
+      <tr><td class="tt">“루프 순서는 상관없다”</td><td>복잡도는 같아도 캐시 효율 때문에 실행 시간에 큰 차이가 날 수 있다(측정 예시 약 14배)</td><td><code class="inl">for i → for j → a[i][j]</code>를 기본형으로 손에 익힌다</td></tr>
+      <tr><td class="tt">“2차원 배열이 더 빠르겠지”</td><td>원소 배치는 같으나 실제 실행 시간은 최적화 및 접근 방법에 따라 달라질 수 있다</td><td>읽기 쉬운 쪽을 고른다. 함수에 넘기거나 3차원이면 1차원 매핑</td></tr>
+      <tr><td class="tt">“dx, dy 순서는 적당히”</td><td>(행, 열)과 (x, y)를 섞으면 결과가 90도 돌아간 채 나온다</td><td><strong>i는 행, j는 열</strong>로 통일하고 문제의 좌표를 읽자마자 바꿔 적는다</td></tr>
+      <tr><td class="tt">“격자 배열도 함수 안에 선언”</td><td><code class="inl">int g[2000][2000]</code>은 약 15MiB라 일반적인 8MiB 스택 한도를 넘길 수 있다</td><td><strong>큰 격자 배열은 전역/정적 또는 동적 할당</strong>을 사용한다 (03장)</td></tr>
+      <tr><td class="tt">“메모리는 int로 넉넉히 잡자”</td><td>0/1만 담는데 int를 쓰면 4배를 낭비한다</td><td>값의 범위를 보고 <code class="inl">unsigned char</code>를 고려한다 — 예제 4</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">자가 점검</h3>
+  <div class="box">
+    <ul class="chk" style="margin-bottom:0;">
+      <li>배열 접근이 O(1)인 이유를 주소 계산식으로 설명할 수 있다</li>
+      <li><code class="inl">i*C+j</code>와 역변환 <code class="inl">i=k/C, j=k%C</code>를 둘 다 쓸 수 있다</li>
+      <li><code class="inl">idx</code>, <code class="inl">at</code>, <code class="inl">set</code>, <code class="inl">in_range</code> 네 함수를 백지에서 작성할 수 있다</li>
+      <li>4방향·8방향 <code class="inl">dy</code>, <code class="inl">dx</code> 배열을 보지 않고 쓸 수 있다</li>
+      <li>행 우선 순회가 빠른 이유를 캐시로 설명할 수 있다</li>
+      <li>2차원 배열의 메모리를 보고 제한 안에 드는지 판단할 수 있다</li>
+    </ul>
+  </div>
+
+  <div class="box teal">
+    <h4>다음 장 예고 — 05 동적 배열(Vec)</h4>
+    <p style="margin-bottom:0;">이 장의 배열은 크기가 고정이었다. 다음 장에서는 <strong>가득 차면 스스로 커지는 배열</strong>을 만든다. <code class="inl">malloc</code>과 <code class="inl">realloc</code>으로 용량을 2배씩 늘리는데, 그러고도 <code class="inl">push</code> 한 번의 비용이 평균 O(1)이 되는 이유(분할 상환)를 따져 본다. 여기서 만든 <code class="inl">Vec</code>을 06·07·08장의 스택·큐·덱이 그대로 감싸 쓴다. <em class="hl">PART 1의 진짜 출발점이다.</em></p>
+  </div>
+
+  <div class="foot"><span>04 배열과 메모리</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+</body>
+</html>

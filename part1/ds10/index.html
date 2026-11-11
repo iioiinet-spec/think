@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>10 이중 연결 리스트와 응용 — 중등정보올림피아드 자료구조</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:23pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  td.m{font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page{margin:0;width:auto;height:auto;min-height:0;padding:0;break-after:page;overflow:visible;}
+    .page:last-child{break-after:auto;}
+    .cover{height:266mm;padding:16mm 14mm;}
+    .foot{display:none;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4;}
+</style>
+<style>
+/* ===== 인쇄 전용 잉크 절약 스타일 (화면 디자인은 유지) ===== */
+@media screen {
+  .print-toolbar { position:fixed;right:18px;top:18px;z-index:9999;
+    background:#fff;border:2px solid #0d7c74;border-radius:10px;padding:11px 16px;
+    color:#0f2a4a;box-shadow:0 4px 16px #0002;font:700 14px sans-serif;cursor:pointer; }
+  .print-toolbar:hover{background:#e8f5f3}
+}
+@media print {
+  @page{size:A4;margin:0}
+  html,body { margin:0!important;padding:0!important;background:#fff!important;
+     -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;
+     color:#111!important;font-size:10.1pt!important;line-height:1.47!important; }
+  .print-toolbar {display:none!important}
+  .page {box-sizing:border-box!important;width:210mm!important;height:297mm!important;min-height:297mm!important;
+    max-height:297mm!important;margin:0!important;padding:13mm 15mm 14mm 15mm!important;
+    break-after:page!important;page-break-after:always!important;overflow:hidden!important;
+    color:#111!important;background:#fff!important; }
+  .page:last-child{break-after:auto!important;page-break-after:auto!important}
+  .cover{height:297mm!important;min-height:297mm!important;padding:24mm 18mm!important;
+     background:#fff!important;color:#111!important;border:0!important}
+  .cover-goal,.box,.box.teal,.box.warm,.qa,.ex,.ex-h,.ex-h .tag,.prob,.prob .pn,
+  .cover-rule,td.k,tbody tr,thead th,pre,pre.out,code.inl,em.hl,h2.sec .num {
+    background:#fff!important;background-image:none!important;color:#111!important;box-shadow:none!important; }
+  *,*::before,*::after { text-shadow:none!important;box-shadow:none!important;
+     -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important; }
+  h2.sec,h3.sub,h4.mini,h4,.cover h1,.cover .chno,.cover .sub,.cover .eyebrow,
+  .cover-bottom,.cover-bottom .brand,.cover-goal h3,.cover-goal ul,
+  p,li,td,th,pre,code,pre span, .ok,.no,.mid,.ex-h .tag,.foot,
+  strong,em.hl,.box h4,.qa .q,.prob .pn,.ex-b .sol b, figcaption {
+     color:#111!important; }
+  .cover-rule {border-top:2px solid #555!important;height:0!important}
+  h2.sec .num { border:1px solid #111!important }
+  thead th,.ex-h {border:1px solid #777!important;border-radius:0!important}
+  table{font-size:8.6pt!important;line-height:1.3!important;margin-bottom:2.3mm!important}
+  td,th{border:1px solid #aaa!important;padding:1.3mm 1.6mm!important}
+  p {margin-bottom:2.0mm!important}
+  h2.sec{font-size:13pt!important;margin-bottom:2.8mm!important;padding-bottom:1.6mm!important;border-color:#111!important}
+  h3.sub{font-size:11pt!important;margin:3.2mm 0 1.4mm!important;border-color:#333!important}
+  h4.mini{font-size:9.4pt!important;margin:2.5mm 0 1.5mm!important}
+  .lead{font-size:10.1pt!important;margin-bottom:2.2mm!important}
+  .box,.box.teal,.box.warm,.qa,.prob{border:1px solid #aaa!important;padding:2mm 2.6mm!important;margin-bottom:2mm!important}
+  .ex{margin:0 0 2.1mm!important;border-color:#aaa!important;border-radius:0!important}
+  .ex-h {padding:1.2mm 2.7mm!important;font-size:9pt!important}
+  .ex-b {padding:2mm 2.7mm!important}
+  .ex-b .sol {margin-top:1.3mm!important;padding-top:1.3mm!important}
+  ul,ol{margin:0 0 2mm!important;padding-left:5mm!important}
+  li{margin-bottom:.8mm!important}
+  pre,pre.out{border:1px solid #bbb!important;border-radius:0!important;
+    font-size:7.8pt!important;line-height:1.33!important;padding:2mm 2.7mm!important;
+    margin-bottom:2mm!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+  figure{margin-bottom:2mm!important}
+  figure svg{max-width:100%!important;max-height:130px!important}
+  .foot{display:none!important}
+  tr,.box,.qa,.ex,.prob,pre,figure,.grid2{break-inside:avoid!important}
+  .grid2{gap:2.4mm!important}
+  /* SVG figures: preserve outlines and arrows; remove all colored areas */
+  figure svg rect,figure svg circle,figure svg ellipse,figure svg polygon {
+    fill:#fff!important;stroke:#555!important; }
+  figure svg text,figure svg tspan{fill:#111!important;stroke:none!important}
+  figure svg path,figure svg line,figure svg polyline{stroke:#333!important}
+  figure svg marker path{fill:#333!important;stroke:none!important}
+  .cover-goal{border-left:2px solid #555!important}
+}
+</style></head>
+<body><button class="print-toolbar" onclick="window.print()" type="button">A4 잉크 절약 인쇄 / PDF 저장</button>
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+<div>
+<div class="eyebrow">PART 1 · 선형 자료구조 · 마지막 장</div>
+<div class="cover-rule"></div>
+<div class="chno">10</div>
+<h1>이중 연결 리스트와 응용</h1>
+<div class="sub">
+      양방향 링크 ‖ 센티넬 두 개 ‖ 커서 ‖ 요세푸스 ‖ 에디터 시뮬레이션<br/>
+      난이도 ★★★☆☆ · 10주차 · 100분 2차시 · <strong>다음 차시는 단원평가 T1</strong>
+</div>
+<div class="cover-goal">
+<h3>이 장을 마치면 할 수 있는 것</h3>
+<ul>
+<li><code>prv</code> 배열 하나로 “이 노드를 지워라”를 O(1)에 할 수 있다</li>
+<li>센티넬 두 개로 유효한 노드 삽입·삭제의 양 끝 NIL 분기를 없앨 수 있다</li>
+<li>커서를 노드 번호 하나로 표현해 에디터를 시뮬레이션할 수 있다</li>
+<li>원형 연결로 요세푸스를 풀 수 있다</li>
+<li>이동량과 실제 시간이 왜 비례하지 않는지 설명할 수 있다</li>
+</ul>
+</div>
+</div>
+<div class="cover-bottom">
+<div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br/>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+<!-- ============ 1 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+<p class="lead">09장의 불편은 전부 한 곳에서 나왔다 — <strong>뒤로만 갈 수 있다.</strong> 이 장은 배열 하나를 더 두어 그 제약을 없앤다. 노드당 8바이트가 12바이트가 되고, 대신 <em class="hl">할 수 있는 일이 크게 늘어난다.</em></p>
+<h3 class="sub">1.1 “이 노드를 지워라”가 09장에서는 O(N)이었다</h3>
+<p>09장에서는 지울 노드의 번호를 이미 알아도 <strong>앞 노드가 따로 주어지지 않았다면</strong> 보통 앞 노드를 탐색해야 했다. 단일 연결 리스트에서 <code class="inl">nxt[?] = …</code>를 고치려면 그 앞 노드가 필요한데, <code class="inl">prv</code>가 없어 <strong>맨 앞부터 찾으면 O(N)</strong>이 된다. 맨 앞 노드를 지우거나 앞 노드를 이미 아는 경우에는 단일 연결 리스트도 O(1)이다.</p>
+<pre class="out"><span class="lbl">$ ./erase      노드 번호를 알고 있는 상태에서 n개를 전부 지운다</span>
+
+<span class="lbl">[앞에서부터 지울 때]</span>
+        n   단일(ms)     단일 이동량   이중(ms)   이중 이동량
+   100000        0.1         100,000        0.4       200,000     <span class="lbl">← 단일도 빠르다</span>
+
+<span class="lbl">[뒤에서부터 지울 때 — 순서만 바꿨다]</span>
+   100000    <span class="bad">10156.5</span>   <span class="bad">5,000,050,000</span>        0.3       200,000     <span class="bad">← 약 34,000배</span></pre>
+<div class="box warm">
+<h4>08장에서 본 것과 똑같은 함정</h4>
+<p style="margin-bottom:0;">같은 코드, 같은 개수인데 <em class="hl">지우는 순서만 바꿨더니 0.1 ms가 10초가 되었다.</em> 앞에서부터 지우면 매번 더미 바로 다음이라 한 걸음이면 되지만, 뒤에서부터면 매번 끝까지 걸어야 한다. <strong>출제자는 뒤에서부터 지우는 입력을 넣는다.</strong></p>
+</div>
+<h3 class="sub">1.2 배열 하나를 더 두면 끝난다</h3>
+<div class="grid2">
+<div>
+<pre style="margin-bottom:0;"><span class="cm">/* 09장 — 단일 */</span>
+<span class="kw">int</span> val[N];
+<span class="kw">int</span> nxt[N];
+
+<span class="cm">/* 지우려면 앞 노드를 찾아야 */</span>
+<span class="kw">int</span> p = <span class="fn">find_prev</span>(x);   <span class="cm">/* O(N) */</span>
+nxt[p] = nxt[x];</pre>
+</div>
+<div>
+<pre style="margin-bottom:0;"><span class="cm">/* 10장 — 이중 */</span>
+<span class="kw">int</span> val[N];
+<span class="kw">int</span> prv[N], nxt[N];
+
+<span class="cm">/* 앞 노드를 이미 알고 있다 */</span>
+nxt[prv[x]] = nxt[x];   <span class="cm">/* O(1) */</span>
+prv[nxt[x]] = prv[x];</pre>
+</div>
+</div>
+<p><code class="inl">find_prev</code>가 사라지고 <strong>두 줄이 남는다.</strong> 이 두 줄이 이 장의 거의 전부다.</p>
+<h3 class="sub">1.3 이 장에서 풀 세 가지 문제</h3>
+<table>
+<thead><tr><th style="width:22%">문제</th><th style="width:30%">핵심 연산</th><th>왜 이중 연결인가</th></tr></thead>
+<tbody>
+<tr><td class="k">임의 위치 삭제</td><td>노드 번호로 바로 삭제</td><td>위의 두 줄 — O(1)</td></tr>
+<tr><td class="k tt">커서 에디터</td><td>커서 좌우 이동, 그 자리 삽입·삭제</td><td><strong>왼쪽으로 가려면 <code class="inl">prv</code>가 필요하다</strong></td></tr>
+<tr><td class="k">요세푸스</td><td>원형으로 돌며 제거</td><td>제거 후 양쪽을 바로 이을 수 있다</td></tr>
+</tbody>
+</table>
+<p>셋 다 <em class="hl">대회에 그대로 나오는 유형</em>이고, 특히 커서 에디터는 PART 1 전체를 복습하는 문제다 — 06장 스택으로도 풀리기 때문이다(도전 C1).</p>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 2.1~2.2 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+<h3 class="sub">2.1 양방향 링크</h3>
+<figure>
+<svg aria-label="이중 연결 리스트" role="img" viewbox="0 0 660 112" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="fw" markerheight="8" markerwidth="8" orient="auto" refx="7" refy="4"><path d="M0,0 L8,4 L0,8 z" fill="#0d7c74"></path></marker>
+<marker id="bw" markerheight="8" markerwidth="8" orient="auto" refx="7" refy="4"><path d="M0,0 L8,4 L0,8 z" fill="#b4531a"></path></marker>
+</defs>
+<g font-size="10" text-anchor="middle">
+<rect fill="#e5eaf0" height="34" stroke="#5b6876" stroke-width="1.3" width="52" x="26" y="34"></rect>
+<text fill="#5b6876" font-size="9" x="52" y="56">HEAD</text>
+<g>
+<rect fill="#f2e3d4" height="34" stroke="#b4531a" stroke-width="1.2" width="30" x="166" y="34"></rect><text fill="#b4531a" font-size="8" x="181" y="56">prv</text>
+<rect fill="#eef4f3" height="34" stroke="#0d7c74" stroke-width="1.4" width="40" x="196" y="34"></rect><text fill="#0f2a4a" x="216" y="56">10</text>
+<rect fill="#d9ece9" height="34" stroke="#0d7c74" stroke-width="1.2" width="30" x="236" y="34"></rect><text fill="#0d7c74" font-size="8" x="251" y="56">nxt</text>
+</g>
+<g>
+<rect fill="#f2e3d4" height="34" stroke="#b4531a" stroke-width="1.2" width="30" x="354" y="34"></rect><text fill="#b4531a" font-size="8" x="369" y="56">prv</text>
+<rect fill="#eef4f3" height="34" stroke="#0d7c74" stroke-width="1.4" width="40" x="384" y="34"></rect><text fill="#0f2a4a" x="404" y="56">20</text>
+<rect fill="#d9ece9" height="34" stroke="#0d7c74" stroke-width="1.2" width="30" x="424" y="34"></rect><text fill="#0d7c74" font-size="8" x="439" y="56">nxt</text>
+</g>
+<rect fill="#e5eaf0" height="34" stroke="#5b6876" stroke-width="1.3" width="52" x="560" y="34"></rect>
+<text fill="#5b6876" font-size="9" x="586" y="56">TAIL</text>
+</g>
+<path d="M80 44 L160 44" marker-end="url(#fw)" stroke="#0d7c74" stroke-width="1.5"></path>
+<path d="M160 60 L80 60" marker-end="url(#bw)" stroke="#b4531a" stroke-width="1.5"></path>
+<path d="M268 44 L348 44" marker-end="url(#fw)" stroke="#0d7c74" stroke-width="1.5"></path>
+<path d="M348 60 L268 60" marker-end="url(#bw)" stroke="#b4531a" stroke-width="1.5"></path>
+<path d="M456 44 L554 44" marker-end="url(#fw)" stroke="#0d7c74" stroke-width="1.5"></path>
+<path d="M554 60 L456 60" marker-end="url(#bw)" stroke="#b4531a" stroke-width="1.5"></path>
+<text fill="#5b6876" font-size="9.5" text-anchor="middle" x="330" y="96">양 끝의 센티넬은 값이 없는 가짜 노드. 진짜 데이터는 그 사이에만 있다</text>
+</svg>
+<figcaption>그림 10-1. 이중 연결 리스트 — 모든 노드가 양쪽 이웃을 안다</figcaption>
+</figure>
+<h3 class="sub">2.2 센티넬 두 개 — 검사가 통째로 사라진다</h3>
+<p>09장의 더미 헤드는 <strong>맨 앞</strong>의 특수 처리를 없앴다. 이중 연결에서는 <em class="hl">맨 뒤도 특수한 경우</em>가 되므로, 센티넬을 <strong>양쪽에 하나씩</strong> 둔다. 그러면 놀라운 일이 생긴다.</p>
+<div class="grid2">
+<div>
+<div class="box warm" style="margin-bottom:0;">
+<h4>센티넬이 없으면</h4>
+<pre style="margin-bottom:0;"><span class="kw">void</span> <span class="fn">erase</span>(<span class="kw">int</span> x){
+    <span class="kw">if</span> (prv[x] != NIL) nxt[prv[x]] = nxt[x];
+    <span class="kw">else</span>               head = nxt[x];
+    <span class="kw">if</span> (nxt[x] != NIL) prv[nxt[x]] = prv[x];
+    <span class="kw">else</span>               tail = prv[x];
+}</pre>
+</div>
+</div>
+<div>
+<div class="box teal" style="margin-bottom:0;">
+<h4>센티넬 두 개면</h4>
+<pre style="margin-bottom:0;"><span class="kw">void</span> <span class="fn">erase</span>(<span class="kw">int</span> x){
+    nxt[prv[x]] = nxt[x];
+    prv[nxt[x]] = prv[x];
+}</pre>
+<p style="margin:2mm 0 0 0;font-size:9.2pt;"><em class="hl"><code class="inl">if</code>가 하나도 없다.</em> <code class="inl">prv[x]</code>와 <code class="inl">nxt[x]</code>가 <strong>언제나 존재</strong>하기 때문이다.</p>
+</div>
+</div>
+</div>
+<div class="box">
+<h4>왜 항상 존재하는가</h4>
+<p style="margin-bottom:0;">진짜 노드는 <strong>HEAD와 TAIL 사이에만</strong> 놓인다. 따라서 어떤 진짜 노드 <code class="inl">x</code>를 잡아도 왼쪽에는 노드가 있고(최소한 HEAD), 오른쪽에도 있다(최소한 TAIL). <em class="hl">빈 리스트든 노드가 하나든 백만 개든 똑같다.</em> 06장부터 반복해 온 <strong>“특수한 경우를 없애는 설계”</strong>가 가장 깔끔하게 드러나는 자리다. <strong>단, 삭제 대상이 실제로 연결된 데이터 노드인지, 새 노드를 만들 공간이 남았는지는 호출자가 확인해야 한다.</strong></p>
+</div>
+<div class="qa">
+<div class="q">Q. 센티넬 두 개면 메모리가 두 칸 더 드는데 괜찮나요?</div>
+<div>노드 하나가 12바이트이므로 <strong>24바이트</strong>다. 100만 노드짜리 문제에서 12 MB를 쓰는데 그중 24바이트다. <em class="hl">끝점 예외 처리 분기들을 24바이트로 줄이는 것</em>이고, 분기 하나는 버그 하나다.</div>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 2.3~2.4 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">2</span>개념과 그림 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+<h3 class="sub">2.3 커서 — 정수 하나로 표현한다</h3>
+<p>글자들 사이를 오가는 <strong>깜빡이는 막대</strong>를 자료구조로 어떻게 표현할까. 커서는 글자가 아니라 <em class="hl">글자와 글자 사이</em>에 있으므로, “몇 번째 글자”로는 어색하다. 규칙 하나로 해결한다.</p>
+<div class="box teal">
+<h4>약속</h4>
+<p style="margin-bottom:0;"><strong><code class="inl">cur</code>은 “커서 바로 <u>오른쪽</u>에 있는 노드”의 번호다.</strong> 커서가 맨 끝에 있으면 <code class="inl">cur = TAIL</code>이다.</p>
+</div>
+<figure>
+<svg aria-label="커서 표현" role="img" viewbox="0 0 660 86" xmlns="http://www.w3.org/2000/svg">
+<g font-size="11" text-anchor="middle">
+<rect fill="#eef4f3" height="30" stroke="#0d7c74" stroke-width="1.3" width="46" x="120" y="26"></rect><text fill="#0f2a4a" x="143" y="46">a</text>
+<rect fill="#eef4f3" height="30" stroke="#0d7c74" stroke-width="1.3" width="46" x="186" y="26"></rect><text fill="#0f2a4a" x="209" y="46">b</text>
+<rect fill="#eef4f3" height="30" stroke="#0d7c74" stroke-width="1.3" width="46" x="282" y="26"></rect><text fill="#0f2a4a" x="305" y="46">c</text>
+<rect fill="#eef4f3" height="30" stroke="#0d7c74" stroke-width="1.3" width="46" x="348" y="26"></rect><text fill="#0f2a4a" x="371" y="46">d</text>
+<rect fill="#e5eaf0" height="30" stroke="#5b6876" stroke-width="1.3" width="52" x="414" y="26"></rect><text fill="#5b6876" font-size="9" x="440" y="46">TAIL</text>
+</g>
+<line stroke="#b4531a" stroke-width="2.6" x1="257" x2="257" y1="18" y2="64"></line>
+<text fill="#b4531a" font-size="9" font-weight="700" text-anchor="middle" x="257" y="12">커서</text>
+<path d="M262 70 L300 62" stroke="#b4531a" stroke-width="1.3"></path>
+<text fill="#b4531a" font-size="9.3" font-weight="700" text-anchor="middle" x="356" y="76">cur = 'c' 노드의 번호</text>
+<text fill="#5b6876" font-size="9.3" text-anchor="middle" x="150" y="76">왼쪽 글자는 prv[cur]</text>
+</svg>
+<figcaption>그림 10-2. 커서 왼쪽에 글자가 있다면 <code>prv[cur]</code>, 오른쪽 글자는 <code>cur</code></figcaption>
+</figure>
+<table>
+<thead><tr><th style="width:14%">명령</th><th style="width:26%">뜻</th><th style="width:34%">코드</th><th>경계</th></tr></thead>
+<tbody>
+<tr><td class="k c">L</td><td>커서를 왼쪽으로</td><td class="m">cur = prv[cur]</td><td><code class="inl">prv[cur]==HEAD</code>면 무시</td></tr>
+<tr><td class="k c">D</td><td>커서를 오른쪽으로</td><td class="m">cur = nxt[cur]</td><td><code class="inl">cur==TAIL</code>이면 무시</td></tr>
+<tr><td class="k c">B</td><td>왼쪽 글자 지우기</td><td class="m">erase(prv[cur])</td><td><code class="inl">prv[cur]==HEAD</code>면 무시</td></tr>
+<tr><td class="k c">P x</td><td>커서 왼쪽에 x 삽입</td><td class="m">insert_before(cur, x)</td><td class="ok">경계 없음</td></tr>
+</tbody>
+</table>
+<p><strong>네 명령 모두 O(1)</strong>이다. 커서가 어디에 있든, 문자열이 얼마나 길든 상관없다. <em class="hl"><code class="inl">B</code>가 가능한 것은 <code class="inl">prv</code>가 있기 때문</em>이다 — 09장의 단일 연결로는 왼쪽 글자를 지울 수 없다.</p>
+<h3 class="sub">2.4 원형 연결 — 센티넬마저 없앤다</h3>
+<p>요세푸스처럼 <strong>끝이 없는</strong> 문제에서는 마지막을 처음에 이어 고리로 만든다. 그러면 <em class="hl">“끝”이라는 개념 자체가 없으므로 센티넬도 필요 없다.</em></p>
+<pre><span class="kw">for</span> (<span class="kw">int</span> i = 1; i &lt;= n; i++) {
+    nxt[i] = (i == n) ? 1 : i + 1;      <span class="cm">/* 마지막의 다음은 1번 */</span>
+    prv[i] = (i == 1) ? n : i - 1;      <span class="cm">/* 1번의 앞은 마지막 */</span>
+}</pre>
+<div class="box warm">
+<h4>대신 조심할 것</h4>
+<p style="margin-bottom:0;">끝이 없으므로 <strong>순회를 멈추는 조건을 따로 만들어야</strong> 한다. 남은 개수를 세거나, 출발점을 기억해 두고 돌아왔는지 본다. <em class="hl">조건을 빼먹으면 09장 연습 04처럼 무한 루프</em>가 된다.</p>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 3.1 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">3</span>구현</h2>
+<h3 class="sub">3.1 DList — 필수 구현</h3>
+<pre>/* dlist.c — 0번 HEAD, 1번 TAIL. 두 센티넬을 사용 */
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define MAXNODE 1000006
+static int val[MAXNODE], prv[MAXNODE], nxt[MAXNODE];
+static int cnt, HEAD, TAIL;
+
+static int new_node(int v){
+    if (cnt &gt;= MAXNODE) { fputs("node pool full\n", stderr); exit(1); }
+    val[cnt] = v;  prv[cnt] = nxt[cnt] = -1;
+    return cnt++;
+}
+static void dl_init(void){
+    cnt = 0; HEAD = new_node(0); TAIL = new_node(0);
+    nxt[HEAD] = TAIL;  prv[TAIL] = HEAD;
+}
+/* 전제: x는 연결된 노드 또는 TAIL, HEAD는 아님 */
+static int insert_before(int x, int v){
+    assert(x &gt;= TAIL &amp;&amp; x &lt; cnt);
+    int p = prv[x], q = new_node(v);
+    prv[q] = p;  nxt[q] = x;  /* 원래 이웃 번호를 보존 */
+    nxt[p] = q;  prv[x] = q;
+    return q;
+}
+/* 전제: x는 현재 연결된 실제 노드, 센티넬 아님 */
+static void erase(int x){
+    assert(x &gt; TAIL &amp;&amp; x &lt; cnt);
+    nxt[prv[x]] = nxt[x];
+    prv[nxt[x]] = prv[x];
+}</pre>
+<div class="box warm">
+<h4>링크를 고치는 순서 — <code class="inl">p</code> 저장 여부가 핵심</h4>
+<p style="margin-bottom:0;"><strong>이 코드에서는 <code class="inl">p = prv[x]</code>를 먼저 저장했으므로</strong> 새 노드와 이웃에 대한 네 대입의 순서를 바꾸어도, 필요한 기존 이웃 번호를 유지한다면 정상 연결된다. 그러나 <code class="inl">p</code>를 저장하지 않고 <code class="inl">prv[x] = q</code>를 먼저 실행한 뒤 다시 <code class="inl">prv[x]</code>를 앞 노드로 읽으면, 이미 <code class="inl">q</code>로 바뀐 값이어서 연결이 깨진다. <strong>권장 습관은 기존 이웃 번호를 먼저 저장하고, 새 노드의 링크를 먼저 기록한 뒤 이웃을 고치는 것</strong>이다.</p>
+</div>
+<pre class="out"><span class="lbl">$ ./dlist</span>
+빈 리스트          H &lt;-&gt; T
+맨 뒤로 10,20,30   H &lt;-&gt; 10 &lt;-&gt; 20 &lt;-&gt; 30 &lt;-&gt; T
+맨 앞에 5          H &lt;-&gt; 5 &lt;-&gt; 10 &lt;-&gt; 20 &lt;-&gt; 30 &lt;-&gt; T
+20 앞에 15         H &lt;-&gt; 5 &lt;-&gt; 10 &lt;-&gt; 15 &lt;-&gt; 20 &lt;-&gt; 30 &lt;-&gt; T
+뒤에서부터 읽기    T &lt;-&gt; 30 &lt;-&gt; 20 &lt;-&gt; 15 &lt;-&gt; 10 &lt;-&gt; 5 &lt;-&gt; H   <span class="lbl">← 역방향 링크로 별도 역전 없이 순회</span>
+
+  i   :    0    1    2    3    4    5    6
+  val :    0    0   10   20   30    5   15
+  prv :   -1    4    5    6    3    0    2
+  nxt :    5   -1    6    4    1    2    3
+
+erase(3) — 값 20인 노드를 직접 지운다 (앞 노드를 찾지 않는다)
+지운 뒤            H &lt;-&gt; 5 &lt;-&gt; 10 &lt;-&gt; 15 &lt;-&gt; 30 &lt;-&gt; T</pre>
+<p><strong>역순 순회를 위한 별도의 뒤집기 과정이 필요 없다.</strong> 09장에서는 리스트를 거꾸로 읽으려면 통째로 뒤집어야 했는데, 여기서는 <code class="inl">prv</code>를 따라가면 그만이다.</p>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 3.2 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+<h3 class="sub">3.2 커서 에디터</h3>
+<p>2.3절의 표를 그대로 코드로 옮긴다. <strong>분기는 경계 처리 세 개뿐</strong>이고, 나머지는 한 줄씩이다. <strong>입력에서 초기 문자열을 구성하고 명령을 읽는 부분은 생략한 핵심 로직이며, 실행 가능한 전체 프로그램은 별도 C 파일에 수록한다.</strong></p>
+<pre><span class="kw">int</span> cur = TAIL;                       <span class="cm">/* 커서는 처음에 맨 끝 */</span>
+
+<span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; m; i++) {
+    <span class="kw">switch</span> (cmd[i]) {
+    <span class="kw">case</span> <span class="st">'L'</span>: <span class="kw">if</span> (prv[cur] != HEAD) cur = prv[cur];          <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="st">'D'</span>: <span class="kw">if</span> (cur      != TAIL) cur = nxt[cur];          <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="st">'B'</span>: <span class="kw">if</span> (prv[cur] != HEAD) <span class="fn">erase</span>(prv[cur]);          <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="st">'P'</span>: <span class="fn">insert_before</span>(cur, arg[i]);                     <span class="kw">break</span>;
+    }
+}
+<span class="cm">/* 출력은 HEAD 다음부터 TAIL 전까지 */</span>
+<span class="kw">for</span> (<span class="kw">int</span> p = nxt[HEAD]; p != TAIL; p = nxt[p]) <span class="fn">putchar</span>(val[p]);</pre>
+<div class="box teal">
+<h4>세 가지를 확인한다</h4>
+<ul style="margin-bottom:0;">
+<li><strong><code class="inl">B</code>가 <code class="inl">erase(prv[cur])</code>이다.</strong> 커서 왼쪽 글자를 지운다. 단일 연결 리스트에서는 앞 노드를 따로 저장하지 않았다면 <strong>O(1)로 직접 삭제할 수 없고</strong>, 처음부터 찾아야 한다.</li>
+<li><strong><code class="inl">P</code>에는 경계 검사가 없다.</strong> <code class="inl">cur</code>이 TAIL이어도 “TAIL 앞에 삽입”이 곧 맨 뒤 추가다 — 센티넬의 효과</li>
+<li><strong>커서는 삽입·삭제 뒤에도 그대로 둔다.</strong> <code class="inl">P</code>는 왼쪽에 넣으므로 커서 오른쪽 노드가 안 바뀌고, <code class="inl">B</code>는 왼쪽을 지우므로 역시 안 바뀐다</li>
+</ul>
+</div>
+<h3 class="sub">3.3 요세푸스 — 원형 연결</h3>
+<p style="font-size:9pt;margin:0 0 2mm 0;">이 코드는 <strong>2.4절에서 1~N번을 원형으로 연결한 뒤</strong> 실행한다. 3.1절의 HEAD·TAIL 센티넬 리스트와는 별개로 초기화해야 한다. 조건은 N ≥ 1, K ≥ 1이다.</p><pre><span class="kw">int</span> cur = 1, m = 0;
+<span class="kw">while</span> (m &lt; n) {
+    <span class="kw">for</span> (<span class="kw">int</span> s = 1; s &lt; k; s++) cur = nxt[cur];   <span class="cm">/* k-1 칸 이동 */</span>
+    out[m++] = cur;                                <span class="cm">/* 이번에 제거될 사람 */</span>
+    <span class="kw">int</span> after = nxt[cur];                          <span class="cm">/* 먼저 붙잡는다 */</span>
+    nxt[prv[cur]] = nxt[cur];                      <span class="cm">/* O(1) 제거 */</span>
+    prv[nxt[cur]] = prv[cur];
+    cur = after;                                   <span class="cm">/* 지워진 자리의 다음부터 */</span>
+}</pre>
+<pre class="out">$ ./jose      N = 7, K = 3
+3번 제거 → 다음 시작 4
+6번 제거 → 다음 시작 7
+2번 제거 → 다음 시작 4
+7번 제거 → 다음 시작 1
+5번 제거 → 다음 시작 1
+1번 제거 → 다음 시작 4
+4번 제거 → 종료
+결과 : 3 6 2 7 5 1 4
+</pre>
+<div class="box warm">
+<h4>제거된 노드의 <code class="inl">nxt</code>는 그대로 남아 있다</h4>
+<p style="margin-bottom:0;">위 코드에서 <code class="inl">after</code>를 먼저 저장했지만, 사실 <code class="inl">erase</code>는 <em class="hl">지워지는 노드 자신의 <code class="inl">prv</code>·<code class="inl">nxt</code>를 건드리지 않는다.</em> 그래서 지운 뒤에 <code class="inl">nxt[cur]</code>을 읽어도 값은 멀쩡하다. 이 성질이 <strong>도전 C2(되살리기)</strong>의 열쇠가 된다 — 다만 <strong>의도해서 쓰는 것과 모르고 의존하는 것은 다르다.</strong></p>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 3.4 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+<h3 class="sub">3.4 실측</h3><p style="font-size:8.6pt;color:var(--muted);margin:0 0 2mm 0;">다음 시간 수치는 특정 실행 환경에서 얻은 <strong>참고 예시</strong>다. 컴파일 최적화, 입력 구성, 시스템 사양에 따라 값이 달라지며, 단순 연산 횟수로 실행 시간을 정확히 예측할 수는 없다.</p>
+<h4 class="mini">요세푸스 — 리스트 vs “죽은 사람도 세며 건너뛰기”</h4>
+<pre class="out">         n     k   리스트(ms)    리스트 이동   배열표시(ms)        배열 이동   일치
+    200000     3          3.1        800,000           37.6        6,333,393     O
+    500000     3          6.4      2,000,000           96.3       16,950,133     O
+   1000000     7         26.2      8,000,000          <span class="bad">519.5</span>       <span class="bad">93,206,072</span>     O</pre>
+<p>배열에 “살아 있음” 표시만 두고 세는 방식은 <em class="hl">이미 죽은 사람 자리도 밟고 지나가야</em> 한다. 사람이 줄어들수록 헛걸음이 늘어 n = 100만에서 <strong>9,320만 걸음</strong>이 되었다. 리스트는 죽은 사람을 고리에서 빼 버리므로 <strong>정확히 (k−1)×n + 2n 걸음</strong>이다.</p>
+<h4 class="mini">커서 에디터 — 배열 vs 리스트 vs 두 스택</h4>
+<pre class="out">   초기길이      명령수     배열(ms)        배열 이동    리스트(ms)  리스트 연산   두스택(ms)  일치
+    200000      200000          5.1      602,524,549           1.6      179,912          1.5     O
+    500000      500000         29.8    3,725,618,875           3.6      449,224          3.9     O
+   1000000     1000000        <span class="bad">222.3</span>   <span class="bad">14,942,592,422</span>           <span class="lbl">9.2</span>      896,648          <span class="lbl">7.9</span>     O</pre>
+<div class="box">
+<h4>이 표에서 반드시 읽어야 할 것</h4>
+<ul style="margin-bottom:0;">
+<li><strong>n = 20만에서는 배열도 통과한다</strong>(5.1 ms). 작은 입력으로 테스트하면 문제를 못 느낀다</li>
+<li><strong>n이 5배가 되자 배열은 44배 느려졌다</strong>(5.1 → 222.3 ms). 전형적인 O(N²)</li>
+<li><strong>리스트와 두 스택은 거의 같다.</strong> 같은 문제를 <em class="hl">전혀 다른 자료구조로 똑같이 빠르게</em> 풀 수 있다 — 도전 C1</li>
+</ul>
+</div>
+<div class="box warm">
+<h4>그런데 이동량과 시간이 비례하지 않는다 — 02장의 단서를 다시 본다</h4>
+<p>n = 100만에서 <strong>이동량은 149억 대 89.7만으로 약 16,600배</strong> 차이인데, <em class="hl">시간은 222.3 대 9.2로 24배</em>밖에 나지 않았다. 왜일까.</p>
+<p style="margin-bottom:0;">배열이 미는 작업은 <code class="inl">memmove</code>로 <strong>연속된 메모리를 통째로</strong> 옮긴다. CPU는 이런 일을 한 번에 수십 바이트씩 처리하므로 <strong>“이동 한 번”이 거의 공짜</strong>다. 반면 리스트는 연산 한 번이 <em class="hl">여기저기 흩어진 메모리를 건드리는 일</em>이라 한 번이 비싸다(09장 4.3절, 48배). <strong>결론 — 연산 횟수는 복잡도를 보는 도구이지 시간을 예측하는 도구가 아니다.</strong> 그래도 n이 커지면 O(N²)은 반드시 진다.</p>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 4 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">4</span>복잡도와 메모리</h2>
+<h3 class="sub">4.1 세 가지를 나란히</h3>
+<table>
+<thead><tr><th style="width:30%">연산</th><th class="c" style="width:16%">배열</th><th class="c" style="width:18%">단일 연결<br/><span style="font-weight:400;">(09장)</span></th><th class="c" style="width:18%">이중 연결<br/><span style="font-weight:400;">(10장)</span></th><th>비고</th></tr></thead>
+<tbody>
+<tr><td class="k">k번째 값 읽기</td><td class="c ok">O(1)</td><td class="c no">O(N)</td><td class="c no">O(N)</td><td>이중이어도 나아지지 않는다</td></tr>
+<tr><td class="k tt">노드 x 삭제<br/><span style="font-weight:400;font-size:8.2pt;">(번호를 알 때)</span></td><td class="c no">O(N)</td><td class="c no">O(N)</td><td class="c ok">O(1)</td><td class="ok"><strong>이중을 쓰는 첫 번째 이유</strong></td></tr>
+<tr><td class="k">노드 x 앞에 삽입</td><td class="c no">O(N)</td><td class="c no">O(N)</td><td class="c ok">O(1)</td><td>단일은 앞 노드 탐색에 O(N), 이중은 직접 접근 O(1)</td></tr>
+<tr><td class="k tt">커서 좌 이동</td><td class="c ok">O(1)</td><td class="c no"><span class="mid">O(N)</span></td><td class="c ok">O(1)</td><td class="ok">단일은 앞 노드를 탐색해야 한다 (별도 역방향 정보가 없을 때)</td></tr>
+<tr><td class="k">역순 순회</td><td class="c ok">O(N)</td><td class="c no">별도 저장·역전 필요</td><td class="c ok">O(N)</td><td>이중은 <code class="inl">prv</code>만 따라가면 O(N)</td></tr>
+<tr><td class="k">노드당 메모리</td><td class="c ok">4 B</td><td class="c">8 B</td><td class="c mid">12 B</td><td>늘어난 4바이트가 위의 세 줄을 산다</td></tr>
+</tbody>
+</table>
+<div class="box teal">
+<h4>한 줄 정리</h4>
+<p style="margin-bottom:0;"><em class="hl">이중 연결 리스트는 노드 풀에서 int 링크를 하나 더 두어 메모리를 8→12바이트로 늘리는 대신, 현재 노드의 앞뒤 연결을 O(1)에 조작할 수 있다.</em> 단, 해당 노드 번호가 이미 주어져야 하고 <strong>센티넬이나 삭제된 노드는 일반 삭제·삽입 대상으로 사용하면 안 된다.</strong> 다른 접근 패턴이 중요하면 단일 리스트나 배열이 더 적절할 수 있다.</p>
+</div>
+<h3 class="sub">4.2 메모리 — 특정 환경에서는 <code class="inl">malloc</code> 사용량이 비슷할 수 있다</h3>
+<pre class="out"><span class="lbl">$ ./mem10</span>
+sizeof(SNode) = 16 바이트    노드 풀 단일 (int 2개) =  8 바이트
+sizeof(DNode) = 24 바이트    노드 풀 이중 (int 3개) = 12 바이트
+
+malloc DNode 1,000,000개 실제 사용량 : 31,372 KB -&gt; 노드당 약 <span class="bad">32.1 바이트</span>
+                                      <span class="lbl">(09장의 SNode 와 완전히 같은 값)</span>
+노드 풀 이중 1,000,000개 선언 크기   : 11,718 KB -&gt; 노드당 정확히 <span class="lbl">12 바이트</span>
+
+256MB 제한에서 담을 수 있는 노드 수
+  malloc DNode  : 약   836만 개        노드 풀 이중 : 약 2,237만 개
+  (참고) 노드 풀 단일 : 약 3,355만 개</pre><p style="font-size:8.4pt;color:var(--muted);margin:-1mm 0 2mm 0;">※ 위 숫자는 특정 시스템의 실측 사례를 설명하기 위한 값이다. 일반적인 C 언어의 고정 사양이나 메모리 제한의 보장값이 아니다.</p>
+<div class="box warm">
+<h4><code class="inl">sizeof</code>는 16과 24로 다른데 실제는 둘 다 32.1이다</h4>
+<p style="margin-bottom:0;"><code class="inl">sizeof(SNode)=16</code>, <code class="inl">sizeof(DNode)=24</code>는 <strong>64비트 포인터·4바이트 int 환경의 예시</strong>다. 일부 메모리 할당기에서는 작은 요청이 정렬 단위·관리 비용 때문에 비슷한 실제 메모리를 쓸 수 있으며, 위 측정에서는 모두 약 32.1바이트로 나타났다. 그러나 <strong>모든 <code class="inl">malloc</code>이 무조건 16바이트 단위로 할당하거나 두 구조체의 실제 비용이 언제나 같다는 뜻은 아니다.</strong> 운영체제, 할당기, 측정 방식에 따라 달라진다. 노드 풀의 8·12바이트는 <code class="inl">sizeof(int)==4</code>인 배열 원소 크기 기준이다.</p>
+</div>
+<div class="qa">
+<div class="q">Q. 그러면 <code class="inl">val</code>·<code class="inl">prv</code>·<code class="inl">nxt</code>를 구조체 배열 하나로 묶으면 어떤가요?</div>
+<div><code class="inl">struct { int v, prv, nxt; } node[N];</code>도 <strong>12바이트로 똑같고</strong> 캐시에 조금 더 유리할 수 있다. 대신 <em class="hl">배열을 통째로 찍어 보는 디버깅</em>이 불편해진다. 둘 다 정답이고, 이 교재는 디버깅 편의를 택했다.</div>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">5</span>예제</h2>
+<div class="ex">
+<div class="ex-h">예제 1 <span class="tag">배열 상태 읽기</span></div>
+<div class="ex-b">
+<p>아래는 <code class="inl">HEAD=0</code>, <code class="inl">TAIL=1</code>인 이중 연결 리스트다. (1) 앞에서부터 읽고 (2) 뒤에서부터 읽으라. (3) <code class="inl">erase(4)</code> 뒤의 <code class="inl">prv</code>·<code class="inl">nxt</code>를 쓰라.</p>
+<table style="margin-bottom:2mm;">
+<thead><tr><th class="c" style="width:14%">i</th><th class="c">0</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr></thead>
+<tbody>
+<tr><td class="k c">val</td><td class="c m">H</td><td class="c m">T</td><td class="c m">7</td><td class="c m">2</td><td class="c m">9</td><td class="c m">4</td></tr>
+<tr><td class="k c">prv</td><td class="c m">−1</td><td class="c m">3</td><td class="c m">5</td><td class="c m">4</td><td class="c m">2</td><td class="c m">0</td></tr>
+<tr><td class="k c">nxt</td><td class="c m">5</td><td class="c m">−1</td><td class="c m">4</td><td class="c m">1</td><td class="c m">3</td><td class="c m">2</td></tr>
+</tbody>
+</table>
+<div class="sol">
+<p><b>(1)</b> 0 → nxt[0]=5(값 4) → nxt[5]=2(값 7) → nxt[2]=4(값 9) → nxt[4]=3(값 2) → nxt[3]=1(TAIL).<br/>
+        따라서 <b>H → 4 → 7 → 9 → 2 → T</b></p>
+<p><b>(2)</b> 1 → prv[1]=3(값 2) → prv[3]=4(값 9) → prv[4]=2(값 7) → prv[2]=5(값 4) → prv[5]=0(HEAD).<br/>
+<b>T → 2 → 9 → 7 → 4 → H</b> — (1)의 정확한 역순이다. <em class="hl">둘이 일치하지 않으면 링크가 깨진 것</em>이므로, 이것이 가장 쉬운 자가 검증이다.</p>
+<p style="margin-bottom:0;"><b>(3)</b> 4번(값 9)을 지운다. <code class="inl">nxt[prv[4]] = nxt[4]</code> → <code class="inl">nxt[2]=3</code>, <code class="inl">prv[nxt[4]] = prv[4]</code> → <code class="inl">prv[3]=2</code>.<br/>
+<b>prv = [−1, 3, 5, 2, 2, 0]</b>, <b>nxt = [5, −1, 3, 1, 3, 2]</b>. <strong>4번 칸 자체는 건드리지 않는다</strong>(그대로 prv=2, nxt=3) — 도전 C2가 여기서 출발한다.</p>
+</div>
+</div>
+</div>
+<div class="ex">
+<div class="ex-h">예제 2 <span class="tag">에디터 추적</span></div>
+<div class="ex-b">
+<p>초기 문자열 <code class="inl">abc</code>, 커서는 맨 끝. 명령 <code class="inl">L L P x B D D</code>를 차례로 실행한 결과를 단계별로 쓰라. (<code class="inl">|</code>로 커서를 표시)</p>
+<div class="sol">
+<table style="margin-bottom:2mm;">
+<thead><tr><th class="c" style="width:14%">명령</th><th class="c" style="width:26%">상태</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td class="c tt">시작</td><td class="c m">abc|</td><td>커서는 맨 끝, <code class="inl">cur = TAIL</code></td></tr>
+<tr><td class="c tt">L</td><td class="c m">ab|c</td><td><code class="inl">cur</code>이 'c' 노드로</td></tr>
+<tr><td class="c tt">L</td><td class="c m">a|bc</td><td><code class="inl">cur</code>이 'b' 노드로</td></tr>
+<tr><td class="c tt">P x</td><td class="c m">ax|bc</td><td>커서 <strong>왼쪽</strong>에 삽입. <em class="hl"><code class="inl">cur</code>은 여전히 'b'</em></td></tr>
+<tr><td class="c tt">B</td><td class="c m">a|bc</td><td>커서 왼쪽 'x'를 지운다</td></tr>
+<tr><td class="c tt">D</td><td class="c m">ab|c</td><td><code class="inl">cur</code>이 'c'로</td></tr>
+<tr><td class="c tt">D</td><td class="c m">abc|</td><td><code class="inl">cur</code>이 TAIL로</td></tr>
+</tbody>
+</table>
+<p style="margin-bottom:0;"><b>답 : abc</b> (처음과 같다).<br/>
+<b>주목할 점.</b> <code class="inl">P</code>와 <code class="inl">B</code> 모두 <em class="hl"><code class="inl">cur</code>을 바꾸지 않았다.</em> 둘 다 커서 <strong>왼쪽</strong>만 건드리기 때문이다. 이 성질 덕분에 코드에 커서 보정이 한 줄도 없다.</p>
+</div>
+</div>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+<div class="ex">
+<div class="ex-h">예제 3 <span class="tag">무엇을 고를 것인가</span></div>
+<div class="ex-b">
+<p>N ≤ 500,000일 때 다음 네 상황에서 배열 · 단일 연결 · 이중 연결 중 무엇을 고를지 정하고 근거를 쓰라.</p>
+<div class="sol">
+<table style="margin-bottom:2mm;">
+<thead><tr><th style="width:36%">상황</th><th class="c" style="width:14%">선택</th><th>근거</th></tr></thead>
+<tbody>
+<tr><td>수를 받아 맨 앞에 쌓고 마지막에 전부 출력</td><td class="c tt">단일</td><td><code class="inl">prv</code>를 쓸 일이 없다. <em class="hl">8바이트로 충분한데 12를 쓸 이유가 없다</em></td></tr>
+<tr><td>Q개의 질의가 “x번 원소를 지워라”</td><td class="c tt ok">이중</td><td>단일이면 질의마다 O(N) → 최악 O(NQ)</td></tr>
+<tr><td>커서를 움직이며 편집, 마지막에 전체 출력</td><td class="c tt ok">이중</td><td>왼쪽 이동·왼쪽 삭제가 필요하다. <strong>두 스택도 정답</strong>(C1)</td></tr>
+<tr><td>수열을 정렬해서 출력</td><td class="c tt">배열</td><td class="mid"><strong>함정.</strong> 리스트는 임의 접근이 안 되어 <em class="hl">대부분의 정렬을 쓸 수 없다.</em> 11장은 전부 배열 위에서 한다</td></tr>
+</tbody>
+</table>
+<p style="margin-bottom:0;"><b>네 번째가 핵심이다.</b> 연결 리스트는 PART 1의 마지막이자 <strong>당분간 마지막</strong>이다. 11장부터 20장까지는 거의 전부 배열 위에서 움직이고, 리스트는 <em class="hl">21장 체이닝 해시와 32장 트라이에서 “노드 풀”이라는 형태로</em> 돌아온다.</p>
+</div>
+</div>
+</div>
+<div class="ex">
+<div class="ex-h">예제 4 <span class="tag">요세푸스 변형</span></div>
+<div class="ex-b">
+<p>N = 7, K = 3인데 <strong>제거 방향이 반대</strong>(왼쪽으로 세며 제거)라면 결과는? 그리고 그 코드는 몇 글자가 바뀌는가?</p>
+<div class="sol">
+<table style="margin-bottom:2mm;">
+<thead><tr><th class="c" style="width:22%">방향</th><th class="c" style="width:26%">이동 코드</th><th>결과 (N=7, K=3)</th></tr></thead>
+<tbody>
+<tr><td class="c tt">오른쪽 (기본)</td><td class="c m">cur = nxt[cur]</td><td class="m">3 6 2 7 5 1 4</td></tr>
+<tr><td class="c tt">왼쪽</td><td class="c m">cur = prv[cur]</td><td class="m"><strong>6 3 7 2 4 1 5</strong> (1번에서 시작해 왼쪽으로 셈)</td></tr>
+</tbody>
+</table>
+<p style="margin-bottom:0;"><b>답 : <code class="inl">nxt</code>를 <code class="inl">prv</code>로 바꾸는 것, 그리고 <code class="inl">after = prv[cur]</code> — 두 군데뿐이다.</b><br/>
+<em class="hl">삭제 코드는 한 글자도 바뀌지 않는다.</em> <code class="inl">nxt[prv[x]]=nxt[x]; prv[nxt[x]]=prv[x];</code>는 방향과 무관하게 “x를 빼낸다”는 뜻이기 때문이다. <strong>이것이 양방향 링크의 대칭성</strong>이고, 단일 연결에서는 앞 노드를 별도로 찾지 않으면 왼쪽 이동을 O(1)에 할 수 없다.<br/>
+<span style="color:var(--muted);">※ 왼쪽 결과는 오른쪽의 단순한 역순이 <u>아니다</u>. 손으로 짐작하지 말고 연습 09 (2)에서 직접 돌려 볼 것.</span></p>
+</div>
+<p style="margin:1mm 0 2mm 0;font-size:9.1pt;"><strong>검산:</strong> 시작 사람을 1번으로 두고 왼쪽으로 3명을 세면 처음 제거되는 사람은 6번이다. 이후 시작은 5번이며, 최종 순서는 <code class="inl">6 3 7 2 4 1 5</code>다.</p></div>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">6</span>연습 문제</h2>
+<p class="lead">01~05는 공책에, 06~10은 컴퓨터로 푼다. 제한 시간 60분. <strong>다음 차시가 단원평가 T1이므로 이 과제는 반드시 전부 제출한다.</strong></p>
+<div class="prob"><span class="pn">01</span>이중 연결 리스트 ADT의 명세표를 작성하라. 연산은 <code class="inl">insert_before</code>, <code class="inl">erase</code>, <code class="inl">next</code>, <code class="inl">prev</code>, <code class="inl">empty</code>이다. <strong>09장의 명세표와 달라진 칸</strong>을 표시하고, 왜 <code class="inl">erase_after</code>가 아니라 <code class="inl">erase</code>인지 한 줄로 쓰라.</div>
+<div class="prob"><span class="pn">02</span>센티넬을 <strong>HEAD 하나만</strong> 두면 <code class="inl">erase</code>와 <code class="inl">insert_before</code>에 각각 어떤 검사가 다시 필요해지는가? 코드로 쓰고, 센티넬 두 개짜리와 분기 개수를 비교하라.</div>
+<div class="prob"><span class="pn">03</span>예제 1과 같은 형식의 배열이 주어졌을 때 앞·뒤 양방향으로 읽으라. 그리고 <code class="inl">insert_before(3, 8)</code> 뒤의 <code class="inl">prv</code>·<code class="inl">nxt</code>를 쓰라. (<code class="inl">HEAD=0</code>, <code class="inl">TAIL=1</code>, <code class="inl">cnt=6</code>)
+  <table style="margin:2mm 0 0 0;">
+<thead><tr><th class="c" style="width:14%">i</th><th class="c">0</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr></thead>
+<tbody>
+<tr><td class="k c">val</td><td class="c m">H</td><td class="c m">T</td><td class="c m">5</td><td class="c m">1</td><td class="c m">6</td><td class="c m">3</td></tr>
+<tr><td class="k c">prv</td><td class="c m">−1</td><td class="c m">2</td><td class="c m">5</td><td class="c m">0</td><td class="c m">3</td><td class="c m">4</td></tr>
+<tr><td class="k c">nxt</td><td class="c m">3</td><td class="c m">−1</td><td class="c m">1</td><td class="c m">4</td><td class="c m">5</td><td class="c m">2</td></tr>
+</tbody>
+</table></div>
+<div class="prob"><span class="pn">04</span> <code class="inl">insert_before</code>에서 <code class="inl">p=prv[x]</code>를 <strong>먼저 저장</strong>한 뒤, <code class="inl">nxt[p]=q; prv[x]=q;</code>를 새 노드의 링크보다 먼저 실행하면 정말 틀리는가? <code class="inl">H → 10 → T</code>에서 10 앞에 20을 넣어 검증하라. 이어서 <code class="inl">p</code>를 저장하지 않고 <code class="inl">prv[x]=q;</code> 후 <code class="inl">prv[q]=prv[x];</code>라고 쓸 때 생기는 오류를 설명하라.</div><p style="font-size:8.6pt;margin:1mm 0 2mm 0;"><strong>검산 힌트:</strong> <code class="inl">p</code>를 미리 보관하면 대입 순서가 달라도 양방향 연결은 유지된다. 반대로 저장하지 않고 덮어쓴 <code class="inl">prv[x]</code>를 다시 읽으면 잘못된 노드를 가리킨다.</p>
+<div class="prob"><span class="pn">05</span>초기 문자열 <code class="inl">dcba</code>, 커서는 맨 끝. 명령 <code class="inl">L L L P x D B B P y</code>를 실행한 결과를 단계별 표로 쓰라. 커서 위치를 <code class="inl">|</code>로 표시할 것.</div>
+<div class="prob"><span class="pn">06</span>센티넬 두 개를 쓰는 DList를 구현하라(<code class="inl">dl_init</code>, <code class="inl">insert_before</code>, <code class="inl">erase</code>, 앞·뒤 순회, 배열 덤프). <strong>앞 순회와 뒤 순회의 결과가 서로 역순인지 자동으로 검사하는 함수</strong>도 만들 것.</div>
+<div class="prob"><span class="pn">07</span>“번호를 아는 노드 n개를 전부 지우기”를 단일 연결과 이중 연결로 각각 구현해 시간과 이동량을 재라. <strong>앞에서부터 지울 때와 뒤에서부터 지울 때</strong>를 모두 측정하고, 왜 순서가 그렇게 큰 차이를 만드는지 설명하라.</div>
+<div class="prob"><span class="pn">08</span>커서 에디터를 DList로 구현하라. 예제 2와 연습 05의 결과가 일치하는지 확인하고, <strong>배열로 미는 방식도 만들어 같은 입력에서 결과가 같은지 대조</strong>하라. 초기 길이 = 명령 수 = 20만 / 50만 / 100만에서 시간을 비교할 것.</div>
+<div class="prob"><span class="pn">09</span>요세푸스를 원형 이중 연결 리스트로 구현하라. (1) N=7, K=3이 <code class="inl">3 6 2 7 5 1 4</code>인지 확인하고, (2) <strong>왼쪽 방향 버전</strong>(예제 4)도 만들어 결과를 구하라. (3) n=100만, k=7에서 시간을 재고 이동량이 <code class="inl">(k−1)n + 2n</code>과 맞는지 확인하라.</div>
+<div class="prob"><span class="pn">10</span> <code class="inl">sizeof(SNode)</code>·<code class="inl">sizeof(DNode)</code>를 출력하고, 각각 <code class="inl">malloc</code>으로 100만 개를 할당해 <strong>해제 전후 메모리 사용량을 비교</strong>하라. 두 구조체의 크기는 다른데 측정된 메모리 사용량은 왜 비슷하거나 다르게 나올 수 있는가? <strong>실행 환경과 측정 방법</strong>을 반드시 기록하라.</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">7</span>도전 문제</h2>
+<div class="prob" style="border-left:4px solid var(--accent);">
+<span class="pn">C1</span><strong>두 스택으로 만드는 에디터</strong><br/>
+    같은 커서 에디터를 <strong>이중 연결 리스트 없이, 스택 두 개로만</strong> 구현하라. 명령 수와 초기 길이는 각각 100만 이하.<br/>
+    (1) 커서 <strong>왼쪽 글자들</strong>과 <strong>오른쪽 글자들</strong>을 각각 스택에 담는다고 하자. <strong>어느 쪽 끝이 스택의 꼭대기가 되어야</strong> 네 명령이 모두 O(1)이 되는가? 그림으로 설명하라.<br/>
+    (2) <code class="inl">L</code>, <code class="inl">D</code>, <code class="inl">B</code>, <code class="inl">P x</code> 네 명령을 두 스택의 <code class="inl">push</code>·<code class="inl">pop</code>으로 각각 옮기라.<br/>
+    (3) 마지막에 전체 문자열을 복원하는 방법을 쓰라. <strong>오른쪽 스택은 어느 순서로 읽어야 하는가?</strong><br/>
+    (4) 리스트 방식과 비교해 <strong>장점과 단점</strong>을 각각 하나씩 쓰라. (힌트 — 메모리, 그리고 “커서가 여러 개라면?”)
+  </div>
+<div class="prob" style="border-left:4px solid var(--accent);">
+<span class="pn">C2</span><strong>지운 노드 되살리기 (undo)</strong><br/>
+<code class="inl">erase(x)</code>는 <em>이웃들의</em> 링크만 고치고 <strong>x 자신의 <code class="inl">prv</code>·<code class="inl">nxt</code>는 그대로 둔다</strong>(3.3절, 예제 1).<br/>
+    (1) 이 성질을 이용하면 지운 노드를 <strong>두 줄로 되살릴 수 있다.</strong> 그 두 줄을 쓰라.<br/>
+    (2) 1 2 3 4 5 6 7 8에서 3, 5, 6, 2를 차례로 지운 뒤 <strong>지운 역순</strong>으로 되살리는 과정을 추적하라.<br/>
+    (3) <strong>역순을 지키지 않으면 무엇이 깨지는가?</strong> 3과 4를 연달아 지운 뒤 3만 되살려 보고, 기대한 결과와 실제 결과를 비교하라.<br/>
+    (4) (3)의 현상이 왜 일어나는지 <code class="inl">nxt[3]</code>과 <code class="inl">prv[4]</code>의 값으로 설명하라.<br/>
+    (5) n = 1,000,000에서 짝수 번호 50만 개를 지운 뒤 전부 되살려, 원래 순서 1…n이 복원되는지 검증하라. 전체 복잡도는?
+  </div><p style="font-size:8.6pt;margin-top:1.5mm;"><strong>성립 조건:</strong> <code class="inl">nxt[prv[x]]=x; prv[nxt[x]]=x;</code>는 저장된 양쪽 이웃이 <strong>현재 연결된 상태</strong>일 때만 유효하다. 삭제 순서의 역순으로 복구하면 이를 보장할 수 있다. 다만 <strong>이웃이 삭제되지 않은 경우</strong>에는 복구 순서를 바꾸어도 되는 반례가 있으므로, ‘역순이 아니면 언제나 실패’는 아니다.</p>
+<div class="box teal">
+<h4>두 문항이 겨냥하는 것</h4>
+<p style="margin-bottom:0;">C1은 <strong>PART 1 전체의 복습</strong>이다. 06장 스택만으로 10장의 문제를 풀 수 있다는 것을 보면, <em class="hl">자료구조는 문제가 정해 주는 것이 아니라 내가 고르는 것</em>임을 알게 된다. 실측으로도 두 방식이 거의 같다(3.4절: 7.9 ms 대 9.2 ms).<br/>
+    C2는 <strong>“지워도 자기 링크는 남는다”</strong>는 성질을 의도적으로 쓰는 연습이다. (3)이 핵심 — 이 기법은 <em class="hl">조건을 지킬 때만 동작</em>하고, 어기면 <strong>지우지도 않은 노드가 되살아난다.</strong> 이 아이디어는 고급 문제의 <strong>되돌리기(rollback)</strong>와 <strong>Dancing Links</strong>로 이어진다.</p>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+<!-- ============ 8 ============ -->
+<section class="page">
+<h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+<table>
+<thead><tr><th style="width:27%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+<tbody>
+<tr><td class="tt">“이중이면 k번째도 빨라지겠지”</td><td>임의 접근은 <strong>여전히 O(N)</strong>이다</td><td>이중이 바꾸는 것은 <em class="hl">“왼쪽을 알아야 하는 일”</em>뿐 (4.1절)</td></tr>
+<tr><td class="tt">“센티넬은 번거롭다”</td><td><code class="inl">erase</code>에만 분기가 네 개 생긴다</td><td>연습 02에서 직접 세어 본다</td></tr>
+<tr><td class="tt">“앞 노드 번호를 저장하지 않고 링크를 덮어써도 되겠지”</td><td>덮어쓴 prv[x]를 다시 앞 노드로 읽으면 연결이 깨진다</td><td>먼저 p=prv[x]를 저장하고, 새 노드의 링크부터 기록하는 습관을 들인다</td></tr>
+<tr><td class="tt">“커서는 몇 번째 글자다”</td><td>커서는 글자 <strong>사이</strong>에 있다</td><td><code class="inl">cur</code> = <strong>오른쪽 노드 번호</strong>로 약속한다 (2.3절)</td></tr>
+<tr><td class="tt">“<code class="inl">P</code> 뒤에 커서를 옮겨야겠지”</td><td>왼쪽에 넣으므로 오른쪽 노드가 안 바뀐다</td><td>보정 코드를 넣으면 <em class="hl">오히려 틀린다</em> (예제 2)</td></tr>
+<tr><td class="tt">“원형이면 코드가 더 간단하네”</td><td>끝이 없어 <strong>멈출 조건</strong>을 따로 만들어야 한다</td><td>남은 개수를 센다 (3.3절)</td></tr>
+<tr><td class="tt">“이동량이 1만 배면 1만 배 느리다”</td><td><code class="inl">memmove</code>는 매우 빠르다 — 16,600배 대 24배</td><td>연산 횟수는 <strong>복잡도</strong>를 보는 도구다 (3.4절)</td></tr>
+<tr><td class="tt">“작은 입력에서 배열도 되던데”</td><td>n = 20만에서는 빨라 보여도 100만에서는 훨씬 느려진다 (통과 여부는 제한 시간에 따라 다름)</td><td><strong>최대 입력</strong>으로 테스트한다</td></tr>
+</tbody>
+</table>
+<h3 class="sub">자가 점검</h3>
+<div class="box">
+<ul class="chk" style="margin-bottom:0;">
+<li><code class="inl">erase</code>를 두 줄로, 검사 없이 쓸 수 있다</li>
+<li>센티넬 두 개가 양 끝 NIL 분기를 왜 없애는지 설명할 수 있다</li>
+<li><code class="inl">insert_before</code> 네 줄의 순서를 틀리지 않는다</li>
+<li>커서를 노드 번호로 표현하고 네 명령을 O(1)로 짤 수 있다</li>
+<li>원형 연결을 만들고 멈출 조건을 넣을 수 있다</li>
+<li>배열·단일·이중의 복잡도 표 여섯 줄을 채울 수 있다</li>
+<li>이동량과 실제 시간이 왜 다른지 설명할 수 있다</li>
+</ul>
+</div>
+<div class="box teal">
+<h4>PART 1을 마치며 — 다음은 단원평가 T1, 그리고 PART 2</h4>
+<p>04~10장에서 만든 것을 모두 모으면 이렇다. <strong>Vec · 스택 · 큐 · 덱 · 단일 리스트 · 이중 리스트</strong> — 여섯 개를 전부 <em class="hl">배열과 정수 몇 개</em>로 만들었고, <code class="inl">malloc</code>은 한 번도 쓰지 않았다. 이 여섯 개는 <strong>36장 끝까지 재사용된다.</strong></p>
+<p style="margin-bottom:0;">반복해서 쓴 생각도 넷이다 — ① <strong>특수한 경우를 설계로 없앤다</strong>(더미·센티넬), ② <strong>“많아야 한 번”으로 O(N)을 증명한다</strong>, ③ <strong>최악 입력을 직접 만들어 본다</strong>, ④ <strong>연산 횟수와 실제 시간을 둘 다 본다</strong>. 다음 차시 <strong>단원평가 T1</strong>은 이 네 가지를 묻는다.<br/>
+    그 뒤 <strong>PART 2(11–16장)는 정렬과 탐색</strong>이다. 11장 병합 정렬에서 <em class="hl">원소를 병합하는 과정을 배열로 다시</em> 만나고, 14장 투 포인터에서 <em class="hl">08장 C2의 논증을 다시</em> 쓴다.</p>
+</div>
+<div class="foot"><span>10 이중 연결 리스트와 응용</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+</body>
+</html>

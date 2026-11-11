@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>06 스택 — 오류 수정 · 잉크 절약 인쇄</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:27pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  td.m{font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page{margin:0;width:auto;height:auto;min-height:0;padding:0;break-after:page;overflow:visible;}
+    .page:last-child{break-after:auto;}
+    .cover{height:266mm;padding:16mm 14mm;}
+    .foot{display:none;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2,.grid3{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4;}
+
+/* ===== 2026-11-06 오류 검토 및 잉크 절약 인쇄 ===== */
+.print-toolbar{position:fixed;right:18px;top:14px;z-index:1000;display:flex;align-items:center;gap:12px;
+  background:#fff;color:#10263c;border:1px solid #cbd5e1;padding:9px 12px;border-radius:10px;
+  box-shadow:0 6px 20px rgba(15,42,74,.16);font:600 14px "Malgun Gothic",sans-serif;}
+.print-toolbar button{background:#0d7c74;color:#fff;border:0;border-radius:7px;padding:9px 15px;
+  font:700 14px "Malgun Gothic",sans-serif;cursor:pointer;}
+.print-toolbar button:focus-visible{outline:3px solid #333;outline-offset:2px}
+@page{size:A4;margin:0;}
+@media print{
+  html,body{margin:0!important;padding:0!important;background:#fff!important;
+      color:#111!important;-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important;}
+  .print-toolbar,.foot{display:none!important;}
+  .page{box-sizing:border-box!important;width:210mm!important;min-height:297mm!important;
+      height:auto!important;padding:16mm 16mm 18mm!important;margin:0!important;
+      overflow:visible!important;break-after:page!important;background:#fff!important;}
+  .page:last-child{break-after:auto!important;}
+  .cover{height:297mm!important;min-height:297mm!important;display:flex!important;
+      padding:17mm!important;justify-content:space-between!important;background:#fff!important;}
+  body *{background-color:transparent!important;background-image:none!important;
+       color:#151515!important;box-shadow:none!important;text-shadow:none!important;
+       border-color:#aaa!important;}
+  .cover,.cover *{color:#111!important;}
+  h2.sec,.cover-rule{border-color:#555!important;}
+  h2.sec .num,.ex-h,.ex-h .tag,.prob .pn,.cover-goal,.qa,.box,.box.teal,.box.warm,
+  .badge,pre,pre.out,table,th,td,.chk li,code.inl{background:transparent!important;color:#111!important;}
+  th,td,.box,.qa,.ex,.prob,pre{border-color:#aaa!important;}
+  thead th,.ex-h{border-bottom:1px solid #888!important;}
+  .ex-h{font-weight:800!important;}
+  pre,pre *{color:#111!important;background:transparent!important;
+       white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+  pre{border:1px solid #bbb!important;padding:2.2mm 2.8mm!important;font-size:7.35pt!important;line-height:1.42!important;}
+  table{font-size:8.45pt!important;}
+  tr,pre,figure,.box,.qa,.prob,.grid2,.grid3{break-inside:avoid!important;}
+  .ex{break-inside:auto!important;}
+  .ex-h{break-after:avoid!important;}
+  h2.sec,h3.sub,h4.mini{break-after:avoid!important;}
+  svg rect,svg circle,svg ellipse,svg polygon{fill:#fff!important;stroke:#777!important;}
+  svg line{stroke:#666!important;}
+  svg path{stroke:#666!important;}
+  svg path[fill="none"]{fill:none!important;}
+  svg marker path{fill:#555!important;}
+  svg text,svg tspan{fill:#111!important;stroke:none!important;}
+  figcaption{color:#444!important;}
+  .chk li::before{color:#111!important;}
+}
+</style>
+</head>
+<body>
+<div class="print-toolbar"><span>06 스택 · 오류 수정본</span><button type="button" onclick="window.print()">A4 잉크 절약 인쇄 / PDF 저장</button></div>
+
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+  <div>
+    <div class="eyebrow">PART 1 · 선형 자료구조</div>
+    <div class="cover-rule"></div>
+    <div class="chno">06</div>
+    <h1>스택</h1>
+    <div class="sub">
+      LIFO ‖ 배열 스택 ‖ 괄호 검사 ‖ 후위 표기 변환과 계산 ‖ 재귀의 스택 치환<br>
+      난이도 ★★☆☆☆ · 6주차 · 100분 2차시
+    </div>
+    <div class="cover-goal">
+      <h3>이 장을 마치면 할 수 있는 것</h3>
+      <ul>
+        <li>배열 스택을 백지에서 5분 안에 작성할 수 있다</li>
+        <li>세 종류 괄호의 짝 검사를 짜고, 왜 종류별 스택 세 개가 틀리는지 말할 수 있다</li>
+        <li>중위 표기를 후위 표기로 바꾸고, 후위 표기를 계산할 수 있다</li>
+        <li>깊은 재귀가 왜 죽는지 알고, 같은 일을 명시적 스택으로 바꿔 쓸 수 있다</li>
+        <li>“가장 최근 것부터”라는 동사를 보면 즉시 스택을 떠올린다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+
+<!-- ============ 1. 왜 필요한가 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+  <p class="lead">01장에서 뽑은 동사 하나 — <strong>“가장 최근에 넣은 것을 뺀다”</strong> — 가 지목하는 자료구조를 드디어 만든다.</p>
+
+  <h3 class="sub">1.1 되돌아가야 하는 일들</h3>
+  <p>스택이 쓰이는 상황에는 공통점이 있다. <strong>들어간 순서의 역순으로 빠져나와야 한다</strong>는 것이다.</p>
+  <table>
+    <thead><tr><th style="width:26%">상황</th><th style="width:30%">쌓는 것</th><th>왜 역순인가</th></tr></thead>
+    <tbody>
+      <tr><td class="k">괄호 짝 검사</td><td>아직 짝을 못 찾은 여는 괄호</td><td>가장 안쪽 괄호가 가장 먼저 닫힌다</td></tr>
+      <tr><td class="k">수식 계산</td><td>아직 계산하지 못한 연산자</td><td>우선순위가 높은 연산이 나중에 들어와 먼저 처리된다</td></tr>
+      <tr><td class="k">되돌리기(undo)</td><td>지금까지 한 작업</td><td>마지막에 한 일부터 취소한다</td></tr>
+      <tr><td class="k">함수 호출</td><td>돌아갈 자리</td><td>나중에 부른 함수가 먼저 끝난다</td></tr>
+      <tr><td class="k">미로 탐색(DFS)</td><td>갈림길</td><td>막히면 <strong>가장 최근 갈림길</strong>로 되돌아간다</td></tr>
+    </tbody>
+  </table>
+  <p>마지막 두 줄이 중요하다. <em class="hl">컴퓨터가 함수를 부르고 돌아오는 방식 자체가 스택</em>이고, 30장에서 배울 DFS도 스택이다. 그래서 이 장에서 “재귀를 스택으로 바꾸는 법”(3.5절)까지 다룬다.</p>
+
+  <h3 class="sub">1.2 05장을 했다면 거의 다 끝났다</h3>
+  <p>05장 도전 C2에서 확인했듯, 스택의 기본 <code class="inl">push</code>·<code class="inl">pop</code> 동작은 <code class="inl">Vec</code>의 맨 뒤 연산과 같다.</p>
+  <table>
+    <thead><tr><th class="c" style="width:18%">스택 연산</th><th class="c" style="width:28%">Vec으로는</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="c k">push</td><td class="c ok"><code class="inl">vec_push</code> 그대로</td><td rowspan="2">맨 뒤가 곧 맨 위다</td></tr>
+      <tr><td class="c k">pop</td><td class="c ok"><code class="inl">vec_pop</code> 그대로</td></tr>
+      <tr><td class="c k">top</td><td class="c mid">마지막 칸 읽기 — <strong>새로 한 줄</strong></td><td><code class="inl">a[n-1]</code></td></tr>
+      <tr><td class="c k">empty</td><td class="c ok"><code class="inl">n == 0</code></td><td>그대로</td></tr>
+    </tbody>
+  </table>
+  <p>그래서 이 장의 무게는 <strong>자료구조 자체가 아니라 응용</strong>에 있다. 괄호 검사, 후위 표기, 재귀 치환 — 셋 다 대회 단골이고, 셋 다 “스택을 떠올릴 수 있는가”로 갈린다.</p>
+
+  <div class="qa">
+    <div class="q">Q. 그냥 배열에 담고 인덱스로 관리하면 되지 않나요?</div>
+    <div>맞다. <strong>실제로 그렇게 구현한다.</strong> 스택은 배열 하나와 정수 하나(<code class="inl">sp</code>)면 끝이다. 그런데도 “스택”이라는 이름을 붙이는 이유는 01장에서 배운 대로 <em class="hl">가운데를 건드리지 않겠다는 약속</em>을 하기 위해서다. 그 약속 덕분에 코드를 읽는 사람이 LIFO를 전제할 수 있고, 스택의 공개 연산만 사용하면 중간 조작을 피할 수 있다.</div>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+
+  <h3 class="sub">2.1 한쪽 끝만 열려 있다</h3>
+  <p>스택은 <strong>접시 더미</strong>다. 위에만 올려놓을 수 있고 위에서만 집을 수 있다. 가운데 접시를 빼낼 방법이 없다.</p>
+  <figure>
+    <svg viewBox="0 0 660 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="스택의 push와 pop">
+      <text x="86" y="16" font-size="10" font-weight="700" fill="#0f2a4a" text-anchor="middle">처음</text>
+      <g font-size="10" text-anchor="middle">
+        <rect x="46" y="96" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="86" y="113" fill="#0f2a4a">7</text>
+        <rect x="46" y="72" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="86" y="89" fill="#0f2a4a">3</text>
+      </g>
+      <text x="86" y="136" font-size="8.6" fill="#5b6876" text-anchor="middle">sp = 2</text>
+      <path d="M140 92 L176 92" stroke="#9aa8b5" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="158" y="84" font-size="8.6" fill="#5b6876" text-anchor="middle">push 9</text>
+      <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 z" fill="#9aa8b5"/></marker></defs>
+
+      <text x="230" y="16" font-size="10" font-weight="700" fill="#0f2a4a" text-anchor="middle">push 9</text>
+      <g font-size="10" text-anchor="middle">
+        <rect x="190" y="96" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="230" y="113" fill="#0f2a4a">7</text>
+        <rect x="190" y="72" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="230" y="89" fill="#0f2a4a">3</text>
+        <rect x="190" y="48" width="80" height="24" fill="#ffe9a8" stroke="#b4531a" stroke-width="1.4"/><text x="230" y="65" fill="#0f2a4a" font-weight="700">9</text>
+      </g>
+      <text x="230" y="136" font-size="8.6" fill="#5b6876" text-anchor="middle">sp = 3</text>
+      <path d="M284 92 L320 92" stroke="#9aa8b5" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="302" y="84" font-size="8.6" fill="#5b6876" text-anchor="middle">pop</text>
+
+      <text x="374" y="16" font-size="10" font-weight="700" fill="#0f2a4a" text-anchor="middle">pop → 9</text>
+      <g font-size="10" text-anchor="middle">
+        <rect x="334" y="96" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="374" y="113" fill="#0f2a4a">7</text>
+        <rect x="334" y="72" width="80" height="24" fill="#eef4f3" stroke="#0d7c74"/><text x="374" y="89" fill="#0f2a4a">3</text>
+        <rect x="334" y="48" width="80" height="24" fill="#fff" stroke="#d7dee6" stroke-dasharray="3 3"/>
+      </g>
+      <text x="374" y="136" font-size="8.6" fill="#5b6876" text-anchor="middle">sp = 2</text>
+
+      <rect x="446" y="40" width="200" height="86" rx="6" fill="#0f2a4a"/>
+      <text x="546" y="62" font-size="10.5" fill="#9ee3dc" text-anchor="middle" font-weight="700">나중에 넣은 것이</text>
+      <text x="546" y="80" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="700">먼저 나온다 (LIFO)</text>
+      <text x="546" y="104" font-size="9.3" fill="#cfe3f2" text-anchor="middle">sp 하나만 움직이면 된다 —</text>
+      <text x="546" y="118" font-size="9.3" fill="#cfe3f2" text-anchor="middle">그래서 모든 연산이 O(1)</text>
+    </svg>
+    <figcaption>그림 6-1. push와 pop은 <code>sp</code>를 1 올리고 내리는 것이 전부다</figcaption>
+  </figure>
+
+  <h3 class="sub">2.2 손으로 추적하기</h3>
+  <p>새 자료구조는 코드보다 추적이 먼저다(설계 원칙 P1).</p>
+  <table>
+    <thead><tr><th class="c" style="width:12%">순서</th><th class="c" style="width:16%">연산</th><th class="c" style="width:16%">반환값</th><th class="c" style="width:26%">스택 (아래 → 위)</th><th class="c">sp</th></tr></thead>
+    <tbody>
+      <tr><td class="c">0</td><td class="c">—</td><td class="c">—</td><td class="c m">(비어 있음)</td><td class="c">0</td></tr>
+      <tr><td class="c">1</td><td class="c tt">push 5</td><td class="c">—</td><td class="c m">5</td><td class="c">1</td></tr>
+      <tr><td class="c">2</td><td class="c tt">push 2</td><td class="c">—</td><td class="c m">5 2</td><td class="c">2</td></tr>
+      <tr><td class="c">3</td><td class="c tt">top</td><td class="c ok">2</td><td class="c m">5 2</td><td class="c">2</td></tr>
+      <tr><td class="c">4</td><td class="c tt">pop</td><td class="c ok">2</td><td class="c m">5</td><td class="c">1</td></tr>
+      <tr><td class="c">5</td><td class="c tt">pop</td><td class="c ok">5</td><td class="c m">(비어 있음)</td><td class="c">0</td></tr>
+      <tr><td class="c">6</td><td class="c tt">pop</td><td class="c no">사전조건 위반</td><td class="c m">—</td><td class="c no">무효</td></tr>
+    </tbody>
+  </table>
+  <div class="box warm">
+    <h4>마지막 줄이 이 장의 모든 버그다</h4>
+    <p style="margin-bottom:0;">빈 스택에서 <code class="inl">pop</code>을 호출하면 <code class="inl">st[--sp]</code>가 유효 범위를 벗어난다. 이는 <strong>정의되지 않은 동작(UB)</strong>으로, 오류 종료·엉뚱한 값·예상 밖의 결과 중 무엇이 일어날지 보장되지 않는다. 01장 명세표의 사전조건 <strong>“비어 있지 않을 것”</strong>이 이것을 막는 한 줄이었다.</p>
+  </div>
+
+  <h3 class="sub">2.3 왜 가운데를 못 보게 하는가</h3>
+  <p>배열이라면 가운데를 읽을 수 있는데 스택은 막는다. 손해 같지만 이득이 더 크다.</p>
+  <div class="grid3">
+    <div class="box teal"><h4>읽기 쉬워진다</h4><p style="margin-bottom:0;"><code class="inl">Stack</code>이라는 이름만 보고 LIFO를 전제한 채 코드를 읽을 수 있다</p></div>
+    <div class="box teal"><h4>틀리기 어려워진다</h4><p style="margin-bottom:0;">가운데를 건드려 규칙을 깨는 실수가 <strong>애초에 불가능</strong>하다</p></div>
+    <div class="box teal"><h4>갈아 끼울 수 있다</h4><p style="margin-bottom:0;">속을 배열에서 연결 리스트로 바꿔도 쓰는 쪽은 그대로다 (01장 2.3절)</p></div>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현</h2>
+  <p class="lead">스택 본체는 짧지만 <strong>배열 용량과 비어 있는 상태에 대한 사전조건</strong>을 꼭 지켜야 한다. 나머지 절은 응용을 다룬다.</p>
+
+  <h3 class="sub">3.1 배열 스택 — 대회 실전형</h3>
+  <p>대회에서는 <code class="inl">Vec</code>을 감싸기보다 <strong>전역 배열과 정수 하나</strong>로 쓰는 쪽이 더 흔하다. 짧고 실수가 없기 때문이다.</p>
+<pre><span class="cm">/* stack.c — 전역 배열 스택 */</span>
+#define MAXS 1000005
+<span class="kw">static</span> <span class="kw">int</span> st[MAXS];
+<span class="kw">static</span> <span class="kw">int</span> sp;                    <span class="cm">/* 다음에 쌓을 자리 = 현재 개수 */</span>
+
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">push</span>(<span class="kw">int</span> x){ st[sp++] = x; }       <span class="cm">/* 사전: sp &lt; MAXS */</span>
+<span class="kw">static</span> <span class="kw">int</span>  <span class="fn">pop</span> (<span class="kw">void</span>){ <span class="kw">return</span> st[--sp]; }   <span class="cm">/* 사전: sp &gt; 0 */</span>
+<span class="kw">static</span> <span class="kw">int</span>  <span class="fn">top</span> (<span class="kw">void</span>){ <span class="kw">return</span> st[sp-1]; }   <span class="cm">/* 사전: sp &gt; 0 */</span>
+<span class="kw">static</span> <span class="kw">int</span>  <span class="fn">empty</span>(<span class="kw">void</span>){ <span class="kw">return</span> sp == 0; }
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">clear</span>(<span class="kw">void</span>){ sp = 0; }            <span class="cm">/* 여러 번 쓸 때 */</span></pre>
+  <table>
+    <thead><tr><th style="width:24%">쓰는 곳</th><th style="width:22%">어느 쪽</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td class="k">대회 문제 풀이</td><td class="tt ok">전역 배열 스택</td><td>10줄이고 메모리 관리가 없다. <strong>크기 상한을 알 때 1순위</strong></td></tr>
+      <tr><td class="k">스택이 여러 개</td><td class="tt">Vec 감싸기</td><td>각자 필요한 만큼만 쓴다 (05장 예제 3)</td></tr>
+      <tr><td class="k">크기를 모름</td><td class="tt">Vec 감싸기</td><td>필요에 따라 확장할 수 있다. 단, 메모리 할당 실패는 검사해야 한다</td></tr>
+    </tbody>
+  </table>
+  <div class="box">
+    <h4><code class="inl">sp</code>가 가리키는 자리를 헷갈리지 않기</h4>
+    <p style="margin-bottom:0;">이 교재는 <code class="inl">sp</code>를 <strong>“다음에 쌓을 빈 자리”</strong>로 쓴다. 그래서 현재 개수와 <code class="inl">sp</code>가 같고, 맨 위 값은 <code class="inl">st[sp-1]</code>이다. 반대로 <em class="hl"><code class="inl">sp</code>를 “맨 위 값의 자리”로 쓰는 방식</em>도 있는데, 그러면 빈 상태가 <code class="inl">sp == -1</code>이 되고 <code class="inl">push</code>는 <code class="inl">st[++sp]</code>가 된다. 둘 다 맞지만 <strong>섞어 쓰면 반드시 틀린다.</strong> 한 가지로 통일한다.</p>
+  </div>
+  <div class="box warm">
+    <h4>배열 크기와 사용 조건</h4>
+    <p style="margin-bottom:0;">괄호 검사에서는 최대 열린 괄호 수, DFS에서는 구현 방식에 따른 최대 동시 대기 정점 수를 기준으로 정한다. 예제의 <code class="inl">push</code>는 <code class="inl">sp &lt; MAXS</code>, <code class="inl">pop/top</code>은 <code class="inl">sp &gt; 0</code>이 사전조건이다. 큰 배열은 전역이나 동적 할당을 사용하면 호출 스택 부담을 줄일 수 있다.</p>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.2 괄호 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.2 응용 ① 괄호 짝 검사</h3>
+  <p>01장 3.2절에서 동사를 뽑아 둔 그 문제다. 이번에는 세 종류 괄호 <code class="inl">()</code> <code class="inl">[]</code> <code class="inl">{}</code>가 섞인다.</p>
+<pre><span class="kw">static</span> <span class="kw">char</span> <span class="fn">match</span>(<span class="kw">char</span> c){            <span class="cm">/* 닫는 괄호의 짝 */</span>
+    <span class="kw">return</span> c == <span class="st">')'</span> ? <span class="st">'('</span> : (c == <span class="st">']'</span> ? <span class="st">'['</span> : <span class="st">'{'</span>);
+}
+<span class="kw">static</span> <span class="kw">int</span> <span class="fn">balanced</span>(<span class="kw">const</span> <span class="kw">char</span> *s){
+    sp = 0;
+    <span class="kw">for</span> (<span class="kw">const</span> <span class="kw">char</span> *p = s; *p; ++p) {
+        <span class="kw">if</span> (*p==<span class="st">'('</span> || *p==<span class="st">'['</span> || *p==<span class="st">'{'</span>) <span class="fn">push</span>(*p);
+        <span class="kw">else</span> <span class="kw">if</span> (*p==<span class="st">')'</span> || *p==<span class="st">']'</span> || *p==<span class="st">'}'</span>) {
+            <span class="kw">if</span> (<span class="fn">empty</span>())            <span class="kw">return</span> 0;   <span class="cm">/* 닫는데 열린 게 없다 */</span>
+            <span class="kw">if</span> (<span class="fn">top</span>() != <span class="fn">match</span>(*p)) <span class="kw">return</span> 0;   <span class="cm">/* 종류가 다르다 */</span>
+            <span class="fn">pop</span>();
+        }
+    }
+    <span class="kw">return</span> <span class="fn">empty</span>();                        <span class="cm">/* 남은 게 없어야 올바르다 */</span>
+}</pre>
+<pre class="out"><span class="lbl">$ ./bracket</span>
+(())()       -&gt; 올바름
+())(         -&gt; 틀림        <span class="lbl">닫는데 열린 게 없음</span>
+([{}])       -&gt; 올바름
+([)]         -&gt; 틀림        <span class="lbl">종류가 어긋남</span>
+(((          -&gt; 틀림        <span class="lbl">끝났는데 남아 있음</span>
+(빈 문자열)  -&gt; 올바름
+a(b[c]d)e    -&gt; 올바름      <span class="lbl">괄호 아닌 글자는 무시</span></pre>
+  <div class="box teal">
+    <h4>틀리는 경우가 정확히 세 가지다</h4>
+    <ol style="margin-bottom:0;">
+      <li><strong>닫는데 스택이 비었다</strong> — <code class="inl">())(</code>의 세 번째 글자</li>
+      <li><strong>맨 위와 종류가 다르다</strong> — <code class="inl">([)]</code>의 <code class="inl">)</code>. 맨 위는 <code class="inl">[</code>인데 짝이 <code class="inl">(</code>라서 어긋난다</li>
+      <li><strong>다 읽었는데 남아 있다</strong> — <code class="inl">(((</code></li>
+    </ol>
+  </div>
+  <div class="box warm">
+    <h4>종류별로 스택 세 개를 쓰면 왜 틀리는가</h4>
+    <p style="margin-bottom:0;">소괄호용·대괄호용·중괄호용 카운터를 따로 두면 <code class="inl">([)]</code>가 <strong>올바르다고 판정된다.</strong> 소괄호도 1개씩, 대괄호도 1개씩 맞기 때문이다. 하지만 <em class="hl">“열린 순서의 역순으로 닫혀야 한다”</em>는 조건은 종류를 가로질러 확인해야 하므로, <strong>하나의 스택</strong>에 모두 쌓아야 한다. 이 반례 하나로 설계가 결정된다.</p>
+    <p style="margin-top:2mm;margin-bottom:0;"><strong>입력 조건:</strong> 문자열 길이는 스택 용량 <code class="inl">MAXS</code> 이하로 제한한다. 더 긴 입력을 허용한다면 <code class="inl">push</code> 전에 용량 검사 또는 동적 확장이 필요하다.</p>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.3 후위 변환 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.3 응용 ② 중위 → 후위 표기</h3>
+  <p>우리가 쓰는 <code class="inl">A+B*C</code>는 <strong>중위 표기</strong>다. 연산자가 가운데 있어 우선순위와 괄호를 따져야 한다. <strong>후위 표기</strong> <code class="inl">ABC*+</code>는 계산 순서가 표현에 반영되므로 <em class="hl">계산할 때 별도로 괄호·우선순위를 해석하지 않아도 된다.</em></p>
+  <table>
+    <thead><tr><th class="c" style="width:26%">중위</th><th class="c" style="width:26%">후위</th><th>읽는 법</th></tr></thead>
+    <tbody>
+      <tr><td class="c m">A+B*C</td><td class="c m ok">ABC*+</td><td>B와 C를 곱하고, 거기에 A를 더한다</td></tr>
+      <tr><td class="c m">(A+B)*C</td><td class="c m ok">AB+C*</td><td>A와 B를 더하고, 거기에 C를 곱한다</td></tr>
+    </tbody>
+  </table>
+  <p><strong>변환 규칙은 세 줄</strong>이다. 피연산자는 바로 내보내고, 연산자는 스택에 쌓되 <strong>괄호 밖에서 자기보다 우선순위가 같거나 높은 연산자는 먼저 내보낸다(여기서는 모두 왼쪽 결합).</strong> 여는 괄호는 그냥 쌓고, 닫는 괄호를 만나면 여는 괄호가 나올 때까지 쏟아 낸다.</p>
+<pre><span class="kw">static</span> <span class="kw">int</span> <span class="fn">prec</span>(<span class="kw">char</span> c){            <span class="cm">/* 우선순위 */</span>
+    <span class="kw">return</span> (c==<span class="st">'*'</span>||c==<span class="st">'/'</span>) ? 2 : (c==<span class="st">'+'</span>||c==<span class="st">'-'</span>) ? 1 : 0;
+}
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">to_postfix</span>(<span class="kw">const</span> <span class="kw">char</span> *s, <span class="kw">char</span> *out){
+    <span class="kw">int</span> k = 0;  sp = 0;
+    <span class="kw">for</span> (<span class="kw">const</span> <span class="kw">char</span> *p = s; *p; ++p) {
+        <span class="kw">if</span> (*p == <span class="st">' '</span> || *p == <span class="st">'\\t'</span>) <span class="kw">continue</span>;
+        <span class="kw">if</span> (*p &gt;= <span class="st">'A'</span> &amp;&amp; *p &lt;= <span class="st">'Z'</span>) out[k++] = *p;      <span class="cm">/* 피연산자 */</span>
+        <span class="kw">else</span> <span class="kw">if</span> (*p == <span class="st">'('</span>) <span class="fn">push</span>(*p);
+        <span class="kw">else</span> <span class="kw">if</span> (*p == <span class="st">')'</span>) {
+            <span class="kw">while</span> (!<span class="fn">empty</span>() &amp;&amp; <span class="fn">top</span>() != <span class="st">'('</span>) out[k++] = <span class="fn">pop</span>();
+            <span class="kw">if</span> (!<span class="fn">empty</span>()) <span class="fn">pop</span>();                       <span class="cm">/* '(' 는 버린다 */</span>
+        } <span class="kw">else</span> {
+            <span class="kw">while</span> (!<span class="fn">empty</span>() &amp;&amp; <span class="fn">top</span>() != <span class="st">'('</span> &amp;&amp;
+                   <span class="fn">prec</span>(<span class="fn">top</span>()) &gt;= <span class="fn">prec</span>(*p))
+                out[k++] = <span class="fn">pop</span>();
+            <span class="fn">push</span>(*p);
+        }
+    }
+    <span class="kw">while</span> (!<span class="fn">empty</span>()) out[k++] = <span class="fn">pop</span>();          <span class="cm">/* 남은 것 쏟기 */</span>
+    out[k] = <span class="st">'\0'</span>;
+}</pre>
+<pre class="out"><span class="lbl">$ ./postfix</span>
+A+B*C          -&gt; ABC*+
+(A+B)*C        -&gt; AB+C*
+A*B+C*D        -&gt; AB*CD*+
+A+B*C-D/E      -&gt; ABC*+DE/-
+((A+B)*C-D)*E  -&gt; AB+C*D-E*</pre>
+  <p style="font-size:9pt;margin:2mm 0;"><strong>이 예제의 입력 범위:</strong> 피연산자는 영문 대문자 한 글자, 연산자는 <code class="inl">+ - * /</code>, 괄호는 올바르게 짝지어져 있으며 단항 마이너스는 없다. 출력 배열은 <code class="inl">strlen(s)+1</code>바이트 이상이어야 한다. 문법 오류 검사는 실전 프로그램에서 별도로 추가한다.</p>
+  <div class="box">
+    <h4>왜 <code class="inl">&gt;=</code>인가 (<code class="inl">&gt;</code>가 아니라)</h4>
+    <p style="margin-bottom:0;">같은 우선순위일 때도 먼저 내보내야 <strong>왼쪽부터 계산</strong>된다. <code class="inl">A-B-C</code>는 <code class="inl">(A-B)-C</code>이지 <code class="inl">A-(B-C)</code>가 아니다. <code class="inl">&gt;</code>로 쓰면 <code class="inl">ABC--</code>가 되어 <em class="hl">뺄셈 순서가 뒤집힌다.</em> 거듭제곱처럼 오른쪽부터 계산하는 연산자라면 반대로 <code class="inl">&gt;</code>를 쓴다.</p>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.4 후위 계산 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.4 응용 ③ 후위 표기 계산</h3>
+  <p>변환보다 훨씬 쉽다. <strong>숫자는 쌓고, 연산자를 만나면 두 개를 꺼내 계산해 다시 쌓는다.</strong> 끝나면 스택에 하나가 남고 그것이 답이다.</p>
+<pre>/* 한 자리 숫자 후위식. 성공 1 / 실패 0 */
+#include &lt;limits.h&gt;
+static long long val[MAXS];
+static int vsp;
+static int eval_postfix(const char *s, long long *answer){
+    vsp = 0;
+    for (const char *p=s; *p; ++p) {
+        if (*p==' ' || *p=='\t') continue;
+        if (*p&gt;='0' &amp;&amp; *p&lt;='9') {
+            if (vsp&gt;=MAXS) return 0;
+            val[vsp++]=*p-'0'; continue;
+        }
+        char op=*p;
+        if (op!='+' &amp;&amp; op!='-' &amp;&amp; op!='*' &amp;&amp; op!='/') return 0;
+        if (vsp&lt;2) return 0;
+        long long b=val[--vsp], a=val[--vsp];
+        if (op=='/' &amp;&amp; (b==0 || (a==LLONG_MIN &amp;&amp; b==-1))) return 0;
+        /* 전제: 계산 결과는 모두 long long 범위 안 */
+        val[vsp++]=op=='+' ? a+b : op=='-' ? a-b : op=='*' ? a*b : a/b;
+    }
+    if (vsp!=1) return 0;
+    *answer=val[0]; return 1;
+}</pre>
+<p style="font-size:9pt;margin:2mm 0;">호출 예: <code class="inl">long long ans; if (eval_postfix("34+2*", &amp;ans)) printf("%lld", ans);</code>. 이 함수는 입력 오류와 0으로 나누기를 검사한다. 범위를 벗어나는 정수 연산은 문제의 입력 조건에서 제외해야 하며, 일반 입력을 다룰 때는 별도 오버플로 검사를 추가한다. <strong>숫자 여러 자리와 음수 리터럴은 지원하지 않는다.</strong></p>
+<pre class="out"><span class="lbl">$ ./postfix</span>
+34+2*    = 14        <span class="lbl">(3+4)*2</span>
+52-3*    = 9         <span class="lbl">(5-2)*3</span>
+123*+    = 7         <span class="lbl">1+(2*3)</span>
+92/4-    = 0         <span class="lbl">(9/2)-4 = 4-4, 정수 나눗셈</span></pre>
+  <div class="box warm">
+    <h4>꺼내는 순서가 거꾸로다 — 가장 흔한 버그</h4>
+    <p style="margin-bottom:0;"><code class="inl">a - b</code>를 계산할 때 <strong>먼저 꺼낸 것이 오른쪽 피연산자 b</strong>다. 나중에 꺼낸 것이 왼쪽 a다. 순서를 바꾸면 덧셈·곱셈은 우연히 맞고 <em class="hl">뺄셈과 나눗셈만 틀린다.</em> 그래서 <code class="inl">34+2*</code>로 테스트하면 통과하고 <code class="inl">52-3*</code>에서 비로소 드러난다. <strong>테스트는 반드시 뺄셈을 포함해야 한다.</strong></p>
+  </div>
+
+  <h4 class="mini">세 응용의 공통 구조</h4>
+  <table>
+    <thead><tr><th style="width:20%">응용</th><th style="width:26%">스택에 쌓는 것</th><th>언제 꺼내는가</th></tr></thead>
+    <tbody>
+      <tr><td class="k">괄호 검사</td><td>여는 괄호</td><td>닫는 괄호를 만났을 때</td></tr>
+      <tr><td class="k">중위→후위</td><td>연산자와 여는 괄호</td><td>우선순위가 낮은 연산자나 닫는 괄호를 만났을 때</td></tr>
+      <tr><td class="k">후위 계산</td><td>계산 결과(숫자)</td><td>연산자를 만났을 때 두 개</td></tr>
+    </tbody>
+  </table>
+  <p>셋 다 <em class="hl">“지금은 처리할 수 없으니 미뤄 두었다가, 처리할 수 있게 되면 가장 최근 것부터 꺼낸다”</em>는 같은 모양이다. 이 모양이 보이면 스택이다.</p>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.5 재귀 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.5 응용 ④ 재귀를 스택으로 바꾸기</h3>
+  <p>함수를 부르면 돌아갈 자리와 지역 변수가 <strong>스택(03장 2.2절)</strong>에 쌓인다. 즉 <em class="hl">재귀는 일반적으로 컴퓨터가 호출 스택을 사용하게 하는 것</em>이다. 호출 스택 한도는 운영체제·채점 환경·컴파일 옵션에 따라 달라지며 <strong>항상 8MB인 것은 아니다.</strong></p>
+<pre><span class="cm">/* 1부터 n까지 더하는 재귀 */</span>
+<span class="kw">static</span> <span class="kw">long</span> <span class="kw">long</span> <span class="fn">rec</span>(<span class="kw">int</span> n){
+    <span class="kw">if</span> (n == 0) <span class="kw">return</span> 0;
+    <span class="kw">return</span> n + <span class="fn">rec</span>(n - 1);
+}</pre>
+<pre class="out"><span class="lbl">환경별 관찰 예시 (Linux, 호출 스택 제한 8 MiB)</span>
+-O0 : 깊이가 커지면 호출 스택 한도를 넘을 수 있음
+-O2 : 컴파일러가 단순 재귀를 반복 형태로 최적화할 수 있음
+<span class="lbl">※ 실패하는 정확한 깊이와 최적화 여부는 보장되지 않는다.</span></pre>
+  <div class="box warm">
+    <h4>최적화에 따라 결과가 달라질 수 있다</h4>
+    <p style="margin-bottom:0;"><code class="inl">-O2</code>에서는 특정 재귀가 반복문으로 최적화될 수 있다. 그러나 <strong>모든 재귀가 그렇게 바뀌는 것은 아니다.</strong> 가지가 갈라지는 호출이나 작업이 남아 있는 호출은 스택을 계속 사용할 수 있다. <em class="hl">같은 코드라도 컴파일러·환경에 따라 한계가 달라진다.</em> 깊이가 매우 큰 문제는 명시적 스택이나 반복문으로 해결하는 편이 안전하다.</p>
+  </div>
+
+  <h4 class="mini">명시적 스택으로 바꾸기</h4>
+  <p>“호출을 쌓는” 대신 “해야 할 일을 쌓는다”로 바꾸면 전역 배열을 쓰게 되어 8MB 제한에서 벗어난다. DFS를 예로 보자.</p>
+  <div class="grid2">
+    <div>
+<pre style="margin-bottom:0;"><span class="cm">/* 재귀 DFS */</span>
+<span class="kw">void</span> <span class="fn">dfs</span>(<span class="kw">int</span> u){
+    vis[u] = 1;
+    <span class="kw">int</span> v = nxt[u];
+    <span class="kw">if</span> (v != -1 &amp;&amp; !vis[v])
+        <span class="fn">dfs</span>(v);
+}</pre>
+    </div>
+    <div>
+<pre style="margin-bottom:0;"><span class="cm">/* 명시적 스택 DFS */</span>
+st[sp++] = 0;
+<span class="kw">while</span> (sp) {
+    <span class="kw">int</span> u = st[--sp];
+    <span class="kw">if</span> (vis[u]) <span class="kw">continue</span>;
+    vis[u] = 1;
+    <span class="kw">int</span> v = nxt[u];
+    <span class="kw">if</span> (v != -1 &amp;&amp; !vis[v]) st[sp++] = v;
+}</pre>
+    </div>
+  </div>
+  <pre class="out">명시적 스택 DFS는 함수 호출 스택의 깊이 제한을 피한다.
+<span class="lbl">※ 정점 수에 맞게 vis/nxt를 할당하고, 대기 정점 수에 맞는 스택 용량도 확보해야 한다.</span></pre>
+  <div class="box teal">
+    <h4>바꾸는 세 단계</h4>
+    <ol style="margin-bottom:0;">
+      <li><strong>쌓을 것을 정한다</strong> — 단순 DFS는 정점 번호를 쌓는다. 복잡한 재귀는 지역 상태·복귀 단계도 담아야 할 수 있다</li>
+      <li><strong><code class="inl">while (sp)</code> 루프로 감싼다</strong> — 꺼내서 처리하고, 다음에 할 일을 쌓는다</li>
+      <li><strong>방문 검사의 시점을 정한다</strong> — 이 예제는 꺼낼 때 검사하지만, 일반 그래프는 중복 push 방지를 위해 넣을 때 표시하기도 한다</li>
+    </ol>
+  </div>
+  <p style="font-size:9pt;color:var(--muted);">※ 함수가 끝난 <strong>뒤에</strong> 할 일이 있는 재귀(후위 순회 등)는 바꾸기가 더 까다롭다. 16장 이진 트리에서 그 방법을 따로 다룬다.</p>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석</h2>
+
+  <h3 class="sub">4.1 연산별 비용</h3>
+  <table>
+    <thead><tr><th style="width:18%">연산</th><th class="c" style="width:18%">배열 스택</th><th class="c" style="width:22%">Vec 감싼 스택</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="k">push</td><td class="c ok">O(1)</td><td class="c ok">O(1) 분할 상환</td><td>배열판은 늘리기가 없어 언제나 O(1)</td></tr>
+      <tr><td class="k">pop · top · empty</td><td class="c ok">O(1)</td><td class="c ok">O(1)</td><td><code class="inl">sp</code> 하나만 본다</td></tr>
+      <tr><td class="k">가운데 보기</td><td class="c no">제공하지 않음</td><td class="c no">제공하지 않음</td><td>ADT가 금지한다 (2.3절)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">4.2 세 응용의 복잡도</h3>
+  <table>
+    <thead><tr><th style="width:22%">응용</th><th class="c" style="width:16%">복잡도</th><th>근거</th></tr></thead>
+    <tbody>
+      <tr><td class="k">괄호 검사</td><td class="c ok">O(N)</td><td>여는 괄호당 push 1회, 닫는 괄호당 pop 최대 1회이며 각 글자를 한 번 검사한다. <strong>전체 O(N)</strong></td></tr>
+      <tr><td class="k">중위 → 후위</td><td class="c ok">O(N)</td><td>연산자 하나는 많아야 한 번 쌓이고 한 번 나온다</td></tr>
+      <tr><td class="k">후위 계산</td><td class="c ok">O(N)</td><td>숫자 하나당 push 한 번, 연산자 하나당 pop 두 번 push 한 번</td></tr>
+      <tr><td class="k">DFS (30장)</td><td class="c ok">O(V+E)</td><td>정점과 간선을 한 번씩</td></tr>
+    </tbody>
+  </table>
+  <div class="box teal">
+    <h4>“많아야 한 번”이 핵심 논리다</h4>
+    <p style="margin-bottom:0;">세 응용 모두 <strong>한 번 쌓인 것은 한 번만 나온다.</strong> 루프 안에 <code class="inl">while</code>이 있어 겉보기에는 O(N²)처럼 보이지만, <em class="hl">전체에서 pop이 일어나는 총 횟수가 push 횟수를 넘을 수 없으므로</em> 합쳐서 O(N)이다. 05장의 분할 상환과 같은 사고이고, 08장 단조 스택에서 다시 쓰인다.</p>
+  </div>
+
+  <h3 class="sub">4.3 공간</h3>
+  <table>
+    <thead><tr><th style="width:26%">상황</th><th class="c" style="width:20%">최대 깊이</th><th>메모리 (int 기준)</th></tr></thead>
+    <tbody>
+      <tr><td class="k">괄호 검사</td><td class="c">문자열 길이 N</td><td>N = 100만이면 4 MB. <code class="inl">char</code>로 담으면 1 MB</td></tr>
+      <tr><td class="k">후위 계산</td><td class="c">피연산자 개수</td><td>한 자리 숫자와 이항 연산자만 있으면 전체 토큰의 약 절반</td></tr>
+      <tr><td class="k">DFS</td><td class="c">구현에 따라 다름</td><td>넣을 때 방문 표시하면 대기 정점은 최대 O(V); 꺼낼 때 표시하면 중복 삽입으로 O(E)까지 가능</td></tr>
+    </tbody>
+  </table>
+  <p>재귀 호출에서는 지역 변수, 반환 위치 등의 정보가 호출 스택에 저장된다. 호출 한 번의 실제 크기는 컴파일러·함수·최적화에 따라 달라진다. 정점 번호만 저장하는 명시적 <code class="inl">int</code> 스택은 원소당 보통 4바이트를 사용하므로, <strong>깊은 탐색에서 메모리 사용과 호출 스택 한계를 직접 통제하기 쉽다.</strong></p>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제</h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 1 <span class="tag">괄호 검사 추적</span></div>
+    <div class="ex-b">
+      <p><code class="inl">([)]</code>를 <code class="inl">balanced</code>에 넣었을 때의 진행을 글자마다 적고, 어느 지점에서 왜 실패하는지 밝혀라.</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:14%">글자</th><th class="c" style="width:20%">하는 일</th><th class="c" style="width:20%">스택</th><th>판정</th></tr></thead>
+          <tbody>
+            <tr><td class="c m">(</td><td class="c">push</td><td class="c m">(</td><td>계속</td></tr>
+            <tr><td class="c m">[</td><td class="c">push</td><td class="c m">( [</td><td>계속</td></tr>
+            <tr><td class="c m">)</td><td class="c">top과 비교</td><td class="c m">( [</td><td class="no">맨 위가 <code class="inl">[</code>인데 <code class="inl">)</code>의 짝은 <code class="inl">(</code> → <strong>실패</strong></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>핵심.</b> 세 번째 글자에서 멈춘다. 이것이 <em class="hl">종류별 카운터로는 잡을 수 없는 오류</em>다 — 소괄호 1쌍, 대괄호 1쌍으로 개수는 완벽히 맞기 때문이다. “역순으로 닫혀야 한다”를 검사하려면 반드시 <strong>하나의 스택</strong>이어야 한다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 2 <span class="tag">후위 변환 추적</span></div>
+    <div class="ex-b">
+      <p><code class="inl">A+B*C-D</code>를 후위 표기로 바꾸는 과정을 글자마다 추적하라.</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:12%">글자</th><th class="c" style="width:30%">하는 일</th><th class="c" style="width:18%">연산자 스택</th><th class="c">출력</th></tr></thead>
+          <tbody>
+            <tr><td class="c m">A</td><td class="c">피연산자 → 바로 출력</td><td class="c m">(빔)</td><td class="c m">A</td></tr>
+            <tr><td class="c m">+</td><td class="c">스택이 비어 바로 쌓기</td><td class="c m">+</td><td class="c m">A</td></tr>
+            <tr><td class="c m">B</td><td class="c">출력</td><td class="c m">+</td><td class="c m">AB</td></tr>
+            <tr><td class="c m">*</td><td class="c">prec(+)=1 &lt; prec(*)=2 → 쌓기</td><td class="c m">+ *</td><td class="c m">AB</td></tr>
+            <tr><td class="c m">C</td><td class="c">출력</td><td class="c m">+ *</td><td class="c m">ABC</td></tr>
+            <tr><td class="c m">−</td><td class="c">prec(*)≥1 → pop, prec(+)≥1 → pop, 쌓기</td><td class="c m">−</td><td class="c m">ABC*+</td></tr>
+            <tr><td class="c m">D</td><td class="c">출력</td><td class="c m">−</td><td class="c m">ABC*+D</td></tr>
+            <tr><td class="c">끝</td><td class="c">남은 것 쏟기</td><td class="c m">(빔)</td><td class="c m ok">ABC*+D−</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>확인.</b> <code class="inl">A+B*C-D</code>는 <code class="inl">(A+(B*C))-D</code>이고, 후위 <code class="inl">ABC*+D−</code>를 읽으면 “B와 C를 곱하고, A를 더하고, D를 뺀다”로 정확히 일치한다. <em class="hl">여섯 번째 줄에서 두 개를 연달아 꺼내는 것</em>이 핵심이다 — <code class="inl">while</code>이므로 조건을 만족하는 동안 계속 꺼낸다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 3 <span class="tag">꺼내는 순서</span></div>
+    <div class="ex-b">
+      <p>후위 계산기에서 피연산자를 꺼내는 순서를 바꿔 <code class="inl">a = val[--vsp]; b = val[--vsp];</code>로 썼다. (1) <code class="inl">34+2*</code>는 맞는가? (2) <code class="inl">52-3*</code>는? (3) 이 버그가 늦게 발견되는 이유는?</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:16%">입력</th><th class="c" style="width:18%">올바른 답</th><th class="c" style="width:22%">순서 바꾼 결과</th><th>왜</th></tr></thead>
+          <tbody>
+            <tr><td class="c m">34+2*</td><td class="c ok">14</td><td class="c ok">14</td><td>덧셈·곱셈은 순서가 바뀌어도 같다 (교환법칙)</td></tr>
+            <tr><td class="c m">52-3*</td><td class="c ok">9</td><td class="c no">−9</td><td>5−2 대신 2−5를 계산 → −3, 거기에 ×3</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>(3) 늦게 발견되는 이유.</b> 처음 만드는 테스트는 보통 <code class="inl">3 4 +</code> 같은 덧셈이다. <em class="hl">덧셈과 곱셈만으로는 이 버그가 절대 드러나지 않는다.</em> 교환법칙이 성립하지 않는 <strong>뺄셈과 나눗셈</strong>을 반드시 테스트에 넣어야 한다. 34장 디버깅 단원에서 다룰 “교환법칙이 성립하는 연산으로만 테스트하면 안 된다”의 대표 사례다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 4 <span class="tag">재귀를 스택으로</span></div>
+    <div class="ex-b">
+      <p>다음 재귀를 명시적 스택으로 바꿔라. 깊이가 100만까지 갈 수 있다.</p>
+<pre style="margin-bottom:0;"><span class="kw">void</span> <span class="fn">walk</span>(<span class="kw">int</span> u){
+    <span class="kw">if</span> (u &gt; n) <span class="kw">return</span>;
+    <span class="fn">visit</span>(u);
+    <span class="fn">walk</span>(u + 1);
+}</pre>
+      <div class="sol">
+        <p><b>풀이.</b> 3.5절의 세 단계를 적용한다. ① 쌓을 것은 매개변수 <code class="inl">u</code> ② <code class="inl">while (sp)</code>로 감싼다 ③ 꺼낸 직후에 조건을 확인한다.</p>
+<pre style="margin-bottom:2mm;">sp = 0;  st[sp++] = 1;
+<span class="kw">while</span> (sp) {
+    <span class="kw">int</span> u = st[--sp];
+    <span class="kw">if</span> (u &gt; n) <span class="kw">continue</span>;        <span class="cm">/* 재귀의 종료 조건이 여기로 */</span>
+    <span class="fn">visit</span>(u);
+    st[sp++] = u + 1;              <span class="cm">/* 재귀 호출이 여기로 */</span>
+}</pre>
+        <p style="margin-bottom:0;"><b>생각할 점.</b> 이 경우는 사실 <strong>스택이 필요 없다.</strong> 쌓이는 것이 항상 하나뿐이라 <code class="inl">for (u = 1; u &lt;= n; u++) visit(u);</code>로 충분하다. <em class="hl">가지가 하나뿐인 재귀는 그냥 반복문</em>이고, 여러 갈래를 탐색하거나 복귀 후 할 일이 남는 경우에는 <strong>상태를 보관하는 명시적 스택</strong>이 도움이 된다 — 16장 이진 트리 순회와 30장 DFS에서 활용한다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">6</span>연습 문제</h2>
+  <p class="lead">01~05는 공책에, 06~10은 컴퓨터로 푼다. 제한 시간 50분.</p>
+
+  <div class="prob"><span class="pn">01</span>다음 연산을 차례로 수행했을 때 각 단계의 스택 상태와 반환값을 표로 쓰라.<br>
+  <code class="inl">push 4, push 7, top, push 1, pop, pop, push 9, pop, pop, empty</code></div>
+
+  <div class="prob"><span class="pn">02</span><code class="inl">sp</code>를 “다음에 쌓을 빈 자리”로 쓸 때와 “맨 위 값의 자리”로 쓸 때, <code class="inl">push</code>·<code class="inl">pop</code>·<code class="inl">top</code>·<code class="inl">empty</code>가 각각 어떻게 달라지는지 표로 비교하라. 빈 상태의 <code class="inl">sp</code> 값도 함께 쓸 것.</div>
+
+  <div class="prob"><span class="pn">03</span>괄호 검사에서 <strong>종류별로 카운터 세 개</strong>를 쓰면 틀리는 입력을 두 개 만들고, 각각 왜 카운터로는 잡히지 않는지 설명하라.</div>
+
+  <div class="prob"><span class="pn">04</span>다음을 후위 표기로 바꾸고, 과정을 추적표로 보여라.<br>
+  ① <code class="inl">A*B+C</code> &nbsp; ② <code class="inl">A-B-C</code> &nbsp; ③ <code class="inl">A*(B+C)/D</code> &nbsp; ④ <code class="inl">(A+B)*(C-D)</code></div>
+
+  <div class="prob"><span class="pn">05</span>다음 후위 표기의 값을 구하고, 스택 상태를 단계별로 쓰라.<br>
+  ① <code class="inl">62/3-</code> &nbsp; ② <code class="inl">45+2*7-</code> &nbsp; ③ <code class="inl">93-42/*</code></div>
+
+  <div class="prob"><span class="pn">06</span>배열 스택(<code class="inl">push</code>, <code class="inl">pop</code>, <code class="inl">top</code>, <code class="inl">empty</code>, <code class="inl">clear</code>)을 교재를 보지 말고 작성하라. 그다음 연습 01의 연산을 그대로 실행해 결과가 맞는지 확인하라.</div>
+
+  <div class="prob"><span class="pn">07</span>세 종류 괄호 검사 프로그램을 작성하라. 교재의 7개 테스트에 더해 <strong>스스로 만든 테스트 5개</strong>(올바른 것 2개, 틀린 것 3개 — 틀리는 세 가지 경우를 모두 포함할 것)를 함께 제출하라.</div>
+
+  <div class="prob"><span class="pn">08</span>후위 표기 계산기를 작성하라. 반드시 <strong>뺄셈과 나눗셈을 포함한 테스트</strong>를 넣고, 피연산자 꺼내는 순서를 일부러 바꿔 보아 어떤 입력에서 답이 달라지는지 기록하라.</div>
+
+  <div class="prob"><span class="pn">09</span>중위 → 후위 변환기를 작성하라. 교재의 5개 예시와 연습 04의 4개를 모두 통과하는지 확인하고, <code class="inl">prec</code> 비교를 <code class="inl">&gt;=</code>에서 <code class="inl">&gt;</code>로 바꾸면 어느 입력에서 결과가 달라지는지 찾아 기록하라.</div>
+
+  <div class="prob"><span class="pn">10</span>깊이 N의 재귀 함수를 작성해 <code class="inl">-O0</code>으로 빌드하고, N을 10만 / 15만 / 20만 / 30만으로 늘려 가며 어디서 죽는지 찾으라. 그다음 <code class="inl">-O2</code>로 같은 실험을 반복해 결과가 어떻게 달라지는지 비교하고, 왜 달라지는지 설명하라.</div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">7</span>도전 문제</h2>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C1</span><strong>괄호 검사에서 한 걸음 더</strong><br>
+    괄호 문자열이 주어진다. 이번에는 올바른지 판정하는 것이 아니라 <strong>추가 정보</strong>를 구해야 한다.<br>
+    (1) 각 닫는 괄호에 대해 <strong>짝이 되는 여는 괄호의 위치</strong>를 출력하라. 어떻게 하면 되는가? (힌트 — 스택에 글자 대신 무엇을 쌓을까?)<br>
+    (2) 올바른 괄호 문자열에서 <strong>가장 깊은 중첩 깊이</strong>를 구하라. 스택을 쓰지 않고도 구할 수 있는가?<br>
+    (3) <strong>소괄호 <code class="inl">()</code>만 있는 문자열</strong>을 올바르게 만들려면 최소 몇 개를 삽입해야 하는지 구하라. <code class="inl">())(</code>의 답은 얼마인가? (세 종류 괄호를 혼합하면 별도의 풀이가 필요하다.)<br>
+    (4) 세 문제의 복잡도를 각각 쓰라.
+  </div>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C2</span><strong>중위 표기를 바로 계산하기</strong><br>
+    <code class="inl">3+4*2-6/3</code> 같은 중위 수식을 <strong>후위로 바꾸지 않고 바로 계산</strong>하려 한다. 스택 두 개(숫자용·연산자용)를 쓴다.<br>
+    (1) 규칙을 세워라. 연산자를 만났을 때 언제 쌓고 언제 계산하는가? 3.3절의 변환 규칙과 어떻게 대응되는가?<br>
+    (2) <code class="inl">3+4*2-6/3</code>의 계산 과정을 두 스택의 상태 변화로 추적하라. 답은 얼마인가?<br>
+    (3) 이 방법과 “후위로 바꾼 뒤 계산”하는 방법을 비교하라. 각각 어떤 장점이 있는가?<br>
+    (4) <span style="color:var(--muted);">(선택)</span> 구현해서 괄호가 포함된 수식까지 처리해 보라.
+  </div>
+
+  <div class="box teal">
+    <h4>두 문항이 겨냥하는 것</h4>
+    <p style="margin-bottom:0;">C1 (1)은 <strong>“스택에 무엇을 쌓을지 바꾸면 얻는 정보가 달라진다”</strong>는 발상이다. 글자 대신 <em class="hl">위치(인덱스)를 쌓는</em> 이 기법은 08장 단조 스택에서 핵심이 된다. (2)는 스택 없이 카운터로도 되는 경우를 알아보는 문제이고, 자료구조를 쓰지 않아도 되는지 먼저 묻는 습관을 들인다. C2는 변환과 계산이 <strong>사실 같은 알고리즘의 두 얼굴</strong>임을 깨닫게 한다.</p>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 8. 막히는 지점 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+
+  <table>
+    <thead><tr><th style="width:26%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">“빈 스택에서 pop해도 괜찮겠지”</td><td>빈 스택에서 <code class="inl">st[--sp]</code>에 접근하면 <strong>정의되지 않은 동작</strong>이다. 오류 종료 또는 잘못된 결과가 발생할 수 있다</td><td>꺼내기 전에 <code class="inl">empty()</code>를 확인한다. 01장 명세표의 사전조건 그대로</td></tr>
+      <tr><td class="tt">“괄호 종류별로 세면 되지”</td><td><code class="inl">([)]</code>가 올바르다고 판정된다</td><td>종류를 가로질러 <strong>하나의 스택</strong>에 쌓는다</td></tr>
+      <tr><td class="tt">“후위 계산에서 꺼낸 순서대로 a, b”</td><td><strong>먼저 꺼낸 것이 오른쪽(b)</strong>이다. 뺄셈·나눗셈만 틀린다</td><td>테스트에 반드시 뺄셈을 넣는다</td></tr>
+      <tr><td class="tt">“우선순위 비교는 <code class="inl">&gt;</code>로”</td><td>같은 우선순위일 때 안 꺼내면 <code class="inl">A-B-C</code>의 순서가 뒤집힌다</td><td><code class="inl">&gt;=</code>를 쓴다. 왼쪽부터 계산하는 연산자이기 때문</td></tr>
+      <tr><td class="tt">“<code class="inl">sp</code>는 맨 위 값의 자리”</td><td>어느 쪽이든 맞지만 <strong>섞어 쓰면 반드시 틀린다</strong></td><td>“다음에 쌓을 빈 자리”로 통일한다. 그러면 <code class="inl">sp</code> = 개수</td></tr>
+      <tr><td class="tt">“재귀는 -O2면 안 죽던데”</td><td>컴파일러가 일부 재귀를 최적화할 수 있지만 모든 재귀에 보장되지는 않는다</td><td>깊이가 수십만이면 <strong>명시적 스택</strong>으로 바꾼다</td></tr>
+      <tr><td class="tt">“스택 배열은 입력 크기만큼”</td><td>최대 동시 저장 개수를 잘못 계산하면 범위를 넘는다</td><td>최대 스택 깊이를 먼저 구해 그 이상으로 할당하고 <code class="inl">sp &lt; MAXS</code>를 지킨다</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">자가 점검</h3>
+  <div class="box">
+    <ul class="chk" style="margin-bottom:0;">
+      <li>배열 스택 다섯 함수를 백지에서 5분 안에 작성할 수 있다</li>
+      <li>괄호 검사가 틀리는 세 가지 경우를 모두 말할 수 있다</li>
+      <li><code class="inl">([)]</code>가 왜 카운터로 안 잡히는지 설명할 수 있다</li>
+      <li>중위 → 후위 변환을 손으로 추적할 수 있다</li>
+      <li>후위 계산에서 먼저 꺼낸 값이 오른쪽 피연산자임을 안다</li>
+      <li>재귀를 명시적 스택으로 바꾸는 세 단계를 적용할 수 있다</li>
+      <li>“가장 최근 것부터”라는 말을 들으면 스택을 떠올린다</li>
+    </ul>
+  </div>
+
+  <div class="box teal">
+    <h4>다음 장 예고 — 07 큐와 원형 큐</h4>
+    <p style="margin-bottom:0;">스택이 “가장 최근”이었다면 큐는 <strong>“가장 먼저”</strong>다. 한쪽 끝에서 넣고 <em class="hl">반대쪽 끝에서 뺀다.</em> 그런데 이 한 글자 차이가 구현을 꽤 바꿔 놓는다. 앞에서 빼면 빈자리가 앞에 생겨 배열이 금방 소진되기 때문이다. 해결책이 <strong>원형 큐</strong>이고, 거기서 “가득 참과 비어 있음을 어떻게 구별하는가”라는 유명한 문제를 만난다. 30장 BFS가 전부 이 큐 위에서 돈다.</p>
+  </div>
+
+  <div class="foot"><span>06 스택</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+
+<script>
+/* SVG 채움색도 인쇄 직전에 흑백으로 바꾸고, 끝나면 화면 색상을 복원합니다. */
+(function () {
+  "use strict";
+  let saved = [];
+  function prepare() {
+    if (saved.length) return;
+    document.querySelectorAll("svg [fill], svg [stroke]").forEach(function (el) {
+      const f = el.getAttribute("fill"), st = el.getAttribute("stroke");
+      saved.push([el, f, st]);
+      const tag = el.tagName.toLowerCase();
+      if (f && f.toLowerCase() !== "none") {
+        const isText = tag === "text" || tag === "tspan";
+        const isPath = tag === "path" || tag === "polyline" || tag === "polygon";
+        el.setAttribute("fill", isText ? "#111111" : isPath ? "#555555" : "#ffffff");
+      }
+      if (st && st.toLowerCase() !== "none") el.setAttribute("stroke", "#666666");
+    });
+  }
+  function restore() {
+    saved.forEach(function (record) {
+      const el = record[0];
+      if (record[1] === null) el.removeAttribute("fill");
+      else el.setAttribute("fill", record[1]);
+      if (record[2] === null) el.removeAttribute("stroke");
+      else el.setAttribute("stroke", record[2]);
+    });
+    saved = [];
+  }
+  window.addEventListener("beforeprint", prepare);
+  window.addEventListener("afterprint", restore);
+})();
+</script>
+</body>
+</html>

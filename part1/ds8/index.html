@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08 덱과 단조 자료구조 — 중등정보올림피아드 자료구조</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:25pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  td.m{font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page{margin:0;width:auto;height:auto;min-height:0;padding:0;break-after:page;overflow:visible;}
+    .page:last-child{break-after:auto;}
+    .cover{height:266mm;padding:16mm 14mm;}
+    .foot{display:none;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2,.grid3{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4;}
+
+  /* 인쇄 전용: 배경 잉크 및 컬러 제거 */
+  .printbar{position:sticky;top:0;z-index:1000;margin:0 auto 7mm;max-width:210mm;
+    padding:9px 14px;background:#fff;border:1px solid #cbd5e1;display:flex;gap:12px;
+    align-items:center;justify-content:space-between;color:#172b45;box-shadow:0 2px 9px #0001;}
+  .printbar button{border:0;background:#174b75;color:#fff;font-weight:700;font-size:14px;
+    padding:10px 18px;border-radius:6px;cursor:pointer;}
+  .printbar .note{font-size:12px;line-height:1.4;}
+  @media print{
+    @page{size:A4; margin:0;}
+    html,body{margin:0!important;padding:0!important;background:#fff!important;}
+    .printbar{display:none!important;}
+    body{font-size:9.7pt!important;line-height:1.49!important;}
+    body *{background:transparent!important;background-image:none!important;box-shadow:none!important;
+      text-shadow:none!important;color:#151515!important;-webkit-print-color-adjust:exact!important;
+      print-color-adjust:exact!important;}
+    .page{width:210mm!important;min-height:297mm!important;height:297mm!important;
+      padding:14mm 15mm 15mm!important;margin:0!important;overflow:visible!important;
+      break-after:page!important;page-break-after:always!important;}
+    .page:last-child{break-after:auto!important;page-break-after:auto!important;}
+    .cover{display:flex!important;flex-direction:column!important;justify-content:space-between!important;
+      border:0!important;}
+    pre{white-space:pre-wrap!important;overflow-wrap:break-word!important;
+      border:1px solid #b5b5b5!important;font-size:7.4pt!important;line-height:1.44!important;}
+    pre *,pre.out *,code *,th *,td *,em *,strong *{color:#151515!important;}
+    body *{border-color:#aaa!important;outline-color:#aaa!important;}
+    .ex-h{border-bottom:1px solid #999!important;}
+    .ex,.box,.qa,.prob,table{border-color:#aaa!important;}
+    thead th{border-color:#999!important;}
+    svg rect,svg circle,svg ellipse,svg polygon{fill:#fff!important;stroke:#666!important;}
+    svg path:not([fill="none"]){fill:#222!important;}
+    svg text,svg tspan{fill:#111!important;}
+    svg line,svg polyline,svg path[stroke]{stroke:#555!important;}
+    .foot{display:none!important;}
+    tr,.box,.qa,.ex,.prob,pre,figure{break-inside:avoid!important;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid!important;}
+  }
+</style>
+</head>
+<body>
+<div class="printbar"><span class="note"><strong>08 덱과 단조 자료구조 · 수정본</strong> · 화면은 컬러, 인쇄는 흰 배경/흑백</span><button type="button" onclick="window.print()">A4 잉크 절약 인쇄 / PDF 저장</button></div>
+
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+  <div>
+    <div class="eyebrow">PART 1 · 선형 자료구조</div>
+    <div class="cover-rule"></div>
+    <div class="chno">08</div>
+    <h1>덱과 단조 자료구조</h1>
+    <div class="sub">
+      양쪽 끝 삽입·삭제 ‖ 단조성 유지 ‖ 단조 스택 ‖ 슬라이딩 윈도우 최솟값<br>
+      난이도 ★★★☆☆ · 8주차 · 100분 2차시 · <strong>난이도가 ★★★로 올라가는 첫 장</strong>
+    </div>
+    <div class="cover-goal">
+      <h3>이 장을 마치면 할 수 있는 것</h3>
+      <ul>
+        <li>원형 덱의 네 연산을 경계 검사와 함께 작성하고 <code>push_front</code>의 음수 모듈러를 처리할 수 있다</li>
+        <li>“단조성을 유지한다”가 무엇인지, 왜 버려도 되는지 설명할 수 있다</li>
+        <li>단조 스택으로 오큰수를 O(N)에 구할 수 있다</li>
+        <li>덱으로 슬라이딩 윈도우 최솟값을 O(N)에 구할 수 있다</li>
+        <li>이중 루프처럼 보이는 코드가 왜 O(N)인지 “많아야 한 번”으로 증명할 수 있다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+  <p class="lead">이 장은 두 가지를 다룬다. <strong>덱</strong>이라는 자료구조와, 그것을 써서 <strong>O(N²)처럼 보이는 문제를 O(N)에 푸는 기법</strong>이다. 진짜 내용은 후자다.</p>
+
+  <h3 class="sub">1.1 덱 — 양쪽이 다 열렸다</h3>
+  <table>
+    <thead><tr><th style="width:16%">자료구조</th><th class="c" style="width:20%">넣는 곳</th><th class="c" style="width:20%">빼는 곳</th><th>한 줄 요약</th></tr></thead>
+    <tbody>
+      <tr><td class="k">스택 (06장)</td><td class="c">뒤</td><td class="c">뒤</td><td>한쪽 끝만</td></tr>
+      <tr><td class="k">큐 (07장)</td><td class="c">뒤</td><td class="c">앞</td><td>양쪽 끝, 방향 고정</td></tr>
+      <tr><td class="k tt">덱 (deque)</td><td class="c ok">앞·뒤 둘 다</td><td class="c ok">앞·뒤 둘 다</td><td><strong>양쪽 끝 자유</strong></td></tr>
+    </tbody>
+  </table>
+  <p>덱은 <em class="hl">스택이자 큐</em>다. 뒤쪽만 쓰면 스택이고, 뒤로 넣고 앞에서 빼면 큐다. 구현도 07장 원형 큐에 두 연산을 더하면 끝난다(3.1절). <strong>그러니 덱 자체는 이 장의 어려운 부분이 아니다.</strong></p>
+
+  <h3 class="sub">1.2 진짜 주제 — 이중 루프를 없앤다</h3>
+  <p>다음 문제를 보자. 아주 자연스러운 문제이고, 자연스러운 풀이는 이중 루프다.</p>
+  <div class="box">
+    <h4>오큰수 문제</h4>
+    <p style="margin-bottom:0;">수열 A가 주어진다. 각 원소에 대해 <strong>오른쪽에 있으면서 자기보다 큰 수 중 가장 왼쪽 것</strong>을 구하라. 없으면 −1. (N ≤ 1,000,000)</p>
+  </div>
+  <div class="grid2">
+    <div>
+<pre style="margin-bottom:0;"><span class="cm">/* 자연스러운 풀이 — O(N²) */</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; n; i++) {
+    ans[i] = -1;
+    <span class="kw">for</span> (<span class="kw">int</span> j = i+1; j &lt; n; j++)
+        <span class="kw">if</span> (a[j] &gt; a[i]) { ans[i]=a[j]; <span class="kw">break</span>; }
+}</pre>
+    </div>
+    <div>
+      <div class="box warm" style="margin-bottom:0;">
+        <h4>이게 왜 위험한가</h4>
+        <p style="margin-bottom:0;">무작위 입력에서는 <code class="inl">break</code>가 금방 걸려 빠르다. 그런데 <strong>감소 수열</strong>(10, 9, 8, …)이 들어오면 매번 끝까지 훑는다. <em class="hl">출제자는 그 입력을 넣는다.</em></p>
+      </div>
+    </div>
+  </div>
+<pre class="out"><span class="lbl">원문 벤치마크 예시 · 감소 수열 n = 100,000 (환경에 따라 시간 변동)</span>
+단조 스택   :    0.4 ms  (연산     100,000회)
+완전 탐색   : 1337.0 ms  (연산 <span class="bad">4,999,950,000회</span>)     <span class="bad">약 3,300배</span></pre>
+  <p>이 장에서 배울 <strong>단조 스택</strong>은 같은 문제를 <em class="hl">O(N)</em>에 해결한다(위 0.4 ms는 원문에 실린 실행 예시이며 기기별로 달라진다). 비결은 “더 이상 쓸모없어진 값을 버리면서 쌓는 것”이고, 그 결과 <strong>쌓인 값들이 단조 증가 또는 단조 감소 상태</strong>가 된다(같은 값이 남을 수도 있다). 그래서 이름이 <strong>단조(monotonic)</strong>다.</p>
+
+  <h3 class="sub">1.3 이 장이 어려운 이유</h3>
+  <p>코드는 짧다. 어려운 것은 <strong>두 가지를 동시에 납득하는 일</strong>이다.</p>
+  <div class="grid2">
+    <div class="box teal"><h4>① 버려도 되는가</h4><p style="margin-bottom:0;">왜 어떤 값은 앞으로 영영 쓸모가 없어서 버려도 되는가 (2.4절)</p></div>
+    <div class="box teal"><h4>② 왜 O(N)인가</h4><p style="margin-bottom:0;"><code class="inl">while</code>이 <code class="inl">for</code> 안에 있는데 왜 이중 루프가 아닌가 (4.1절)</p></div>
+  </div>
+  <p>①은 문제마다 생각해야 하고, ②는 <strong>06장 4.2절의 “많아야 한 번”</strong> 논리가 그대로 쓰인다. 이 장에서 네 번째로 만나는 셈이다.</p>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.1~2.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+
+  <h3 class="sub">2.1 덱의 네 연산</h3>
+  <figure>
+    <svg viewBox="0 0 660 124" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="덱의 네 연산">
+      <g font-size="10.5" text-anchor="middle">
+        <rect x="200" y="42" width="66" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="233" y="62" fill="#0f2a4a">8</text>
+        <rect x="266" y="42" width="66" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="299" y="62" fill="#0f2a4a">9</text>
+        <rect x="332" y="42" width="66" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="365" y="62" fill="#0f2a4a">1</text>
+        <rect x="398" y="42" width="66" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="431" y="62" fill="#0f2a4a">2</text>
+      </g>
+      <path d="M120 50 L194 50" stroke="#b4531a" stroke-width="1.6" marker-end="url(#r1)"/>
+      <text x="157" y="44" font-size="9" fill="#b4531a" text-anchor="middle" font-weight="700">push_front</text>
+      <path d="M194 66 L120 66" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#r2)"/>
+      <text x="157" y="80" font-size="9" fill="#0d7c74" text-anchor="middle" font-weight="700">pop_front</text>
+      <path d="M544 50 L470 50" stroke="#b4531a" stroke-width="1.6" marker-end="url(#r3)"/>
+      <text x="507" y="44" font-size="9" fill="#b4531a" text-anchor="middle" font-weight="700">push_back</text>
+      <path d="M470 66 L544 66" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#r4)"/>
+      <text x="507" y="80" font-size="9" fill="#0d7c74" text-anchor="middle" font-weight="700">pop_back</text>
+      <defs>
+        <marker id="r1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#b4531a"/></marker>
+        <marker id="r2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#0d7c74"/></marker>
+        <marker id="r3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#b4531a"/></marker>
+        <marker id="r4" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#0d7c74"/></marker>
+      </defs>
+      <text x="330" y="106" font-size="9.5" fill="#5b6876" text-anchor="middle">뒤쪽 두 개만 쓰면 스택 · 뒤로 넣고 앞에서 빼면 큐 · 넷 다 쓰면 덱</text>
+    </svg>
+    <figcaption>그림 8-1. 덱은 스택과 큐를 모두 포함한다</figcaption>
+  </figure>
+
+  <h3 class="sub">2.2 구현의 유일한 새 조각 — <code class="inl">push_front</code></h3>
+  <p>07장 방식 B 원형 큐에서 <code class="inl">push_back</code>과 <code class="inl">pop_front</code>는 이미 만들었다. 새로 필요한 것은 두 개뿐이다.</p>
+  <table>
+    <thead><tr><th style="width:22%">연산</th><th class="c" style="width:36%">하는 일</th><th>주의</th></tr></thead>
+    <tbody>
+      <tr><td class="k">push_front</td><td class="c m">df = (df − 1 + CAP) % CAP</td><td class="no"><strong>−1이 되므로 반드시 +CAP</strong> (07장 연습 04)</td></tr>
+      <tr><td class="k">pop_back</td><td class="c m">dcnt−−</td><td>개수만 줄이면 맨 뒤가 떨어져 나간다</td></tr>
+    </tbody>
+  </table>
+  <div class="box warm">
+    <h4>여기서 07장 연습 04가 쓰인다</h4>
+    <p style="margin-bottom:0;"><code class="inl">df</code>가 0일 때 앞으로 하나 가면 −1이 된다. <code class="inl">(-1) % 8</code>은 C에서 7이 아니라 <strong>−1</strong>이므로, <code class="inl">dq[-1]</code>이라는 배열 밖 접근이 된다. <em class="hl">CAP을 먼저 더해 양수로 만든 뒤 나눈다.</em> 이 한 줄을 빠뜨리는 것이 이 장에서 가장 흔한 사고다. <strong>또한 빈 덱의 삭제·조회, 가득 찬 덱의 삽입은 반드시 검사</strong>해야 한다.</p>
+  </div>
+<pre class="out"><span class="lbl">$ ./deque       CAP = 8</span>
+push_back  1   df=0 cnt=1  [1]
+push_back  2   df=0 cnt=2  [1 2]
+push_front 9   df=<span class="lbl">7</span> cnt=3  [9 1 2]      <span class="lbl">← 0에서 7로 돌아갔다</span>
+push_front 8   df=6 cnt=4  [8 9 1 2]
+pop_front  -&gt; 8            [9 1 2]
+pop_back   -&gt; 2            [9 1]</pre>
+
+  <h3 class="sub">2.3 단조성이란 무엇인가</h3>
+  <p>이제 본론이다. <strong>단조 스택</strong>은 특별한 자료구조가 아니다. 그냥 스택인데, <em class="hl">쌓을 때 규칙을 하나 더 지킬 뿐</em>이다.</p>
+  <div class="box teal">
+    <h4>규칙</h4>
+    <p style="margin-bottom:0;"><strong>새 값을 쌓기 전에, 스택 맨 위가 “새 값에 밀려 쓸모없어졌다면” 꺼내 버린다.</strong><br>
+    그 결과 스택 안의 값들은 <em class="hl">항상 정렬된 상태(단조 증가 또는 단조 감소)</em>를 유지한다.</p>
+  </div>
+  <p>오큰수 문제라면 규칙은 이렇게 구체화된다 — <strong>맨 위 값이 새 값보다 작으면, 그 값의 답은 바로 새 값이다.</strong> 답을 적어 주고 꺼낸다. 그 결과 스택에는 새 값보다 크거나 같은 원소의 <strong>위치</strong>만 남아, 아래쪽 값이 위쪽 값보다 크거나 같은 상태가 유지된다. 꺼낸 원소는 쓸모없어서 버리는 것이 아니라 <strong>오큰수의 답을 확정한 것</strong>이다.</p>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">2.4 왜 버려도 되는가 — 지배 관계</h3>
+  <p>단조 기법의 핵심은 <strong>“이 값은 앞으로 영영 쓸모가 없다”</strong>를 확신하는 것이다. 슬라이딩 윈도우 최솟값으로 설명하면 가장 분명하다.</p>
+  <div class="box">
+    <h4>상황</h4>
+    <p style="margin-bottom:0;">창(window) 안의 최솟값을 계속 알아야 한다. 창은 오른쪽으로 한 칸씩 움직인다. 지금 덱 안에 <strong>위치 i의 값 5</strong>가 들어 있는데, 새로 <strong>위치 j(&gt; i)의 값 3</strong>이 들어온다.</p>
+  </div>
+  <figure>
+    <svg viewBox="0 0 660 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="지배 관계">
+      <rect x="40" y="26" width="270" height="76" rx="5" fill="#fff6ec" stroke="#b4531a" stroke-width="1.4"/>
+      <text x="175" y="46" font-size="10.5" font-weight="700" fill="#b4531a" text-anchor="middle">위치 i 의 값 5</text>
+      <text x="175" y="66" font-size="9.4" fill="#1c2430" text-anchor="middle">· 더 왼쪽에 있어 <tspan font-weight="700">먼저 창에서 빠진다</tspan></text>
+      <text x="175" y="82" font-size="9.4" fill="#1c2430" text-anchor="middle">· 값도 더 크다</text>
+      <text x="175" y="96" font-size="9.4" fill="#9d2f3f" text-anchor="middle" font-weight="700">→ 최솟값이 될 기회가 없다</text>
+
+      <path d="M318 64 L352 64" stroke="#5b6876" stroke-width="1.6" marker-end="url(#rd)"/>
+      <defs><marker id="rd" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#5b6876"/></marker></defs>
+
+      <rect x="360" y="26" width="270" height="76" rx="5" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/>
+      <text x="495" y="46" font-size="10.5" font-weight="700" fill="#0d7c74" text-anchor="middle">위치 j 의 값 3</text>
+      <text x="495" y="66" font-size="9.4" fill="#1c2430" text-anchor="middle">· 더 오른쪽이라 <tspan font-weight="700">더 오래 남는다</tspan></text>
+      <text x="495" y="82" font-size="9.4" fill="#1c2430" text-anchor="middle">· 값도 더 작다</text>
+      <text x="495" y="96" font-size="9.4" fill="#0d7c74" text-anchor="middle" font-weight="700">→ 5를 완전히 대신한다</text>
+    </svg>
+    <figcaption>그림 8-2. 두 가지 면에서 모두 우월하면 “지배한다”고 말한다 — 지배당한 값은 버린다</figcaption>
+  </figure>
+  <p>5가 최솟값으로 뽑힐 수 있으려면 <strong>3이 창 안에 없어야</strong> 하는데, 3은 5보다 오른쪽에 있으므로 <em class="hl">5가 창에 있는 한 3도 반드시 창에 있다.</em> 따라서 새 값 3을 처리한 이후의 창에서는 5가 최솟값이 될 수 없다. (이전 창의 답은 이미 계산했다.) <strong>버려도 안전하다.</strong></p>
+  <div class="box teal">
+    <h4>일반화 — 단조 기법을 설계하는 질문</h4>
+    <p style="margin-bottom:0;">새 값이 들어올 때마다 스스로에게 묻는다 — <em class="hl">“맨 끝에 있는 이 값이, 새 값에 비해 모든 면에서 불리한가?”</em><br>
+    오큰수라면 “더 왼쪽에 있고 값도 작은가”이고, 윈도우 최솟값이라면 “더 왼쪽에 있고 값도 큰가”다. 답이 예이면 버린다. <strong>이 질문을 세울 수 있으면 단조 기법을 쓸 수 있다.</strong></p>
+  </div>
+
+  <h4 class="mini">단조 스택과 단조 덱의 차이</h4>
+  <table>
+    <thead><tr><th style="width:20%">기법</th><th style="width:26%">버리는 곳</th><th>왜 그 구조인가</th></tr></thead>
+    <tbody>
+      <tr><td class="k">단조 스택</td><td>뒤(맨 위)에서만</td><td>지배당한 값만 버리면 되므로 한쪽 끝이면 충분하다</td></tr>
+      <tr><td class="k tt">단조 덱</td><td><strong>뒤에서</strong> 지배당한 값<br><strong>앞에서</strong> 창을 벗어난 값</td><td>버리는 이유가 <em class="hl">두 가지</em>라서 양쪽 끝이 다 필요하다 — 덱이 쓰이는 이유</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현</h2>
+
+  <h3 class="sub">3.1 원형 덱</h3>
+<pre>/* deque.c — 07장 방식 B를 확장한 원형 덱 (C11) */
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define CAP 1000005
+static int dq[CAP], df, dcnt;
+
+static void d_require(int ok){
+    if (!ok) { fputs("덱 범위 오류\n", stderr); exit(EXIT_FAILURE); }
+}
+static int d_empty(void){ return dcnt == 0; }
+static int d_full (void){ return dcnt == CAP; }
+static int d_size (void){ return dcnt; }
+
+static void d_push_back(int x){
+    d_require(!d_full());
+    dq[(df + dcnt) % CAP] = x; dcnt++;
+}
+static void d_push_front(int x){
+    d_require(!d_full());
+    df = (df - 1 + CAP) % CAP;
+    dq[df] = x; dcnt++;
+}
+static int d_pop_front(void){
+    d_require(!d_empty());
+    int x = dq[df]; df = (df + 1) % CAP; dcnt--; return x;
+}
+static int d_pop_back(void){
+    d_require(!d_empty());
+    dcnt--; return dq[(df + dcnt) % CAP];
+}
+static int d_front(void){ d_require(!d_empty()); return dq[df]; }
+static int d_back(void){
+    d_require(!d_empty()); return dq[(df + dcnt - 1) % CAP];
+}
+static void d_clear(void){ df = dcnt = 0; }</pre>
+  <div class="box">
+    <h4><code class="inl">d_pop_back</code>은 개수만 줄여도 된다</h4>
+    <p style="margin-bottom:0;">맨 뒤 값의 자리는 <code class="inl">(df + dcnt - 1) % CAP</code>이다. <code class="inl">dcnt</code>를 먼저 하나 줄이면 그 식이 <code class="inl">(df + dcnt) % CAP</code>이 되므로, <strong>줄이고 나서 읽으면</strong> 계산이 한 번으로 끝난다. <em class="hl">배열에 남아 있는 값은 지우지 않는다</em> — 05장 <code class="inl">vec_pop</code>과 같은 방식이다.</p>
+  </div>
+  <div class="box warm">
+    <h4>총 push가 제한될 때는 선형 인덱스도 쓴다</h4>
+    <p style="margin-bottom:0;">07장 3.3절과 같다. 총 push 횟수가 적으면 <code class="inl">%</code> 없이 <strong>배열 가운데에서 시작</strong>해 양쪽으로 벌려 쓰는 방법이 더 간단하다. 다만 <strong>앞뒤로 얼마나 벌어질지(각 방향의 삽입 횟수)를 모르면 위험</strong>하므로, 단조 기법처럼 <strong>총 push가 N번으로 묶이는 경우</strong>에만 쓴다. 3.3절의 슬라이딩 윈도우가 그런 경우라 거기서는 선형 배열을 쓴다.</p>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.2 단조 스택 — 오큰수</h3>
+  <p style="font-size:8.8pt;">다음 코드는 3.1절 덱 코드와 <strong>별개의 프로그램에 넣는 함수 예시</strong>다. 배열과 매크로는 최대 입력 크기에 맞춰 선언하며, 호출 전 <code class="inl">0 &lt;= n &lt;= MAXN</code>을 확인한다.</p>
+  <p>06장 도전 C1에서 미리 만난 <strong>“위치를 쌓는다”</strong>가 여기서 본격적으로 쓰인다. 값이 아니라 <em class="hl">아직 답을 못 찾은 원소들의 위치</em>를 쌓는다.</p>
+<pre>#define MAXN 1000005
+<span class="kw">static</span> <span class="kw">int</span> a[MAXN], ans[MAXN], st[MAXN];
+<span class="kw">static</span> <span class="kw">int</span> sp;
+
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">next_greater</span>(<span class="kw">int</span> n){
+    sp = 0;
+    <span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; n; i++) {
+        <span class="cm">/* 맨 위가 a[i]보다 작으면, 그 원소의 답이 바로 a[i]다 */</span>
+        <span class="kw">while</span> (sp &amp;&amp; a[st[sp-1]] &lt; a[i])
+            ans[st[--sp]] = a[i];
+        st[sp++] = i;                  <span class="cm">/* 아직 답을 못 찾았으니 쌓는다 */</span>
+    }
+    <span class="kw">while</span> (sp) ans[st[--sp]] = -1;     <span class="cm">/* 끝까지 남은 것은 답이 없다 */</span>
+}</pre>
+  <h4 class="mini">손으로 추적하기 — A = [3, 5, 2, 7, 5]</h4>
+  <table>
+    <thead><tr><th class="c" style="width:10%">i</th><th class="c" style="width:12%">a[i]</th><th style="width:34%">하는 일</th><th class="c" style="width:22%">스택(위치:값)</th><th>확정된 답</th></tr></thead>
+    <tbody>
+      <tr><td class="c">0</td><td class="c">3</td><td>스택이 비어 바로 쌓기</td><td class="c m">0:3</td><td>—</td></tr>
+      <tr><td class="c">1</td><td class="c">5</td><td>3 &lt; 5 → 0번의 답은 5. 꺼내고 쌓기</td><td class="c m">1:5</td><td class="m ok">ans[0]=5</td></tr>
+      <tr><td class="c">2</td><td class="c">2</td><td>5 &gt; 2 → 버릴 것 없음. 쌓기</td><td class="c m">1:5 2:2</td><td>—</td></tr>
+      <tr><td class="c">3</td><td class="c">7</td><td>2 &lt; 7 → ans[2]=7. 5 &lt; 7 → ans[1]=7. 쌓기</td><td class="c m">3:7</td><td class="m ok">ans[2]=7, ans[1]=7</td></tr>
+      <tr><td class="c">4</td><td class="c">5</td><td>7 &gt; 5 → 쌓기</td><td class="c m">3:7 4:5</td><td>—</td></tr>
+      <tr><td class="c">끝</td><td class="c">—</td><td>남은 것은 답이 없다</td><td class="c m">(빔)</td><td class="m ok">ans[3]=−1, ans[4]=−1</td></tr>
+    </tbody>
+  </table>
+<pre class="out"><span class="lbl">$ ./mono</span>
+입력   : 3 5 2 7 5
+오큰수 : 5 7 7 -1 -1       <span class="lbl">(완전 탐색 결과와 일치)</span></pre>
+  <div class="box teal">
+    <h4>스택 안은 아래에서 위로 비증가(같은 값 허용) 상태다</h4>
+    <p style="margin-bottom:0;">추적표의 스택 열을 보자 — <code class="inl">1:5 2:2</code>, <code class="inl">3:7 4:5</code>. 언제나 <strong>아래 값 ≥ 위 값</strong>이다. 작거나 같은 값이 들어오면 그냥 쌓이고, 큰 값이 들어오면 자기보다 작은 것들의 오큰수를 확정하고 꺼낸다. <em class="hl">이 정렬 상태가 저절로 유지되는 것이 “단조”의 뜻</em>이다.</p>
+  </div>
+  <div class="box warm">
+    <h4>왜 값이 아니라 위치를 쌓는가</h4>
+    <p style="margin-bottom:0;">답을 <code class="inl">ans[]</code>의 <strong>어느 칸</strong>에 적어야 하는지 알아야 하기 때문이다. 값만 쌓으면 “이 값이 몇 번째 원소였는지”를 잃는다. 06장 도전 C1의 괄호 짝 찾기와 <em class="hl">완전히 같은 발상</em>이다.</p>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.3 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.3 슬라이딩 윈도우 최솟값</h3>
+
+  <p>길이 N인 수열에서 <strong>크기 k인 창을 한 칸씩 옮기며 각 창의 최솟값</strong>을 구한다. 완전 탐색은 O(N×k)다.</p>
+  <p>덱에는 <strong>위치</strong>를 담고, 두 방향에서 버린다 — <em class="hl">뒤에서는 지배당한 값, 앞에서는 창을 벗어난 값.</em></p>
+<pre>#define MAXN 1000005
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+<span class="kw">static</span> <span class="kw">int</span> a[MAXN], dq[MAXN];       <span class="cm">/* dq 에는 '위치'를 담는다 */</span>
+
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">window_min</span>(<span class="kw">int</span> n, <span class="kw">int</span> k){
+    <span class="kw">if</span> (n &lt; 1 || n &gt; MAXN || k &lt; 1 || k &gt; n) { <span class="fn">fputs</span>(<span class="st">"잘못된 n 또는 k\n"</span>, stderr); <span class="fn">exit</span>(EXIT_FAILURE); }
+    <span class="kw">int</span> f = 0, r = 0;                 <span class="cm">/* 선형으로 쓴다 (총 push가 N번) */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; n; i++) {
+        <span class="cm">/* ① 뒤에서 — a[i]에 지배당한 것을 버린다 */</span>
+        <span class="kw">while</span> (r &gt; f &amp;&amp; a[dq[r-1]] &gt;= a[i]) r--;
+        dq[r++] = i;
+        <span class="cm">/* ② 앞에서 — 창을 벗어난 것을 버린다 */</span>
+        <span class="kw">while</span> (f &lt; r &amp;&amp; dq[f] &lt;= i - k) f++;
+        <span class="cm">/* ③ 창이 완성되면 맨 앞이 곧 최솟값 */</span>
+        <span class="kw">if</span> (i &gt;= k-1) <span class="fn">printf</span>(<span class="st">"%d "</span>, a[dq[f]]);
+    }
+}</pre>
+  <h4 class="mini">손으로 추적하기 — A = [5, 3, 8, 2, 7, 1, 9, 4], k = 3</h4>
+  <table>
+    <thead><tr><th class="c" style="width:8%">i</th><th class="c" style="width:10%">a[i]</th><th style="width:30%">뒤에서 버린 것</th><th class="c" style="width:12%">앞에서</th><th class="c" style="width:20%">덱(위치:값)</th><th class="c">출력</th></tr></thead>
+    <tbody>
+      <tr><td class="c">0</td><td class="c">5</td><td>—</td><td class="c">—</td><td class="c m">0:5</td><td class="c">—</td></tr>
+      <tr><td class="c">1</td><td class="c">3</td><td>5 ≥ 3 → 버림</td><td class="c">—</td><td class="c m">1:3</td><td class="c">—</td></tr>
+      <tr><td class="c">2</td><td class="c">8</td><td>—</td><td class="c">—</td><td class="c m">1:3 2:8</td><td class="c ok">3</td></tr>
+      <tr><td class="c">3</td><td class="c">2</td><td>8 ≥ 2, 3 ≥ 2 → 둘 다 버림</td><td class="c">—</td><td class="c m">3:2</td><td class="c ok">2</td></tr>
+      <tr><td class="c">4</td><td class="c">7</td><td>—</td><td class="c">—</td><td class="c m">3:2 4:7</td><td class="c ok">2</td></tr>
+      <tr><td class="c">5</td><td class="c">1</td><td>7 ≥ 1, 2 ≥ 1 → 둘 다 버림</td><td class="c">—</td><td class="c m">5:1</td><td class="c ok">1</td></tr>
+      <tr><td class="c">6</td><td class="c">9</td><td>—</td><td class="c">—</td><td class="c m">5:1 6:9</td><td class="c ok">1</td></tr>
+      <tr><td class="c">7</td><td class="c">4</td><td>9 ≥ 4 → 버림</td><td class="c">—</td><td class="c m">5:1 7:4</td><td class="c ok">1</td></tr>
+    </tbody>
+  </table>
+<pre class="out"><span class="lbl">$ ./slide</span>
+입력 : 5 3 8 2 7 1 9 4
+k=3 창 최솟값(덱)   : 3 2 2 1 1 1
+k=3 창 최솟값(검증) : 3 2 2 1 1 1      <span class="lbl">완전 탐색과 일치</span></pre>
+  <div class="box warm">
+    <h4>네 단계 처리 순서 — 올바른 구현의 한 예</h4>
+    <p style="margin-bottom:0;"><strong>① 뒤에서 버리고 → ② 넣고 → ③ 앞에서 버리고 → ④ 출력</strong>. 이 구현에서 사용하는 순서다. 이 순서는 올바른 구현 중 하나다. <strong>앞에서 만료된 위치를 먼저 제거한 뒤, 뒤쪽 지배 후보를 제거하고 삽입해도 정답</strong>이며, 어느 순서든 덱이 비었을 때의 접근을 피해야 한다. 그리고 <code class="inl">while</code> 조건의 <code class="inl">&gt;=</code>는 <strong>같은 값도 버린다</strong>는 뜻인데, 그래야 더 오른쪽 것이 남아 덱이 짧아진다.</p>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.4 연산 횟수와 실행 시간 예시</h3>
+  <p>아래 시간은 <strong>원문에 제시된 특정 환경의 실행 예시</strong>로, 기기·컴파일러·입력에 따라 재현되지 않을 수 있다. 복잡도는 실행 시간 한 번이 아니라 원소별 삽입·삭제 횟수로 판단한다.</p>
+  <h4 class="mini">오큰수</h4>
+<pre class="out"><span class="lbl">감소 수열 (최악의 경우) — 오른쪽에 큰 수가 없어 완전 탐색은 끝까지 훑는다</span>
+n= 50,000 :  단조   0.2 ms (    50,000회)   완전탐색   330.7 ms ( 1,249,975,000회)
+n=100,000 :  단조   0.4 ms (   100,000회)   완전탐색  1337.0 ms ( <span class="bad">4,999,950,000회</span>)
+
+<span class="lbl">무작위 수열 — 완전 탐색도 break 가 금방 걸려 빠르다</span>
+n=  100,000 : 단조  0.2 ms (  199,991회)   완전탐색   0.2 ms (    646,561회)
+n=1,000,000 : 단조  3.1 ms (1,999,977회)   완전탐색   5.8 ms ( 17,354,564회)</pre>
+  <div class="box warm">
+    <h4>무작위 입력으로 테스트하면 속는다</h4>
+    <p style="margin-bottom:0;">위 무작위 예시에서는 완전 탐색도 빨라 보인다(n = 100만에 5.8 ms). 이 시간은 특정 환경의 측정치이며, 무작위 입력이라고 항상 빠른 것은 아니다. 그런데 <strong>감소 수열</strong>을 넣으면 n = 10만에서 벌써 1.3초다. <em class="hl">02장 2.4절 — 출제자는 최악의 입력을 일부러 넣는다.</em> “내 테스트에서는 빨랐는데요”가 변명이 되지 않는 이유다.</p>
+  </div>
+
+  <h4 class="mini">슬라이딩 윈도우 최솟값</h4>
+<pre class="out">n=  200,000  k=  500 :  덱  0.6 ms (  399,458회)   완전탐색   48.5 ms (  99,550,999회)
+n=  200,000  k=1,000 :  덱  0.4 ms (  399,715회)   완전탐색   99.2 ms ( 198,801,999회)
+n=1,000,000  k=1,000 :  덱  3.5 ms (1,999,080회)   완전탐색  505.3 ms ( <span class="bad">998,001,999회</span>)</pre>
+  <div class="box teal">
+    <h4>표에서 읽어야 할 두 가지</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>덱의 삽입은 N번이고 삭제는 최대 N번이므로, 삽입·삭제 합계가 2N 이하이다.</strong> n = 20만이면 최대 40만, n = 100만이면 최대 200만. <em class="hl">k가 500이든 1,000이든 변하지 않는다</em> — 창 크기와 무관하다는 것이 이 기법의 핵심이다</li>
+      <li><strong>완전 탐색의 비교 횟수는 (N−k+1)(k−1)이다.</strong> 고정된 N에서 k를 늘리면 대체로 N×k에 비례하며, 위 예시에서도 약 2배가 되었다(정확히 2배는 아님)</li>
+    </ul>
+  </div>
+  <p>왜 2N인지는 다음 절에서 증명한다. 먼저 <strong>각 위치가 덱에 한 번 들어가고 많아야 한 번 나온다</strong>는 사실을 떠올려 보자.</p>
+
+  <div class="qa">
+    <div class="q">Q. 최솟값 말고 최댓값을 구하려면요?</div>
+    <div>부등호만 뒤집는다. <code class="inl">a[dq[r-1]] &gt;= a[i]</code>를 <code class="inl">a[dq[r-1]] &lt;= a[i]</code>로 바꾸면 덱이 <em class="hl">감소 상태를 유지</em>하게 되고, 맨 앞이 최댓값이 된다. <strong>구조는 글자 하나도 바뀌지 않는다.</strong></div>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석</h2>
+
+  <h3 class="sub">4.1 <code class="inl">while</code>이 <code class="inl">for</code> 안에 있는데 왜 O(N)인가</h3>
+  <p>이 장에서 가장 중요한 논증이다. 코드만 보면 이중 루프라 O(N²)처럼 보인다.</p>
+<pre><span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; n; i++) {        <span class="cm">/* N번 */</span>
+    <span class="kw">while</span> (sp &amp;&amp; ...) sp--;            <span class="cm">/* 최악엔 N번? */</span>
+    st[sp++] = i;
+}</pre>
+  <div class="box teal">
+    <h4>증명 — 원소 하나의 일생을 센다</h4>
+    <table style="margin-bottom:0;">
+      <thead><tr><th class="c" style="width:34%">각 원소가 겪는 일</th><th class="c" style="width:20%">평생 횟수</th><th>이유</th></tr></thead>
+      <tbody>
+        <tr><td class="c tt">스택에 push 된다</td><td class="c ok">정확히 1번</td><td><code class="inl">for</code>문에서 i마다 한 번씩만 쌓는다</td></tr>
+        <tr><td class="c tt">스택에서 pop 된다</td><td class="c ok">많아야 1번</td><td><em class="hl">한 번 나가면 다시 들어오지 않는다</em></td></tr>
+        <tr><td class="c tt ok">합계</td><td class="c ok">2N번 이하</td><td>따라서 전체가 <strong>O(N)</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><code class="inl">while</code>이 한 번에 여러 개를 꺼내는 경우는 분명히 있다. 추적표의 i = 3에서 두 개를 연달아 꺼냈다. 하지만 <strong>그만큼 다른 i에서는 꺼낼 것이 없다.</strong> 전체를 합치면 pop 횟수가 push 횟수를 넘을 수 없다.</p>
+  <p>실측이 이를 확인해 준다 — 위 예시에서 n = 100만일 때 단조 스택의 삽입·삭제 합계가 <strong>1,999,977회</strong>, 즉 <em class="hl">정확히 2N에 거의 일치</em>했다.</p>
+  <div class="box">
+    <h4>같은 논리가 반복해서 나온다</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>05장</strong> — Vec의 용량 2배 증가, 총 복사가 2N 이하</li>
+      <li><strong>06장</strong> — 괄호 검사·후위 변환, 한 번 쌓인 것은 한 번만 나온다</li>
+      <li><strong>07장 C1</strong> — 스택 두 개로 만든 큐, 한 원소는 평생 한 번만 옮겨진다</li>
+      <li><strong>08장</strong> — 단조 스택·단조 덱 <span style="color:var(--muted);">(네 번째)</span></li>
+    </ul>
+  </div>
+
+  <h3 class="sub">4.2 연산별 비용</h3>
+  <table>
+    <thead><tr><th style="width:26%">대상</th><th class="c" style="width:18%">복잡도</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td class="k">덱의 네 연산</td><td class="c ok">O(1)</td><td>용량·빈 상태 검사와 인덱스 계산. 가득 찼을 때 추가 삽입은 허용하지 않음</td></tr>
+      <tr><td class="k">오큰수 (단조 스택)</td><td class="c ok">O(N)</td><td>완전 탐색은 최악 O(N²)</td></tr>
+      <tr><td class="k">윈도우 최솟값 (단조 덱)</td><td class="c ok">O(N)</td><td>완전 탐색은 O(N×k). <strong>k와 무관</strong>하다는 것이 핵심</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">4.3 공간</h3>
+  <p>단조 스택·덱에는 <strong>많아야 N개</strong>의 위치가 저장된다. 오큰수에서는 최대 N개가 쌓일 수 있고, 슬라이딩 윈도우의 후보는 최대 k개다. 따라서 배열은 N칸이면 충분하고, N = 100만인 <code class="inl">int</code> 배열 한 개는 약 4 MB(약 3.81 MiB)다.</p>
+  <p>슬라이딩 윈도우에서는 더 작다. 덱에 남는 것은 <em class="hl">창 안에 있으면서 지배당하지 않은 값</em>들뿐이라 <strong>많아야 k개</strong>다. 그래도 안전하게 N칸으로 잡는다 — 04장에서 배운 대로 <strong>최댓값으로 고정 선언</strong>하는 편이 실수가 없다.</p>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제</h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 1 <span class="tag">단조 스택 추적</span></div>
+    <div class="ex-b">
+      <p>A = [2, 4, 1, 6, 3]의 오큰수를 단조 스택으로 구하라. 각 i마다 스택 상태와 확정되는 답을 쓸 것.</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:8%">i</th><th class="c" style="width:10%">a[i]</th><th style="width:34%">하는 일</th><th class="c" style="width:20%">스택(위치:값)</th><th>확정</th></tr></thead>
+          <tbody>
+            <tr><td class="c">0</td><td class="c">2</td><td>비었으니 쌓기</td><td class="c m">0:2</td><td>—</td></tr>
+            <tr><td class="c">1</td><td class="c">4</td><td>2 &lt; 4 → 꺼내고 쌓기</td><td class="c m">1:4</td><td class="m ok">ans[0]=4</td></tr>
+            <tr><td class="c">2</td><td class="c">1</td><td>4 &gt; 1 → 그냥 쌓기</td><td class="c m">1:4 2:1</td><td>—</td></tr>
+            <tr><td class="c">3</td><td class="c">6</td><td>1 &lt; 6, 4 &lt; 6 → 둘 다 꺼냄</td><td class="c m">3:6</td><td class="m ok">ans[2]=6, ans[1]=6</td></tr>
+            <tr><td class="c">4</td><td class="c">3</td><td>6 &gt; 3 → 쌓기</td><td class="c m">3:6 4:3</td><td>—</td></tr>
+            <tr><td class="c">끝</td><td class="c">—</td><td>남은 것은 −1</td><td class="c m">(빔)</td><td class="m ok">ans[3]=−1, ans[4]=−1</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>답 : 4 6 6 −1 −1</b><br>
+        i = 3에서 <strong>두 개를 연달아 꺼낸 것</strong>에 주목한다. 그 대신 i = 0, 2, 4에서는 하나도 꺼내지 않았다. <em class="hl">전체를 합치면 꺼낸 횟수는 쌓은 횟수(5)를 넘지 않는다</em> — 4.1절의 논리가 눈으로 확인된다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 2 <span class="tag">지배 관계 판단</span></div>
+    <div class="ex-b">
+      <p>슬라이딩 윈도우 <strong>최솟값</strong>을 구하는 중이다. 아직 창에 포함된 덱에 위치 2(값 7)와 위치 5(값 7)가 있다. 위치 7에 값 7이 새로 들어온다. (1) 앞의 둘을 버려야 하는가? (2) 조건이 <code class="inl">&gt;=</code>가 아니라 <code class="inl">&gt;</code>라면 무엇이 달라지는가?</p>
+      <div class="sol">
+        <ul style="margin-bottom:2mm;">
+          <li>(1) <strong>버린다.</strong> 값이 같을 때도 <em class="hl">더 오른쪽 것이 더 오래 남으므로</em> 왼쪽 것은 쓸모가 없다. 최솟값이 7인 창이라면 위치 7의 7을 답으로 내면 된다</li>
+          <li>(2) <code class="inl">&gt;</code>라면 같은 값을 안 버린다. <strong>최솟값 자체는 여전히 맞지만</strong> 같은 값이 더 오래 남는다. 모든 값이 7인 수열에서는 덱 크기가 최대 <strong>k개</strong>가 될 수 있으며(k = N = 100만이면 100만 개), <code class="inl">&gt;=</code>를 쓰면 중복 후보를 제거하여 보통 더 짧게 유지한다. <strong>어느 쪽이든 시간복잡도는 O(N), 공간은 최악 O(k)</strong>다</li>
+        </ul>
+        <div class="box teal" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>정리.</b> 최솟값만 요구할 때 <code class="inl">&gt;=</code>와 <code class="inl">&gt;</code>는 <strong>정답과 점근적 시간복잡도는 같고, 동점 처리 및 덱에 남는 원소 수가 달라진다.</strong> 다만 문제가 “최솟값의 <u>위치</u>”를 묻는다면 어느 쪽을 쓰느냐에 따라 <strong>어느 위치가 답이 되는지가 달라지므로</strong> 그때는 문제의 요구를 보고 정해야 한다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 3 <span class="tag">최악의 입력 만들기</span></div>
+    <div class="ex-b">
+      <p>오큰수의 완전 탐색 풀이를 무너뜨리는 입력을 설계하라. (1) 어떤 수열인가? (2) N = 100,000일 때 연산 횟수는? (3) 반대로 완전 탐색이 가장 빠른 입력은?</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:18%">입력</th><th class="c" style="width:24%">예</th><th class="c" style="width:24%">연산 횟수</th><th>이유</th></tr></thead>
+          <tbody>
+            <tr><td class="c tt no">최악</td><td class="c m">감소 수열<br>100000, 99999, …</td><td class="c no">약 50억</td><td>오른쪽에 큰 수가 없어 매번 끝까지 훑는다</td></tr>
+            <tr><td class="c tt ok">최선</td><td class="c m">증가 수열<br>1, 2, 3, …</td><td class="c ok">약 10만</td><td>바로 옆이 답이라 <code class="inl">break</code>가 즉시 걸린다</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>(2)</b> 감소 수열에서 i번째는 N−1−i번 비교하므로 합은 <strong>N(N−1)/2 ≈ 50억</strong>이다. 실측도 4,999,950,000회로 정확히 일치했다.<br>
+        <b>교훈.</b> <em class="hl">최선과 최악이 5만 배 차이 난다.</em> 02장에서 배운 대로 대회는 최악으로 판정하므로, 완전 탐색은 N이 조금만 커져도 쓸 수 없다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 4 <span class="tag">덱 배열 크기</span></div>
+    <div class="ex-b">
+      <p>N = 1,000,000, k = 500인 슬라이딩 윈도우 최솟값을 푼다. (1) 덱에 동시에 몇 개까지 들어갈 수 있는가? (2) 배열을 몇 칸 잡겠는가? (3) 원형 덱을 써야 하는가?</p>
+      <div class="sol">
+        <ul style="margin-bottom:2mm;">
+          <li>(1) 덱에 남는 것은 <strong>창 안에 있으면서 지배당하지 않은 값</strong>들이다. 창 크기가 k이므로 <em class="hl">많아야 k = 500개</em>다</li>
+          <li>(2) 이론상 500칸이면 되지만, <strong>N칸(100만)으로 잡는 것을 권한다.</strong> 4 MB면 충분하고, <code class="inl">f</code>와 <code class="inl">r</code>이 단조 증가하는 선형 방식을 그대로 쓸 수 있어 코드가 짧다</li>
+          <li>(3) <strong>필요 없다.</strong> <code class="inl">r</code>은 i마다 많아야 한 번 증가하므로 <em class="hl">총 push가 N번을 넘지 않는다.</em> 07장 3.3절의 판단 기준 그대로 — 총 push가 N이면 선형으로 충분하다</li>
+        </ul>
+        <div class="box warm" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>주의.</b> 이 판단은 <strong>각 원소가 한 번만 들어가기 때문에</strong> 성립한다. 만약 같은 값을 여러 번 넣는 변형 문제라면 총 push를 다시 세어야 한다. <em class="hl">“선형으로 충분한가”는 언제나 총 push 횟수로 판단한다.</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">6</span>연습 문제</h2>
+  <p class="lead">01~05는 공책에, 06~10은 컴퓨터로 푼다. 제한 시간 60분. <strong>이 장은 추적이 절반이다.</strong></p>
+
+  <div class="prob"><span class="pn">01</span>덱 ADT의 다섯 칸 명세표를 작성하라. 연산은 <code class="inl">push_front</code>, <code class="inl">push_back</code>, <code class="inl">pop_front</code>, <code class="inl">pop_back</code>, <code class="inl">empty</code>이다. 스택·큐 명세표와 무엇이 같고 다른지 두 줄로 덧붙일 것.</div>
+
+  <div class="prob"><span class="pn">02</span><code class="inl">d_push_front</code>에서 <code class="inl">+ CAP</code>를 빠뜨리면 어떤 일이 일어나는가? CAP = 8, <code class="inl">df = 0</code>인 상태를 예로 들어 구체적으로 설명하라.</div>
+
+  <div class="prob"><span class="pn">03</span>A = [4, 1, 7, 3, 9, 2]의 오큰수를 단조 스택으로 구하라. 각 i마다 하는 일·스택 상태·확정되는 답을 표로 쓸 것.</div>
+
+  <div class="prob"><span class="pn">04</span>A = [6, 2, 9, 4, 1, 8, 3], k = 3인 슬라이딩 윈도우 <strong>최솟값</strong>을 덱으로 구하라. 각 i마다 뒤에서 버린 것·앞에서 버린 것·덱 상태·출력을 표로 쓸 것.</div>
+
+  <div class="prob"><span class="pn">05</span>“지배한다”는 말의 뜻을 설명하고, 다음 두 경우에서 버릴지 말지 판단하라. 근거를 함께 쓸 것.<br>
+  ① 윈도우 <strong>최댓값</strong>을 구하는 중, 덱 뒤에 (위치 3, 값 5)가 있고 (위치 6, 값 8)이 들어온다<br>
+  ② 오큰수를 구하는 중, 스택 위에 (위치 3, 값 5)가 있고 (위치 6, 값 2)가 들어온다</div>
+
+  <div class="prob"><span class="pn">06</span>원형 덱 열 가지 API 함수(<code class="inl">empty</code>·<code class="inl">full</code>·<code class="inl">size</code>·네 가지 push/pop·<code class="inl">front</code>·<code class="inl">back</code>·<code class="inl">clear</code>)를 작성하라. CAP = 8로 두고 <code class="inl">push_front</code>를 세 번 연달아 해 <code class="inl">df</code>가 7, 6, 5로 돌아가는지 확인하라. <code class="inl">+ CAP</code>를 일부러 빼면 어떻게 되는지도 기록할 것.</div>
+
+  <div class="prob"><span class="pn">07</span>오큰수를 단조 스택으로 구현하라. 연습 03의 답과 일치하는지 확인하고, <strong>완전 탐색 버전도 만들어 답이 같은지 대조</strong>하라. 두 버전의 연산 횟수를 세어 출력할 것.</div>
+
+  <div class="prob"><span class="pn">08</span>07의 두 버전을 <strong>감소 수열</strong>과 <strong>무작위 수열</strong>로 각각 n = 10,000 / 50,000 / 100,000에서 돌려 시간을 비교하라. 표로 정리하고, 무작위에서 완전 탐색이 빠른 이유를 설명할 것.</div>
+
+  <div class="prob"><span class="pn">09</span>슬라이딩 윈도우 최솟값을 덱으로 구현하라. 연습 04의 답과 일치하는지 확인하고, 완전 탐색과 대조하라. n = 200,000에서 <strong>k를 100 / 500 / 1,000으로 바꿔 가며</strong> 두 방식의 연산 횟수를 세어, 덱 쪽이 k와 무관한지 확인하라.</div>
+
+  <div class="prob"><span class="pn">10</span>09의 코드에서 부등호만 바꿔 <strong>윈도우 최댓값</strong> 버전을 만들라. 같은 입력으로 최솟값·최댓값을 동시에 출력하고, 완전 탐색으로 둘 다 검증하라.</div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">7</span>도전 문제</h2>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C1</span><strong>히스토그램에서 가장 큰 직사각형</strong><br>
+    높이가 <code class="inl">h[0..N−1]</code>인 막대들이 나란히 서 있다(폭은 모두 1). 막대들에 걸쳐 그릴 수 있는 <strong>가장 큰 직사각형의 넓이</strong>를 구하라. N ≤ 100,000.<br>
+    <span style="color:var(--muted);">예 : h = [2, 1, 4, 5, 1, 3, 3] → 답은 8 (높이 4인 막대 두 개, 4×2)</span><br>
+    (1) 각 막대를 높이로 삼는 직사각형의 <strong>넓이를 구하려면 무엇을 알아야 하는가?</strong> 두 가지를 쓰라.<br>
+    (2) (1)의 두 값은 단조 스택으로 구할 수 있다. 무엇을 쌓고 언제 꺼내는가? 3.2절의 오큰수와 비교해 설명하라.<br>
+    (3) h = [2, 1, 4, 5, 1, 3, 3]에 대해 추적표를 쓰고 답이 8임을 확인하라.<br>
+    (4) 복잡도를 쓰고, 완전 탐색(모든 구간을 보는 방법)과 비교하라.
+  </div>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C2</span><strong>창 크기가 변하는 문제</strong><br>
+    수열 A와 정수 S가 주어진다. <strong>합이 S 이상인 가장 짧은 연속 구간의 길이</strong>를 구하라. 모든 값은 양수이고 N ≤ 1,000,000.<br>
+    (1) 이 문제는 창 크기가 <strong>고정이 아니다.</strong> 그런데도 O(N)에 풀 수 있다. 어떤 성질 덕분인가? (힌트 — 모든 값이 양수다)<br>
+    (2) 두 포인터를 쓰는 방법을 설계하라. 오른쪽 끝을 늘릴 때와 왼쪽 끝을 줄일 때의 조건을 각각 쓰라.<br>
+    (3) A = [2, 3, 1, 2, 4, 3], S = 7일 때 추적표를 쓰고 답을 구하라.<br>
+    (4) 이 방법이 O(N)인 이유를 4.1절과 <strong>같은 논증</strong>으로 설명하라.<br>
+    (5) 만약 음수가 섞여 있다면 왜 이 방법이 깨지는가? 반례를 하나 들어라.
+  </div>
+
+  <div class="box teal">
+    <h4>두 문항이 겨냥하는 것</h4>
+    <p style="margin-bottom:0;">C1은 <strong>단조 스택의 대표 응용</strong>이다. “왼쪽·오른쪽으로 얼마나 뻗을 수 있는가”를 묻는 모든 문제가 같은 틀이고, 대회 출제 빈도가 높다. C2는 14장 <strong>투 포인터</strong>를 미리 만나는 문항으로, <em class="hl">“포인터 두 개가 각각 한 방향으로만 움직이므로 전체 O(N)”</em>이라는 4.1절과 똑같은 논증이 쓰인다. (5)는 그 논증이 <strong>어떤 전제 위에 서 있는지</strong>를 묻는다 — 가장 중요한 질문이다.</p>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+
+  <table>
+    <thead><tr><th style="width:26%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">“<code class="inl">push_front</code>는 <code class="inl">(df-1)%CAP</code>”</td><td><code class="inl">df=0</code>일 때 −1이 되어 배열 밖을 읽는다</td><td><strong><code class="inl">(df - 1 + CAP) % CAP</code></strong> — 07장 연습 04</td></tr>
+      <tr><td class="tt">“단조 스택에 값을 쌓는다”</td><td>답을 어느 칸에 적을지 모르게 된다</td><td><strong>위치(인덱스)를 쌓는다.</strong> 값은 <code class="inl">a[st[sp-1]]</code>로 본다</td></tr>
+      <tr><td class="tt">“<code class="inl">while</code>이 있으니 O(N²)”</td><td>한 원소는 많아야 한 번 나간다</td><td>원소 하나의 일생을 세어 본다 (4.1절)</td></tr>
+      <tr><td class="tt">“무작위로 테스트했더니 빠르던데”</td><td>완전 탐색은 무작위에서 빠르고 <strong>최악에서만 터진다</strong></td><td>감소 수열 같은 <strong>최악 입력</strong>으로 테스트한다</td></tr>
+      <tr><td class="tt">“윈도우에서 앞뒤 중 하나만 버리면 되지”</td><td>버리는 이유가 <strong>두 가지</strong>다 — 지배당함(뒤), 창 벗어남(앞)</td><td>그래서 스택이 아니라 <strong>덱</strong>이 필요하다</td></tr>
+      <tr><td class="tt">“순서는 상관없겠지”</td><td>뒤에서 버리기 → 넣기 → 앞에서 버리기 → 출력의 순서가 중요하다</td><td>추적표로 한 번 확인하고 그 순서를 고정한다</td></tr>
+      <tr><td class="tt">“<code class="inl">&gt;=</code>든 <code class="inl">&gt;</code>든 답은 같으니까”</td><td>답은 같지만 덱 길이가 달라진다. 위치를 묻는 문제면 답도 달라진다</td><td>효율을 위해 <code class="inl">&gt;=</code>를 쓰되, 문제가 위치를 묻는지 확인한다</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">자가 점검</h3>
+  <div class="box">
+    <ul class="chk" style="margin-bottom:0;">
+      <li>원형 덱의 열 가지 API 함수를 백지에서 작성할 수 있다</li>
+      <li><code class="inl">push_front</code>의 <code class="inl">+ CAP</code>를 설명할 수 있다</li>
+      <li>“지배한다”의 뜻을 두 가지 면(위치·값)으로 설명할 수 있다</li>
+      <li>단조 스택으로 오큰수를 짜고 손으로 추적할 수 있다</li>
+      <li>슬라이딩 윈도우 최솟값의 네 단계 순서를 외우고 있다</li>
+      <li>이중 루프처럼 보이는 코드가 O(N)인 이유를 증명할 수 있다</li>
+      <li>완전 탐색을 무너뜨리는 최악 입력을 만들 수 있다</li>
+    </ul>
+  </div>
+
+  <div class="box teal">
+    <h4>배열 구현을 마치며 — 다음은 09 단일 연결 리스트</h4>
+    <p style="margin-bottom:0;">PART 1은 10장까지 이어지지만, <strong>배열 위에서 만드는 것은 여기까지다.</strong> 05~08장에서 <strong>Vec · 스택 · 큐 · 덱</strong>을 모두 배열 하나와 정수 몇 개로 만들었고, 그 과정에서 <em class="hl">“많아야 한 번”</em>이라는 논증을 네 번 반복했다.<br>
+    다음 장부터는 <strong>값들이 메모리에 흩어져 있는</strong> 구조로 넘어간다. 04장에서 보았듯 포인터 추적 때문에 캐시 효율이 낮아질 수 있지만, 대신 <strong>삽입·삭제할 위치의 노드를 이미 알고 있다면 O(1)</strong>로 연결을 바꿀 수 있다. 그 위치를 찾는 데는 O(N)이 걸릴 수 있다. 그 맞바꿈을 어떻게 쓸지가 09·10장의 주제이고, 거기서 배우는 <strong>노드 풀</strong> 기법이 32장 트라이까지 이어진다.</p>
+  </div>
+
+  <div class="foot"><span>08 덱과 단조 자료구조</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+</body>
+</html>

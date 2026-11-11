@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>07 큐와 원형 큐 — 중등정보올림피아드 자료구조</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:27pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  td.m{font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  .print-toolbar{max-width:210mm;margin:10px auto 12px;padding:12px 18px;background:#fff;
+    border:1px solid #ced9e2;border-radius:10px;display:flex;align-items:center;gap:15px;flex-wrap:wrap;
+    box-shadow:0 2px 10px #00000010;font-size:12pt;}
+  .print-toolbar strong{font-size:12pt;}
+  .print-toolbar span{font-size:9pt;color:#536473;flex:1;}
+  .print-toolbar button{background:#0d615c;color:white;border:0;border-radius:7px;padding:11px 16px;
+    font-size:11pt;font-weight:700;cursor:pointer;}
+  .print-toolbar button:hover{background:#10483f;}
+  @media print{
+    @page{size:A4; margin:0;}
+    html,body{margin:0!important;padding:0!important;}
+    body{background:#fff!important;color:#111!important;}
+    .print-toolbar,.foot{display:none!important;}
+    .page{width:210mm!important;min-height:297mm!important;height:auto!important;
+      margin:0!important;padding:16mm 16mm 18mm!important;break-after:page;overflow:visible!important;
+      background:#fff!important;}
+    .page:last-child{break-after:auto;}
+    .cover{height:297mm!important;min-height:297mm!important;display:flex!important;
+      padding:20mm 17mm!important;justify-content:space-between!important;}
+    *,*::before,*::after{background-color:transparent!important;background-image:none!important;
+      color:#111!important;text-shadow:none!important;box-shadow:none!important;
+      -webkit-print-color-adjust:economy!important;print-color-adjust:economy!important;}
+    .page,.cover{background:#fff!important;}
+    .cover-rule{background:#111!important;height:2px!important;}
+    pre,pre.out{background:#fff!important;color:#111!important;border:1px solid #777!important;
+      white-space:pre-wrap;overflow-wrap:anywhere;font-size:7.8pt!important;}
+    pre span,pre .cm,pre .kw,pre .fn,pre .st{color:#111!important;}
+    thead th,.ex-h,.pn,.sec .num{background:#fff!important;color:#111!important;border:1px solid #555!important;}
+    .box,.qa,.ex,.prob,.cover-goal{background:#fff!important;border-color:#777!important;}
+    th,td{background:#fff!important;color:#111!important;border-color:#999!important;}
+    svg text,svg tspan{fill:#111!important;stroke:none!important;}
+    svg rect,svg circle,svg ellipse,svg polygon{fill:#fff!important;stroke:#444!important;}
+    svg path,svg line,svg polyline{fill:none!important;stroke:#444!important;}
+    svg marker path{fill:#111!important;stroke:none!important;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2,.grid3{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4; margin:0;}
+
+  @media print {
+    body {font-size:9.15pt!important; line-height:1.40!important;}
+    .page:not(.cover){padding:12mm 14mm 13mm!important;}
+    h2.sec{font-size:12.4pt!important;margin:0 0 2.6mm!important;padding-bottom:1.5mm!important;}
+    h3.sub{font-size:10.2pt!important;margin:2.8mm 0 1.3mm!important;}
+    h4.mini{font-size:9.5pt!important;margin:2.4mm 0 1.3mm!important;}
+    p{margin-bottom:1.6mm!important;}
+    ul,ol{margin-bottom:1.6mm!important;}
+    li{margin-bottom:.75mm!important;}
+    .box,.qa{padding:2.1mm 2.6mm!important;margin-bottom:1.8mm!important;}
+    .box h4{margin-bottom:1mm!important;}
+    .ex,.prob{margin-bottom:1.8mm!important;}
+    .ex-b{padding:2mm 2.5mm!important;}
+    .ex-h{padding:1.1mm 2.2mm!important;}
+    table{font-size:8.35pt!important;margin-bottom:1.8mm!important;}
+    th,td{padding:1.1mm 1.5mm!important;}
+    pre,pre.out{font-size:7.2pt!important;line-height:1.35!important;
+      padding:1.8mm 2.5mm!important;margin-bottom:1.7mm!important;}
+    figure{margin-bottom:1.5mm!important;}
+    figure svg{max-height:45mm!important;width:auto!important;}
+    figcaption{font-size:7.6pt!important;margin-top:.7mm!important;}
+    .grid2,.grid3{gap:2.3mm!important;}
+  }
+  figure.diagram-print{display:none;}
+  @media print {figure.diagram-screen{display:none!important;}figure.diagram-print{display:block!important;}}
+  @media print {
+    * {border-color:#666!important;}
+    h2.sec,h3.sub,.qa,.box,.ex,.prob{border-color:#666!important;}
+  }
+</style>
+</head>
+<body>
+<div class="print-toolbar"><strong>07 큐와 원형 큐 · 검토 수정본</strong><span>화면은 컬러 · A4 인쇄는 흰 배경/검은 글씨</span><button type="button" onclick="window.print()">A4 잉크 절약 인쇄 / PDF 저장</button></div>
+
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+  <div>
+    <div class="eyebrow">PART 1 · 선형 자료구조</div>
+    <div class="cover-rule"></div>
+    <div class="chno">07</div>
+    <h1>큐와 원형 큐</h1>
+    <div class="sub">
+      FIFO ‖ front · rear ‖ 모듈러 인덱스 ‖ 가득 참 판정의 두 방식 ‖ 요세푸스<br>
+      난이도 ★★☆☆☆ · 7주차 · 100분 2차시 · 30장 BFS의 토대
+    </div>
+    <div class="cover-goal">
+      <h3>이 장을 마치면 할 수 있는 것</h3>
+      <ul>
+        <li>선형 큐에서 자리가 소진되는 현상을 설명하고 재현할 수 있다</li>
+        <li>모듈러 연산으로 인덱스를 돌려 원형 큐를 만들 수 있다</li>
+        <li>가득 참과 비어 있음을 구별하는 두 방식을 각각 구현하고 고를 수 있다</li>
+        <li>대회에서 쓰는 “밀지 않는 선형 큐”를 쓰고, 배열 크기를 어림할 수 있다</li>
+        <li>요세푸스 문제를 큐로 풀 수 있다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+  <p class="lead">스택이 “가장 최근”이었다면, 큐는 <strong>“가장 먼저”</strong>다. 한 글자 차이인데 구현이 꽤 달라진다.</p>
+
+  <h3 class="sub">1.1 줄 선 순서대로</h3>
+  <p>큐(queue)는 <strong>줄</strong>이다. 뒤에 서고 앞에서 빠져나간다. 먼저 들어온 것이 먼저 나오므로 <strong>FIFO</strong>(First In, First Out)라고 한다.</p>
+  <table>
+    <thead><tr><th style="width:24%">상황</th><th style="width:28%">줄 서는 것</th><th>왜 순서대로인가</th></tr></thead>
+    <tbody>
+      <tr><td class="k">은행 창구</td><td>번호표를 받은 손님</td><td>먼저 온 사람이 먼저 받는 것이 공정하다</td></tr>
+      <tr><td class="k">프린터</td><td>인쇄 요청</td><td>보낸 순서대로 출력된다</td></tr>
+      <tr><td class="k">버퍼</td><td>아직 처리 못 한 입력</td><td>도착 순서를 지켜야 내용이 섞이지 않는다 (03장 입력 버퍼)</td></tr>
+      <tr><td class="k"><strong>BFS</strong> (30장)</td><td>발견되어 큐에 들어갔지만 아직 처리하지 않은 칸</td><td><strong>가까운 곳부터</strong> 퍼져 나가야 최단 거리가 나온다</td></tr>
+    </tbody>
+  </table>
+  <p>마지막 줄이 이 장을 배우는 가장 큰 이유다. <em class="hl">모든 이동의 비용이 1로 같은 격자에서 BFS가 최단 거리를 보장하는 핵심 근거가 바로 큐의 FIFO 성질</em>이고, 30장 전체가 이 위에서 돈다.</p>
+
+  <h3 class="sub">1.2 스택과 무엇이 다른가</h3>
+  <div class="grid2">
+    <div class="box teal">
+      <h4>스택 — 한쪽 끝만 쓴다</h4>
+      <p style="margin-bottom:0;">넣는 곳과 빼는 곳이 <strong>같다.</strong> 그래서 <code class="inl">sp</code> 하나만 움직이면 끝났다.</p>
+    </div>
+    <div class="box warm">
+      <h4>큐 — 양쪽 끝을 쓴다</h4>
+      <p style="margin-bottom:0;">넣는 곳(<code class="inl">rear</code>)과 빼는 곳(<code class="inl">front</code>)이 <strong>반대편</strong>이다. 그래서 <em class="hl">표시가 두 개</em> 필요하고, 여기서 문제가 생긴다.</p>
+    </div>
+  </div>
+  <p>표시가 두 개라는 사실이 이 장의 모든 내용을 만들어 낸다. 앞에서 빼면 <strong>앞쪽에 빈자리가 생기는데 그 자리를 다시 못 쓰는</strong> 문제(2.2절), 그것을 해결하는 <strong>원형 큐</strong>(2.3절), 그리고 원형이 되면서 생기는 <strong>“가득 참과 비어 있음이 똑같아 보이는”</strong> 문제(2.4절)가 차례로 나온다.</p>
+
+  <div class="qa">
+    <div class="q">Q. 앞에서 뺄 때마다 전체를 한 칸씩 당기면 되지 않나요?</div>
+    <div>동작은 한다. 그런데 <code class="inl">dequeue</code> 한 번이 <strong>O(N)</strong>이 된다. 01장 연습 04에서 본 그대로다. N번 꺼내면 O(N²)이고, N = 10만이면 <em class="hl">50억 번</em>이라 시간 초과다. 큐의 모든 연산은 O(1)이어야 하고, 그래서 <strong>당기지 않고 표시만 옮기는</strong> 방법을 쓴다.</div>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.1~2.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+
+  <h3 class="sub">2.1 front와 rear</h3>
+  <p>표시를 두 개 둔다. <code class="inl">front</code>는 <strong>다음에 꺼낼 자리</strong>, <code class="inl">rear</code>는 <strong>다음에 넣을 빈 자리</strong>다. 스택의 <code class="inl">sp</code>와 같은 약속(“다음 자리”)을 쓰므로 헷갈릴 일이 적다.</p>
+  <figure class="diagram-screen">
+    <svg viewBox="0 0 660 136" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="큐의 front와 rear">
+      <g font-size="10" text-anchor="middle">
+        <rect x="70" y="40" width="66" height="28" fill="#f4f7fa" stroke="#9aa8b5" stroke-dasharray="3 3"/><text x="103" y="59" fill="#9aa8b5">빈칸</text>
+        <rect x="136" y="40" width="66" height="28" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="169" y="59" fill="#0f2a4a">7</text>
+        <rect x="202" y="40" width="66" height="28" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="235" y="59" fill="#0f2a4a">3</text>
+        <rect x="268" y="40" width="66" height="28" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="301" y="59" fill="#0f2a4a">9</text>
+        <rect x="334" y="40" width="66" height="28" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/><text x="367" y="59" fill="#9aa8b5">빈칸</text>
+        <rect x="400" y="40" width="66" height="28" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/><text x="433" y="59" fill="#9aa8b5">빈칸</text>
+      </g>
+      <g font-size="8.6" fill="#5b6876" text-anchor="middle">
+        <text x="103" y="34">0</text><text x="169" y="34">1</text><text x="235" y="34">2</text>
+        <text x="301" y="34">3</text><text x="367" y="34">4</text><text x="433" y="34">5</text>
+      </g>
+      <path d="M169 88 L169 72" stroke="#0d7c74" stroke-width="1.8" marker-end="url(#au7)"/>
+      <text x="169" y="102" font-size="9.5" fill="#0d7c74" text-anchor="middle" font-weight="700">front = 1</text>
+      <text x="169" y="116" font-size="8.4" fill="#5b6876" text-anchor="middle">다음에 꺼낼 자리</text>
+      <path d="M367 88 L367 72" stroke="#b4531a" stroke-width="1.8" marker-end="url(#au8)"/>
+      <text x="367" y="102" font-size="9.5" fill="#b4531a" text-anchor="middle" font-weight="700">rear = 4</text>
+      <text x="367" y="116" font-size="8.4" fill="#5b6876" text-anchor="middle">다음에 넣을 자리</text>
+      <defs>
+        <marker id="au7" markerWidth="7" markerHeight="7" refX="3.5" refY="1" orient="auto"><path d="M0,7 L3.5,0 L7,7 z" fill="#0d7c74"/></marker>
+        <marker id="au8" markerWidth="7" markerHeight="7" refX="3.5" refY="1" orient="auto"><path d="M0,7 L3.5,0 L7,7 z" fill="#b4531a"/></marker>
+      </defs>
+      <rect x="486" y="36" width="160" height="60" rx="5" fill="#0f2a4a"/>
+      <text x="566" y="56" font-size="9.6" fill="#9ee3dc" text-anchor="middle">개수 = rear − front</text>
+      <text x="566" y="72" font-size="9.6" fill="#fff" text-anchor="middle">비었다 ⟺ front == rear</text>
+      <text x="566" y="88" font-size="9.6" fill="#cfe3f2" text-anchor="middle">둘 다 O(1)</text>
+    </svg>
+    <figcaption>그림 7-1. 넣으면 rear가 오른쪽으로, 빼면 front가 오른쪽으로 — <strong>둘 다 오른쪽으로만 간다</strong></figcaption>
+  </figure>
+<figure class="diagram-print">
+    <svg viewBox="0 0 660 136" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="큐의 front와 rear">
+      <g font-size="10" text-anchor="middle">
+        <rect x="70" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-dasharray="3 3"/><text x="103" y="59" fill="#111">빈칸</text>
+        <rect x="136" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-width="1.4"/><text x="169" y="59" fill="#111">7</text>
+        <rect x="202" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-width="1.4"/><text x="235" y="59" fill="#111">3</text>
+        <rect x="268" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-width="1.4"/><text x="301" y="59" fill="#111">9</text>
+        <rect x="334" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-dasharray="3 3"/><text x="367" y="59" fill="#111">빈칸</text>
+        <rect x="400" y="40" width="66" height="28" fill="#fff" stroke="#555" stroke-dasharray="3 3"/><text x="433" y="59" fill="#111">빈칸</text>
+      </g>
+      <g font-size="8.6" fill="#5b6876" text-anchor="middle">
+        <text x="103" y="34">0</text><text x="169" y="34">1</text><text x="235" y="34">2</text>
+        <text x="301" y="34">3</text><text x="367" y="34">4</text><text x="433" y="34">5</text>
+      </g>
+      <path d="M169 88 L169 72" stroke="#555" stroke-width="1.8" marker-end="url(#au7)"/ fill="#fff">
+      <text x="169" y="102" font-size="9.5" fill="#111" text-anchor="middle" font-weight="700">front = 1</text>
+      <text x="169" y="116" font-size="8.4" fill="#111" text-anchor="middle">다음에 꺼낼 자리</text>
+      <path d="M367 88 L367 72" stroke="#555" stroke-width="1.8" marker-end="url(#au8)"/ fill="#fff">
+      <text x="367" y="102" font-size="9.5" fill="#111" text-anchor="middle" font-weight="700">rear = 4</text>
+      <text x="367" y="116" font-size="8.4" fill="#111" text-anchor="middle">다음에 넣을 자리</text>
+      <defs>
+        <marker id="au7" markerWidth="7" markerHeight="7" refX="3.5" refY="1" orient="auto"><path d="M0,7 L3.5,0 L7,7 z" fill="#111"/></marker>
+        <marker id="au8" markerWidth="7" markerHeight="7" refX="3.5" refY="1" orient="auto"><path d="M0,7 L3.5,0 L7,7 z" fill="#111"/></marker>
+      </defs>
+      <rect x="486" y="36" width="160" height="60" rx="5" fill="#fff"/>
+      <text x="566" y="56" font-size="9.6" fill="#111" text-anchor="middle">개수 = rear − front</text>
+      <text x="566" y="72" font-size="9.6" fill="#111" text-anchor="middle">비었다 ⟺ front == rear</text>
+      <text x="566" y="88" font-size="9.6" fill="#111" text-anchor="middle">둘 다 O(1)</text>
+    </svg>
+    <figcaption>그림 7-1. 넣으면 rear가 오른쪽으로, 빼면 front가 오른쪽으로 — <strong>둘 다 오른쪽으로만 간다</strong></figcaption>
+  </figure>
+
+  <h3 class="sub">2.2 문제 — 뒤쪽이 차면 앞쪽의 빈칸을 못 쓴다</h3>
+  <p>front와 rear가 둘 다 오른쪽으로만 가므로, 쓰다 보면 <strong>배열 왼쪽이 통째로 버려진다.</strong> 용량 5짜리 큐로 실제로 돌려 보자.</p>
+<pre class="out"><span class="lbl">$ ./naive        용량 5짜리 선형 큐</span>
+enqueue 1 -&gt; front=0 rear=1
+enqueue 2 -&gt; front=0 rear=2
+enqueue 3 -&gt; front=0 rear=3
+dequeue 1 -&gt; front=1 rear=3
+dequeue 2 -&gt; front=2 rear=3
+dequeue 3 -&gt; front=3 rear=3
+<span class="lbl">지금 큐는 비어 있다 (front == rear == 3)</span>
+enqueue 4 -&gt; 성공        (front=3 rear=4)
+enqueue 5 -&gt; 성공        (front=3 rear=5)
+enqueue 6 -&gt; <span class="bad">실패! 자리가 없다</span> (front=3 rear=5)</pre>
+  <div class="box warm">
+    <h4>빈칸이 남았는데도 더 넣을 수 없다</h4>
+    <p style="margin-bottom:0;">dequeue 3 직후에는 큐가 비었다. push 4·5 뒤의 마지막 줄을 보자. 현재 큐에 든 것은 2개뿐이고 배열은 5칸인데 <em class="hl">더 못 넣는다.</em> <code class="inl">rear</code>가 배열 끝에 닿았기 때문이다. 앞쪽 0·1·2번 칸은 비어 있지만 <strong>이 선형 큐에서는 초기화하지 않는 한 다시 쓸 수 없다.</strong> 이것이 재사용이 필요한 상황에서 선형 큐가 불리한 이유다. 단, 전체 push 횟수 상한이 작다면 대회용 선형 큐도 유용하다.</p>
+  </div>
+
+  <h3 class="sub">2.3 해결 — 끝에서 처음으로 돌아간다</h3>
+  <p>배열의 끝과 처음을 <strong>이어 붙여 원처럼</strong> 쓰면 된다. 구현은 한 글자, <code class="inl">%</code>다.</p>
+  <table>
+    <thead><tr><th style="width:26%">하던 것</th><th style="width:30%">바꾼 것</th><th>뜻</th></tr></thead>
+    <tbody>
+      <tr><td class="c m">rear = rear + 1</td><td class="c m ok">rear = (rear + 1) % CAP</td><td rowspan="2">끝(CAP−1) 다음이 다시 0이 된다</td></tr>
+      <tr><td class="c m">front = front + 1</td><td class="c m ok">front = (front + 1) % CAP</td></tr>
+    </tbody>
+  </table>
+  <p>CAP = 5일 때 인덱스는 0→1→2→3→4→0→1→… 로 돈다. <em class="hl">나머지 연산 하나로 배열이 원이 된다.</em> 그런데 원이 되는 순간, 새로운 문제가 생긴다.</p>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">2.4 새 문제 — 가득 참과 비어 있음이 똑같아 보인다</h3>
+  <p>선형 큐에서는 <code class="inl">front == rear</code>가 “비었다”였다. 그런데 원형으로 만들면 <strong>배열 CAP칸을 전부 채우면 <code class="inl">front == rear</code>가 되어 비어 있는 상태와 구별되지 않는다.</strong></p>
+  <figure class="diagram-screen">
+    <svg viewBox="0 0 660 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="비어 있음과 가득 참이 구별되지 않는 상황">
+      <text x="150" y="16" font-size="10.5" font-weight="700" fill="#0d7c74" text-anchor="middle">비어 있다</text>
+      <g font-size="9.5" text-anchor="middle">
+        <rect x="40" y="26" width="44" height="26" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+        <rect x="84" y="26" width="44" height="26" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+        <rect x="128" y="26" width="44" height="26" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+        <rect x="172" y="26" width="44" height="26" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+        <rect x="216" y="26" width="44" height="26" fill="#fff" stroke="#9aa8b5" stroke-dasharray="3 3"/>
+      </g>
+      <text x="150" y="70" font-size="10" fill="#0f2a4a" text-anchor="middle">front = 2, rear = 2</text>
+      <text x="150" y="86" font-size="10" font-weight="700" fill="#0d7c74" text-anchor="middle">front == rear</text>
+
+      <text x="440" y="16" font-size="10.5" font-weight="700" fill="#b4531a" text-anchor="middle">가득 찼다</text>
+      <g font-size="9.5" text-anchor="middle">
+        <rect x="330" y="26" width="44" height="26" fill="#eef4f3" stroke="#0d7c74"/><text x="352" y="44" fill="#0f2a4a">a</text>
+        <rect x="374" y="26" width="44" height="26" fill="#eef4f3" stroke="#0d7c74"/><text x="396" y="44" fill="#0f2a4a">b</text>
+        <rect x="418" y="26" width="44" height="26" fill="#eef4f3" stroke="#0d7c74"/><text x="440" y="44" fill="#0f2a4a">c</text>
+        <rect x="462" y="26" width="44" height="26" fill="#eef4f3" stroke="#0d7c74"/><text x="484" y="44" fill="#0f2a4a">d</text>
+        <rect x="506" y="26" width="44" height="26" fill="#eef4f3" stroke="#0d7c74"/><text x="528" y="44" fill="#0f2a4a">e</text>
+      </g>
+      <text x="440" y="70" font-size="10" fill="#0f2a4a" text-anchor="middle">front = 2, rear = 2</text>
+      <text x="440" y="86" font-size="10" font-weight="700" fill="#b4531a" text-anchor="middle">front == rear</text>
+
+      <rect x="150" y="98" width="360" height="24" rx="4" fill="#9d2f3f"/>
+      <text x="330" y="115" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="700">두 상태를 구별할 방법이 없다</text>
+    </svg>
+    <figcaption>그림 7-2. 다섯 칸을 모두 채우면 rear가 한 바퀴 돌아 front와 만난다</figcaption>
+  </figure>
+<figure class="diagram-print">
+    <svg viewBox="0 0 660 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="비어 있음과 가득 참이 구별되지 않는 상황">
+      <text x="150" y="16" font-size="10.5" font-weight="700" fill="#111" text-anchor="middle">비어 있다</text>
+      <g font-size="9.5" text-anchor="middle">
+        <rect x="40" y="26" width="44" height="26" fill="#fff" stroke="#555" stroke-dasharray="3 3"/>
+        <rect x="84" y="26" width="44" height="26" fill="#fff" stroke="#555" stroke-dasharray="3 3"/>
+        <rect x="128" y="26" width="44" height="26" fill="#fff" stroke="#555" stroke-dasharray="3 3"/>
+        <rect x="172" y="26" width="44" height="26" fill="#fff" stroke="#555" stroke-dasharray="3 3"/>
+        <rect x="216" y="26" width="44" height="26" fill="#fff" stroke="#555" stroke-dasharray="3 3"/>
+      </g>
+      <text x="150" y="70" font-size="10" fill="#111" text-anchor="middle">front = 2, rear = 2</text>
+      <text x="150" y="86" font-size="10" font-weight="700" fill="#111" text-anchor="middle">front == rear</text>
+
+      <text x="440" y="16" font-size="10.5" font-weight="700" fill="#111" text-anchor="middle">가득 찼다</text>
+      <g font-size="9.5" text-anchor="middle">
+        <rect x="330" y="26" width="44" height="26" fill="#fff" stroke="#555"/><text x="352" y="44" fill="#111">a</text>
+        <rect x="374" y="26" width="44" height="26" fill="#fff" stroke="#555"/><text x="396" y="44" fill="#111">b</text>
+        <rect x="418" y="26" width="44" height="26" fill="#fff" stroke="#555"/><text x="440" y="44" fill="#111">c</text>
+        <rect x="462" y="26" width="44" height="26" fill="#fff" stroke="#555"/><text x="484" y="44" fill="#111">d</text>
+        <rect x="506" y="26" width="44" height="26" fill="#fff" stroke="#555"/><text x="528" y="44" fill="#111">e</text>
+      </g>
+      <text x="440" y="70" font-size="10" fill="#111" text-anchor="middle">front = 2, rear = 2</text>
+      <text x="440" y="86" font-size="10" font-weight="700" fill="#111" text-anchor="middle">front == rear</text>
+
+      <rect x="150" y="98" width="360" height="24" rx="4" fill="#fff"/>
+      <text x="330" y="115" font-size="10.5" fill="#111" text-anchor="middle" font-weight="700">두 상태를 구별할 방법이 없다</text>
+    </svg>
+    <figcaption>그림 7-2. 다섯 칸을 모두 채우면 rear가 한 바퀴 돌아 front와 만난다</figcaption>
+  </figure>
+  <p>해결책은 두 가지다. 둘 다 널리 쓰이고 각각 장단점이 있다.</p>
+
+  <h4 class="mini">방식 A — 한 칸을 비워 둔다</h4>
+  <p><strong>절대 가득 채우지 않는다.</strong> 배열이 CAP칸이면 최대 CAP−1개만 담는다. 그러면 <code class="inl">front == rear</code>는 오직 “비었다”일 때만 생긴다.</p>
+  <table>
+    <thead><tr><th class="c" style="width:22%">판정</th><th class="c" style="width:34%">조건</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="c k">비었다</td><td class="c m">front == rear</td><td>그대로</td></tr>
+      <tr><td class="c k">가득 찼다</td><td class="c m">(rear + 1) % CAP == front</td><td>한 칸 남았을 때를 “가득”으로 본다</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="mini">방식 B — 개수를 따로 센다</h4>
+  <p>변수 <code class="inl">cnt</code>를 하나 더 두고 넣을 때 +1, 뺄 때 −1 한다. <strong>배열을 전부 쓸 수 있다.</strong></p>
+  <table>
+    <thead><tr><th class="c" style="width:22%">판정</th><th class="c" style="width:34%">조건</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="c k">비었다</td><td class="c m">cnt == 0</td><td rowspan="2">front와 rear를 비교할 필요가 없다</td></tr>
+      <tr><td class="c k">가득 찼다</td><td class="c m">cnt == CAP</td></tr>
+    </tbody>
+  </table>
+  <p>방식 B는 <code class="inl">rear</code>를 아예 두지 않아도 된다. 넣을 자리는 <code class="inl">(front + cnt) % CAP</code>로 계산할 수 있다(CAP &gt; 0). <strong>push 전에는 cnt &lt; CAP, pop·front 전에는 cnt &gt; 0</strong>이어야 한다.</p>
+
+  <h4 class="mini">실제로 돌려 보면</h4>
+<pre class="out"><span class="lbl">$ ./circ          배열 칸 수 = 5</span>
+[방식 A] 한 칸 비우기            [방식 B] 개수 세기
+push 1~4 -&gt; 성공                 push 1~5 -&gt; 성공
+push 5   -&gt; <span class="bad">가득 참</span>              push 6   -&gt; <span class="bad">가득 참</span>
+<span class="lbl">최대 저장 개수 : 4개</span>             <span class="lbl">최대 저장 개수 : 5개</span></pre>
+  <div class="box teal">
+    <h4>어느 쪽을 쓸까</h4>
+    <p style="margin-bottom:0;"><strong>방식 B를 권한다.</strong> 배열을 다 쓸 수 있고, <code class="inl">cnt</code> 덕분에 <em class="hl">현재 개수를 언제든 O(1)에 알 수 있다</em>(이것이 의외로 자주 필요하다). 방식 A는 변수가 하나 적지만, “왜 한 칸이 모자라지?”로 헷갈리는 사고가 잦다. 다만 방식 A도 널리 쓰이므로 <strong>남의 코드를 읽을 때를 대비해 둘 다 알아 둔다.</strong></p>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.1~3.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현</h2>
+
+  <h3 class="sub">3.1 원형 큐 — 방식 B (권장)</h3>
+<pre>/* circq_b.c — 방식 B: 개수로 빈 큐/가득 찬 큐 구별 */
+#include &lt;assert.h&gt;
+#define CAP 100005
+static int q[CAP];
+static int qf, qcnt;   /* front 위치, 저장된 원소 수 */
+
+static int q_empty(void){ return qcnt == 0; }
+static int q_full(void) { return qcnt == CAP; }
+static int q_size(void) { return qcnt; }
+static void q_push(int x){
+    assert(!q_full());  /* 가득 차면 넣지 않는다 */
+    q[(qf + qcnt) % CAP] = x;
+    ++qcnt;
+}
+static int q_pop(void){
+    assert(!q_empty()); /* 비면 꺼내지 않는다 */
+    int x = q[qf];
+    qf = (qf + 1) % CAP;
+    --qcnt;
+    return x;
+}
+static int q_front(void){
+    assert(!q_empty());
+    return q[qf];
+}
+static void q_clear(void){ qf = qcnt = 0; }</pre>
+  <div class="box">
+    <h4><code class="inl">(qf + qcnt) % CAP</code>가 넣을 자리인 이유</h4>
+    <p style="margin-bottom:0;">맨 앞이 <code class="inl">qf</code>이고 <code class="inl">qcnt</code>개가 들어 있으니, 마지막 값은 <code class="inl">qf + qcnt − 1</code>번 자리에 있다. 그 다음 칸이 <code class="inl">qf + qcnt</code>이고, 배열을 넘어가면 <code class="inl">%</code>로 되돌린다. <em class="hl"><code class="inl">rear</code> 변수를 따로 두지 않아도 되는 이유</em>가 이것이다.</p>
+  </div>
+
+  <h3 class="sub">3.2 원형 큐 — 방식 A (한 칸 비우기)</h3>
+  <p>아래 구현은 <strong>방식 B와 이름이 같은 별개의 대안</strong>이다. 두 코드를 한 C 파일에 동시에 넣지 말고 각각 독립 실행 파일에 사용한다. 두 방식 모두 <code class="inl">assert</code>를 이용해 사전조건을 확인한다.</p>
+<pre>/* circq_a.c — 방식 A: B와 별도 파일로 사용 */
+#include &lt;assert.h&gt;
+#define CAP 100005  /* 실제로 담을 수 있는 수: CAP-1 */
+static int q[CAP], qf, qr;
+
+static int q_empty(void){ return qf == qr; }
+static int q_full(void){ return (qr + 1) % CAP == qf; }
+static void q_push(int x){
+    assert(!q_full());
+    q[qr] = x;
+    qr = (qr + 1) % CAP;
+}
+static int q_pop(void){
+    assert(!q_empty());
+    int x = q[qf];
+    qf = (qf + 1) % CAP;
+    return x;
+}
+static int q_size(void){ return (qr - qf + CAP) % CAP; }
+static void q_clear(void){ qf = qr = 0; }</pre>
+  <div class="box warm">
+    <h4><code class="inl">q_size</code>에 <code class="inl">+ CAP</code>가 붙은 이유</h4>
+    <p style="margin-bottom:0;"><code class="inl">qr</code>이 한 바퀴 돌아 <code class="inl">qf</code>보다 작아질 수 있다. 그러면 <code class="inl">qr − qf</code>가 <strong>음수</strong>가 되는데, C에서 음수에 <code class="inl">%</code>를 쓰면 <em class="hl">음수 나머지가 나온다</em>(예: <code class="inl">-2 % 5</code>는 −2). 그래서 CAP을 더해 양수로 만든 뒤 나눈다. <strong>원형 큐에서 음수 모듈러는 가장 흔한 버그</strong>이고, 08장 덱에서 <code class="inl">front</code>를 왼쪽으로 옮길 때 다시 만난다.</p>
+  </div>
+  <p>용량이 N개 필요하면 배열은 <strong>N+1칸</strong>으로 잡아야 한다. <code class="inl">assert</code> 검사는 <code class="inl">-DNDEBUG</code> 옵션에서 비활성화되므로, 실제 입력이 잘못될 수 있는 프로그램에는 명시적인 오류 반환·검사도 필요하다.</p>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.3~3.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.3 대회 실전형 — 밀지 않는 선형 큐</h3>
+  <p>의외의 사실 하나. <strong>대회에서는 원형 큐를 안 쓰는 경우가 더 많다.</strong> 배열을 충분히 크게 잡고 <code class="inl">%</code> 없이 그냥 쓴다.</p>
+<pre>/* linearq.c — 밀지 않는 선형 큐 */
+#include &lt;assert.h&gt;
+#define MAXQ 1000005
+static int q[MAXQ];
+static int qf, qr;
+
+static void q_push(int x){
+    assert(qr &lt; MAXQ);  /* 총 push 횟수 제한 */
+    q[qr++] = x;
+}
+static int q_pop(void){
+    assert(qf &lt; qr);    /* 비어 있지 않을 것 */
+    return q[qf++];
+}
+static int q_empty(void){ return qf == qr; }
+static int q_size(void){ return qr - qf; }
+static void q_clear(void){ qf = qr = 0; }</pre>
+  <p>세 구현의 <code class="inl">q_push</code>·<code class="inl">q_pop</code>은 <strong>각각 별도의 코드 예시</strong>이다. 용량 초과·빈 큐 접근은 사전조건 위반이며, 예제에서는 <code class="inl">assert</code>로 검사한다. 실제 입력이 잘못될 수 있는 경우에는 오류 반환값을 직접 처리해야 한다.</p>
+  <div class="box teal">
+    <h4>이게 왜 괜찮은가 — 들어가는 총 개수를 세어 본다</h4>
+    <p style="margin-bottom:0;">배열이 낭비되는 것은 맞지만, 중요한 것은 <em class="hl">“전체에서 push가 몇 번 일어나는가”</em>다. <strong>방문 표시를 큐에 넣을 때 하는 표준 <strong>BFS(30장)</strong>는 각 정점이 많아야 한 번 들어가므로 <strong>배열 크기는 정점 수면 충분</strong>하다.</p>
+  </div>
+  <p>반대로 <strong>같은 값이 여러 번 드나드는 문제</strong>에서는 총 push 횟수를 따로 세어야 한다. 요세푸스가 그렇다.</p>
+<pre class="out"><span class="lbl">$ ./grow        요세푸스 (k = 3), 밀지 않는 선형 큐가 쓴 배열 칸 수</span>
+n=   1,000  -&gt;    3,000칸  (n의 3.0배)
+n= 100,000  -&gt;  300,000칸  (n의 3.0배)
+n=1,000,000 -&gt; 3,000,000칸 (n의 3.0배)</pre>
+  <div class="box warm">
+    <h4>총 push 횟수 = n × k (아래 코드 그대로 실행할 때)</h4>
+    <p style="margin-bottom:0;">처음 n명을 넣는 push가 n번, 한 명을 제거하기 전에 k−1번씩 뒤로 보내는 push가 총 n(k−1)번이다. 따라서 <strong>총 push = n+n(k−1)=nk번</strong>이며, 선형 배열은 적어도 nk칸이 필요하다. 이 코드는 마지막 한 명도 k−1번 회전시킨다. k = 3이면 3n이라 괜찮지만 <em class="hl">k가 100이면 100n칸</em>이라 위험하다. <strong>“선형으로 충분한지”는 총 push 횟수로 판단한다. 큐를 중간에 안전하게 초기화하면 새 사용 구간마다 다시 계산한다.</strong></p>
+  </div>
+
+  <h3 class="sub">3.4 응용 — 요세푸스 문제</h3>
+  <p>1번부터 n번까지 둥글게 앉아 있고, k번째 사람을 차례로 제거한다. 제거되는 순서를 출력한다. <strong>조건: n ≥ 1, k ≥ 1</strong>. 아래 코드는 <strong>가득 차지 않는 충분한 용량</strong>의 원형 큐(B) 또는 총 push 횟수 nk를 담을 수 있는 선형 큐를 전제로 한다.</p>
+<pre><span class="kw">for</span> (<span class="kw">int</span> i = 1; i &lt;= n; i++) <span class="fn">q_push</span>(i);
+<span class="kw">while</span> (!<span class="fn">q_empty</span>()) {
+    <span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; k-1; i++) <span class="fn">q_push</span>(<span class="fn">q_pop</span>());  <span class="cm">/* k-1명을 뒤로 */</span>
+    <span class="fn">printf</span>(<span class="st">"%d "</span>, <span class="fn">q_pop</span>());                        <span class="cm">/* k번째를 제거 */</span>
+}</pre>
+<pre class="out"><span class="lbl">$ ./jose</span>
+&lt;7, 3&gt; 요세푸스 : &lt;3, 6, 2, 7, 5, 1, 4&gt;</pre>
+  <div class="box">
+    <h4>코드 한 줄이 문제를 그대로 옮긴다</h4>
+    <p style="margin-bottom:0;"><code class="inl">q_push(q_pop())</code>는 “맨 앞 사람을 꺼내 맨 뒤에 세운다”, 즉 <strong>원을 한 칸 돌리는 동작</strong>이다. 01장의 <em class="hl">“동사를 먼저 뽑는다”</em>가 그대로 코드가 된 예다.</p>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석</h2>
+
+  <h3 class="sub">4.1 연산별 비용</h3>
+  <table>
+    <thead><tr><th style="width:20%">연산</th><th class="c" style="width:16%">복잡도</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="k">push · pop</td><td class="c ok">O(1)</td><td>표시 하나를 옮기고 나머지 연산 한 번</td></tr>
+      <tr><td class="k">front · empty · size</td><td class="c ok">O(1)</td><td>변수를 읽거나 뺄셈 한 번</td></tr>
+      <tr><td class="k">가운데 보기</td><td class="c no">제공 안 함</td><td>ADT가 금지한다</td></tr>
+      <tr><td class="k">(참고) 당기는 방식</td><td class="c no">O(N)</td><td>dequeue마다 전체를 밀면 N번에 O(N²)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">4.2 메모리 — 어느 구현을 고를지의 기준</h3>
+  <table>
+    <thead><tr><th style="width:22%">구현</th><th class="c" style="width:22%">필요한 배열 칸</th><th class="c" style="width:16%">변수</th><th>고르는 기준</th></tr></thead>
+    <tbody>
+      <tr><td class="k">선형 (밀지 않음)</td><td class="c mid">총 push 횟수</td><td class="c">2개</td><td><strong>총 push가 적으면 1순위.</strong> BFS는 정점 수로 충분</td></tr>
+      <tr><td class="k">원형 A (한 칸 비움)</td><td class="c ok">최대 동시 개수 + 1</td><td class="c">2개</td><td>메모리가 빠듯하고 변수를 줄이고 싶을 때</td></tr>
+      <tr><td class="k">원형 B (개수 셈)</td><td class="c ok">최대 동시 개수</td><td class="c">2개</td><td>메모리가 빠듯할 때. <strong>개수를 자주 쓰면 유리</strong></td></tr>
+    </tbody>
+  </table>
+  <div class="box teal">
+    <h4>판단 순서</h4>
+    <ol style="margin-bottom:0;">
+      <li><strong>총 push 횟수를 센다.</strong> 각 원소가 한 번만 들어간다면(BFS 등) → <strong>선형으로 충분</strong></li>
+      <li>여러 번 들어갔다 나온다면 총 push 횟수를 계산한다 (요세푸스는 n × k)</li>
+      <li>그 값이 메모리 제한을 넘으면 → <strong>원형 큐</strong>로 바꾸고 배열은 <em class="hl">최대 동시 개수</em>만큼만 잡는다</li>
+    </ol>
+  </div>
+
+  <h3 class="sub">4.3 요세푸스의 복잡도</h3>
+  <p>위 구현은 n명을 처음 넣고, 매 제거마다 k−1번 회전한 뒤 한 번 더 꺼낸다. 따라서 <strong>push가 nk번, pop도 nk번</strong>으로, 총 큐 연산은 약 <strong>2nk번</strong>이고 시간복잡도는 O(nk)다. n=100만, k=100이면 약 2억 번의 큐 연산에 출력까지 필요하므로 <strong>1초 통과를 장담할 수 없다.</strong></p>
+  <table>
+    <thead><tr><th class="c" style="width:20%">n</th><th class="c" style="width:16%">k</th><th class="c" style="width:22%">push 횟수(=pop 횟수)</th><th class="c" style="width:18%">1초 기준</th><th>메모리(선형)</th></tr></thead>
+    <tbody>
+      <tr><td class="c">5,000</td><td class="c">3</td><td class="c">15,000</td><td class="c ok">여유</td><td>60 KB</td></tr>
+      <tr><td class="c">1,000,000</td><td class="c">3</td><td class="c">300만</td><td class="c ok">여유</td><td>12 MB</td></tr>
+      <tr><td class="c">1,000,000</td><td class="c">100</td><td class="c mid">각 1억 (총 약 2억)</td><td class="c no">위험 · 환경 의존</td><td class="no">400 MB — 불가</td></tr>
+    </tbody>
+  </table>
+  <p>마지막 줄은 선형 큐의 배열만 약 381MiB(10진법 400MB)라 256MiB 메모리 제한을 초과한다. 원형 큐 B로 바꾸면 배열은 n칸(약 3.8MiB)이면 된다. <strong>단, 원형 큐로 메모리를 해결해도 약 2억 회의 큐 연산에 따른 시간 초과 가능성은 여전히 있다.</strong> k가 크면 다른 풀이(예: 펜윅 트리 기반 순서 통계)를 고려한다.</p>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제</h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 1 <span class="tag">원형 인덱스 추적</span></div>
+    <div class="ex-b">
+      <p>CAP = 5인 방식 B 원형 큐에서 다음을 수행했다. 각 단계의 <code class="inl">qf</code>, <code class="inl">qcnt</code>와 값이 들어가는 자리를 쓰라.<br>
+      <code class="inl">push A, push B, push C, pop, pop, push D, push E, push F</code></p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:16%">연산</th><th class="c" style="width:22%">들어가는/나오는 자리</th><th class="c" style="width:14%">qf</th><th class="c" style="width:14%">qcnt</th><th>배열 상태 (0~4)</th></tr></thead>
+          <tbody>
+            <tr><td class="c tt">push A</td><td class="c">(0+0)%5 = <strong>0</strong></td><td class="c">0</td><td class="c">1</td><td class="m">A . . . .</td></tr>
+            <tr><td class="c tt">push B</td><td class="c">(0+1)%5 = <strong>1</strong></td><td class="c">0</td><td class="c">2</td><td class="m">A B . . .</td></tr>
+            <tr><td class="c tt">push C</td><td class="c">(0+2)%5 = <strong>2</strong></td><td class="c">0</td><td class="c">3</td><td class="m">A B C . .</td></tr>
+            <tr><td class="c tt">pop</td><td class="c">자리 0 → A</td><td class="c">1</td><td class="c">2</td><td class="m">. B C . .</td></tr>
+            <tr><td class="c tt">pop</td><td class="c">자리 1 → B</td><td class="c">2</td><td class="c">1</td><td class="m">. . C . .</td></tr>
+            <tr><td class="c tt">push D</td><td class="c">(2+1)%5 = <strong>3</strong></td><td class="c">2</td><td class="c">2</td><td class="m">. . C D .</td></tr>
+            <tr><td class="c tt">push E</td><td class="c">(2+2)%5 = <strong>4</strong></td><td class="c">2</td><td class="c">3</td><td class="m">. . C D E</td></tr>
+            <tr><td class="c tt">push F</td><td class="c ok">(2+3)%5 = <strong>0</strong></td><td class="c">2</td><td class="c">4</td><td class="m">F . C D E</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>핵심.</b> 표의 점(.)은 <strong>논리적으로 비어 있는 칸</strong>의 표시이며, pop이 실제 배열 값을 지우지는 않는다. 마지막 <code class="inl">push F</code>에서 <em class="hl">자리 0으로 되돌아갔다.</em> 앞서 비워진 칸을 다시 쓰는 것, 이것이 원형 큐의 전부다. 선형 큐였다면 여기서 “자리 없음”이 났을 것이다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 2 <span class="tag">음수 모듈러</span></div>
+    <div class="ex-b">
+      <p>방식 A에서 <code class="inl">q_size</code>를 <code class="inl">(qr - qf) % CAP</code>로 썼다. CAP = 5, <code class="inl">qf = 3</code>, <code class="inl">qr = 1</code>일 때 (1) 실제 개수는? (2) 이 식의 결과는? (3) 올바른 식은?</p>
+      <div class="sol">
+        <p><b>풀이.</b> 배열 상태를 그려 보면 자리 3, 4, 0에 값이 있고 1이 다음 빈 자리다.</p>
+        <ul style="margin-bottom:2mm;">
+          <li>(1) 실제 개수는 <strong>3개</strong> (자리 3, 4, 0)</li>
+          <li>(2) <code class="inl">(1 - 3) % 5</code> = <code class="inl">(-2) % 5</code> = <strong class="no">−2</strong>. C는 음수 나머지를 그대로 돌려준다</li>
+          <li>(3) <code class="inl">(qr - qf + CAP) % CAP</code> = <code class="inl">(1 - 3 + 5) % 5</code> = <code class="inl">3 % 5</code> = <strong class="ok">3</strong></li>
+        </ul>
+        <div class="box warm" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>일반 규칙.</b> C에서 <code class="inl">%</code>의 결과는 <em class="hl">왼쪽 피연산자의 부호를 따른다.</em> 그래서 음수가 될 수 있는 값에 <code class="inl">%</code>를 쓸 때는 <strong>먼저 CAP을 더해</strong> 양수로 만든다. 08장 덱에서 <code class="inl">front</code>를 왼쪽으로 옮길 때 <code class="inl">(qf - 1 + CAP) % CAP</code>로 똑같이 처리한다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 3 <span class="tag">배열 크기 정하기</span></div>
+    <div class="ex-b">
+      <p>다음 세 상황에서 <strong>밀지 않는 선형 큐</strong>를 쓸 때 배열을 몇 칸 잡아야 하는가? 메모리도 함께 계산하고, 불가능하면 대안을 말하라. (메모리 제한 256MB)</p>
+      <ul style="margin-bottom:0;">
+        <li>① 정점 100만 개짜리 그래프의 BFS</li>
+        <li>② 요세푸스 n = 50만, k = 5</li>
+        <li>③ 요세푸스 n = 50만, k = 500</li>
+      </ul>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th class="c" style="width:8%">번호</th><th class="c" style="width:24%">총 push 횟수</th><th class="c" style="width:18%">메모리(int)</th><th class="c" style="width:14%">판정</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td class="c">①</td><td class="c">100만 (정점당 1번)</td><td class="c">약 4 MB</td><td class="c ok">선형 OK</td><td>각 정점이 한 번만 들어간다</td></tr>
+            <tr><td class="c">②</td><td class="c">50만 × 5 = 250만</td><td class="c">약 10 MB</td><td class="c ok">선형 OK</td><td>여유 있다</td></tr>
+            <tr><td class="c">③</td><td class="c">50만 × 500 = 2.5억</td><td class="c no">약 954 MB</td><td class="c no">불가</td><td><strong>원형 큐로</strong> → 50만 칸 = 2 MB</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>교훈.</b> ③에서 보듯 <em class="hl">push와 pop이 각각 2.5억 번(총 약 5억 연산)이어서 시간도 위험하고, 선형 배열의 메모리도 제한을 넘는다.</em> 선형 큐를 쓸지 말지는 “편한가”가 아니라 <strong>총 push 횟수 × 4바이트</strong>를 계산해서 정한다. 계산은 10초면 끝난다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 4 <span class="tag">방식 A의 함정</span></div>
+    <div class="ex-b">
+      <p>동시에 최대 1,000개를 담아야 한다. 방식 A(한 칸 비우기)로 <code class="inl">int q[1000]</code>을 선언했더니 999개째까지만 들어가고 1,000번째에서 “가득 참”이 떴다. (1) 왜인가? (2) 어떻게 고치는가? (3) 방식 B라면?</p>
+      <div class="sol">
+        <ul style="margin-bottom:2mm;">
+          <li>(1) 방식 A는 <strong>한 칸을 일부러 비워 둔다.</strong> 배열 CAP칸에 담을 수 있는 최대는 CAP−1개이므로, 1,000칸에는 999개가 한계다</li>
+          <li>(2) 배열을 <code class="inl">int q[1001]</code>로 <strong>한 칸 더</strong> 잡는다. 일반적으로 <em class="hl">필요한 개수 + 1</em></li>
+          <li>(3) 방식 B는 배열을 전부 쓰므로 <code class="inl">int q[1000]</code>으로 <strong>정확히 1,000개</strong>가 들어간다</li>
+        </ul>
+        <div class="box teal" style="margin-bottom:0;">
+          <p style="margin-bottom:0;"><b>이런 버그의 성격.</b> 작은 입력에서는 멀쩡하고 <strong>딱 한계에 닿는 입력에서만</strong> 틀린다. 그래서 예제 테스트는 통과하고 채점에서 떨어진다. <em class="hl">자료구조의 용량은 항상 “딱 맞는 입력”으로 테스트한다</em>는 습관을 들인다 — 04장 연습 08의 극단 입력과 같은 사고다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">6</span>연습 문제</h2>
+  <p class="lead">01~05는 공책에, 06~10은 컴퓨터로 푼다. 제한 시간 50분.</p>
+
+  <div class="prob"><span class="pn">01</span>큐 ADT의 다섯 칸 명세표를 작성하라. 연산은 <code class="inl">push</code>, <code class="inl">pop</code>, <code class="inl">front</code>, <code class="inl">empty</code>, <code class="inl">size</code> 다섯 가지다. (01장 연습 01의 덱 명세표와 같은 형식)</div>
+
+  <div class="prob"><span class="pn">02</span>선형 큐(돌리지 않고 당기지도 않는)에서 <strong>“비어 있는데 넣을 수 없는”</strong> 상황을 CAP = 4로 만들어 보여라. 연산 순서와 각 단계의 front·rear를 쓸 것.</div>
+
+  <div class="prob"><span class="pn">03</span>CAP = 6인 방식 B 원형 큐에서 다음을 수행했을 때 각 단계의 <code class="inl">qf</code>, <code class="inl">qcnt</code>, 들어가는 자리를 표로 쓰라.<br>
+  <code class="inl">push×4, pop×3, push×4</code></div>
+
+  <div class="prob"><span class="pn">04</span><code class="inl">(qr - qf) % CAP</code>가 음수를 내는 경우를 CAP = 7로 구체적인 수를 들어 보여라. 올바른 식을 쓰고, C에서 <code class="inl">%</code>의 부호 규칙을 한 문장으로 정리할 것.</div>
+
+  <div class="prob"><span class="pn">05</span>다음 각 상황에서 선형 큐·원형 A·원형 B 중 무엇을 고르겠는가? 총 push 횟수와 메모리를 계산해 근거를 대라. (제한 256MB)<br>
+  ① 정점 200만 개 BFS &nbsp; ② 요세푸스 n = 10만, k = 1,000 &nbsp; ③ 동시 최대 1만 개인데 push가 1억 번 일어나는 시뮬레이션</div>
+
+  <div class="prob"><span class="pn">06</span>방식 B 원형 큐(<code class="inl">q_push</code>, <code class="inl">q_pop</code>, <code class="inl">q_front</code>, <code class="inl">q_empty</code>, <code class="inl">q_full</code>, <code class="inl">q_size</code>, <code class="inl">q_clear</code>)를 교재를 보지 말고 작성하라. CAP = 6으로 두고 연습 03의 연산을 실행해 qf·qcnt·삽입 위치까지 일치하는지 확인할 것. 그다음 CAP = 5로 줄여 FIFO 결과만 비교할 것.</div>
+
+  <div class="prob"><span class="pn">07</span>방식 A 원형 큐도 작성하라. CAP = 5로 두고 <strong>몇 개까지 들어가는지</strong> 실험으로 확인하고, 방식 B와 비교해 표로 정리하라.</div>
+
+  <div class="prob"><span class="pn">08</span>요세푸스 프로그램을 작성하라. <code class="inl">&lt;7, 3&gt;</code>의 답이 <code class="inl">&lt;3, 6, 2, 7, 5, 1, 4&gt;</code>인지 확인하고, <code class="inl">&lt;10, 4&gt;</code>와 <code class="inl">&lt;5, 1&gt;</code>의 답도 구하라. <code class="inl">k = 1</code>일 때 무슨 일이 일어나는지 설명할 것.</div>
+
+  <div class="prob"><span class="pn">09</span>08의 요세푸스를 <strong>선형 큐</strong>로 만들고, 배열을 실제로 몇 칸 썼는지 세어 출력하라. n = 1,000 / 10,000 / 100,000에 대해 k = 3과 k = 10으로 각각 측정해 표로 만들고, <code class="inl">n × k</code>와 일치하는지 확인하라.</div>
+
+  <div class="prob"><span class="pn">10</span>09의 프로그램을 <strong>원형 큐</strong>로 바꿔 같은 입력을 돌리고, 사용한 배열 칸 수를 비교하라. 두 결과(제거 순서)가 완전히 같은지 <code class="inl">diff</code>로 확인할 것.</div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">7</span>도전 문제</h2>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C1</span><strong>스택 두 개로 큐 만들기</strong><br>
+    스택만 쓸 수 있는 상황에서 큐를 만들어야 한다. 스택 두 개(<code class="inl">in</code>, <code class="inl">out</code>)를 쓴다.<br>
+    (1) <code class="inl">push</code>는 <code class="inl">in</code>에 쌓는다. <code class="inl">pop</code>은 어떻게 해야 <strong>가장 먼저 들어온 것</strong>이 나오는가? 규칙을 세워라.<br>
+    (2) <code class="inl">push 1, push 2, push 3, pop, push 4, pop, pop</code>을 수행할 때 두 스택의 상태 변화를 추적표로 쓰라. 출력은 무엇인가?<br>
+    (3) <code class="inl">pop</code> 한 번의 <strong>최악 복잡도</strong>는 얼마인가? 그런데도 전체가 O(N)인 이유를 설명하라. (힌트 — 05장의 분할 상환)<br>
+    (4) 각 원소가 평생 몇 번 push되고 몇 번 pop되는지 세어, (3)의 주장을 뒷받침하라.
+  </div>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C2</span><strong>BFS 미리 만들어 보기 — 30장 예고</strong><br>
+    R × C 격자에 0(길)과 1(벽)이 있다. (0,0)에서 출발해 (R−1, C−1)까지 가는 <strong>최단 거리</strong>를 구하려 한다. 상하좌우로만 이동한다.<br>
+    (1) 큐에 무엇을 넣어야 하는가? 04장에서 배운 <code class="inl">i*C+j</code>를 어떻게 쓸 수 있는가?<br>
+    (2) 거리는 어디에 기록하는가? 큐에 거리까지 함께 넣는 방법과 별도 배열에 기록하는 방법을 비교하라.<br>
+    (3) <strong>방문 표시를 언제 하는가</strong>가 중요하다. 큐에 넣을 때 표시하는 것과 꺼낼 때 표시하는 것 중 어느 쪽이 맞는가? 틀린 쪽을 쓰면 어떤 일이 생기는지 설명하라.<br>
+    (4) 큐 배열은 몇 칸 잡아야 하는가? 근거를 대라.<br>
+    (5) <span style="color:var(--muted);">(선택)</span> 구현해서 작은 격자로 확인하라.
+  </div>
+
+  <div class="box teal">
+    <h4>두 문항이 겨냥하는 것</h4>
+    <p style="margin-bottom:0;">C1은 <strong>“LIFO 두 개로 FIFO를 만든다”</strong>는 유명한 구성이다. 분할 상환을 스택·큐 맥락에서 한 번 더 만나며, 실제 면접과 대회에 자주 나온다. C2는 30장 BFS의 <em class="hl">가장 중요한 함정 하나</em>를 미리 만나게 한다 — (3)에서 꺼낼 때 방문 표시를 하면 <strong>같은 칸이 중복으로 큐에 들어갈 수 있다.</strong> 격자에서는 중복 삽입이 늘어나 큐 용량을 넘길 수 있고, 일반 그래프에서는 중복이 더 커질 수 있다. 방문 표시는 <strong>큐에 넣을 때</strong> 한다. 이 한 줄 때문에 BFS가 안 되는 학생이 매년 나온다.</p>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+
+  <table>
+    <thead><tr><th style="width:26%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">“dequeue할 때 한 칸씩 당기면 되지”</td><td>한 번이 O(N)이라 N번 연속으로 꺼내면 O(N²)가 될 수 있다</td><td>당기지 않고 <strong>front만 옮긴다</strong></td></tr>
+      <tr><td class="tt">“<code class="inl">front == rear</code>면 비어 있는 것”</td><td>원형 큐에서는 <strong>가득 찼을 때도 같아진다</strong></td><td>한 칸을 비우거나(A) 개수를 센다(B)</td></tr>
+      <tr><td class="tt">“<code class="inl">(qr - qf) % CAP</code>로 개수를”</td><td>음수가 나올 수 있다. C의 <code class="inl">%</code>는 왼쪽 부호를 따른다</td><td><code class="inl">(qr - qf + CAP) % CAP</code></td></tr>
+      <tr><td class="tt">“방식 A에서 1,000개면 배열 1,000칸”</td><td>한 칸을 비워 두므로 999개가 한계다</td><td>필요한 개수 <strong>+ 1</strong>칸을 잡는다</td></tr>
+      <tr><td class="tt">“선형 큐 배열은 동시 최대 개수만큼”</td><td>선형 큐는 <strong>총 push 횟수</strong>만큼 필요하다</td><td>총 push를 세고, 크면 원형으로 바꾼다</td></tr>
+      <tr><td class="tt">“원형 큐가 항상 더 좋다”</td><td><code class="inl">%</code> 비용이 있고 코드가 길어 실수가 는다</td><td>총 push가 작으면 <strong>선형이 1순위</strong>. BFS가 그 경우</td></tr>
+      <tr><td class="tt">“<code class="inl">clear</code>는 없어도 돼”</td><td>여러 테스트를 연달아 돌리면 qf·qcnt가 이전 상태를 유지해 오답이 난다. 배열에 남은 옛 값 자체는 비어 있는 칸이라 무관하다</td><td><code class="inl">qf = qcnt = 0</code> 한 줄을 반드시 둔다</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">자가 점검</h3>
+  <div class="box">
+    <ul class="chk" style="margin-bottom:0;">
+      <li>선형 큐에서 자리가 소진되는 과정을 그림으로 설명할 수 있다</li>
+      <li>방식 B 원형 큐 일곱 함수를 백지에서 5분 안에 작성할 수 있다</li>
+      <li><code class="inl">(qf + qcnt) % CAP</code>가 넣을 자리인 이유를 설명할 수 있다</li>
+      <li>음수 모듈러를 피하는 <code class="inl">+ CAP</code>를 빠뜨리지 않는다</li>
+      <li>선형과 원형 중 무엇을 쓸지 <strong>총 push 횟수</strong>로 판단할 수 있다</li>
+      <li>요세푸스를 큐로 풀 수 있다</li>
+    </ul>
+  </div>
+
+  <div class="box teal">
+    <h4>다음 장 예고 — 08 덱과 단조 자료구조</h4>
+    <p style="margin-bottom:0;">스택은 한쪽 끝, 큐는 양쪽 끝을 쓰되 방향이 정해져 있었다. <strong>덱(deque)</strong>은 <em class="hl">양쪽 끝에서 넣고 뺄 수 있다.</em> 구현은 이 장의 원형 큐에 <code class="inl">push_front</code>와 <code class="inl">pop_back</code>을 더하면 끝인데(그때 <code class="inl">(qf - 1 + CAP) % CAP</code>를 쓴다), 진짜 내용은 그 다음이다. <strong>단조 스택</strong>과 <strong>슬라이딩 윈도우 최솟값</strong> — 덱 안의 유효한 후보 값들을 단조 순서로 유지하는 기법으로, O(N²)로 보이는 문제를 O(N)에 푼다. PART 1에서 가장 어렵고 가장 많이 쓰이는 장이다.</p>
+  </div>
+
+  <div class="foot"><span>07 큐와 원형 큐</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+</body>
+</html>

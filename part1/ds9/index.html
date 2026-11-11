@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09 단일 연결 리스트 — 중등정보올림피아드 자료구조</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy-2:#1b3f6b; --teal:#0d7c74; --teal-2:#0fa39a;
+    --ink:#1c2430; --muted:#5b6876; --line:#d7dee6; --soft:#f4f7fa;
+    --soft-2:#eef4f3; --accent:#b4531a; --warm:#fff6ec; --red:#9d2f3f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"Noto Sans CJK KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); font-size:10pt; line-height:1.64; background:#e9edf1;}
+  .page{width:210mm;min-height:297mm;padding:16mm 16mm 18mm 16mm;margin:0 auto 8mm auto;background:#fff;position:relative;}
+
+  .cover{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(160deg,#0f2a4a 0%,#123355 48%,#0d5a58 100%);color:#fff;}
+  .cover .eyebrow{font-size:9.5pt;letter-spacing:.3em;color:#8fd6cf;font-weight:600;}
+  .cover-rule{height:3px;width:52mm;background:var(--teal-2);margin:6mm 0 8mm 0;}
+  .cover .chno{font-size:46pt;font-weight:800;color:#9ee3dc;line-height:1;}
+  .cover h1{font-size:25pt;line-height:1.3;margin:3mm 0 0 0;font-weight:800;}
+  .cover .sub{margin-top:7mm;font-size:11pt;color:#cfe3f2;line-height:1.85;}
+  .cover-goal{margin-top:9mm;background:rgba(255,255,255,.1);border-left:4px solid var(--teal-2);padding:5mm 6mm;}
+  .cover-goal h3{margin:0 0 2.5mm 0;font-size:10.5pt;color:#9ee3dc;}
+  .cover-goal ul{margin:0;padding-left:5mm;font-size:10pt;color:#eaf3fa;}
+  .cover-goal li{margin-bottom:1.5mm;}
+  .cover-bottom{font-size:9.6pt;color:#cfe3f2;}
+  .cover-bottom .brand{font-size:11.5pt;color:#fff;font-weight:700;}
+
+  h2.sec{font-size:14pt;color:var(--navy);margin:0 0 4mm 0;padding-bottom:2.2mm;
+    border-bottom:2.5px solid var(--navy);font-weight:800;}
+  h2.sec .num{display:inline-block;background:var(--teal);color:#fff;font-size:10pt;
+    padding:.6mm 2.6mm;border-radius:1mm;margin-right:3mm;vertical-align:2px;}
+  h3.sub{font-size:11.2pt;color:var(--navy-2);margin:4.6mm 0 2.3mm 0;font-weight:700;
+    padding-left:3mm;border-left:4px solid var(--teal-2);}
+  h3.sub:first-of-type{margin-top:1mm;}
+  h4.mini{font-size:10.2pt;color:var(--navy);margin:3.6mm 0 1.8mm 0;font-weight:700;}
+  p{margin:0 0 2.7mm 0;}
+  ul,ol{margin:0 0 2.8mm 0;padding-left:5.5mm;}
+  li{margin-bottom:1.2mm;}
+  .lead{font-size:10.4pt;color:var(--muted);margin-bottom:4.2mm;}
+  strong{color:var(--navy);}
+  em.hl{font-style:normal;background:#ffe9a8;color:var(--navy);font-weight:700;
+    padding:.2mm .8mm;border-radius:1mm;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+
+  table{width:100%;border-collapse:collapse;font-size:8.8pt;margin:0 0 3.2mm 0;}
+  th,td{border:1px solid var(--line);padding:1.8mm 2.1mm;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-weight:700;text-align:center;font-size:8.7pt;}
+  tbody tr:nth-child(even){background:#fafcfd;}
+  td.c,th.c{text-align:center;}
+  td.k{background:var(--soft-2);font-weight:700;color:var(--navy);white-space:nowrap;}
+  td.tt{font-weight:700;color:var(--navy);}
+  td.m{font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;}
+  .ok{color:var(--teal);font-weight:800;}
+  .no{color:var(--red);font-weight:800;}
+  .mid{color:var(--accent);font-weight:800;}
+
+  .box{border:1px solid var(--line);background:var(--soft);padding:3.4mm 3.8mm;margin:0 0 3.4mm 0;border-radius:1.5mm;}
+  .box h4{margin:0 0 2mm 0;font-size:9.8pt;color:var(--navy);font-weight:800;}
+  .box.teal{background:var(--soft-2);border-color:#b9d9d5;}
+  .box.warm{background:var(--warm);border-color:#f0d6b4;}
+  .box.warm h4{color:var(--accent);}
+  .box p:last-child,.box ul:last-child{margin-bottom:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+  .qa{border-left:4px solid var(--teal);background:var(--soft-2);padding:3mm 4mm;margin:0 0 3.4mm 0;}
+  .qa .q{font-weight:800;color:var(--navy);margin-bottom:1.4mm;}
+
+  .ex{border:1px solid var(--line);margin:0 0 3.6mm 0;border-radius:1.5mm;overflow:hidden;}
+  .ex-h{background:var(--navy);color:#fff;padding:1.7mm 3.4mm;font-weight:700;font-size:9.4pt;}
+  .ex-h .tag{background:var(--teal-2);color:#06302d;border-radius:1mm;padding:.3mm 2mm;font-size:8pt;margin-left:2.5mm;}
+  .ex-b{padding:3mm 3.8mm;}
+  .ex-b .sol{margin-top:2.4mm;padding-top:2.4mm;border-top:1px dashed var(--line);}
+  .ex-b .sol b{color:var(--teal);}
+  .ex-b p:last-child,.ex-b table:last-child,.ex-b ul:last-child,.ex-b pre:last-child{margin-bottom:0;}
+  .prob{border:1px solid var(--line);padding:2.5mm 3.3mm;margin-bottom:2.5mm;border-radius:1.5mm;background:#fff;}
+  .prob .pn{display:inline-block;background:var(--soft-2);color:var(--navy);font-weight:800;
+    border-radius:1mm;padding:.2mm 2mm;margin-right:2mm;font-size:8.6pt;}
+
+  pre{background:#0f2a4a;color:#e6eef6;padding:3mm 3.8mm;border-radius:1.5mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:7.7pt;line-height:1.48;margin:0 0 3mm 0;}
+  pre .cm{color:#86b8a5;} pre .kw{color:#8fd6ff;} pre .fn{color:#ffd79a;} pre .st{color:#ffb4a2;}
+  pre.out{background:#f4f7fa;color:#1c2430;border:1px solid var(--line);}
+  pre.out .lbl{color:var(--teal);font-weight:700;}
+  pre.out .bad{color:var(--red);font-weight:700;}
+  code.inl{background:var(--soft-2);color:var(--navy);padding:.2mm 1.2mm;border-radius:1mm;
+    font-family:"D2Coding","Consolas","DejaVu Sans Mono",monospace;font-size:8.6pt;}
+
+  figure{margin:0 0 3.6mm 0;text-align:center;}
+  figure svg{max-width:100%;height:auto;}
+  figcaption{font-size:8.4pt;color:var(--muted);margin-top:1.4mm;}
+  .chk{list-style:none;padding-left:0;}
+  .chk li{padding-left:6mm;position:relative;margin-bottom:1.5mm;}
+  .chk li:before{content:"□";position:absolute;left:0;color:var(--teal);font-size:11pt;line-height:1.2;}
+
+  .foot{position:absolute;left:16mm;right:16mm;bottom:8mm;border-top:1px solid var(--line);
+    padding-top:2mm;font-size:8pt;color:var(--muted);display:flex;justify-content:space-between;}
+  .foot b{color:var(--navy);font-weight:700;}
+
+  @media print{
+    body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .page{margin:0;width:auto;height:auto;min-height:0;padding:0;break-after:page;overflow:visible;}
+    .page:last-child{break-after:auto;}
+    .cover{height:266mm;padding:16mm 14mm;}
+    .foot{display:none;}
+    tr,.box,.qa,.ex,.prob,pre,figure,.grid2{break-inside:avoid;}
+    thead{display:table-header-group;}
+    h2.sec,h3.sub,h4.mini{break-after:avoid;}
+  }
+  @page{size:A4;}
+
+/* 인쇄할 때는 모든 채움색·강조색을 제거하고 선과 글자만 사용 */
+.print-toolbar{max-width:210mm;margin:12px auto 16px;padding:11px 18px;background:#fff;border:1px solid #cbd5e1;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 8px #0001;font-size:10.5pt}
+.print-toolbar button{border:0;border-radius:6px;background:#0f2a4a;color:#fff;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}
+@media print{
+  @page{size:A4;margin:12mm 13mm 13mm}
+  .print-toolbar{display:none!important}
+  html,body{margin:0!important;padding:0!important;background:white!important;-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
+  .page{background:white!important;color:#101010!important;margin:0!important;padding:0!important;width:auto!important;min-height:0!important;height:auto!important;break-after:page!important;overflow:visible!important}
+  .page:last-child{break-after:auto!important}
+  .cover{background:white!important;color:#111!important;height:266mm!important;padding:7mm 5mm!important;border:1px solid #aaa}
+  .page *, .page *::before,.page *::after{background-color:transparent!important;background-image:none!important;color:#111!important;border-color:#888!important;outline-color:#888!important;text-shadow:none!important;box-shadow:none!important;-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
+  .page h2.sec .num, .ex-h,.ex-h .tag,.prob .pn{background:transparent!important;color:#111!important;border:1px solid #444!important}
+  .box,.qa,.ex,.prob,td,th{border-color:#b5b5b5!important}
+  .box,.qa{border-left:2px solid #777!important}
+  .cover-rule{background:#333!important}
+  .cover-goal{border-left:2px solid #555!important}
+  pre,pre.out{background:transparent!important;color:#111!important;border:1px solid #aaa!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;font-size:7.0pt!important;line-height:1.34!important;padding:2mm!important}
+  pre *,pre.out *{color:#111!important;background:transparent!important}
+  table{font-size:8.35pt!important}
+  th,td{padding:1.55mm 1.8mm!important}
+  p,li{line-height:1.52!important}
+  svg rect,svg circle,svg ellipse,svg polygon{fill:white!important;stroke:#444!important}
+  svg text,svg tspan{fill:#111!important;stroke:none!important}
+  svg line,svg path,svg polyline{stroke:#444!important}
+  svg marker path{fill:#444!important}
+  .foot{display:none!important}
+  tr,pre,figure{break-inside:avoid!important}
+  .grid2,.qa,.box,.ex,.prob{break-inside:avoid!important}
+  h2.sec,h3.sub,h4.mini{break-after:avoid!important}
+}
+
+</style>
+</head>
+<body>
+<div class="print-toolbar" role="toolbar" aria-label="인쇄 도구"><span><strong>09 단일 연결 리스트</strong> · 오류 수정본</span><button type="button" onclick="window.print()">A4 잉크 절약 인쇄 / PDF 저장</button></div>
+
+
+<!-- ============ 표지 ============ -->
+<section class="page cover">
+  <div>
+    <div class="eyebrow">PART 1 · 선형 자료구조</div>
+    <div class="cover-rule"></div>
+    <div class="chno">09</div>
+    <h1>단일 연결 리스트</h1>
+    <div class="sub">
+      노드와 링크 ‖ 더미 헤드 ‖ 배열 기반 노드 풀 ‖ 역순 연결<br>
+      난이도 ★★★☆☆ · 9주차 · 100분 2차시 · <strong>포인터 이해도 점검 지점</strong>
+    </div>
+    <div class="cover-goal">
+      <h3>이 장을 마치면 할 수 있는 것</h3>
+      <ul>
+        <li>논리적 순서와 물리적 순서가 다르다는 것을 배열 상태로 설명할 수 있다</li>
+        <li><code>val[]</code>·<code>nxt[]</code> 두 배열만으로 리스트를 만들 수 있다</li>
+        <li>더미 헤드를 써서 “맨 앞” 특수 처리를 없앨 수 있다</li>
+        <li>포인터 세 개로 리스트를 역순으로 뒤집을 수 있다</li>
+        <li>삽입은 O(1)인데 왜 전체 풀이가 느려질 수 있는지 설명할 수 있다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="brand">세영코딩연구소</div>
+    저자 : 컴퓨터공학박사 KIM<br>
+    DS-C 시리즈 · 중등정보올림피아드 자료구조 교재
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">1</span>왜 필요한가</h2>
+  <p class="lead">05~08장에서 만든 것은 전부 배열 위에 있었다. 배열은 빠르지만 <strong>중간을 건드리는 일에 약하다.</strong> 이 장은 그 약점 하나를 해결하고, 대신 무엇을 잃는지 정확히 재는 장이다.</p>
+
+  <h3 class="sub">1.1 배열이 못 하는 것 하나</h3>
+  <p>배열 가운데에 값을 하나 끼워 넣으려면 <em class="hl">뒤쪽을 전부 한 칸씩 밀어야</em> 한다. 한 번은 괜찮다. 문제는 그것을 N번 할 때다.</p>
+<pre class="out"><span class="lbl">$ ./mid      가운데에 N번 끼워 넣기</span>
+        n      배열(ms)        배열 이동량   리스트(ms)   리스트 링크 갱신
+    50000          39.1          625,000,000          0.3        100,000
+   100000         183.7        2,500,000,000          0.2        200,000
+   200000         <span class="bad">785.5</span>       <span class="bad">10,000,000,000</span>          <span class="lbl">0.3</span>        400,000</pre>
+  <p>위 시간은 특정 컴퓨터에서 얻은 <strong>예시 측정값</strong>이며 기기·컴파일러·측정 코드에 따라 달라진다. 비교 조건은 <strong>삽입할 위치의 앞 노드를 이미 알고 있고 탐색 시간은 제외</strong>한 경우다. N = 200,000일 때 배열은 약 100억 칸을 이동하지만 리스트는 링크를 40만 번 갱신한다. <em class="hl">삽입 위치를 찾아야 한다면 리스트도 O(N)이 추가된다.</em></p>
+
+  <h3 class="sub">1.2 연결 리스트의 발상</h3>
+  <div class="grid2">
+    <div class="box">
+      <h4>배열의 약속</h4>
+      <p style="margin-bottom:0;">“<strong>i번째 다음은 i+1번째다.</strong>” 순서가 <em class="hl">위치로 정해져</em> 있다. 그래서 중간에 끼우려면 위치를 전부 바꿔야 한다.</p>
+    </div>
+    <div class="box teal">
+      <h4>리스트의 약속</h4>
+      <p style="margin-bottom:0;">“<strong>각 값이 다음이 누구인지 들고 있다.</strong>” 순서가 <em class="hl">링크로 정해져</em> 있다. 끼우려면 <strong>링크 두 개만</strong> 고치면 된다.</p>
+    </div>
+  </div>
+  <p>이 맞바꿈에는 분명한 대가가 있다. 배열은 <code class="inl">a[k]</code>로 <strong>어디든 한 번에</strong> 갈 수 있지만, 리스트는 <em class="hl">첫 노드부터 k번 따라가야</em> k번째에 닿는다. 그래서 이 장의 복잡도 표는 <strong>이긴 칸과 진 칸이 반씩</strong>이다(4.1절).</p>
+
+  <h3 class="sub">1.3 그리고 이 장의 진짜 주제 — 노드 풀</h3>
+  <p>교과서는 연결 리스트를 <code class="inl">malloc</code>과 포인터로 가르친다. <strong>대회에서는 노드 풀을 자주 사용한다.</strong> 배열 두 개로 구현할 수 있다.</p>
+<pre class="out"><span class="lbl">$ ./bench      n = 1,000,000</span>
+malloc  리스트 : 생성    30.0 ms     노드당 메모리 <span class="bad">32.1 바이트</span>
+노드 풀 리스트 : 생성     <span class="lbl">4.6 ms</span>     노드당 메모리 <span class="lbl">8 바이트</span>
+                       <span class="lbl">예시 측정에서 6.5배 빠름</span>          <span class="lbl">배열 원소 크기는 약 1/4</span></pre>
+  <p>위 수치는 한 환경의 <strong>벤치마크 예시</strong>이지 모든 환경에서 보장되는 속도·메모리 비율이 아니다. 구현 방식과 할당기에 따라 달라진다. 지금은 한 줄만 기억하면 된다 — <em class="hl">노드 풀은 “노드를 미리 배열로 만들어 두고 번호로 부르는 것”</em>이다. 이 기법은 10장 이중 연결 리스트, 21장 체이닝 해시, <strong>32장 트라이</strong>까지 그대로 쓰인다.</p>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.1~2.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림</h2>
+
+  <h3 class="sub">2.1 노드와 링크</h3>
+  <figure>
+    <svg viewBox="0 0 660 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="연결 리스트 구조">
+      <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0d7c74"/></marker></defs>
+      <g font-size="10.5" text-anchor="middle">
+        <rect x="24" y="30" width="54" height="30" fill="#e5eaf0" stroke="#5b6876" stroke-width="1.3"/>
+        <text x="51" y="50" fill="#5b6876" font-size="9">더미</text>
+        <g>
+          <rect x="140" y="30" width="46" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="163" y="50" fill="#0f2a4a">10</text>
+          <rect x="186" y="30" width="34" height="30" fill="#d9ece9" stroke="#0d7c74" stroke-width="1.4"/><text x="203" y="50" fill="#0d7c74" font-size="8.5">nxt</text>
+        </g>
+        <g>
+          <rect x="282" y="30" width="46" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="305" y="50" fill="#0f2a4a">20</text>
+          <rect x="328" y="30" width="34" height="30" fill="#d9ece9" stroke="#0d7c74" stroke-width="1.4"/><text x="345" y="50" fill="#0d7c74" font-size="8.5">nxt</text>
+        </g>
+        <g>
+          <rect x="424" y="30" width="46" height="30" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.4"/><text x="447" y="50" fill="#0f2a4a">30</text>
+          <rect x="470" y="30" width="34" height="30" fill="#d9ece9" stroke="#0d7c74" stroke-width="1.4"/><text x="487" y="50" fill="#0d7c74" font-size="8.5">nxt</text>
+        </g>
+        <text x="585" y="50" fill="#9d2f3f" font-weight="700">NIL</text>
+      </g>
+      <path d="M78 45 L134 45" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#ar)"/>
+      <path d="M220 45 L276 45" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#ar)"/>
+      <path d="M362 45 L418 45" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#ar)"/>
+      <path d="M504 45 L558 45" stroke="#0d7c74" stroke-width="1.6" marker-end="url(#ar)"/>
+      <text x="330" y="88" font-size="9.5" fill="#5b6876" text-anchor="middle">노드 = 값 한 칸 + 다음 노드를 가리키는 칸. 마지막은 NIL(−1)</text>
+    </svg>
+    <figcaption>그림 9-1. 단일 연결 리스트 — 링크는 한 방향으로만 간다</figcaption>
+  </figure>
+
+  <h3 class="sub">2.2 논리적 순서 ≠ 물리적 순서</h3>
+  <p>이 장에서 가장 중요한 그림이다. 아래는 <strong>10 → 15 → 20 → 30</strong> 순서인 리스트를 노드 풀로 만든 <em class="hl">실제 배열 상태</em>다.</p>
+<pre class="out"><span class="lbl">$ ./pool</span>
+head -> 10 -> 15 -> 20 -> 30 -> NIL        <span class="lbl">← 논리적 순서</span>
+
+  i   :    0    1    2    3    4
+  val :    0   30   20   10   15           <span class="bad">← 배열에 담긴 순서</span>
+  nxt :    3   -1    1    4    2</pre>
+  <p>배열에는 <strong>30, 20, 10, 15</strong> 순으로 들어 있는데 리스트는 <strong>10, 15, 20, 30</strong>으로 읽힌다. 논리적 순서는 <code class="inl">nxt[]</code>를 따라 결정되며, 물리적 노드 번호 순서와 일치할 필요가 없다.</p>
+  <table>
+    <thead><tr><th class="c" style="width:12%">단계</th><th class="c" style="width:16%">지금 번호</th><th class="c" style="width:16%">값</th><th>다음으로 갈 번호</th></tr></thead>
+    <tbody>
+      <tr><td class="c tt">시작</td><td class="c m">0 (더미)</td><td class="c">—</td><td class="m">nxt[0] = 3</td></tr>
+      <tr><td class="c">1</td><td class="c m">3</td><td class="c tt">10</td><td class="m">nxt[3] = 4</td></tr>
+      <tr><td class="c">2</td><td class="c m">4</td><td class="c tt">15</td><td class="m">nxt[4] = 2</td></tr>
+      <tr><td class="c">3</td><td class="c m">2</td><td class="c tt">20</td><td class="m">nxt[2] = 1</td></tr>
+      <tr><td class="c">4</td><td class="c m">1</td><td class="c tt">30</td><td class="m no">nxt[1] = −1 → 끝</td></tr>
+    </tbody>
+  </table>
+  <div class="box teal">
+    <h4>여기서 나오는 질문 두 개</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>왜 순서가 뒤죽박죽인가?</strong> 30, 20, 10을 <em class="hl">맨 앞에 차례로 넣었기</em> 때문이다. 노드 생성 순서는 30(1번), 20(2번), 10(3번)이고, 15는 나중에 4번 노드로 생성해 10과 20 사이에 끼워 넣었다.</li>
+      <li><strong>그래서 문제가 되나?</strong> 정답에는 영향이 없다. 다만 <strong>속도에는 영향이 있다</strong> — 4.3절에서 같은 노드로 5.9배 차이를 측정한다.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 2.3~2.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">2</span>개념과 그림 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">2.3 더미 헤드 — 특수 처리를 없애는 장치</h3>
+  <p>더미 헤드는 <strong>값이 없는 가짜 노드 하나</strong>를 리스트 맨 앞에 영구히 두는 것이다. 노드 한 개를 더 쓰는 대신 얻는 편의가 크다.</p>
+  <table>
+    <thead><tr><th style="width:20%">상황</th><th style="width:38%">더미가 없으면</th><th>더미가 있으면</th></tr></thead>
+    <tbody>
+      <tr><td class="k">맨 앞에 삽입</td><td class="no"><code class="inl">head</code> 자체를 바꿔야 한다 → 함수에 <code class="inl">head</code>의 주소를 넘기거나 반환값으로 돌려받아야 한다</td><td class="ok"><code class="inl">insert_after(head, v)</code> — <em class="hl">다른 위치와 완전히 같다</em></td></tr>
+      <tr><td class="k">맨 앞 삭제</td><td class="no"><code class="inl">head = head->next</code> 특수 분기</td><td class="ok"><code class="inl">erase_after(head)</code> — 같은 함수</td></tr>
+      <tr><td class="k">빈 리스트</td><td class="no"><code class="inl">head == NULL</code> 검사를 곳곳에</td><td class="ok"><code class="inl">nxt[head] == NIL</code>로 검사</td></tr>
+    </tbody>
+  </table>
+  <div class="box">
+    <h4>핵심 한 줄</h4>
+    <p style="margin-bottom:0;">모든 삽입·삭제를 <em class="hl">“어떤 노드의 <u>뒤에</u>”</em>로 통일하면, 더미 덕분에 <strong>맨 앞도 “더미의 뒤”가 되어</strong> 특수한 경우가 사라진다. 단일 연결 리스트는 뒤로만 갈 수 있으므로, 애초에 <strong>지울 노드가 아니라 그 앞 노드를 잡는 것</strong>이 올바른 설계다.</p>
+  </div>
+
+  <h3 class="sub">2.4 노드 풀 — 왜 <code class="inl">malloc</code>을 안 쓰는가</h3>
+  <p>노드 풀은 <strong>노드를 미리 배열로 다 만들어 두고, 포인터 대신 번호를 쓰는 것</strong>이다. <code class="inl">NULL</code>의 자리는 <code class="inl">−1</code>이 대신한다.</p>
+  <div class="grid2">
+    <div>
+<pre style="margin-bottom:0;"><span class="cm">/* 교과서 방식 */</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> Node {
+    <span class="kw">int</span> v;
+    <span class="kw">struct</span> Node *next;
+} Node;
+
+Node *p = <span class="fn">malloc</span>(<span class="kw">sizeof</span> *p);
+<span class="kw">if</span> (p == NULL) { <span class="fn">perror</span>(<span class="st">"malloc"</span>); <span class="fn">exit</span>(EXIT_FAILURE); }
+p-&gt;next = NULL;    <span class="cm">/* stdlib.h 필요 */</span></pre>
+    </div>
+    <div>
+<pre style="margin-bottom:0;"><span class="cm">/* 대회 방식 — 노드 풀 */</span>
+<span class="kw">static</span> <span class="kw">int</span> val[MAXNODE];
+<span class="kw">static</span> <span class="kw">int</span> nxt[MAXNODE];
+<span class="kw">static</span> <span class="kw">int</span> cnt;
+
+<span class="kw">int</span> p = cnt++;
+nxt[p] = NIL;   <span class="cm">/* NIL 은 -1 */</span></pre>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th style="width:18%">항목</th><th class="c" style="width:20%">malloc 노드</th><th class="c" style="width:18%">노드 풀</th><th>근거 (4.4절 실측)</th></tr></thead>
+    <tbody>
+      <tr><td class="k">생성 속도</td><td class="c">30.0 ms</td><td class="c ok">4.6 ms</td><td>100만 개 기준 <strong>6.5배</strong></td></tr>
+      <tr><td class="k">노드당 메모리</td><td class="c no">32.1 바이트</td><td class="c ok">8 바이트</td><td><code class="inl">sizeof</code>는 16인데 실제는 32 — 관리 비용이 붙는다</td></tr>
+      <tr><td class="k">해제</td><td class="c no"><code class="inl">free</code> 필요</td><td class="c ok">개별 free 없음</td><td>고정 풀은 프로그램 종료 시 반환하며, 삭제 노드 재사용에는 별도 빈 칸 목록이 필요</td></tr>
+      <tr><td class="k">디버깅</td><td class="c no">주소를 봐야 한다</td><td class="c ok"><code class="inl">printf</code>로 번호</td><td>배열을 통째로 찍어 볼 수 있다 (2.2절 표)</td></tr>
+    </tbody>
+  </table>
+  <div class="box warm">
+    <h4>정직하게 — 노드 풀이 이기지 못하는 칸도 있다</h4>
+    <p style="margin-bottom:0;">제시된 실험에서는 <strong>순회 시간이 비슷했다</strong>(43.0 ms 대 41.1 ms). 그러나 할당 방식·노드 배치·캐시 상태에 따라 순회 속도는 달라진다. 또 노드 풀은 <em class="hl">최대 개수를 미리 알아야</em> 하고, 지운 노드의 칸을 그냥 두면 낭비된다(연습 05). 노드 풀의 진짜 강점은 <strong>속도보다 메모리와 단순함</strong>이다.</p>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.1 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현</h2>
+
+  <h3 class="sub">3.1 노드 풀과 리스트 만들기</h3>
+<pre><span class="cm">/* list.c — 배열 두 개로 만드는 단일 연결 리스트 */</span>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define MAXNODE 1000005
+#define NIL (-1)
+
+<span class="kw">static</span> <span class="kw">int</span> val[MAXNODE];      <span class="cm">/* 값 */</span>
+<span class="kw">static</span> <span class="kw">int</span> nxt[MAXNODE];      <span class="cm">/* 다음 노드의 '번호' (없으면 NIL) */</span>
+<span class="kw">static</span> <span class="kw">int</span> cnt;               <span class="cm">/* 다음에 쓸 빈 칸 */</span>
+<span class="kw">static</span> <span class="kw">int</span> head;              <span class="cm">/* 더미 헤드의 번호 */</span>
+
+<span class="kw">static</span> <span class="kw">int</span> <span class="fn">new_node</span>(<span class="kw">int</span> v){
+    <span class="kw">if</span> (cnt &gt;= MAXNODE) {
+        <span class="fn">fprintf</span>(stderr, <span class="st">"노드 풀 용량 초과\n"</span>);
+        <span class="fn">exit</span>(EXIT_FAILURE);
+    }
+    val[cnt] = v;  nxt[cnt] = NIL;  <span class="kw">return</span> cnt++;
+}
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">list_init</span>(<span class="kw">void</span>){
+    cnt = 0;  head = <span class="fn">new_node</span>(0);     <span class="cm">/* 0번 칸을 더미로 쓴다 */</span>
+}</pre>
+  <div class="box teal">
+    <h4>왜 0번을 더미로 쓰는가</h4>
+    <p style="margin-bottom:0;"><code class="inl">cnt</code>가 0부터 시작하므로 <strong>맨 처음 만든 노드가 자연스럽게 0번</strong>이 된다. 그러면 <code class="inl">head</code>는 언제나 0이고, 어디서든 <code class="inl">0</code>을 더미로 믿을 수 있다.</p>
+  </div>
+
+  <h3 class="sub">3.2 삽입 · 삭제 · 탐색</h3>
+<pre><span class="kw">static</span> <span class="kw">void</span> <span class="fn">insert_after</span>(<span class="kw">int</span> p, <span class="kw">int</span> v){   <span class="cm">/* p 의 '뒤'에 v 를 끼운다 */</span>
+    <span class="kw">int</span> q = <span class="fn">new_node</span>(v);
+    nxt[q] = nxt[p];        <span class="cm">/* ① 새 노드가 p 의 다음을 이어받고 */</span>
+    nxt[p] = q;             <span class="cm">/* ② 그 다음에 p 가 새 노드를 가리킨다 */</span>
+}
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">erase_after</span>(<span class="kw">int</span> p){           <span class="cm">/* p 의 '다음'을 지운다 */</span>
+    <span class="kw">int</span> q = nxt[p];
+    <span class="kw">if</span> (q == NIL) <span class="kw">return</span>;               <span class="cm">/* 지울 것이 없다 */</span>
+    nxt[p] = nxt[q];        <span class="cm">/* q 를 논리적 리스트에서 제외; 풀의 칸은 재사용 안 함 */</span>
+}
+<span class="kw">static</span> <span class="kw">int</span>  <span class="fn">find_prev</span>(<span class="kw">int</span> v){            <span class="cm">/* 값이 v 인 노드의 '앞'을 찾는다 */</span>
+    <span class="kw">for</span> (<span class="kw">int</span> p = head; nxt[p] != NIL; p = nxt[p])
+        <span class="kw">if</span> (val[nxt[p]] == v) <span class="kw">return</span> p;
+    <span class="kw">return</span> NIL;                           <span class="cm">/* 없음 */</span>
+}
+<span class="kw">static</span> <span class="kw">void</span> <span class="fn">traverse</span>(<span class="kw">void</span>){
+    <span class="kw">for</span> (<span class="kw">int</span> p = nxt[head]; p != NIL; p = nxt[p]) <span class="fn">printf</span>(<span class="st">"%d "</span>, val[p]);
+}</pre>
+  <div class="box warm">
+    <h4>순서를 바꾸면 리스트가 끊어진다</h4>
+    <p style="margin-bottom:0;"><code class="inl">insert_after</code>에서 ①과 ②를 바꿔 <code class="inl">nxt[p]=q;</code>를 먼저 하면, <em class="hl"><code class="inl">nxt[p]</code>의 원래 값이 사라져</em> 뒤쪽 전체를 잃는다. <strong>“끊기 전에 먼저 붙잡아라”</strong> — 3.3절 역순 연결에서 똑같은 규칙이 다시 나온다.</p>
+  </div>
+  <div class="qa">
+    <div class="q">Q. <code class="inl">find_prev</code>는 왜 <code class="inl">val[nxt[p]]</code>를 보나요? <code class="inl">val[p]</code>가 자연스러운데요.</div>
+    <div>지운다·끼운다를 하려면 <strong>그 노드가 아니라 그 앞 노드</strong>가 필요하기 때문이다. 단일 연결 리스트는 <em class="hl">뒤로만 갈 수 있어 “앞으로 돌아가기”가 불가능</em>하므로, 찾을 때부터 한 칸 앞을 들고 있는다. 10장에서 이 불편이 사라진다.</div>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 3.3 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">3</span>구현 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">3.3 역순 연결 — 포인터 세 개</h3>
+  <p>리스트를 통째로 뒤집는다. 새 노드를 하나도 만들지 않고 <strong>링크 방향만 바꾼다.</strong> 필수 구현 항목이고, 면접·대회에서 가장 많이 나오는 리스트 문제다.</p>
+<pre><span class="kw">static</span> <span class="kw">void</span> <span class="fn">reverse</span>(<span class="kw">void</span>){
+    <span class="kw">int</span> prev = NIL, cur = nxt[head];
+    <span class="kw">while</span> (cur != NIL) {
+        <span class="kw">int</span> after = nxt[cur];    <span class="cm">/* ① 먼저 '다음'을 붙잡아 둔다 */</span>
+        nxt[cur] = prev;         <span class="cm">/* ② 방향을 뒤집는다 */</span>
+        prev = cur;              <span class="cm">/* ③ 두 포인터를 한 칸씩 전진 */</span>
+        cur  = after;
+    }
+    nxt[head] = prev;            <span class="cm">/* ④ 마지막에 있던 것이 새 첫 노드 */</span>
+}</pre>
+  <figure>
+    <svg viewBox="0 0 660 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="역순 연결 한 걸음">
+      <defs>
+        <marker id="g1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#b4531a"/></marker>
+        <marker id="g2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#0d7c74"/></marker>
+      </defs>
+      <g font-size="10.5" text-anchor="middle">
+        <rect x="90" y="40" width="58" height="28" fill="#f4f7fa" stroke="#5b6876" stroke-width="1.3"/><text x="119" y="59" fill="#1c2430">prev</text>
+        <rect x="280" y="40" width="58" height="28" fill="#fff6ec" stroke="#b4531a" stroke-width="1.6"/><text x="309" y="59" fill="#b4531a" font-weight="700">cur</text>
+        <rect x="470" y="40" width="58" height="28" fill="#eef4f3" stroke="#0d7c74" stroke-width="1.6"/><text x="499" y="59" fill="#0d7c74" font-weight="700">after</text>
+      </g>
+      <path d="M338 54 L464 54" stroke="#0d7c74" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#g2)"/>
+      <text x="401" y="46" font-size="8.6" fill="#0d7c74" text-anchor="middle">① 붙잡아 둔다</text>
+      <path d="M274 68 L154 68" stroke="#b4531a" stroke-width="1.8" marker-end="url(#g1)"/>
+      <text x="214" y="82" font-size="8.6" fill="#b4531a" text-anchor="middle">② 방향을 뒤집는다</text>
+      <text x="330" y="100" font-size="9" fill="#5b6876" text-anchor="middle">③ prev ← cur,  cur ← after  로 둘 다 한 칸 전진</text>
+    </svg>
+    <figcaption>그림 9-2. ①을 하지 않고 ②를 먼저 하면 오른쪽 전체를 잃는다</figcaption>
+  </figure>
+<pre class="out"><span class="lbl">$ ./rev</span>
+원래              head -&gt; 10 -&gt; 20 -&gt; 30 -&gt; 40 -&gt; 50 -&gt; NIL
+reverse 뒤        head -&gt; 50 -&gt; 40 -&gt; 30 -&gt; 20 -&gt; 10 -&gt; NIL
+한 번 더          head -&gt; 10 -&gt; 20 -&gt; 30 -&gt; 40 -&gt; 50 -&gt; NIL
+
+<span class="lbl">n = 1,000,000 역순 검증 : 정확 (확인한 노드 1,000,000개)</span></pre>
+  <div class="box warm">
+    <h4>①을 빼면 어떻게 되는지 — 실제로 돌려 본 결과</h4>
+    <p style="margin-bottom:0;"><code class="inl">after</code>를 쓰지 않고 <code class="inl">nxt[cur]=prev;</code>를 먼저 한 뒤 <code class="inl">cur=nxt[cur];</code>를 하면, <code class="inl">nxt[cur]</code>는 이미 <code class="inl">prev</code>로 바뀌어 있다.</p>
+<pre class="out" style="margin:2mm 0 0 0;">원래              head -&gt; 10 -&gt; 20 -&gt; 30 -&gt; 40 -&gt; 50 -&gt; NIL
+reverse_bug 뒤    head -&gt; 10 -&gt; NIL        <span class="bad">← 뒤가 통째로 사라졌다</span></pre>
+    <p style="margin:2mm 0 0 0;">무한 루프도, 오류 메시지도 없다. <em class="hl">조용히 노드 네 개가 없어진다.</em> 이것이 포인터 버그의 전형적인 모습이다 — 터지지 않고 <strong>결과만 틀린다.</strong></p>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4.1~4.2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석</h2>
+
+  <h3 class="sub">4.1 이긴 칸과 진 칸</h3>
+  <table>
+    <thead><tr><th style="width:30%">연산</th><th class="c" style="width:16%">배열</th><th class="c" style="width:16%">연결 리스트</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td class="k">k번째 값 읽기</td><td class="c ok">O(1)</td><td class="c no">O(N)</td><td class="no">리스트의 가장 큰 약점 — 처음부터 따라가야 한다</td></tr>
+      <tr><td class="k">맨 앞 삽입·삭제</td><td class="c no">O(N)</td><td class="c ok">O(1)</td><td>배열은 전부 민다</td></tr>
+      <tr><td class="k">맨 뒤 삽입</td><td class="c ok">O(1)</td><td class="c mid">O(N) 또는 O(1)</td><td><code class="inl">tail</code>을 따로 들고 있으면 O(1)</td></tr>
+      <tr><td class="k tt">중간 삽입·삭제<br><span style="font-weight:400;font-size:8.2pt;">(앞 노드를 알고 있을 때)</span></td><td class="c no">O(N)</td><td class="c ok">O(1)</td><td class="ok"><strong>리스트의 주요 장점</strong></td></tr>
+      <tr><td class="k">값으로 찾기</td><td class="c">O(N)</td><td class="c">O(N)</td><td>둘 다 전부 본다</td></tr>
+      <tr><td class="k">순회 1회</td><td class="c ok">O(N) · 빠름</td><td class="c mid">O(N) · 느림</td><td>같은 O(N)인데 상수가 다르다 (4.3절)</td></tr>
+    </tbody>
+  </table>
+  <div class="box warm">
+    <h4>“위치를 이미 알 때”가 핵심 조건이다</h4>
+    <p style="margin-bottom:0;">중간 삽입이 O(1)인 것은 <em class="hl">삽입·삭제 위치의 바로 앞 노드 번호를 이미 알고 있을 때</em>뿐이다. 값으로 찾아서 끼운다면 찾는 데 O(N)이 들어 <strong>전체는 O(N)</strong>이 된다. 이 조건을 빠뜨린 채 “리스트가 빠르다”고 외우면, 실제로는 배열보다 느린 코드를 짜게 된다.</p>
+  </div>
+
+  <h3 class="sub">4.2 중간 삽입 — 1.1절 표를 다시 본다</h3>
+<pre class="out">        n      배열(ms)        배열 이동량   리스트(ms)   리스트 링크 갱신
+    50000          39.1          625,000,000          0.3        100,000
+   100000         183.7        2,500,000,000          0.2        200,000
+   200000         785.5       10,000,000,000          0.3        400,000</pre>
+  <div class="box teal">
+    <h4>두 열을 비교해 읽는다</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>배열 이동량은 n²에 비례한다.</strong> n이 2배가 될 때 6.25억 → 25억 → 100억으로 <em class="hl">정확히 4배씩</em> 늘었다 — O(N²)의 교과서적 모습이다</li>
+      <li><strong>리스트 링크 갱신 횟수는 2N이다.</strong> 삽입 한 번에 링크 두 개. n=200,000이면 400,000으로 <em class="hl">정확히 맞는다</em></li>
+      <li><strong>리스트 시간은 n이 4배가 되어도 측정값은 0.2~0.3 ms 수준이었다.</strong> 실제 연산 수는 N에 비례하므로 입력이 커지면 시간이 증가한다</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 4.3~4.4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">4</span>복잡도 분석 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <h3 class="sub">4.3 순회가 느린 진짜 이유</h3>
+  <p>같은 O(N)이더라도 리스트 순회는 배열보다 느릴 수 있다. 왜인지 정확히 알기 위해 <strong>노드 값과 노드 수를 같게</strong> 만들고 재 보았다 — 같은 노드 풀, 같은 100만 개 노드, 같은 합계. <em class="hl">주된 차이는 링크를 따라가는 순서</em>이다.</p>
+<pre class="out"><span class="lbl">$ ./shuffle      n = 1,000,000, 순회 20회</span>
+노드 풀 · 링크 순서 = 배열 순서 :    38.9 ms
+노드 풀 · 링크 순서 = 무작위     :   <span class="bad">231.2 ms</span>
+그냥 배열                        :     <span class="lbl">4.8 ms</span>
+
+방문하는 노드 집합과 합계는 같다. 링크의 순서를 바꾸면 접근 패턴이 달라진다.
+무작위 링크가 순차 링크의 <span class="bad">5.9배</span> 느리고, 배열의 <span class="bad">48.3배</span> 느리다.</pre>
+  <div class="box">
+    <h4>04장에서 배운 것이 그대로 나타났다</h4>
+    <p style="margin-bottom:0;">04장에서 2차원 배열을 열 우선으로 순회했을 때와 같은 현상이다. CPU는 메모리를 <strong>한 칸씩이 아니라 덩어리로</strong> 읽어 온다. 링크가 순서대로면 이미 읽어 둔 덩어리 안에서 다음 노드를 찾지만, <em class="hl">링크가 멀리 뛰면 매번 새로 읽어 와야</em> 한다.</p>
+  </div>
+  <div class="qa">
+    <div class="q">Q. 그러면 노드 풀을 쓰면 항상 빠른 건가요?</div>
+    <div><strong>아니다.</strong> 위 두 줄은 <em class="hl">똑같은 노드 풀</em>이다. 풀을 쓰는 것만으로는 부족하고, <strong>접근 순서와 메모리 배치가 비슷할수록</strong> 캐시 효율이 좋아질 가능성이 크다. 입력 순서대로 리스트를 만들면 대개 저절로 그렇게 되지만, 중간 삽입을 많이 하면 점점 흐트러진다. <strong>그럼에도 리스트를 선택할 수 있는 이유</strong>는 삽입 위치를 알고 있을 때 링크 갱신만으로 중간 삽입이 가능하기 때문이다 — <em class="hl">무엇을 많이 하는 문제인가로 고른다.</em></div>
+  </div>
+
+  <h3 class="sub">4.4 메모리 — 노드 풀을 쓰는 가장 큰 이유</h3>
+<pre class="out"><span class="lbl">$ ./mem</span>
+sizeof(Node)            = 16 바이트   (int 4 + 패딩 4 + 포인터 8)
+노드 풀 1개분 (4바이트 int 2개) = 8 바이트
+
+malloc 노드 1,000,000개 실제 사용량 : 31,372 KB -&gt; 노드당 약 <span class="bad">32.1 바이트</span>
+노드 풀  1,000,000개 배열 원소 크기  :  약 7,812 KiB -&gt; 원소당 <span class="lbl">8 바이트</span>
+
+256MB 제한에서 담을 수 있는 노드 수
+  malloc 노드 : 약   836만 개 (측정 예시)
+  노드 풀     : 약 <span class="lbl">3,355만 개</span> (배열만 계산)</pre>
+  <div class="box warm">
+    <h4><code class="inl">sizeof</code>와 실제 메모리 사용량은 다를 수 있다</h4>
+    <p style="margin-bottom:0;"><code class="inl">malloc</code>은 블록마다 <em class="hl">“이 블록이 몇 바이트인지” 같은 관리 정보를 함께 저장</em>하고, 정렬을 위해 크기를 올려 잡는다. 그래서 <strong>작은 블록을 많이 잡으면 추가 비용이 커질 수 있다.</strong> 제시된 환경에서는 실제 메모리 증가량이 노드당 약 32.1바이트였지만 <strong>항상 32.1바이트인 것은 아니다.</strong><br>
+    <strong>결론.</strong> <code class="inl">sizeof(Node)</code>는 구조체 자체의 크기이고, <code class="inl">malloc</code> 관리 비용·정렬·할당기 특성은 별도다. 또한 <code class="inl">/proc/self/statm</code>은 Linux의 프로세스 메모리 통계로, 개별 할당 블록의 정확한 크기를 직접 알려 주지는 않는다.</p>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 5. 예제 1~2 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제</h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 1 <span class="tag">배열 상태 읽기</span></div>
+    <div class="ex-b">
+      <p>노드 풀의 상태가 아래와 같다. <code class="inl">head = 0</code>(더미)일 때 (1) 리스트를 순서대로 쓰고, (2) 값 7을 2 뒤에 끼우면 배열이 어떻게 바뀌는지 쓰라.</p>
+      <table style="margin-bottom:2mm;">
+        <thead><tr><th class="c" style="width:16%">i</th><th class="c">0</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th></tr></thead>
+        <tbody>
+          <tr><td class="k c">val</td><td class="c m">—</td><td class="c m">9</td><td class="c m">2</td><td class="c m">5</td><td class="c m">4</td></tr>
+          <tr><td class="k c">nxt</td><td class="c m">3</td><td class="c m">−1</td><td class="c m">1</td><td class="c m">4</td><td class="c m">2</td></tr>
+        </tbody>
+      </table>
+      <div class="sol">
+        <p><b>(1)</b> 0 → nxt[0]=3(값 5) → nxt[3]=4(값 4) → nxt[4]=2(값 2) → nxt[2]=1(값 9) → nxt[1]=−1.<br>
+        따라서 <b>head → 5 → 4 → 2 → 9 → NIL</b></p>
+        <p style="margin-bottom:0;"><b>(2)</b> 2는 2번 칸에 있다. 새 노드는 <code class="inl">cnt</code>가 5이므로 <strong>5번 칸</strong>에 만들어진다. <code class="inl">val[5]=7</code>, <code class="inl">nxt[5]=nxt[2]=1</code>, 그리고 <code class="inl">nxt[2]=5</code>.
+        결과는 <b>head → 5 → 4 → 2 → 7 → 9 → NIL</b>이고, <em class="hl">수정된 노드는 두 개</em>(기존 2번 노드와 새 5번 노드)이며, 배열 원소로 세면 <code class="inl">val[5]</code>, <code class="inl">nxt[5]</code>, <code class="inl">nxt[2]</code>의 세 칸다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 2 <span class="tag">더미 헤드의 효과</span></div>
+    <div class="ex-b">
+      <p>더미 헤드 없이 <code class="inl">head</code>가 첫 노드를 직접 가리키는 구조에서 “값 v인 노드를 지우는 함수”를 짠다고 하자. 더미가 있을 때와 비교해 <strong>늘어나는 분기</strong>를 모두 쓰라.</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th style="width:26%">경우</th><th style="width:37%">더미 없음</th><th>더미 있음</th></tr></thead>
+          <tbody>
+            <tr><td class="k">리스트가 비었다</td><td class="no"><code class="inl">if (head == NIL) return;</code></td><td class="ok">필요 없음 — 루프가 안 돈다</td></tr>
+            <tr><td class="k">첫 노드가 v다</td><td class="no"><code class="inl">if (val[head]==v) { head=nxt[head]; return; }</code></td><td class="ok">필요 없음 — 더미의 뒤일 뿐</td></tr>
+            <tr><td class="k">그 외</td><td>루프 한 개</td><td>루프 한 개</td></tr>
+            <tr><td class="k tt">함수 모양</td><td class="no"><code class="inl">head</code>가 바뀔 수 있어 <strong>반환값이나 주소</strong>가 필요</td><td class="ok"><code class="inl">void erase(int v)</code>로 충분</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>정리.</b> 더미가 분기 <strong>두 개</strong>와 함수 시그니처 하나를 없앴다. <em class="hl">대회에서 분기 하나는 버그 하나다.</em> 더미 노드는 삽입·삭제 분기를 줄이는 유용한 선택이다. 다만 메모리 제약 등 구현 조건에 따라 생략할 수도 있다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 예제 3~4 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">5</span>예제 <span style="font-size:10pt;color:var(--muted);font-weight:400;">(이어서)</span></h2>
+
+  <div class="ex">
+    <div class="ex-h">예제 3 <span class="tag">배열이냐 리스트냐</span></div>
+    <div class="ex-b">
+      <p>다음 네 상황에서 배열과 연결 리스트 중 무엇을 고를지 정하고 근거를 쓰라. N ≤ 500,000.</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th style="width:38%">상황</th><th class="c" style="width:14%">선택</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>수열을 받아 k번째 값을 Q번 묻는다</td><td class="c tt">배열</td><td>리스트는 질의마다 O(N) → 전체 O(NQ)</td></tr>
+            <tr><td>맨 앞에 N번 넣고 전부 출력</td><td class="c tt">리스트</td><td>배열은 매번 전부 밀어 O(N²)</td></tr>
+            <tr><td>정렬된 상태를 유지하며 값을 삽입</td><td class="c tt">배열</td><td class="mid"><strong>함정.</strong> 리스트도 <em class="hl">자리를 찾는 데 O(N)</em>이라 이득이 없다. 둘 다 O(N²)이므로, 이럴 땐 <strong>23장 균형 트리</strong>가 답이다</td></tr>
+            <tr><td>처리하며 원소를 하나씩 빼낸다<br><span style="font-size:8.2pt;">(요세푸스 같은 문제)</span></td><td class="c tt">리스트</td><td>앞 노드를 알고 있으면 삭제가 O(1). 요세푸스처럼 계속 이동하는 문제는 원형 연결 리스트나 07장 원형 큐도 적합하다</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>세 번째가 이 예제의 핵심이다.</b> “삽입이 O(1)이니까 리스트”는 <em class="hl">자리를 공짜로 안다는 전제</em> 위에서만 맞다(4.1절 경고 박스).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-h">예제 4 <span class="tag">메모리 추정</span></div>
+    <div class="ex-b">
+      <p>N = 2,000,000개의 노드가 필요하고 메모리 제한이 256 MB다. (1) <code class="inl">malloc</code> 방식과 노드 풀 방식의 사용량을 각각 추정하라. (2) 노드 풀 배열은 몇 칸으로 선언해야 하는가?</p>
+      <div class="sol">
+        <table style="margin-bottom:2mm;">
+          <thead><tr><th style="width:24%">방식</th><th class="c" style="width:22%">노드당</th><th class="c" style="width:20%">200만 개</th><th>판정</th></tr></thead>
+          <tbody>
+            <tr><td class="k">malloc 노드</td><td class="c">약 32 바이트</td><td class="c mid">약 61 MB</td><td>들어가긴 한다. 다만 <strong>생성에 약 60 ms(제시된 측정 조건을 단순 확장한 추정)</strong>가 든다</td></tr>
+            <tr><td class="k">노드 풀</td><td class="c ok">8 바이트</td><td class="c ok">약 15 MB</td><td class="ok">여유롭다</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-bottom:0;"><b>(2)</b> <strong>N + 1칸 이상</strong>으로 잡는다. <em class="hl">더미 헤드가 한 칸을 먹기 때문</em>이다. 실전에서는 <code class="inl">#define MAXNODE 2000005</code>처럼 <strong>여유를 조금 둔다</strong> — 문제가 “최대 N개”라고 해도 더미·보초 노드가 몇 개 붙을 수 있다. 8바이트 × 5칸은 40바이트이므로 여유를 두는 비용은 사실상 0이다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 6. 연습 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">6</span>연습 문제</h2>
+  <p class="lead">01~05는 공책에, 06~10은 컴퓨터로 푼다. 제한 시간 60분. <strong>이 장은 배열 상태를 직접 적어 보는 것이 가장 빠른 공부다.</strong></p>
+
+  <div class="prob"><span class="pn">01</span>단일 연결 리스트 ADT의 명세표를 작성하라. 연산은 <code class="inl">insert_after</code>, <code class="inl">erase_after</code>, <code class="inl">find_prev</code>, <code class="inl">traverse</code>, <code class="inl">empty</code>이다. <strong>왜 <code class="inl">insert</code>가 아니라 <code class="inl">insert_after</code>인지</strong>를 한 줄로 덧붙일 것.</div>
+
+  <div class="prob"><span class="pn">02</span>아래 노드 풀에서 <code class="inl">head = 0</code>(더미)일 때 리스트를 순서대로 쓰라. 그리고 <code class="inl">erase_after(4)</code>를 실행한 뒤의 <code class="inl">nxt</code> 배열을 쓰라.
+  <table style="margin:2mm 0 0 0;">
+    <thead><tr><th class="c" style="width:14%">i</th><th class="c">0</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th></tr></thead>
+    <tbody>
+      <tr><td class="k c">val</td><td class="c m">—</td><td class="c m">8</td><td class="c m">3</td><td class="c m">6</td><td class="c m">1</td><td class="c m">7</td></tr>
+      <tr><td class="k c">nxt</td><td class="c m">4</td><td class="c m">3</td><td class="c m">−1</td><td class="c m">2</td><td class="c m">5</td><td class="c m">1</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="prob"><span class="pn">03</span>빈 리스트에서 <code class="inl">insert_after(head, 50)</code>, <code class="inl">insert_after(head, 40)</code>, <code class="inl">insert_after(head, 30)</code>을 차례로 실행했다. (1) 리스트의 논리적 순서는? (2) <code class="inl">val</code>과 <code class="inl">nxt</code> 배열의 최종 상태는? (3) 왜 둘의 순서가 반대인가?</div>
+
+  <div class="prob"><span class="pn">04</span><code class="inl">insert_after</code>의 두 줄 순서를 바꾸면 무슨 일이 일어나는가? <code class="inl">head → 10 → 20 → NIL</code> 상태에서 <code class="inl">insert_after(head, 5)</code>를 잘못된 순서로 실행했을 때의 결과를 추적해 쓰라.</div>
+
+  <div class="prob"><span class="pn">05</span>노드 풀에서 <code class="inl">erase_after</code>로 지운 노드의 칸은 재사용되지 않는다. (1) 삽입 N번·삭제 N번을 번갈아 하면 <code class="inl">cnt</code>는 얼마가 되는가? (2) 지운 칸을 재사용하려면 어떻게 해야 하는가? <strong>힌트 — 빈 칸들도 리스트로 엮을 수 있다.</strong></div>
+
+  <div class="prob"><span class="pn">06</span>노드 풀 단일 연결 리스트를 구현하라(<code class="inl">list_init</code>, <code class="inl">new_node</code>, <code class="inl">insert_after</code>, <code class="inl">erase_after</code>, <code class="inl">find_prev</code>, <code class="inl">traverse</code>). 연습 03의 결과와 일치하는지 확인하고, <strong><code class="inl">val</code>·<code class="inl">nxt</code> 배열을 통째로 출력하는 함수</strong>도 함께 만들 것.</div>
+
+  <div class="prob"><span class="pn">07</span>역순 연결 <code class="inl">reverse</code>를 구현하라. (1) 두 번 뒤집으면 원래대로 돌아오는지 확인하고, (2) <code class="inl">after</code>를 쓰지 않는 잘못된 버전도 만들어 결과를 비교하라. (3) n = 1,000,000에서 올바른 버전의 결과를 완전 검증하라.</div>
+
+  <div class="prob"><span class="pn">08</span>중간 삽입을 배열과 리스트로 각각 구현해 n = 50,000 / 100,000 / 200,000에서 시간과 <strong>이동량</strong>을 재라. 배열 이동량이 n이 2배가 될 때 몇 배가 되는지 확인하고, 그 값이 왜 4인지 설명하라.</div>
+
+  <div class="prob"><span class="pn">09</span>같은 노드 풀 100만 개로 <strong>링크를 순서대로 이은 리스트</strong>와 <strong>무작위 순열로 이은 리스트</strong>를 만들어 순회 시간을 비교하라. 두 리스트의 <strong>합계가 같은지 반드시 확인</strong>하고, 차이가 나는 이유를 04장과 연결해 설명하라.</div>
+
+  <div class="prob"><span class="pn">10</span>노드 100만 개를 <code class="inl">malloc</code> 방식과 노드 풀 방식으로 만들어 생성 시간을 비교하라. 또 <code class="inl">sizeof(struct Node)</code>를 출력하고, Linux 환경이라면 <code class="inl">/proc/self/statm</code>의 resident(상주 페이지 수)에 시스템 페이지 크기를 곱해 프로세스의 상주 메모리 사용량을 추정하고, <strong>둘이 왜 다른지</strong> 쓰라.</div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 7. 도전 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">7</span>도전 문제</h2>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C1</span><strong>정렬된 두 리스트 병합</strong><br>
+    오름차순으로 정렬된 두 리스트 A, B가 있다. <strong>값을 담는 새 노드를 만들지 않고, 기존 노드의 링크만 변경하여</strong> 두 리스트를 합쳐 하나의 정렬된 리스트를 만들라. |A| + |B| ≤ 1,000,000.<br>
+    <span style="color:var(--muted);">예 : A = 1 4 7 9, B = 2 3 8 10 11 → 1 2 3 4 7 8 9 10 11</span><br>
+    (1) 기존 A 리스트의 더미 헤드를 <strong>결과 리스트의 더미로 재사용</strong>하면 코드가 얼마나 짧아지는가? 더미 없이 짜 보고 비교하라. (B의 더미는 데이터 노드가 아니므로 병합 대상에서 제외한다.)<br>
+    (2) 한쪽이 먼저 바닥났을 때 <strong>남은 쪽을 한 번에 붙이는</strong> 방법을 쓰라. 왜 하나씩 옮길 필요가 없는가?<br>
+    (3) 위 예제의 비교 횟수를 세어라. 일반적으로 최대 몇 번인가?<br>
+    (4) 복잡도를 쓰고, <strong>배열 두 개를 합치는 것과 비교</strong>해 무엇이 유리한지 설명하라.
+  </div>
+
+  <div class="prob" style="border-left:4px solid var(--accent);">
+    <span class="pn">C2</span><strong>사이클 판정 — 토끼와 거북이</strong><br>
+    리스트의 어떤 노드가 앞쪽 노드를 다시 가리켜 <strong>고리</strong>가 생겼을 수 있다. 추가 배열을 쓰지 않고 O(N) 시간, <strong>O(1) 메모리</strong>로 고리의 유무를 판정하라.<br>
+    (1) 한 칸씩 가는 포인터(거북이)와 두 칸씩 가는 포인터(토끼)를 동시에 출발시킨다. 고리가 있으면 <strong>왜 반드시 만나는가?</strong> (힌트 — 고리 안에서 둘의 간격이 매 걸음 어떻게 변하는가)<br>
+    (2) 고리가 없으면 왜 반드시 끝나는가? 종료 조건을 정확히 쓰라.<br>
+    (3) 1→2→3→4→5→6→7에서 7이 다시 3을 가리킬 때, <strong>둘이 처음 만나는 노드의 값</strong>을 추적해 구하라.<br>
+    (4) 만난 뒤 <strong>한 포인터를 맨 앞으로 되돌리고 둘 다 한 칸씩</strong> 가게 하면 고리의 <strong>시작점</strong>에서 만난다. (3)의 예로 확인하라.<br>
+    (5) 전체 복잡도가 O(N)인 이유를 설명하라. <strong>한 번의 반복에서 이동하는 링크 수가 상수이고, 고리 진입 전 경로와 고리 길이가 모두 N 이하</strong>임을 이용할 것. (단조 스택의 분할 상환 논증과는 다르다.)
+  </div>
+
+  <div class="box teal">
+    <h4>두 문항이 겨냥하는 것</h4>
+    <p style="margin-bottom:0;">C1은 <strong>더미 헤드가 왜 유용한지</strong>를 몸으로 느끼게 하는 문제다. 더미 없이 짜 보면 “결과 리스트가 아직 비었는가”를 매번 검사하게 되는데, 기존 더미를 결과 헤드로 재사용하면 그 분기를 없앨 수 있다. 11장 병합 정렬에서 <em class="hl">같은 병합 논리를 배열로</em> 다시 만나므로 여기서 손에 익혀 둔다.<br>
+    C2는 <strong>O(1) 메모리</strong>라는 제약이 핵심이다. 방문 표시 배열을 쓰면 쉽지만 메모리를 N만큼 쓴다. (5)는 빠른 포인터와 느린 포인터 사이의 상대 이동 거리로 만남을 설명하고, 각 단계의 이동 횟수가 O(N)임을 구분하여 증명해야 한다.</p>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="page">
+  <h2 class="sec"><span class="num">8</span>막히는 지점</h2>
+
+  <table>
+    <thead><tr><th style="width:27%">흔한 생각</th><th style="width:30%">무엇이 틀렸나</th><th>바로잡기</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">“리스트는 삽입이 O(1)이니 배열보다 빠르다”</td><td><strong>자리를 찾는 비용</strong>을 빼먹었다. 찾아서 넣으면 O(N)</td><td>“위치를 이미 알 때”라는 조건을 함께 외운다 (4.1절)</td></tr>
+      <tr><td class="tt">“<code class="inl">nxt[p]=q</code>를 먼저 써도 되겠지”</td><td><code class="inl">nxt[p]</code>의 원래 값이 사라져 뒤가 끊긴다</td><td><strong>끊기 전에 먼저 붙잡는다.</strong> 삽입도 역순도 같은 규칙</td></tr>
+      <tr><td class="tt">“역순은 <code class="inl">cur=nxt[cur]</code>로 전진하면 된다”</td><td>이미 뒤집어서 <code class="inl">prev</code>를 가리킨다 → 조용히 뒤가 날아간다</td><td><code class="inl">after</code>를 먼저 저장한다. 이 예시에서는 <code class="inl">10 → NIL</code>만 남는다</td></tr>
+      <tr><td class="tt">“지울 노드를 찾으면 된다”</td><td>단일 연결은 <strong>앞으로 돌아갈 수 없다</strong></td><td><code class="inl">find_prev</code>로 <strong>앞 노드</strong>를 찾는다</td></tr>
+      <tr><td class="tt">“더미는 번거롭기만 하다”</td><td>분기 두 개와 함수 시그니처 하나가 늘어난다</td><td>예제 2의 표를 직접 채워 본다</td></tr>
+      <tr><td class="tt">“메모리는 <code class="inl">sizeof</code>로 계산하면 된다”</td><td><code class="inl">malloc</code>은 블록마다 관리 비용이 붙는다 (16 → 약 32.1(실험 환경))</td><td>4바이트 int 두 배열의 <em class="hl">원소 크기는 계산이 명확하다</em> — 8바이트 × 할당 용량</td></tr>
+      <tr><td class="tt">“노드 풀이면 항상 빠르다”</td><td>같은 풀이라도 링크가 뒤섞이면 5.9배 느려진다</td><td>데이터 배치와 실제 순회 순서를 함께 고려한다 (4.3절)</td></tr>
+      <tr><td class="tt">“배열 크기는 N칸이면 된다”</td><td><strong>더미가 한 칸</strong>을 쓴다</td><td>N + 여유로 선언한다 (<code class="inl">MAXNODE 1000005</code>)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">자가 점검</h3>
+  <div class="box">
+    <ul class="chk" style="margin-bottom:0;">
+      <li><code class="inl">val</code>·<code class="inl">nxt</code> 배열만 보고 리스트 순서를 읽어 낼 수 있다</li>
+      <li>논리적 순서와 물리적 순서가 왜 다른지 설명할 수 있다</li>
+      <li>더미 헤드가 없애 주는 분기를 두 가지 말할 수 있다</li>
+      <li>노드 풀 리스트 여섯 함수를 백지에서 작성할 수 있다</li>
+      <li>역순 연결을 포인터 세 개로 짜고, ①을 빼면 왜 깨지는지 안다</li>
+      <li>배열과 리스트의 복잡도 표 여섯 줄을 채울 수 있다</li>
+      <li>노드당 메모리를 8바이트로 계산해 배열 크기를 정할 수 있다</li>
+    </ul>
+  </div>
+
+  <div class="box teal">
+    <h4>다음은 10 이중 연결 리스트와 응용</h4>
+    <p style="margin-bottom:0;">이 장의 불편은 거의 전부 <em class="hl">“뒤로만 갈 수 있다”</em>에서 나왔다. 지울 노드가 아니라 <strong>앞 노드</strong>를 잡아야 했고, 그래서 <code class="inl">find_prev</code> 같은 함수가 필요했다.<br>
+    10장에서는 <code class="inl">prv</code> 배열을 하나 더 두어 양방향으로 간다. 그러면 <strong>“이 노드를 지워라”를 O(1)에</strong> 할 수 있게 되고, 요세푸스와 에디터 시뮬레이션 같은 문제가 한 번에 풀린다. 4바이트 정수 배열 기준으로 노드당 원소 크기는 8 → 12바이트로 늘어난다. 포인터 기반 노드의 실제 크기는 환경과 정렬 조건에 따라 다르다. 그리고 10장이 PART 1의 마지막 장이다.</p>
+  </div>
+
+  <div class="foot"><span>09 단일 연결 리스트</span><span><b>세영코딩연구소</b> 저자 : 컴퓨터공학박사 KIM</span></div>
+</section>
+
+</body>
+</html>
