@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한문 기말고사 완전정리 (미리보기)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23a63d2f'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23faf7f0' font-family='serif'>漢</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f1e6;
+  --surface: #fffdf7;
+  --surface-2: #fbf6ea;
+  --border: #e3d9c4;
+  --border-soft: #ece2cd;
+  --ink: #2c2620;
+  --ink-soft: #5d5548;
+  --ink-faint: #948a77;
+  --seal: #a63d2f;
+  --seal-deep: #8a2f24;
+  --seal-soft: #f3e2dc;
+  --indigo: #33506b;
+  --green: #4c6b3c;
+  --gold: #b08a2e;
+  --shadow: 0 2px 6px rgba(60, 48, 30, .07), 0 12px 32px rgba(60, 48, 30, .08);
+  --radius: 14px;
+  --font-body: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-serif: 'Noto Serif KR', 'Batang', 'Apple SD Gothic Neo', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: none; scroll-behavior: smooth; }
+body {
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(166, 61, 47, .045), transparent 34%),
+    radial-gradient(circle at 88% 92%, rgba(51, 80, 107, .05), transparent 38%);
+}
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+::selection { background: rgba(166, 61, 47, .22); }
+
+/* ---------- header ---------- */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(246, 241, 230, .92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1060px; margin: 0 auto; padding: 14px 20px 10px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-seal {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--seal); color: #faf4ec;
+  font-family: var(--font-serif); font-size: 26px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+  transform: rotate(-4deg);
+}
+.logo-text h1 { font-family: var(--font-serif); font-size: 20px; font-weight: 900; line-height: 1.2; letter-spacing: -0.02em; }
+.logo-text p { font-size: 12px; color: var(--ink-faint); letter-spacing: .04em; }
+nav { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+nav button {
+  padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 500;
+  color: var(--ink-soft); transition: all .18s ease;
+}
+nav button:hover { background: var(--surface-2); color: var(--ink); }
+nav button.active { background: var(--ink); color: #faf4ec; font-weight: 700; }
+
+main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
+.page { display: none; animation: fadein .25s ease; }
+.page.active { display: block; }
+@keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+h2.page-title {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 900; letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.page-sub { color: var(--ink-soft); font-size: 14px; margin-bottom: 28px; }
+
+/* ---------- home ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 36px 32px; margin-bottom: 24px;
+  display: flex; gap: 28px; align-items: center; flex-wrap: wrap;
+  box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.hero::after {
+  content: '漢'; position: absolute; right: -10px; bottom: -40px;
+  font-family: var(--font-serif); font-size: 200px; font-weight: 900;
+  color: rgba(166, 61, 47, .06); pointer-events: none;
+}
+.hero h3 { font-family: var(--font-serif); font-size: 26px; font-weight: 900; line-height: 1.35; margin-bottom: 10px; }
+.hero p { color: var(--ink-soft); font-size: 15px; max-width: 52ch; }
+.hero .scope-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--seal-soft); color: var(--seal-deep);
+  border: 1px solid #e5c7bd; border-radius: 999px;
+  padding: 5px 14px; font-size: 13px; font-weight: 700; margin-bottom: 14px;
+}
+.hero-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.btn {
+  padding: 11px 22px; border-radius: 12px; font-size: 15px; font-weight: 700;
+  transition: all .18s ease; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: var(--seal); color: #faf4ec; box-shadow: 0 4px 14px rgba(166,61,47,.3); }
+.btn-primary:hover { background: var(--seal-deep); transform: translateY(-1px); }
+.btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--ink-faint); background: var(--surface-2); }
+.btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 9px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow);
+}
+.stat-card .num { font-family: var(--font-serif); font-size: 32px; font-weight: 900; line-height: 1.1; }
+.stat-card .label { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.stat-card.accent .num { color: var(--seal); }
+.stat-card.indigo .num { color: var(--indigo); }
+.stat-card.green .num { color: var(--green); }
+
+.home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.unit-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; box-shadow: var(--shadow); transition: transform .18s ease, border-color .18s ease;
+  text-align: left;
+}
+.unit-card:hover { transform: translateY(-3px); border-color: #d4c5a5; }
+.unit-card .unit-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--ink); color: #faf4ec; font-weight: 700; font-size: 15px; margin-bottom: 12px;
+}
+.unit-card h4 { font-family: var(--font-serif); font-size: 19px; font-weight: 900; margin-bottom: 6px; }
+.unit-card p { font-size: 13.5px; color: var(--ink-soft); }
+.unit-card .go { margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--seal); }
+
+/* ---------- study ---------- */
+.sub-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.sub-tabs button {
+  padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 500;
+  border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft);
+  transition: all .18s ease;
+}
+.sub-tabs button:hover { border-color: var(--ink-faint); }
+.sub-tabs button.active { background: var(--seal); border-color: var(--seal); color: #faf4ec; font-weight: 700; }
+
+.info-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.info-card h4 { font-family: var(--font-serif); font-size: 17px; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.info-card h4::before { content: ''; width: 4px; height: 18px; background: var(--seal); border-radius: 2px; }
+.info-card p, .info-card li { font-size: 15px; color: var(--ink); }
+.info-card ul, .info-card ol { padding-left: 22px; }
+.info-card li { margin-bottom: 6px; }
+.info-card .muted { color: var(--ink-soft); font-size: 13.5px; }
+
+.entry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.entry {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.entry .hanja { font-family: var(--font-serif); font-size: 34px; font-weight: 900; line-height: 1.2; letter-spacing: .02em; }
+.entry .reading { color: var(--seal); font-weight: 700; font-size: 15px; margin: 2px 0 8px; }
+.entry .meaning { font-size: 14.5px; }
+.entry .origin {
+  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
+  font-size: 13px; color: var(--ink-soft);
+}
+.entry .origin::before { content: '📖 '; font-size: 12px; }
+.season-tag {
+  position: absolute; top: 14px; right: 14px; font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 999px;
+}
+.tag-봄 { background: #e9f0dd; color: #4c6b3c; }
+.tag-여름 { background: #e3edf3; color: #2f6483; }
+.tag-가을 { background: #f3e8d3; color: #9a6d1e; }
+.tag-겨울 { background: #e8e6ef; color: #55517a; }
+
+.term-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.term-table th, .term-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border-soft); }
+.term-table th { font-size: 12.5px; color: var(--ink-faint); font-weight: 700; letter-spacing: .03em; }
+.term-table td.h { font-family: var(--font-serif); font-weight: 900; font-size: 17px; }
+.term-table tr:last-child td { border-bottom: none; }
+
+.note {
+  background: var(--seal-soft); border: 1px solid #e5c7bd; border-radius: var(--radius);
+  padding: 16px 18px; font-size: 14px; color: var(--seal-deep); margin-top: 16px;
+}
+.note strong { font-weight: 900; }
+
+/* ---------- flashcards ---------- */
+.fc-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+.chip {
+  padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 500;
+  border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft);
+  transition: all .18s ease;
+}
+.chip:hover { border-color: var(--ink-faint); }
+.chip.active { background: var(--ink); color: #faf4ec; border-color: var(--ink); font-weight: 700; }
+.fc-progress { margin-left: auto; font-size: 13.5px; color: var(--ink-soft); font-weight: 500; }
+
+.fc-stage { perspective: 1400px; margin-bottom: 20px; }
+.fc-card {
+  position: relative; width: 100%; max-width: 560px; margin: 0 auto;
+  min-height: 320px; cursor: pointer;
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.4,0,.2,1);
+}
+.fc-card.flipped { transform: rotateY(180deg); }
+.fc-face {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; text-align: center; padding: 32px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  box-shadow: var(--shadow);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.fc-face.back { transform: rotateY(180deg); background: linear-gradient(150deg, #fffdf7, var(--surface-2)); }
+.fc-face .fc-hint { position: absolute; bottom: 16px; font-size: 12px; color: var(--ink-faint); }
+.fc-face .fc-cat { font-size: 12.5px; font-weight: 700; letter-spacing: .08em; color: var(--seal); }
+.fc-face .big-hanja { font-family: var(--font-serif); font-size: clamp(44px, 9vw, 76px); font-weight: 900; line-height: 1.15; }
+.fc-face .fc-meaning { font-size: 17px; font-weight: 500; max-width: 42ch; }
+.fc-face .fc-extra { font-size: 14px; color: var(--ink-soft); max-width: 46ch; }
+.fc-nav { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+/* ---------- quiz ---------- */
+.quiz-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  padding: 32px; box-shadow: var(--shadow); max-width: 680px; margin: 0 auto;
+}
+.quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; font-size: 14px; color: var(--ink-soft); font-weight: 500; }
+.quiz-bar { height: 6px; background: var(--border-soft); border-radius: 3px; overflow: hidden; margin-bottom: 26px; }
+.quiz-bar div { height: 100%; background: var(--seal); border-radius: 3px; transition: width .3s ease; }
+.q-text { font-family: var(--font-serif); font-size: 21px; font-weight: 700; line-height: 1.5; margin-bottom: 24px; }
+.q-text .hanja-q { color: var(--seal); font-size: 26px; }
+.choices { display: grid; gap: 10px; }
+.choice {
+  padding: 14px 18px; border: 1.5px solid var(--border); border-radius: 12px;
+  background: var(--surface-2); font-size: 15.5px; text-align: left; font-weight: 500;
+  transition: all .18s ease; display: flex; align-items: center; gap: 12px;
+}
+.choice .key {
+  width: 26px; height: 26px; border-radius: 8px; flex: none;
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--ink-soft);
+}
+.choice:hover:not(:disabled) { border-color: var(--seal); background: var(--seal-soft); }
+.choice:disabled { cursor: default; opacity: .85; }
+.choice.correct { border-color: var(--green); background: #e9f0dd; }
+.choice.correct .key { background: var(--green); color: #fff; border-color: var(--green); }
+.choice.wrong { border-color: var(--seal); background: var(--seal-soft); }
+.choice.wrong .key { background: var(--seal); color: #fff; border-color: var(--seal); }
+.q-explain {
+  margin-top: 18px; padding: 14px 16px; border-radius: 12px; font-size: 14px;
+  background: var(--surface-2); border: 1px solid var(--border-soft); color: var(--ink-soft);
+  display: none;
+}
+.q-explain.show { display: block; }
+.quiz-result { text-align: center; padding: 20px 0; }
+.quiz-result .score-big { font-family: var(--font-serif); font-size: 72px; font-weight: 900; line-height: 1; margin: 12px 0 6px; }
+.quiz-result .score-label { color: var(--ink-soft); margin-bottom: 24px; }
+.emoji-faces { font-size: 44px; }
+
+/* ---------- wrong note ---------- */
+.wrong-item {
+  background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--seal);
+  border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.wrong-item .wq { font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+.wrong-item .wa { font-size: 14px; color: var(--ink-soft); }
+.wrong-item .wa strong { color: var(--green); }
+.wrong-item .wdate { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+.empty-state .big { font-size: 48px; margin-bottom: 12px; }
+
+footer { text-align: center; padding: 30px 20px; color: var(--ink-faint); font-size: 12.5px; border-top: 1px solid var(--border-soft); }
+
+@media (max-width: 640px) {
+  .hero { padding: 26px 22px; }
+  .quiz-box { padding: 22px 18px; }
+  .q-text { font-size: 18px; }
+  nav { width: 100%; margin-left: 0; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  nav button { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-seal">漢</div>
+      <div class="logo-text">
+        <h1>한문 기말고사 완전정리</h1>
+        <p>중2 2학기 · 2~10단원 (6·10단원 제외)</p>
+      </div>
+    </div>
+    <nav id="main-nav">
+      <button data-page="home" class="active">홈</button>
+      <button data-page="study">단원 학습</button>
+      <button data-page="cards">플래시카드</button>
+      <button data-page="quiz">퀴즈</button>
+      <button data-page="wrong">오답노트</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HOME ================= -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div>
+      <div class="scope-chip">시험범위 · 2 ~ 10단원 (6단원, 10단원 제외)</div>
+      <h3>오늘 조금씩,<br>기말고사 한문 만점까지</h3>
+      <p>24절기, 옛사람의 이름, 나이 표현, 고사성어, 논어 명문장까지 — 시험에 나오는 내용만 콕콕 정리했어요. 단원 학습 → 플래시카드 → 퀴즈 순서로 공부하면 완벽해져요.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" data-goto="study">단원 학습 시작</button>
+        <button class="btn btn-ghost" data-goto="quiz">퀴즈 풀기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card accent"><div class="num" id="stat-quiz">0</div><div class="label">푼 퀴즈 문제</div></div>
+    <div class="stat-card indigo"><div class="num" id="stat-avg">–</div><div class="label">최근 퀴즈 평균</div></div>
+    <div class="stat-card"><div class="num" id="stat-known">0</div><div class="label">외운 플래시카드</div></div>
+    <div class="stat-card"><div class="num" id="stat-wrong">0</div><div class="label">오답노트</div></div>
+  </div>
+
+  <h2 class="page-title" style="font-size:20px; margin-bottom:14px;">시험 범위 단원</h2>
+  <div class="home-grid">
+    <button class="unit-card" data-goto="study" data-unit="2">
+      <div class="unit-badge">2</div>
+      <h4>24절기</h4>
+      <p>입춘부터 대한까지, 태양의 위치로 나눈 1년 24개의 마디와 계절별 특징</p>
+      <div class="go">공부하기 →</div>
+    </button>
+    <button class="unit-card" data-goto="study" data-unit="3">
+      <div class="unit-badge">3</div>
+      <h4>옛 사람의 이름</h4>
+      <p>아명·본명·자·호·시호 — 옛사람은 이름이 여러 개였어요</p>
+      <div class="go">공부하기 →</div>
+    </button>
+    <button class="unit-card" data-goto="study" data-unit="7">
+      <div class="unit-badge">7</div>
+      <h4>나이 표현</h4>
+      <p>환갑·고희·미수·백수, 그리고 논어에 나오는 공자님의 인생 단계</p>
+      <div class="go">공부하기 →</div>
+    </button>
+    <button class="unit-card" data-goto="study" data-unit="8">
+      <div class="unit-badge">8</div>
+      <h4>이야기가 있는 성어</h4>
+      <p>어부지리·조삼모사·노익장 등 중국 고사성어의 뜻과 출전</p>
+      <div class="go">공부하기 →</div>
+    </button>
+    <button class="unit-card" data-goto="study" data-unit="9">
+      <div class="unit-badge">9</div>
+      <h4>2·3급사 성어</h4>
+      <p>백미·사족·모순·기우·형설지공·결초보은·대기만성</p>
+      <div class="go">공부하기 →</div>
+    </button>
+    <button class="unit-card" data-goto="cards">
+      <div class="unit-badge">카</div>
+      <h4>플래시카드</h4>
+      <p>전 범위 카드 58장 — 뒤집으면서 외우고, 아는 카드는 체크!</p>
+      <div class="go">카드 보기 →</div>
+    </button>
+  </div>
+</section>
+
+<!-- ================= STUDY ================= -->
+<section class="page" id="page-study">
+  <h2 class="page-title">단원 학습</h2>
+  <p class="page-sub">단원을 눌러서 핵심 내용을 정리해 보세요. 읽고 나면 플래시카드로 확인!</p>
+  <div class="sub-tabs" id="unit-tabs">
+    <button data-unit="2" class="active">2단원 · 24절기</button>
+    <button data-unit="3">3단원 · 옛 사람의 이름</button>
+    <button data-unit="7">7단원 · 나이 표현</button>
+    <button data-unit="8">8단원 · 고사성어</button>
+    <button data-unit="9">9단원 · 2·3급사 성어</button>
+  </div>
+  <div id="unit-content"></div>
+</section>
+
+<!-- ================= FLASHCARDS ================= -->
+<section class="page" id="page-cards">
+  <h2 class="page-title">플래시카드</h2>
+  <p class="page-sub">카드를 누르면 뒤집혀요. 아는 카드는 체크하면 통계에 반영돼요.</p>
+  <div class="fc-controls">
+    <button class="chip active" data-deck="all">전체</button>
+    <button class="chip" data-deck="2">24절기</button>
+    <button class="chip" data-deck="3">이름</button>
+    <button class="chip" data-deck="7">나이·논어</button>
+    <button class="chip" data-deck="89">고사성어</button>
+    <button class="chip" data-deck="unknown">모르는 것만</button>
+    <span class="fc-progress" id="fc-progress"></span>
+  </div>
+  <div class="fc-stage">
+    <div class="fc-card" id="fc-card">
+      <div class="fc-face front">
+        <div class="fc-cat" id="fcf-cat"></div>
+        <div class="big-hanja" id="fcf-front"></div>
+        <div class="fc-hint">카드를 눌러서 정답 확인</div>
+      </div>
+      <div class="fc-face back">
+        <div class="fc-cat" id="fcb-cat"></div>
+        <div class="fc-meaning" id="fcb-main"></div>
+        <div class="fc-extra" id="fcb-extra"></div>
+        <div class="fc-hint">다시 누르면 앞면으로</div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button class="btn btn-ghost" id="fc-prev">← 이전</button>
+    <button class="btn btn-primary" id="fc-shuffle">🔀 섞기</button>
+    <button class="btn btn-ghost" id="fc-know">✓ 외웠어요</button>
+    <button class="btn btn-ghost" id="fc-next">다음 →</button>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="page" id="page-quiz">
+  <h2 class="page-title">기말고사 대비 퀴즈</h2>
+  <p class="page-sub">시험 범위 전체에서 15문제가 랜덤으로 출제돼요. 틀린 문제는 자동으로 오답노트에 저장!</p>
+  <div class="quiz-box" id="quiz-box">
+    <div id="quiz-start" class="quiz-result">
+      <div class="emoji-faces">📝</div>
+      <h3 style="font-family:var(--font-serif); font-size:22px; font-weight:900; margin:10px 0 8px;">준비됐나요?</h3>
+      <p style="color:var(--ink-soft); margin-bottom:24px;">성어 뜻, 나이, 24절기, 논어, 이름까지 섞여서 나와요.</p>
+      <button class="btn btn-primary" id="quiz-start-btn">퀴즈 시작하기</button>
+    </div>
+    <div id="quiz-play" style="display:none;">
+      <div class="quiz-meta">
+        <span id="q-count"></span>
+        <span id="q-score"></span>
+      </div>
+      <div class="quiz-bar"><div id="q-bar" style="width:0%"></div></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="choices" id="q-choices"></div>
+      <div class="q-explain" id="q-explain"></div>
+      <div style="margin-top:20px; text-align:right;">
+        <button class="btn btn-primary" id="q-next" style="display:none;">다음 문제 →</button>
+      </div>
+    </div>
+    <div id="quiz-end" class="quiz-result" style="display:none;">
+      <div class="emoji-faces" id="result-emoji"></div>
+      <div class="score-big" id="result-score"></div>
+      <div class="score-label" id="result-label"></div>
+      <button class="btn btn-primary" id="quiz-retry">다시 풀기</button>
+      <button class="btn btn-ghost" data-goto="wrong" style="margin-left:8px;">오답노트 보기</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WRONG NOTE ================= -->
+<section class="page" id="page-wrong">
+  <h2 class="page-title">오답노트</h2>
+  <p class="page-sub">퀴즈에서 틀린 문제들이 여기에 쌓여요. 시험 전에 여기만 다시 보면 끝!</p>
+  <div id="wrong-list"></div>
+  <div id="wrong-empty" class="empty-state">
+    <div class="big">🌱</div>
+    <p><strong>아직 틀린 문제가 없어요!</strong></p>
+    <p style="font-size:13px; margin-top:4px;">퀴즈를 풀면 틀린 문제가 자동으로 저장돼요.</p>
+    <br>
+    <button class="btn btn-primary" data-goto="quiz">퀴즈 풀러 가기</button>
+  </div>
+  <div id="wrong-actions" style="display:none; margin-top:16px;">
+    <button class="btn btn-ghost" id="wrong-clear">오답노트 전부 지우기</button>
+  </div>
+</section>
+
+</main>
+
+<footer>중2 2학기 한문 기말고사 대비 · 단원 2·3·7·8·9 범위 정리 앱</footer>
+
+<script>
+/* ================= 데이터 ================= */
+const IDIOMS = [
+  {u:8, h:'漁父之利', r:'어부지리', m:'둘이 다투는 틈에 제3자가 이득을 봄', s:'조개와 황새가 서로 물고 버티다가 어부에게 둘 다 잡힌 이야기 (전국책)'},
+  {u:8, h:'朝三暮四', r:'조삼모사', m:'눈앞의 속임수로 속이거나, 말·행동을 자주 바꿈', s:'송나라 사람이 원숭이에게 "아침 3개, 저녁 4개"라고 속임 (장자)'},
+  {u:8, h:'鷄卵有骨', r:'계란유골', m:'뜻밖의 행운에도 불행이 따름, 재수가 없음', s:''},
+  {u:8, h:'三馬太守', r:'삼마태수', m:'청렴결백한 관리 (청백리)', s:''},
+  {u:8, h:'三日天下', r:'삼일천하', m:'아주 짧은 기간 동안 정권을 잡음', s:'1884년 갑신정변이 3일 만에 실패한 데서 유래'},
+  {u:8, h:'見金如石', r:'견금여석', m:'돈을 돌멩이처럼 여김 (청렴결백함)', s:''},
+  {u:8, h:'助長', r:'조장', m:'서투르게 도와주다가 오히려 그르침', s:'송나라 사람이 벼 포기를 뽑아주며 자라게 하려다 말림 (맥자조장)'},
+  {u:8, h:'壓卷', r:'압권', m:'여러 책이나 작품 중 가장 뛰어난 부분', s:''},
+  {u:8, h:'似而非', r:'사이비', m:'겉모습은 진짜 같은데 실제는 가짜임', s:''},
+  {u:8, h:'老益壯', r:'노익장', m:'나이가 들수록 더욱 씩씩하고 장대해짐', s:'후한의 마원 장군이 늙어도 더욱 기운이 세었다는 고사'},
+  {u:9, h:'白眉', r:'백미', m:'여럿 중에서 가장 뛰어난 사람이나 물건', s:'촉한의 마량은 눈썹이 희었는데 다섯 형제 중 가장 뛰어남'},
+  {u:9, h:'蛇足', r:'사족', m:'불필요한 군더더기', s:'뱀 그리기 대회에서 먼저 그린 사람이 발을 그려 실격됨'},
+  {u:9, h:'矛盾', r:'모순', m:'말이나 행동이 앞뒤가 맞지 않음', s:'무엇이든 뚫는 창과 무엇도 못 뚫는 방패를 함께 파는 장수'},
+  {u:9, h:'杞憂', r:'기우', m:'쓸데없는 걱정, 근거 없는 불안', s:'기나라 사람이 하늘이 무너질까 봐 걱정한 고사'},
+  {u:9, h:'螢雪之功', r:'형설지공', m:'가난 속에서도 각고의 노력으로 이룬 공부의 성과', s:'차윤은 반딧불 빛으로, 손강은 눈 반사광으로 글을 읽음'},
+  {u:9, h:'結草報恩', r:'결초보은', m:'죽은 뒤에라도 은혜를 갚음', s:'첩을 구해준 은혜에 아버지 혼백이 풀을 묶어 적장 두회의 말을 넘어뜨림'},
+  {u:9, h:'大器晩成', r:'대기만성', m:'큰 그릇(큰 인물)은 늦게 이루어짐', s:'조위의 최림이 어려서 볼품없었으나 뒤에 크게 성공한 고사'},
+];
+const NAMES = [
+  {h:'兒名(初名)', r:'아명', m:'어렸을 때 부르던 이름 — 질병과 액운을 막으려고 일부러 천하게 지음', e:'예: 개똥이'},
+  {h:'本名', r:'본명', m:'호적에 올라가는 공식적인 이름', e:'어른의 이름을 함부로 부르는 것은 금기였어요'},
+  {h:'字', r:'자', m:'관례(성인식) 때 스승이나 어른이 지어주고, 친구들이 부르던 이름', e:''},
+  {h:'號', r:'호', m:'자기가 짓거나 남이 지어준 별명 — 사는 곳·이상·환경·좋아하는 것에서 유래', e:'예: 김구 → 백범일지, 김정희 → 추사체'},
+  {h:'諡號', r:'시호', m:'죽은 뒤 나라에 큰 공을 세운 사람에게 임금이 내린 이름', e:'예: 이순신 → 충무공, 충무로의 유래'},
+];
+const AGES = [
+  {h:'還甲', r:'환갑', n:61, d:'61세 — 태어난 갑자(甲子)가 돌아옴'},
+  {h:'古稀', r:'고희', n:70, d:'70세 — 두보의 시 "인생 70은 고래로 드물다"에서 유래'},
+  {h:'傘壽', r:'산수', n:80, d:'80세 — 傘의 약자(傘)를 八十으로 봄'},
+  {h:'望九', r:'망구', n:81, d:'81세 — 아흔(九)을 바라본다는 뜻'},
+  {h:'米壽', r:'미수', n:88, d:'88세 — 米 자를 八十八으로 쪼개서 봄'},
+  {h:'白壽', r:'백수', n:99, d:'99세 — 百에서 一을 빼면 白이 됨'},
+];
+const ANALECTS = [
+  {age:15, h:'志學', r:'지학', s:'吾十有五而志于學 · 학문할 뜻을 세움'},
+  {age:30, h:'而立', r:'이립', s:'三十而立 · 스스로 서 나감'},
+  {age:40, h:'不惑', r:'불혹', s:'四十而不惑 · 미혹하지 않음'},
+  {age:50, h:'知天命', r:'지천명', s:'五十而知天命 · 천명을 알음'},
+  {age:60, h:'耳順', r:'이순', s:'六十而耳順 · 무엇이든 귀에 순하게 들림'},
+  {age:70, h:'從心', r:'종심', s:'七十而從心所欲 不踰矩 · 마음대로 행해도 도리에 어긋나지 않음'},
+];
+const SEASONS = {
+  '봄': [['立春','입춘'],['雨水','우수'],['驚蟄','경칩'],['春分','춘분'],['淸明','청명'],['穀雨','곡우']],
+  '여름': [['立夏','입하'],['小滿','소만'],['芒種','망종'],['夏至','하지'],['小暑','소서'],['大暑','대서']],
+  '가을': [['立秋','입추'],['處暑','처서'],['白露','백로'],['秋分','추분'],['寒露','한로'],['霜降','상강']],
+  '겨울': [['立冬','입동'],['小雪','소설'],['大雪','대설'],['冬至','동지'],['小寒','소한'],['大寒','대한']],
+};
+const SEASON_ORDER = ['봄','여름','가을','겨울'];
+
+/* ================= 저장소 (안전 래핑) ================= */
+const store = (() => {
+  let mem = {};
+  return {
+    get(k, d) { try { const v = mem[k]; return v ? JSON.parse(v) : d; } catch(e) { return d; } },
+    set(k, v) { mem[k] = JSON.stringify(v); }
+  };
+})();
+
+/* ================= 탭 ================= */
+const pages = document.querySelectorAll('.page');
+const navBtns = document.querySelectorAll('#main-nav button');
+function goto(p) {
+  pages.forEach(x => x.classList.remove('active'));
+  navBtns.forEach(x => x.classList.toggle('active', x.dataset.page === p));
+  document.getElementById('page-' + p).classList.add('active');
+  window.scrollTo({top: 0});
+}
+navBtns.forEach(b => b.addEventListener('click', () => goto(b.dataset.page)));
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]');
+  if (g) {
+    goto(g.dataset.goto);
+    if (g.dataset.unit) selectUnit(g.dataset.unit);
+  }
+});
+
+/* ================= 단원 학습 ================= */
+const unitContent = document.getElementById('unit-content');
+const unitTabs = document.querySelectorAll('#unit-tabs button');
+
+function seasonCard(season) {
+  const items = SEASONS[season].map(([h, r]) =>
+    `<div class="entry"><span class="season-tag tag-${season}">${season}</span><div class="hanja">${h}</div><div class="reading">${r}</div><div class="meaning">한자 뜻: ${seasonWord(h)}</div></div>`
+  ).join('');
+  return `<div class="info-card"><h4>${season} 절기 (6개)</h4><div class="entry-grid">${items}</div></div>`;
+}
+function seasonWord(h) {
+  const map = {'立':'설','春':'봄','雨':'비','水':'물','驚':'놀랄','蟄':'벌레가 숨을','分':'나눌','淸':'맑을','明':'밝을','穀':'곡식','立夏':'여름 시작','小':'작을','滿':'찰','芒':'깃망','種':'씨 뿌릴','夏':'여름','至':'이를','暑':'더울','大':'큰','秋':'가을','處':'머무를','白':'흴','露':'이슬','寒':'찰','霜':'서리','降':'내릴','冬':'겨울','雪':'눈','日':'해','風':'바람'};
+  return h.split('').map(c => map[c] || '').filter(Boolean).join(' · ');
+}
+
+function renderUnit(u) {
+  let html = '';
+  if (u === '2') {
+    html = `
+      <div class="info-card">
+        <h4>24절기(節氣)란?</h4>
+        <p>태양의 <strong>황경(움직이는 길)</strong>을 기준으로 1년을 <strong>24등분</strong>한 것. 태양이 매번 약 <strong>15일</strong> 간격으로 이동할 때마다 한 절기씩 바뀌어요.</p>
+        <div class="note"><strong>암기 팁</strong> — 각 계절의 첫 절기는 "입(立)"이 들어가요: 입춘 → 입하 → 입추 → 입동. 계절 순서는 봄→여름→가을→겨울!</div>
+      </div>
+      ${SEASON_ORDER.map(seasonCard).join('')}
+      <div class="info-card">
+        <h4>전통문화와 절기</h4>
+        <p class="term-table-wrap"></p>
+        <table class="term-table">
+          <tr><th>한자</th><th>읽기</th><th>뜻</th></tr>
+          <tr><td class="h">立春大吉</td><td>입춘대길</td><td>입춘에 큰 길함이 있으라는 뜻 (입춘첩)</td></tr>
+          <tr><td class="h">春·夏·秋·冬</td><td>춘·하·추·동</td><td>봄 춘 / 여름 하 / 가을 추 / 겨울 동</td></tr>
+        </table>
+      </div>`;
+  } else if (u === '3') {
+    html = `
+      <div class="info-card">
+        <h4>생각열기 — 이름이란?</h4>
+        <p style="font-family:var(--font-serif); font-size:22px; font-weight:900; margin:8px 0;">虎死留皮 人死留名</p>
+        <p><strong>호사유피 인사유명</strong> — 호랑이는 죽어서 가죽을 남기고, 사람은 죽어서 이름을 남긴다.</p>
+        <p class="muted">虎(범 호) · 死(죽을 사) · 留(머무를 류) · 皮(가죽 피) · 人(사람 인) · 名(이름 명)</p>
+      </div>
+      <div class="info-card">
+        <h4>여러 이름의 종류</h4>
+        <div class="entry-grid">
+          ${NAMES.map(n => `<div class="entry"><div class="hanja">${n.h}</div><div class="reading">${n.r}</div><div class="meaning">${n.m}</div>${n.e ? `<div class="origin">${n.e}</div>` : ''}</div>`).join('')}
+        </div>
+      </div>
+      <div class="info-card">
+        <h4>호(號) 짓는 방법 &amp; 시호에서 온 이름</h4>
+        <ol>
+          <li><strong>사는 곳</strong>에서 유래</li>
+          <li><strong>지향하는 이상</strong>에서 유래</li>
+          <li><strong>삶의 환경·처지</strong>에서 유래</li>
+          <li><strong>좋아하는 것</strong>에서 유래</li>
+        </ol>
+        <table class="term-table" style="margin-top:14px;">
+          <tr><th>명칭</th><th>유래</th></tr>
+          <tr><td class="h">백범일지</td><td>김구의 호 '백범'에서 온 책 이름</td></tr>
+          <tr><td class="h">추사체</td><td>김정희의 호 '추사'에서 온 서체 이름</td></tr>
+          <tr><td class="h">충무로</td><td>이순신의 시호 '충무공'에서 온 거리 이름</td></tr>
+        </table>
+      </div>`;
+  } else if (u === '7') {
+    html = `
+      <div class="info-card">
+        <h4>나이를 나타내는 한자어</h4>
+        <div class="entry-grid">
+          ${AGES.map(a => `<div class="entry"><div class="hanja">${a.h}</div><div class="reading">${a.r} · ${a.n}세</div><div class="meaning">${a.d}</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="info-card">
+        <h4>논어(論語) — 공자의 인생 단계</h4>
+        <p class="muted" style="margin-bottom:12px;">子曰(자왈): 공자가 이르시되 —</p>
+        <table class="term-table">
+          <tr><th>나이</th><th>한자</th><th>읽기</th><th>뜻</th></tr>
+          ${ANALECTS.map(a => `<tr><td><strong>${a.age}세</strong></td><td class="h">${a.h}</td><td>${a.r}</td><td>${a.s}</td></tr>`).join('')}
+        </table>
+      </div>
+      <div class="info-card">
+        <h4>한자 읽기 — 不의 소리</h4>
+        <p>不는 뒤에 오는 글자가 <strong>ㄷ, ㅈ</strong>으로 시작하면 <strong>'부'</strong>, 그 외에는 <strong>'불'</strong>로 읽어요.</p>
+        <table class="term-table" style="margin-top:12px;">
+          <tr><th>'부' (ㄷ·ㅈ 앞)</th><th>'불' (그 외)</th></tr>
+          <tr><td>不動産 → <strong>부</strong>동산</td><td>不利 → <strong>불</strong>리</td></tr>
+          <tr><td>不正 → <strong>부</strong>정</td><td>不滿 → <strong>불</strong>만</td></tr>
+        </table>
+      </div>`;
+  } else {
+    const list = IDIOMS.filter(i => i.u === +u);
+    html = `
+      <div class="info-card">
+        <h4>${u === '8' ? '8단원 · 이야기가 있는 성어 (중국 고사성어)' : '9단원 · 2·3급사 성어'}</h4>
+        <p class="muted">한자를 눈으로 익히고, 뜻과 출전(고사)까지 함께 외워요. 시험에는 뜻·독음·고사가 모두 나와요!</p>
+      </div>
+      <div class="entry-grid">
+        ${list.map(i => `<div class="entry"><div class="hanja">${i.h}</div><div class="reading">${i.r}</div><div class="meaning">${i.m}</div>${i.s ? `<div class="origin">${i.s}</div>` : ''}</div>`).join('')}
+      </div>`;
+  }
+  unitContent.innerHTML = html;
+}
+function selectUnit(u) {
+  unitTabs.forEach(b => b.classList.toggle('active', b.dataset.unit === u));
+  renderUnit(u);
+}
+unitTabs.forEach(b => b.addEventListener('click', () => selectUnit(b.dataset.unit)));
+renderUnit('2');
+
+/* ================= 플래시카드 ================= */
+function buildDeck() {
+  const deck = [];
+  IDIOMS.forEach(i => deck.push({cat:'고사성어', deck:String(i.u), front:i.h, main:i.r + ' — ' + i.m, extra:i.s}));
+  NAMES.forEach(n => deck.push({cat:'이름', deck:'3', front:n.h, main:n.r + ' — ' + n.m, extra:n.e}));
+  AGES.forEach(a => deck.push({cat:'나이', deck:'7', front:a.h + ' (' + a.n + '세)', main:a.r + ' — ' + a.d, extra:''}));
+  ANALECTS.forEach(a => deck.push({cat:'논어', deck:'7', front:a.age + '세 · ' + a.h, main:a.r + ' — ' + a.s, extra:''}));
+  Object.entries(SEASONS).forEach(([s, arr]) => arr.forEach(([h, r]) => deck.push({cat:'24절기 · ' + s, deck:'2', front:h, main:r, extra:s + ' 절기 (순서: ' + (arr.findIndex(x => x[0] === h) + 1) + '/6)'})));
+  return deck;
+}
+const ALL_CARDS = buildDeck();
+let fcFilter = 'all';
+let fcOrder = ALL_CARDS.map((_, i) => i);
+let fcIdx = 0;
+const known = store.get('known', []);
+const fcCard = document.getElementById('fc-card');
+
+function fcVisible() {
+  return fcOrder.filter(i => {
+    const c = ALL_CARDS[i];
+    if (fcFilter === 'all') return true;
+    if (fcFilter === 'unknown') return !known.includes(i);
+    return fcFilter === c.deck;
+  });
+}
+function renderCard() {
+  const vis = fcVisible();
+  if (!vis.length) {
+    document.getElementById('fcf-front').textContent = '🎉';
+    document.getElementById('fcf-cat').textContent = '전부 외웠어요!';
+    document.getElementById('fcb-main').textContent = '이 필터의 카드를 다 외웠어요.';
+    document.getElementById('fcb-extra').textContent = '';
+    document.getElementById('fc-progress').textContent = '';
+    fcCard.classList.remove('flipped');
+    return;
+  }
+  if (fcIdx >= vis.length) fcIdx = 0;
+  const i = vis[fcIdx];
+  const c = ALL_CARDS[i];
+  document.getElementById('fcf-cat').textContent = c.cat;
+  document.getElementById('fcf-front').textContent = c.front;
+  document.getElementById('fcb-cat').textContent = c.cat;
+  document.getElementById('fcb-main').textContent = c.main;
+  document.getElementById('fcb-extra').textContent = c.extra || '';
+  document.getElementById('fc-progress').textContent = (fcIdx + 1) + ' / ' + vis.length + (known.includes(i) ? ' · ✓ 외움' : '');
+  fcCard.classList.remove('flipped');
+}
+fcCard.addEventListener('click', () => fcCard.classList.toggle('flipped'));
+document.getElementById('fc-prev').addEventListener('click', () => { const v = fcVisible(); if (v.length) { fcIdx = (fcIdx - 1 + v.length) % v.length; renderCard(); } });
+document.getElementById('fc-next').addEventListener('click', () => { const v = fcVisible(); if (v.length) { fcIdx = (fcIdx + 1) % v.length; renderCard(); } });
+document.getElementById('fc-shuffle').addEventListener('click', () => {
+  fcOrder = ALL_CARDS.map((_, i) => i);
+  for (let i = fcOrder.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]]; }
+  fcIdx = 0; renderCard();
+});
+document.getElementById('fc-know').addEventListener('click', () => {
+  const vis = fcVisible(); if (!vis.length) return;
+  const i = vis[fcIdx];
+  if (!known.includes(i)) { known.push(i); store.set('known', known); }
+  updateStats();
+  const v = fcVisible();
+  if (fcIdx >= v.length) fcIdx = Math.max(0, v.length - 1);
+  renderCard();
+});
+document.querySelectorAll('.fc-controls .chip').forEach(ch => ch.addEventListener('click', () => {
+  document.querySelectorAll('.fc-controls .chip').forEach(x => x.classList.remove('active'));
+  ch.classList.add('active');
+  fcFilter = ch.dataset.deck; fcIdx = 0; renderCard();
+}));
+renderCard();
+
+/* ================= 퀴즈 ================= */
+const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const pick = (arr, n) => shuffle(arr).slice(0, n);
+
+function buildQuestions() {
+  const qs = [];
+  // 1. 성어 → 뜻
+  shuffle(IDIOMS).slice(0, 5).forEach(i => {
+    const wrongs = pick(IDIOMS.filter(x => x.r !== i.r), 3).map(x => x.m);
+    qs.push({q:`<span class="hanja-q">${i.h}</span><br>${i.r}의 뜻은?`, c:shuffle([i.m, ...wrongs]), a:i.m, ex:i.s || (i.h + ' → ' + i.r), t:'성어 뜻'});
+  });
+  // 2. 뜻 → 성어
+  shuffle(IDIOMS).slice(0, 3).forEach(i => {
+    const wrongs = pick(IDIOMS.filter(x => x.r !== i.r), 3).map(x => x.h + ' (' + x.r + ')');
+    qs.push({q:`"${i.m}"<br>이 뜻을 가진 성어는?`, c:shuffle([i.h + ' (' + i.r + ')', ...wrongs]), a:i.h + ' (' + i.r + ')', ex:i.s || '', t:'성어 찾기'});
+  });
+  // 3. 고사 → 성어
+  const withStory = IDIOMS.filter(i => i.s);
+  shuffle(withStory).slice(0, 2).forEach(i => {
+    const wrongs = pick(IDIOMS.filter(x => x.r !== i.r), 3).map(x => x.h + ' (' + x.r + ')');
+    qs.push({q:`다음 고사와 관련 있는 성어는?<br><span style="font-size:15px; color:var(--ink-soft);">${i.s}</span>`, c:shuffle([i.h + ' (' + i.r + ')', ...wrongs]), a:i.h + ' (' + i.r + ')', ex:i.m, t:'고사·출전'});
+  });
+  // 4. 나이
+  shuffle(AGES).slice(0, 2).forEach(a => {
+    const wrongs = pick(AGES.filter(x => x.h !== a.h), 3).map(x => x.h + ' (' + x.r + ', ' + x.n + '세)');
+    qs.push({q:`<span class="hanja-q">${a.n}세</span>를 뜻하는 한자어는?`, c:shuffle([a.h + ' (' + a.r + ', ' + a.n + '세)', ...wrongs]), a:a.h + ' (' + a.r + ', ' + a.n + '세)', ex:a.d, t:'나이'});
+  });
+  // 5. 논어
+  shuffle(ANALECTS).slice(0, 2).forEach(a => {
+    const wrongs = pick(ANALECTS.filter(x => x.h !== a.h), 3).map(x => x.r + ' (' + x.age + '세)');
+    qs.push({q:`공자가 말한 <span class="hanja-q">${a.age}세</span>의 단계는?`, c:shuffle([a.r + ' (' + a.age + '세)', ...wrongs]), a:a.r + ' (' + a.age + '세)', ex:a.s, t:'논어'});
+  });
+  // 6. 24절기 계절
+  const allTerms = Object.entries(SEASONS).flatMap(([s, arr]) => arr.map(([h, r]) => ({h, r, s})));
+  shuffle(allTerms).slice(0, 2).forEach(t => {
+    const wrongs = SEASON_ORDER.filter(s => s !== t.s);
+    qs.push({q:`<span class="hanja-q">${t.h} (${t.r})</span>은 어느 계절의 절기인가?`, c:shuffle([t.s, ...wrongs]), a:t.s, ex:t.s + ' 절기 — 입춘·입하·입추·입동이 각 계절의 시작!', t:'24절기'});
+  });
+  // 7. 24절기 순서
+  shuffle(SEASON_ORDER).slice(0, 1).forEach(s => {
+    const arr = SEASONS[s];
+    const k = Math.floor(Math.random() * 5);
+    const next = arr[k + 1];
+    const wrongs = pick(allTerms.filter(t => t.h !== next[0]), 3).map(t => t.h + ' (' + t.r + ')');
+    qs.push({q:`${s}의 ${k + 1}번째 절기 <span class="hanja-q">${arr[k][1]}</span> 다음 절기는?`, c:shuffle([next[0] + ' (' + next[1] + ')', ...wrongs]), a:next[0] + ' (' + next[1] + ')', ex:s + ' 절기 순서: ' + arr.map(x => x[1]).join(' → '), t:'24절기 순서'});
+  });
+  // 8. 이름 종류
+  shuffle(NAMES).slice(0, 1).forEach(n => {
+    const wrongs = pick(NAMES.filter(x => x.h !== n.h), 3).map(x => x.r);
+    qs.push({q:`"${n.m}"<br>이것은 어떤 이름인가?`, c:shuffle([n.r, ...wrongs]), a:n.r, ex:n.h + ' — ' + n.m + (n.e ? ' (' + n.e + ')' : ''), t:'옛 이름'});
+  });
+  // 9. 不 읽기
+  qs.push({q:`'不動産'의 '不'는 어떻게 읽을까?`, c:shuffle(['부', '불', '푸', '보']), a:'부', ex:'不 뒤에 ㄷ, ㅈ이 오면 "부", 그 외에는 "불" (부동산, 부정 / 불리, 불만)', t:'한자 읽기'});
+  return shuffle(qs).slice(0, 15);
+}
+
+let quiz = null, qi = 0, score = 0;
+const quizStats = store.get('quizStats', {count: 0, last: null});
+
+function startQuiz() {
+  quiz = buildQuestions(); qi = 0; score = 0;
+  document.getElementById('quiz-start').style.display = 'none';
+  document.getElementById('quiz-end').style.display = 'none';
+  document.getElementById('quiz-play').style.display = 'block';
+  renderQ();
+}
+function renderQ() {
+  const q = quiz[qi];
+  document.getElementById('q-count').textContent = '문제 ' + (qi + 1) + ' / ' + quiz.length;
+  document.getElementById('q-score').textContent = '정답 ' + score + '개';
+  document.getElementById('q-bar').style.width = (qi / quiz.length * 100) + '%';
+  document.getElementById('q-text').innerHTML = q.q;
+  const box = document.getElementById('q-choices');
+  box.innerHTML = '';
+  q.c.forEach((c, idx) => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = `<span class="key">${'①②③④'[idx]}</span><span>${c}</span>`;
+    b.addEventListener('click', () => answer(b, c, q));
+    box.appendChild(b);
+  });
+  document.getElementById('q-explain').classList.remove('show');
+  document.getElementById('q-next').style.display = 'none';
+}
+function answer(btn, c, q) {
+  document.querySelectorAll('.choice').forEach(b => b.disabled = true);
+  const correct = c === q.a;
+  if (correct) {
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.choice').forEach(b => { if (b.textContent.includes(q.a)) b.classList.add('correct'); });
+    const wrong = store.get('wrongList', []);
+    wrong.unshift({q: q.q.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(), a: q.a, ex: q.ex, t: q.t, date: new Date().toLocaleDateString('ko-KR')});
+    store.set('wrongList', wrong.slice(0, 100));
+  }
+  const ex = document.getElementById('q-explain');
+  ex.innerHTML = (correct ? '✅ 정답! ' : '❌ 아쉬워요. ') + (q.ex || '');
+  ex.classList.add('show');
+  document.getElementById('q-score').textContent = '정답 ' + score + '개';
+  document.getElementById('q-next').style.display = 'inline-flex';
+  document.getElementById('q-next').textContent = qi === quiz.length - 1 ? '결과 보기 🏁' : '다음 문제 →';
+  updateStats();
+}
+document.getElementById('q-next').addEventListener('click', () => {
+  if (qi < quiz.length - 1) { qi++; renderQ(); }
+  else {
+    quizStats.count += quiz.length; quizStats.last = Math.round(score / quiz.length * 100);
+    store.set('quizStats', quizStats);
+    document.getElementById('quiz-play').style.display = 'none';
+    const r = document.getElementById('quiz-end');
+    r.style.display = 'block';
+    const pct = Math.round(score / quiz.length * 100);
+    document.getElementById('result-score').textContent = score + ' / ' + quiz.length;
+    const emoji = pct === 100 ? '🏆' : pct >= 80 ? '😄' : pct >= 60 ? '🙂' : '💪';
+    const label = pct === 100 ? '완벽해요! 이대로 시험장 가면 만점!' : pct >= 80 ? '훌륭해요! 틀린 것만 오답노트에서 다시 봐요.' : pct >= 60 ? '좋아요! 조금만 더 복습해요.' : '괜찮아요! 단원 학습부터 천천히 다시!';
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-label').textContent = label + ' (' + pct + '점)';
+    updateStats(); renderWrong();
+  }
+});
+document.getElementById('quiz-start-btn').addEventListener('click', startQuiz);
+document.getElementById('quiz-retry').addEventListener('click', startQuiz);
+
+/* ================= 오답노트 ================= */
+function renderWrong() {
+  const list = store.get('wrongList', []);
+  document.getElementById('wrong-empty').style.display = list.length ? 'none' : 'block';
+  document.getElementById('wrong-actions').style.display = list.length ? 'block' : 'none';
+  document.getElementById('wrong-list').innerHTML = list.map(w => `
+    <div class="wrong-item">
+      <div class="wq">[${w.t}] ${w.q}</div>
+      <div class="wa">정답: <strong>${w.a}</strong>${w.ex ? ' — ' + w.ex : ''}</div>
+      <div class="wdate">${w.date}</div>
+    </div>`).join('');
+}
+document.getElementById('wrong-clear').addEventListener('click', () => {
+  store.set('wrongList', []);
+  renderWrong(); updateStats();
+});
+renderWrong();
+
+/* ================= 통계 ================= */
+function updateStats() {
+  document.getElementById('stat-quiz').textContent = quizStats.count;
+  document.getElementById('stat-avg').textContent = quizStats.last !== null ? quizStats.last + '점' : '–';
+  document.getElementById('stat-known').textContent = known.length + ' / ' + ALL_CARDS.length;
+  document.getElementById('stat-wrong').textContent = store.get('wrongList', []).length;
+}
+updateStats();
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  const PICK_CAPABILITIES = ["pick"];
+  const PICK_CHAIN_LENGTH = 4;
+  const PICK_MAX_TEXT_CHARS = 120;
+  const PICK_MAX_HTML_CHARS = 300;
+
+  function truncate(value, maxChars) {
+    return value.length > maxChars ? value.slice(0, maxChars - 1) + "…" : value;
+  }
+
+  function isPickableElement(element) {
+    return (
+      element instanceof Element &&
+      element !== document.documentElement &&
+      element !== document.body
+    );
+  }
+
+  function resolvePickTarget(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const element = document.elementFromPoint(x, y);
+    return isPickableElement(element) ? element.closest("svg") || element : null;
+  }
+
+  function pickLabel(element) {
+    if (element.id) return element.localName + "#" + element.id;
+    return [element.localName].concat(Array.from(element.classList).slice(0, 2)).join(".");
+  }
+
+  // Only attributes that help find the element in source. data-* values and URL
+  // query strings or fragments can carry tokens.
+  const PICK_ATTRIBUTES = new Set([
+    "id",
+    "class",
+    "name",
+    "type",
+    "role",
+    "alt",
+    "aria-label",
+    "href",
+    "src",
+  ]);
+
+  function pickAttributeValue(attribute) {
+    return attribute.name === "href" || attribute.name === "src"
+      ? attribute.value.split(/[?#]/)[0]
+      : attribute.value;
+  }
+
+  function describePickElement(element) {
+    const chain = [];
+    for (
+      let current = element;
+      isPickableElement(current) && chain.length < PICK_CHAIN_LENGTH;
+      current = current.parentElement
+    ) {
+      chain.unshift(current);
+    }
+    const attributes = Array.from(element.attributes)
+      .filter((attribute) => PICK_ATTRIBUTES.has(attribute.name))
+      .map((attribute) => ` ${attribute.name}="${pickAttributeValue(attribute).replace(/"/g, "&quot;")}"`)
+      .join("");
+    const text = (element.innerText || element.textContent || "").replace(/\s+/g, " ").trim();
+    return {
+      chain: chain.map(pickLabel),
+      html: truncate(`<${element.localName}${attributes}>`, PICK_MAX_HTML_CHARS),
+      text: text ? truncate(text, PICK_MAX_TEXT_CHARS) : undefined,
+    };
+  }
+
+  // Hover asks once per frame, and innerText on a large section forces layout,
+  // so only the rect is re-read while the pointer stays on the same element.
+  // Clicks ask for fresh details since the page may have changed the element.
+  let lastPick = null;
+
+  function describePickTarget(element, fresh) {
+    if (fresh || lastPick?.element !== element) {
+      lastPick = { element, details: describePickElement(element) };
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+      ...lastPick.details,
+    };
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+      capabilities: PICK_CAPABILITIES,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_PICK") {
+      const element = resolvePickTarget(event.data.x, event.data.y);
+      postToTrustedTop({
+        type: "INLINE_EDIT_PICK_RESULT",
+        seq: event.data.seq,
+        target: element ? describePickTarget(element, event.data.fresh === true) : null,
+      });
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
